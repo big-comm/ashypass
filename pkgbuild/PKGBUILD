@@ -1,9 +1,15 @@
 # Maintainer: Tales A. Mendonça <talesam@gmail.com>
 
-pkgname=pkgbuild-template-translate
-pkgdesc="Package template for BigCommunity"
-# Uncomment and edit the following lines as needed
-#depends=('')
+pkgname=ashypass
+pkgdesc="Generate and securely store passwords with encryption"
+depends=(
+    'python'
+    'python-gobject'
+    'gtk4'
+    'libadwaita'
+    'python-cryptography'
+    'python-argon2-cffi'
+)
 #makedepends=('')
 #optdepends=('')
 #conflicts=('')

@@ -1,0 +1,97 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# Application Data
+*.db
+*.sqlite
+*.sqlite3
+*.log
+*.tmp
+
+# User Data and Cache
+.local/
+.cache/
+cache/
+favicons/
+*.session
+
+# Documentation (Private)
+CLAUDE.md
+docs/notes/
+*.draft.md
+
+# Temporary Files
+tmp/
+temp/
+*.bak
+*.backup
+
+# OS Files
+Thumbs.db
+.directory
+
+# Build artifacts
+*.tar.gz
+*.tar.xz
+*.tar.zst
+*.pkg.tar.zst
+pkg/
+src/
+
+# Configuration (sensitive)
+config.json
+secrets/
+*.key
+*.pem
+
+# Locale compiled files
+*.mo
+
+# Test files
+test_*.py
+tests/__pycache__/
+*.test
+
+# Screenshots for testing
+screenshots/test_*.png
+/tmp/
