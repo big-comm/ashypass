@@ -84,6 +84,10 @@ secrets/
 *.key
 *.pem
 
+# Google OAuth tokens (user-specific, do not commit)
+token.pickle
+*.pickle
+
 # Test files
 test_*.py
 tests/__pycache__/

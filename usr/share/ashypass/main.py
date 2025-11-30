@@ -90,7 +90,7 @@ class AshyPassApplication(Adw.Application):
         """Show about dialog"""
         about = Adw.AboutDialog()
         about.set_application_name(APP_NAME)
-        about.set_application_icon(APP_ID)
+        about.set_application_icon("ashypass")
         about.set_version("1.0.0")
         about.set_developer_name("Big Community")
         about.set_license_type(Gtk.License.MIT_X11)
@@ -101,7 +101,7 @@ class AshyPassApplication(Adw.Application):
             _("Contributors"),
             [_("Big Community Apps")]
         )
-        
+
         about.present(self.window)
     
     def on_show_toast(self, action, parameter):

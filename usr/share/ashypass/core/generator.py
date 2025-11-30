@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from typing import Tuple
 
 from core.config import AMBIGUOUS_CHARS, DEFAULT_SYMBOLS, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH
+from utils.i18n import _
 
 
 @dataclass
@@ -162,14 +163,14 @@ class PasswordGenerator:
         
         # Determine strength level
         if score >= 80:
-            level = "Very Strong"
+            level = _("Very Strong")
         elif score >= 60:
-            level = "Strong"
+            level = _("Strong")
         elif score >= 40:
-            level = "Medium"
+            level = _("Medium")
         elif score >= 20:
-            level = "Weak"
+            level = _("Weak")
         else:
-            level = "Very Weak"
+            level = _("Very Weak")
         
         return min(100, score), level

@@ -4,7 +4,7 @@
 import sqlite3
 import time
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Callable
 import hashlib
 import base64
 
@@ -23,7 +23,20 @@ class Database:
         self.connection: Optional[sqlite3.Connection] = None
         self.ph = PasswordHasher(time_cost=3, memory_cost=65536, parallelism=4)
         self._fernet: Optional[Fernet] = None
-    
+        self._change_listeners: List[Callable[[], None]] = []
+
+    def add_change_listener(self, callback: Callable[[], None]) -> None:
+        """Add a listener to be notified when database changes"""
+        self._change_listeners.append(callback)
+
+    def _notify_change(self) -> None:
+        """Notify all listeners of a change"""
+        for callback in self._change_listeners:
+            try:
+                callback()
+            except Exception as e:
+                print(f"Error in change listener: {e}")
+
     def connect(self) -> None:
         """Establish database connection"""
         self.connection = sqlite3.connect(str(self.db_path))
@@ -154,6 +167,7 @@ class Database:
             (title, username, password_encrypted, notes_encrypted, url, timestamp, timestamp),
         )
         self.connection.commit()
+        self._notify_change()
         return cursor.lastrowid
     
     def get_passwords(self, search: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -231,6 +245,8 @@ class Database:
         cursor = self.connection.cursor()
         cursor.execute(f"UPDATE passwords SET {', '.join(updates)} WHERE id = ?", params)
         self.connection.commit()
+        if cursor.rowcount > 0:
+            self._notify_change()
         return cursor.rowcount > 0
     
     def delete_password(self, password_id: int) -> bool:
@@ -241,4 +257,6 @@ class Database:
         cursor = self.connection.cursor()
         cursor.execute("DELETE FROM passwords WHERE id = ?", (password_id,))
         self.connection.commit()
+        if cursor.rowcount > 0:
+            self._notify_change()
         return cursor.rowcount > 0

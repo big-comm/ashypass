@@ -20,7 +20,7 @@
 
 ## Overview
 
-Ashy Pass is a modern, secure password manager built with GTK4 and libadwaita, designed for GNOME desktop environments. It provides military-grade encryption, intelligent password generation, and seamless vault management with automatic session locking.
+Ashy Pass is a modern, secure password manager built with GTK4 and libadwaita, designed for GNOME desktop environments. It provides military-grade encryption, intelligent password generation, seamless vault management with automatic session locking, and cloud backup via Google Drive.
 
 ## Features
 
@@ -29,21 +29,38 @@ Ashy Pass is a modern, secure password manager built with GTK4 and libadwaita, d
 - **Automatic session locking** after 30 seconds of inactivity
 - **Secure password generation** using Python's cryptographically secure `secrets` module
 - **Master password protection** with PBKDF2 hashing
+- **Zero-knowledge architecture** - your master password never leaves your device
 
 ### 🎲 Password Generation
 - **Strong passwords** with configurable length (8-64 characters) and character sets
 - **Passphrases** using EFF wordlist (3-10 words with customizable separators)
 - **PIN codes** for numeric-only requirements (4-12 digits)
-- **Quick generation** directly in vault dialogs with preset options
-- **Custom generator** with full control over all parameters
-- **Real-time strength indicator** with visual feedback
+- **Quick generation** directly in vault dialogs with preset options:
+  - Strong Password (16 chars, all types)
+  - Passphrase (4 words)
+  - PIN Code (6 digits)
+  - Custom... (full generator dialog)
+- **Real-time strength indicator** with visual feedback (Weak, Medium, Strong, Very Strong)
 
 ### 💾 Vault Management
 - **Encrypted storage** for passwords, usernames, URLs, and notes
 - **Automatic favicon fetching** and caching for visual identification
 - **Search functionality** to quickly find stored credentials
 - **One-click password copying** to clipboard with security timeout
-- **Import/Export** capabilities for backup and migration
+- **In-vault password generator** with dropdown menu integration
+
+### ☁️ Cloud Backup & Sync
+- **Google Drive integration** with OAuth 2.0 authentication
+- **Automatic encrypted backups** to your Google Drive
+- **Manual backup on demand** via Settings
+- **Secure token storage** with automatic refresh
+- **User-specific backups** in dedicated folder
+
+### 📤 Import/Export
+- **CSV import** from Google Chrome, Firefox, and other password managers
+- **CSV export** compatible with Google Chrome password manager
+- **Bulk password migration** with automatic field mapping
+- **Backup to local files** for offline storage
 
 ### 🎨 User Interface
 - **Modern GNOME design** following libadwaita guidelines
@@ -51,6 +68,7 @@ Ashy Pass is a modern, secure password manager built with GTK4 and libadwaita, d
 - **Dark mode support** with automatic theme switching
 - **Intuitive navigation** with view switcher
 - **Toast notifications** for user feedback
+- **Multi-language support** with gettext internationalization
 
 ## System Requirements
 
@@ -63,6 +81,7 @@ Ashy Pass is a modern, secure password manager built with GTK4 and libadwaita, d
 ### Recommended
 - **Desktop:** GNOME 43+ or compatible environment
 - **Display:** 1280x720 resolution or higher
+- **Internet:** For Google Drive backup and favicon fetching
 
 ## Installation
 
@@ -106,8 +125,12 @@ python3 main.py
 
 **In-Vault Generation:**
 1. Click the **+** button in the Vault toolbar
-2. Click the generation button next to the password field
-3. Choose from preset options or select **Custom** for full control
+2. Click the generation button (⚡) next to the password field
+3. Choose from preset options:
+   - **Strong Password** - 16 characters with all character types
+   - **Passphrase** - 4 words separated by hyphens
+   - **PIN Code** - 6-digit numeric code
+   - **Custom...** - Opens full generator with all options
 
 ### Managing Vault Entries
 
@@ -116,13 +139,51 @@ python3 main.py
 - **Copy:** Click the copy icon to copy password to clipboard
 - **Delete:** Click the trash icon and confirm deletion
 - **Search:** Use the search bar to filter entries by title, username, or URL
+- **Favicons:** Automatically fetched from URLs for visual identification
+
+### Google Drive Backup
+
+**Setup:**
+1. Click the **Settings** icon (⚙️) in the toolbar
+2. Go to **Cloud Backup** tab
+3. Click **Sign in with Google**
+4. Authorize Ashy Pass in your browser
+5. Your encrypted vault will automatically backup
+
+**Manual Backup:**
+1. Open **Settings** → **Cloud Backup**
+2. Click **Backup Now**
+3. Encrypted database uploaded to Google Drive
+
+**Note:** All backups are encrypted with your master password. Google cannot access your passwords.
+
+### Import/Export Passwords
+
+**Import from CSV:**
+1. Open **Settings** → **Import/Export**
+2. Click the import icon
+3. Select your CSV file (from Chrome, Firefox, etc.)
+4. Passwords are automatically added to your vault
+
+**Export to CSV:**
+1. Open **Settings** → **Import/Export**
+2. Click the export icon
+3. Choose save location
+4. File can be imported to Google Chrome: `chrome://password-manager/settings`
+
+**CSV Format (Google Chrome compatible):**
+```csv
+name,url,username,password,note
+GitHub,https://github.com,user@email.com,MySecurePass123,Development account
+```
 
 ### Security Best Practices
 
 - Use a **strong master password** (16+ characters with mixed case, numbers, symbols)
-- Enable **automatic locking** by setting session timeout
-- Regularly **backup your vault** using export functionality
+- Enable **Google Drive backup** for disaster recovery
+- Regularly **export backups** to external storage
 - Never share your **master password** with anyone
+- Keep your system and Ashy Pass **updated**
 
 ## Configuration
 
@@ -138,31 +199,68 @@ Configuration file: `~/.config/ashypass/config.json`
 }
 ```
 
+Data directory: `~/.local/share/ashypass/`
+- `passwords.db` - Encrypted password database
+- `token.pickle` - Google Drive authentication token
+- `favicons/` - Cached website icons
+
 ## Architecture
 
 Ashy Pass follows a three-layer architecture:
 
 ```
 ashypass/
-├── core/           # Business logic and security
-│   ├── auth.py     # Session management
-│   ├── database.py # Encrypted storage
-│   ├── generator.py # Password generation
-│   └── config.py   # Application settings
-├── ui/             # GTK4/libadwaita interface
-│   ├── window.py   # Main application window
-│   ├── generator_view.py # Generator interface
-│   └── vault_view.py     # Vault interface
-└── utils/          # Utilities
-    ├── clipboard.py # Clipboard operations
-    └── i18n.py     # Internationalization
+├── core/                  # Business logic and security
+│   ├── auth.py            # Session management
+│   ├── database.py        # Encrypted storage (Argon2 + Fernet)
+│   ├── generator.py       # Password generation
+│   ├── backup_service.py  # Google Drive integration
+│   ├── csv_handler.py     # Import/Export functionality
+│   ├── client_secrets.py  # OAuth credentials
+│   └── config.py          # Application settings
+├── ui/                    # GTK4/libadwaita interface
+│   ├── window.py          # Main application window
+│   ├── generator_view.py  # Generator interface
+│   ├── vault_view.py      # Vault interface
+│   └── settings_dialog.py # Settings and preferences
+└── utils/                 # Utilities
+    ├── clipboard.py       # Clipboard operations
+    └── i18n.py            # Internationalization (gettext)
 ```
 
 **Security Flow:**
 1. Master password → Argon2 KDF → Encryption key
 2. Passwords → Fernet encryption → SQLite database
 3. Decryption → Session verification → Display
+4. Google Drive → Encrypted database upload → Secure cloud storage
 
+**Google Drive Integration:**
+- OAuth 2.0 authentication with `openid`, `drive.file`, `userinfo.email` scopes
+- Encrypted database backups in "AshyPass Backups" folder
+- Automatic token refresh for seamless access
+- No access to passwords by Google (zero-knowledge)
+
+## Development
+
+### Setup Development Environment
+
+```bash
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Run in development mode
+python3 main.py
+```
+
+### Building Translations
+
+```bash
+# Extract translatable strings
+xgettext --language=Python --keyword=_ --output=locale/ashypass.pot *.py ui/*.py core/*.py utils/*.py
+
+# Compile translations
+msgfmt locale/pt_BR/LC_MESSAGES/ashypass.po -o locale/pt_BR/LC_MESSAGES/ashypass.mo
+```
 
 ### Code Style
 
@@ -170,6 +268,7 @@ ashypass/
 - Use **type hints** for function signatures
 - Document classes and methods with **docstrings**
 - Keep functions **focused and testable**
+- Use `_()` function for all user-facing strings (i18n)
 
 ## Contributing
 
@@ -190,6 +289,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **EFF Wordlist** for passphrase generation
 - **GNOME Team** for GTK4 and libadwaita
 - **Python Cryptography** library for encryption primitives
+- **Google Drive API** for cloud backup functionality
 
 ---
 
