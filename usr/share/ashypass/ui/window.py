@@ -139,16 +139,16 @@ class MainWindow(Adw.ApplicationWindow):
         self.view_stack.add_titled_with_icon(
             self.generator_view,
             "generator",
-            "Generator",
+            _("Generator"),
             "view-reveal-symbolic"
         )
-        
+
         # Vault view
         self.vault_view = VaultView(self.database, self.session)
         self.view_stack.add_titled_with_icon(
             self.vault_view,
             "vault",
-            "Vault",
+            _("Vault"),
             "dialog-password-symbolic"
         )
 

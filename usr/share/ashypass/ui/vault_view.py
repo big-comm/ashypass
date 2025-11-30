@@ -14,6 +14,7 @@ import urllib.request
 import urllib.parse
 import hashlib
 import os
+import threading
 
 from core.database import Database
 from core.auth import SessionManager
@@ -289,31 +290,18 @@ class VaultView(Adw.NavigationPage):
             subtitle_parts.append(pwd_data["url"])
 
         if subtitle_parts:
-            row.set_subtitle(" • ".join(subtitle_parts))
+            # Escape markup to prevent errors with special characters like &
+            subtitle_text = GLib.markup_escape_text(" • ".join(subtitle_parts))
+            row.set_subtitle(subtitle_text)
 
-        # Add favicon if URL is available
+        # Add favicon (async to avoid blocking UI)
+        icon = Gtk.Image.new_from_icon_name("dialog-password-symbolic")
+        icon.set_pixel_size(32)
+        row.add_prefix(icon)
+
+        # Load favicon asynchronously if URL is available
         if pwd_data.get("url"):
-            favicon_path = self._fetch_favicon(pwd_data["url"])
-            if favicon_path and os.path.exists(favicon_path):
-                try:
-                    favicon = Gtk.Image.new_from_file(favicon_path)
-                    favicon.set_pixel_size(32)
-                    row.add_prefix(favicon)
-                except:
-                    # Use default icon if favicon fails to load
-                    icon = Gtk.Image.new_from_icon_name("dialog-password-symbolic")
-                    icon.set_pixel_size(32)
-                    row.add_prefix(icon)
-            else:
-                # Use default icon
-                icon = Gtk.Image.new_from_icon_name("dialog-password-symbolic")
-                icon.set_pixel_size(32)
-                row.add_prefix(icon)
-        else:
-            # Use default icon if no URL
-            icon = Gtk.Image.new_from_icon_name("dialog-password-symbolic")
-            icon.set_pixel_size(32)
-            row.add_prefix(icon)
+            self._load_favicon_async(pwd_data["url"], icon)
         
         # Copy button
         copy_btn = Gtk.Button()
@@ -706,7 +694,7 @@ class VaultView(Adw.NavigationPage):
         dialog.present(self.get_root())
 
     def _get_favicon_url(self, url: str) -> Optional[str]:
-        """Get favicon URL from website URL"""
+        """Get favicon URL from website URL using Google's favicon service"""
         if not url:
             return None
 
@@ -716,8 +704,9 @@ class VaultView(Adw.NavigationPage):
                 url = f"https://{url}"
                 parsed = urllib.parse.urlparse(url)
 
-            domain = f"{parsed.scheme}://{parsed.netloc}"
-            return f"{domain}/favicon.ico"
+            # Use Google's favicon service for better compatibility
+            domain = parsed.netloc
+            return f"https://www.google.com/s2/favicons?domain={domain}&sz=32"
         except:
             return None
 
@@ -727,9 +716,11 @@ class VaultView(Adw.NavigationPage):
         if not favicon_url:
             return None
 
-        # Generate cache filename from URL hash
-        url_hash = hashlib.md5(favicon_url.encode()).hexdigest()
-        cache_path = self.favicon_cache_dir / f"{url_hash}.ico"
+        # Generate cache filename from domain hash
+        parsed = urllib.parse.urlparse(url)
+        domain = parsed.netloc if parsed.netloc else url
+        url_hash = hashlib.md5(domain.encode()).hexdigest()
+        cache_path = self.favicon_cache_dir / f"{url_hash}.png"
 
         # Return if already cached
         if cache_path.exists():
@@ -744,3 +735,51 @@ class VaultView(Adw.NavigationPage):
             return str(cache_path)
         except:
             return None
+
+    def _load_favicon_async(self, url: str, image_widget: Gtk.Image) -> None:
+        """Load favicon asynchronously to avoid blocking UI"""
+        favicon_url = self._get_favicon_url(url)
+        if not favicon_url:
+            return
+
+        # Generate cache filename from domain hash
+        try:
+            parsed = urllib.parse.urlparse(url)
+            domain = parsed.netloc if parsed.netloc else url
+            url_hash = hashlib.md5(domain.encode()).hexdigest()
+            cache_path = self.favicon_cache_dir / f"{url_hash}.png"
+        except:
+            return
+
+        # If already cached, load immediately
+        if cache_path.exists():
+            try:
+                GLib.idle_add(self._update_favicon_image, image_widget, str(cache_path))
+            except:
+                pass
+            return
+
+        # Download in background thread
+        def download_favicon():
+            try:
+                req = urllib.request.Request(favicon_url, headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req, timeout=5) as response:
+                    with open(cache_path, 'wb') as f:
+                        f.write(response.read())
+
+                # Update UI in main thread
+                GLib.idle_add(self._update_favicon_image, image_widget, str(cache_path))
+            except:
+                pass  # Silently fail, keep default icon
+
+        thread = threading.Thread(target=download_favicon, daemon=True)
+        thread.start()
+
+    def _update_favicon_image(self, image_widget: Gtk.Image, favicon_path: str) -> bool:
+        """Update image widget with favicon (called in main thread)"""
+        try:
+            if os.path.exists(favicon_path):
+                image_widget.set_from_file(favicon_path)
+        except:
+            pass  # Keep default icon on error
+        return False  # Don't repeat this idle callback

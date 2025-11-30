@@ -10,7 +10,7 @@ from pathlib import Path
 # Application Information
 APP_ID = "com.bigcommunity.ashypass"  # Restored original ID
 APP_NAME = "Ashy Pass"
-APP_VERSION = "1.2.0"
+APP_VERSION = "1.2.1"
 
 # Paths
 CONFIG_DIR = Path.home() / ".config" / "ashypass"

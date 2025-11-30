@@ -39,11 +39,18 @@ class GeneratorView(Adw.NavigationPage):
         group = Adw.PreferencesGroup()
         group.set_title(_("Generated Password"))
 
-        self.password_entry = Adw.EntryRow()
-        self.password_entry.set_title(_("Password"))
-        self.password_entry.set_editable(False)
-        self.password_entry.add_css_class("monospace")
-        group.add(self.password_entry)
+        password_row = Adw.ActionRow()
+        password_row.set_title(_("Password"))
+
+        # Use selectable label for read-only password display
+        self.password_label = Gtk.Label()
+        self.password_label.set_selectable(True)
+        self.password_label.add_css_class("monospace")
+        self.password_label.add_css_class("title-3")
+        self.password_label.set_xalign(1.0)  # Align right
+        password_row.add_suffix(self.password_label)
+
+        group.add(password_row)
         
         # Strength indicator
         strength_row = Adw.ActionRow()
@@ -224,7 +231,7 @@ class GeneratorView(Adw.NavigationPage):
             elif current_type == "pin":
                 self.current_password = self.generator.generate_pin(int(self.pin_length_spin.get_value()))
             
-            self.password_entry.set_text(self.current_password)
+            self.password_label.set_text(self.current_password)
             self._update_strength_indicator()
         except ValueError as e:
             print(f"Error: {e}")
