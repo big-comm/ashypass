@@ -5,17 +5,20 @@ Application constants and configuration management
 """
 
 import os
+import json
 from pathlib import Path
+from typing import Any, Dict
 
 # Application Information
 APP_ID = "com.bigcommunity.ashypass"  # Restored original ID
 APP_NAME = "Ashy Pass"
-APP_VERSION = "1.2.1"
+APP_VERSION = "1.2.2"
 
 # Paths
 CONFIG_DIR = Path.home() / ".config" / "ashypass"
 DATA_DIR = Path.home() / ".local" / "share" / "ashypass"
 DATABASE_PATH = DATA_DIR / "passwords.db"
+CONFIG_FILE = CONFIG_DIR / "settings.json"
 
 # Security Settings
 SESSION_TIMEOUT_SECONDS = 30
@@ -48,3 +51,24 @@ def ensure_directories() -> None:
     """Create configuration and data directories if they don't exist"""
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def load_settings() -> Dict[str, Any]:
+    """Load user settings from JSON file"""
+    if CONFIG_FILE.exists():
+        try:
+            with open(CONFIG_FILE, 'r') as f:
+                return json.load(f)
+        except:
+            pass
+    return {}
+
+
+def save_settings(settings: Dict[str, Any]) -> None:
+    """Save user settings to JSON file"""
+    ensure_directories()
+    try:
+        with open(CONFIG_FILE, 'w') as f:
+            json.dump(settings, f, indent=2)
+    except Exception as e:
+        print(f"Error saving settings: {e}")

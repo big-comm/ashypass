@@ -10,6 +10,7 @@ from core.generator import PasswordGenerator, PasswordConfig
 from utils.clipboard import ClipboardManager
 from utils.i18n import _
 from core.config import *
+from core.config import load_settings, save_settings
 
 
 class GeneratorView(Adw.NavigationPage):
@@ -20,7 +21,9 @@ class GeneratorView(Adw.NavigationPage):
         self.generator = PasswordGenerator()
         self.clipboard = ClipboardManager()
         self.current_password = ""
+        self.settings = load_settings()
         self._build_ui()
+        self._load_preferences()
         self._generate_password()
     
     def _build_ui(self) -> None:
@@ -39,16 +42,24 @@ class GeneratorView(Adw.NavigationPage):
         group = Adw.PreferencesGroup()
         group.set_title(_("Generated Password"))
 
+        # Password row - same style as Strength row
         password_row = Adw.ActionRow()
         password_row.set_title(_("Password"))
 
-        # Use selectable label for read-only password display
+        # Password label - selectable, monospace, left-aligned in a scrolled window
+        password_scroll = Gtk.ScrolledWindow()
+        password_scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.NEVER)
+        password_scroll.set_max_content_width(400)
+        password_scroll.set_propagate_natural_width(True)
+
         self.password_label = Gtk.Label()
         self.password_label.set_selectable(True)
         self.password_label.add_css_class("monospace")
         self.password_label.add_css_class("title-3")
-        self.password_label.set_xalign(1.0)  # Align right
-        password_row.add_suffix(self.password_label)
+        self.password_label.set_xalign(0.0)  # Left align
+
+        password_scroll.set_child(self.password_label)
+        password_row.add_suffix(password_scroll)
 
         group.add(password_row)
         
@@ -136,28 +147,28 @@ class GeneratorView(Adw.NavigationPage):
         self.length_spin.set_title(_("Length"))
         self.length_spin.set_adjustment(Gtk.Adjustment(value=DEFAULT_PASSWORD_LENGTH,
             lower=MIN_PASSWORD_LENGTH, upper=MAX_PASSWORD_LENGTH, step_increment=1))
-        self.length_spin.connect("changed", lambda _: self._generate_password())
+        self.length_spin.connect("changed", lambda _: self._on_option_changed())
         group.add(self.length_spin)
 
         self.uppercase_switch = Adw.SwitchRow(title=_("Uppercase Letters (A-Z)"), active=True)
-        self.uppercase_switch.connect("notify::active", lambda *_: self._generate_password())
+        self.uppercase_switch.connect("notify::active", lambda *_: self._on_option_changed())
         group.add(self.uppercase_switch)
 
         self.lowercase_switch = Adw.SwitchRow(title=_("Lowercase Letters (a-z)"), active=True)
-        self.lowercase_switch.connect("notify::active", lambda *_: self._generate_password())
+        self.lowercase_switch.connect("notify::active", lambda *_: self._on_option_changed())
         group.add(self.lowercase_switch)
 
         self.digits_switch = Adw.SwitchRow(title=_("Digits (0-9)"), active=True)
-        self.digits_switch.connect("notify::active", lambda *_: self._generate_password())
+        self.digits_switch.connect("notify::active", lambda *_: self._on_option_changed())
         group.add(self.digits_switch)
 
         self.symbols_switch = Adw.SwitchRow(title=_("Symbols (!@#$...)"), active=True)
-        self.symbols_switch.connect("notify::active", lambda *_: self._generate_password())
+        self.symbols_switch.connect("notify::active", lambda *_: self._on_option_changed())
         group.add(self.symbols_switch)
 
         self.ambiguous_switch = Adw.SwitchRow(title=_("Exclude Ambiguous Characters"), active=True)
         self.ambiguous_switch.set_subtitle(_("Avoid characters like 0, O, 1, l, I"))
-        self.ambiguous_switch.connect("notify::active", lambda *_: self._generate_password())
+        self.ambiguous_switch.connect("notify::active", lambda *_: self._on_option_changed())
         group.add(self.ambiguous_switch)
         
         return group
@@ -170,19 +181,19 @@ class GeneratorView(Adw.NavigationPage):
         self.words_spin = Adw.SpinRow(title=_("Number of Words"))
         self.words_spin.set_adjustment(Gtk.Adjustment(value=DEFAULT_PASSPHRASE_WORDS,
             lower=MIN_PASSPHRASE_WORDS, upper=MAX_PASSPHRASE_WORDS, step_increment=1))
-        self.words_spin.connect("changed", lambda _: self._generate_password())
+        self.words_spin.connect("changed", lambda _: self._on_option_changed())
         group.add(self.words_spin)
 
         self.separator_entry = Adw.EntryRow(title=_("Separator"), text="-")
-        self.separator_entry.connect("changed", lambda _: self._generate_password())
+        self.separator_entry.connect("changed", lambda _: self._on_option_changed())
         group.add(self.separator_entry)
 
         self.capitalize_switch = Adw.SwitchRow(title=_("Capitalize Words"), active=True)
-        self.capitalize_switch.connect("notify::active", lambda *_: self._generate_password())
+        self.capitalize_switch.connect("notify::active", lambda *_: self._on_option_changed())
         group.add(self.capitalize_switch)
 
         self.add_number_switch = Adw.SwitchRow(title=_("Add Number at End"), active=True)
-        self.add_number_switch.connect("notify::active", lambda *_: self._generate_password())
+        self.add_number_switch.connect("notify::active", lambda *_: self._on_option_changed())
         group.add(self.add_number_switch)
         
         return group
@@ -195,7 +206,7 @@ class GeneratorView(Adw.NavigationPage):
         self.pin_length_spin = Adw.SpinRow(title=_("Length"))
         self.pin_length_spin.set_adjustment(Gtk.Adjustment(value=DEFAULT_PIN_LENGTH,
             lower=MIN_PIN_LENGTH, upper=MAX_PIN_LENGTH, step_increment=1))
-        self.pin_length_spin.connect("changed", lambda _: self._generate_password())
+        self.pin_length_spin.connect("changed", lambda _: self._on_option_changed())
         group.add(self.pin_length_spin)
         
         return group
@@ -253,7 +264,63 @@ class GeneratorView(Adw.NavigationPage):
             self.strength_label.add_css_class("warning")
         else:
             self.strength_label.add_css_class("error")
-    
+
+    def _load_preferences(self) -> None:
+        """Load saved generator preferences"""
+        gen_prefs = self.settings.get("generator", {})
+
+        # Load password options
+        if "length" in gen_prefs:
+            self.length_spin.set_value(gen_prefs["length"])
+        if "uppercase" in gen_prefs:
+            self.uppercase_switch.set_active(gen_prefs["uppercase"])
+        if "lowercase" in gen_prefs:
+            self.lowercase_switch.set_active(gen_prefs["lowercase"])
+        if "digits" in gen_prefs:
+            self.digits_switch.set_active(gen_prefs["digits"])
+        if "symbols" in gen_prefs:
+            self.symbols_switch.set_active(gen_prefs["symbols"])
+        if "exclude_ambiguous" in gen_prefs:
+            self.ambiguous_switch.set_active(gen_prefs["exclude_ambiguous"])
+
+        # Load passphrase options
+        if "passphrase_words" in gen_prefs:
+            self.words_spin.set_value(gen_prefs["passphrase_words"])
+        if "passphrase_separator" in gen_prefs:
+            self.separator_entry.set_text(gen_prefs["passphrase_separator"])
+        if "passphrase_capitalize" in gen_prefs:
+            self.capitalize_switch.set_active(gen_prefs["passphrase_capitalize"])
+        if "passphrase_add_number" in gen_prefs:
+            self.add_number_switch.set_active(gen_prefs["passphrase_add_number"])
+
+        # Load PIN options
+        if "pin_length" in gen_prefs:
+            self.pin_length_spin.set_value(gen_prefs["pin_length"])
+
+    def _save_preferences(self) -> None:
+        """Save current generator preferences"""
+        gen_prefs = {
+            "length": int(self.length_spin.get_value()),
+            "uppercase": self.uppercase_switch.get_active(),
+            "lowercase": self.lowercase_switch.get_active(),
+            "digits": self.digits_switch.get_active(),
+            "symbols": self.symbols_switch.get_active(),
+            "exclude_ambiguous": self.ambiguous_switch.get_active(),
+            "passphrase_words": int(self.words_spin.get_value()),
+            "passphrase_separator": self.separator_entry.get_text(),
+            "passphrase_capitalize": self.capitalize_switch.get_active(),
+            "passphrase_add_number": self.add_number_switch.get_active(),
+            "pin_length": int(self.pin_length_spin.get_value()),
+        }
+
+        self.settings["generator"] = gen_prefs
+        save_settings(self.settings)
+
+    def _on_option_changed(self) -> None:
+        """Handle option change - save preferences and regenerate"""
+        self._save_preferences()
+        self._generate_password()
+
     def _on_copy_clicked(self, button: Gtk.Button) -> None:
         """Handle copy button click"""
         if self.current_password:
