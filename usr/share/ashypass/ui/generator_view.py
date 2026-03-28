@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Ashy Pass - Generator View"""
 
+import logging
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
@@ -75,6 +76,9 @@ class GeneratorView(Adw.NavigationPage):
         self.strength_bar.set_mode(Gtk.LevelBarMode.CONTINUOUS)
         self.strength_bar.set_min_value(0)
         self.strength_bar.set_max_value(100)
+        self.strength_bar.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Password Strength")]
+        )
         self.strength_bar.set_margin_top(6)
         self.strength_bar.set_margin_bottom(6)
         self.strength_bar.set_margin_start(12)
@@ -245,7 +249,7 @@ class GeneratorView(Adw.NavigationPage):
             self.password_label.set_text(self.current_password)
             self._update_strength_indicator()
         except ValueError as e:
-            print(f"Error: {e}")
+            logging.getLogger(__name__).error("Generation error: %s", e)
     
     def _update_strength_indicator(self) -> None:
         """Update password strength indicator"""

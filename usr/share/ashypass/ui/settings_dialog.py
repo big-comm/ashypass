@@ -1,3 +1,4 @@
+import logging
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
@@ -6,6 +7,7 @@ from gi.repository import Gtk, Adw, GLib, Gio
 from core.backup_service import BackupService
 from core.csv_handler import CsvHandler
 from core.database import Database
+from core.config import MIN_MASTER_PASSWORD_LENGTH
 from utils.i18n import _
 import threading
 
@@ -82,7 +84,10 @@ class SettingsDialog(Adw.PreferencesWindow):
         btn_backup = Gtk.Button(icon_name="document-save-symbolic")
         btn_backup.set_valign(Gtk.Align.CENTER)
         btn_backup.add_css_class("flat")
+        btn_backup.set_tooltip_text(_("Backup Now"))
+        btn_backup.update_property([Gtk.AccessibleProperty.LABEL], [_("Backup Now")])
         btn_backup.connect("clicked", self._on_backup_now_clicked)
+        self.btn_backup = btn_backup
         
         self.row_backup_now.add_suffix(btn_backup)
         group_actions.add(self.row_backup_now)
@@ -109,6 +114,10 @@ class SettingsDialog(Adw.PreferencesWindow):
         btn_import = Gtk.Button(icon_name="document-open-symbolic")
         btn_import.set_valign(Gtk.Align.CENTER)
         btn_import.add_css_class("flat")
+        btn_import.set_tooltip_text(_("Import from CSV"))
+        btn_import.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Import from CSV")]
+        )
         btn_import.connect("clicked", self._on_import_clicked)
         row_import.add_suffix(btn_import)
 
@@ -122,6 +131,8 @@ class SettingsDialog(Adw.PreferencesWindow):
         btn_export = Gtk.Button(icon_name="document-save-symbolic")
         btn_export.set_valign(Gtk.Align.CENTER)
         btn_export.add_css_class("flat")
+        btn_export.set_tooltip_text(_("Export to CSV"))
+        btn_export.update_property([Gtk.AccessibleProperty.LABEL], [_("Export to CSV")])
         btn_export.connect("clicked", self._on_export_clicked)
         row_export.add_suffix(btn_export)
 
@@ -130,6 +141,40 @@ class SettingsDialog(Adw.PreferencesWindow):
         page_import_export.add(group_import_export)
 
         self.add(page_import_export)
+
+        # --- Security Page ---
+        page_security = Adw.PreferencesPage()
+        page_security.set_title(_("Security"))
+        page_security.set_icon_name("channel-secure-symbolic")
+
+        group_master = Adw.PreferencesGroup()
+        group_master.set_title(_("Master Password"))
+        group_master.set_description(
+            _("Change your master password. All stored passwords will be re-encrypted.")
+        )
+
+        self.current_password_row = Adw.PasswordEntryRow()
+        self.current_password_row.set_title(_("Current Password"))
+        group_master.add(self.current_password_row)
+
+        self.new_password_row = Adw.PasswordEntryRow()
+        self.new_password_row.set_title(_("New Password"))
+        group_master.add(self.new_password_row)
+
+        self.confirm_password_row = Adw.PasswordEntryRow()
+        self.confirm_password_row.set_title(_("Confirm New Password"))
+        group_master.add(self.confirm_password_row)
+
+        btn_change = Gtk.Button(label=_("Change Master Password"))
+        btn_change.add_css_class("pill")
+        btn_change.add_css_class("destructive-action")
+        btn_change.set_halign(Gtk.Align.CENTER)
+        btn_change.set_margin_top(12)
+        btn_change.connect("clicked", self._on_change_master_clicked)
+        group_master.add(btn_change)
+
+        page_security.add(group_master)
+        self.add(page_security)
 
     def _update_account_status(self):
         """Update UI based on login state"""
@@ -147,8 +192,7 @@ class SettingsDialog(Adw.PreferencesWindow):
                 info = self.backup_service.get_user_info()
                 if info and 'email' in info:
                     self.row_account.set_subtitle(info['email'])
-                    # Could also set avatar if we wanted to fetch the image
-            except:
+            except Exception:
                 self.row_account.set_subtitle(_("Unknown User"))
         else:
             self.row_status.set_subtitle(_("Disconnected"))
@@ -157,6 +201,9 @@ class SettingsDialog(Adw.PreferencesWindow):
         """Handle login"""
         self.btn_login.set_sensitive(False)
         self.btn_login.set_label(_("Waiting for browser..."))
+        self._login_spinner = Gtk.Spinner(spinning=True)
+        self._login_spinner.set_valign(Gtk.Align.CENTER)
+        self.row_login.add_prefix(self._login_spinner)
         
         def run_login():
             success = self.backup_service.login()
@@ -169,6 +216,9 @@ class SettingsDialog(Adw.PreferencesWindow):
     def _on_login_finished(self, success):
         self.btn_login.set_sensitive(True)
         self.btn_login.set_label(_("Sign in with Google"))
+        if self._login_spinner:
+            self.row_login.remove(self._login_spinner)
+            self._login_spinner = None
         
         if success:
             self._update_account_status()
@@ -192,11 +242,29 @@ class SettingsDialog(Adw.PreferencesWindow):
         self._update_account_status()
 
     def _on_backup_now_clicked(self, btn):
-        parent = self.get_transient_for()
-        if parent and hasattr(parent, 'show_toast'):
-             parent.show_toast(_("Starting backup..."))
+        self.btn_backup.set_sensitive(False)
+        self._backup_spinner = Gtk.Spinner(spinning=True)
+        self._backup_spinner.set_valign(Gtk.Align.CENTER)
+        self.row_backup_now.add_prefix(self._backup_spinner)
 
-        self.backup_service.auto_backup()
+        def run_backup():
+            success = self.backup_service.backup_database()
+            GLib.idle_add(self._on_backup_finished, success)
+
+        thread = threading.Thread(target=run_backup, daemon=True)
+        thread.start()
+
+    def _on_backup_finished(self, success: bool) -> None:
+        self.btn_backup.set_sensitive(True)
+        if self._backup_spinner:
+            self.row_backup_now.remove(self._backup_spinner)
+            self._backup_spinner = None
+        parent = self.get_transient_for()
+        if parent and hasattr(parent, "show_toast"):
+            if success:
+                parent.show_toast(_("Backup complete"))
+            else:
+                parent.show_toast(_("Backup failed — check your connection"))
 
     def _on_import_clicked(self, btn):
         """Handle CSV import"""
@@ -254,7 +322,9 @@ class SettingsDialog(Adw.PreferencesWindow):
                     )
                     count += 1
                 except Exception as e:
-                    print(f"Error importing entry {entry.get('title')}: {e}")
+                    logging.getLogger(__name__).error(
+                        "Error importing entry %s: %s", entry.get("title"), e
+                    )
 
             # Show success message
             parent = self.get_transient_for()
@@ -269,7 +339,30 @@ class SettingsDialog(Adw.PreferencesWindow):
             self._show_error_dialog(_("Import Failed"), str(e))
 
     def _on_export_clicked(self, btn):
-        """Handle CSV export"""
+        """Handle CSV export with security warning"""
+        dlg = Adw.AlertDialog()
+        dlg.set_heading(_("Security Warning"))
+        dlg.set_body(
+            _(
+                "The exported CSV file will contain all your passwords in plain text. "
+                "Make sure to store it in a secure location and delete it when no longer needed."
+            )
+        )
+        dlg.add_response("cancel", _("Cancel"))
+        dlg.add_response("continue", _("Continue Export"))
+        dlg.set_response_appearance("continue", Adw.ResponseAppearance.DESTRUCTIVE)
+        dlg.set_default_response("cancel")
+        dlg.set_close_response("cancel")
+
+        def on_warning_response(d, response):
+            if response == "continue":
+                self._open_export_dialog()
+
+        dlg.connect("response", on_warning_response)
+        dlg.present(self)
+
+    def _open_export_dialog(self):
+        """Open file chooser for export"""
         dialog = Gtk.FileDialog()
         dialog.set_title(_("Export Passwords to CSV"))
         dialog.set_initial_name("ashypass_passwords.csv")
@@ -331,3 +424,43 @@ class SettingsDialog(Adw.PreferencesWindow):
         dlg.set_body(message)
         dlg.add_response("ok", _("OK"))
         dlg.present(self)
+
+    def _on_change_master_clicked(self, btn):
+        """Handle change master password"""
+        current = self.current_password_row.get_text()
+        new_pwd = self.new_password_row.get_text()
+        confirm = self.confirm_password_row.get_text()
+
+        if not current or not new_pwd or not confirm:
+            self._show_error_dialog(_("Error"), _("All fields are required"))
+            return
+
+        if len(new_pwd) < MIN_MASTER_PASSWORD_LENGTH:
+            self._show_error_dialog(
+                _("Error"),
+                _("New password must be at least {min} characters").format(
+                    min=MIN_MASTER_PASSWORD_LENGTH
+                ),
+            )
+            return
+
+        if new_pwd != confirm:
+            self._show_error_dialog(_("Error"), _("New passwords do not match"))
+            return
+
+        try:
+            if self.database.change_master_password(current, new_pwd):
+                self.current_password_row.set_text("")
+                self.new_password_row.set_text("")
+                self.confirm_password_row.set_text("")
+
+                parent = self.get_transient_for()
+                if parent and hasattr(parent, "show_toast"):
+                    parent.show_toast(_("Master password changed successfully"))
+            else:
+                self._show_error_dialog(_("Error"), _("Current password is incorrect"))
+        except Exception as e:
+            self._show_error_dialog(
+                _("Error"),
+                _("Failed to change master password: {error}").format(error=str(e)),
+            )

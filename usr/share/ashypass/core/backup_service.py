@@ -1,5 +1,6 @@
+import os
 import os.path
-import pickle
+import json
 import logging
 import threading
 from typing import Optional, Dict, Any
@@ -9,8 +10,10 @@ from pathlib import Path
 try:
     from google_auth_oauthlib.flow import InstalledAppFlow
     from google.auth.transport.requests import Request
+    from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build
     from googleapiclient.http import MediaFileUpload
+
     GOOGLE_LIBS_AVAILABLE = True
 except ImportError:
     GOOGLE_LIBS_AVAILABLE = False
@@ -19,18 +22,20 @@ from core.config import DATA_DIR, DATABASE_PATH
 from core.client_secrets import GOOGLE_CLIENT_CONFIG
 
 SCOPES = [
-    'https://www.googleapis.com/auth/drive.file',
-    'openid',
-    'https://www.googleapis.com/auth/userinfo.email'
+    "https://www.googleapis.com/auth/drive.file",
+    "openid",
+    "https://www.googleapis.com/auth/userinfo.email",
 ]
-TOKEN_FILE = DATA_DIR / 'token.pickle'
+TOKEN_FILE = DATA_DIR / "token.json"
+LEGACY_TOKEN_FILE = DATA_DIR / "token.pickle"
+
 
 class BackupService:
     """
     Manages Google Drive backups and authentication.
     Uses embedded client configuration.
     """
-    
+
     def __init__(self):
         self.creds = None
         self.service = None
@@ -38,26 +43,63 @@ class BackupService:
         self.folder_id: Optional[str] = None
         self.folder_name = "AshyPass Backups"
         self._is_backing_up = False
-        
+
         # Attempt to load existing token on startup
-        if GOOGLE_LIBS_AVAILABLE and TOKEN_FILE.exists():
-             self._load_token()
+        if GOOGLE_LIBS_AVAILABLE:
+            # Migrate legacy pickle token to JSON if needed
+            self._migrate_legacy_token()
+            if TOKEN_FILE.exists():
+                self._load_token()
+
+    def _migrate_legacy_token(self) -> None:
+        """Migrate legacy pickle token to JSON format"""
+        if not LEGACY_TOKEN_FILE.exists() or TOKEN_FILE.exists():
+            return
+        try:
+            import pickle
+
+            with open(LEGACY_TOKEN_FILE, "rb") as f:
+                creds = pickle.load(f)
+            self._save_token(creds)
+            LEGACY_TOKEN_FILE.unlink()
+            logging.info("Migrated legacy token.pickle to token.json")
+        except Exception as e:
+            logging.error(f"Error migrating legacy token: {e}")
+
+    def _save_token(self, creds) -> None:
+        """Save credentials to JSON file with restrictive permissions"""
+        token_data = {
+            "token": creds.token,
+            "refresh_token": creds.refresh_token,
+            "token_uri": creds.token_uri,
+            "client_id": creds.client_id,
+            "client_secret": creds.client_secret,
+            "scopes": list(creds.scopes) if creds.scopes else SCOPES,
+        }
+        # Write with restrictive permissions (owner-only read/write)
+        fd = os.open(str(TOKEN_FILE), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        try:
+            with os.fdopen(fd, "w") as f:
+                json.dump(token_data, f)
+        except Exception:
+            os.close(fd)
+            raise
 
     def _load_token(self) -> bool:
-        """Load token from file and refresh if necessary"""
+        """Load token from JSON file and refresh if necessary"""
         try:
-            with open(TOKEN_FILE, 'rb') as token:
-                self.creds = pickle.load(token)
-            
+            with open(TOKEN_FILE, "r") as f:
+                token_data = json.load(f)
+
+            self.creds = Credentials.from_authorized_user_info(token_data, SCOPES)
+
             if self.creds and self.creds.expired and self.creds.refresh_token:
                 self.creds.refresh(Request())
-                # Save refreshed token
-                with open(TOKEN_FILE, 'wb') as token:
-                    pickle.dump(self.creds, token)
-            
+                self._save_token(self.creds)
+
             if self.creds and self.creds.valid:
-                self.service = build('drive', 'v3', credentials=self.creds)
-                self.user_info_service = build('oauth2', 'v2', credentials=self.creds)
+                self.service = build("drive", "v3", credentials=self.creds)
+                self.user_info_service = build("oauth2", "v2", credentials=self.creds)
                 return True
         except Exception as e:
             logging.error(f"Error loading token: {e}")
@@ -89,14 +131,12 @@ class BackupService:
 
         try:
             # Use embedded config instead of file
-            flow = InstalledAppFlow.from_client_config(
-                GOOGLE_CLIENT_CONFIG, SCOPES)
-            
+            flow = InstalledAppFlow.from_client_config(GOOGLE_CLIENT_CONFIG, SCOPES)
+
             self.creds = flow.run_local_server(port=0)
-            
-            # Save the credentials
-            with open(TOKEN_FILE, 'wb') as token:
-                pickle.dump(self.creds, token)
+
+            # Save the credentials as JSON
+            self._save_token(self.creds)
             
             self.service = build('drive', 'v3', credentials=self.creds)
             self.user_info_service = build('oauth2', 'v2', credentials=self.creds)

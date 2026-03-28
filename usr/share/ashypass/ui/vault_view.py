@@ -12,6 +12,7 @@ from gi.repository import Gtk, Adw, GLib, Gio
 from typing import Optional, Dict, Any
 import urllib.request
 import urllib.parse
+import urllib.error
 import hashlib
 import os
 import threading
@@ -41,6 +42,8 @@ class VaultView(Adw.NavigationPage):
         
         # Set lock callback
         self.session.set_lock_callback(self._on_session_locked)
+        self.session.set_warning_callback(self._on_session_warning)
+        self._countdown_id: int | None = None
         
         # Build UI
         self._build_ui()
@@ -99,7 +102,31 @@ class VaultView(Adw.NavigationPage):
         self.master_password_entry = Adw.PasswordEntryRow()
         self.master_password_entry.set_title(_("Master Password"))
         self.master_password_entry.connect("entry-activated", self._on_unlock_clicked)
+        self.master_password_entry.connect("changed", self._on_master_password_changed)
         self.auth_group.add(self.master_password_entry)
+
+        # Strength indicator (visible only during first-time setup)
+        self.strength_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        self.strength_box.set_visible(False)
+        self.strength_box.set_margin_start(12)
+        self.strength_box.set_margin_end(12)
+
+        self.master_strength_bar = Gtk.LevelBar()
+        self.master_strength_bar.set_mode(Gtk.LevelBarMode.CONTINUOUS)
+        self.master_strength_bar.set_min_value(0)
+        self.master_strength_bar.set_max_value(100)
+        self.master_strength_bar.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Password Strength")]
+        )
+        self.strength_box.append(self.master_strength_bar)
+
+        self.master_strength_label = Gtk.Label()
+        self.master_strength_label.add_css_class("dim-label")
+        self.master_strength_label.add_css_class("caption")
+        self.master_strength_label.set_xalign(0.0)
+        self.strength_box.append(self.master_strength_label)
+
+        self.auth_group.add(self.strength_box)
 
         # For first-time setup
         self.confirm_password_entry = Adw.PasswordEntryRow()
@@ -132,6 +159,14 @@ class VaultView(Adw.NavigationPage):
     def _create_vault_page(self) -> Gtk.Widget:
         """Create vault content page"""
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+
+        # Timeout warning banner
+        self.timeout_banner = Adw.Banner()
+        self.timeout_banner.set_title(_("Vault will lock soon due to inactivity"))
+        self.timeout_banner.set_button_label(_("Stay Unlocked"))
+        self.timeout_banner.connect("button-clicked", self._on_stay_unlocked_clicked)
+        self.timeout_banner.set_revealed(False)
+        main_box.append(self.timeout_banner)
 
         # Search bar
         search_bar_widget = Gtk.SearchBar()
@@ -187,9 +222,11 @@ class VaultView(Adw.NavigationPage):
             if has_master:
                 self.unlock_button.set_label(_("Unlock Vault"))
                 self.confirm_password_entry.set_visible(False)
+                self.strength_box.set_visible(False)
             else:
                 self.unlock_button.set_label(_("Create Master Password"))
                 self.confirm_password_entry.set_visible(True)
+                self.strength_box.set_visible(True)
             
             self.main_stack.set_visible_child_name("auth")
             self.master_password_entry.set_text("")
@@ -243,18 +280,70 @@ class VaultView(Adw.NavigationPage):
         """Show authentication error message"""
         self.auth_error_label.set_text(message)
         self.auth_error_label.set_visible(True)
-    
+
+    def _on_master_password_changed(self, entry) -> None:
+        """Update strength indicator during first-time setup"""
+        if not self.strength_box.get_visible():
+            return
+        password = entry.get_text()
+        if not password:
+            self.master_strength_bar.set_value(0)
+            self.master_strength_label.set_text("")
+            return
+        score, level = self.generator.check_password_strength(password)
+        self.master_strength_bar.set_value(score)
+        self.master_strength_label.set_text(level)
+
+    def _on_session_warning(self, remaining: int) -> None:
+        """Show countdown warning before session locks"""
+        self.timeout_banner.set_title(
+            _("Vault will lock in %d seconds due to inactivity") % remaining
+        )
+        self.timeout_banner.set_revealed(True)
+        # Start 1-second countdown updates
+        self._cancel_countdown()
+        self._countdown_id = GLib.timeout_add_seconds(1, self._update_countdown)
+
+    def _update_countdown(self) -> bool:
+        """Update the countdown banner every second"""
+        remaining = self.session.get_remaining_time()
+        if remaining <= 0 or not self.session.is_authenticated():
+            self.timeout_banner.set_revealed(False)
+            self._countdown_id = None
+            return False
+        self.timeout_banner.set_title(
+            _("Vault will lock in %d seconds due to inactivity") % remaining
+        )
+        return True
+
+    def _on_stay_unlocked_clicked(self, banner: Adw.Banner) -> None:
+        """User clicked Stay Unlocked — reset session timeout"""
+        self._cancel_countdown()
+        self.timeout_banner.set_revealed(False)
+        self.session.on_activity()
+
+    def _cancel_countdown(self) -> None:
+        """Cancel the countdown timer if active"""
+        if self._countdown_id is not None:
+            GLib.source_remove(self._countdown_id)
+            self._countdown_id = None
+
     def _lock_vault(self) -> None:
         """Lock the vault"""
         self.session.logout()
         self._update_view()
-    
+
     def _on_session_locked(self) -> None:
         """Handle automatic session lock"""
+        self._cancel_countdown()
+        self.timeout_banner.set_revealed(False)
         self._update_view()
         # Show toast notification
-        self.activate_action("app.show-toast", GLib.Variant.new_string(_("Vault locked due to inactivity")))
-    
+        self.activate_action(
+            "app.show-toast",
+            GLib.Variant.new_string(_("Vault locked due to inactivity")),
+        )
+
     def _load_passwords(self, search: Optional[str] = None) -> None:
         """Load passwords from database"""
         # Clear list
@@ -263,21 +352,31 @@ class VaultView(Adw.NavigationPage):
             if row is None:
                 break
             self.list_box.remove(row)
-        
+
         # Load from database
         passwords = self.database.get_passwords(search)
-        
+
         if not passwords:
+            if search:
+                self.empty_status.set_icon_name("edit-find-symbolic")
+                self.empty_status.set_title(_("No Results"))
+                self.empty_status.set_description(_("No passwords match your search"))
+            else:
+                self.empty_status.set_icon_name("dialog-password-symbolic")
+                self.empty_status.set_title(_("No Passwords Stored"))
+                self.empty_status.set_description(
+                    _("Add your first password using the + button")
+                )
             self.content_stack.set_visible_child_name("empty")
             return
-        
+
         self.content_stack.set_visible_child_name("list")
-        
+
         # Add rows
         for pwd_data in passwords:
             row = self._create_password_row(pwd_data)
             self.list_box.append(row)
-    
+
     def _create_password_row(self, pwd_data: Dict[str, Any]) -> Adw.ActionRow:
         """Create a password list row"""
         row = Adw.ActionRow()
@@ -302,14 +401,17 @@ class VaultView(Adw.NavigationPage):
         # Load favicon asynchronously if URL is available
         if pwd_data.get("url"):
             self._load_favicon_async(pwd_data["url"], icon)
-        
+
         # Copy button
         copy_btn = Gtk.Button()
         copy_btn.set_icon_name("edit-copy-symbolic")
         copy_btn.set_valign(Gtk.Align.CENTER)
         copy_btn.add_css_class("flat")
         copy_btn.set_tooltip_text(_("Copy Password"))
-        copy_btn.connect("clicked", lambda _, pwd_id=pwd_data["id"]: self._copy_password(pwd_id))
+        copy_btn.update_property([Gtk.AccessibleProperty.LABEL], [_("Copy Password")])
+        copy_btn.connect(
+            "clicked", lambda _, pwd_id=pwd_data["id"]: self._copy_password(pwd_id)
+        )
         row.add_suffix(copy_btn)
 
         # Edit button
@@ -318,7 +420,10 @@ class VaultView(Adw.NavigationPage):
         edit_btn.set_valign(Gtk.Align.CENTER)
         edit_btn.add_css_class("flat")
         edit_btn.set_tooltip_text(_("Edit"))
-        edit_btn.connect("clicked", lambda _, pwd_id=pwd_data["id"]: self._show_edit_dialog(pwd_id))
+        edit_btn.update_property([Gtk.AccessibleProperty.LABEL], [_("Edit")])
+        edit_btn.connect(
+            "clicked", lambda _, pwd_id=pwd_data["id"]: self._show_edit_dialog(pwd_id)
+        )
         row.add_suffix(edit_btn)
 
         # Delete button
@@ -327,36 +432,42 @@ class VaultView(Adw.NavigationPage):
         delete_btn.set_valign(Gtk.Align.CENTER)
         delete_btn.add_css_class("flat")
         delete_btn.set_tooltip_text(_("Delete"))
-        delete_btn.connect("clicked", lambda _, pwd_id=pwd_data["id"]: self._confirm_delete(pwd_id))
+        delete_btn.update_property([Gtk.AccessibleProperty.LABEL], [_("Delete")])
+        delete_btn.connect(
+            "clicked", lambda _, pwd_id=pwd_data["id"]: self._confirm_delete(pwd_id)
+        )
         row.add_suffix(delete_btn)
-        
+
         return row
-    
+
     def _on_search_changed(self, entry: Gtk.SearchEntry) -> None:
         """Handle search text change"""
         search_text = entry.get_text().strip()
         self._load_passwords(search_text if search_text else None)
         self.session.on_activity()
-    
+
     def _copy_password(self, password_id: int) -> None:
         """Copy password to clipboard"""
         entry = self.database.get_password(password_id)
         if entry:
             self.clipboard.copy_text(entry["password"])
-            self.activate_action("app.show-toast", GLib.Variant.new_string(_("Password copied to clipboard")))
+            self.activate_action(
+                "app.show-toast",
+                GLib.Variant.new_string(_("Password copied to clipboard")),
+            )
             self.session.on_activity()
-    
+
     def _show_add_dialog(self) -> None:
         """Show add password dialog"""
         self._show_password_dialog()
-    
+
     def _show_edit_dialog(self, password_id: int) -> None:
         """Show edit password dialog"""
         entry = self.database.get_password(password_id)
         if entry:
             self._show_password_dialog(entry)
         self.session.on_activity()
-    
+
     def _show_password_dialog(self, entry: Optional[Dict[str, Any]] = None) -> None:
         """Show password add/edit dialog"""
         is_edit = entry is not None
@@ -368,7 +479,7 @@ class VaultView(Adw.NavigationPage):
         dialog.set_response_appearance("save", Adw.ResponseAppearance.SUGGESTED)
         dialog.set_default_response("save")
         dialog.set_close_response("cancel")
-        
+
         # Form
         form = Adw.PreferencesGroup()
 
@@ -399,6 +510,9 @@ class VaultView(Adw.NavigationPage):
         generate_btn = Gtk.MenuButton()
         generate_btn.set_icon_name("document-new-symbolic")
         generate_btn.set_tooltip_text(_("Generate Password"))
+        generate_btn.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Generate Password")]
+        )
         generate_btn.set_valign(Gtk.Align.CENTER)
 
         # Create menu
@@ -421,22 +535,35 @@ class VaultView(Adw.NavigationPage):
 
         # Generate strong password action
         action_strong = Gio.SimpleAction.new("generate-strong", None)
-        action_strong.connect("activate", lambda a, p: self._generate_password_in_dialog(password_entry, "strong"))
+        action_strong.connect(
+            "activate",
+            lambda a, p: self._generate_password_in_dialog(password_entry, "strong"),
+        )
         action_group.add_action(action_strong)
 
         # Generate passphrase action
         action_passphrase = Gio.SimpleAction.new("generate-passphrase", None)
-        action_passphrase.connect("activate", lambda a, p: self._generate_password_in_dialog(password_entry, "passphrase"))
+        action_passphrase.connect(
+            "activate",
+            lambda a, p: self._generate_password_in_dialog(
+                password_entry, "passphrase"
+            ),
+        )
         action_group.add_action(action_passphrase)
 
         # Generate PIN action
         action_pin = Gio.SimpleAction.new("generate-pin", None)
-        action_pin.connect("activate", lambda a, p: self._generate_password_in_dialog(password_entry, "pin"))
+        action_pin.connect(
+            "activate",
+            lambda a, p: self._generate_password_in_dialog(password_entry, "pin"),
+        )
         action_group.add_action(action_pin)
 
         # Generate custom action
         action_custom = Gio.SimpleAction.new("generate-custom", None)
-        action_custom.connect("activate", lambda a, p: self._show_custom_generator_dialog(password_entry))
+        action_custom.connect(
+            "activate", lambda a, p: self._show_custom_generator_dialog(password_entry)
+        )
         action_group.add_action(action_custom)
 
         generate_btn.insert_action_group("password", action_group)
@@ -452,9 +579,9 @@ class VaultView(Adw.NavigationPage):
         if entry:
             notes_entry.set_text(entry.get("notes", "") or "")
         form.add(notes_entry)
-        
+
         dialog.set_extra_child(form)
-        
+
         def on_response(dlg, response):
             if response == "save":
                 title = title_entry.get_text().strip()
@@ -463,12 +590,21 @@ class VaultView(Adw.NavigationPage):
                 url = url_entry.get_text().strip() or None
                 notes = notes_entry.get_text().strip() or None
 
+                # Inline validation
+                has_error = False
                 if not title:
-                    self.activate_action("app.show-toast", GLib.Variant.new_string(_("Title is required")))
-                    return
+                    title_entry.add_css_class("error")
+                    has_error = True
+                else:
+                    title_entry.remove_css_class("error")
 
                 if not password:
-                    self.activate_action("app.show-toast", GLib.Variant.new_string(_("Password is required")))
+                    password_entry.add_css_class("error")
+                    has_error = True
+                else:
+                    password_entry.remove_css_class("error")
+
+                if has_error:
                     return
 
                 try:
@@ -479,21 +615,33 @@ class VaultView(Adw.NavigationPage):
                             username=username,
                             password=password,
                             url=url,
-                            notes=notes
+                            notes=notes,
                         )
-                        self.activate_action("app.show-toast", GLib.Variant.new_string(_("Password updated")))
+                        self.activate_action(
+                            "app.show-toast",
+                            GLib.Variant.new_string(_("Password updated")),
+                        )
                     else:
-                        self.database.add_password(title, password, username, notes, url)
-                        self.activate_action("app.show-toast", GLib.Variant.new_string(_("Password added")))
+                        self.database.add_password(
+                            title, password, username, notes, url
+                        )
+                        self.activate_action(
+                            "app.show-toast",
+                            GLib.Variant.new_string(_("Password added")),
+                        )
 
                     self._load_passwords()
                     self.session.on_activity()
                 except Exception as e:
-                    self.activate_action("app.show-toast", GLib.Variant.new_string(_("Error: {error}").format(error=str(e))))
-        
+                    error_dlg = Adw.AlertDialog()
+                    error_dlg.set_heading(_("Error Saving Password"))
+                    error_dlg.set_body(str(e))
+                    error_dlg.add_response("ok", _("OK"))
+                    error_dlg.present(self.get_root())
+
         dialog.connect("response", on_response)
         dialog.present(self.get_root())
-    
+
     def _confirm_delete(self, password_id: int) -> None:
         """Show delete confirmation dialog"""
         entry = self.database.get_password(password_id)
@@ -502,7 +650,11 @@ class VaultView(Adw.NavigationPage):
 
         dialog = Adw.AlertDialog()
         dialog.set_heading(_("Delete Password?"))
-        dialog.set_body(_("Are you sure you want to delete '{title}'? This action cannot be undone.").format(title=entry['title']))
+        dialog.set_body(
+            _(
+                "Are you sure you want to delete '{title}'? This action cannot be undone."
+            ).format(title=entry["title"])
+        )
         dialog.add_response("cancel", _("Cancel"))
         dialog.add_response("delete", _("Delete"))
         dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE)
@@ -512,14 +664,18 @@ class VaultView(Adw.NavigationPage):
         def on_response(dlg, response):
             if response == "delete":
                 if self.database.delete_password(password_id):
-                    self.activate_action("app.show-toast", GLib.Variant.new_string(_("Password deleted")))
+                    self.activate_action(
+                        "app.show-toast", GLib.Variant.new_string(_("Password deleted"))
+                    )
                     self._load_passwords()
                     self.session.on_activity()
 
         dialog.connect("response", on_response)
         dialog.present(self.get_root())
 
-    def _generate_password_in_dialog(self, password_entry: Gtk.PasswordEntry, gen_type: str) -> None:
+    def _generate_password_in_dialog(
+        self, password_entry: Gtk.PasswordEntry, gen_type: str
+    ) -> None:
         """Generate password directly in the dialog"""
         try:
             if gen_type == "strong":
@@ -530,16 +686,13 @@ class VaultView(Adw.NavigationPage):
                     use_lowercase=True,
                     use_digits=True,
                     use_symbols=True,
-                    exclude_ambiguous=True
+                    exclude_ambiguous=True,
                 )
                 password = self.generator.generate_password(config)
             elif gen_type == "passphrase":
                 # Passphrase: 4 words
                 password = self.generator.generate_passphrase(
-                    num_words=4,
-                    separator="-",
-                    capitalize=True,
-                    add_number=True
+                    num_words=4, separator="-", capitalize=True, add_number=True
                 )
             elif gen_type == "pin":
                 # PIN: 6 digits
@@ -548,9 +701,14 @@ class VaultView(Adw.NavigationPage):
                 return
 
             password_entry.set_text(password)
-            self.activate_action("app.show-toast", GLib.Variant.new_string(_("Password generated")))
+            self.activate_action(
+                "app.show-toast", GLib.Variant.new_string(_("Password generated"))
+            )
         except Exception as e:
-            self.activate_action("app.show-toast", GLib.Variant.new_string(_("Error generating password")))
+            self.activate_action(
+                "app.show-toast",
+                GLib.Variant.new_string(_("Error generating password")),
+            )
 
     def _show_custom_generator_dialog(self, password_entry: Gtk.PasswordEntry) -> None:
         """Show custom generator dialog with all options"""
@@ -594,7 +752,9 @@ class VaultView(Adw.NavigationPage):
 
         length_spin = Adw.SpinRow()
         length_spin.set_title(_("Length"))
-        length_spin.set_adjustment(Gtk.Adjustment(value=16, lower=8, upper=64, step_increment=1))
+        length_spin.set_adjustment(
+            Gtk.Adjustment(value=16, lower=8, upper=64, step_increment=1)
+        )
         pwd_group.add(length_spin)
 
         uppercase_switch = Adw.SwitchRow(title=_("Uppercase Letters"), active=True)
@@ -619,7 +779,9 @@ class VaultView(Adw.NavigationPage):
         phrase_group.set_title(_("Passphrase Options"))
 
         words_spin = Adw.SpinRow(title=_("Number of Words"))
-        words_spin.set_adjustment(Gtk.Adjustment(value=4, lower=3, upper=10, step_increment=1))
+        words_spin.set_adjustment(
+            Gtk.Adjustment(value=4, lower=3, upper=10, step_increment=1)
+        )
         phrase_group.add(words_spin)
 
         separator_entry = Adw.EntryRow(title=_("Separator"), text="-")
@@ -638,7 +800,9 @@ class VaultView(Adw.NavigationPage):
         pin_group.set_title(_("PIN Options"))
 
         pin_length_spin = Adw.SpinRow(title=_("Length"))
-        pin_length_spin.set_adjustment(Gtk.Adjustment(value=6, lower=4, upper=12, step_increment=1))
+        pin_length_spin.set_adjustment(
+            Gtk.Adjustment(value=6, lower=4, upper=12, step_increment=1)
+        )
         pin_group.add(pin_length_spin)
 
         options_stack.add_named(pin_group, "pin")
@@ -652,11 +816,63 @@ class VaultView(Adw.NavigationPage):
         passphrase_btn.connect("toggled", on_type_changed, "passphrase")
         pin_btn.connect("toggled", on_type_changed, "pin")
 
+        # Preview section
+        preview_group = Adw.PreferencesGroup()
+        preview_group.set_title(_("Preview"))
+
+        preview_row = Adw.ActionRow()
+        preview_row.set_title(_("No preview yet"))
+        preview_row.set_title_selectable(True)
+        preview_row.add_css_class("monospace")
+
+        preview_btn = Gtk.Button.new_from_icon_name("view-refresh-symbolic")
+        preview_btn.set_valign(Gtk.Align.CENTER)
+        preview_btn.set_tooltip_text(_("Generate Preview"))
+        preview_btn.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Generate Preview")]
+        )
+        preview_row.add_suffix(preview_btn)
+
+        preview_group.add(preview_row)
+
+        def _generate_preview(*_args) -> None:
+            try:
+                current_type = options_stack.get_visible_child_name()
+                if current_type == "password":
+                    config = PasswordConfig(
+                        length=int(length_spin.get_value()),
+                        use_uppercase=uppercase_switch.get_active(),
+                        use_lowercase=lowercase_switch.get_active(),
+                        use_digits=digits_switch.get_active(),
+                        use_symbols=symbols_switch.get_active(),
+                        exclude_ambiguous=ambiguous_switch.get_active(),
+                    )
+                    preview_text = self.generator.generate_password(config)
+                elif current_type == "passphrase":
+                    preview_text = self.generator.generate_passphrase(
+                        num_words=int(words_spin.get_value()),
+                        separator=separator_entry.get_text(),
+                        capitalize=capitalize_switch.get_active(),
+                        add_number=add_number_switch.get_active(),
+                    )
+                elif current_type == "pin":
+                    preview_text = self.generator.generate_pin(
+                        int(pin_length_spin.get_value())
+                    )
+                else:
+                    return
+                preview_row.set_title(preview_text)
+            except ValueError:
+                preview_row.set_title(_("Invalid options"))
+
+        preview_btn.connect("clicked", _generate_preview)
+
         # Main container
         container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         container.set_spacing(12)
         container.append(type_group)
         container.append(options_stack)
+        container.append(preview_group)
 
         dialog.set_extra_child(container)
 
@@ -672,7 +888,7 @@ class VaultView(Adw.NavigationPage):
                             use_lowercase=lowercase_switch.get_active(),
                             use_digits=digits_switch.get_active(),
                             use_symbols=symbols_switch.get_active(),
-                            exclude_ambiguous=ambiguous_switch.get_active()
+                            exclude_ambiguous=ambiguous_switch.get_active(),
                         )
                         password = self.generator.generate_password(config)
                     elif current_type == "passphrase":
@@ -680,21 +896,29 @@ class VaultView(Adw.NavigationPage):
                             num_words=int(words_spin.get_value()),
                             separator=separator_entry.get_text(),
                             capitalize=capitalize_switch.get_active(),
-                            add_number=add_number_switch.get_active()
+                            add_number=add_number_switch.get_active(),
                         )
                     elif current_type == "pin":
-                        password = self.generator.generate_pin(int(pin_length_spin.get_value()))
+                        password = self.generator.generate_pin(
+                            int(pin_length_spin.get_value())
+                        )
 
                     password_entry.set_text(password)
-                    self.activate_action("app.show-toast", GLib.Variant.new_string(_("Password generated")))
+                    self.activate_action(
+                        "app.show-toast",
+                        GLib.Variant.new_string(_("Password generated")),
+                    )
                 except Exception as e:
-                    self.activate_action("app.show-toast", GLib.Variant.new_string(_("Error generating password")))
+                    self.activate_action(
+                        "app.show-toast",
+                        GLib.Variant.new_string(_("Error generating password")),
+                    )
 
         dialog.connect("response", on_response)
         dialog.present(self.get_root())
 
     def _get_favicon_url(self, url: str) -> Optional[str]:
-        """Get favicon URL from website URL using Google's favicon service"""
+        """Get favicon URL from website URL"""
         if not url:
             return None
 
@@ -704,10 +928,11 @@ class VaultView(Adw.NavigationPage):
                 url = f"https://{url}"
                 parsed = urllib.parse.urlparse(url)
 
-            # Use Google's favicon service for better compatibility
             domain = parsed.netloc
-            return f"https://www.google.com/s2/favicons?domain={domain}&sz=32"
-        except:
+            if not domain:
+                return None
+            return f"https://{domain}/favicon.ico"
+        except (ValueError, AttributeError):
             return None
 
     def _fetch_favicon(self, url: str) -> Optional[str]:
@@ -719,7 +944,7 @@ class VaultView(Adw.NavigationPage):
         # Generate cache filename from domain hash
         parsed = urllib.parse.urlparse(url)
         domain = parsed.netloc if parsed.netloc else url
-        url_hash = hashlib.md5(domain.encode()).hexdigest()
+        url_hash = hashlib.sha256(domain.encode()).hexdigest()[:16]
         cache_path = self.favicon_cache_dir / f"{url_hash}.png"
 
         # Return if already cached
@@ -733,7 +958,7 @@ class VaultView(Adw.NavigationPage):
                 with open(cache_path, 'wb') as f:
                     f.write(response.read())
             return str(cache_path)
-        except:
+        except (urllib.error.URLError, OSError, ValueError):
             return None
 
     def _load_favicon_async(self, url: str, image_widget: Gtk.Image) -> None:
@@ -746,17 +971,14 @@ class VaultView(Adw.NavigationPage):
         try:
             parsed = urllib.parse.urlparse(url)
             domain = parsed.netloc if parsed.netloc else url
-            url_hash = hashlib.md5(domain.encode()).hexdigest()
+            url_hash = hashlib.sha256(domain.encode()).hexdigest()[:16]
             cache_path = self.favicon_cache_dir / f"{url_hash}.png"
-        except:
+        except (ValueError, AttributeError):
             return
 
         # If already cached, load immediately
         if cache_path.exists():
-            try:
-                GLib.idle_add(self._update_favicon_image, image_widget, str(cache_path))
-            except:
-                pass
+            GLib.idle_add(self._update_favicon_image, image_widget, str(cache_path))
             return
 
         # Download in background thread
@@ -769,8 +991,8 @@ class VaultView(Adw.NavigationPage):
 
                 # Update UI in main thread
                 GLib.idle_add(self._update_favicon_image, image_widget, str(cache_path))
-            except:
-                pass  # Silently fail, keep default icon
+            except (urllib.error.URLError, OSError, ValueError):
+                pass  # Keep default icon
 
         thread = threading.Thread(target=download_favicon, daemon=True)
         thread.start()
@@ -780,6 +1002,6 @@ class VaultView(Adw.NavigationPage):
         try:
             if os.path.exists(favicon_path):
                 image_widget.set_from_file(favicon_path)
-        except:
+        except Exception:
             pass  # Keep default icon on error
         return False  # Don't repeat this idle callback

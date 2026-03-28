@@ -5,6 +5,7 @@ Modern password generator and encrypted password vault
 """
 
 import sys
+import logging
 import gi
 
 gi.require_version('Gtk', '4.0')
@@ -12,22 +13,23 @@ gi.require_version('Adw', '1')
 
 from gi.repository import Gtk, Adw, Gio, GLib
 
-from core.config import APP_ID, APP_NAME, ensure_directories
+from core.config import APP_ID, APP_NAME, APP_VERSION, ensure_directories
 from core.database import Database
 from utils.i18n import _
 from ui.window import MainWindow
 
+logger = logging.getLogger(__name__)
+
 
 class AshyPassApplication(Adw.Application):
     """Main application class"""
-    
+
     def __init__(self):
-        print("Initializing AshyPassApplication...")
         super().__init__(
             application_id=APP_ID,
             flags=Gio.ApplicationFlags.DEFAULT_FLAGS
         )
-        print(f"Application ID: {APP_ID}")
+        logger.debug("Application ID: %s", APP_ID)
         
         self.database = None
         self.window = None
@@ -40,38 +42,27 @@ class AshyPassApplication(Adw.Application):
         action = Gio.SimpleAction.new("show-toast", GLib.VariantType.new("s"))
         action.connect("activate", self.on_show_toast)
         self.add_action(action)
-        print("AshyPassApplication initialized")
     
     def do_activate(self):
         """Called when the application is activated"""
-        print("do_activate called!")
-        
         # Ensure directories exist
         ensure_directories()
-        print("Directories ensured")
         
         # Initialize database
         if not self.database:
-            print("Initializing database...")
             self.database = Database()
             self.database.connect()
             self.database.initialize()
-            print("Database initialized")
+            logger.debug("Database initialized")
         
         # Create window if it doesn't exist
         if not self.window:
-            print("Creating main window...")
             self.window = MainWindow(self, self.database)
-            print("Window created")
-        
-        print("Presenting window...")
+
         self.window.present()
-        print("Window presented!")
     
     def on_shutdown(self, app):
         """Called when the application is shutting down"""
-        print("Shutting down...")
-        # Close database connection
         if self.database:
             self.database.close()
     
@@ -91,7 +82,7 @@ class AshyPassApplication(Adw.Application):
         about = Adw.AboutDialog()
         about.set_application_name(APP_NAME)
         about.set_application_icon("ashypass")
-        about.set_version("1.0.0")
+        about.set_version(APP_VERSION)
         about.set_developer_name("Big Community")
         about.set_license_type(Gtk.License.MIT_X11)
         about.set_comments(_("Modern password generator and encrypted password vault"))
@@ -113,22 +104,17 @@ class AshyPassApplication(Adw.Application):
 
 def main():
     """Main entry point"""
+    logging.basicConfig(
+        level=logging.DEBUG if "--debug" in sys.argv else logging.WARNING,
+        format="%(levelname)s: %(name)s: %(message)s",
+    )
+
     try:
-        print("Starting Ashy Pass...")
-        
-        # Initialize libadwaita
         Adw.init()
-        print("Libadwaita initialized")
-        
         app = AshyPassApplication()
-        print("Application created, running...")
-        exit_code = app.run(sys.argv)
-        print(f"Application exited with code: {exit_code}")
-        return exit_code
+        return app.run(sys.argv)
     except Exception as e:
-        print(f"Error starting application: {e}")
-        import traceback
-        traceback.print_exc()
+        logger.error("Error starting application: %s", e, exc_info=True)
         return 1
 
 

@@ -1,6 +1,10 @@
 import csv
+import logging
 import os
 from typing import List, Dict, Optional, Any
+
+logger = logging.getLogger(__name__)
+
 
 class CsvHandler:
     """Handles import and export of passwords in CSV format (Google Chrome compatible)"""
@@ -44,7 +48,7 @@ class CsvHandler:
                         entries.append(entry)
                         
         except Exception as e:
-            print(f"Error importing CSV: {e}")
+            logger.error("Error importing CSV: %s", e)
             raise
             
         return entries
@@ -76,5 +80,5 @@ class CsvHandler:
                     writer.writerow(row)
             return True
         except Exception as e:
-            print(f"Error exporting CSV: {e}")
+            logger.error("Error exporting CSV: %s", e)
             return False

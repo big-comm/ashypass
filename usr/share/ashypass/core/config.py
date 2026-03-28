@@ -6,13 +6,16 @@ Application constants and configuration management
 
 import os
 import json
+import logging
 from pathlib import Path
 from typing import Any, Dict
+
+logger = logging.getLogger(__name__)
 
 # Application Information
 APP_ID = "com.bigcommunity.ashypass"  # Restored original ID
 APP_NAME = "Ashy Pass"
-APP_VERSION = "1.2.2"
+APP_VERSION = "2.0.0"
 
 # Paths
 CONFIG_DIR = Path.home() / ".config" / "ashypass"
@@ -59,7 +62,7 @@ def load_settings() -> Dict[str, Any]:
         try:
             with open(CONFIG_FILE, 'r') as f:
                 return json.load(f)
-        except:
+        except (OSError, json.JSONDecodeError, ValueError):
             pass
     return {}
 
@@ -71,4 +74,4 @@ def save_settings(settings: Dict[str, Any]) -> None:
         with open(CONFIG_FILE, 'w') as f:
             json.dump(settings, f, indent=2)
     except Exception as e:
-        print(f"Error saving settings: {e}")
+        logger.error("Error saving settings: %s", e)

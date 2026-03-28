@@ -3,6 +3,8 @@
 
 import sqlite3
 import time
+import os
+import logging
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Callable
 import hashlib
@@ -13,6 +15,8 @@ from argon2.exceptions import VerifyMismatchError
 from cryptography.fernet import Fernet
 
 from core.config import DATABASE_PATH
+
+logger = logging.getLogger(__name__)
 
 
 class Database:
@@ -35,7 +39,7 @@ class Database:
             try:
                 callback()
             except Exception as e:
-                print(f"Error in change listener: {e}")
+                logger.error("Error in change listener: %s", e)
 
     def connect(self) -> None:
         """Establish database connection"""
@@ -100,8 +104,8 @@ class Database:
         
         if self.has_master_password():
             return False
-        
-        salt = base64.urlsafe_b64encode(hashlib.sha256(password.encode()).digest())
+
+        salt = base64.urlsafe_b64encode(os.urandom(32))
         password_hash = self.ph.hash(password)
         
         cursor = self.connection.cursor()
@@ -260,3 +264,66 @@ class Database:
         if cursor.rowcount > 0:
             self._notify_change()
         return cursor.rowcount > 0
+
+    def change_master_password(self, current_password: str, new_password: str) -> bool:
+        """Change the master password, re-encrypting all stored passwords.
+
+        This operation is atomic: if any step fails, the database is rolled back
+        to its previous state and no data is lost.
+        """
+        if not self.connection:
+            self.connect()
+
+        # Verify current password first
+        if not self.verify_master_password(current_password):
+            return False
+
+        old_fernet = self._fernet
+
+        # Decrypt all passwords with the old key
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT id, password_encrypted, notes_encrypted FROM passwords")
+        rows = cursor.fetchall()
+
+        decrypted_entries = []
+        for row in rows:
+            entry = {"id": row["id"]}
+            entry["password"] = old_fernet.decrypt(row["password_encrypted"]).decode()
+            entry["notes"] = (
+                old_fernet.decrypt(row["notes_encrypted"]).decode()
+                if row["notes_encrypted"]
+                else None
+            )
+            decrypted_entries.append(entry)
+
+        # Derive new key
+        new_salt = base64.urlsafe_b64encode(os.urandom(32))
+        new_hash = self.ph.hash(new_password)
+        self._derive_encryption_key(new_password, new_salt)
+
+        # Re-encrypt and update atomically
+        try:
+            cursor.execute("BEGIN")
+            cursor.execute(
+                "UPDATE master SET password_hash = ?, salt = ? WHERE id = 1",
+                (new_hash, new_salt.decode()),
+            )
+            for entry in decrypted_entries:
+                enc_password = self._encrypt(entry["password"])
+                enc_notes = self._encrypt(entry["notes"]) if entry["notes"] else None
+                cursor.execute(
+                    "UPDATE passwords SET password_encrypted = ?, notes_encrypted = ? WHERE id = ?",
+                    (enc_password, enc_notes, entry["id"]),
+                )
+            self.connection.commit()
+            logger.info(
+                "Master password changed, %d entries re-encrypted",
+                len(decrypted_entries),
+            )
+            return True
+        except Exception:
+            self.connection.rollback()
+            # Restore old key so current session keeps working
+            self._fernet = old_fernet
+            logger.error("Failed to change master password, rolled back")
+            raise
