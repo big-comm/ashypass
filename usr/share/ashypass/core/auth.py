@@ -5,7 +5,7 @@ import time
 from typing import Optional, Callable
 from gi.repository import GLib
 
-from core.config import SESSION_TIMEOUT_SECONDS
+from core.config import SESSION_TIMEOUT_SECONDS, load_settings
 
 
 class SessionManager:
@@ -13,7 +13,10 @@ class SessionManager:
 
     WARNING_SECONDS = 10
 
-    def __init__(self, timeout_seconds: int = SESSION_TIMEOUT_SECONDS):
+    def __init__(self, timeout_seconds: int | None = None):
+        if timeout_seconds is None:
+            settings = load_settings()
+            timeout_seconds = settings.get("lock_timeout", SESSION_TIMEOUT_SECONDS)
         self.timeout_seconds = timeout_seconds
         self._authenticated = False
         self._last_activity = 0

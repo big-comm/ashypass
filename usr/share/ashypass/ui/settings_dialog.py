@@ -6,8 +6,15 @@ from gi.repository import Gtk, Adw, GLib, Gio
 
 from core.backup_service import BackupService
 from core.csv_handler import CsvHandler
+from core.aegis_import import (
+    parse_aegis_json,
+    parse_aegis_encrypted,
+    AegisEncryptedError,
+    is_aegis_encrypted,
+)
+from core.andotp_import import parse_andotp_json
 from core.database import Database
-from core.config import MIN_MASTER_PASSWORD_LENGTH
+from core.config import MIN_MASTER_PASSWORD_LENGTH, load_settings, save_settings
 from utils.i18n import _
 import threading
 
@@ -18,7 +25,7 @@ class SettingsDialog(Adw.PreferencesWindow):
         super().__init__()
         self.set_transient_for(parent)
         self.set_modal(True)
-        self.set_default_size(500, 600)
+        self.set_default_size(640, 600)
         self.set_title(_("Settings"))
 
         self.backup_service = backup_service
@@ -140,7 +147,73 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         page_import_export.add(group_import_export)
 
+        # 2FA Import Group
+        group_2fa = Adw.PreferencesGroup()
+        group_2fa.set_title(_("2FA / TOTP Import"))
+        group_2fa.set_description(
+            _("Import TOTP entries from authenticator apps (plain or encrypted).")
+        )
+
+        row_aegis = Adw.ActionRow()
+        row_aegis.set_title(_("Import from Aegis"))
+        row_aegis.set_subtitle(_("Aegis JSON export (plain or encrypted)"))
+
+        btn_aegis = Gtk.Button(icon_name="document-open-symbolic")
+        btn_aegis.set_valign(Gtk.Align.CENTER)
+        btn_aegis.add_css_class("flat")
+        btn_aegis.set_tooltip_text(_("Import from Aegis"))
+        btn_aegis.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Import from Aegis")]
+        )
+        btn_aegis.connect("clicked", self._on_aegis_import_clicked)
+        row_aegis.add_suffix(btn_aegis)
+        group_2fa.add(row_aegis)
+
+        row_andotp = Adw.ActionRow()
+        row_andotp.set_title(_("Import from andOTP"))
+        row_andotp.set_subtitle(_("andOTP plaintext JSON backup"))
+
+        btn_andotp = Gtk.Button(icon_name="document-open-symbolic")
+        btn_andotp.set_valign(Gtk.Align.CENTER)
+        btn_andotp.add_css_class("flat")
+        btn_andotp.set_tooltip_text(_("Import from andOTP"))
+        btn_andotp.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Import from andOTP")]
+        )
+        btn_andotp.connect("clicked", self._on_andotp_import_clicked)
+        row_andotp.add_suffix(btn_andotp)
+        group_2fa.add(row_andotp)
+
+        page_import_export.add(group_2fa)
+
         self.add(page_import_export)
+
+        # --- Appearance Page ---
+        page_appearance = Adw.PreferencesPage()
+        page_appearance.set_title(_("Appearance"))
+        page_appearance.set_icon_name("preferences-desktop-appearance-symbolic")
+
+        group_icons = Adw.PreferencesGroup()
+        group_icons.set_title(_("Icons"))
+        group_icons.set_description(
+            _(
+                "Show website favicons next to passwords and 2FA codes for easier identification."
+            )
+        )
+
+        self._settings = load_settings()
+
+        self.favicon_switch_row = Adw.SwitchRow()
+        self.favicon_switch_row.set_title(_("Show Favicons"))
+        self.favicon_switch_row.set_subtitle(
+            _("Download website icons (requires internet)")
+        )
+        self.favicon_switch_row.set_active(self._settings.get("show_favicons", True))
+        self.favicon_switch_row.connect("notify::active", self._on_favicon_toggled)
+        group_icons.add(self.favicon_switch_row)
+
+        page_appearance.add(group_icons)
+        self.add(page_appearance)
 
         # --- Security Page ---
         page_security = Adw.PreferencesPage()
@@ -174,7 +247,48 @@ class SettingsDialog(Adw.PreferencesWindow):
         group_master.add(btn_change)
 
         page_security.add(group_master)
+
+        # Lock timeout group
+        group_timeout = Adw.PreferencesGroup()
+        group_timeout.set_title(_("Auto-Lock"))
+        group_timeout.set_description(
+            _("Automatically lock the vault after a period of inactivity.")
+        )
+
+        self.timeout_spin = Adw.SpinRow()
+        self.timeout_spin.set_title(_("Lock after (seconds)"))
+        self.timeout_spin.set_subtitle(_("Minimum 15 seconds"))
+        self.timeout_spin.set_adjustment(
+            Gtk.Adjustment(
+                value=self._settings.get("lock_timeout", 30),
+                lower=15,
+                upper=600,
+                step_increment=15,
+                page_increment=60,
+            )
+        )
+        self.timeout_spin.connect("notify::value", self._on_timeout_changed)
+        group_timeout.add(self.timeout_spin)
+
+        page_security.add(group_timeout)
         self.add(page_security)
+
+    def _on_favicon_toggled(self, switch_row, _pspec) -> None:
+        """Handle favicon toggle"""
+        self._settings["show_favicons"] = switch_row.get_active()
+        save_settings(self._settings)
+
+    def _on_timeout_changed(self, spin_row, _pspec) -> None:
+        """Handle lock timeout change"""
+        value = int(spin_row.get_value())
+        self._settings["lock_timeout"] = value
+        save_settings(self._settings)
+        # Apply to running session
+        parent = self.get_transient_for()
+        if parent and hasattr(parent, "session"):
+            parent.session.timeout_seconds = value
+            if parent.session.is_authenticated():
+                parent.session.reset_timeout()
 
     def _update_account_status(self):
         """Update UI based on login state"""
@@ -302,6 +416,15 @@ class SettingsDialog(Adw.PreferencesWindow):
     def _import_passwords(self, file_path: str):
         """Import passwords from CSV file"""
         try:
+            if not self.database._fernet:
+                self._show_error_dialog(
+                    _("Vault Locked"),
+                    _(
+                        "You must unlock the vault before importing. Go to the Vault tab and enter your master password first."
+                    ),
+                )
+                return
+
             # Import CSV
             entries = self.csv_handler.import_csv(file_path)
 
@@ -408,6 +531,175 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         except Exception as e:
             self._show_error_dialog(_("Export Failed"), str(e))
+
+    def _on_aegis_import_clicked(self, btn):
+        """Handle Aegis JSON import"""
+        dialog = Gtk.FileDialog()
+        dialog.set_title(_("Select Aegis JSON Export"))
+
+        filter_json = Gtk.FileFilter()
+        filter_json.set_name(_("JSON Files"))
+        filter_json.add_pattern("*.json")
+
+        filter_all = Gtk.FileFilter()
+        filter_all.set_name(_("All Files"))
+        filter_all.add_pattern("*")
+
+        filters = Gio.ListStore.new(Gtk.FileFilter)
+        filters.append(filter_json)
+        filters.append(filter_all)
+        dialog.set_filters(filters)
+        dialog.set_default_filter(filter_json)
+
+        dialog.open(self, None, self._on_aegis_file_selected)
+
+    def _on_aegis_file_selected(self, dialog, result):
+        """Handle Aegis file selection"""
+        try:
+            file = dialog.open_finish(result)
+            if file:
+                file_path = file.get_path()
+                self._import_aegis(file_path)
+        except Exception as e:
+            if "dismissed" not in str(e).lower():
+                self._show_error_dialog(_("Import Failed"), str(e))
+
+    def _import_aegis(self, file_path: str):
+        """Import TOTP entries from Aegis JSON file (plain or encrypted)"""
+        try:
+            entries = parse_aegis_json(file_path)
+            self._save_totp_entries(entries, "Aegis")
+        except AegisEncryptedError:
+            self._ask_aegis_password(file_path)
+        except Exception as e:
+            self._show_error_dialog(_("Import Failed"), str(e))
+
+    def _ask_aegis_password(self, file_path: str):
+        """Show dialog to ask for Aegis vault password"""
+        dlg = Adw.AlertDialog()
+        dlg.set_heading(_("Encrypted Aegis Export"))
+        dlg.set_body(
+            _("This Aegis export is encrypted. Enter the password to decrypt it.")
+        )
+        dlg.add_response("cancel", _("Cancel"))
+        dlg.add_response("decrypt", _("Decrypt"))
+        dlg.set_response_appearance("decrypt", Adw.ResponseAppearance.SUGGESTED)
+        dlg.set_default_response("decrypt")
+        dlg.set_close_response("cancel")
+
+        password_entry = Gtk.PasswordEntry()
+        password_entry.set_show_peek_icon(True)
+        password_entry.set_hexpand(True)
+        password_entry.set_margin_top(12)
+        password_entry.set_margin_start(12)
+        password_entry.set_margin_end(12)
+        dlg.set_extra_child(password_entry)
+
+        def on_response(d, response):
+            if response == "decrypt":
+                pwd = password_entry.get_text()
+                if not pwd:
+                    self._show_error_dialog(_("Error"), _("Password cannot be empty."))
+                    return
+                try:
+                    entries = parse_aegis_encrypted(file_path, pwd)
+                    self._save_totp_entries(entries, "Aegis")
+                except ValueError as ve:
+                    self._show_error_dialog(_("Decryption Failed"), str(ve))
+                except Exception as ex:
+                    self._show_error_dialog(_("Import Failed"), str(ex))
+
+        dlg.connect("response", on_response)
+        dlg.present(self)
+
+    def _on_andotp_import_clicked(self, btn):
+        """Handle andOTP JSON import"""
+        dialog = Gtk.FileDialog()
+        dialog.set_title(_("Select andOTP JSON Backup"))
+
+        filter_json = Gtk.FileFilter()
+        filter_json.set_name(_("JSON Files"))
+        filter_json.add_pattern("*.json")
+
+        filter_all = Gtk.FileFilter()
+        filter_all.set_name(_("All Files"))
+        filter_all.add_pattern("*")
+
+        filters = Gio.ListStore.new(Gtk.FileFilter)
+        filters.append(filter_json)
+        filters.append(filter_all)
+        dialog.set_filters(filters)
+        dialog.set_default_filter(filter_json)
+
+        dialog.open(self, None, self._on_andotp_file_selected)
+
+    def _on_andotp_file_selected(self, dialog, result):
+        """Handle andOTP file selection"""
+        try:
+            file = dialog.open_finish(result)
+            if file:
+                file_path = file.get_path()
+                self._import_andotp(file_path)
+        except Exception as e:
+            if "dismissed" not in str(e).lower():
+                self._show_error_dialog(_("Import Failed"), str(e))
+
+    def _import_andotp(self, file_path: str):
+        """Import TOTP entries from andOTP JSON backup"""
+        try:
+            entries = parse_andotp_json(file_path)
+            self._save_totp_entries(entries, "andOTP")
+        except Exception as e:
+            self._show_error_dialog(_("Import Failed"), str(e))
+
+    def _save_totp_entries(self, entries: list, source: str):
+        """Save imported TOTP entries to database"""
+        if not entries:
+            self._show_info_dialog(
+                _("Import Complete"),
+                _("No TOTP entries found in {source} export.").format(source=source),
+            )
+            return
+
+        if not self.database._fernet:
+            self._show_error_dialog(
+                _("Vault Locked"),
+                _(
+                    "You must unlock the vault before importing. Go to the Vault tab and enter your master password first."
+                ),
+            )
+            return
+
+        count = 0
+        for entry in entries:
+            try:
+                self.database.add_password(
+                    title=entry["title"],
+                    password=entry.get("password", ""),
+                    username=entry.get("username"),
+                    notes=entry.get("notes"),
+                    url=entry.get("url"),
+                    totp_secret=entry.get("totp_secret"),
+                    totp_algorithm=entry.get("totp_algorithm", "SHA1"),
+                    totp_digits=entry.get("totp_digits", 6),
+                    totp_period=entry.get("totp_period", 30),
+                )
+                count += 1
+            except Exception as e:
+                logging.getLogger(__name__).error(
+                    "Error importing %s entry %s: %s", source, entry.get("title"), e
+                )
+
+        parent = self.get_transient_for()
+        if parent and hasattr(parent, "show_toast"):
+            parent.show_toast(
+                _("Imported {count} TOTP entries from {source}").format(
+                    count=count, source=source
+                )
+            )
+
+        if parent and hasattr(parent, "vault_view"):
+            parent.vault_view._load_passwords()
 
     def _show_error_dialog(self, title: str, message: str):
         """Show error dialog"""

@@ -112,7 +112,9 @@ def main():
     try:
         Adw.init()
         app = AshyPassApplication()
-        return app.run(sys.argv)
+        # Filter out --debug before passing to GLib
+        gtk_argv = [a for a in sys.argv if a != "--debug"]
+        return app.run(gtk_argv)
     except Exception as e:
         logger.error("Error starting application: %s", e, exc_info=True)
         return 1

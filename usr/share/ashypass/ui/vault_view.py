@@ -10,18 +10,14 @@ gi.require_version('Adw', '1')
 
 from gi.repository import Gtk, Adw, GLib, Gio
 from typing import Optional, Dict, Any
-import urllib.request
-import urllib.parse
-import urllib.error
-import hashlib
-import os
-import threading
 
 from core.database import Database
 from core.auth import SessionManager
 from core.generator import PasswordGenerator, PasswordConfig
+from core.totp import generate_totp, remaining_seconds, parse_otpauth_uri
 from utils.clipboard import ClipboardManager
 from utils.i18n import _
+from utils.favicon import load_favicon_async
 from core.config import MIN_MASTER_PASSWORD_LENGTH, DATA_DIR
 
 
@@ -36,15 +32,15 @@ class VaultView(Adw.NavigationPage):
         self.clipboard = ClipboardManager()
         self.generator = PasswordGenerator()
 
-        # Favicon cache directory
-        self.favicon_cache_dir = DATA_DIR / "favicons"
-        self.favicon_cache_dir.mkdir(parents=True, exist_ok=True)
-        
         # Set lock callback
         self.session.set_lock_callback(self._on_session_locked)
         self.session.set_warning_callback(self._on_session_warning)
         self._countdown_id: int | None = None
-        
+        self._totp_timer_id: int | None = None
+        self._totp_widgets: list = []  # list of (label, progress, entry_data) tuples
+        self._updating_categories: bool = False
+        self._view_mode: str = "all"  # "all", "favorites", "groups"
+
         # Build UI
         self._build_ui()
         
@@ -87,7 +83,7 @@ class VaultView(Adw.NavigationPage):
         
         # Title
         title = Gtk.Label()
-        title.set_markup(f"<span size='xx-large' weight='bold'>{_('Password Vault')}</span>")
+        title.set_markup(f"<span size='xx-large' weight='bold'>{_('Ashy Pass')}</span>")
         content_box.append(title)
 
         # Subtitle
@@ -141,6 +137,9 @@ class VaultView(Adw.NavigationPage):
         self.auth_error_label = Gtk.Label()
         self.auth_error_label.add_css_class("error")
         self.auth_error_label.set_visible(False)
+        self.auth_error_label.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Authentication error")]
+        )
         content_box.append(self.auth_error_label)
         
         # Unlock button
@@ -169,18 +168,40 @@ class VaultView(Adw.NavigationPage):
         main_box.append(self.timeout_banner)
 
         # Search bar
-        search_bar_widget = Gtk.SearchBar()
+        self.search_bar = Gtk.SearchBar()
         self.search_entry = Gtk.SearchEntry()
         self.search_entry.set_placeholder_text(_("Search passwords..."))
+        self.search_entry.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Search passwords")]
+        )
         self.search_entry.connect("search-changed", self._on_search_changed)
-        search_bar_widget.set_child(self.search_entry)
-        search_bar_widget.set_key_capture_widget(main_box)
-        main_box.append(search_bar_widget)
-        
+        self.search_bar.set_child(self.search_entry)
+        main_box.append(self.search_bar)
+
+        # Category filter bar
+        self.category_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        self.category_bar.set_margin_start(12)
+        self.category_bar.set_margin_end(12)
+        self.category_bar.set_margin_top(4)
+        self.category_bar.set_margin_bottom(4)
+        self.category_bar.set_visible(False)  # shown only when categories exist
+
+        cat_icon = Gtk.Image.new_from_icon_name("folder-symbolic")
+        self.category_bar.append(cat_icon)
+
+        self.category_dropdown = Gtk.DropDown()
+        self.category_dropdown.set_hexpand(True)
+        self._category_model = Gtk.StringList.new([_("All")])
+        self.category_dropdown.set_model(self._category_model)
+        self.category_dropdown.connect("notify::selected", self._on_category_changed)
+        self.category_bar.append(self.category_dropdown)
+
+        main_box.append(self.category_bar)
+
         # Password list
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_vexpand(True)
-        
+
         self.list_box = Gtk.ListBox()
         self.list_box.set_selection_mode(Gtk.SelectionMode.NONE)
         self.list_box.add_css_class("boxed-list")
@@ -188,15 +209,17 @@ class VaultView(Adw.NavigationPage):
         self.list_box.set_margin_bottom(12)
         self.list_box.set_margin_start(12)
         self.list_box.set_margin_end(12)
-        
+
         scrolled.set_child(self.list_box)
-        
+
         # Empty state
         self.empty_status = Adw.StatusPage()
         self.empty_status.set_icon_name("dialog-password-symbolic")
         self.empty_status.set_title(_("No Passwords Stored"))
-        self.empty_status.set_description(_("Add your first password using the + button"))
-        
+        self.empty_status.set_description(
+            _("Add your first password using the + button")
+        )
+
         # Stack for empty/content state
         self.content_stack = Gtk.Stack()
         self.content_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
@@ -207,7 +230,7 @@ class VaultView(Adw.NavigationPage):
         main_box.append(self.content_stack)
 
         return main_box
-    
+
     def _update_view(self) -> None:
         """Update view based on authentication state"""
         if self.session.is_authenticated():
@@ -227,7 +250,7 @@ class VaultView(Adw.NavigationPage):
                 self.unlock_button.set_label(_("Create Master Password"))
                 self.confirm_password_entry.set_visible(True)
                 self.strength_box.set_visible(True)
-            
+
             self.main_stack.set_visible_child_name("auth")
             self.master_password_entry.set_text("")
             self.confirm_password_entry.set_text("")
@@ -238,9 +261,9 @@ class VaultView(Adw.NavigationPage):
     def _update_toolbar_buttons(self) -> None:
         """Update toolbar buttons visibility"""
         root = self.get_root()
-        if root and hasattr(root, '_on_view_changed'):
-            root._on_view_changed(root.view_stack)
-    
+        if root and hasattr(root, "_on_view_changed"):
+            root._on_view_changed()
+
     def _on_unlock_clicked(self, *args) -> None:
         """Handle unlock button click"""
         password = self.master_password_entry.get_text()
@@ -263,7 +286,11 @@ class VaultView(Adw.NavigationPage):
             confirm = self.confirm_password_entry.get_text()
 
             if len(password) < MIN_MASTER_PASSWORD_LENGTH:
-                self._show_auth_error(_("Password must be at least {min} characters").format(min=MIN_MASTER_PASSWORD_LENGTH))
+                self._show_auth_error(
+                    _("Password must be at least {min} characters").format(
+                        min=MIN_MASTER_PASSWORD_LENGTH
+                    )
+                )
                 return
 
             if password != confirm:
@@ -275,7 +302,7 @@ class VaultView(Adw.NavigationPage):
                 self._update_view()
             else:
                 self._show_auth_error(_("Failed to setup master password"))
-    
+
     def _show_auth_error(self, message: str) -> None:
         """Show authentication error message"""
         self.auth_error_label.set_text(message)
@@ -336,16 +363,36 @@ class VaultView(Adw.NavigationPage):
     def _on_session_locked(self) -> None:
         """Handle automatic session lock"""
         self._cancel_countdown()
+        self._stop_totp_timer()
+        self._totp_widgets.clear()
         self.timeout_banner.set_revealed(False)
         self._update_view()
+        # Lock TOTP view too
+        root = self.get_root()
+        if root and hasattr(root, "totp_view"):
+            root.totp_view.on_lock()
         # Show toast notification
         self.activate_action(
             "app.show-toast",
             GLib.Variant.new_string(_("Vault locked due to inactivity")),
         )
 
+    def show_groups_view(self) -> None:
+        """Show passwords organized by groups/categories"""
+        self._view_mode = "groups"
+        self._load_passwords()
+
+    def show_favorites_view(self) -> None:
+        """Show only favorite passwords"""
+        self._view_mode = "favorites"
+        self._load_passwords()
+
     def _load_passwords(self, search: Optional[str] = None) -> None:
         """Load passwords from database"""
+        # Stop TOTP timer and clear tracked widgets
+        self._stop_totp_timer()
+        self._totp_widgets.clear()
+
         # Clear list
         while True:
             row = self.list_box.get_first_child()
@@ -353,11 +400,39 @@ class VaultView(Adw.NavigationPage):
                 break
             self.list_box.remove(row)
 
+        # Update category filter (hide in special views)
+        if self._view_mode == "all":
+            self._update_category_filter()
+        else:
+            self.category_bar.set_visible(False)
+
         # Load from database
         passwords = self.database.get_passwords(search)
 
+        # Apply view mode filter
+        if self._view_mode == "favorites":
+            passwords = [p for p in passwords if p.get("favorite")]
+        elif self._view_mode == "groups":
+            # Groups view: organize by category with headers
+            self._load_grouped_passwords(passwords)
+            return
+
+        # Apply category filter (only in "all" mode)
+        if self._view_mode == "all":
+            selected_cat = self._get_selected_category()
+            if selected_cat:
+                passwords = [
+                    p for p in passwords if (p.get("category") or "") == selected_cat
+                ]
+
         if not passwords:
-            if search:
+            if self._view_mode == "favorites":
+                self.empty_status.set_icon_name("emblem-favorite-symbolic")
+                self.empty_status.set_title(_("No Favorites"))
+                self.empty_status.set_description(
+                    _("Mark passwords as favorite with the heart icon")
+                )
+            elif search:
                 self.empty_status.set_icon_name("edit-find-symbolic")
                 self.empty_status.set_title(_("No Results"))
                 self.empty_status.set_description(_("No passwords match your search"))
@@ -377,6 +452,74 @@ class VaultView(Adw.NavigationPage):
             row = self._create_password_row(pwd_data)
             self.list_box.append(row)
 
+        # Start TOTP auto-refresh if any entries have TOTP
+        self._start_totp_timer()
+
+    def _load_grouped_passwords(self, passwords) -> None:
+        """Load passwords organized by category groups"""
+        # Group by category
+        groups: Dict[str, list] = {}
+        uncategorized = []
+        for p in passwords:
+            cat = p.get("category") or ""
+            if cat:
+                groups.setdefault(cat, []).append(p)
+            else:
+                uncategorized.append(p)
+
+        if not groups and not uncategorized:
+            self.empty_status.set_icon_name("folder-symbolic")
+            self.empty_status.set_title(_("No Groups"))
+            self.empty_status.set_description(
+                _("Set a category on your passwords to organize them into groups")
+            )
+            self.content_stack.set_visible_child_name("empty")
+            return
+
+        self.content_stack.set_visible_child_name("list")
+
+        # Add categorized groups first (sorted)
+        for cat_name in sorted(groups.keys()):
+            # Group header
+            header = Gtk.Label()
+            header.set_markup(f"<b>📁 {GLib.markup_escape_text(cat_name)}</b>")
+            header.set_xalign(0)
+            header.set_margin_start(16)
+            header.set_margin_top(12)
+            header.set_margin_bottom(4)
+            header.add_css_class("heading")
+            header_row = Gtk.ListBoxRow()
+            header_row.set_activatable(False)
+            header_row.set_selectable(False)
+            header_row.set_child(header)
+            self.list_box.append(header_row)
+
+            for pwd_data in groups[cat_name]:
+                row = self._create_password_row(pwd_data)
+                self.list_box.append(row)
+
+        # Uncategorized at the end
+        if uncategorized:
+            header = Gtk.Label()
+            header.set_markup(f"<b>{GLib.markup_escape_text(_('Uncategorized'))}</b>")
+            header.set_xalign(0)
+            header.set_margin_start(16)
+            header.set_margin_top(12)
+            header.set_margin_bottom(4)
+            header.add_css_class("heading")
+            header.add_css_class("dim-label")
+            header_row = Gtk.ListBoxRow()
+            header_row.set_activatable(False)
+            header_row.set_selectable(False)
+            header_row.set_child(header)
+            self.list_box.append(header_row)
+
+            for pwd_data in uncategorized:
+                row = self._create_password_row(pwd_data)
+                self.list_box.append(row)
+
+        self._start_totp_timer()
+
     def _create_password_row(self, pwd_data: Dict[str, Any]) -> Adw.ActionRow:
         """Create a password list row"""
         row = Adw.ActionRow()
@@ -387,6 +530,8 @@ class VaultView(Adw.NavigationPage):
             subtitle_parts.append(pwd_data["username"])
         if pwd_data.get("url"):
             subtitle_parts.append(pwd_data["url"])
+        if pwd_data.get("category"):
+            subtitle_parts.append(f"📁 {pwd_data['category']}")
 
         if subtitle_parts:
             # Escape markup to prevent errors with special characters like &
@@ -400,7 +545,20 @@ class VaultView(Adw.NavigationPage):
 
         # Load favicon asynchronously if URL is available
         if pwd_data.get("url"):
-            self._load_favicon_async(pwd_data["url"], icon)
+            load_favicon_async(pwd_data["url"], icon)
+
+        # Favorite toggle
+        is_fav = bool(pwd_data.get("favorite"))
+        fav_btn = Gtk.Button()
+        fav_btn.set_icon_name("starred-symbolic" if is_fav else "non-starred-symbolic")
+        fav_btn.set_valign(Gtk.Align.CENTER)
+        fav_btn.add_css_class("flat")
+        fav_btn.set_tooltip_text(_("Favorite"))
+        fav_btn.connect(
+            "clicked",
+            lambda _, pid=pwd_data["id"], btn=fav_btn: self._toggle_favorite(pid, btn),
+        )
+        row.add_suffix(fav_btn)
 
         # Copy button
         copy_btn = Gtk.Button()
@@ -446,6 +604,32 @@ class VaultView(Adw.NavigationPage):
         self._load_passwords(search_text if search_text else None)
         self.session.on_activity()
 
+    def _on_category_changed(self, dropdown, _pspec) -> None:
+        """Handle category filter change"""
+        if self._updating_categories:
+            return
+        self._load_passwords(search=self.search_entry.get_text().strip() or None)
+        self.session.on_activity()
+
+    def _get_selected_category(self) -> str | None:
+        """Get selected category from dropdown (None means 'All')"""
+        idx = self.category_dropdown.get_selected()
+        if idx == 0:  # "All"
+            return None
+        item = self._category_model.get_string(idx)
+        return item if item else None
+
+    def _update_category_filter(self) -> None:
+        """Refresh the category dropdown with current categories from DB"""
+        self._updating_categories = True
+        categories = self.database.get_categories()
+        # Rebuild model
+        items = [_("All")] + categories
+        self._category_model = Gtk.StringList.new(items)
+        self.category_dropdown.set_model(self._category_model)
+        self.category_bar.set_visible(len(categories) > 0)
+        self._updating_categories = False
+
     def _copy_password(self, password_id: int) -> None:
         """Copy password to clipboard"""
         entry = self.database.get_password(password_id)
@@ -456,6 +640,69 @@ class VaultView(Adw.NavigationPage):
                 GLib.Variant.new_string(_("Password copied to clipboard")),
             )
             self.session.on_activity()
+
+    def _toggle_favorite(self, password_id: int, btn: Gtk.Button) -> None:
+        """Toggle favorite status of a password"""
+        new_state = self.database.toggle_favorite(password_id)
+        btn.set_icon_name("starred-symbolic" if new_state else "non-starred-symbolic")
+        self.session.on_activity()
+
+    def _copy_totp(self, password_id: int) -> None:
+        """Copy TOTP code to clipboard"""
+        entry = self.database.get_password(password_id)
+        if entry and entry.get("totp_secret"):
+            code = generate_totp(
+                entry["totp_secret"],
+                algorithm=entry.get("totp_algorithm", "SHA1"),
+                digits=entry.get("totp_digits", 6),
+                period=entry.get("totp_period", 30),
+            )
+            self.clipboard.copy_text(code)
+            self.activate_action(
+                "app.show-toast",
+                GLib.Variant.new_string(_("TOTP code copied to clipboard")),
+            )
+            self.session.on_activity()
+
+    def _start_totp_timer(self) -> None:
+        """Start the 1-second timer to refresh TOTP codes"""
+        self._stop_totp_timer()
+        if self._totp_widgets:
+            self._update_totp_displays()
+            self._totp_timer_id = GLib.timeout_add_seconds(
+                1, self._update_totp_displays
+            )
+
+    def _stop_totp_timer(self) -> None:
+        """Stop the TOTP refresh timer"""
+        if self._totp_timer_id is not None:
+            GLib.source_remove(self._totp_timer_id)
+            self._totp_timer_id = None
+
+    def _update_totp_displays(self) -> bool:
+        """Update all visible TOTP code labels and progress bars"""
+        for label, progress, pwd_data in self._totp_widgets:
+            if not label.get_parent():
+                continue
+            secret_enc = pwd_data.get("totp_secret_encrypted")
+            if not secret_enc:
+                continue
+            try:
+                secret = self.database._decrypt(secret_enc)
+                algo = pwd_data.get("totp_algorithm", "SHA1")
+                digits = pwd_data.get("totp_digits", 6)
+                period = pwd_data.get("totp_period", 30)
+                code = generate_totp(
+                    secret, algorithm=algo, digits=digits, period=period
+                )
+                remaining = remaining_seconds(period)
+                label.set_text(code)
+                progress.set_value(remaining / period)
+            except Exception:
+                label.set_text("------")
+                progress.set_value(0)
+        self.session.on_activity()
+        return True  # Keep timer running
 
     def _show_add_dialog(self) -> None:
         """Show add password dialog"""
@@ -580,7 +827,63 @@ class VaultView(Adw.NavigationPage):
             notes_entry.set_text(entry.get("notes", "") or "")
         form.add(notes_entry)
 
-        dialog.set_extra_child(form)
+        # Category field
+        category_entry = Adw.EntryRow()
+        category_entry.set_title(_("Category"))
+        if entry:
+            category_entry.set_text(entry.get("category", "") or "")
+        form.add(category_entry)
+
+        # TOTP section
+        totp_group = Adw.PreferencesGroup()
+        totp_group.set_title(_("Two-Factor Authentication"))
+
+        totp_entry = Adw.PasswordEntryRow()
+        totp_entry.set_title(_("TOTP Secret (Base32)"))
+        if entry and entry.get("totp_secret"):
+            totp_entry.set_text(entry["totp_secret"])
+        totp_group.add(totp_entry)
+
+        totp_algo_row = Adw.ComboRow()
+        totp_algo_row.set_title(_("Algorithm"))
+        totp_algo_row.set_model(Gtk.StringList.new(["SHA1", "SHA256", "SHA512"]))
+        if entry and entry.get("totp_algorithm"):
+            algos = ["SHA1", "SHA256", "SHA512"]
+            try:
+                totp_algo_row.set_selected(algos.index(entry["totp_algorithm"]))
+            except ValueError:
+                pass
+        totp_group.add(totp_algo_row)
+
+        totp_digits_row = Adw.SpinRow()
+        totp_digits_row.set_title(_("Digits"))
+        totp_digits_row.set_adjustment(
+            Gtk.Adjustment(
+                value=entry.get("totp_digits", 6) if entry else 6,
+                lower=6,
+                upper=8,
+                step_increment=2,
+            )
+        )
+        totp_group.add(totp_digits_row)
+
+        totp_period_row = Adw.SpinRow()
+        totp_period_row.set_title(_("Period (seconds)"))
+        totp_period_row.set_adjustment(
+            Gtk.Adjustment(
+                value=entry.get("totp_period", 30) if entry else 30,
+                lower=15,
+                upper=60,
+                step_increment=15,
+            )
+        )
+        totp_group.add(totp_period_row)
+
+        content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        content_box.set_size_request(500, -1)
+        content_box.append(form)
+        content_box.append(totp_group)
+        dialog.set_extra_child(content_box)
 
         def on_response(dlg, response):
             if response == "save":
@@ -589,6 +892,12 @@ class VaultView(Adw.NavigationPage):
                 password = password_entry.get_text()
                 url = url_entry.get_text().strip() or None
                 notes = notes_entry.get_text().strip() or None
+                totp_secret = totp_entry.get_text().strip() or None
+                totp_algos = ["SHA1", "SHA256", "SHA512"]
+                totp_algorithm = totp_algos[totp_algo_row.get_selected()]
+                totp_digits = int(totp_digits_row.get_value())
+                totp_period = int(totp_period_row.get_value())
+                category = category_entry.get_text().strip() or None
 
                 # Inline validation
                 has_error = False
@@ -616,6 +925,11 @@ class VaultView(Adw.NavigationPage):
                             password=password,
                             url=url,
                             notes=notes,
+                            totp_secret=totp_secret,
+                            totp_algorithm=totp_algorithm,
+                            totp_digits=totp_digits,
+                            totp_period=totp_period,
+                            category=category,
                         )
                         self.activate_action(
                             "app.show-toast",
@@ -623,7 +937,16 @@ class VaultView(Adw.NavigationPage):
                         )
                     else:
                         self.database.add_password(
-                            title, password, username, notes, url
+                            title,
+                            password,
+                            username,
+                            notes,
+                            url,
+                            totp_secret=totp_secret,
+                            totp_algorithm=totp_algorithm,
+                            totp_digits=totp_digits,
+                            totp_period=totp_period,
+                            category=category,
                         )
                         self.activate_action(
                             "app.show-toast",
@@ -727,6 +1050,7 @@ class VaultView(Adw.NavigationPage):
         type_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         type_box.set_halign(Gtk.Align.CENTER)
         type_box.add_css_class("linked")
+        type_box.update_property([Gtk.AccessibleProperty.LABEL], [_("Generation Type")])
 
         password_btn = Gtk.ToggleButton(label=_("Password"))
         password_btn.set_active(True)
@@ -916,92 +1240,3 @@ class VaultView(Adw.NavigationPage):
 
         dialog.connect("response", on_response)
         dialog.present(self.get_root())
-
-    def _get_favicon_url(self, url: str) -> Optional[str]:
-        """Get favicon URL from website URL"""
-        if not url:
-            return None
-
-        try:
-            parsed = urllib.parse.urlparse(url)
-            if not parsed.scheme:
-                url = f"https://{url}"
-                parsed = urllib.parse.urlparse(url)
-
-            domain = parsed.netloc
-            if not domain:
-                return None
-            return f"https://{domain}/favicon.ico"
-        except (ValueError, AttributeError):
-            return None
-
-    def _fetch_favicon(self, url: str) -> Optional[str]:
-        """Fetch and cache favicon, return local path"""
-        favicon_url = self._get_favicon_url(url)
-        if not favicon_url:
-            return None
-
-        # Generate cache filename from domain hash
-        parsed = urllib.parse.urlparse(url)
-        domain = parsed.netloc if parsed.netloc else url
-        url_hash = hashlib.sha256(domain.encode()).hexdigest()[:16]
-        cache_path = self.favicon_cache_dir / f"{url_hash}.png"
-
-        # Return if already cached
-        if cache_path.exists():
-            return str(cache_path)
-
-        # Download favicon
-        try:
-            req = urllib.request.Request(favicon_url, headers={'User-Agent': 'Mozilla/5.0'})
-            with urllib.request.urlopen(req, timeout=5) as response:
-                with open(cache_path, 'wb') as f:
-                    f.write(response.read())
-            return str(cache_path)
-        except (urllib.error.URLError, OSError, ValueError):
-            return None
-
-    def _load_favicon_async(self, url: str, image_widget: Gtk.Image) -> None:
-        """Load favicon asynchronously to avoid blocking UI"""
-        favicon_url = self._get_favicon_url(url)
-        if not favicon_url:
-            return
-
-        # Generate cache filename from domain hash
-        try:
-            parsed = urllib.parse.urlparse(url)
-            domain = parsed.netloc if parsed.netloc else url
-            url_hash = hashlib.sha256(domain.encode()).hexdigest()[:16]
-            cache_path = self.favicon_cache_dir / f"{url_hash}.png"
-        except (ValueError, AttributeError):
-            return
-
-        # If already cached, load immediately
-        if cache_path.exists():
-            GLib.idle_add(self._update_favicon_image, image_widget, str(cache_path))
-            return
-
-        # Download in background thread
-        def download_favicon():
-            try:
-                req = urllib.request.Request(favicon_url, headers={'User-Agent': 'Mozilla/5.0'})
-                with urllib.request.urlopen(req, timeout=5) as response:
-                    with open(cache_path, 'wb') as f:
-                        f.write(response.read())
-
-                # Update UI in main thread
-                GLib.idle_add(self._update_favicon_image, image_widget, str(cache_path))
-            except (urllib.error.URLError, OSError, ValueError):
-                pass  # Keep default icon
-
-        thread = threading.Thread(target=download_favicon, daemon=True)
-        thread.start()
-
-    def _update_favicon_image(self, image_widget: Gtk.Image, favicon_path: str) -> bool:
-        """Update image widget with favicon (called in main thread)"""
-        try:
-            if os.path.exists(favicon_path):
-                image_widget.set_from_file(favicon_path)
-        except Exception:
-            pass  # Keep default icon on error
-        return False  # Don't repeat this idle callback

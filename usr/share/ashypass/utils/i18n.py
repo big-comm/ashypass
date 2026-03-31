@@ -6,7 +6,7 @@
 import gettext
 import os
 
-# Determine locale directory (works in AppImage and system install)
+# Determine locale directory (works in AppImage, system install, and source tree)
 locale_dir = '/usr/share/locale'  # Default for system install
 
 # Check if we're in an AppImage
@@ -21,6 +21,17 @@ if 'APPIMAGE' in os.environ or 'APPDIR' in os.environ:
 
     if os.path.isdir(appimage_locale):
         locale_dir = appimage_locale
+else:
+    # Check if running from source tree (development)
+    # i18n.py is in: <project>/usr/share/ashypass/utils/i18n.py
+    # locale would be in: <project>/usr/share/locale
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    app_dir = os.path.dirname(script_dir)
+    share_dir = os.path.dirname(app_dir)
+    source_locale = os.path.join(share_dir, "locale")
+
+    if os.path.isdir(source_locale):
+        locale_dir = source_locale
 
 # Configure the translation text domain for ashypass
 gettext.bindtextdomain("ashypass", locale_dir)

@@ -85,114 +85,177 @@ class Database:
         
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_passwords_title ON passwords(title)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_passwords_username ON passwords(username)")
-        
+
+        # TOTP migration: add columns if they don't exist (non-destructive)
+        totp_columns = [
+            ("totp_secret_encrypted", "BLOB"),
+            ("totp_algorithm", "TEXT DEFAULT 'SHA1'"),
+            ("totp_digits", "INTEGER DEFAULT 6"),
+            ("totp_period", "INTEGER DEFAULT 30"),
+        ]
+        for col_name, col_type in totp_columns:
+            try:
+                cursor.execute(
+                    f"ALTER TABLE passwords ADD COLUMN {col_name} {col_type}"
+                )
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+        # Category/group migration
+        try:
+            cursor.execute("ALTER TABLE passwords ADD COLUMN category TEXT")
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
+        # Favorite migration
+        try:
+            cursor.execute(
+                "ALTER TABLE passwords ADD COLUMN favorite INTEGER DEFAULT 0"
+            )
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
         self.connection.commit()
-    
+
     def has_master_password(self) -> bool:
         """Check if master password is set"""
         if not self.connection:
             self.connect()
-        
+
         cursor = self.connection.cursor()
         cursor.execute("SELECT COUNT(*) FROM master")
         return cursor.fetchone()[0] > 0
-    
+
     def set_master_password(self, password: str) -> bool:
         """Set the master password (first-time setup)"""
         if not self.connection:
             self.connect()
-        
+
         if self.has_master_password():
             return False
 
         salt = base64.urlsafe_b64encode(os.urandom(32))
         password_hash = self.ph.hash(password)
-        
+
         cursor = self.connection.cursor()
         cursor.execute(
             "INSERT INTO master (id, password_hash, salt, created_at) VALUES (1, ?, ?, ?)",
             (password_hash, salt.decode(), int(time.time())),
         )
         self.connection.commit()
-        
+
         self._derive_encryption_key(password, salt)
         return True
-    
+
     def verify_master_password(self, password: str) -> bool:
         """Verify master password and unlock database"""
         if not self.connection:
             self.connect()
-        
+
         cursor = self.connection.cursor()
         cursor.execute("SELECT password_hash, salt FROM master WHERE id = 1")
         row = cursor.fetchone()
-        
+
         if not row:
             return False
-        
+
         try:
             self.ph.verify(row["password_hash"], password)
             self._derive_encryption_key(password, row["salt"].encode())
             return True
         except VerifyMismatchError:
             return False
-    
+
     def _derive_encryption_key(self, password: str, salt: bytes) -> None:
         """Derive Fernet encryption key from master password"""
-        key = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000, dklen=32)
+        key = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 100000, dklen=32)
         self._fernet = Fernet(base64.urlsafe_b64encode(key))
-    
+
     def _encrypt(self, data: str) -> bytes:
         """Encrypt data using Fernet"""
         if not self._fernet:
             raise RuntimeError("Database not unlocked")
         return self._fernet.encrypt(data.encode())
-    
+
     def _decrypt(self, data: bytes) -> str:
         """Decrypt data using Fernet"""
         if not self._fernet:
             raise RuntimeError("Database not unlocked")
         return self._fernet.decrypt(data).decode()
-    
-    def add_password(self, title: str, password: str, username: Optional[str] = None,
-                    notes: Optional[str] = None, url: Optional[str] = None) -> int:
+
+    def add_password(
+        self,
+        title: str,
+        password: str,
+        username: Optional[str] = None,
+        notes: Optional[str] = None,
+        url: Optional[str] = None,
+        totp_secret: Optional[str] = None,
+        totp_algorithm: str = "SHA1",
+        totp_digits: int = 6,
+        totp_period: int = 30,
+        category: Optional[str] = None,
+    ) -> int:
         """Add a new password entry"""
         if not self.connection:
             self.connect()
-        
+
         timestamp = int(time.time())
         password_encrypted = self._encrypt(password)
         notes_encrypted = self._encrypt(notes) if notes else None
-        
+        totp_secret_encrypted = self._encrypt(totp_secret) if totp_secret else None
+
         cursor = self.connection.cursor()
         cursor.execute(
-            """INSERT INTO passwords (title, username, password_encrypted, notes_encrypted, url, created_at, updated_at)
-               VALUES (?, ?, ?, ?, ?, ?, ?)""",
-            (title, username, password_encrypted, notes_encrypted, url, timestamp, timestamp),
+            """INSERT INTO passwords (title, username, password_encrypted, notes_encrypted, url,
+               totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
+               category, created_at, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                title,
+                username,
+                password_encrypted,
+                notes_encrypted,
+                url,
+                totp_secret_encrypted,
+                totp_algorithm if totp_secret else None,
+                totp_digits if totp_secret else None,
+                totp_period if totp_secret else None,
+                category,
+                timestamp,
+                timestamp,
+            ),
         )
         self.connection.commit()
         self._notify_change()
         return cursor.lastrowid
-    
+
     def get_passwords(self, search: Optional[str] = None) -> List[Dict[str, Any]]:
         """Get all password entries (passwords remain encrypted)"""
         if not self.connection:
             self.connect()
-        
+
         cursor = self.connection.cursor()
-        
+
+        select_cols = """id, title, username, url, created_at, updated_at, last_accessed,
+                        totp_secret_encrypted, totp_algorithm, totp_digits, totp_period, category, favorite"""
+
         if search:
             cursor.execute(
-                """SELECT id, title, username, url, created_at, updated_at, last_accessed
+                f"""SELECT {select_cols}
                    FROM passwords WHERE title LIKE ? OR username LIKE ? OR url LIKE ? ORDER BY title""",
                 (f"%{search}%", f"%{search}%", f"%{search}%"),
             )
         else:
-            cursor.execute(
-                "SELECT id, title, username, url, created_at, updated_at, last_accessed FROM passwords ORDER BY title"
-            )
-        
-        return [dict(row) for row in cursor.fetchall()]
+            cursor.execute(f"SELECT {select_cols} FROM passwords ORDER BY title")
+
+        results = []
+        for row in cursor.fetchall():
+            entry = dict(row)
+            # Indicate whether TOTP is configured (without decrypting secret)
+            entry["has_totp"] = entry["totp_secret_encrypted"] is not None
+            results.append(entry)
+        return results
     
     def get_password(self, password_id: int) -> Optional[Dict[str, Any]]:
         """Get a specific password entry with decrypted password"""
@@ -209,15 +272,32 @@ class Database:
         entry = dict(row)
         entry["password"] = self._decrypt(entry["password_encrypted"])
         entry["notes"] = self._decrypt(entry["notes_encrypted"]) if entry["notes_encrypted"] else None
+        entry["totp_secret"] = (
+            self._decrypt(entry["totp_secret_encrypted"])
+            if entry.get("totp_secret_encrypted")
+            else None
+        )
+        entry["has_totp"] = entry["totp_secret"] is not None
         
         cursor.execute("UPDATE passwords SET last_accessed = ? WHERE id = ?", (int(time.time()), password_id))
         self.connection.commit()
         
         return entry
-    
-    def update_password(self, password_id: int, title: Optional[str] = None,
-                       password: Optional[str] = None, username: Optional[str] = None,
-                       notes: Optional[str] = None, url: Optional[str] = None) -> bool:
+
+    def update_password(
+        self,
+        password_id: int,
+        title: Optional[str] = None,
+        password: Optional[str] = None,
+        username: Optional[str] = None,
+        notes: Optional[str] = None,
+        url: Optional[str] = None,
+        totp_secret: Optional[str] = None,
+        totp_algorithm: Optional[str] = None,
+        totp_digits: Optional[int] = None,
+        totp_period: Optional[int] = None,
+        category: Optional[str] = None,
+    ) -> bool:
         """Update a password entry"""
         if not self.connection:
             self.connect()
@@ -239,6 +319,21 @@ class Database:
         if url is not None:
             updates.append("url = ?")
             params.append(url)
+        if totp_secret is not None:
+            updates.append("totp_secret_encrypted = ?")
+            params.append(self._encrypt(totp_secret) if totp_secret else None)
+        if totp_algorithm is not None:
+            updates.append("totp_algorithm = ?")
+            params.append(totp_algorithm)
+        if totp_digits is not None:
+            updates.append("totp_digits = ?")
+            params.append(totp_digits)
+        if totp_period is not None:
+            updates.append("totp_period = ?")
+            params.append(totp_period)
+        if category is not None:
+            updates.append("category = ?")
+            params.append(category if category else None)
         
         if not updates:
             return False
@@ -265,6 +360,33 @@ class Database:
             self._notify_change()
         return cursor.rowcount > 0
 
+    def get_categories(self) -> List[str]:
+        """Get all distinct non-null categories"""
+        if not self.connection:
+            self.connect()
+        cursor = self.connection.cursor()
+        cursor.execute(
+            "SELECT DISTINCT category FROM passwords WHERE category IS NOT NULL AND category != '' ORDER BY category"
+        )
+        return [row["category"] for row in cursor.fetchall()]
+
+    def toggle_favorite(self, password_id: int) -> bool:
+        """Toggle favorite status of a password entry. Returns new state."""
+        if not self.connection:
+            self.connect()
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT favorite FROM passwords WHERE id = ?", (password_id,))
+        row = cursor.fetchone()
+        if not row:
+            return False
+        new_val = 0 if row["favorite"] else 1
+        cursor.execute(
+            "UPDATE passwords SET favorite = ? WHERE id = ?", (new_val, password_id)
+        )
+        self.connection.commit()
+        self._notify_change()
+        return bool(new_val)
+
     def change_master_password(self, current_password: str, new_password: str) -> bool:
         """Change the master password, re-encrypting all stored passwords.
 
@@ -282,7 +404,9 @@ class Database:
 
         # Decrypt all passwords with the old key
         cursor = self.connection.cursor()
-        cursor.execute("SELECT id, password_encrypted, notes_encrypted FROM passwords")
+        cursor.execute(
+            "SELECT id, password_encrypted, notes_encrypted, totp_secret_encrypted FROM passwords"
+        )
         rows = cursor.fetchall()
 
         decrypted_entries = []
@@ -292,6 +416,11 @@ class Database:
             entry["notes"] = (
                 old_fernet.decrypt(row["notes_encrypted"]).decode()
                 if row["notes_encrypted"]
+                else None
+            )
+            entry["totp_secret"] = (
+                old_fernet.decrypt(row["totp_secret_encrypted"]).decode()
+                if row["totp_secret_encrypted"]
                 else None
             )
             decrypted_entries.append(entry)
@@ -311,9 +440,14 @@ class Database:
             for entry in decrypted_entries:
                 enc_password = self._encrypt(entry["password"])
                 enc_notes = self._encrypt(entry["notes"]) if entry["notes"] else None
+                enc_totp = (
+                    self._encrypt(entry["totp_secret"])
+                    if entry["totp_secret"]
+                    else None
+                )
                 cursor.execute(
-                    "UPDATE passwords SET password_encrypted = ?, notes_encrypted = ? WHERE id = ?",
-                    (enc_password, enc_notes, entry["id"]),
+                    "UPDATE passwords SET password_encrypted = ?, notes_encrypted = ?, totp_secret_encrypted = ? WHERE id = ?",
+                    (enc_password, enc_notes, enc_totp, entry["id"]),
                 )
             self.connection.commit()
             logger.info(

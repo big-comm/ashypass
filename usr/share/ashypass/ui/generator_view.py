@@ -61,6 +61,9 @@ class GeneratorView(Adw.NavigationPage):
 
         password_scroll.set_child(self.password_label)
         password_row.add_suffix(password_scroll)
+        password_row.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Generated password")]
+        )
 
         group.add(password_row)
         
@@ -112,6 +115,7 @@ class GeneratorView(Adw.NavigationPage):
         type_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         type_box.set_halign(Gtk.Align.CENTER)
         type_box.add_css_class("linked")
+        type_box.update_property([Gtk.AccessibleProperty.LABEL], [_("Generation Type")])
 
         password_btn = Gtk.ToggleButton(label=_("Password"))
         password_btn.set_active(True)

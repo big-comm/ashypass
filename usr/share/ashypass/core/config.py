@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # Application Information
 APP_ID = "com.bigcommunity.ashypass"  # Restored original ID
 APP_NAME = "Ashy Pass"
-APP_VERSION = "2.0.0"
+APP_VERSION = "2.1.0"
 
 # Paths
 CONFIG_DIR = Path.home() / ".config" / "ashypass"
@@ -44,10 +44,10 @@ AMBIGUOUS_CHARS = "il1Lo0O"
 DEFAULT_SYMBOLS = "!@#$%&*()-_=+[]{}|;:,.<>?/"
 
 # UI Settings
-WINDOW_DEFAULT_WIDTH = 500
-WINDOW_DEFAULT_HEIGHT = 800
-WINDOW_MIN_WIDTH = 450
-WINDOW_MIN_HEIGHT = 800
+WINDOW_DEFAULT_WIDTH = 900
+WINDOW_DEFAULT_HEIGHT = 650
+WINDOW_MIN_WIDTH = 700
+WINDOW_MIN_HEIGHT = 500
 
 
 def ensure_directories() -> None:
