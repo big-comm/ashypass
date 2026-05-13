@@ -30,8 +30,10 @@ base64 = "0.22"
 zeroize = { version = "1.8", features = ["zeroize_derive"] }
 subtle = "2.6"
 
-# Storage
-rusqlite = { version = "0.32", features = ["bundled"] }
+# Storage. Link against the system sqlite3 (rusqlite's `bundled` feature
+# builds it from source, which breaks under ld.lld + `-Wl,--as-needed`
+# on Arch-style packaging environments).
+rusqlite = { version = "0.32" }
 
 # Async / HTTP
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "io-util"] }
