@@ -118,7 +118,7 @@ The project ships as a **multi-crate workspace**:
 |---|---|
 | OS | Linux with GTK 4.12+ |
 | Toolchain | Rust 1.85+, `pkg-config`, GTK4 / libadwaita dev headers |
-| Runtime libs | `gtk4`, `libadwaita`, `gettext`, `glibc`, `gcc-libs`, optional Secret Service daemon (gnome-keyring / kwallet) |
+| Runtime libs | `gtk4`, `libadwaita`, `gettext`, `sqlite`, `openssl`, `glibc`, `gcc-libs`, optional Secret Service daemon (gnome-keyring / kwallet) |
 | Memory | ~50 MiB resident |
 | Disk | ~30 MiB binary + vault |
 
