@@ -1,0 +1,53 @@
+[package]
+name = "ashypass-core"
+description = "Ashy Pass — encryption, storage, generator, TOTP, importers, backup (no UI)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[features]
+default = []
+fido2 = ["dep:ctap-hid-fido2"]
+
+[dependencies]
+argon2.workspace = true
+aes-gcm.workspace = true
+aes = "0.8"
+cbc = { version = "0.1", features = ["alloc"] }
+pbkdf2.workspace = true
+sha2.workspace = true
+sha1.workspace = true
+hmac.workspace = true
+rand.workspace = true
+base32.workspace = true
+base64.workspace = true
+zeroize.workspace = true
+subtle.workspace = true
+rusqlite.workspace = true
+tokio.workspace = true
+reqwest.workspace = true
+url.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+anyhow.workspace = true
+log.workspace = true
+chrono.workspace = true
+csv.workspace = true
+dirs.workspace = true
+bip39.workspace = true
+image.workspace = true
+zxcvbn.workspace = true
+zip.workspace = true
+keepass.workspace = true
+secret-service.workspace = true
+
+ctap-hid-fido2 = { version = "3", optional = true }
+
+[dev-dependencies]
+proptest = "1"
+tempfile = "3"
+hex = "0.4"
