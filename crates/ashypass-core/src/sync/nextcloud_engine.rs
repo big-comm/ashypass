@@ -25,10 +25,9 @@
 //!
 //! ## Caveats
 //!
-//! * Folders/categories: Nextcloud's `folder` is a UUID; mapping that to
-//!   Ashypass's free-text `category` is lossy in both directions. We carry
-//!   the category as a plain label and ignore the remote folder UUID. A
-//!   future task could map them through a side table.
+//! * Folders/categories: Nextcloud's `folder` is a UUID; AshyPass keeps a
+//!   side-table mapping between local category names and remote folder UUIDs
+//!   so local folders and remote folders reconcile together.
 //! * TOTP secrets: not exposed by Nextcloud Passwords API v1.0. We never
 //!   write them to the remote, and we leave any local TOTP intact when
 //!   pulling updates.
@@ -36,25 +35,24 @@
 //!   the hundreds of entries; for thousands you'd want a `since` cursor —
 //!   v2.0 of the API supports that.
 
-use crate::db::vault::{NewEntry, NextcloudMapping, UpdateEntry, Vault};
-use crate::sync::nextcloud_passwords::{NcCreateOrUpdate, NcPassword, NextcloudPasswordsClient};
+use crate::db::vault::{
+    NewEntry, NextcloudFolderMapping, NextcloudMapping, UpdateEntry, Vault,
+};
+use crate::sync::nextcloud_passwords::{
+    NcCreateOrUpdate, NcFolder, NcFolderCreate, NcPassword, NextcloudPasswordsClient,
+};
 use crate::Result;
 use std::collections::HashMap;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum ConflictResolution {
     /// Newest `updated_at` / `edited` wins; on equal timestamps, remote wins.
+    #[default]
     LastWriteWins,
     /// Force the local copy onto the server.
     PreferLocal,
     /// Force the remote copy into the local vault.
     PreferRemote,
-}
-
-impl Default for ConflictResolution {
-    fn default() -> Self {
-        Self::LastWriteWins
-    }
 }
 
 #[derive(Debug, Default, Clone)]
@@ -64,6 +62,7 @@ pub struct SyncStats {
     pub updated_remotely: usize,
     pub updated_locally: usize,
     pub deleted_remotely: usize,
+    pub skipped_passwordless: usize,
     pub conflicts: usize,
     pub errors: Vec<String>,
 }
@@ -76,6 +75,34 @@ pub struct SyncReport {
     pub conflict_details: Vec<(String, &'static str)>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum NextcloudSyncPhase {
+    Preparing,
+    ApplyingDeletes,
+    FetchingRemote,
+    SyncingFolders,
+    SyncingLocal,
+    PullingRemote,
+    Finishing,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct NextcloudSyncProgress {
+    pub phase: NextcloudSyncPhase,
+    pub current: usize,
+    pub total: usize,
+}
+
+impl NextcloudSyncProgress {
+    fn new(phase: NextcloudSyncPhase, current: usize, total: usize) -> Self {
+        Self {
+            phase,
+            current,
+            total,
+        }
+    }
+}
+
 /// Run a full reconcile against the Nextcloud server. The vault must be
 /// unlocked; this function decrypts passwords to push them, and writes new
 /// encrypted entries when pulling.
@@ -84,13 +111,36 @@ pub fn sync(
     client: &NextcloudPasswordsClient,
     policy: ConflictResolution,
 ) -> Result<SyncReport> {
+    sync_with_progress(vault, client, policy, |_| {})
+}
+
+pub fn sync_with_progress<F>(
+    vault: &Vault,
+    client: &NextcloudPasswordsClient,
+    policy: ConflictResolution,
+    mut progress: F,
+) -> Result<SyncReport>
+where
+    F: FnMut(NextcloudSyncProgress),
+{
     let mut report = SyncReport::default();
+    progress(NextcloudSyncProgress::new(
+        NextcloudSyncPhase::Preparing,
+        0,
+        0,
+    ));
+    let mut folders = FolderResolver::new(vault, client)?;
 
     // 1. Apply any pending local deletions to the remote first. Done up
     //    front so a re-creation by another device after our delete still
     //    gets re-killed during step 4.
     let tombstones = vault.nc_tombstones()?;
-    for uuid in &tombstones {
+    progress(NextcloudSyncProgress::new(
+        NextcloudSyncPhase::ApplyingDeletes,
+        0,
+        tombstones.len(),
+    ));
+    for (idx, uuid) in tombstones.iter().enumerate() {
         match client.delete(uuid) {
             Ok(()) => {
                 report.stats.deleted_remotely += 1;
@@ -106,9 +156,19 @@ pub fn sync(
                 }
             }
         }
+        progress(NextcloudSyncProgress::new(
+            NextcloudSyncPhase::ApplyingDeletes,
+            idx + 1,
+            tombstones.len(),
+        ));
     }
 
     // 2. Fetch the full remote inventory once.
+    progress(NextcloudSyncProgress::new(
+        NextcloudSyncPhase::FetchingRemote,
+        0,
+        0,
+    ));
     let remote_list = client.list()?;
     let mut remote_by_uuid: HashMap<String, NcPassword> = remote_list
         .into_iter()
@@ -116,19 +176,60 @@ pub fn sync(
         .map(|p| (p.id.clone(), p))
         .collect();
 
+    // Mirror local empty folders too. Entry sync below also calls this for
+    // every categorized password, but that would miss folders with no entries.
+    let local_folders = vault.categories()?;
+    progress(NextcloudSyncProgress::new(
+        NextcloudSyncPhase::SyncingFolders,
+        0,
+        local_folders.len(),
+    ));
+    for (idx, local_folder) in local_folders.iter().enumerate() {
+        folders.remote_uuid_for_local_category(Some(local_folder))?;
+        progress(NextcloudSyncProgress::new(
+            NextcloudSyncPhase::SyncingFolders,
+            idx + 1,
+            local_folders.len(),
+        ));
+    }
+
     // 3. Walk the local inventory.
     let local_entries = vault.list(None)?;
-    for summary in &local_entries {
+    progress(NextcloudSyncProgress::new(
+        NextcloudSyncPhase::SyncingLocal,
+        0,
+        local_entries.len(),
+    ));
+    for (idx, summary) in local_entries.iter().enumerate() {
         // Need the decrypted entry to push to the server.
         let local_full = match vault.get(summary.id)? {
             Some(e) => e,
-            None => continue,
+            None => {
+                progress(NextcloudSyncProgress::new(
+                    NextcloudSyncPhase::SyncingLocal,
+                    idx + 1,
+                    local_entries.len(),
+                ));
+                continue;
+            }
         };
         let mapping = vault.nc_mapping_for_entry(local_full.id)?;
         match mapping {
             None => {
                 // Local-only entry — push as new.
-                let payload = build_create_payload(&local_full);
+                if is_passwordless(&local_full) {
+                    report.stats.skipped_passwordless += 1;
+                    progress(NextcloudSyncProgress::new(
+                        NextcloudSyncPhase::SyncingLocal,
+                        idx + 1,
+                        local_entries.len(),
+                    ));
+                    continue;
+                }
+                let payload = build_create_payload(
+                    &local_full,
+                    folders.remote_uuid_for_local_category(local_full.category.as_deref())?,
+                );
                 match client.create(&payload) {
                     Ok(created) => {
                         let new_map = NextcloudMapping {
@@ -156,11 +257,55 @@ pub fn sync(
                 let remote = match remote_by_uuid.remove(&map.nc_uuid) {
                     Some(r) => r,
                     None => {
-                        // Remote disappeared while we were synced. Honour
-                        // that by deleting locally (also via trash) so
-                        // both sides agree.
-                        if vault.delete(local_full.id).unwrap_or(false) {
-                            report.stats.deleted_remotely += 0; // local delete; nothing remote
+                        // Remote disappeared. If the local entry changed after
+                        // the last sync, do not silently discard that edit:
+                        // preserve it by creating a fresh remote item unless
+                        // the caller explicitly prefers remote state.
+                        let local_changed =
+                            local_full.updated_at > map.local_updated_at_snapshot;
+                        if local_changed && policy != ConflictResolution::PreferRemote {
+                            if is_passwordless(&local_full) {
+                                report.stats.skipped_passwordless += 1;
+                                progress(NextcloudSyncProgress::new(
+                                    NextcloudSyncPhase::SyncingLocal,
+                                    idx + 1,
+                                    local_entries.len(),
+                                ));
+                                continue;
+                            }
+                            report.stats.conflicts += 1;
+                            report
+                                .conflict_details
+                                .push((local_full.title.clone(), "local"));
+                            let payload = build_create_payload(
+                                &local_full,
+                                folders.remote_uuid_for_local_category(
+                                    local_full.category.as_deref(),
+                                )?,
+                            );
+                            match client.create(&payload) {
+                                Ok(created) => {
+                                    let new_map = NextcloudMapping {
+                                        entry_id: local_full.id,
+                                        nc_uuid: created.id.clone(),
+                                        last_synced_at: chrono::Utc::now().timestamp(),
+                                        local_updated_at_snapshot: local_full.updated_at,
+                                        remote_edited_snapshot: created.edited,
+                                        remote_revision_snapshot: created.revision,
+                                    };
+                                    vault.nc_mapping_upsert(&new_map)?;
+                                    report.stats.created_remotely += 1;
+                                }
+                                Err(e) => report
+                                    .stats
+                                    .errors
+                                    .push(format!("recreate {}: {e}", local_full.title)),
+                            }
+                        } else if let Err(e) = vault.delete(local_full.id) {
+                            report
+                                .stats
+                                .errors
+                                .push(format!("delete local {}: {e}", local_full.title));
                         }
                         continue;
                     }
@@ -168,11 +313,38 @@ pub fn sync(
                 let local_changed = local_full.updated_at > map.local_updated_at_snapshot;
                 let remote_changed = remote.edited > map.remote_edited_snapshot
                     || remote.revision != map.remote_revision_snapshot;
+                let remote_category = folders.local_category_for_remote_uuid(&remote.folder)?;
+                let category_changed =
+                    !same_category(local_full.category.as_deref(), remote_category.as_deref());
 
                 match (local_changed, remote_changed) {
-                    (false, false) => continue,
+                    (false, false) => {
+                        if category_changed
+                            && apply_remote_to_local(
+                                vault,
+                                local_full.id,
+                                &remote,
+                                remote_category,
+                            )?
+                        {
+                            update_mapping_after_pull(vault, local_full.id, &remote, &map)?;
+                            report.stats.updated_locally += 1;
+                        }
+                    }
                     (true, false) => {
-                        let mut payload = build_create_payload(&local_full);
+                        if is_passwordless(&local_full) {
+                            report.stats.skipped_passwordless += 1;
+                            progress(NextcloudSyncProgress::new(
+                                NextcloudSyncPhase::SyncingLocal,
+                                idx + 1,
+                                local_entries.len(),
+                            ));
+                            continue;
+                        }
+                        let mut payload = build_create_payload(
+                            &local_full,
+                            folders.remote_uuid_for_local_category(local_full.category.as_deref())?,
+                        );
                         payload.id = Some(map.nc_uuid.clone());
                         match client.update(&payload) {
                             Ok(updated) => {
@@ -194,7 +366,12 @@ pub fn sync(
                         }
                     }
                     (false, true) => {
-                        if apply_remote_to_local(vault, local_full.id, &remote)? {
+                        if apply_remote_to_local(
+                            vault,
+                            local_full.id,
+                            &remote,
+                            remote_category,
+                        )? {
                             update_mapping_after_pull(vault, local_full.id, &remote, &map)?;
                             report.stats.updated_locally += 1;
                         }
@@ -207,7 +384,21 @@ pub fn sync(
                             .push((local_full.title.clone(), chose));
                         match chose {
                             "local" => {
-                                let mut payload = build_create_payload(&local_full);
+                                if is_passwordless(&local_full) {
+                                    report.stats.skipped_passwordless += 1;
+                                    progress(NextcloudSyncProgress::new(
+                                        NextcloudSyncPhase::SyncingLocal,
+                                        idx + 1,
+                                        local_entries.len(),
+                                    ));
+                                    continue;
+                                }
+                                let mut payload = build_create_payload(
+                                    &local_full,
+                                    folders.remote_uuid_for_local_category(
+                                        local_full.category.as_deref(),
+                                    )?,
+                                );
                                 payload.id = Some(map.nc_uuid.clone());
                                 if let Ok(updated) = client.update(&payload) {
                                     let new_map = NextcloudMapping {
@@ -223,7 +414,12 @@ pub fn sync(
                                 }
                             }
                             _ => {
-                                if apply_remote_to_local(vault, local_full.id, &remote)? {
+                                if apply_remote_to_local(
+                                    vault,
+                                    local_full.id,
+                                    &remote,
+                                    remote_category,
+                                )? {
                                     update_mapping_after_pull(vault, local_full.id, &remote, &map)?;
                                     report.stats.updated_locally += 1;
                                 }
@@ -233,20 +429,32 @@ pub fn sync(
                 }
             }
         }
+        progress(NextcloudSyncProgress::new(
+            NextcloudSyncPhase::SyncingLocal,
+            idx + 1,
+            local_entries.len(),
+        ));
     }
 
     // 4. Anything still in `remote_by_uuid` is remote-only. Pull it in,
     //    unless we tombstoned its UUID (already cleared in step 1) — in
     //    that case the server still had a delete pending; ignore the row
     //    and a future sync will re-issue the delete if needed.
-    for (uuid, remote) in remote_by_uuid {
+    let remote_remaining = remote_by_uuid.len();
+    progress(NextcloudSyncProgress::new(
+        NextcloudSyncPhase::PullingRemote,
+        0,
+        remote_remaining,
+    ));
+    for (idx, (uuid, remote)) in remote_by_uuid.into_iter().enumerate() {
+        let category = folders.local_category_for_remote_uuid(&remote.folder)?;
         let new_entry = NewEntry {
             title: remote.label.clone(),
             username: empty_to_none(&remote.username),
             url: empty_to_none(&remote.url),
             password: remote.password.clone(),
             notes: empty_to_none(&remote.notes),
-            category: None,
+            category,
             ..Default::default()
         };
         match vault.add(new_entry) {
@@ -269,12 +477,134 @@ pub fn sync(
                 .errors
                 .push(format!("pull {}: {e}", remote.label)),
         }
+        progress(NextcloudSyncProgress::new(
+            NextcloudSyncPhase::PullingRemote,
+            idx + 1,
+            remote_remaining,
+        ));
     }
 
+    progress(NextcloudSyncProgress::new(
+        NextcloudSyncPhase::Finishing,
+        1,
+        1,
+    ));
     Ok(report)
 }
 
-fn apply_remote_to_local(vault: &Vault, entry_id: i64, r: &NcPassword) -> Result<bool> {
+struct FolderResolver<'a> {
+    vault: &'a Vault,
+    client: &'a NextcloudPasswordsClient,
+    remote_by_uuid: HashMap<String, NcFolder>,
+    remote_uuid_by_label: HashMap<String, String>,
+}
+
+impl<'a> FolderResolver<'a> {
+    fn new(vault: &'a Vault, client: &'a NextcloudPasswordsClient) -> Result<Self> {
+        let mut remote_by_uuid = HashMap::new();
+        let mut remote_uuid_by_label = HashMap::new();
+        for folder in client
+            .list_folders()?
+            .into_iter()
+            .filter(|f| !f.id.is_empty() && !f.label.trim().is_empty())
+            .filter(|f| !f.trashed && !f.hidden)
+        {
+            let key = folder_key(&folder.label);
+            remote_uuid_by_label
+                .entry(key)
+                .or_insert_with(|| folder.id.clone());
+            vault.create_folder(&folder.label)?;
+            vault.nc_folder_mapping_upsert(&NextcloudFolderMapping {
+                local_name: folder.label.clone(),
+                nc_uuid: folder.id.clone(),
+                last_synced_at: chrono::Utc::now().timestamp(),
+                remote_edited_snapshot: folder.edited,
+                remote_revision_snapshot: folder.revision.clone(),
+            })?;
+            remote_by_uuid.insert(folder.id.clone(), folder);
+        }
+        Ok(Self {
+            vault,
+            client,
+            remote_by_uuid,
+            remote_uuid_by_label,
+        })
+    }
+
+    fn remote_uuid_for_local_category(&mut self, category: Option<&str>) -> Result<String> {
+        let Some(local_name) = category.map(str::trim).filter(|s| !s.is_empty()) else {
+            return Ok(String::new());
+        };
+        if let Some(mapping) = self.vault.nc_folder_mapping_for_name(local_name)? {
+            return Ok(mapping.nc_uuid);
+        }
+        if let Some(uuid) = self.remote_uuid_by_label.get(&folder_key(local_name)).cloned() {
+            let folder = self.remote_by_uuid.get(&uuid).cloned().unwrap_or_else(|| NcFolder {
+                id: uuid.clone(),
+                label: local_name.to_string(),
+                ..Default::default()
+            });
+            self.upsert_local_mapping(local_name, &folder)?;
+            return Ok(uuid);
+        }
+
+        let created = self.client.create_folder(&NcFolderCreate {
+            label: local_name.to_string(),
+            parent: String::new(),
+        })?;
+        if created.id.is_empty() {
+            return Err(crate::Error::Other(format!(
+                "nextcloud folder create returned no id for {local_name}"
+            )));
+        }
+        let folder = NcFolder {
+            label: if created.label.is_empty() {
+                local_name.to_string()
+            } else {
+                created.label
+            },
+            ..created
+        };
+        self.upsert_local_mapping(local_name, &folder)?;
+        self.remote_uuid_by_label
+            .insert(folder_key(local_name), folder.id.clone());
+        self.remote_by_uuid.insert(folder.id.clone(), folder.clone());
+        Ok(folder.id)
+    }
+
+    fn local_category_for_remote_uuid(&mut self, uuid: &str) -> Result<Option<String>> {
+        if uuid.trim().is_empty() {
+            return Ok(None);
+        }
+        if let Some(mapping) = self.vault.nc_folder_mapping_for_uuid(uuid)? {
+            return Ok(Some(mapping.local_name));
+        }
+        let Some(folder) = self.remote_by_uuid.get(uuid).cloned() else {
+            return Ok(None);
+        };
+        self.upsert_local_mapping(&folder.label, &folder)?;
+        Ok(Some(folder.label))
+    }
+
+    fn upsert_local_mapping(&self, local_name: &str, folder: &NcFolder) -> Result<()> {
+        self.vault.create_folder(local_name)?;
+        self.vault
+            .nc_folder_mapping_upsert(&NextcloudFolderMapping {
+                local_name: local_name.to_string(),
+                nc_uuid: folder.id.clone(),
+                last_synced_at: chrono::Utc::now().timestamp(),
+                remote_edited_snapshot: folder.edited,
+                remote_revision_snapshot: folder.revision.clone(),
+            })
+    }
+}
+
+fn apply_remote_to_local(
+    vault: &Vault,
+    entry_id: i64,
+    r: &NcPassword,
+    category: Option<String>,
+) -> Result<bool> {
     // Only carry text fields. Passwords without a non-empty password value
     // would violate the not-null constraint, so guard against that.
     if r.password.is_empty() {
@@ -286,6 +616,7 @@ fn apply_remote_to_local(vault: &Vault, entry_id: i64, r: &NcPassword) -> Result
         password: Some(r.password.clone()),
         url: Some(empty_to_none(&r.url).map(|s| s.to_string())),
         notes: Some(empty_to_none(&r.notes).map(|s| s.to_string())),
+        category: Some(category),
         ..Default::default()
     };
     vault.update(entry_id, change)
@@ -324,7 +655,10 @@ fn resolve_conflict(policy: ConflictResolution, local_ts: i64, remote_ts: i64) -
     }
 }
 
-fn build_create_payload(e: &crate::db::vault::PasswordEntry) -> NcCreateOrUpdate {
+fn build_create_payload(
+    e: &crate::db::vault::PasswordEntry,
+    folder: String,
+) -> NcCreateOrUpdate {
     NcCreateOrUpdate {
         id: None,
         label: e.title.clone(),
@@ -332,6 +666,7 @@ fn build_create_payload(e: &crate::db::vault::PasswordEntry) -> NcCreateOrUpdate
         password: e.password.clone().unwrap_or_default(),
         url: e.url.clone().unwrap_or_default(),
         notes: e.notes.clone().unwrap_or_default(),
+        folder,
         // SHA-1 hash of the plaintext password — required by the Nextcloud
         // Passwords API for HIBP-style breach checks server-side. We hash
         // here so the server never needs the raw secret separately.
@@ -345,6 +680,30 @@ fn empty_to_none(s: &str) -> Option<String> {
     } else {
         Some(s.to_string())
     }
+}
+
+fn is_passwordless(entry: &crate::db::vault::PasswordEntry) -> bool {
+    entry
+        .password
+        .as_deref()
+        .map(str::trim)
+        .unwrap_or_default()
+        .is_empty()
+}
+
+fn same_category(left: Option<&str>, right: Option<&str>) -> bool {
+    normalize_category(left) == normalize_category(right)
+}
+
+fn normalize_category(value: Option<&str>) -> Option<String> {
+    value
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(ToOwned::to_owned)
+}
+
+fn folder_key(name: &str) -> String {
+    name.trim().to_lowercase()
 }
 
 fn sha1_hex(data: &[u8]) -> String {
@@ -403,5 +762,35 @@ mod tests {
             sha1_hex(b"password"),
             "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8"
         );
+    }
+
+    #[test]
+    fn same_category_treats_blank_as_none() {
+        assert!(same_category(None, Some("")));
+        assert!(same_category(Some(" Work "), Some("Work")));
+        assert!(!same_category(Some("Work"), Some("Personal")));
+    }
+
+    #[test]
+    fn passwordless_detects_blank_passwords() {
+        let entry = crate::db::vault::PasswordEntry {
+            id: 0,
+            title: String::new(),
+            username: None,
+            url: None,
+            password: Some("  ".into()),
+            notes: None,
+            totp_secret: None,
+            totp_algorithm: "SHA1".into(),
+            totp_digits: 6,
+            totp_period: 30,
+            has_totp: false,
+            category: None,
+            favorite: false,
+            created_at: 0,
+            updated_at: 0,
+            last_accessed: None,
+        };
+        assert!(is_passwordless(&entry));
     }
 }

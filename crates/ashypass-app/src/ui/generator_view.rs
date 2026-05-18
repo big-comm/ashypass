@@ -21,6 +21,7 @@ use std::rc::Rc;
 
 pub struct GeneratorView {
     pub root: gtk::Box,
+    #[expect(dead_code, reason = "keeps view model alive for signal handlers")]
     inner: Rc<Inner>,
 }
 

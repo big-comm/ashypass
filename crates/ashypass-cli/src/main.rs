@@ -138,8 +138,10 @@ fn run_gen(a: GenArgs) -> Result<()> {
     } else if a.pin {
         generate_pin(a.pin_length)
     } else {
-        let mut cfg = PasswordConfig::default();
-        cfg.length = a.length;
+        let cfg = PasswordConfig {
+            length: a.length,
+            ..Default::default()
+        };
         generate_password(&cfg).map_err(|e| anyhow!("{e}"))?
     };
     println!("{pw}");
@@ -174,8 +176,8 @@ fn run_list(vault: &Vault, a: ListArgs) -> Result<()> {
         .unwrap_or(8)
         .max(8);
     println!(
-        "{:>5}  {:<title_w$}  {:<user_w$}  {:<cat_w$}  {}",
-        "ID", "TITLE", "USERNAME", "CATEGORY", "TOTP"
+        "{:>5}  {:<title_w$}  {:<user_w$}  {:<cat_w$}  TOTP",
+        "ID", "TITLE", "USERNAME", "CATEGORY"
     );
     for e in entries {
         println!(

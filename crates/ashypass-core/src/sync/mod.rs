@@ -7,5 +7,7 @@
 pub mod nextcloud_passwords;
 pub mod nextcloud_engine;
 
-pub use nextcloud_engine::{ConflictResolution, SyncReport, SyncStats};
+pub use nextcloud_engine::{
+    ConflictResolution, NextcloudSyncPhase, NextcloudSyncProgress, SyncReport, SyncStats,
+};
 pub use nextcloud_passwords::{NcConfig, NcPassword, NextcloudPasswordsClient};

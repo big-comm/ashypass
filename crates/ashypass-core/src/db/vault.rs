@@ -15,6 +15,25 @@ use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
+type ChangeListener = Rc<dyn Fn() + 'static>;
+type EncryptedEntryRow = (i64, Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>);
+type TrashRow = (
+    String,
+    Option<String>,
+    Vec<u8>,
+    Option<Vec<u8>>,
+    Option<String>,
+    Option<Vec<u8>>,
+    Option<String>,
+    Option<i64>,
+    Option<i64>,
+    Option<String>,
+    Option<i64>,
+    Option<i64>,
+    Option<i64>,
+);
+type AttachmentRow = (i64, i64, String, Option<String>, Vec<u8>, i64, i64);
+
 pub struct Vault {
     db_path: PathBuf,
     conn: Connection,
@@ -32,7 +51,7 @@ pub struct Vault {
     /// capture non-`Send` values like `glib` widgets directly. Each listener
     /// is held as an `Rc` so `notify_change` can snapshot the list cheaply
     /// before invoking handlers — handlers may re-enter the vault.
-    listeners: Rc<RefCell<Vec<Rc<dyn Fn() + 'static>>>>,
+    listeners: Rc<RefCell<Vec<ChangeListener>>>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -92,6 +111,15 @@ pub struct NextcloudMapping {
 }
 
 #[derive(Debug, Clone)]
+pub struct NextcloudFolderMapping {
+    pub local_name: String,
+    pub nc_uuid: String,
+    pub last_synced_at: i64,
+    pub remote_edited_snapshot: i64,
+    pub remote_revision_snapshot: String,
+}
+
+#[derive(Debug, Clone)]
 pub struct TrashedEntry {
     pub trash_id: i64,
     pub original_id: i64,
@@ -144,6 +172,17 @@ impl Vault {
         &self.db_path
     }
 
+    pub fn open_with_session_key(path: impl AsRef<Path>, key: DerivedKey) -> Result<Self> {
+        let mut vault = Self::open(path)?;
+        vault.key = Some(key.clone());
+        vault.cached_key = Some(key);
+        Ok(vault)
+    }
+
+    pub fn session_reopen_parts(&self) -> Result<(PathBuf, DerivedKey)> {
+        Ok((self.db_path.clone(), self.key()?.clone()))
+    }
+
     pub fn add_change_listener<F>(&self, f: F)
     where
         F: Fn() + 'static,
@@ -162,7 +201,7 @@ impl Vault {
         );
         // Snapshot first so a subscriber that re-enters notify_change (via a
         // mutation) doesn't trip the RefCell's borrow rules.
-        let snapshot: Vec<Rc<dyn Fn()>> = self.listeners.borrow().clone();
+        let snapshot: Vec<ChangeListener> = self.listeners.borrow().clone();
         for cb in snapshot {
             cb();
         }
@@ -317,6 +356,78 @@ impl Vault {
             })?
             .collect::<rusqlite::Result<Vec<_>>>()?;
         Ok(rows)
+    }
+
+    pub fn nc_folder_mapping_for_name(
+        &self,
+        local_name: &str,
+    ) -> Result<Option<NextcloudFolderMapping>> {
+        let m = self
+            .conn
+            .query_row(
+                "SELECT local_name, nc_uuid, last_synced_at,
+                        remote_edited_snapshot, remote_revision_snapshot
+                 FROM nextcloud_folder_mapping WHERE local_name = ? COLLATE NOCASE",
+                params![local_name],
+                |r| {
+                    Ok(NextcloudFolderMapping {
+                        local_name: r.get(0)?,
+                        nc_uuid: r.get(1)?,
+                        last_synced_at: r.get(2)?,
+                        remote_edited_snapshot: r.get(3)?,
+                        remote_revision_snapshot: r.get(4)?,
+                    })
+                },
+            )
+            .optional()?;
+        Ok(m)
+    }
+
+    pub fn nc_folder_mapping_for_uuid(
+        &self,
+        uuid: &str,
+    ) -> Result<Option<NextcloudFolderMapping>> {
+        let m = self
+            .conn
+            .query_row(
+                "SELECT local_name, nc_uuid, last_synced_at,
+                        remote_edited_snapshot, remote_revision_snapshot
+                 FROM nextcloud_folder_mapping WHERE nc_uuid = ?",
+                params![uuid],
+                |r| {
+                    Ok(NextcloudFolderMapping {
+                        local_name: r.get(0)?,
+                        nc_uuid: r.get(1)?,
+                        last_synced_at: r.get(2)?,
+                        remote_edited_snapshot: r.get(3)?,
+                        remote_revision_snapshot: r.get(4)?,
+                    })
+                },
+            )
+            .optional()?;
+        Ok(m)
+    }
+
+    pub fn nc_folder_mapping_upsert(&self, m: &NextcloudFolderMapping) -> Result<()> {
+        self.conn.execute(
+            "DELETE FROM nextcloud_folder_mapping
+             WHERE nc_uuid = ? OR local_name = ? COLLATE NOCASE",
+            params![m.nc_uuid, m.local_name],
+        )?;
+        self.conn.execute(
+            "INSERT INTO nextcloud_folder_mapping (
+                 local_name, nc_uuid, last_synced_at,
+                 remote_edited_snapshot, remote_revision_snapshot)
+             VALUES (?, ?, ?, ?, ?)",
+            params![
+                m.local_name,
+                m.nc_uuid,
+                m.last_synced_at,
+                m.remote_edited_snapshot,
+                m.remote_revision_snapshot,
+            ],
+        )?;
+        Ok(())
     }
 
     pub fn nc_tombstones(&self) -> Result<Vec<String>> {
@@ -532,18 +643,39 @@ impl Vault {
     }
 
     pub fn list(&self, search: Option<&str>) -> Result<Vec<PasswordEntry>> {
+        self.list_filtered(search, None)
+    }
+
+    pub fn list_filtered(
+        &self,
+        search: Option<&str>,
+        category: Option<&str>,
+    ) -> Result<Vec<PasswordEntry>> {
         let base = "SELECT id, title, username, url,
                            totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
                            category, favorite, created_at, updated_at, last_accessed
                     FROM passwords";
-        let (sql, params_vec): (String, Vec<Value>) = if let Some(q) = search {
+
+        let mut clauses: Vec<&str> = Vec::new();
+        let mut params_vec: Vec<Value> = Vec::new();
+
+        if let Some(q) = search.filter(|s| !s.trim().is_empty()) {
             let pat = format!("%{q}%");
-            (
-                format!("{base} WHERE title LIKE ? OR username LIKE ? OR url LIKE ? ORDER BY title"),
-                vec![pat.clone().into(), pat.clone().into(), pat.into()],
-            )
+            clauses.push("(title LIKE ? OR username LIKE ? OR url LIKE ?)");
+            params_vec.push(pat.clone().into());
+            params_vec.push(pat.clone().into());
+            params_vec.push(pat.into());
+        }
+
+        if let Some(category) = category.filter(|s| !s.is_empty()) {
+            clauses.push("category = ?");
+            params_vec.push(category.to_string().into());
+        }
+
+        let sql = if clauses.is_empty() {
+            format!("{base} ORDER BY title")
         } else {
-            (format!("{base} ORDER BY title"), vec![])
+            format!("{base} WHERE {} ORDER BY title", clauses.join(" AND "))
         };
 
         let mut stmt = self.conn.prepare(&sql)?;
@@ -571,6 +703,21 @@ impl Vault {
             })?
             .collect::<rusqlite::Result<Vec<_>>>()?;
         Ok(rows)
+    }
+
+    pub fn totp_secret(&self, id: i64) -> Result<Option<String>> {
+        let blob: Option<Option<Vec<u8>>> = self
+            .conn
+            .query_row(
+                "SELECT totp_secret_encrypted FROM passwords WHERE id = ?",
+                params![id],
+                |r| r.get(0),
+            )
+            .optional()?;
+        match blob.flatten() {
+            Some(blob) => Ok(Some(self.decrypt(&blob)?)),
+            None => Ok(None),
+        }
     }
 
     pub fn get(&self, id: i64) -> Result<Option<PasswordEntry>> {
@@ -737,18 +884,27 @@ impl Vault {
     /// Drop all history rows for an entry. Used when the user wants to purge
     /// prior credentials (e.g. after a confirmed leak).
     pub fn clear_password_history(&self, entry_id: i64) -> Result<usize> {
-        Ok(self.conn.execute(
+        let n = self.conn.execute(
             "DELETE FROM passwords_history WHERE entry_id = ?",
             params![entry_id],
-        )?)
+        )?;
+        if n > 0 {
+            self.notify_change();
+        }
+        Ok(n)
     }
 
     /// Soft-delete: moves the entry row to `passwords_trash` and removes it
     /// from `passwords`. Recovered with `restore_from_trash(trash_id)`.
     /// Permanent deletion happens via `purge_trash()` or `empty_trash()`.
     pub fn delete(&self, id: i64) -> Result<bool> {
+        if crate::settings::Settings::load().trash_retention_days == 0 {
+            return self.delete_permanent(id);
+        }
         let now = chrono::Utc::now().timestamp();
-        let copied = self.conn.execute(
+        let uuid = self.nextcloud_uuid_for_entry(id)?;
+        let tx = self.conn.unchecked_transaction()?;
+        let copied = tx.execute(
             "INSERT INTO passwords_trash (
                 original_id, title, username, password_encrypted, notes_encrypted,
                 url, totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
@@ -767,42 +923,55 @@ impl Vault {
         // mapping row itself disappears via ON DELETE CASCADE below; without
         // the tombstone we'd lose the link to the remote resource forever
         // and the next pull would re-create the entry.
-        self.record_nextcloud_tombstone_for(id, now)?;
+        if let Some(uuid) = uuid {
+            tx.execute(
+                "INSERT OR REPLACE INTO nextcloud_tombstones (nc_uuid, deleted_at)
+                 VALUES (?, ?)",
+                params![uuid, now],
+            )?;
+        }
 
-        let n = self
-            .conn
-            .execute("DELETE FROM passwords WHERE id = ?", params![id])?;
+        let n = tx.execute("DELETE FROM passwords WHERE id = ?", params![id])?;
         if n > 0 {
+            tx.commit()?;
             self.notify_change();
+        } else {
+            tx.rollback()?;
         }
         Ok(n > 0)
     }
 
-    fn record_nextcloud_tombstone_for(&self, entry_id: i64, when: i64) -> Result<()> {
-        let uuid: Option<String> = self
+    /// Hard delete with no trash copy. Used when trash retention is disabled.
+    pub fn delete_permanent(&self, id: i64) -> Result<bool> {
+        let now = chrono::Utc::now().timestamp();
+        let uuid = self.nextcloud_uuid_for_entry(id)?;
+        let tx = self.conn.unchecked_transaction()?;
+        if let Some(uuid) = uuid {
+            tx.execute(
+                "INSERT OR REPLACE INTO nextcloud_tombstones (nc_uuid, deleted_at)
+                 VALUES (?, ?)",
+                params![uuid, now],
+            )?;
+        }
+        let n = tx.execute("DELETE FROM passwords WHERE id = ?", params![id])?;
+        if n > 0 {
+            tx.commit()?;
+            self.notify_change();
+        } else {
+            tx.rollback()?;
+        }
+        Ok(n > 0)
+    }
+
+    fn nextcloud_uuid_for_entry(&self, entry_id: i64) -> Result<Option<String>> {
+        Ok(self
             .conn
             .query_row(
                 "SELECT nc_uuid FROM nextcloud_mapping WHERE entry_id = ?",
                 params![entry_id],
                 |r| r.get(0),
             )
-            .optional()?;
-        if let Some(u) = uuid {
-            self.conn.execute(
-                "INSERT OR REPLACE INTO nextcloud_tombstones (nc_uuid, deleted_at)
-                 VALUES (?, ?)",
-                params![u, when],
-            )?;
-        }
-        Ok(())
-    }
-
-    /// Hard delete with no trash copy. Used by trash purge.
-    fn delete_permanent(&self, id: i64) -> Result<bool> {
-        let n = self
-            .conn
-            .execute("DELETE FROM passwords WHERE id = ?", params![id])?;
-        Ok(n > 0)
+            .optional()?)
     }
 
     /// Summary of trashed entries, newest-deleted first. Passwords stay
@@ -830,9 +999,7 @@ impl Vault {
 
     /// Restore a trashed entry to the active table. Generates a new id.
     pub fn restore_from_trash(&self, trash_id: i64) -> Result<Option<i64>> {
-        let row: Option<(String, Option<String>, Vec<u8>, Option<Vec<u8>>, Option<String>,
-            Option<Vec<u8>>, Option<String>, Option<i64>, Option<i64>,
-            Option<String>, Option<i64>, Option<i64>, Option<i64>)> = self
+        let row: Option<TrashRow> = self
             .conn
             .query_row(
                 "SELECT title, username, password_encrypted, notes_encrypted, url,
@@ -880,6 +1047,9 @@ impl Vault {
             "DELETE FROM passwords_trash WHERE id = ?",
             params![trash_id],
         )?;
+        if n > 0 {
+            self.notify_change();
+        }
         Ok(n > 0)
     }
 
@@ -888,17 +1058,23 @@ impl Vault {
     /// trash doesn't grow unbounded.
     pub fn purge_trash(&self, retention_secs: i64) -> Result<usize> {
         let cutoff = chrono::Utc::now().timestamp() - retention_secs;
-        Ok(self.conn.execute(
+        let n = self.conn.execute(
             "DELETE FROM passwords_trash WHERE deleted_at < ?",
             params![cutoff],
-        )?)
+        )?;
+        if n > 0 {
+            self.notify_change();
+        }
+        Ok(n)
     }
 
     /// Drop every row in trash.
     pub fn empty_trash(&self) -> Result<usize> {
-        Ok(self
-            .conn
-            .execute("DELETE FROM passwords_trash", [])?)
+        let n = self.conn.execute("DELETE FROM passwords_trash", [])?;
+        if n > 0 {
+            self.notify_change();
+        }
+        Ok(n)
     }
 
     pub fn toggle_favorite(&self, id: i64) -> Result<bool> {
@@ -917,6 +1093,26 @@ impl Vault {
     }
 
     // -----------------------------------------------------------------
+    // Folders
+    // -----------------------------------------------------------------
+
+    /// Create a local folder. Entries still reference folders through their
+    /// `category` text so this can represent empty folders too.
+    pub fn create_folder(&self, name: &str) -> Result<bool> {
+        let name = normalize_folder_name(name)?;
+        let ts = chrono::Utc::now().timestamp();
+        let n = self.conn.execute(
+            "INSERT OR IGNORE INTO folders (name, created_at, updated_at)
+             VALUES (?, ?, ?)",
+            params![name, ts, ts],
+        )?;
+        if n > 0 {
+            self.notify_change();
+        }
+        Ok(n > 0)
+    }
+
+    // -----------------------------------------------------------------
     // Tags
     // -----------------------------------------------------------------
 
@@ -929,7 +1125,7 @@ impl Vault {
             .map(|s| s.trim().to_string())
             .filter(|s| !s.is_empty())
             .collect();
-        normalized.sort_by(|a, b| a.to_lowercase().cmp(&b.to_lowercase()));
+        normalized.sort_by_key(|a| a.to_lowercase());
         normalized.dedup_by(|a, b| a.to_lowercase() == b.to_lowercase());
 
         let mut tag_ids: Vec<i64> = Vec::with_capacity(normalized.len());
@@ -956,6 +1152,7 @@ impl Vault {
                 params![entry_id, tid],
             )?;
         }
+        self.notify_change();
         Ok(())
     }
 
@@ -989,10 +1186,14 @@ impl Vault {
 
     /// Delete tag rows that no entry references. Useful after bulk untagging.
     pub fn prune_tags(&self) -> Result<usize> {
-        Ok(self.conn.execute(
+        let n = self.conn.execute(
             "DELETE FROM tags WHERE id NOT IN (SELECT tag_id FROM entry_tags)",
             [],
-        )?)
+        )?;
+        if n > 0 {
+            self.notify_change();
+        }
+        Ok(n)
     }
 
     /// Entry summaries that carry the given tag (case-insensitive).
@@ -1061,7 +1262,9 @@ impl Vault {
              VALUES (?, ?, ?, ?, ?, ?)",
             params![entry_id, filename, mime_type, ciphertext, size, now],
         )?;
-        Ok(self.conn.last_insert_rowid())
+        let id = self.conn.last_insert_rowid();
+        self.notify_change();
+        Ok(id)
     }
 
     /// List the attachments on `entry_id` without decrypting the blobs.
@@ -1090,7 +1293,7 @@ impl Vault {
     /// Fetch a single attachment by id, decrypting its contents. Returns
     /// `None` if no such attachment exists.
     pub fn get_attachment(&self, att_id: i64) -> Result<Option<(AttachmentInfo, Vec<u8>)>> {
-        let row: Option<(i64, i64, String, Option<String>, Vec<u8>, i64, i64)> = self
+        let row: Option<AttachmentRow> = self
             .conn
             .query_row(
                 "SELECT id, entry_id, filename, mime_type, ciphertext, size_bytes, created_at
@@ -1132,13 +1335,19 @@ impl Vault {
         let n = self
             .conn
             .execute("DELETE FROM attachments WHERE id = ?", params![att_id])?;
+        if n > 0 {
+            self.notify_change();
+        }
         Ok(n > 0)
     }
 
     pub fn categories(&self) -> Result<Vec<String>> {
         let mut stmt = self.conn.prepare(
-            "SELECT DISTINCT category FROM passwords
-             WHERE category IS NOT NULL AND category != '' ORDER BY category",
+            "SELECT name FROM folders
+             UNION
+             SELECT DISTINCT category AS name FROM passwords
+             WHERE category IS NOT NULL AND category != ''
+             ORDER BY name COLLATE NOCASE",
         )?;
         let rows = stmt
             .query_map([], |r| r.get::<_, String>(0))?
@@ -1166,7 +1375,7 @@ impl Vault {
 
         // collect plaintexts under the old key first
         let old_key = self.key()?.clone();
-        let entries: Vec<(i64, Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>)> = {
+        let entries: Vec<EncryptedEntryRow> = {
             let mut stmt = self.conn.prepare(
                 "SELECT id, password_encrypted, notes_encrypted, totp_secret_encrypted FROM passwords",
             )?;
@@ -1212,4 +1421,12 @@ impl Vault {
         self.notify_change();
         Ok(())
     }
+}
+
+fn normalize_folder_name(name: &str) -> Result<String> {
+    let name = name.trim();
+    if name.is_empty() {
+        return Err(Error::InvalidInput("folder name is required".into()));
+    }
+    Ok(name.to_string())
 }

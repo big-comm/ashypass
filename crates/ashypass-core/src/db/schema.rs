@@ -97,6 +97,18 @@ CREATE TABLE IF NOT EXISTS entry_tags (
 pub const CREATE_ENTRY_TAGS_INDEX: &str =
     "CREATE INDEX IF NOT EXISTS idx_entry_tags_tag ON entry_tags(tag_id)";
 
+/// Local folder catalog. Existing entries still store their folder name in
+/// `passwords.category`; this table lets users create empty folders and gives
+/// sync a stable local catalog to mirror to providers like Nextcloud.
+pub const CREATE_FOLDERS: &str = r#"
+CREATE TABLE IF NOT EXISTS folders (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT    NOT NULL UNIQUE COLLATE NOCASE,
+    created_at  INTEGER NOT NULL,
+    updated_at  INTEGER NOT NULL
+)
+"#;
+
 /// Encrypted file attachments. The blob is the standard `aes_gcm_v2` envelope
 /// (version byte + nonce + AES-GCM ciphertext). `size_bytes` is the plaintext
 /// length, kept for UI display without needing to decrypt.
@@ -161,6 +173,18 @@ CREATE TABLE IF NOT EXISTS nextcloud_mapping (
 )
 "#;
 
+/// Maps local folder names to Nextcloud Passwords folder UUIDs. Folder names
+/// remain user-facing local labels; UUIDs are provider state.
+pub const CREATE_NEXTCLOUD_FOLDER_MAPPING: &str = r#"
+CREATE TABLE IF NOT EXISTS nextcloud_folder_mapping (
+    local_name                 TEXT PRIMARY KEY COLLATE NOCASE,
+    nc_uuid                    TEXT    NOT NULL UNIQUE,
+    last_synced_at             INTEGER NOT NULL,
+    remote_edited_snapshot     INTEGER NOT NULL,
+    remote_revision_snapshot   TEXT    NOT NULL
+)
+"#;
+
 /// Records UUIDs we have deleted locally so the next sync push deletes them
 /// remotely (and ignores any remote-pull that re-creates them with the same
 /// UUID until the tombstone is cleared). Each row is removed once we've
@@ -182,6 +206,7 @@ pub fn initialize(conn: &rusqlite::Connection) -> rusqlite::Result<()> {
     conn.execute(CREATE_TAGS, [])?;
     conn.execute(CREATE_ENTRY_TAGS, [])?;
     conn.execute(CREATE_ENTRY_TAGS_INDEX, [])?;
+    conn.execute(CREATE_FOLDERS, [])?;
     conn.execute(CREATE_ATTACHMENTS, [])?;
     conn.execute(CREATE_ATTACHMENTS_INDEX, [])?;
     conn.execute(CREATE_SYNC_META, [])?;
@@ -191,6 +216,7 @@ pub fn initialize(conn: &rusqlite::Connection) -> rusqlite::Result<()> {
         [],
     )?;
     conn.execute(CREATE_NEXTCLOUD_MAPPING, [])?;
+    conn.execute(CREATE_NEXTCLOUD_FOLDER_MAPPING, [])?;
     conn.execute(CREATE_NEXTCLOUD_TOMBSTONES, [])?;
     for s in CREATE_INDEXES {
         conn.execute(s, [])?;

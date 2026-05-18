@@ -16,13 +16,14 @@
 use crate::{Error, Result};
 use reqwest::blocking::Client;
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 use std::fs;
 use std::path::PathBuf;
 use std::time::Duration;
 
-/// On-disk persisted config. Same plaintext-on-disk threat model as the
-/// WebDAV backend — chmod 0600 on save.
+/// Persisted config. Service password is stored in Secret Service when
+/// available; the JSON file is still chmod 0600 and keeps legacy fallback
+/// compatibility on sessions without a keyring.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct NcConfig {
     /// Base URL of the Nextcloud instance, e.g.
@@ -32,6 +33,9 @@ pub struct NcConfig {
     /// The Nextcloud **app password** — not the account password.
     pub app_password: String,
 }
+
+const APP_PASSWORD_SECRET_KIND: &str = "nextcloud-passwords-app-password";
+const APP_PASSWORD_SECRET_LABEL: &str = "Ashy Pass — Nextcloud Passwords app password";
 
 /// A password entry as returned by the Nextcloud Passwords API. Only the
 /// fields the sync engine cares about are deserialised; extras are dropped.
@@ -58,8 +62,26 @@ pub struct NcPassword {
     #[serde(default)]
     pub trashed: bool,
     /// Folder UUID this password belongs to (used as our "category").
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_folder_id")]
     pub folder: String,
+}
+
+/// Folder as returned by the Nextcloud Passwords API.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct NcFolder {
+    pub id: String,
+    #[serde(default)]
+    pub label: String,
+    #[serde(default)]
+    pub parent: String,
+    #[serde(default)]
+    pub revision: String,
+    #[serde(default)]
+    pub edited: i64,
+    #[serde(default)]
+    pub trashed: bool,
+    #[serde(default)]
+    pub hidden: bool,
 }
 
 /// Fields accepted on `password/create` and `password/update`. Server fills
@@ -74,8 +96,18 @@ pub struct NcCreateOrUpdate {
     pub password: String,
     pub url: String,
     pub notes: String,
+    #[serde(skip_serializing_if = "String::is_empty")]
+    pub folder: String,
     /// Required on create per spec — server rejects empty hash.
     pub hash: String,
+}
+
+/// Fields accepted on `folder/create`.
+#[derive(Debug, Clone, Serialize, Default)]
+pub struct NcFolderCreate {
+    pub label: String,
+    #[serde(skip_serializing_if = "String::is_empty")]
+    pub parent: String,
 }
 
 #[derive(Debug, Clone)]
@@ -122,6 +154,7 @@ impl NextcloudPasswordsClient {
         if path.exists() {
             fs::remove_file(path)?;
         }
+        let _ = crate::keyring::delete_named_secret(APP_PASSWORD_SECRET_KIND);
         Ok(())
     }
 
@@ -133,7 +166,8 @@ impl NextcloudPasswordsClient {
 
     pub fn list(&self) -> Result<Vec<NcPassword>> {
         let cfg = self.require()?;
-        let r = self.request_with_cfg(cfg, "GET", "/password/list", None)?;
+        let body = serde_json::json!({ "details": "model+folder" }).to_string();
+        let r = self.request_with_cfg(cfg, "POST", "/password/list", Some(body))?;
         ensure_2xx(&r)?;
         let parsed: Vec<NcPassword> = serde_json::from_str(&r.body)
             .map_err(|e| Error::Other(format!("nextcloud list parse: {e}")))?;
@@ -161,6 +195,23 @@ impl NextcloudPasswordsClient {
         let body = serde_json::json!({ "id": id }).to_string();
         let r = self.request_with_cfg(cfg, "DELETE", "/password/delete", Some(body))?;
         ensure_2xx(&r)
+    }
+
+    pub fn list_folders(&self) -> Result<Vec<NcFolder>> {
+        let cfg = self.require()?;
+        let r = self.request_with_cfg(cfg, "GET", "/folder/list", None)?;
+        ensure_2xx(&r)?;
+        let parsed: Vec<NcFolder> = serde_json::from_str(&r.body)
+            .map_err(|e| Error::Other(format!("nextcloud folder list parse: {e}")))?;
+        Ok(parsed)
+    }
+
+    pub fn create_folder(&self, payload: &NcFolderCreate) -> Result<NcFolder> {
+        let cfg = self.require()?;
+        let body = serde_json::to_string(payload)?;
+        let r = self.request_with_cfg(cfg, "POST", "/folder/create", Some(body))?;
+        ensure_2xx(&r)?;
+        parse_single_folder(&r.body)
     }
 
     // -----------------------------------------------------------------
@@ -211,10 +262,45 @@ impl NextcloudPasswordsClient {
 
     fn load_config() -> Option<NcConfig> {
         let text = fs::read_to_string(Self::config_path()).ok()?;
-        serde_json::from_str(&text).ok()
+        let mut cfg: NcConfig = serde_json::from_str(&text).ok()?;
+        if cfg.app_password.is_empty() {
+            cfg.app_password = crate::keyring::load_named_secret(APP_PASSWORD_SECRET_KIND)
+                .map_err(|e| {
+                    log::warn!("nextcloud app password unavailable from keyring: {e}");
+                    e
+                })
+                .ok()
+                .flatten()?;
+        } else if crate::keyring::store_named_secret(
+            APP_PASSWORD_SECRET_KIND,
+            APP_PASSWORD_SECRET_LABEL,
+            &cfg.app_password,
+        )
+        .is_ok()
+        {
+            let mut disk_cfg = cfg.clone();
+            disk_cfg.app_password.clear();
+            let _ = Self::write_config_file(&disk_cfg);
+        }
+        Some(cfg)
     }
 
     fn save_config(cfg: &NcConfig) -> Result<()> {
+        let mut disk_cfg = cfg.clone();
+        match crate::keyring::store_named_secret(
+            APP_PASSWORD_SECRET_KIND,
+            APP_PASSWORD_SECRET_LABEL,
+            &cfg.app_password,
+        ) {
+            Ok(()) => disk_cfg.app_password.clear(),
+            Err(e) => {
+                log::warn!("nextcloud keyring save failed; keeping chmod 0600 fallback: {e}");
+            }
+        }
+        Self::write_config_file(&disk_cfg)
+    }
+
+    fn write_config_file(cfg: &NcConfig) -> Result<()> {
         let path = Self::config_path();
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)?;
@@ -230,6 +316,12 @@ impl NextcloudPasswordsClient {
     }
 }
 
+impl Default for NextcloudPasswordsClient {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 struct Response {
     status: u16,
     body: String,
@@ -239,10 +331,10 @@ fn ensure_2xx(r: &Response) -> Result<()> {
     if (200..300).contains(&r.status) {
         Ok(())
     } else {
+        let body = nextcloud_error_message(&r.body).unwrap_or_else(|| truncate_for_msg(&r.body));
         Err(Error::Other(format!(
-            "nextcloud HTTP {}: {}",
-            r.status,
-            truncate_for_msg(&r.body)
+            "nextcloud HTTP {}: {body}",
+            r.status
         )))
     }
 }
@@ -268,6 +360,54 @@ fn parse_single(body: &str) -> Result<NcPassword> {
         revision: s.revision,
         ..Default::default()
     })
+}
+
+fn parse_single_folder(body: &str) -> Result<NcFolder> {
+    if let Ok(full) = serde_json::from_str::<NcFolder>(body) {
+        if !full.id.is_empty() {
+            return Ok(full);
+        }
+    }
+    #[derive(Deserialize)]
+    struct Shallow {
+        id: String,
+        #[serde(default)]
+        revision: String,
+    }
+    let s: Shallow = serde_json::from_str(body)
+        .map_err(|e| Error::Other(format!("nextcloud folder create parse: {e}")))?;
+    Ok(NcFolder {
+        id: s.id,
+        revision: s.revision,
+        ..Default::default()
+    })
+}
+
+fn deserialize_folder_id<'de, D>(deserializer: D) -> std::result::Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value = serde_json::Value::deserialize(deserializer)?;
+    match value {
+        serde_json::Value::String(id) => Ok(id),
+        serde_json::Value::Object(obj) => Ok(obj
+            .get("id")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default()
+            .to_string()),
+        serde_json::Value::Null => Ok(String::new()),
+        other => Err(serde::de::Error::custom(format!(
+            "unexpected folder value: {other}"
+        ))),
+    }
+}
+
+fn nextcloud_error_message(body: &str) -> Option<String> {
+    serde_json::from_str::<serde_json::Value>(body)
+        .ok()?
+        .get("message")?
+        .as_str()
+        .map(ToOwned::to_owned)
 }
 
 fn truncate_for_msg(s: &str) -> String {
@@ -317,6 +457,17 @@ mod tests {
     }
 
     #[test]
+    fn parses_password_folder_detail_object() {
+        let body = r#"[
+            {"id":"a","label":"GH","username":"u","password":"p","url":"","notes":"","revision":"r1","edited":1700000000,"trashed":false,"folder":{"id":"f1","label":"Work"}},
+            {"id":"b","label":"None","username":"","password":"p","url":"","notes":"","revision":"r2","edited":1700000001,"trashed":false,"folder":null}
+        ]"#;
+        let v: Vec<NcPassword> = serde_json::from_str(body).unwrap();
+        assert_eq!(v[0].folder, "f1");
+        assert!(v[1].folder.is_empty());
+    }
+
+    #[test]
     fn parse_single_supports_shallow_response() {
         let shallow = r#"{"id":"abc","revision":"rev-1"}"#;
         let p = parse_single(shallow).unwrap();
@@ -332,6 +483,36 @@ mod tests {
         assert_eq!(p.id, "abc");
         assert_eq!(p.label, "L");
         assert_eq!(p.edited, 42);
+    }
+
+    #[test]
+    fn parse_single_folder_supports_full_response() {
+        let full = r#"{"id":"f1","label":"Work","parent":"","revision":"r","edited":42,"trashed":false,"hidden":false}"#;
+        let f = parse_single_folder(full).unwrap();
+        assert_eq!(f.id, "f1");
+        assert_eq!(f.label, "Work");
+        assert_eq!(f.edited, 42);
+    }
+
+    #[test]
+    fn password_payload_includes_folder_when_present() {
+        let payload = NcCreateOrUpdate {
+            label: "Example".into(),
+            password: "secret".into(),
+            folder: "folder-uuid".into(),
+            ..Default::default()
+        };
+        let json = serde_json::to_string(&payload).unwrap();
+        assert!(json.contains(r#""folder":"folder-uuid""#));
+    }
+
+    #[test]
+    fn extracts_nextcloud_error_message() {
+        let body = r#"{"status":"error","id":"abc","message":"Field \"password\" can not be empty"}"#;
+        assert_eq!(
+            nextcloud_error_message(body).as_deref(),
+            Some("Field \"password\" can not be empty")
+        );
     }
 
     #[test]

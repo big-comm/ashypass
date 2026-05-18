@@ -11,7 +11,7 @@ use adw::prelude::*;
 use ashypass_core::db::vault::{PasswordEntry, UpdateEntry};
 use ashypass_core::totp::{generate_totp, remaining_seconds, Algorithm};
 use gtk::glib;
-use std::cell::{Cell, RefCell};
+use std::cell::RefCell;
 use std::rc::Rc;
 
 pub struct TotpView {
@@ -33,10 +33,7 @@ struct Inner {
 
     // TOTP page widgets
     search_entry: gtk::SearchEntry,
-    category_bar: gtk::Box,
-    category_dropdown: gtk::DropDown,
-    category_model: RefCell<gtk::StringList>,
-    updating_categories: Cell<bool>,
+    search_reload_id: RefCell<Option<glib::SourceId>>,
     list_box: gtk::ListBox,
     empty_status: adw::StatusPage,
     content_stack: gtk::Stack,
@@ -51,6 +48,7 @@ struct RowData {
     code_label: gtk::Label,
     progress: gtk::LevelBar,
     id: i64,
+    secret: String,
     algorithm: String,
     digits: u8,
     period: u32,
@@ -70,8 +68,8 @@ impl TotpView {
         let (auth_page, master_entry, auth_error, unlock_btn) = build_auth_page();
         main_stack.add_named(&auth_page, Some("locked"));
 
-        let (totp_page, search_bar, search_entry, category_bar, category_dropdown, category_model,
-             list_box, empty_status, content_stack) = build_totp_page();
+        let (totp_page, search_bar, search_entry, list_box, empty_status, content_stack) =
+            build_totp_page();
         main_stack.add_named(&totp_page, Some("totp"));
 
         root.append(&main_stack);
@@ -83,10 +81,7 @@ impl TotpView {
             master_entry: master_entry.clone(),
             auth_error: auth_error.clone(),
             search_entry: search_entry.clone(),
-            category_bar,
-            category_dropdown,
-            category_model: RefCell::new(category_model),
-            updating_categories: Cell::new(false),
+            search_reload_id: RefCell::new(None),
             list_box,
             empty_status,
             content_stack,
@@ -108,26 +103,25 @@ impl TotpView {
         // TOTP wiring
         {
             let inner_cl = inner.clone();
-            search_entry.connect_search_changed(move |e| {
-                let text = e.text().trim().to_string();
-                let search = if text.is_empty() { None } else { Some(text) };
-                inner_cl.load_entries(search.as_deref());
-                SessionManager::on_activity(&inner_cl.state.session);
-            });
-        }
-        {
-            let inner_cl = inner.clone();
-            inner.category_dropdown.connect_selected_notify(move |_| {
-                if inner_cl.updating_categories.get() {
-                    return;
+            search_entry.connect_search_changed(move |_| {
+                if let Some(id) = inner_cl.search_reload_id.borrow_mut().take() {
+                    id.remove();
                 }
-                let text = inner_cl.search_entry.text().trim().to_string();
-                let search = if text.is_empty() { None } else { Some(text) };
-                inner_cl.load_entries(search.as_deref());
-                SessionManager::on_activity(&inner_cl.state.session);
+                let inner_weak = Rc::downgrade(&inner_cl);
+                let id = glib::timeout_add_local(std::time::Duration::from_millis(150), move || {
+                    let Some(inner) = inner_weak.upgrade() else {
+                        return glib::ControlFlow::Break;
+                    };
+                    *inner.search_reload_id.borrow_mut() = None;
+                    let text = inner.search_entry.text().trim().to_string();
+                    let search = if text.is_empty() { None } else { Some(text) };
+                    inner.load_entries(search.as_deref());
+                    SessionManager::on_activity(&inner.state.session);
+                    glib::ControlFlow::Break
+                });
+                *inner_cl.search_reload_id.borrow_mut() = Some(id);
             });
         }
-
         Self {
             root,
             search_bar,
@@ -145,6 +139,7 @@ impl TotpView {
         let authed = self.inner.state.session.borrow().is_authenticated()
             && self.inner.state.vault.borrow().is_unlocked();
         if !authed {
+            self.inner.cancel_pending_search_reload();
             self.inner.stop_timer();
             self.inner.rows.borrow_mut().clear();
             self.inner.main_stack.set_visible_child_name("locked");
@@ -156,6 +151,7 @@ impl TotpView {
     }
 
     pub fn on_locked(&self) {
+        self.inner.cancel_pending_search_reload();
         self.inner.stop_timer();
         self.inner.rows.borrow_mut().clear();
         self.inner.main_stack.set_visible_child_name("locked");
@@ -217,9 +213,6 @@ fn build_totp_page() -> (
     gtk::Box,
     gtk::SearchBar,
     gtk::SearchEntry,
-    gtk::Box,
-    gtk::DropDown,
-    gtk::StringList,
     gtk::ListBox,
     adw::StatusPage,
     gtk::Stack,
@@ -234,25 +227,6 @@ fn build_totp_page() -> (
         .build();
     search_bar.connect_entry(&search_entry);
     main_box.append(&search_bar);
-
-    let category_bar = gtk::Box::builder()
-        .orientation(gtk::Orientation::Horizontal)
-        .spacing(6)
-        .margin_start(12)
-        .margin_end(12)
-        .margin_top(4)
-        .margin_bottom(4)
-        .visible(false)
-        .build();
-    let cat_icon = gtk::Image::from_icon_name("folder-symbolic");
-    category_bar.append(&cat_icon);
-    let category_model = gtk::StringList::new(&[tr!("All")]);
-    let category_dropdown = gtk::DropDown::builder()
-        .hexpand(true)
-        .model(&category_model)
-        .build();
-    category_bar.append(&category_dropdown);
-    main_box.append(&category_bar);
 
     let scrolled = gtk::ScrolledWindow::builder().vexpand(true).build();
     let list_box = gtk::ListBox::builder()
@@ -283,9 +257,6 @@ fn build_totp_page() -> (
         main_box,
         search_bar,
         search_entry,
-        category_bar,
-        category_dropdown,
-        category_model,
         list_box,
         empty_status,
         content_stack,
@@ -338,11 +309,14 @@ impl Inner {
     }
 
     fn load_entries(self: &Rc<Self>, search: Option<&str>) {
+        if !(self.state.session.borrow().is_authenticated()
+            && self.state.vault.borrow().is_unlocked())
+        {
+            return;
+        }
         self.stop_timer();
         self.rows.borrow_mut().clear();
         clear_list_box(&self.list_box);
-
-        self.update_category_filter();
 
         let mut entries = match self.state.vault.borrow().list(search) {
             Ok(v) => v,
@@ -353,9 +327,20 @@ impl Inner {
         };
         entries.retain(|p| p.has_totp);
 
-        if let Some(cat) = self.get_selected_category() {
-            entries.retain(|p| p.category.as_deref().unwrap_or("") == cat);
-        }
+        let entries: Vec<(PasswordEntry, String)> = {
+            let vault = self.state.vault.borrow();
+            entries
+                .into_iter()
+                .filter_map(|entry| match vault.totp_secret(entry.id) {
+                    Ok(Some(secret)) => Some((entry, secret)),
+                    Ok(None) => None,
+                    Err(e) => {
+                        log::error!("totp secret read failed: {e}");
+                        None
+                    }
+                })
+                .collect()
+        };
 
         self.main_stack.set_visible_child_name("totp");
 
@@ -381,14 +366,14 @@ impl Inner {
         }
 
         self.content_stack.set_visible_child_name("list");
-        for entry in entries {
-            let row = self.build_row(&entry);
+        for (entry, secret) in entries {
+            let row = self.build_row(&entry, secret);
             self.list_box.append(&row);
         }
         self.start_timer();
     }
 
-    fn build_row(self: &Rc<Self>, entry: &PasswordEntry) -> gtk::ListBoxRow {
+    fn build_row(self: &Rc<Self>, entry: &PasswordEntry, secret: String) -> gtk::ListBoxRow {
         let row = gtk::ListBoxRow::new();
         row.set_activatable(false);
 
@@ -416,6 +401,7 @@ impl Inner {
         let code_label = gtk::Label::new(Some("------"));
         code_label.add_css_class("monospace");
         code_label.add_css_class("title-1");
+        code_label.add_css_class("totp-code");
         code_label.set_xalign(0.0);
         center.append(&code_label);
 
@@ -423,11 +409,8 @@ impl Inner {
         if let Some(u) = entry.username.as_deref().filter(|s| !s.is_empty()) {
             parts.push(u.to_string());
         }
-        if let Some(c) = entry.category.as_deref().filter(|s| !s.is_empty()) {
-            parts.push(format!("📁 {c}"));
-        }
         let name_label = gtk::Label::builder()
-            .label(&parts.join(" · "))
+            .label(parts.join(" · "))
             .xalign(0.0)
             .ellipsize(gtk::pango::EllipsizeMode::End)
             .build();
@@ -494,38 +477,13 @@ impl Inner {
             code_label,
             progress,
             id: entry.id,
+            secret,
             algorithm: entry.totp_algorithm.clone(),
             digits: entry.totp_digits,
             period: entry.totp_period,
         });
 
         row
-    }
-
-    fn get_selected_category(&self) -> Option<String> {
-        let idx = self.category_dropdown.selected();
-        if idx == 0 {
-            return None;
-        }
-        let model = self.category_model.borrow();
-        let s = model.string(idx)?;
-        let s = s.to_string();
-        if s.is_empty() { None } else { Some(s) }
-    }
-
-    fn update_category_filter(&self) {
-        self.updating_categories.set(true);
-        let cats = self.state.vault.borrow().categories().unwrap_or_default();
-        let mut items: Vec<&str> = Vec::with_capacity(1 + cats.len());
-        items.push(tr!("All"));
-        for c in &cats {
-            items.push(c.as_str());
-        }
-        let model = gtk::StringList::new(&items);
-        self.category_dropdown.set_model(Some(&model));
-        *self.category_model.borrow_mut() = model;
-        self.category_bar.set_visible(!cats.is_empty());
-        self.updating_categories.set(false);
     }
 
     fn start_timer(self: &Rc<Self>) {
@@ -551,24 +509,18 @@ impl Inner {
         }
     }
 
+    fn cancel_pending_search_reload(&self) {
+        if let Some(id) = self.search_reload_id.borrow_mut().take() {
+            id.remove();
+        }
+    }
+
     fn update_displays(&self) {
         let now = chrono::Utc::now().timestamp() as u64;
         let rows = self.rows.borrow();
         for rd in rows.iter() {
-            let secret = {
-                let v = self.state.vault.borrow();
-                match v.get(rd.id) {
-                    Ok(Some(e)) => e.totp_secret,
-                    _ => None,
-                }
-            };
-            let Some(secret) = secret else {
-                rd.code_label.set_text("------");
-                rd.progress.set_value(0.0);
-                continue;
-            };
             let algo = Algorithm::parse(&rd.algorithm).unwrap_or(Algorithm::Sha1);
-            match generate_totp(&secret, algo, rd.digits, rd.period, now) {
+            match generate_totp(&rd.secret, algo, rd.digits, rd.period, now) {
                 Ok(code) => {
                     rd.code_label.set_text(&code);
                     let rem = remaining_seconds(rd.period, now);
@@ -583,14 +535,20 @@ impl Inner {
     }
 
     fn copy_totp(self: &Rc<Self>, id: i64) {
-        let entry = match self.state.vault.borrow().get(id) {
-            Ok(Some(e)) => e,
-            _ => return,
+        let row_data = self.rows.borrow().iter().find(|rd| rd.id == id).map(|rd| {
+            (
+                rd.secret.clone(),
+                rd.algorithm.clone(),
+                rd.digits,
+                rd.period,
+            )
+        });
+        let Some((secret, algorithm, digits, period)) = row_data else {
+            return;
         };
-        let Some(secret) = entry.totp_secret else { return };
-        let algo = Algorithm::parse(&entry.totp_algorithm).unwrap_or(Algorithm::Sha1);
+        let algo = Algorithm::parse(&algorithm).unwrap_or(Algorithm::Sha1);
         let now = chrono::Utc::now().timestamp() as u64;
-        if let Ok(code) = generate_totp(&secret, algo, entry.totp_digits, entry.totp_period, now) {
+        if let Ok(code) = generate_totp(&secret, algo, digits, period, now) {
             let seconds = ashypass_core::settings::Settings::load().clipboard_clear;
             crate::clipboard::copy(&code, seconds);
             self.show_toast(tr!("TOTP code copied"));
@@ -603,14 +561,20 @@ impl Inner {
             Ok(Some(e)) => e,
             _ => return,
         };
-        let dialog = adw::AlertDialog::builder()
-            .heading(tr!("Delete 2FA Entry?"))
-            .body(&format!(
+        let trash_enabled = ashypass_core::settings::Settings::load().trash_retention_days > 0;
+        let body = if trash_enabled {
+            format!("{} '{}'?", tr!("Are you sure you want to delete"), entry.title)
+        } else {
+            format!(
                 "{} '{}'? {}",
                 tr!("Are you sure you want to delete"),
                 entry.title,
                 tr!("This action cannot be undone.")
-            ))
+            )
+        };
+        let dialog = adw::AlertDialog::builder()
+            .heading(tr!("Delete 2FA Entry?"))
+            .body(&body)
             .default_response("cancel")
             .close_response("cancel")
             .build();
@@ -621,8 +585,17 @@ impl Inner {
         let inner_cl = self.clone();
         dialog.connect_response(None, move |dlg, response| {
             if response == "delete" {
-                if let Ok(true) = inner_cl.state.vault.borrow().delete(id) {
-                    inner_cl.show_toast(tr!("Entry deleted"));
+                let deleted = if trash_enabled {
+                    inner_cl.state.vault.borrow().delete(id)
+                } else {
+                    inner_cl.state.vault.borrow().delete_permanent(id)
+                };
+                if let Ok(true) = deleted {
+                    inner_cl.show_toast(if trash_enabled {
+                        tr!("Entry deleted")
+                    } else {
+                        tr!("Permanently deleted")
+                    });
                     inner_cl.load_entries(None);
                     SessionManager::on_activity(&inner_cl.state.session);
                 }
@@ -661,12 +634,6 @@ impl Inner {
             .text(entry.url.as_deref().unwrap_or(""))
             .build();
         form.add(&url_entry);
-        let category_entry = adw::EntryRow::builder()
-            .title(tr!("Category"))
-            .text(entry.category.as_deref().unwrap_or(""))
-            .build();
-        form.add(&category_entry);
-
         let totp_group = adw::PreferencesGroup::builder().title(tr!("TOTP Settings")).build();
 
         let totp_entry = adw::PasswordEntryRow::builder()
@@ -743,7 +710,7 @@ impl Inner {
                 totp_algorithm: Some(algo),
                 totp_digits: Some(digits_row.value() as u8),
                 totp_period: Some(period_row.value() as u32),
-                category: Some(trim_to_opt(&category_entry.text())),
+                category: None,
             };
             match inner_cl.state.vault.borrow().update(id, change) {
                 Ok(_) => {

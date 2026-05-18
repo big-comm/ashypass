@@ -264,10 +264,10 @@ fn handle_generate(length: &Option<usize>, kind: &Option<String>) -> Result<Stri
         Some("passphrase") => Ok(generate_passphrase(4, "-", true, true)),
         Some("pin") => Ok(generate_pin(length.unwrap_or(6))),
         Some("password") | None => {
-            let mut cfg = PasswordConfig::default();
-            if let Some(n) = length {
-                cfg.length = *n;
-            }
+            let cfg = PasswordConfig {
+                length: length.unwrap_or(PasswordConfig::default().length),
+                ..Default::default()
+            };
             generate_password(&cfg).map_err(|e| anyhow!("{e}"))
         }
         Some(other) => bail!("unknown generate kind: {other}"),

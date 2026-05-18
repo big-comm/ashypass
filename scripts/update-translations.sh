@@ -20,7 +20,7 @@ mapfile -d '' SOURCES < <(find crates/ashypass-app/src -name '*.rs' -print0)
 echo "[1/3] Extracting strings from ${#SOURCES[@]} files → $POT"
 xgettext \
     --from-code=UTF-8 \
-    --language=C \
+    --language=Rust \
     --keyword=tr \
     --keyword=tr_static \
     --package-name=ashypass \

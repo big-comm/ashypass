@@ -72,11 +72,11 @@ pub fn generate_backup_phrase() -> Result<String> {
 }
 
 pub fn hash_backup_phrase(phrase: &str) -> Result<String> {
-    Ok(crate::crypto::argon2_kdf::hash_master(phrase.trim())?)
+    crate::crypto::argon2_kdf::hash_master(phrase.trim())
 }
 
 pub fn verify_backup_phrase(phrase: &str, stored: &str) -> Result<bool> {
-    Ok(crate::crypto::argon2_kdf::verify_master(phrase.trim(), stored)?)
+    crate::crypto::argon2_kdf::verify_master(phrase.trim(), stored)
 }
 
 /// Random 32-byte salt used as the input to CTAP2 hmac-secret.

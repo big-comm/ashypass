@@ -41,6 +41,7 @@ pub struct Settings {
     pub clipboard_clear: u64,
     pub generator: GeneratorPrefs,
     pub argon2: TunedParams,
+    pub audit_check_hibp: bool,
     /// Trash retention in days. Entries deleted longer ago are purged on app
     /// start. 0 disables the trash entirely (deletes are immediate).
     pub trash_retention_days: u32,
@@ -54,6 +55,7 @@ impl Default for Settings {
             clipboard_clear: CLIPBOARD_CLEAR_SECONDS,
             generator: GeneratorPrefs::default(),
             argon2: TunedParams::default(),
+            audit_check_hibp: false,
             trash_retention_days: 30,
         }
     }

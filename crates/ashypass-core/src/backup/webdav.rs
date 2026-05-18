@@ -4,10 +4,9 @@
 //! Nextcloud `remote.php/dav/files/<user>/...` path layout but works against
 //! any RFC 4918 server (ownCloud, FastMail Files, Apache mod_dav, etc.).
 //!
-//! Credentials live in `~/.config/ashypass/webdav.json` with file mode 0600.
-//! This is plaintext on disk — same threat model as `~/.netrc` or
-//! `~/.config/rclone/rclone.conf`. The Secret Service provider (task #32)
-//! will replace this once available.
+//! Credentials are stored in Secret Service when available. The JSON config
+//! remains chmod 0600 and is used as a legacy fallback on sessions without a
+//! desktop keyring.
 
 use crate::{Error, Result};
 use reqwest::blocking::Client;
@@ -28,6 +27,9 @@ pub struct WebdavConfig {
     /// `AshyPass Backups`. Will be created on demand.
     pub folder: String,
 }
+
+const PASSWORD_SECRET_KIND: &str = "webdav-password";
+const PASSWORD_SECRET_LABEL: &str = "Ashy Pass — WebDAV password";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WebdavFile {
@@ -86,6 +88,7 @@ impl WebdavService {
         if path.exists() {
             fs::remove_file(path)?;
         }
+        let _ = crate::keyring::delete_named_secret(PASSWORD_SECRET_KIND);
         Ok(())
     }
 
@@ -210,10 +213,45 @@ impl WebdavService {
     fn load_config() -> Option<WebdavConfig> {
         let path = Self::config_path();
         let text = fs::read_to_string(&path).ok()?;
-        serde_json::from_str(&text).ok()
+        let mut cfg: WebdavConfig = serde_json::from_str(&text).ok()?;
+        if cfg.password.is_empty() {
+            cfg.password = crate::keyring::load_named_secret(PASSWORD_SECRET_KIND)
+                .map_err(|e| {
+                    log::warn!("webdav password unavailable from keyring: {e}");
+                    e
+                })
+                .ok()
+                .flatten()?;
+        } else if crate::keyring::store_named_secret(
+            PASSWORD_SECRET_KIND,
+            PASSWORD_SECRET_LABEL,
+            &cfg.password,
+        )
+        .is_ok()
+        {
+            let mut disk_cfg = cfg.clone();
+            disk_cfg.password.clear();
+            let _ = Self::write_config_file(&disk_cfg);
+        }
+        Some(cfg)
     }
 
     fn save_config(cfg: &WebdavConfig) -> Result<()> {
+        let mut disk_cfg = cfg.clone();
+        match crate::keyring::store_named_secret(
+            PASSWORD_SECRET_KIND,
+            PASSWORD_SECRET_LABEL,
+            &cfg.password,
+        ) {
+            Ok(()) => disk_cfg.password.clear(),
+            Err(e) => {
+                log::warn!("webdav keyring save failed; keeping chmod 0600 fallback: {e}");
+            }
+        }
+        Self::write_config_file(&disk_cfg)
+    }
+
+    fn write_config_file(cfg: &WebdavConfig) -> Result<()> {
         let path = Self::config_path();
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)?;
@@ -226,6 +264,12 @@ impl WebdavService {
             let _ = fs::set_permissions(&path, fs::Permissions::from_mode(0o600));
         }
         Ok(())
+    }
+}
+
+impl Default for WebdavService {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

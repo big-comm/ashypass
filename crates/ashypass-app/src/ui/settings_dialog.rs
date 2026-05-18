@@ -6,6 +6,7 @@
 //! - Import/Export: scaffolding for task #10 (CSV / Aegis / andOTP)
 //! - Cloud Backup: scaffolding for task #11 (Google Drive)
 
+use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
 use adw::prelude::*;
@@ -15,26 +16,71 @@ use gtk::gio;
 use std::cell::RefCell;
 use std::rc::Rc;
 
+type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
+type NextcloudSyncResult = Result<ashypass_core::sync::SyncReport, String>;
+type AuditResult = Result<ashypass_core::audit::Report, String>;
+
+enum NextcloudSyncMessage {
+    Progress(ashypass_core::sync::NextcloudSyncProgress),
+    Finished(NextcloudSyncResult),
+}
+
+#[derive(Clone)]
+struct NextcloudProgressUi {
+    dialog: adw::Dialog,
+    spinner: gtk::Spinner,
+    title: gtk::Label,
+    detail: gtk::Label,
+    progress: gtk::ProgressBar,
+}
+
 pub fn present(
     parent: &impl IsA<gtk::Widget>,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    _toast: adw::ToastOverlay,
 ) {
+    let parent_widget = parent.upcast_ref::<gtk::Widget>().clone();
+    let dialog_slot: Rc<RefCell<Option<adw::Dialog>>> = Rc::new(RefCell::new(None));
+    let toast = adw::ToastOverlay::new();
     let settings = Rc::new(RefCell::new(Settings::load()));
 
     // Build the 4 preference pages — each is an AdwPreferencesPage so the
     // existing group/row helpers keep their look (with scroll).
     let security_page = adw::PreferencesPage::builder().build();
-    populate_security(&security_page, state.clone(), settings.clone(), toast.clone());
+    populate_security(
+        &security_page,
+        state.clone(),
+        settings.clone(),
+        toast.clone(),
+        parent_widget.clone(),
+        dialog_slot.clone(),
+    );
     populate_two_factor(&security_page, toast.clone());
-    populate_audit(&security_page, state.clone(), toast.clone());
+    populate_audit(
+        &security_page,
+        state.clone(),
+        settings.clone(),
+        toast.clone(),
+    );
 
     let data_page = adw::PreferencesPage::builder().build();
-    populate_import_export(&data_page, state.clone(), toast.clone());
+    populate_import_export(
+        &data_page,
+        state.clone(),
+        toast.clone(),
+        parent_widget.clone(),
+        dialog_slot.clone(),
+    );
     populate_trash(&data_page, state.clone(), settings.clone(), toast.clone());
 
     let cloud_page = adw::PreferencesPage::builder().build();
-    populate_cloud(&cloud_page, state.clone(), toast.clone());
+    populate_cloud(
+        &cloud_page,
+        state.clone(),
+        toast.clone(),
+        parent_widget.clone(),
+        dialog_slot.clone(),
+    );
 
     let appearance_page = adw::PreferencesPage::builder().build();
     populate_appearance(&appearance_page, settings);
@@ -49,10 +95,10 @@ pub fn present(
         ("appearance", "preferences-desktop-appearance-symbolic", &appearance_page),
     ];
     let labels: [&str; 4] = [
-        &tr!("Security"),
-        &tr!("Data"),
-        &tr!("Cloud"),
-        &tr!("Appearance"),
+        tr!("Security"),
+        tr!("Data"),
+        tr!("Cloud"),
+        tr!("Appearance"),
     ];
 
     let stack = adw::ViewStack::new();
@@ -127,13 +173,15 @@ pub fn present(
     split.set_content(Some(&content_page));
     split.set_min_sidebar_width(200.0);
     split.set_max_sidebar_width(240.0);
+    toast.set_child(Some(&split));
 
     let dialog = adw::Dialog::builder()
         .title(tr!("Settings"))
         .content_width(960)
         .content_height(680)
-        .child(&split)
+        .child(&toast)
         .build();
+    *dialog_slot.borrow_mut() = Some(dialog.clone());
     dialog.present(Some(parent));
 }
 
@@ -146,7 +194,19 @@ fn populate_security(
     state: SharedState,
     settings: Rc<RefCell<Settings>>,
     toast: adw::ToastOverlay,
+    parent: gtk::Widget,
+    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) {
+    let unlocked = state.vault.borrow().is_unlocked();
+    if !unlocked {
+        page.add(&locked_notice_group(
+            state.clone(),
+            toast.clone(),
+            parent,
+            dialog_slot,
+        ));
+    }
+
     // --- Master password
     let mp_group = adw::PreferencesGroup::builder()
         .title(tr!("Master Password"))
@@ -171,7 +231,7 @@ fn populate_security(
         .build();
     change_btn.add_css_class("suggested-action");
     change_btn.add_css_class("pill");
-    change_btn.set_sensitive(state.vault.borrow().is_unlocked());
+    change_btn.set_sensitive(unlocked);
 
     let status_lbl = gtk::Label::builder()
         .xalign(0.0)
@@ -361,7 +421,7 @@ fn populate_security(
                 }
                 Err(e) => {
                     toast.add_toast(adw::Toast::builder()
-                        .title(&format!("{e}"))
+                        .title(format!("{e}"))
                         .timeout(3)
                         .build());
                 }
@@ -473,7 +533,7 @@ fn populate_security(
                 Err(e) => {
                     toast.add_toast(
                         adw::Toast::builder()
-                            .title(&format!("{}: {e}", tr!("Keyring error")))
+                            .title(format!("{}: {e}", tr!("Keyring error")))
                             .timeout(4)
                             .build(),
                     );
@@ -498,7 +558,7 @@ fn populate_security(
                 Err(e) => {
                     toast.add_toast(
                         adw::Toast::builder()
-                            .title(&format!("{}: {e}", tr!("Keyring error")))
+                            .title(format!("{}: {e}", tr!("Keyring error")))
                             .timeout(4)
                             .build(),
                     );
@@ -654,10 +714,12 @@ fn populate_two_factor(page: &adw::PreferencesPage, toast: adw::ToastOverlay) {
     list_box.add_css_class("boxed-list");
     list_box.set_selection_mode(gtk::SelectionMode::None);
 
+    let render_slot: RenderSlot = Rc::new(RefCell::new(None));
     let render = {
         let list_box = list_box.clone();
         let config = config.clone();
         let toast = toast.clone();
+        let render_slot = render_slot.clone();
         Rc::new(move || {
             while let Some(child) = list_box.first_child() {
                 list_box.remove(&child);
@@ -677,7 +739,7 @@ fn populate_two_factor(page: &adw::PreferencesPage, toast: adw::ToastOverlay) {
                                 .clone()
                                 .unwrap_or_else(|| format!("{} {}", tr!("Key"), idx + 1)),
                         )
-                        .subtitle(&format!("id: {}", slot_short(slot)))
+                        .subtitle(format!("id: {}", slot_short(slot)))
                         .build();
                     let rm = gtk::Button::builder()
                         .icon_name("user-trash-symbolic")
@@ -688,8 +750,7 @@ fn populate_two_factor(page: &adw::PreferencesPage, toast: adw::ToastOverlay) {
                     {
                         let config = config.clone();
                         let toast = toast.clone();
-                        let idx = idx;
-                        let list_box = list_box.clone();
+                        let render_slot = render_slot.clone();
                         rm.connect_clicked(move |_| {
                             let mut cfg = config.borrow_mut();
                             if idx < cfg.slots.len() {
@@ -703,11 +764,8 @@ fn populate_two_factor(page: &adw::PreferencesPage, toast: adw::ToastOverlay) {
                                 }
                                 drop(cfg);
                                 show_toast(&toast, tr!("Key removed"));
-                                // Trigger a re-render by removing all children;
-                                // the parent closure will repopulate via its
-                                // own render() captured below.
-                                while let Some(c) = list_box.first_child() {
-                                    list_box.remove(&c);
+                                if let Some(cb) = render_slot.borrow().clone() {
+                                    (cb)();
                                 }
                             }
                         });
@@ -718,6 +776,7 @@ fn populate_two_factor(page: &adw::PreferencesPage, toast: adw::ToastOverlay) {
             }
         })
     };
+    *render_slot.borrow_mut() = Some(render.clone());
     render();
 
     let row_holder = adw::PreferencesGroup::new();
@@ -888,8 +947,18 @@ fn populate_import_export(
     page: &adw::PreferencesPage,
     state: SharedState,
     toast: adw::ToastOverlay,
+    parent: gtk::Widget,
+    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) {
     let authed = state.vault.borrow().is_unlocked();
+    if !authed {
+        page.add(&locked_notice_group(
+            state.clone(),
+            toast.clone(),
+            parent,
+            dialog_slot,
+        ));
+    }
 
     let import_group = adw::PreferencesGroup::builder()
         .title(tr!("Import"))
@@ -1085,6 +1154,217 @@ fn import_row(
 
 fn show_toast(overlay: &adw::ToastOverlay, message: &str) {
     overlay.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+}
+
+fn show_message_dialog(parent: Option<&gtk::Window>, heading: &str, body: &str) {
+    let dialog = adw::AlertDialog::builder()
+        .heading(heading)
+        .body(body)
+        .build();
+    dialog.add_response("ok", tr!("OK"));
+    dialog.set_default_response(Some("ok"));
+    dialog.present(parent);
+}
+
+fn show_nextcloud_progress_dialog(parent: Option<&gtk::Window>) -> NextcloudProgressUi {
+    let dialog = adw::Dialog::builder()
+        .title(tr!("Synchronizing Nextcloud"))
+        .content_width(420)
+        .build();
+
+    let content = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(12)
+        .margin_top(24)
+        .margin_bottom(24)
+        .margin_start(24)
+        .margin_end(24)
+        .build();
+
+    let spinner = gtk::Spinner::new();
+    spinner.set_halign(gtk::Align::Center);
+    spinner.start();
+    content.append(&spinner);
+
+    let title = gtk::Label::builder()
+        .label(tr!("Preparing synchronization"))
+        .xalign(0.5)
+        .build();
+    title.add_css_class("title-3");
+    content.append(&title);
+
+    let detail = gtk::Label::builder()
+        .label(tr!("Waiting for Nextcloud..."))
+        .xalign(0.5)
+        .wrap(true)
+        .build();
+    detail.add_css_class("dim-label");
+    content.append(&detail);
+
+    let progress = gtk::ProgressBar::new();
+    progress.set_show_text(true);
+    progress.set_text(Some(tr!("Starting...")));
+    progress.pulse();
+    content.append(&progress);
+
+    dialog.set_child(Some(&content));
+    dialog.present(parent);
+
+    NextcloudProgressUi {
+        dialog,
+        spinner,
+        title,
+        detail,
+        progress,
+    }
+}
+
+fn update_nextcloud_progress(
+    ui: &NextcloudProgressUi,
+    progress: ashypass_core::sync::NextcloudSyncProgress,
+) {
+    ui.title.set_text(nextcloud_phase_label(progress.phase));
+    if progress.total == 0 {
+        ui.detail.set_text(tr!("Waiting for Nextcloud..."));
+        ui.progress.set_text(Some(tr!("Working...")));
+        ui.progress.pulse();
+        return;
+    }
+
+    let current = progress.current.min(progress.total);
+    let fraction = current as f64 / progress.total as f64;
+    let percent = (fraction * 100.0).round() as u8;
+    ui.progress.set_fraction(fraction);
+    ui.progress.set_text(Some(&format!("{percent}%")));
+    ui.detail
+        .set_text(&format!("{current}/{} ({percent}%)", progress.total));
+}
+
+fn nextcloud_phase_label(phase: ashypass_core::sync::NextcloudSyncPhase) -> &'static str {
+    use ashypass_core::sync::NextcloudSyncPhase;
+    match phase {
+        NextcloudSyncPhase::Preparing => tr!("Preparing synchronization"),
+        NextcloudSyncPhase::ApplyingDeletes => tr!("Applying local deletions"),
+        NextcloudSyncPhase::FetchingRemote => tr!("Fetching remote passwords"),
+        NextcloudSyncPhase::SyncingFolders => tr!("Syncing folders"),
+        NextcloudSyncPhase::SyncingLocal => tr!("Sending local changes"),
+        NextcloudSyncPhase::PullingRemote => tr!("Downloading remote changes"),
+        NextcloudSyncPhase::Finishing => tr!("Finishing synchronization"),
+    }
+}
+
+fn locked_notice_group(
+    state: SharedState,
+    toast: adw::ToastOverlay,
+    parent: gtk::Widget,
+    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+) -> adw::PreferencesGroup {
+    let group = adw::PreferencesGroup::new();
+    let row = adw::ActionRow::builder()
+        .title(tr!("Vault must be unlocked to configure"))
+        .subtitle(tr!("Unlock Vault"))
+        .activatable(true)
+        .build();
+    row.add_prefix(&gtk::Image::from_icon_name("system-lock-screen-symbolic"));
+    row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+    row.connect_activated(move |_| {
+        show_settings_unlock_dialog(
+            &parent,
+            state.clone(),
+            toast.clone(),
+            dialog_slot.clone(),
+        );
+    });
+    group.add(&row);
+    group
+}
+
+fn show_settings_unlock_dialog(
+    parent: &gtk::Widget,
+    state: SharedState,
+    toast: adw::ToastOverlay,
+    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+) {
+    let has_master = state.vault.borrow().has_master_password().unwrap_or(false);
+    let dialog = adw::AlertDialog::builder()
+        .heading(if has_master {
+            tr!("Unlock Vault")
+        } else {
+            tr!("Create Master Password")
+        })
+        .default_response("unlock")
+        .close_response("cancel")
+        .build();
+    dialog.add_response("cancel", tr!("Cancel"));
+    dialog.add_response("unlock", if has_master { tr!("Unlock Vault") } else { tr!("Save") });
+    dialog.set_response_appearance("unlock", adw::ResponseAppearance::Suggested);
+
+    let password_row = adw::PasswordEntryRow::builder()
+        .title(tr!("Master Password"))
+        .build();
+    let confirm_row = adw::PasswordEntryRow::builder()
+        .title(tr!("Confirm Password"))
+        .visible(!has_master)
+        .build();
+    let list = gtk::ListBox::builder()
+        .selection_mode(gtk::SelectionMode::None)
+        .build();
+    list.add_css_class("boxed-list");
+    list.append(&password_row);
+    if !has_master {
+        list.append(&confirm_row);
+    }
+    dialog.set_extra_child(Some(&list));
+
+    {
+        let parent = parent.clone();
+        let state = state.clone();
+        let toast = toast.clone();
+        let dialog_slot = dialog_slot.clone();
+        dialog.connect_response(None, move |dlg, response| {
+            if response != "unlock" {
+                return;
+            }
+            let password = password_row.text().to_string();
+            if password.is_empty() {
+                password_row.add_css_class("error");
+                return;
+            }
+
+            let result = if has_master {
+                state.vault.borrow_mut().unlock(&password)
+            } else {
+                if password.chars().count() < MIN_MASTER_PASSWORD_LENGTH {
+                    show_toast(&toast, tr!("Password too short"));
+                    return;
+                }
+                if password != confirm_row.text().as_str() {
+                    show_toast(&toast, tr!("Passwords do not match"));
+                    return;
+                }
+                state.vault.borrow_mut().set_master_password(&password)
+            };
+
+            match result {
+                Ok(()) => {
+                    SessionManager::login(&state.session);
+                    state.events.emit(crate::events::AppEvent::VaultChanged);
+                    dlg.close();
+                    if let Some(settings_dialog) = dialog_slot.borrow_mut().take() {
+                        settings_dialog.close();
+                    }
+                    present(&parent, state.clone(), toast.clone());
+                }
+                Err(ashypass_core::Error::InvalidMasterPassword) => {
+                    show_toast(&toast, tr!("Incorrect master password"));
+                }
+                Err(e) => {
+                    show_toast(&toast, &format!("{}: {e}", tr!("Failed to unlock vault")));
+                }
+            }
+        });
+    }
+    dialog.present(Some(parent));
 }
 
 fn run_import(
@@ -1433,8 +1713,16 @@ fn run_export_csv(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Wid
 // Cloud Backup — Google Drive (task #11)
 // ---------------------------------------------------------------------------
 
-fn populate_cloud(page: &adw::PreferencesPage, state: SharedState, toast: adw::ToastOverlay) {
-    let creds = ashypass_core::backup::ClientCredentials::from_env();
+fn populate_cloud(
+    page: &adw::PreferencesPage,
+    state: SharedState,
+    toast: adw::ToastOverlay,
+    parent: gtk::Widget,
+    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+) {
+    let creds = Rc::new(RefCell::new(
+        ashypass_core::backup::ClientCredentials::load(),
+    ));
     let logged_in = state.backup.borrow().is_logged_in();
 
     let group = adw::PreferencesGroup::builder()
@@ -1448,13 +1736,47 @@ fn populate_cloud(page: &adw::PreferencesPage, state: SharedState, toast: adw::T
         .title(tr!("Status"))
         .subtitle(if logged_in {
             tr!("Signed in")
-        } else if creds.is_none() {
-            tr!("OAuth client not configured at build time")
+        } else if creds.borrow().is_none() {
+            tr!("Not configured")
         } else {
             tr!("Not signed in")
         })
         .build();
     group.add(&status_row);
+
+    let drive_action_rows: Rc<RefCell<Vec<adw::ActionRow>>> =
+        Rc::new(RefCell::new(Vec::new()));
+    let google_signin_row: Rc<RefCell<Option<adw::ActionRow>>> = Rc::new(RefCell::new(None));
+
+    let configure_row = adw::ActionRow::builder()
+        .title(tr!("Configure Google OAuth"))
+        .subtitle(if creds.borrow().is_some() {
+            tr!("Configured")
+        } else {
+            tr!("OAuth client not configured at build time")
+        })
+        .activatable(true)
+        .build();
+    configure_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+    {
+        let creds = creds.clone();
+        let status = status_row.clone();
+        let toast = toast.clone();
+        let signin_row = google_signin_row.clone();
+        let configure = configure_row.clone();
+        configure_row.connect_activated(move |row| {
+            let parent = row.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+            show_google_oauth_dialog(
+                parent.as_ref(),
+                creds.clone(),
+                status.clone(),
+                configure.clone(),
+                signin_row.borrow().clone(),
+                toast.clone(),
+            );
+        });
+    }
+    group.add(&configure_row);
 
     let signin_row = adw::ActionRow::builder()
         .title(if logged_in {
@@ -1466,13 +1788,15 @@ fn populate_cloud(page: &adw::PreferencesPage, state: SharedState, toast: adw::T
         .activatable(true)
         .build();
     signin_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
-    signin_row.set_sensitive(creds.is_some());
+    signin_row.set_sensitive(logged_in || creds.borrow().is_some());
+    *google_signin_row.borrow_mut() = Some(signin_row.clone());
     {
         let state = state.clone();
         let toast = toast.clone();
         let creds = creds.clone();
         let status = status_row.clone();
         let signin = signin_row.clone();
+        let action_rows = drive_action_rows.clone();
         signin_row.connect_activated(move |_| {
             if state.backup.borrow().is_logged_in() {
                 if let Err(e) = state.backup.borrow_mut().logout() {
@@ -1481,14 +1805,23 @@ fn populate_cloud(page: &adw::PreferencesPage, state: SharedState, toast: adw::T
                 }
                 status.set_subtitle(tr!("Not signed in"));
                 signin.set_title(tr!("Sign in to Google"));
+                for row in action_rows.borrow().iter() {
+                    row.set_sensitive(false);
+                }
                 show_toast(&toast, tr!("Signed out"));
                 return;
             }
-            let Some(c) = creds.clone() else { return };
+            let Some(c) = creds.borrow().clone() else {
+                show_toast(&toast, tr!("Not configured"));
+                return;
+            };
             match state.backup.borrow_mut().login(&c) {
                 Ok(()) => {
                     status.set_subtitle(tr!("Signed in"));
                     signin.set_title(tr!("Sign out"));
+                    for row in action_rows.borrow().iter() {
+                        row.set_sensitive(true);
+                    }
                     show_toast(&toast, tr!("Signed in to Google Drive"));
                 }
                 Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Sign in failed"))),
@@ -1504,6 +1837,7 @@ fn populate_cloud(page: &adw::PreferencesPage, state: SharedState, toast: adw::T
         .build();
     backup_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
     backup_row.set_sensitive(logged_in);
+    drive_action_rows.borrow_mut().push(backup_row.clone());
     {
         let state = state.clone();
         let toast = toast.clone();
@@ -1526,6 +1860,7 @@ fn populate_cloud(page: &adw::PreferencesPage, state: SharedState, toast: adw::T
         .build();
     restore_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
     restore_row.set_sensitive(logged_in);
+    drive_action_rows.borrow_mut().push(restore_row.clone());
     {
         let state = state.clone();
         let toast = toast.clone();
@@ -1555,7 +1890,78 @@ fn populate_cloud(page: &adw::PreferencesPage, state: SharedState, toast: adw::T
     page.add(&group);
 
     page.add(&build_webdav_group(state.clone(), toast.clone()));
-    page.add(&build_nextcloud_passwords_group(state, toast));
+    page.add(&build_nextcloud_passwords_group(
+        state,
+        toast,
+        parent,
+        dialog_slot,
+    ));
+}
+
+fn show_google_oauth_dialog(
+    parent: Option<&gtk::Window>,
+    creds: Rc<RefCell<Option<ashypass_core::backup::ClientCredentials>>>,
+    status: adw::ActionRow,
+    configure: adw::ActionRow,
+    signin_row: Option<adw::ActionRow>,
+    toast: adw::ToastOverlay,
+) {
+    let dialog = adw::AlertDialog::builder()
+        .heading(tr!("Configure Google OAuth"))
+        .body(tr!("OAuth client not configured at build time"))
+        .build();
+    dialog.add_response("cancel", tr!("Cancel"));
+    dialog.add_response("save", tr!("Save"));
+    dialog.set_default_response(Some("save"));
+    dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
+
+    let client_id = adw::EntryRow::builder().title(tr!("Client ID")).build();
+    let client_secret = adw::PasswordEntryRow::builder()
+        .title(tr!("Client Secret (optional)"))
+        .build();
+    if let Some(existing) = creds.borrow().as_ref() {
+        client_id.set_text(&existing.client_id);
+        if let Some(secret) = existing.client_secret.as_ref() {
+            client_secret.set_text(secret);
+        }
+    }
+    let list = gtk::ListBox::builder()
+        .selection_mode(gtk::SelectionMode::None)
+        .build();
+    list.add_css_class("boxed-list");
+    list.append(&client_id);
+    list.append(&client_secret);
+    dialog.set_extra_child(Some(&list));
+
+    dialog.connect_response(None, move |_dlg, response| {
+        if response != "save" {
+            return;
+        }
+        let id = client_id.text().trim().to_string();
+        if id.is_empty() {
+            client_id.add_css_class("error");
+            show_toast(&toast, tr!("All fields are required."));
+            return;
+        }
+        let secret = client_secret.text().trim().to_string();
+        let cfg = ashypass_core::backup::ClientCredentials {
+            client_id: id,
+            client_secret: if secret.is_empty() { None } else { Some(secret) },
+        };
+        match cfg.save() {
+            Ok(()) => {
+                *creds.borrow_mut() = Some(cfg);
+                status.set_subtitle(tr!("Not signed in"));
+                configure.set_subtitle(tr!("Configured"));
+                if let Some(row) = signin_row.as_ref() {
+                    row.set_sensitive(true);
+                }
+                show_toast(&toast, tr!("Configured"));
+            }
+            Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Configure failed"))),
+        }
+    });
+    dialog.present(parent);
 }
 
 fn build_webdav_group(state: SharedState, toast: adw::ToastOverlay) -> adw::PreferencesGroup {
@@ -1573,6 +1979,9 @@ fn build_webdav_group(state: SharedState, toast: adw::ToastOverlay) -> adw::Pref
         .build();
     group.add(&status_row);
 
+    let webdav_action_rows: Rc<RefCell<Vec<adw::ActionRow>>> =
+        Rc::new(RefCell::new(Vec::new()));
+
     let configure_row = adw::ActionRow::builder()
         .title(if logged_in { tr!("Sign out") } else { tr!("Configure WebDAV") })
         .subtitle(tr!("Server URL, username, app-password"))
@@ -1584,9 +1993,7 @@ fn build_webdav_group(state: SharedState, toast: adw::ToastOverlay) -> adw::Pref
         let toast = toast.clone();
         let status = status_row.clone();
         let configure = configure_row.clone();
-        let upload_btn_state = state.clone();
-        let upload_status_state = status_row.clone();
-        let upload_button_handle = configure_row.clone();
+        let action_rows = webdav_action_rows.clone();
         configure_row.connect_activated(move |row| {
             if state.webdav.borrow().is_logged_in() {
                 if let Err(e) = state.webdav.borrow_mut().logout() {
@@ -1595,17 +2002,23 @@ fn build_webdav_group(state: SharedState, toast: adw::ToastOverlay) -> adw::Pref
                 }
                 status.set_subtitle(tr!("Not configured"));
                 configure.set_title(tr!("Configure WebDAV"));
+                for row in action_rows.borrow().iter() {
+                    row.set_sensitive(false);
+                }
                 show_toast(&toast, tr!("Signed out"));
-                let _ = (&upload_btn_state, &upload_status_state, &upload_button_handle);
                 return;
             }
             let parent = row.root().and_then(|r| r.downcast::<gtk::Window>().ok());
             show_webdav_dialog(parent.as_ref(), state.clone(), toast.clone(), {
                 let status = status.clone();
                 let configure = configure.clone();
+                let action_rows = action_rows.clone();
                 move || {
                     status.set_subtitle(tr!("Configured"));
                     configure.set_title(tr!("Sign out"));
+                    for row in action_rows.borrow().iter() {
+                        row.set_sensitive(true);
+                    }
                 }
             });
         });
@@ -1619,6 +2032,7 @@ fn build_webdav_group(state: SharedState, toast: adw::ToastOverlay) -> adw::Pref
         .build();
     backup_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
     backup_row.set_sensitive(logged_in);
+    webdav_action_rows.borrow_mut().push(backup_row.clone());
     {
         let state = state.clone();
         let toast = toast.clone();
@@ -1651,6 +2065,7 @@ fn build_webdav_group(state: SharedState, toast: adw::ToastOverlay) -> adw::Pref
         .build();
     sync_row.add_suffix(&gtk::Image::from_icon_name("emblem-synchronizing-symbolic"));
     sync_row.set_sensitive(logged_in);
+    webdav_action_rows.borrow_mut().push(sync_row.clone());
     {
         let state = state.clone();
         let toast = toast.clone();
@@ -1670,6 +2085,7 @@ fn build_webdav_group(state: SharedState, toast: adw::ToastOverlay) -> adw::Pref
         .build();
     restore_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
     restore_row.set_sensitive(logged_in);
+    webdav_action_rows.borrow_mut().push(restore_row.clone());
     {
         let state = state.clone();
         let toast = toast.clone();
@@ -1943,6 +2359,8 @@ fn show_sync_conflict_dialog(
 fn build_nextcloud_passwords_group(
     state: SharedState,
     toast: adw::ToastOverlay,
+    parent: gtk::Widget,
+    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) -> adw::PreferencesGroup {
     let logged_in = state.nextcloud.borrow().is_logged_in();
     let group = adw::PreferencesGroup::builder()
@@ -1962,6 +2380,9 @@ fn build_nextcloud_passwords_group(
         .build();
     group.add(&status_row);
 
+    let nextcloud_action_rows: Rc<RefCell<Vec<adw::ActionRow>>> =
+        Rc::new(RefCell::new(Vec::new()));
+
     let configure_row = adw::ActionRow::builder()
         .title(if logged_in {
             tr!("Sign out")
@@ -1977,6 +2398,9 @@ fn build_nextcloud_passwords_group(
         let toast = toast.clone();
         let status = status_row.clone();
         let configure = configure_row.clone();
+        let action_rows = nextcloud_action_rows.clone();
+        let parent_widget = parent.clone();
+        let dialog_slot = dialog_slot.clone();
         configure_row.connect_activated(move |row| {
             if state.nextcloud.borrow().is_logged_in() {
                 if let Err(e) = state.nextcloud.borrow_mut().logout() {
@@ -1985,18 +2409,32 @@ fn build_nextcloud_passwords_group(
                 }
                 status.set_subtitle(tr!("Not configured"));
                 configure.set_title(tr!("Configure Nextcloud Passwords"));
+                for row in action_rows.borrow().iter() {
+                    row.set_sensitive(false);
+                }
                 show_toast(&toast, tr!("Signed out"));
                 return;
             }
             let parent = row.root().and_then(|r| r.downcast::<gtk::Window>().ok());
-            show_nextcloud_dialog(parent.as_ref(), state.clone(), toast.clone(), {
-                let status = status.clone();
-                let configure = configure.clone();
-                move || {
-                    status.set_subtitle(tr!("Configured"));
-                    configure.set_title(tr!("Sign out"));
-                }
-            });
+            show_nextcloud_dialog(
+                parent.as_ref(),
+                state.clone(),
+                toast.clone(),
+                parent_widget.clone(),
+                dialog_slot.clone(),
+                {
+                    let status = status.clone();
+                    let configure = configure.clone();
+                    let action_rows = action_rows.clone();
+                    move || {
+                        status.set_subtitle(tr!("Configured"));
+                        configure.set_title(tr!("Sign out"));
+                        for row in action_rows.borrow().iter() {
+                            row.set_sensitive(true);
+                        }
+                    }
+                },
+            );
         });
     }
     group.add(&configure_row);
@@ -2010,11 +2448,22 @@ fn build_nextcloud_passwords_group(
         .build();
     sync_row.add_suffix(&gtk::Image::from_icon_name("emblem-synchronizing-symbolic"));
     sync_row.set_sensitive(logged_in);
+    nextcloud_action_rows.borrow_mut().push(sync_row.clone());
     {
         let state = state.clone();
         let toast = toast.clone();
-        sync_row.connect_activated(move |_| {
-            run_nextcloud_sync(state.clone(), toast.clone());
+        let parent_widget = parent.clone();
+        let dialog_slot = dialog_slot.clone();
+        sync_row.connect_activated(move |row| {
+            let parent = row.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+            run_nextcloud_sync(
+                parent.as_ref(),
+                state.clone(),
+                toast.clone(),
+                Some(parent_widget.clone()),
+                Some(dialog_slot.clone()),
+                Some(row.clone()),
+            );
         });
     }
     group.add(&sync_row);
@@ -2026,6 +2475,8 @@ fn show_nextcloud_dialog<F>(
     parent: Option<&gtk::Window>,
     state: SharedState,
     toast: adw::ToastOverlay,
+    unlock_parent: gtk::Widget,
+    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
     on_saved: F,
 ) where
     F: Fn() + 'static,
@@ -2046,6 +2497,7 @@ fn show_nextcloud_dialog<F>(
     let pass_row = adw::PasswordEntryRow::builder()
         .title(tr!("App password"))
         .build();
+    let parent_window = parent.cloned();
 
     let list = gtk::ListBox::builder()
         .selection_mode(gtk::SelectionMode::None)
@@ -2064,6 +2516,9 @@ fn show_nextcloud_dialog<F>(
         let user_row = user_row.clone();
         let pass_row = pass_row.clone();
         let on_saved = on_saved.clone();
+        let parent_window = parent_window.clone();
+        let unlock_parent = unlock_parent.clone();
+        let dialog_slot = dialog_slot.clone();
         dialog.connect_response(None, move |_dlg, resp| {
             if resp != "save" {
                 return;
@@ -2077,6 +2532,13 @@ fn show_nextcloud_dialog<F>(
                 Ok(()) => {
                     show_toast(&toast, tr!("Nextcloud Passwords connected"));
                     on_saved();
+                    show_nextcloud_initial_sync_dialog(
+                        parent_window.as_ref(),
+                        state.clone(),
+                        toast.clone(),
+                        unlock_parent.clone(),
+                        dialog_slot.clone(),
+                    );
                 }
                 Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Configure failed"))),
             }
@@ -2085,31 +2547,213 @@ fn show_nextcloud_dialog<F>(
     dialog.present(parent);
 }
 
-fn run_nextcloud_sync(state: SharedState, toast: adw::ToastOverlay) {
+fn show_nextcloud_initial_sync_dialog(
+    parent: Option<&gtk::Window>,
+    state: SharedState,
+    toast: adw::ToastOverlay,
+    unlock_parent: gtk::Widget,
+    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+) {
+    if !state.vault.borrow().is_unlocked() {
+        show_toast(&toast, tr!("Unlock the vault first"));
+        show_settings_unlock_dialog(&unlock_parent, state, toast, dialog_slot);
+        return;
+    }
+
+    let dialog = adw::AlertDialog::builder()
+        .heading(tr!("Nextcloud Passwords connected"))
+        .body(tr!(
+            "Two-way reconcile: pull remote, push local, resolve by latest-wins"
+        ))
+        .default_response("sync")
+        .close_response("cancel")
+        .build();
+    dialog.add_response("cancel", tr!("Cancel"));
+    dialog.add_response("sync", tr!("Sync now"));
+    dialog.set_response_appearance("sync", adw::ResponseAppearance::Suggested);
+    let parent_window = parent.cloned();
+    dialog.connect_response(None, move |dlg, response| {
+        if response == "sync" {
+            run_nextcloud_sync(
+                parent_window.as_ref(),
+                state.clone(),
+                toast.clone(),
+                None,
+                None,
+                None,
+            );
+        }
+        dlg.close();
+    });
+    dialog.present(parent);
+}
+
+fn run_nextcloud_sync(
+    parent: Option<&gtk::Window>,
+    state: SharedState,
+    toast: adw::ToastOverlay,
+    unlock_parent: Option<gtk::Widget>,
+    dialog_slot: Option<Rc<RefCell<Option<adw::Dialog>>>>,
+    active_row: Option<adw::ActionRow>,
+) {
     use ashypass_core::sync::{nextcloud_engine, ConflictResolution};
     if !state.vault.borrow().is_unlocked() {
         show_toast(&toast, tr!("Unlock the vault first"));
+        if let (Some(unlock_parent), Some(dialog_slot)) = (unlock_parent, dialog_slot) {
+            show_settings_unlock_dialog(&unlock_parent, state, toast, dialog_slot);
+        } else {
+            show_message_dialog(
+                parent,
+                tr!("Vault must be unlocked to configure"),
+                tr!("Unlock the vault first"),
+            );
+        }
         return;
     }
-    let report = nextcloud_engine::sync(
-        &state.vault.borrow(),
-        &state.nextcloud.borrow(),
-        ConflictResolution::LastWriteWins,
-    );
-    match report {
+    let (db_path, session_key) = match state.vault.borrow().session_reopen_parts() {
+        Ok(parts) => parts,
+        Err(e) => {
+            let msg = format!("{}: {e}", tr!("Sync failed"));
+            show_toast(&toast, &msg);
+            show_message_dialog(parent, tr!("Sync failed"), &msg);
+            return;
+        }
+    };
+    let client = state.nextcloud.borrow().clone();
+    let parent_window = parent.cloned();
+    let progress_ui = show_nextcloud_progress_dialog(parent);
+    let (sender, receiver) = std::sync::mpsc::channel::<NextcloudSyncMessage>();
+    if let Some(row) = active_row.as_ref() {
+        row.set_title(tr!("Synchronizing..."));
+        row.set_subtitle(tr!("Please wait while AshyPass talks to Nextcloud"));
+        row.set_sensitive(false);
+    }
+    show_toast(&toast, tr!("Synchronizing Nextcloud"));
+
+    let worker_sender = sender.clone();
+    std::thread::spawn(move || {
+        let progress_sender = worker_sender.clone();
+        let outcome = (|| {
+            let vault = ashypass_core::db::Vault::open_with_session_key(db_path, session_key)?;
+            nextcloud_engine::sync_with_progress(
+                &vault,
+                &client,
+                ConflictResolution::LastWriteWins,
+                move |progress| {
+                    let _ = progress_sender.send(NextcloudSyncMessage::Progress(progress));
+                },
+            )
+        })()
+        .map_err(|e| e.to_string());
+        let _ = worker_sender.send(NextcloudSyncMessage::Finished(outcome));
+    });
+    drop(sender);
+
+    glib::timeout_add_local(std::time::Duration::from_millis(150), move || {
+        let mut latest_progress = None;
+        let mut finished = None;
+
+        loop {
+            match receiver.try_recv() {
+                Ok(NextcloudSyncMessage::Progress(progress)) => latest_progress = Some(progress),
+                Ok(NextcloudSyncMessage::Finished(outcome)) => {
+                    finished = Some(outcome);
+                    break;
+                }
+                Err(std::sync::mpsc::TryRecvError::Empty) => break,
+                Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                    if let Some(row) = active_row.as_ref() {
+                        restore_nextcloud_sync_row(row);
+                    }
+                    progress_ui.spinner.stop();
+                    progress_ui.dialog.close();
+                    let msg = tr!("Sync failed").to_string();
+                    show_toast(&toast, &msg);
+                    show_message_dialog(parent_window.as_ref(), tr!("Sync failed"), &msg);
+                    state.events.emit(crate::events::AppEvent::SyncFailed(msg));
+                    return glib::ControlFlow::Break;
+                }
+            }
+        }
+
+        if let Some(progress) = latest_progress {
+            update_nextcloud_progress(&progress_ui, progress);
+        } else {
+            progress_ui.progress.pulse();
+        }
+
+        if let Some(outcome) = finished {
+            if let Some(row) = active_row.as_ref() {
+                restore_nextcloud_sync_row(row);
+            }
+            progress_ui.spinner.stop();
+            progress_ui.dialog.close();
+            finish_nextcloud_sync(
+                parent_window.as_ref(),
+                state.clone(),
+                toast.clone(),
+                outcome,
+            );
+            glib::ControlFlow::Break
+        } else {
+            glib::ControlFlow::Continue
+        }
+    });
+}
+
+fn restore_nextcloud_sync_row(row: &adw::ActionRow) {
+    row.set_title(tr!("Sync now"));
+    row.set_subtitle(tr!(
+        "Two-way reconcile: pull remote, push local, resolve by latest-wins"
+    ));
+    row.set_sensitive(true);
+}
+
+fn finish_nextcloud_sync(
+    parent: Option<&gtk::Window>,
+    state: SharedState,
+    toast: adw::ToastOverlay,
+    result: NextcloudSyncResult,
+) {
+    match result {
         Ok(r) => {
             let s = &r.stats;
-            let msg = format!(
-                "{}: +{} loc, +{} rem, ↑{}, ↓{}, ✕{}, ⚠{}",
-                tr!("Sync"),
+            let heading = if s.errors.is_empty() {
+                tr!("Sync completed")
+            } else {
+                tr!("Sync completed with errors")
+            };
+            show_toast(&toast, heading);
+            let mut body = format!(
+                "{}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}",
+                tr!("Nextcloud sync finished."),
+                tr!("Created locally"),
                 s.created_locally,
+                tr!("Created on Nextcloud"),
                 s.created_remotely,
-                s.updated_remotely,
+                tr!("Updated locally"),
                 s.updated_locally,
+                tr!("Updated on Nextcloud"),
+                s.updated_remotely,
+                tr!("Deleted on Nextcloud"),
                 s.deleted_remotely,
+                tr!("Conflicts resolved"),
                 s.conflicts,
             );
-            show_toast(&toast, &msg);
+            if s.skipped_passwordless > 0 {
+                let skipped = format!(
+                    "{}: {}",
+                    tr!("Passwordless entries ignored"),
+                    s.skipped_passwordless
+                );
+                show_toast(&toast, &skipped);
+                body.push_str("\n\n");
+                body.push_str(&skipped);
+                body.push('\n');
+                body.push_str(tr!(
+                    "Nextcloud requires a filled password, so these local entries were not sent."
+                ));
+            }
             if !s.errors.is_empty() {
                 let head = s.errors.first().cloned().unwrap_or_default();
                 let extra = if s.errors.len() > 1 {
@@ -2118,7 +2762,19 @@ fn run_nextcloud_sync(state: SharedState, toast: adw::ToastOverlay) {
                     String::new()
                 };
                 show_toast(&toast, &format!("{}: {head}{extra}", tr!("Sync errors")));
+                body.push_str("\n\n");
+                body.push_str(tr!("Sync errors"));
+                body.push_str(":\n");
+                for err in s.errors.iter().take(5) {
+                    body.push_str("- ");
+                    body.push_str(err);
+                    body.push('\n');
+                }
+                if s.errors.len() > 5 {
+                    body.push_str(&format!("... +{} more", s.errors.len() - 5));
+                }
             }
+            show_message_dialog(parent, heading, &body);
             state
                 .events
                 .emit(crate::events::AppEvent::SyncCompleted {
@@ -2126,7 +2782,9 @@ fn run_nextcloud_sync(state: SharedState, toast: adw::ToastOverlay) {
                 });
         }
         Err(e) => {
-            show_toast(&toast, &format!("{}: {e}", tr!("Sync failed")));
+            let msg = format!("{}: {e}", tr!("Sync failed"));
+            show_toast(&toast, &msg);
+            show_message_dialog(parent, tr!("Sync failed"), &msg);
             state
                 .events
                 .emit(crate::events::AppEvent::SyncFailed(e.to_string()));
@@ -2138,7 +2796,12 @@ fn run_nextcloud_sync(state: SharedState, toast: adw::ToastOverlay) {
 // Audit
 // ---------------------------------------------------------------------------
 
-fn populate_audit(page: &adw::PreferencesPage, state: SharedState, toast: adw::ToastOverlay) {
+fn populate_audit(
+    page: &adw::PreferencesPage,
+    state: SharedState,
+    settings: Rc<RefCell<Settings>>,
+    toast: adw::ToastOverlay,
+) {
     let opts_group = adw::PreferencesGroup::builder()
         .title(tr!("Audit Options"))
         .description(tr!(
@@ -2150,8 +2813,15 @@ fn populate_audit(page: &adw::PreferencesPage, state: SharedState, toast: adw::T
         .subtitle(tr!(
             "Sends only the first 5 hex chars of SHA-1(password) per entry. Cached locally for 7 days."
         ))
-        .active(false)
+        .active(settings.borrow().audit_check_hibp)
         .build();
+    {
+        let settings = settings.clone();
+        hibp_row.connect_active_notify(move |row| {
+            settings.borrow_mut().audit_check_hibp = row.is_active();
+            let _ = settings.borrow().save();
+        });
+    }
     opts_group.add(&hibp_row);
     let run_row = adw::ActionRow::builder()
         .title(tr!("Run Audit"))
@@ -2173,80 +2843,152 @@ fn populate_audit(page: &adw::PreferencesPage, state: SharedState, toast: adw::T
     let findings_group = adw::PreferencesGroup::builder().title(tr!("Findings")).build();
     page.add(&findings_group);
 
+    let finding_rows: Rc<RefCell<Vec<adw::ActionRow>>> = Rc::new(RefCell::new(Vec::new()));
     let findings_group_cl = findings_group.clone();
     let summary_row_cl = summary_row.clone();
     let hibp_row_cl = hibp_row.clone();
-    run_row.connect_activated(move |_| {
+    let finding_rows_cl = finding_rows.clone();
+    run_row.connect_activated(move |trigger| {
         if !state.vault.borrow().is_unlocked() {
             show_toast(&toast, tr!("Unlock the vault first"));
             return;
         }
-        clear_group(&findings_group_cl);
-        let mut opts = ashypass_core::audit::AuditOptions::defaults();
-        opts.check_hibp = hibp_row_cl.is_active();
-        let report = match ashypass_core::audit::run(&state.vault.borrow(), opts) {
-            Ok(r) => r,
+        let state = state.clone();
+        let toast = toast.clone();
+        let findings_group = findings_group_cl.clone();
+        let summary_row = summary_row_cl.clone();
+        let hibp_row = hibp_row_cl.clone();
+        let finding_rows = finding_rows_cl.clone();
+        let trigger = trigger.clone();
+        trigger.set_sensitive(false);
+        for existing in finding_rows.borrow_mut().drain(..) {
+            findings_group.remove(&existing);
+        }
+        let (db_path, session_key) = match state.vault.borrow().session_reopen_parts() {
+            Ok(parts) => parts,
             Err(e) => {
                 show_toast(&toast, &format!("{}: {e}", tr!("Audit failed")));
+                trigger.set_sensitive(true);
                 return;
             }
         };
-        summary_row_cl.set_title(&format!(
-            "{} {}",
-            report.total_entries,
-            tr!("entries scanned")
-        ));
-        summary_row_cl.set_subtitle(&format!(
-            "{} {} • {} {} • {} {} • {} {} • {} {}",
-            report.count(ashypass_core::audit::IssueKind::Weak),
-            tr!("weak"),
-            report.count(ashypass_core::audit::IssueKind::Duplicate),
-            tr!("duplicate"),
-            report.count(ashypass_core::audit::IssueKind::Old),
-            tr!("old"),
-            report.count(ashypass_core::audit::IssueKind::Breached),
-            tr!("breached"),
-            report.count(ashypass_core::audit::IssueKind::MissingTotp),
-            tr!("no 2FA"),
-        ));
-        if report.findings.is_empty() {
-            let row = adw::ActionRow::builder()
-                .title(tr!("All clear"))
-                .subtitle(tr!("No issues found."))
-                .build();
-            findings_group_cl.add(&row);
-            return;
-        }
-        for f in report.findings.iter().take(200) {
-            let issues = f
-                .kinds
-                .iter()
-                .map(|k| match k {
-                    ashypass_core::audit::IssueKind::Weak => tr!("weak"),
-                    ashypass_core::audit::IssueKind::Duplicate => tr!("duplicate"),
-                    ashypass_core::audit::IssueKind::Old => tr!("old"),
-                    ashypass_core::audit::IssueKind::Breached => tr!("breached"),
-                    ashypass_core::audit::IssueKind::MissingTotp => tr!("no 2FA"),
-                })
-                .collect::<Vec<_>>()
-                .join(" • ");
-            let subtitle = match f.breached_count {
-                Some(c) => format!("{issues} ({} ×{c})", tr!("seen")),
-                None => issues,
-            };
-            let row = adw::ActionRow::builder()
-                .title(&f.title)
-                .subtitle(&subtitle)
-                .build();
-            let chip = gtk::Label::new(Some(f.strength_label));
-            chip.add_css_class("dim-label");
-            row.add_suffix(&chip);
-            findings_group_cl.add(&row);
-        }
-        for err in &report.network_errors {
-            show_toast(&toast, err);
-        }
+        let mut opts = ashypass_core::audit::AuditOptions::defaults();
+        opts.check_hibp = hibp_row.is_active();
+        summary_row.set_title(tr!("Run Audit"));
+        summary_row.set_subtitle("");
+        show_toast(&toast, tr!("Run Audit"));
+
+        let (sender, receiver) = std::sync::mpsc::channel::<AuditResult>();
+        std::thread::spawn(move || {
+            let outcome = (|| {
+                let vault = ashypass_core::db::Vault::open_with_session_key(db_path, session_key)?;
+                ashypass_core::audit::run(&vault, opts)
+            })()
+            .map_err(|e| e.to_string());
+            let _ = sender.send(outcome);
+        });
+
+        glib::timeout_add_local(std::time::Duration::from_millis(150), move || {
+            match receiver.try_recv() {
+                Ok(Ok(report)) => {
+                    render_audit_report(
+                        &report,
+                        &summary_row,
+                        &findings_group,
+                        &finding_rows,
+                        &toast,
+                    );
+                    trigger.set_sensitive(true);
+                    glib::ControlFlow::Break
+                }
+                Ok(Err(e)) => {
+                    show_toast(&toast, &format!("{}: {e}", tr!("Audit failed")));
+                    trigger.set_sensitive(true);
+                    glib::ControlFlow::Break
+                }
+                Err(std::sync::mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
+                Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                    show_toast(&toast, tr!("Audit failed"));
+                    trigger.set_sensitive(true);
+                    glib::ControlFlow::Break
+                }
+            }
+        });
     });
+}
+
+fn render_audit_report(
+    report: &ashypass_core::audit::Report,
+    summary_row: &adw::ActionRow,
+    findings_group: &adw::PreferencesGroup,
+    finding_rows: &Rc<RefCell<Vec<adw::ActionRow>>>,
+    toast: &adw::ToastOverlay,
+) {
+    summary_row.set_title(&format!(
+        "{} {}",
+        report.total_entries,
+        tr!("entries scanned")
+    ));
+    summary_row.set_subtitle(&format!(
+        "{} {} • {} {} • {} {} • {} {} • {} {}",
+        report.count(ashypass_core::audit::IssueKind::Weak),
+        tr!("weak"),
+        report.count(ashypass_core::audit::IssueKind::Duplicate),
+        tr!("duplicate"),
+        report.count(ashypass_core::audit::IssueKind::Old),
+        tr!("old"),
+        report.count(ashypass_core::audit::IssueKind::Breached),
+        tr!("breached"),
+        report.count(ashypass_core::audit::IssueKind::MissingTotp),
+        tr!("no 2FA"),
+    ));
+    for err in &report.network_errors {
+        show_toast(toast, err);
+    }
+    if report.findings.is_empty() {
+        let row = adw::ActionRow::builder()
+            .title(tr!("All clear"))
+            .subtitle(tr!("No issues found."))
+            .build();
+        findings_group.add(&row);
+        finding_rows.borrow_mut().push(row);
+        show_toast(
+            toast,
+            &format!("{} {}", report.total_entries, tr!("entries scanned")),
+        );
+        return;
+    }
+    for f in report.findings.iter().take(200) {
+        let issues = f
+            .kinds
+            .iter()
+            .map(|k| match k {
+                ashypass_core::audit::IssueKind::Weak => tr!("weak"),
+                ashypass_core::audit::IssueKind::Duplicate => tr!("duplicate"),
+                ashypass_core::audit::IssueKind::Old => tr!("old"),
+                ashypass_core::audit::IssueKind::Breached => tr!("breached"),
+                ashypass_core::audit::IssueKind::MissingTotp => tr!("no 2FA"),
+            })
+            .collect::<Vec<_>>()
+            .join(" • ");
+        let subtitle = match f.breached_count {
+            Some(c) => format!("{issues} ({} ×{c})", tr!("seen")),
+            None => issues,
+        };
+        let row = adw::ActionRow::builder()
+            .title(&f.title)
+            .subtitle(&subtitle)
+            .build();
+        let chip = gtk::Label::new(Some(f.strength_label));
+        chip.add_css_class("dim-label");
+        row.add_suffix(&chip);
+        findings_group.add(&row);
+        finding_rows.borrow_mut().push(row);
+    }
+    show_toast(
+        toast,
+        &format!("{} {}", report.total_entries, tr!("entries scanned")),
+    );
 }
 
 fn clear_group(group: &adw::PreferencesGroup) {
@@ -2313,7 +3055,7 @@ fn populate_trash(
     let list_holder = Rc::new(RefCell::new(list_group.clone()));
     // Self-referential render closure: stored in a RefCell so button handlers
     // built during rendering can re-invoke it once it's installed.
-    let render_slot: Rc<RefCell<Option<Rc<dyn Fn()>>>> = Rc::new(RefCell::new(None));
+    let render_slot: RenderSlot = Rc::new(RefCell::new(None));
     let render: Rc<dyn Fn()> = {
         let state = state.clone();
         let holder = list_holder.clone();
@@ -2326,7 +3068,7 @@ fn populate_trash(
                 Ok(v) => v,
                 Err(e) => {
                     let row = adw::ActionRow::builder()
-                        .title(&format!("{e}"))
+                        .title(format!("{e}"))
                         .build();
                     group.add(&row);
                     return;
@@ -2345,7 +3087,7 @@ fn populate_trash(
                     .unwrap_or_default();
                 let row = adw::ActionRow::builder()
                     .title(&t.title)
-                    .subtitle(&format!(
+                    .subtitle(format!(
                         "{} — {}",
                         t.username.as_deref().unwrap_or(""),
                         when
@@ -2385,7 +3127,7 @@ fn populate_trash(
                             Ok(None) => {}
                             Err(e) => {
                                 toast.add_toast(adw::Toast::builder()
-                                    .title(&format!("{e}"))
+                                    .title(format!("{e}"))
                                     .timeout(3)
                                     .build());
                             }
@@ -2411,7 +3153,7 @@ fn populate_trash(
                             }
                             Err(e) => {
                                 toast.add_toast(adw::Toast::builder()
-                                    .title(&format!("{e}"))
+                                    .title(format!("{e}"))
                                     .timeout(3)
                                     .build());
                             }
@@ -2452,14 +3194,14 @@ fn populate_trash(
             match state.vault.borrow().empty_trash() {
                 Ok(n) => {
                     toast.add_toast(adw::Toast::builder()
-                        .title(&format!("{} {}", n, tr!("entries removed")))
+                        .title(format!("{} {}", n, tr!("entries removed")))
                         .timeout(3)
                         .build());
                     (render)();
                 }
                 Err(e) => {
                     toast.add_toast(adw::Toast::builder()
-                        .title(&format!("{e}"))
+                        .title(format!("{e}"))
                         .timeout(3)
                         .build());
                 }
@@ -2469,4 +3211,3 @@ fn populate_trash(
     action_group.add(&empty_row);
     page.add(&action_group);
 }
-

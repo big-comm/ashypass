@@ -14,6 +14,8 @@ use crate::{Error, Result};
 use rusqlite::{params, Connection};
 use std::path::Path;
 
+type LegacyEncryptedRow = (i64, Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>);
+
 /// Add columns introduced after the initial Python release (idempotent).
 pub fn add_missing_columns(conn: &Connection) -> Result<()> {
     let alters = [
@@ -29,6 +31,8 @@ pub fn add_missing_columns(conn: &Connection) -> Result<()> {
         // Ignore "duplicate column" — the cheapest way is to attempt and swallow.
         let _ = conn.execute(sql, []);
     }
+    conn.execute(crate::db::schema::CREATE_FOLDERS, [])?;
+    conn.execute(crate::db::schema::CREATE_NEXTCLOUD_FOLDER_MAPPING, [])?;
     Ok(())
 }
 
@@ -91,7 +95,7 @@ pub fn migrate_v1_to_v2(conn: &mut Connection, master_password: &str) -> Result<
         let mut select = tx.prepare(
             "SELECT id, password_encrypted, notes_encrypted, totp_secret_encrypted FROM passwords",
         )?;
-        let rows: Vec<(i64, Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>)> = select
+        let rows: Vec<LegacyEncryptedRow> = select
             .query_map([], |r| {
                 Ok((
                     r.get::<_, i64>(0)?,

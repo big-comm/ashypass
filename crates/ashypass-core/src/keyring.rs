@@ -17,13 +17,14 @@ use std::collections::HashMap;
 
 /// All Ashy Pass keyring items carry these attribute pairs so we can find
 /// them again and so they don't collide with other apps' secrets.
-fn attributes() -> HashMap<&'static str, &'static str> {
+fn attributes(kind: &'static str) -> HashMap<&'static str, &'static str> {
     HashMap::from([
         ("application", "ashypass"),
-        ("kind", "master-password"),
+        ("kind", kind),
     ])
 }
 
+const MASTER_PASSWORD_KIND: &str = "master-password";
 const LABEL: &str = "Ashy Pass — vault master password";
 
 fn service() -> Result<SecretService<'static>> {
@@ -35,6 +36,12 @@ fn service() -> Result<SecretService<'static>> {
 /// existing entry with the same attributes. `replace=true` so we don't grow
 /// duplicate items if the user toggles the setting off and on.
 pub fn store_master(password: &str) -> Result<()> {
+    store_named_secret(MASTER_PASSWORD_KIND, LABEL, password)
+}
+
+/// Write an application secret under a stable kind. Intended for service
+/// app-passwords that should not be persisted in plaintext JSON configs.
+pub fn store_named_secret(kind: &'static str, label: &str, secret: &str) -> Result<()> {
     let ss = service()?;
     let collection = ss
         .get_default_collection()
@@ -46,9 +53,9 @@ pub fn store_master(password: &str) -> Result<()> {
         .map_err(|e| Error::Other(format!("unlock collection: {e}")))?;
     collection
         .create_item(
-            LABEL,
-            attributes(),
-            password.as_bytes(),
+            label,
+            attributes(kind),
+            secret.as_bytes(),
             true,
             "text/plain",
         )
@@ -60,9 +67,14 @@ pub fn store_master(password: &str) -> Result<()> {
 /// item matching our attributes exists (i.e. user hasn't opted in yet, or
 /// previously opted out). Bubbles up real errors otherwise.
 pub fn load_master() -> Result<Option<String>> {
+    load_named_secret(MASTER_PASSWORD_KIND)
+}
+
+/// Look up an application secret by kind.
+pub fn load_named_secret(kind: &'static str) -> Result<Option<String>> {
     let ss = service()?;
     let found = ss
-        .search_items(attributes())
+        .search_items(attributes(kind))
         .map_err(|e| Error::Other(format!("search: {e}")))?;
     let item = match found.unlocked.into_iter().next() {
         Some(i) => i,
@@ -85,9 +97,14 @@ pub fn load_master() -> Result<Option<String>> {
 
 /// Remove the stored master password. No-op if nothing is stored.
 pub fn delete_master() -> Result<()> {
+    delete_named_secret(MASTER_PASSWORD_KIND)
+}
+
+/// Remove application secrets with the given kind. No-op if none are stored.
+pub fn delete_named_secret(kind: &'static str) -> Result<()> {
     let ss = service()?;
     let found = ss
-        .search_items(attributes())
+        .search_items(attributes(kind))
         .map_err(|e| Error::Other(format!("search: {e}")))?;
     for item in found.unlocked.into_iter().chain(found.locked) {
         item.delete()
@@ -99,8 +116,13 @@ pub fn delete_master() -> Result<()> {
 /// True when an item matching our attributes is present (locked or not).
 /// Useful for showing the right toggle state without reading the secret.
 pub fn is_stored() -> bool {
+    is_named_secret_stored(MASTER_PASSWORD_KIND)
+}
+
+/// True when a secret matching the given kind is present (locked or not).
+pub fn is_named_secret_stored(kind: &'static str) -> bool {
     let Ok(ss) = service() else { return false };
-    let Ok(found) = ss.search_items(attributes()) else {
+    let Ok(found) = ss.search_items(attributes(kind)) else {
         return false;
     };
     !found.unlocked.is_empty() || !found.locked.is_empty()

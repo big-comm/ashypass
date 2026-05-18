@@ -15,9 +15,12 @@ use ashypass_core::generator::{
 use ashypass_core::totp::{generate_totp, remaining_seconds, Algorithm};
 use gtk::glib;
 use std::cell::{Cell, RefCell};
+use std::collections::HashSet;
 use std::rc::Rc;
 
 type AuthChangedCb = Box<dyn Fn()>;
+type TotpWidget = (gtk::Label, gtk::ProgressBar, i64, String, u8, u32);
+type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum ViewMode {
@@ -54,16 +57,20 @@ struct Inner {
     // Vault page
     timeout_banner: adw::Banner,
     search_entry: gtk::SearchEntry,
+    search_reload_id: RefCell<Option<glib::SourceId>>,
     category_bar: gtk::Box,
     category_dropdown: gtk::DropDown,
     category_model: RefCell<gtk::StringList>,
+    category_names: RefCell<Vec<String>>,
     updating_categories: Cell<bool>,
     list_box: gtk::ListBox,
+    list_scrolled: gtk::ScrolledWindow,
     empty_status: adw::StatusPage,
     content_stack: gtk::Stack,
 
     view_mode: Cell<ViewMode>,
-    totp_widgets: RefCell<Vec<(gtk::Label, gtk::ProgressBar, i64, String, u8, u32)>>,
+    expanded_folders: RefCell<HashSet<String>>,
+    totp_widgets: RefCell<Vec<TotpWidget>>,
     totp_timer_id: RefCell<Option<glib::SourceId>>,
 
     on_auth_changed: RefCell<Option<AuthChangedCb>>,
@@ -89,7 +96,7 @@ impl VaultView {
         // ---- Vault page ----
         let (vault_page, timeout_banner, search_bar, search_entry,
              category_bar, category_dropdown, category_model,
-             list_box, empty_status, content_stack) = build_vault_page();
+             list_box, list_scrolled, empty_status, content_stack) = build_vault_page();
         main_stack.add_named(&vault_page, Some("vault"));
 
         root.append(&main_stack);
@@ -110,14 +117,18 @@ impl VaultView {
             strength_label,
             timeout_banner,
             search_entry: search_entry.clone(),
+            search_reload_id: RefCell::new(None),
             category_bar,
             category_dropdown,
             category_model: RefCell::new(category_model),
+            category_names: RefCell::new(Vec::new()),
             updating_categories: Cell::new(false),
             list_box,
+            list_scrolled,
             empty_status,
             content_stack,
             view_mode: Cell::new(ViewMode::All),
+            expanded_folders: RefCell::new(HashSet::new()),
             totp_widgets: RefCell::new(Vec::new()),
             totp_timer_id: RefCell::new(None),
             on_auth_changed: RefCell::new(None),
@@ -125,6 +136,7 @@ impl VaultView {
 
         wire_auth(&inner);
         wire_vault(&inner);
+        wire_events(&inner);
         wire_session_warning(&inner);
 
         inner.update_view();
@@ -156,6 +168,7 @@ impl VaultView {
     /// Lock the vault triggered by user click or external (session timeout).
     pub fn lock_vault(&self) {
         self.inner.stop_totp_timer();
+        self.inner.cancel_pending_search_reload();
         self.inner.state.vault.borrow_mut().lock();
         self.inner.timeout_banner.set_revealed(false);
         self.inner.update_view();
@@ -315,6 +328,7 @@ fn build_vault_page() -> (
     gtk::DropDown,
     gtk::StringList,
     gtk::ListBox,
+    gtk::ScrolledWindow,
     adw::StatusPage,
     gtk::Stack,
 ) {
@@ -346,6 +360,7 @@ fn build_vault_page() -> (
         .visible(false)
         .build();
     let cat_icon = gtk::Image::from_icon_name("folder-symbolic");
+    cat_icon.add_css_class("folder-heading-icon");
     category_bar.append(&cat_icon);
     let category_model = gtk::StringList::new(&[tr!("All")]);
     let category_dropdown = gtk::DropDown::builder()
@@ -389,6 +404,7 @@ fn build_vault_page() -> (
         category_dropdown,
         category_model,
         list_box,
+        scrolled,
         empty_status,
         content_stack,
     )
@@ -439,17 +455,32 @@ fn wire_auth(inner: &Rc<Inner>) {
 
 fn wire_vault(inner: &Rc<Inner>) {
     let inner_cl = inner.clone();
-    inner.search_entry.connect_search_changed(move |entry| {
-        let text = entry.text().trim().to_string();
-        let search = if text.is_empty() { None } else { Some(text) };
-        inner_cl.load_passwords(search.as_deref());
-        SessionManager::on_activity(&inner_cl.state.session);
+    inner.search_entry.connect_search_changed(move |_| {
+        if let Some(id) = inner_cl.search_reload_id.borrow_mut().take() {
+            id.remove();
+        }
+        let inner_weak = Rc::downgrade(&inner_cl);
+        let id = glib::timeout_add_local(std::time::Duration::from_millis(150), move || {
+            let Some(inner) = inner_weak.upgrade() else {
+                return glib::ControlFlow::Break;
+            };
+            *inner.search_reload_id.borrow_mut() = None;
+            let text = inner.search_entry.text().trim().to_string();
+            let search = if text.is_empty() { None } else { Some(text) };
+            inner.load_passwords(search.as_deref());
+            SessionManager::on_activity(&inner.state.session);
+            glib::ControlFlow::Break
+        });
+        *inner_cl.search_reload_id.borrow_mut() = Some(id);
     });
 
     let inner_cl = inner.clone();
     inner.category_dropdown.connect_selected_notify(move |_| {
         if inner_cl.updating_categories.get() {
             return;
+        }
+        if let Some(id) = inner_cl.search_reload_id.borrow_mut().take() {
+            id.remove();
         }
         let text = inner_cl.search_entry.text().trim().to_string();
         let search = if text.is_empty() { None } else { Some(text) };
@@ -478,11 +509,33 @@ fn wire_session_warning(inner: &Rc<Inner>) {
     inner.state.session.borrow_mut().set_warning_callback(cb);
 }
 
+fn wire_events(inner: &Rc<Inner>) {
+    let inner_weak = Rc::downgrade(inner);
+    inner.state.events.subscribe(move |event| {
+        let Some(inner) = inner_weak.upgrade() else {
+            return;
+        };
+        match event {
+            crate::events::AppEvent::VaultChanged
+            | crate::events::AppEvent::SyncCompleted { .. } if inner.can_show_vault_data() => {
+                inner.update_view();
+            }
+            crate::events::AppEvent::SessionLocked => inner.update_view(),
+            _ => {}
+        }
+    });
+}
+
 // ============================================================================
 // Inner — view model logic
 // ============================================================================
 
 impl Inner {
+    fn can_show_vault_data(&self) -> bool {
+        self.state.session.borrow().is_authenticated()
+            && self.state.vault.borrow().is_unlocked()
+    }
+
     fn notify_auth_changed(&self) {
         if let Some(cb) = self.on_auth_changed.borrow().as_ref() {
             cb();
@@ -654,18 +707,31 @@ impl Inner {
     }
 
     fn load_passwords(self: &Rc<Self>, search: Option<&str>) {
+        if !self.can_show_vault_data() {
+            return;
+        }
         self.stop_totp_timer();
         self.totp_widgets.borrow_mut().clear();
         clear_list_box(&self.list_box);
 
         let mode = self.view_mode.get();
+        let selected_category = if mode == ViewMode::All {
+            self.get_selected_category()
+        } else {
+            None
+        };
         if mode == ViewMode::All {
-            self.update_category_filter();
+            self.update_category_filter(selected_category.as_deref());
         } else {
             self.category_bar.set_visible(false);
         }
 
-        let mut entries = match self.state.vault.borrow().list(search) {
+        let mut entries = match self
+            .state
+            .vault
+            .borrow()
+            .list_filtered(search, selected_category.as_deref())
+        {
             Ok(v) => v,
             Err(e) => {
                 log::error!("vault.list failed: {e}");
@@ -676,14 +742,8 @@ impl Inner {
         if mode == ViewMode::Favorites {
             entries.retain(|p| p.favorite);
         } else if mode == ViewMode::Groups {
-            self.load_grouped(entries);
+            self.load_grouped(entries, search.is_some());
             return;
-        }
-
-        if mode == ViewMode::All {
-            if let Some(cat) = self.get_selected_category() {
-                entries.retain(|p| p.category.as_deref().unwrap_or("") == cat);
-            }
         }
 
         if entries.is_empty() {
@@ -712,17 +772,28 @@ impl Inner {
         }
 
         self.content_stack.set_visible_child_name("list");
+        let nextcloud_synced_ids = self.nextcloud_synced_ids();
+        let show_favicons = ashypass_core::settings::Settings::load().show_favicons;
         for entry in entries {
-            let row = self.create_password_row(&entry);
+            let row = self.create_password_row(
+                &entry,
+                nextcloud_synced_ids.contains(&entry.id),
+                show_favicons,
+            );
             self.list_box.append(&row);
         }
         self.start_totp_timer();
     }
 
-    fn load_grouped(self: &Rc<Self>, entries: Vec<PasswordEntry>) {
+    fn load_grouped(self: &Rc<Self>, entries: Vec<PasswordEntry>, filtering: bool) {
         use std::collections::BTreeMap;
         let mut groups: BTreeMap<String, Vec<PasswordEntry>> = BTreeMap::new();
         let mut uncategorized: Vec<PasswordEntry> = Vec::new();
+        if !filtering {
+            for folder in self.state.vault.borrow().categories().unwrap_or_default() {
+                groups.entry(folder).or_default();
+            }
+        }
         for p in entries {
             match p.category.clone().filter(|s| !s.is_empty()) {
                 Some(cat) => groups.entry(cat).or_default().push(p),
@@ -731,63 +802,221 @@ impl Inner {
         }
 
         if groups.is_empty() && uncategorized.is_empty() {
-            self.empty_status.set_icon_name(Some("folder-symbolic"));
-            self.empty_status.set_title(tr!("No Groups"));
-            self.empty_status
-                .set_description(Some(tr!("Set a category on entries to organize them into groups")));
-            self.content_stack.set_visible_child_name("empty");
+            if filtering {
+                self.empty_status.set_icon_name(Some("edit-find-symbolic"));
+                self.empty_status.set_title(tr!("No Results"));
+                self.empty_status
+                    .set_description(Some(tr!("No passwords match your search")));
+                self.content_stack.set_visible_child_name("empty");
+            } else {
+                self.content_stack.set_visible_child_name("list");
+                self.add_create_folder_row();
+            }
             return;
         }
 
         self.content_stack.set_visible_child_name("list");
+        let nextcloud_synced_ids = self.nextcloud_synced_ids();
+        let show_favicons = ashypass_core::settings::Settings::load().show_favicons;
+        self.add_create_folder_row();
 
         for (cat, items) in groups {
-            let escaped = glib::markup_escape_text(&cat);
-            let header = gtk::Label::new(None);
-            header.set_markup(&format!("<b>📁 {}</b>", escaped));
-            header.set_xalign(0.0);
-            header.set_margin_start(16);
-            header.set_margin_top(12);
-            header.set_margin_bottom(4);
-            header.add_css_class("heading");
-            let hdr_row = gtk::ListBoxRow::new();
-            hdr_row.set_activatable(false);
-            hdr_row.set_selectable(false);
-            hdr_row.set_child(Some(&header));
-            self.list_box.append(&hdr_row);
+            let expanded = self.expanded_folders.borrow().contains(&cat);
+            let items_empty = items.is_empty();
+            let row = adw::ActionRow::builder()
+                .title(&cat)
+                .subtitle(format!("{}", items.len()))
+                .activatable(true)
+                .build();
+            let folder_icon = gtk::Image::from_icon_name("folder-symbolic");
+            folder_icon.add_css_class("folder-heading-icon");
+            row.add_prefix(&folder_icon);
+            row.add_suffix(&gtk::Image::from_icon_name(if expanded {
+                "pan-down-symbolic"
+            } else {
+                "pan-end-symbolic"
+            }));
+            {
+                let inner_cl = self.clone();
+                let cat = cat.clone();
+                row.connect_activated(move |_| {
+                    inner_cl.toggle_group_folder(&cat);
+                });
+            }
+            self.list_box.append(&row);
 
-            for e in items {
-                let row = self.create_password_row(&e);
-                self.list_box.append(&row);
+            if expanded {
+                for e in items {
+                    let row = self.create_password_row(
+                        &e,
+                        nextcloud_synced_ids.contains(&e.id),
+                        show_favicons,
+                    );
+                    self.list_box.append(&row);
+                }
+                if items_empty {
+                    let empty = adw::ActionRow::builder()
+                        .title(tr!("No Passwords Stored"))
+                        .sensitive(false)
+                        .build();
+                    self.list_box.append(&empty);
+                }
             }
         }
 
         if !uncategorized.is_empty() {
-            let escaped = glib::markup_escape_text(tr!("Uncategorized"));
-            let header = gtk::Label::new(None);
-            header.set_markup(&format!("<b>{}</b>", escaped));
-            header.set_xalign(0.0);
-            header.set_margin_start(16);
-            header.set_margin_top(12);
-            header.set_margin_bottom(4);
-            header.add_css_class("heading");
-            header.add_css_class("dim-label");
-            let hdr_row = gtk::ListBoxRow::new();
-            hdr_row.set_activatable(false);
-            hdr_row.set_selectable(false);
-            hdr_row.set_child(Some(&header));
-            self.list_box.append(&hdr_row);
+            let key = String::new();
+            let expanded = self.expanded_folders.borrow().contains(&key);
+            let row = adw::ActionRow::builder()
+                .title(tr!("Uncategorized"))
+                .subtitle(format!("{}", uncategorized.len()))
+                .activatable(true)
+                .build();
+            let folder_icon = gtk::Image::from_icon_name("folder-symbolic");
+            folder_icon.add_css_class("folder-heading-icon");
+            row.add_prefix(&folder_icon);
+            row.add_suffix(&gtk::Image::from_icon_name(if expanded {
+                "pan-down-symbolic"
+            } else {
+                "pan-end-symbolic"
+            }));
+            {
+                let inner_cl = self.clone();
+                row.connect_activated(move |_| {
+                    inner_cl.toggle_group_folder("");
+                });
+            }
+            self.list_box.append(&row);
 
-            for e in uncategorized {
-                let row = self.create_password_row(&e);
-                self.list_box.append(&row);
+            if expanded {
+                for e in uncategorized {
+                    let row = self.create_password_row(
+                        &e,
+                        nextcloud_synced_ids.contains(&e.id),
+                        show_favicons,
+                    );
+                    self.list_box.append(&row);
+                }
             }
         }
 
         self.start_totp_timer();
     }
 
-    fn create_password_row(self: &Rc<Self>, entry: &PasswordEntry) -> adw::ActionRow {
+    fn add_create_folder_row(self: &Rc<Self>) {
+        let row = adw::ActionRow::builder()
+            .title(tr!("Folder"))
+            .subtitle(tr!("Set a category on entries to organize them into groups"))
+            .activatable(true)
+            .build();
+        let icon = gtk::Image::from_icon_name("folder-new-symbolic");
+        icon.add_css_class("folder-heading-icon");
+        row.add_prefix(&icon);
+        row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+        {
+            let inner_cl = self.clone();
+            row.connect_activated(move |_| {
+                inner_cl.show_add_folder_dialog();
+            });
+        }
+        self.list_box.append(&row);
+    }
+
+    fn current_search(&self) -> Option<String> {
+        let text = self.search_entry.text().trim().to_string();
+        if text.is_empty() {
+            None
+        } else {
+            Some(text)
+        }
+    }
+
+    fn reload_current_filter(self: &Rc<Self>) {
+        let scroll_y = self.list_scrolled.vadjustment().value();
+        let search = self.current_search();
+        self.load_passwords(search.as_deref());
+        self.restore_scroll(scroll_y);
+    }
+
+    fn restore_scroll(&self, value: f64) {
+        let adjustment = self.list_scrolled.vadjustment();
+        glib::idle_add_local_once(move || {
+            let lower = adjustment.lower();
+            let max = (adjustment.upper() - adjustment.page_size()).max(lower);
+            adjustment.set_value(value.clamp(lower, max));
+        });
+    }
+
+    fn toggle_group_folder(self: &Rc<Self>, folder: &str) {
+        {
+            let mut expanded = self.expanded_folders.borrow_mut();
+            if !expanded.insert(folder.to_string()) {
+                expanded.remove(folder);
+            }
+        }
+        self.reload_current_filter();
+        SessionManager::on_activity(&self.state.session);
+    }
+
+    fn show_add_folder_dialog(self: &Rc<Self>) {
+        let dialog = adw::AlertDialog::builder()
+            .heading(tr!("Folder"))
+            .default_response("save")
+            .close_response("cancel")
+            .build();
+        dialog.add_response("cancel", tr!("Cancel"));
+        dialog.add_response("save", tr!("Save"));
+        dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
+
+        let folder_entry = adw::EntryRow::builder().title(tr!("Folder")).build();
+        let list = gtk::ListBox::builder()
+            .selection_mode(gtk::SelectionMode::None)
+            .build();
+        list.add_css_class("boxed-list");
+        list.append(&folder_entry);
+        dialog.set_extra_child(Some(&list));
+
+        let inner_cl = self.clone();
+        dialog.connect_response(None, move |dlg, response| {
+            if response != "save" {
+                dlg.close();
+                return;
+            }
+            let name = folder_entry.text().trim().to_string();
+            if name.is_empty() {
+                folder_entry.add_css_class("error");
+                return;
+            }
+            match inner_cl.state.vault.borrow().create_folder(&name) {
+                Ok(_) => {
+                    inner_cl.show_toast(&format!("{}: {name}", tr!("Folder")));
+                    inner_cl.reload_current_filter();
+                    SessionManager::on_activity(&inner_cl.state.session);
+                    dlg.close();
+                }
+                Err(e) => {
+                    inner_cl.show_toast(&format!("{}: {e}", tr!("Error saving password")));
+                }
+            }
+        });
+        dialog.present(Some(self.toast.upcast_ref::<gtk::Widget>()));
+    }
+
+    fn nextcloud_synced_ids(&self) -> HashSet<i64> {
+        self.state
+            .vault
+            .borrow()
+            .nc_all_mappings()
+            .map(|items| items.into_iter().map(|m| m.entry_id).collect())
+            .unwrap_or_default()
+    }
+
+    fn create_password_row(
+        self: &Rc<Self>,
+        entry: &PasswordEntry,
+        nextcloud_synced: bool,
+        show_favicons: bool,
+    ) -> adw::ActionRow {
         let row = adw::ActionRow::builder().title(&entry.title).build();
 
         let mut parts: Vec<String> = Vec::new();
@@ -798,7 +1027,7 @@ impl Inner {
             parts.push(u.to_string());
         }
         if let Some(c) = entry.category.as_deref().filter(|s| !s.is_empty()) {
-            parts.push(format!("📁 {c}"));
+            parts.push(format!("{}: {c}", tr!("Folder")));
         }
         if !parts.is_empty() {
             let escaped = glib::markup_escape_text(&parts.join(" • "));
@@ -806,13 +1035,24 @@ impl Inner {
         }
 
         let icon = gtk::Image::new();
-        if ashypass_core::settings::Settings::load().show_favicons {
+        if show_favicons {
             crate::favicons::apply(&icon, entry.url.as_deref(), 32);
         } else {
             icon.set_pixel_size(32);
             icon.set_icon_name(Some("dialog-password-symbolic"));
         }
         row.add_prefix(&icon);
+
+        if nextcloud_synced {
+            let badge = gtk::Label::builder()
+                .label("Nextcloud")
+                .tooltip_text(tr!("Nextcloud Passwords"))
+                .valign(gtk::Align::Center)
+                .build();
+            badge.add_css_class("caption");
+            badge.add_css_class("sync-provider-badge");
+            row.add_suffix(&badge);
+        }
 
         // Favorite toggle
         let fav_btn = gtk::Button::builder()
@@ -902,17 +1142,29 @@ impl Inner {
         }
     }
 
-    fn update_category_filter(&self) {
+    fn update_category_filter(&self, selected: Option<&str>) {
         self.updating_categories.set(true);
         let cats = self.state.vault.borrow().categories().unwrap_or_default();
-        let mut items: Vec<&str> = Vec::with_capacity(1 + cats.len());
-        items.push(tr!("All"));
-        for c in &cats {
-            items.push(c.as_str());
+
+        if *self.category_names.borrow() != cats {
+            let mut items: Vec<&str> = Vec::with_capacity(1 + cats.len());
+            items.push(tr!("All"));
+            for c in &cats {
+                items.push(c.as_str());
+            }
+            let model = gtk::StringList::new(&items);
+            self.category_dropdown.set_model(Some(&model));
+            *self.category_model.borrow_mut() = model;
+            *self.category_names.borrow_mut() = cats.clone();
         }
-        let model = gtk::StringList::new(&items);
-        self.category_dropdown.set_model(Some(&model));
-        *self.category_model.borrow_mut() = model;
+
+        let selected_idx = selected
+            .and_then(|name| cats.iter().position(|cat| cat == name))
+            .map(|idx| (idx + 1) as u32)
+            .unwrap_or(0);
+        if self.category_dropdown.selected() != selected_idx {
+            self.category_dropdown.set_selected(selected_idx);
+        }
         self.category_bar.set_visible(!cats.is_empty());
         self.updating_categories.set(false);
     }
@@ -1053,15 +1305,21 @@ impl Inner {
             Ok(Some(e)) => e,
             _ => return,
         };
-
-        let dialog = adw::AlertDialog::builder()
-            .heading(tr!("Delete Password?"))
-            .body(&format!(
+        let trash_enabled = ashypass_core::settings::Settings::load().trash_retention_days > 0;
+        let body = if trash_enabled {
+            format!("{} '{}'?", tr!("Are you sure you want to delete"), entry.title)
+        } else {
+            format!(
                 "{} '{}'? {}",
                 tr!("Are you sure you want to delete"),
                 entry.title,
                 tr!("This action cannot be undone.")
-            ))
+            )
+        };
+
+        let dialog = adw::AlertDialog::builder()
+            .heading(tr!("Delete Password?"))
+            .body(&body)
             .default_response("cancel")
             .close_response("cancel")
             .build();
@@ -1072,9 +1330,18 @@ impl Inner {
         let inner_cl = self.clone();
         dialog.connect_response(None, move |dlg, response| {
             if response == "delete" {
-                if let Ok(true) = inner_cl.state.vault.borrow().delete(id) {
-                    inner_cl.show_toast(tr!("Password deleted"));
-                    inner_cl.load_passwords(None);
+                let deleted = if trash_enabled {
+                    inner_cl.state.vault.borrow().delete(id)
+                } else {
+                    inner_cl.state.vault.borrow().delete_permanent(id)
+                };
+                if let Ok(true) = deleted {
+                    inner_cl.show_toast(if trash_enabled {
+                        tr!("Password deleted")
+                    } else {
+                        tr!("Permanently deleted")
+                    });
+                    inner_cl.reload_current_filter();
                     SessionManager::on_activity(&inner_cl.state.session);
                 }
             }
@@ -1104,6 +1371,12 @@ impl Inner {
 
     fn stop_totp_timer(&self) {
         if let Some(id) = self.totp_timer_id.borrow_mut().take() {
+            id.remove();
+        }
+    }
+
+    fn cancel_pending_search_reload(&self) {
+        if let Some(id) = self.search_reload_id.borrow_mut().take() {
             id.remove();
         }
     }
@@ -1341,7 +1614,7 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
         add_btn.add_css_class("flat");
         attach_group.set_header_suffix(Some(&add_btn));
 
-        let render: Rc<RefCell<Option<Rc<dyn Fn()>>>> = Rc::new(RefCell::new(None));
+        let render: RenderSlot = Rc::new(RefCell::new(None));
         let attach_group_cl = attach_group.clone();
         let inner_for_render = inner.clone();
         let render_fn: Rc<dyn Fn()> = Rc::new({
@@ -1369,7 +1642,7 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
                 for att in entries {
                     let row = adw::ActionRow::builder()
                         .title(&att.filename)
-                        .subtitle(&format!(
+                        .subtitle(format!(
                             "{} · {}",
                             human_size(att.size_bytes),
                             att.mime_type.as_deref().unwrap_or("application/octet-stream")
@@ -1600,7 +1873,7 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
                 } else {
                     tr!("Password added")
                 });
-                inner_cl.load_passwords(None);
+                inner_cl.reload_current_filter();
                 SessionManager::on_activity(&inner_cl.state.session);
                 dlg.close();
             }
@@ -1634,7 +1907,7 @@ fn mask_password(s: &str) -> String {
         return String::new();
     }
     let visible = len.min(3);
-    let masked: String = std::iter::repeat('•').take(len.saturating_sub(visible)).collect();
+    let masked = "•".repeat(len.saturating_sub(visible));
     let tail: String = s.chars().skip(len.saturating_sub(visible)).collect();
     format!("{masked}{tail}")
 }

@@ -17,7 +17,7 @@ use std::rc::Rc;
 
 pub struct MainWindow {
     pub window: adw::ApplicationWindow,
-    pub toast_overlay: adw::ToastOverlay,
+    #[expect(dead_code, reason = "keeps view model alive for signal handlers")]
     inner: Rc<MainWindowInner>,
 }
 
@@ -252,7 +252,7 @@ impl MainWindow {
             let events = state.events.clone();
             let cb: Rc<dyn Fn(u64)> = Rc::new(move |remaining| {
                 let toast = adw::Toast::builder()
-                    .title(&format!(
+                    .title(format!(
                         "{} ({}s)",
                         tr!("Vault will lock soon"),
                         remaining
@@ -279,6 +279,21 @@ impl MainWindow {
             totp_view.set_on_auth_changed(Box::new(move || {
                 inner_cl.update_auth_nav();
             }));
+        }
+        {
+            let inner_weak = Rc::downgrade(&inner);
+            state.events.subscribe(move |event| {
+                if matches!(
+                    event,
+                    crate::events::AppEvent::VaultChanged
+                        | crate::events::AppEvent::SyncCompleted { .. }
+                        | crate::events::AppEvent::SessionLocked
+                ) {
+                    if let Some(inner) = inner_weak.upgrade() {
+                        inner.update_auth_nav();
+                    }
+                }
+            });
         }
 
         // Window-wide activity tracker (key + click) — resets the auto-lock
@@ -389,14 +404,8 @@ impl MainWindow {
 
         Self {
             window,
-            toast_overlay,
             inner,
         }
-    }
-
-    pub fn show_toast(&self, message: &str) {
-        let toast = adw::Toast::builder().title(message).timeout(3).build();
-        self.toast_overlay.add_toast(toast);
     }
 
     pub fn present(&self) {

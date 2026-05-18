@@ -7,7 +7,7 @@
 //!  4. Block on the listener until Google redirects back with `?code=...`.
 //!  5. Exchange the code for an access + refresh token at the token endpoint.
 
-use crate::config::token_file;
+use crate::config::{config_dir, token_file};
 use crate::{Error, Result};
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use rand::RngCore;
@@ -51,6 +51,11 @@ impl Token {
         }
         let json = serde_json::to_string_pretty(self)?;
         fs::write(&path, json)?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let _ = fs::set_permissions(&path, fs::Permissions::from_mode(0o600));
+        }
         Ok(())
     }
 
@@ -65,13 +70,19 @@ impl Token {
 
 /// Per-installation OAuth client identity. For a desktop loopback client,
 /// only `client_id` is mandatory; `client_secret` is included if present.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ClientCredentials {
     pub client_id: String,
     pub client_secret: Option<String>,
 }
 
 impl ClientCredentials {
+    /// Load runtime credentials saved through the UI, falling back to
+    /// compile-time environment values for distro builds.
+    pub fn load() -> Option<Self> {
+        Self::from_file().or_else(Self::from_env)
+    }
+
     /// Pulls the client id/secret from compile-time env vars so the binary can
     /// be shipped without secrets in source. Returns `None` if unset.
     pub fn from_env() -> Option<Self> {
@@ -87,6 +98,35 @@ impl ClientCredentials {
             client_secret: secret,
         })
     }
+
+    pub fn save(&self) -> Result<()> {
+        let path = credentials_file();
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        let json = serde_json::to_string_pretty(self)?;
+        fs::write(&path, json)?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let _ = fs::set_permissions(&path, fs::Permissions::from_mode(0o600));
+        }
+        Ok(())
+    }
+
+    fn from_file() -> Option<Self> {
+        let text = fs::read_to_string(credentials_file()).ok()?;
+        let creds: Self = serde_json::from_str(&text).ok()?;
+        if creds.client_id.trim().is_empty() {
+            None
+        } else {
+            Some(creds)
+        }
+    }
+}
+
+fn credentials_file() -> std::path::PathBuf {
+    config_dir().join("google_oauth.json")
 }
 
 /// Generates `(code_verifier, code_challenge_S256)`.

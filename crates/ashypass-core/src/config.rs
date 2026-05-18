@@ -21,7 +21,7 @@ pub const MAX_PIN_LENGTH: usize = 12;
 pub const AMBIGUOUS_CHARS: &str = "il1Lo0O";
 pub const DEFAULT_SYMBOLS: &str = "!@#$%&*()-_=+[]{}|;:,.<>?/";
 
-pub const WINDOW_DEFAULT_WIDTH: i32 = 800;
+pub const WINDOW_DEFAULT_WIDTH: i32 = 870;
 pub const WINDOW_DEFAULT_HEIGHT: i32 = 650;
 pub const WINDOW_MIN_WIDTH: i32 = 700;
 pub const WINDOW_MIN_HEIGHT: i32 = 570;

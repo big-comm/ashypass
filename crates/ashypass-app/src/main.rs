@@ -16,6 +16,8 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 fn main() -> glib::ExitCode {
+    configure_graphics_backend();
+
     env_logger::Builder::from_env(
         env_logger::Env::default().default_filter_or("warn,ashypass=debug"),
     )
@@ -65,6 +67,7 @@ fn main() -> glib::ExitCode {
             let state = AppState::new(vault);
             *state_holder.borrow_mut() = Some(state.clone());
 
+            init_css();
             let win = ui::MainWindow::new(app, state);
             win.present();
             *window_holder.borrow_mut() = Some(win);
@@ -74,11 +77,90 @@ fn main() -> glib::ExitCode {
     app.run()
 }
 
+fn configure_graphics_backend() {
+    if std::env::var_os("GSK_RENDERER").is_some() {
+        return;
+    }
+
+    // Avoid GTK's Vulkan renderer by default. Some Mesa/Xe stacks can freeze
+    // during list redraws with VK_ERROR_OUT_OF_DEVICE_MEMORY.
+    std::env::set_var("GSK_RENDERER", "ngl");
+}
+
 fn init_i18n() {
     use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
     setlocale(LocaleCategory::LcAll, "");
-    let _ = bindtextdomain("ashypass", "/usr/share/locale");
+    let locale_dir = app_locale_dir();
+    let _ = bindtextdomain("ashypass", &locale_dir);
     let _ = textdomain("ashypass");
+}
+
+fn app_locale_dir() -> std::path::PathBuf {
+    fn has_catalog(path: &std::path::Path) -> bool {
+        path.join("en/LC_MESSAGES/ashypass.mo").is_file()
+            || path.join("pt_BR/LC_MESSAGES/ashypass.mo").is_file()
+    }
+
+    if let Ok(exe) = std::env::current_exe() {
+        for ancestor in exe.ancestors() {
+            let candidate = ancestor.join("usr/share/locale");
+            if has_catalog(&candidate) {
+                return candidate;
+            }
+        }
+    }
+
+    if let Ok(cwd) = std::env::current_dir() {
+        let candidate = cwd.join("usr/share/locale");
+        if has_catalog(&candidate) {
+            return candidate;
+        }
+    }
+
+    std::path::PathBuf::from("/usr/share/locale")
+}
+
+fn init_css() {
+    let Some(display) = gdk::Display::default() else {
+        return;
+    };
+    let provider = gtk::CssProvider::new();
+    provider.load_from_string(
+        "
+        .sync-provider-badge {
+            border-radius: 999px;
+            padding: 2px 7px;
+            font-weight: 600;
+            font-size: 0.82em;
+            background: rgba(53, 132, 228, 0.18);
+            color: #1c71d8;
+        }
+
+        .sync-provider-badge:backdrop {
+            background: rgba(53, 132, 228, 0.10);
+            color: rgba(28, 113, 216, 0.70);
+        }
+
+        .folder-heading-icon {
+            color: #62a0ea;
+        }
+
+        .folder-heading-icon:backdrop {
+            color: rgba(98, 160, 234, 0.70);
+        }
+
+        .totp-code {
+            font-size: 1.28em;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        ",
+    );
+    gtk::style_context_add_provider_for_display(
+        &display,
+        &provider,
+        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+    );
 }
 
 fn setup_app_actions(app: &adw::Application) {
