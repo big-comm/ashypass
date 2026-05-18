@@ -12,6 +12,7 @@ use ashypass_core::db::vault::{NewEntry, PasswordEntry, UpdateEntry};
 use ashypass_core::generator::{
     generate_passphrase, generate_password, generate_pin, PasswordConfig,
 };
+use ashypass_core::settings::Settings;
 use ashypass_core::totp::{generate_totp, remaining_seconds, Algorithm};
 use gtk::glib;
 use std::cell::{Cell, RefCell};
@@ -88,15 +89,35 @@ impl VaultView {
             .build();
 
         // ---- Auth page ----
-        let (auth_page, master_entry, confirm_entry, pin_entry, unlock_button,
-             pin_button, use_master_button, auth_error,
-             strength_box, strength_bar, strength_label) = build_auth_page();
+        let (
+            auth_page,
+            master_entry,
+            confirm_entry,
+            pin_entry,
+            unlock_button,
+            pin_button,
+            use_master_button,
+            auth_error,
+            strength_box,
+            strength_bar,
+            strength_label,
+        ) = build_auth_page();
         main_stack.add_named(&auth_page, Some("auth"));
 
         // ---- Vault page ----
-        let (vault_page, timeout_banner, search_bar, search_entry,
-             category_bar, category_dropdown, category_model,
-             list_box, list_scrolled, empty_status, content_stack) = build_vault_page();
+        let (
+            vault_page,
+            timeout_banner,
+            search_bar,
+            search_entry,
+            category_bar,
+            category_dropdown,
+            category_model,
+            list_box,
+            list_scrolled,
+            empty_status,
+            content_stack,
+        ) = build_vault_page();
         main_stack.add_named(&vault_page, Some("vault"));
 
         root.append(&main_stack);
@@ -156,6 +177,10 @@ impl VaultView {
 
     pub fn set_on_auth_changed(&self, cb: AuthChangedCb) {
         *self.inner.on_auth_changed.borrow_mut() = Some(cb);
+    }
+
+    pub fn focus_auth_field(&self) {
+        self.inner.focus_auth_field();
     }
 
     pub fn show_add_dialog(&self) {
@@ -228,7 +253,10 @@ fn build_auth_page() -> (
     content.append(&icon);
 
     let title = gtk::Label::new(None);
-    title.set_markup(&format!("<span size='xx-large' weight='bold'>{}</span>", tr!("Ashy Pass")));
+    title.set_markup(&format!(
+        "<span size='xx-large' weight='bold'>{}</span>",
+        tr!("Ashy Pass")
+    ));
     content.append(&title);
 
     let subtitle = gtk::Label::new(Some(tr!("Enter your master password to unlock")));
@@ -416,19 +444,29 @@ fn build_vault_page() -> (
 
 fn wire_auth(inner: &Rc<Inner>) {
     let inner_cl = inner.clone();
-    inner.unlock_button.connect_clicked(move |_| inner_cl.on_unlock_clicked());
+    inner
+        .unlock_button
+        .connect_clicked(move |_| inner_cl.on_unlock_clicked());
 
     let inner_cl = inner.clone();
-    inner.master_entry.connect_entry_activated(move |_| inner_cl.on_unlock_clicked());
+    inner
+        .master_entry
+        .connect_entry_activated(move |_| inner_cl.on_unlock_clicked());
 
     let inner_cl = inner.clone();
-    inner.confirm_entry.connect_entry_activated(move |_| inner_cl.on_unlock_clicked());
+    inner
+        .confirm_entry
+        .connect_entry_activated(move |_| inner_cl.on_unlock_clicked());
 
     let inner_cl = inner.clone();
-    inner.pin_button.connect_clicked(move |_| inner_cl.on_pin_unlock_clicked());
+    inner
+        .pin_button
+        .connect_clicked(move |_| inner_cl.on_pin_unlock_clicked());
 
     let inner_cl = inner.clone();
-    inner.pin_entry.connect_entry_activated(move |_| inner_cl.on_pin_unlock_clicked());
+    inner
+        .pin_entry
+        .connect_entry_activated(move |_| inner_cl.on_pin_unlock_clicked());
 
     let inner_cl = inner.clone();
     inner.use_master_button.connect_clicked(move |_| {
@@ -498,7 +536,9 @@ fn wire_vault(inner: &Rc<Inner>) {
 fn wire_session_warning(inner: &Rc<Inner>) {
     let inner_weak = Rc::downgrade(inner);
     let cb: Rc<dyn Fn(u64)> = Rc::new(move |remaining| {
-        let Some(inner) = inner_weak.upgrade() else { return };
+        let Some(inner) = inner_weak.upgrade() else {
+            return;
+        };
         inner.timeout_banner.set_title(&format!(
             "{} ({}s)",
             tr!("Vault will lock soon due to inactivity"),
@@ -517,7 +557,9 @@ fn wire_events(inner: &Rc<Inner>) {
         };
         match event {
             crate::events::AppEvent::VaultChanged
-            | crate::events::AppEvent::SyncCompleted { .. } if inner.can_show_vault_data() => {
+            | crate::events::AppEvent::SyncCompleted { .. }
+                if inner.can_show_vault_data() =>
+            {
                 inner.update_view();
             }
             crate::events::AppEvent::SessionLocked => inner.update_view(),
@@ -532,8 +574,7 @@ fn wire_events(inner: &Rc<Inner>) {
 
 impl Inner {
     fn can_show_vault_data(&self) -> bool {
-        self.state.session.borrow().is_authenticated()
-            && self.state.vault.borrow().is_unlocked()
+        self.state.session.borrow().is_authenticated() && self.state.vault.borrow().is_unlocked()
     }
 
     fn notify_auth_changed(&self) {
@@ -555,7 +596,13 @@ impl Inner {
         if self.state.vault.borrow().is_unlocked() {
             return true;
         }
-        if !self.state.vault.borrow().has_master_password().unwrap_or(false) {
+        if !self
+            .state
+            .vault
+            .borrow()
+            .has_master_password()
+            .unwrap_or(false)
+        {
             return false;
         }
         let Ok(Some(pw)) = ashypass_core::keyring::load_master() else {
@@ -583,8 +630,18 @@ impl Inner {
             self.main_stack.set_visible_child_name("vault");
             self.load_passwords(None);
         } else {
-            let has_master = self.state.vault.borrow().has_master_password().unwrap_or(false);
-            let quick = self.state.vault.borrow().is_quick_unlock_available();
+            let has_master = self
+                .state
+                .vault
+                .borrow()
+                .has_master_password()
+                .unwrap_or(false);
+            let quick = has_master
+                && (self.state.vault.borrow().is_quick_unlock_available()
+                    || Settings::load()
+                        .quick_unlock
+                        .as_ref()
+                        .is_some_and(|p| p.is_configured()));
             if has_master {
                 self.unlock_button.set_label(tr!("Unlock Vault"));
                 self.confirm_entry.set_visible(false);
@@ -608,7 +665,19 @@ impl Inner {
             self.auth_error.set_visible(false);
             self.strength_bar.set_value(0.0);
             self.strength_label.set_text("");
+            self.focus_auth_field();
         }
+    }
+
+    fn focus_auth_field(&self) {
+        let target = if self.pin_entry.is_visible() {
+            self.pin_entry.clone().upcast::<gtk::Widget>()
+        } else {
+            self.master_entry.clone().upcast::<gtk::Widget>()
+        };
+        glib::idle_add_local_once(move || {
+            target.grab_focus();
+        });
     }
 
     /// Switch the auth page from PIN-only to master-password mode. Triggered
@@ -620,7 +689,7 @@ impl Inner {
         self.use_master_button.set_visible(false);
         self.master_entry.set_visible(true);
         self.unlock_button.set_visible(true);
-        self.master_entry.grab_focus();
+        self.focus_auth_field();
     }
 
     fn on_pin_unlock_clicked(self: &Rc<Self>) {
@@ -629,7 +698,29 @@ impl Inner {
             self.show_auth_error(tr!("Please enter your PIN"));
             return;
         }
-        let r = self.state.vault.borrow_mut().quick_unlock(&pin);
+        let persistent_quick_unlock = Settings::load().quick_unlock;
+        let r = {
+            let mut vault = self.state.vault.borrow_mut();
+            if vault.is_quick_unlock_available() {
+                match vault.quick_unlock(&pin) {
+                    Ok(()) => Ok(()),
+                    Err(ashypass_core::Error::InvalidMasterPassword) => {
+                        Err(ashypass_core::Error::InvalidMasterPassword)
+                    }
+                    Err(e) => {
+                        if let Some(prefs) = persistent_quick_unlock.as_ref() {
+                            vault.quick_unlock_persistent(&pin, prefs)
+                        } else {
+                            Err(e)
+                        }
+                    }
+                }
+            } else if let Some(prefs) = persistent_quick_unlock.as_ref() {
+                vault.quick_unlock_persistent(&pin, prefs)
+            } else {
+                vault.quick_unlock(&pin)
+            }
+        };
         match r {
             Ok(()) => {
                 SessionManager::login(&self.state.session);
@@ -644,6 +735,9 @@ impl Inner {
                 // Cache may have been lost (e.g. dev path) — fall back.
                 self.show_auth_error(&format!("{}: {e}", tr!("Quick-unlock failed")));
                 self.state.vault.borrow_mut().disable_quick_unlock();
+                let mut settings = Settings::load();
+                settings.quick_unlock = None;
+                let _ = settings.save();
                 self.show_master_unlock();
             }
         }
@@ -661,7 +755,12 @@ impl Inner {
             return;
         }
 
-        let has_master = self.state.vault.borrow().has_master_password().unwrap_or(false);
+        let has_master = self
+            .state
+            .vault
+            .borrow()
+            .has_master_password()
+            .unwrap_or(false);
 
         if has_master {
             let r = self.state.vault.borrow_mut().unlock(&password);
@@ -695,12 +794,18 @@ impl Inner {
             }
             match self.state.vault.borrow_mut().set_master_password(&password) {
                 Ok(()) => {
+                    let mut settings = Settings::load();
+                    settings.quick_unlock = None;
+                    let _ = settings.save();
                     SessionManager::login(&self.state.session);
                     self.update_view();
                     self.notify_auth_changed();
                 }
                 Err(e) => {
-                    self.show_auth_error(&format!("{}: {e}", tr!("Failed to setup master password")));
+                    self.show_auth_error(&format!(
+                        "{}: {e}",
+                        tr!("Failed to setup master password")
+                    ));
                 }
             }
         }
@@ -710,9 +815,12 @@ impl Inner {
         if !self.can_show_vault_data() {
             return;
         }
+        self.main_stack.set_visible_child_name("vault");
         self.stop_totp_timer();
         self.totp_widgets.borrow_mut().clear();
         clear_list_box(&self.list_box);
+        let ui_settings = Settings::load();
+        self.apply_vault_list_density(ui_settings.compact_vault_list);
 
         let mode = self.view_mode.get();
         let selected_category = if mode == ViewMode::All {
@@ -742,7 +850,7 @@ impl Inner {
         if mode == ViewMode::Favorites {
             entries.retain(|p| p.favorite);
         } else if mode == ViewMode::Groups {
-            self.load_grouped(entries, search.is_some());
+            self.load_grouped(entries, search.is_some(), &ui_settings);
             return;
         }
 
@@ -773,19 +881,23 @@ impl Inner {
 
         self.content_stack.set_visible_child_name("list");
         let nextcloud_synced_ids = self.nextcloud_synced_ids();
-        let show_favicons = ashypass_core::settings::Settings::load().show_favicons;
         for entry in entries {
             let row = self.create_password_row(
                 &entry,
-                nextcloud_synced_ids.contains(&entry.id),
-                show_favicons,
+                ui_settings.show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
+                ui_settings.show_favicons,
             );
             self.list_box.append(&row);
         }
         self.start_totp_timer();
     }
 
-    fn load_grouped(self: &Rc<Self>, entries: Vec<PasswordEntry>, filtering: bool) {
+    fn load_grouped(
+        self: &Rc<Self>,
+        entries: Vec<PasswordEntry>,
+        filtering: bool,
+        ui_settings: &Settings,
+    ) {
         use std::collections::BTreeMap;
         let mut groups: BTreeMap<String, Vec<PasswordEntry>> = BTreeMap::new();
         let mut uncategorized: Vec<PasswordEntry> = Vec::new();
@@ -817,7 +929,6 @@ impl Inner {
 
         self.content_stack.set_visible_child_name("list");
         let nextcloud_synced_ids = self.nextcloud_synced_ids();
-        let show_favicons = ashypass_core::settings::Settings::load().show_favicons;
         self.add_create_folder_row();
 
         for (cat, items) in groups {
@@ -849,8 +960,8 @@ impl Inner {
                 for e in items {
                     let row = self.create_password_row(
                         &e,
-                        nextcloud_synced_ids.contains(&e.id),
-                        show_favicons,
+                        ui_settings.show_sync_badges && nextcloud_synced_ids.contains(&e.id),
+                        ui_settings.show_favicons,
                     );
                     self.list_box.append(&row);
                 }
@@ -892,8 +1003,8 @@ impl Inner {
                 for e in uncategorized {
                     let row = self.create_password_row(
                         &e,
-                        nextcloud_synced_ids.contains(&e.id),
-                        show_favicons,
+                        ui_settings.show_sync_badges && nextcloud_synced_ids.contains(&e.id),
+                        ui_settings.show_favicons,
                     );
                     self.list_box.append(&row);
                 }
@@ -906,7 +1017,9 @@ impl Inner {
     fn add_create_folder_row(self: &Rc<Self>) {
         let row = adw::ActionRow::builder()
             .title(tr!("Folder"))
-            .subtitle(tr!("Set a category on entries to organize them into groups"))
+            .subtitle(tr!(
+                "Set a category on entries to organize them into groups"
+            ))
             .activatable(true)
             .build();
         let icon = gtk::Image::from_icon_name("folder-new-symbolic");
@@ -1009,6 +1122,14 @@ impl Inner {
             .nc_all_mappings()
             .map(|items| items.into_iter().map(|m| m.entry_id).collect())
             .unwrap_or_default()
+    }
+
+    fn apply_vault_list_density(&self, compact: bool) {
+        let margin = if compact { 6 } else { 12 };
+        self.list_box.set_margin_top(margin);
+        self.list_box.set_margin_bottom(margin);
+        self.list_box.set_margin_start(margin);
+        self.list_box.set_margin_end(margin);
     }
 
     fn create_password_row(
@@ -1303,7 +1424,11 @@ impl Inner {
         };
         let trash_enabled = ashypass_core::settings::Settings::load().trash_retention_days > 0;
         let body = if trash_enabled {
-            format!("{} '{}'?", tr!("Are you sure you want to delete"), entry.title)
+            format!(
+                "{} '{}'?",
+                tr!("Are you sure you want to delete"),
+                entry.title
+            )
         } else {
             format!(
                 "{} '{}'? {}",
@@ -1443,7 +1568,9 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
     }
     form.add(&username_entry);
 
-    let password_entry = adw::PasswordEntryRow::builder().title(tr!("Password")).build();
+    let password_entry = adw::PasswordEntryRow::builder()
+        .title(tr!("Password"))
+        .build();
     if let Some(p) = entry.as_ref().and_then(|e| e.password.clone()) {
         password_entry.set_text(&p);
     }
@@ -1599,7 +1726,9 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
     if let Some(eid) = entry.as_ref().map(|e| e.id) {
         let attach_group = adw::PreferencesGroup::builder()
             .title(tr!("Attachments"))
-            .description(tr!("Encrypted with your master key. Stored inside the vault."))
+            .description(tr!(
+                "Encrypted with your master key. Stored inside the vault."
+            ))
             .build();
 
         let add_btn = gtk::Button::builder()
@@ -1646,7 +1775,9 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
                         .subtitle(format!(
                             "{} · {}",
                             human_size(att.size_bytes),
-                            att.mime_type.as_deref().unwrap_or("application/octet-stream")
+                            att.mime_type
+                                .as_deref()
+                                .unwrap_or("application/octet-stream")
                         ))
                         .build();
 
@@ -1661,9 +1792,7 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
                         let att_id = att.id;
                         let filename = att.filename.clone();
                         save_btn.connect_clicked(move |btn| {
-                            let parent = btn
-                                .root()
-                                .and_then(|r| r.downcast::<gtk::Window>().ok());
+                            let parent = btn.root().and_then(|r| r.downcast::<gtk::Window>().ok());
                             let dialog = gtk::FileDialog::builder()
                                 .title(tr!("Save attachment"))
                                 .initial_name(&filename)
@@ -1691,10 +1820,8 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
                                         Ok(None) => {
                                             inner_cl.show_toast(tr!("Attachment not found"))
                                         }
-                                        Err(e) => inner_cl.show_toast(&format!(
-                                            "{}: {e}",
-                                            tr!("Decrypt failed")
-                                        )),
+                                        Err(e) => inner_cl
+                                            .show_toast(&format!("{}: {e}", tr!("Decrypt failed"))),
                                     }
                                 },
                             );
@@ -1837,34 +1964,44 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
             .collect();
 
         let result = if let Some(id) = entry_id {
-            inner_cl.state.vault.borrow().update(
-                id,
-                UpdateEntry {
-                    title: Some(title),
-                    username: Some(username.unwrap_or_default()),
-                    password: Some(password),
-                    notes: Some(notes),
-                    url: Some(url),
-                    totp_secret: Some(totp_secret),
+            inner_cl
+                .state
+                .vault
+                .borrow()
+                .update(
+                    id,
+                    UpdateEntry {
+                        title: Some(title),
+                        username: Some(username.unwrap_or_default()),
+                        password: Some(password),
+                        notes: Some(notes),
+                        url: Some(url),
+                        totp_secret: Some(totp_secret),
+                        totp_algorithm: Some(algo),
+                        totp_digits: Some(digits),
+                        totp_period: Some(period),
+                        category: Some(category),
+                    },
+                )
+                .map(|_| Some(id))
+        } else {
+            inner_cl
+                .state
+                .vault
+                .borrow()
+                .add(NewEntry {
+                    title,
+                    username,
+                    password,
+                    url,
+                    notes,
+                    totp_secret,
                     totp_algorithm: Some(algo),
                     totp_digits: Some(digits),
                     totp_period: Some(period),
-                    category: Some(category),
-                },
-            ).map(|_| Some(id))
-        } else {
-            inner_cl.state.vault.borrow().add(NewEntry {
-                title,
-                username,
-                password,
-                url,
-                notes,
-                totp_secret,
-                totp_algorithm: Some(algo),
-                totp_digits: Some(digits),
-                totp_period: Some(period),
-                category,
-            }).map(Some)
+                    category,
+                })
+                .map(Some)
         };
 
         match result {
@@ -1920,7 +2057,11 @@ fn clear_list_box(lb: &gtk::ListBox) {
 
 fn trim_to_opt(s: &glib::GString) -> Option<String> {
     let t = s.trim();
-    if t.is_empty() { None } else { Some(t.to_string()) }
+    if t.is_empty() {
+        None
+    } else {
+        Some(t.to_string())
+    }
 }
 
 fn mask_password(s: &str) -> String {
@@ -1955,7 +2096,9 @@ fn human_size(bytes: u64) -> String {
 }
 
 fn mime_guess_from_ext(filename: &str) -> Option<String> {
-    let ext = filename.rsplit_once('.').map(|x| x.1.to_ascii_lowercase())?;
+    let ext = filename
+        .rsplit_once('.')
+        .map(|x| x.1.to_ascii_lowercase())?;
     Some(
         match ext.as_str() {
             "png" => "image/png",

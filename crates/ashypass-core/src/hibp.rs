@@ -164,7 +164,10 @@ pub fn check_many(passwords: &[&str]) -> Result<Vec<BreachStatus>> {
                 let body = fetch_range(prefix)?;
                 cache.prefixes.insert(
                     prefix.to_string(),
-                    CacheEntry { fetched_at: now, body: body.clone() },
+                    CacheEntry {
+                        fetched_at: now,
+                        body: body.clone(),
+                    },
                 );
                 dirty = true;
                 body
@@ -193,7 +196,8 @@ mod tests {
 
     #[test]
     fn parse_finds_suffix() {
-        let body = "ABCDE0123456789ABCDEF0123456789ABCDEF:42\n0000000000000000000000000000000000A:7\n";
+        let body =
+            "ABCDE0123456789ABCDEF0123456789ABCDEF:42\n0000000000000000000000000000000000A:7\n";
         let r = parse_body(body, "ABCDE0123456789ABCDEF0123456789ABCDEF");
         assert!(matches!(r, BreachStatus::Found { count: 42 }));
     }

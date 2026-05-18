@@ -4,10 +4,10 @@
 //! - `aes_gcm_v2`: AES-256-GCM authenticated encryption (current).
 //! - `fernet_legacy`: read-only Fernet (AES-128-CBC + HMAC-SHA256) for v1 migration.
 
-pub mod argon2_kdf;
 pub mod aes_gcm_v2;
+pub mod argon2_kdf;
+pub mod autotune;
 pub mod fernet_legacy;
 pub mod key;
-pub mod autotune;
 
 pub use key::DerivedKey;

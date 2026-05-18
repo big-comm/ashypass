@@ -50,7 +50,11 @@ pub fn import_csv(path: impl AsRef<Path>) -> Result<Vec<CsvEntry>> {
         let entry = CsvEntry {
             title: {
                 let t = get(&row, i_name);
-                if t.is_empty() { "Untitled".into() } else { t }
+                if t.is_empty() {
+                    "Untitled".into()
+                } else {
+                    t
+                }
             },
             url: get(&row, i_url),
             username: get(&row, i_user),
@@ -75,6 +79,7 @@ pub fn export_csv(path: impl AsRef<Path>, entries: &[CsvEntry]) -> Result<()> {
         w.write_record([&e.title, &e.url, &e.username, &e.password, &e.notes])
             .map_err(|e| Error::Other(format!("csv write: {e}")))?;
     }
-    w.flush().map_err(|e| Error::Other(format!("csv flush: {e}")))?;
+    w.flush()
+        .map_err(|e| Error::Other(format!("csv flush: {e}")))?;
     Ok(())
 }

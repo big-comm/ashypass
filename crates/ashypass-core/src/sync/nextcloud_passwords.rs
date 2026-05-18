@@ -225,10 +225,7 @@ impl NextcloudPasswordsClient {
         path: &str,
         body: Option<String>,
     ) -> Result<Response> {
-        let url = format!(
-            "{}/index.php/apps/passwords/api/1.0{}",
-            cfg.base_url, path
-        );
+        let url = format!("{}/index.php/apps/passwords/api/1.0{}", cfg.base_url, path);
         let client = http_client()?;
         let mut req = match method {
             "GET" => client.get(&url),
@@ -332,10 +329,7 @@ fn ensure_2xx(r: &Response) -> Result<()> {
         Ok(())
     } else {
         let body = nextcloud_error_message(&r.body).unwrap_or_else(|| truncate_for_msg(&r.body));
-        Err(Error::Other(format!(
-            "nextcloud HTTP {}: {body}",
-            r.status
-        )))
+        Err(Error::Other(format!("nextcloud HTTP {}: {body}", r.status)))
     }
 }
 
@@ -508,7 +502,8 @@ mod tests {
 
     #[test]
     fn extracts_nextcloud_error_message() {
-        let body = r#"{"status":"error","id":"abc","message":"Field \"password\" can not be empty"}"#;
+        let body =
+            r#"{"status":"error","id":"abc","message":"Field \"password\" can not be empty"}"#;
         assert_eq!(
             nextcloud_error_message(body).as_deref(),
             Some("Field \"password\" can not be empty")

@@ -106,7 +106,11 @@ pub fn parse_str(text: &str) -> Result<Vec<NewEntry>> {
         if password.is_empty() {
             continue;
         }
-        let url = login.uris.into_iter().find_map(|u| u.uri).filter(|s| !s.is_empty());
+        let url = login
+            .uris
+            .into_iter()
+            .find_map(|u| u.uri)
+            .filter(|s| !s.is_empty());
         let totp_secret = login.totp.as_deref().and_then(extract_totp_secret);
         let category = item
             .folder_id

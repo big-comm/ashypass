@@ -7,23 +7,158 @@ use rand::{rngs::OsRng, Rng, RngCore};
 
 /// 150+ common English words. Future improvement: load EFF wordlist from disk.
 pub const PASSPHRASE_WORDS: &[&str] = &[
-    "able", "about", "above", "accept", "action", "active", "actual", "advance", "advice",
-    "afraid", "after", "again", "against", "agency", "agent", "agree", "ahead", "allow",
-    "almost", "alone", "along", "already", "always", "amount", "ancient", "angle", "angry",
-    "animal", "annual", "another", "answer", "anyone", "apart", "appear", "apple", "apply",
-    "approve", "april", "area", "argue", "arise", "around", "arrive", "artist", "aside",
-    "assault", "asset", "assist", "assume", "attack", "attempt", "attend", "attract", "author",
-    "autumn", "avenue", "avoid", "awake", "award", "aware", "balance", "barrel", "barrier",
-    "battle", "beach", "beauty", "become", "before", "begin", "behalf", "behave", "behind",
-    "belief", "belong", "below", "benefit", "beside", "better", "between", "beyond", "blame",
-    "branch", "brave", "bread", "break", "bridge", "brief", "bright", "bring", "broken",
-    "brother", "brown", "budget", "build", "burden", "button", "camera", "cancel", "cancer",
-    "cannot", "canvas", "capable", "capital", "carbon", "career", "careful", "carpet", "carry",
-    "castle", "casual", "catch", "cause", "ceiling", "center", "central", "century", "certain",
-    "chair", "challenge", "chance", "change", "channel", "chapter", "charge", "chart", "chase",
-    "cheap", "check", "chemical", "chest", "chicken", "chief", "child", "choice", "choose",
-    "church", "circle", "citizen", "civil", "claim", "class", "classic", "clean", "clear",
-    "client", "climate", "climb", "clock", "close", "cloud", "coach", "coast",
+    "able",
+    "about",
+    "above",
+    "accept",
+    "action",
+    "active",
+    "actual",
+    "advance",
+    "advice",
+    "afraid",
+    "after",
+    "again",
+    "against",
+    "agency",
+    "agent",
+    "agree",
+    "ahead",
+    "allow",
+    "almost",
+    "alone",
+    "along",
+    "already",
+    "always",
+    "amount",
+    "ancient",
+    "angle",
+    "angry",
+    "animal",
+    "annual",
+    "another",
+    "answer",
+    "anyone",
+    "apart",
+    "appear",
+    "apple",
+    "apply",
+    "approve",
+    "april",
+    "area",
+    "argue",
+    "arise",
+    "around",
+    "arrive",
+    "artist",
+    "aside",
+    "assault",
+    "asset",
+    "assist",
+    "assume",
+    "attack",
+    "attempt",
+    "attend",
+    "attract",
+    "author",
+    "autumn",
+    "avenue",
+    "avoid",
+    "awake",
+    "award",
+    "aware",
+    "balance",
+    "barrel",
+    "barrier",
+    "battle",
+    "beach",
+    "beauty",
+    "become",
+    "before",
+    "begin",
+    "behalf",
+    "behave",
+    "behind",
+    "belief",
+    "belong",
+    "below",
+    "benefit",
+    "beside",
+    "better",
+    "between",
+    "beyond",
+    "blame",
+    "branch",
+    "brave",
+    "bread",
+    "break",
+    "bridge",
+    "brief",
+    "bright",
+    "bring",
+    "broken",
+    "brother",
+    "brown",
+    "budget",
+    "build",
+    "burden",
+    "button",
+    "camera",
+    "cancel",
+    "cancer",
+    "cannot",
+    "canvas",
+    "capable",
+    "capital",
+    "carbon",
+    "career",
+    "careful",
+    "carpet",
+    "carry",
+    "castle",
+    "casual",
+    "catch",
+    "cause",
+    "ceiling",
+    "center",
+    "central",
+    "century",
+    "certain",
+    "chair",
+    "challenge",
+    "chance",
+    "change",
+    "channel",
+    "chapter",
+    "charge",
+    "chart",
+    "chase",
+    "cheap",
+    "check",
+    "chemical",
+    "chest",
+    "chicken",
+    "chief",
+    "child",
+    "choice",
+    "choose",
+    "church",
+    "circle",
+    "citizen",
+    "civil",
+    "claim",
+    "class",
+    "classic",
+    "clean",
+    "clear",
+    "client",
+    "climate",
+    "climb",
+    "clock",
+    "close",
+    "cloud",
+    "coach",
+    "coast",
 ];
 
 #[derive(Debug, Clone)]
@@ -124,7 +259,9 @@ fn ensure_complexity(pw: &mut [char], cfg: &PasswordConfig, rng: &mut OsRng) {
             cfg.custom_symbols.clone()
         };
         let filtered: String = if cfg.exclude_ambiguous {
-            base.chars().filter(|c| !AMBIGUOUS_CHARS.contains(*c)).collect()
+            base.chars()
+                .filter(|c| !AMBIGUOUS_CHARS.contains(*c))
+                .collect()
         } else {
             base
         };
@@ -134,7 +271,12 @@ fn ensure_complexity(pw: &mut [char], cfg: &PasswordConfig, rng: &mut OsRng) {
     }
 }
 
-pub fn generate_passphrase(num_words: usize, separator: &str, capitalize: bool, add_number: bool) -> String {
+pub fn generate_passphrase(
+    num_words: usize,
+    separator: &str,
+    capitalize: bool,
+    add_number: bool,
+) -> String {
     let mut rng = OsRng;
     let mut parts: Vec<String> = (0..num_words)
         .map(|_| {
@@ -176,7 +318,10 @@ mod tests {
 
     #[test]
     fn password_respects_length() {
-        let cfg = PasswordConfig { length: 24, ..Default::default() };
+        let cfg = PasswordConfig {
+            length: 24,
+            ..Default::default()
+        };
         let pw = generate_password(&cfg).unwrap();
         assert_eq!(pw.chars().count(), 24);
     }
@@ -193,7 +338,9 @@ mod tests {
             custom_symbols: String::new(),
         };
         let pw = generate_password(&cfg).unwrap();
-        assert!(pw.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit()));
+        assert!(pw
+            .chars()
+            .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit()));
     }
 
     #[test]
@@ -210,5 +357,4 @@ mod tests {
         assert_eq!(p.len(), 6);
         assert!(p.chars().all(|c| c.is_ascii_digit()));
     }
-
 }

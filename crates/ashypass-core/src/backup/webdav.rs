@@ -73,9 +73,7 @@ impl WebdavService {
             .map_err(|e| Error::Other(format!("webdav probe: {e}")))?;
         let status = resp.status().as_u16();
         if status >= 400 {
-            return Err(Error::Other(format!(
-                "webdav login failed: HTTP {status}"
-            )));
+            return Err(Error::Other(format!("webdav login failed: HTTP {status}")));
         }
         Self::save_config(&cfg)?;
         self.config = Some(cfg);
@@ -100,11 +98,7 @@ impl WebdavService {
 
     fn folder_url(&self) -> Result<String> {
         let cfg = self.require()?;
-        Ok(format!(
-            "{}/{}",
-            cfg.base_url,
-            url_escape_path(&cfg.folder)
-        ))
+        Ok(format!("{}/{}", cfg.base_url, url_escape_path(&cfg.folder)))
     }
 
     /// Create the configured sub-folder if it doesn't already exist.
@@ -371,7 +365,10 @@ fn parse_propfind(xml: &str) -> Vec<WebdavFile> {
         let name = if !display.is_empty() {
             display
         } else {
-            href.rsplit('/').find(|s| !s.is_empty()).unwrap_or("").to_string()
+            href.rsplit('/')
+                .find(|s| !s.is_empty())
+                .unwrap_or("")
+                .to_string()
         };
         if name.is_empty() {
             continue;

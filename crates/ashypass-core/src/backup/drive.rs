@@ -60,9 +60,10 @@ impl BackupService {
     }
 
     fn refreshed_access_token(&mut self) -> Result<String> {
-        let token = self.token.as_mut().ok_or(Error::Other(
-            "not signed in to Google Drive".into(),
-        ))?;
+        let token = self
+            .token
+            .as_mut()
+            .ok_or(Error::Other("not signed in to Google Drive".into()))?;
         let now = chrono::Utc::now().timestamp();
         if token.is_expired(now) {
             oauth::refresh(token)?;

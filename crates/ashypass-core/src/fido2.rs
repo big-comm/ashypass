@@ -66,8 +66,8 @@ impl Fido2Config {
 pub fn generate_backup_phrase() -> Result<String> {
     let mut entropy = [0u8; 16];
     rand::thread_rng().fill_bytes(&mut entropy);
-    let mnemonic = bip39::Mnemonic::from_entropy(&entropy)
-        .map_err(|e| Error::Other(format!("bip39: {e}")))?;
+    let mnemonic =
+        bip39::Mnemonic::from_entropy(&entropy).map_err(|e| Error::Other(format!("bip39: {e}")))?;
     Ok(mnemonic.to_string())
 }
 

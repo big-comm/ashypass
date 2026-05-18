@@ -8,8 +8,7 @@ use crate::tr;
 use adw::prelude::*;
 use ashypass_core::config::{
     DEFAULT_PASSPHRASE_WORDS, DEFAULT_PASSWORD_LENGTH, DEFAULT_PIN_LENGTH, MAX_PASSPHRASE_WORDS,
-    MAX_PASSWORD_LENGTH, MAX_PIN_LENGTH, MIN_PASSPHRASE_WORDS, MIN_PASSWORD_LENGTH,
-    MIN_PIN_LENGTH,
+    MAX_PASSWORD_LENGTH, MAX_PIN_LENGTH, MIN_PASSPHRASE_WORDS, MIN_PASSWORD_LENGTH, MIN_PIN_LENGTH,
 };
 use ashypass_core::generator::{
     generate_passphrase, generate_password, generate_pin, PasswordConfig,
@@ -75,7 +74,9 @@ impl GeneratorView {
             .build();
 
         // ---- Generated password group ----
-        let pwd_group = adw::PreferencesGroup::builder().title(tr!("Generated Password")).build();
+        let pwd_group = adw::PreferencesGroup::builder()
+            .title(tr!("Generated Password"))
+            .build();
 
         let password_row = adw::ActionRow::builder().title(tr!("Password")).build();
         let password_scroll = gtk::ScrolledWindow::builder()
@@ -128,7 +129,9 @@ impl GeneratorView {
         content.append(&btn_box);
 
         // ---- Type selector ----
-        let type_group = adw::PreferencesGroup::builder().title(tr!("Generation Type")).build();
+        let type_group = adw::PreferencesGroup::builder()
+            .title(tr!("Generation Type"))
+            .build();
         let type_box = gtk::Box::builder()
             .orientation(gtk::Orientation::Horizontal)
             .halign(gtk::Align::Center)
@@ -292,7 +295,8 @@ impl Inner {
                 match generate_password(&cfg) {
                     Ok(p) => p,
                     Err(e) => {
-                        self.password_label.set_text(&format!("{}: {e}", tr!("Error")));
+                        self.password_label
+                            .set_text(&format!("{}: {e}", tr!("Error")));
                         return;
                     }
                 }
@@ -354,7 +358,9 @@ fn build_password_options() -> (
     adw::SwitchRow,
     adw::SwitchRow,
 ) {
-    let group = adw::PreferencesGroup::builder().title(tr!("Password Options")).build();
+    let group = adw::PreferencesGroup::builder()
+        .title(tr!("Password Options"))
+        .build();
 
     let length_adj = gtk::Adjustment::new(
         DEFAULT_PASSWORD_LENGTH as f64,
@@ -419,7 +425,9 @@ fn build_passphrase_options() -> (
     adw::SwitchRow,
     adw::SwitchRow,
 ) {
-    let group = adw::PreferencesGroup::builder().title(tr!("Passphrase Options")).build();
+    let group = adw::PreferencesGroup::builder()
+        .title(tr!("Passphrase Options"))
+        .build();
 
     let words_adj = gtk::Adjustment::new(
         DEFAULT_PASSPHRASE_WORDS as f64,
@@ -435,7 +443,10 @@ fn build_passphrase_options() -> (
         .build();
     group.add(&words_spin);
 
-    let separator_entry = adw::EntryRow::builder().title(tr!("Separator")).text("-").build();
+    let separator_entry = adw::EntryRow::builder()
+        .title(tr!("Separator"))
+        .text("-")
+        .build();
     group.add(&separator_entry);
 
     let capitalize_switch = adw::SwitchRow::builder()
@@ -450,11 +461,19 @@ fn build_passphrase_options() -> (
         .build();
     group.add(&add_number_switch);
 
-    (group, words_spin, separator_entry, capitalize_switch, add_number_switch)
+    (
+        group,
+        words_spin,
+        separator_entry,
+        capitalize_switch,
+        add_number_switch,
+    )
 }
 
 fn build_pin_options() -> (adw::PreferencesGroup, adw::SpinRow) {
-    let group = adw::PreferencesGroup::builder().title(tr!("PIN Options")).build();
+    let group = adw::PreferencesGroup::builder()
+        .title(tr!("PIN Options"))
+        .build();
 
     let pin_adj = gtk::Adjustment::new(
         DEFAULT_PIN_LENGTH as f64,

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-12 19:34\n"
+"POT-Creation-Date: 2026-05-18 15:56-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -12,802 +12,993 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:188
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:218
-msgid "Ashy Pass"
-msgstr "Ashy Pass"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:191
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:221
-msgid "Enter your master password to unlock"
-msgstr "Sláðu inn aðal lykilorðið þitt til að opna"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:196
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:228
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:152
-msgid "Master Password"
-msgstr "Aðal lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:205
-msgid "Unlock"
-msgstr "Opna"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:230
-msgid "Search 2FA codes…"
-msgstr "Leita að 2FA kóðum…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:249
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:520
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:350
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:909
-msgid "All"
-msgstr "Allt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:270
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:372
-msgid "No 2FA Codes"
-msgstr "Engir 2FA kóðar"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:271
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:373
-msgid "Add a TOTP secret to an entry to see live codes here."
-msgstr "Bættu TOTP leynilykli við færslu til að sjá lifandi kóða hér."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:315
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:607
-msgid "Please enter a password"
-msgstr "Vinsamlegast sláðu inn lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:319
-msgid "Please create your master password in the Vault tab first."
-msgstr "Vinsamlegast búðu fyrst til aðal lykilorðið þitt í Vault flipanum."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:332
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:622
-msgid "Incorrect master password"
-msgstr "Rangt aðal lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:335
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:625
-msgid "Failed to unlock vault"
-msgstr "Mistókst að opna hvelfingu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:366
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:698
-msgid "No Results"
-msgstr "Engar niðurstöður"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:367
-msgid "No 2FA codes match your search"
-msgstr "Engir 2FA kóðar passa við leitina þína"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:456
-msgid "Copy Code"
-msgstr "Afrita kóða"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:468
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:849
-msgid "Edit"
-msgstr "Breyta"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:480
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:618
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:877
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1069
-msgid "Delete"
-msgstr "Eyða"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:596
-msgid "TOTP code copied"
-msgstr "TOTP kóði afritaður"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:607
-msgid "Delete 2FA Entry?"
-msgstr "Eyða 2FA færslu?"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:610
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1061
-msgid "Are you sure you want to delete"
-msgstr "Ertu viss um að þú viljir eyða"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:612
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1063
-msgid "This action cannot be undone."
-msgstr "Ekki er hægt að afturkalla þessa aðgerð."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:617
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:646
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1068
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1159
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1358
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1717
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1918
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2039
-msgid "Cancel"
-msgstr "Hætta við"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:625
-msgid "Entry deleted"
-msgstr "Færslu eytt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:642
-msgid "Edit 2FA Entry"
-msgstr "Breyta 2FA færslu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:647
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1160
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1718
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2040
-msgid "Save"
-msgstr "Vista"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:652
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1165
-msgid "Title"
-msgstr "Titill"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:655
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1171
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1725
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2045
-msgid "Username"
-msgstr "Notandanafn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:660
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1237
-msgid "URL"
-msgstr "Vefslóð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:665
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1249
-msgid "Category"
-msgstr "Flokkur"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:670
-msgid "TOTP Settings"
-msgstr "TOTP stillingar"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:673
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1270
-msgid "TOTP Secret (Base32)"
-msgstr "TOTP Leyndarmál (Base32)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:682
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1279
-msgid "Algorithm"
-msgstr "Reiknirit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:694
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1301
-msgid "Digits"
-msgstr "Tölustafir"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:701
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1315
-msgid "Period (seconds)"
-msgstr "Tímabil (sekúndur)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:750
-msgid "Entry updated"
-msgstr "Færslu uppfært"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:756
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:294
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:242
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:701
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:796
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:803
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:811
-msgid "Error"
-msgstr "Villa"
-
-#. ---- Generated password group ----
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:77
-msgid "Generated Password"
-msgstr "Myndað lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:79
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:137
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1177
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1364
-msgid "Password"
-msgstr "Lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:95
-msgid "Strength"
-msgstr "Styrkur"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:120
-msgid "Copy to Clipboard"
-msgstr "Afrita á klemmuspjald"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:124
-msgid "Generate New"
-msgstr "Mynda nýtt"
-
-#. ---- Type selector ----
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:130
-msgid "Generation Type"
-msgstr "Myndunargerð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:140
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1191
-msgid "Passphrase"
-msgstr "Setningarlykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:143
-msgid "PIN"
-msgstr "PIN-númer"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:339
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:930
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1013
-msgid "Password copied to clipboard"
-msgstr "Lykilorð afritað á klemmuspjald"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:356
-msgid "Password Options"
-msgstr "Lykilorðsvalkostir"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:367
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:467
-msgid "Length"
-msgstr "Lengd"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:373
-msgid "Uppercase Letters (A-Z)"
-msgstr "Hástafir (A-Z)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:379
-msgid "Lowercase Letters (a-z)"
-msgstr "Lágstafir (a-z)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:385
-msgid "Digits (0-9)"
-msgstr "Tölustafir (0-9)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:391
-msgid "Symbols (!@#$…)"
-msgstr "Tákn (!@#$…)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:397
-msgid "Exclude Ambiguous Characters"
-msgstr "Sleppa óljósum stöfum"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:398
-msgid "Avoid characters like 0, O, 1, l, I"
-msgstr "Forðastu stafi eins og 0, O, 1, l, I"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:421
-msgid "Passphrase Options"
-msgstr "Lykilorðasamsetningarvalkostir"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:432
-msgid "Number of Words"
-msgstr "Fjöldi orða"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:437
-msgid "Separator"
-msgstr "Aðgreiningartákn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:441
-msgid "Capitalize Words"
-msgstr "Hástafa orð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:447
-msgid "Add Number at End"
-msgstr "Bæta við tölu aftan við"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:456
-msgid "PIN Options"
-msgstr "PIN-valkostir"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:254
-msgid "Confirm Password"
-msgstr "Staðfesta lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:260
-msgid "Quick-unlock PIN"
-msgstr "Flýtilás PIN-númer"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:272
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:536
-msgid "Unlock Vault"
-msgstr "Opna hvelfingu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:278
-msgid "Unlock with PIN"
-msgstr "Opna með PIN-númeri"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:285
-msgid "Use master password instead"
-msgstr "Nota aðallykilorð í staðinn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:324
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:473
-msgid "Vault will lock soon due to inactivity"
-msgstr "Hvelfing mun læsast fljótlega vegna aðgerðaleysis"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:325
-msgid "Stay Unlocked"
-msgstr "Haltu áfram opnu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:331
-msgid "Search passwords…"
-msgstr "Leita að lykilorðum…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:371
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:703
-msgid "No Passwords Stored"
-msgstr "Engin lykilorð geymd"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:372
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:704
-msgid "Add your first password using the + button"
-msgstr "Bættu við fyrsta lykilorðinu með + hnappinum"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:540
-msgid "Create Master Password"
-msgstr "Búa til aðallykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:576
-msgid "Please enter your PIN"
-msgstr "Vinsamlegast sláðu inn PIN-númerið þitt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:587
-msgid "Incorrect PIN"
-msgstr "Rangt PIN-númer"
-
-#. Cache may have been lost (e.g. dev path) — fall back.
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:592
-msgid "Quick-unlock failed"
-msgstr "Flýtilás mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:633
-msgid "Password must be at least"
-msgstr "Lykilorð verður að vera að minnsta kosti"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:635
-msgid "characters"
-msgstr "stafir"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:640
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1395
-msgid "Passwords do not match"
-msgstr "Lykilorð passa ekki"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:650
-msgid "Failed to setup master password"
-msgstr "Mistókst að setja upp aðallykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:693
-msgid "No Favorites"
-msgstr "Engin eftirlæti"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:694
-msgid "Mark passwords as favorite with the star icon"
-msgstr "Merktu lykilorð sem eftirlæti með stjörnutákninu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:699
-msgid "No passwords match your search"
-msgstr "Engin lykilorð passa við leitina þína"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:735
-msgid "No Groups"
-msgstr "Engir hópar"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:737
-msgid "Set a category on entries to organize them into groups"
-msgstr "Settu flokk á færslur til að raða þeim í hópa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:766
-msgid "Uncategorized"
-msgstr "Óflokkað"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:821
-msgid "Favorite"
-msgstr "Eftirlæti"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:835
-msgid "Copy Password"
-msgstr "Afrita lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:863
-msgid "Password history"
-msgstr "Lykilorðasaga"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:968
-msgid "Failed to read history"
-msgstr "Mistókst að lesa sögu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:974
-msgid "Password History"
-msgstr "Lykilorðasaga"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:987
-msgid "No previous passwords recorded."
-msgstr "Engin fyrri lykilorð skráð."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:989
-msgid "Older versions appear here after the password is changed."
-msgstr "Eldri útgáfur birtast hér eftir að lykilorði er breytt."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1004
-msgid "Copy"
-msgstr "Afrita"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1025
-msgid "Clear history"
-msgstr "Hreinsa feril"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1036
-msgid "History cleared"
-msgstr "Ferill hreinsaður"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1058
-msgid "Delete Password?"
-msgstr "Eyða lykilorði?"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1076
-msgid "Password deleted"
-msgstr "Lykilorði eytt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1152
-msgid "Edit Password"
-msgstr "Breyta lykilorði"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1154
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:72
-msgid "Add Password"
-msgstr "Bæta við lykilorði"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1185
-msgid "Generate Password"
-msgstr "Búa til lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1190
-msgid "Strong Password"
-msgstr "Sterkt lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1192
-msgid "PIN Code"
-msgstr "PIN-númer"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1203
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1216
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1228
-msgid "Password generated"
-msgstr "Lykilorð búið til"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1243
-msgid "Notes"
-msgstr "Athugasemdir"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1256
-msgid "Tags (comma-separated)"
-msgstr "Merki (kommu-aðskilin)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1266
-msgid "Two-Factor Authentication"
-msgstr "Tveggja þátta auðkenning"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1332
-msgid "Attachments"
-msgstr "Viðhengi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1333
-msgid "Encrypted with your master key. Stored inside the vault."
-msgstr "Dulkóðað með aðallyklinum þínum. Geymt inni í hirslunni."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1338
-msgid "Add file"
-msgstr "Bæta við skrá"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1362
-msgid "No attachments"
-msgstr "Engar viðhengi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1363
-msgid "Click the + button to add a file."
-msgstr "Smelltu á + hnappinn til að bæta við skrá."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1381
-msgid "Save as…"
-msgstr "Vista sem…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1394
-msgid "Save attachment"
-msgstr "Vista viðhengi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1409
-msgid "Attachment saved"
-msgstr "Viðhengi vistað"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1413
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1499
-msgid "Save failed"
-msgstr "Vista mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1418
-msgid "Attachment not found"
-msgstr "Viðhengi fannst ekki"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1422
-msgid "Decrypt failed"
-msgstr "Afkóðun mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1433
-msgid "Delete attachment"
-msgstr "Eyða viðhengi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1444
-msgid "Attachment deleted"
-msgstr "Viðhengi eytt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1465
-msgid "Add attachment"
-msgstr "Bæta við viðhengi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1476
-msgid "Read failed"
-msgstr "Lestur mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1493
-msgid "Attachment added"
-msgstr "Viðhengi bætt við"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1599
-msgid "Password updated"
-msgstr "Lykilorð uppfært"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1601
-msgid "Password added"
-msgstr "Lykilorði bætt við"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1608
-msgid "Error saving password"
-msgstr "Villa við að vista lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:61
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:145
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:501
-msgid "Generator"
-msgstr "Framleiðandi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:66
-msgid "Search"
-msgstr "Leita"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:78
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:603
-msgid "Lock Vault"
-msgstr "Læsa hvelfingu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:99
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:578
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:610
-msgid "Keyboard Shortcuts"
-msgstr "Flýtilyklar"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:102
-msgid "About"
-msgstr "Um"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:103
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:611
-msgid "Quit"
-msgstr "Hætta"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:146
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:499
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:600
-msgid "Vault"
-msgstr "Hvelfing"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:147
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:500
-msgid "2FA"
-msgstr "2FA"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:157
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:463
-msgid "Groups"
-msgstr "Hópar"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:160
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:471
-msgid "Favorites"
-msgstr "Eftirlæti"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:163
-msgid "Lock"
-msgstr "Læsa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:172
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:117
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:121
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:132
-msgid "Settings"
-msgstr "Stillingar"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:240
-msgid "Vault locked due to inactivity"
-msgstr "Hólf læst vegna aðgerðaleysis"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:257
-msgid "Vault will lock soon"
-msgstr "Hólf mun læsast fljótlega"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:591
-msgid "Navigation"
-msgstr "Flakk"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:593
-msgid "Show Vault"
-msgstr "Sýna hólf"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:594
-msgid "Show 2FA"
-msgstr "Sýna 2FA"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:595
-msgid "Show Generator"
-msgstr "Sýna rafall"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:596
-msgid "Focus Search"
-msgstr "Einbeita leit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:602
-msgid "New Entry"
-msgstr "Ný færsla"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:607
-msgid "Application"
-msgstr "Forrit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:609
-msgid "Open Settings"
-msgstr "Opna stillingar"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:52
-msgid "Security"
-msgstr "Öryggi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:53
-msgid "Data"
-msgstr "Gögn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:54
-msgid "Cloud"
-msgstr "Ský"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:55
-msgid "Appearance"
-msgstr "Útlit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:154
-msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
-msgstr ""
-"Notað til að opna hólfið. Breyting á því dulkóðar öll vistuð gögn að nýju."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:159
-msgid "Current password"
-msgstr "Núverandi lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:162
-msgid "New password"
-msgstr "Nýtt lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:165
-msgid "Confirm new password"
-msgstr "Staðfestu nýja lykilorðið"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:168
-msgid "Change Master Password"
-msgstr "Breyta aðallykilorði"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:211
-msgid "All fields are required."
-msgstr "Allir reitir verða að vera fylltir út."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:219
-msgid "Password too short"
-msgstr "Lykilorðið er of stutt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:227
-msgid "Passwords do not match."
-msgstr "Lykilorðin eru ekki eins."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:234
-msgid "Master password changed."
-msgstr "Aðallykilorði hefur verið breytt."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:254
-msgid "Session"
-msgstr "Setustund"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:258
-msgid "Auto-lock after (seconds)"
-msgstr "Sjálfvirk læsing eftir (sekúndur)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:259
-msgid "Lock vault when idle for this long"
-msgstr "Læsa hvelfingu þegar hún er í aðgerðaleysi svona lengi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:274
-msgid "Clear clipboard after (seconds)"
-msgstr "Hreinsa klippiborð eftir (sekúndur)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:275
 msgid "0 disables auto-clear"
 msgstr "0 slekkur á sjálfvirkri hreinsun"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:290
-msgid "Quick Unlock"
-msgstr "Flýtilæsing"
+msgid "2FA"
+msgstr "2FA"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:292
-msgid ""
-"After auto-lock, unlock with a short PIN instead of the master password. The"
-" PIN guards a key cached in memory only — it is discarded when the app "
-"closes."
+msgid "2FA Codes"
 msgstr ""
-"Eftir sjálfvirka læsingu skaltu opna með stuttu PIN-númeri í stað "
-"aðallykilorðsins. PIN-númerið verndar lykil sem er geymt í vinnsluminni "
-"eingöngu — það er eytt þegar forritið lokast."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:299
-msgid "New PIN (4+ chars)"
-msgstr "Nýtt PIN (4+ stafir)"
+msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
+msgstr ""
+"12 orða BIP-39 setning til að opna án öryggislykils. Birtist einu sinni."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:304
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:404
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1448
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1571
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1956
-msgid "Status"
-msgstr "Staða"
+msgid "About"
+msgstr "Um"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:313
-msgid "Enabled for this session"
-msgstr "Virkt fyrir þessa lotu"
+msgid "Add Number at End"
+msgstr "Bæta við tölu aftan við"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:315
-msgid "Disabled"
-msgstr "Óvirkt"
+msgid "Add Password"
+msgstr "Bæta við lykilorði"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:317
-msgid "Vault must be unlocked to configure"
-msgstr "Hvelfingin verður að vera opnuð til að stilla"
+msgid "Add a TOTP secret to an entry to see live codes here."
+msgstr "Bættu TOTP leynilykli við færslu til að sjá lifandi kóða hér."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:331
+msgid "Add attachment"
+msgstr "Bæta við viðhengi"
+
+msgid "Add file"
+msgstr "Bæta við skrá"
+
+msgid "Add your first password using the + button"
+msgstr "Bættu við fyrsta lykilorðinu með + hnappinum"
+
+msgid ""
+"After auto-lock or restart, unlock with a short PIN instead of the master "
+"password on this device. The vault key is stored encrypted by the PIN."
+msgstr ""
+
+msgid "Algorithm"
+msgstr "Reiknirit"
+
+msgid "All"
+msgstr "Allt"
+
+msgid "All clear"
+msgstr "Allt í lagi"
+
+msgid "All fields are required."
+msgstr "Allir reitir verða að vera fylltir út."
+
+msgid ""
+"Another device uploaded a newer snapshot since this device last synced. "
+"Uploading now would orphan the remote changes."
+msgstr ""
+"Annað tæki hlaðið upp nýrri skyndimynd síðan þetta tæki samstillti síðast. "
+"Ef hlaðið er upp núna verða fjartengdu breytingarnar munaðarlausar."
+
+msgid "App password"
+msgstr "Lykilorð forrits"
+
+msgid "Appearance"
+msgstr "Útlit"
+
+msgid "Application"
+msgstr "Forrit"
+
+msgid "Applying local deletions"
+msgstr ""
+
+msgid "Are you sure you want to delete"
+msgstr "Ertu viss um að þú viljir eyða"
+
+msgid "Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
+msgstr ""
+"Argon2id + AES-256-GCM, verndað með lykilorði. Hægt að flytja aftur inn með "
+"Ashy Pass."
+
+msgid ""
+"Argon2id turns your master password into the vault encryption key; it is not "
+"a physical security key. Higher costs slow brute force but also slow unlock. "
+"Auto-tune picks values calibrated to ~500 ms on this machine. Existing "
+"master hashes keep their original costs; tuned values apply on the next "
+"master password change."
+msgstr ""
+
+msgid "Ashy Pass"
+msgstr "Ashy Pass"
+
+msgid "Attachment added"
+msgstr "Viðhengi bætt við"
+
+msgid "Attachment deleted"
+msgstr "Viðhengi eytt"
+
+msgid "Attachment not found"
+msgstr "Viðhengi fannst ekki"
+
+msgid "Attachment saved"
+msgstr "Viðhengi vistað"
+
+msgid "Attachments"
+msgstr "Viðhengi"
+
+msgid "Audit Options"
+msgstr "Valmöguleikar úttektar"
+
+msgid "Audit failed"
+msgstr "Úttekt mistókst"
+
+msgid "Auto-lock after (seconds)"
+msgstr "Sjálfvirk læsing eftir (sekúndur)"
+
+msgid "Auto-tune"
+msgstr "Sjálfvirk stilling"
+
+msgid "Avoid characters like 0, O, 1, l, I"
+msgstr "Forðastu stafi eins og 0, O, 1, l, I"
+
+msgid "Back up now"
+msgstr "Taka öryggisafrit núna"
+
+msgid "Backup Phrase"
+msgstr "Öryggisafritunarorðasamband"
+
+msgid "Backup failed"
+msgstr "Öryggisafrit mistókst"
+
+msgid "Backup phrase"
+msgstr "Öryggisafritunarorðasamband"
+
+msgid "Backup uploaded"
+msgstr "Öryggisafrit hlaðið upp"
+
+msgid "Benchmark this machine (~5 s)"
+msgstr "Viðmiðunarmæling á þessari vél (~5 sek)"
+
+msgid "Bitwarden, Chrome, 1Password compatible columns"
+msgstr "Dálkar sem samrýmast Bitwarden, Chrome og 1Password"
+
+msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
+msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
+
+msgid "Cancel"
+msgstr "Hætta við"
+
+msgid "Capitalize Words"
+msgstr "Hástafa orð"
+
+msgid "Category"
+msgstr "Flokkur"
+
+msgid "Change Master Password"
+msgstr "Breyta aðallykilorði"
+
+msgid "Check Have I Been Pwned (online)"
+msgstr "Athuga Have I Been Pwned (á netinu)"
+
+msgid "Choose a 1Password .1pux archive"
+msgstr "Veldu 1Password .1pux skjalasafn"
+
+msgid "Choose a Bitwarden JSON export"
+msgstr "Veldu Bitwarden JSON útflutning"
+
+msgid "Choose a CSV file"
+msgstr "Veldu CSV-skrá"
+
+msgid "Choose an Aegis JSON export"
+msgstr "Veldu Aegis JSON-útflutning"
+
+msgid "Choose an andOTP JSON export"
+msgstr "Veldu andOTP JSON útflutning"
+
+msgid "Clear clipboard after (seconds)"
+msgstr "Hreinsa klippiborð eftir (sekúndur)"
+
+msgid "Clear history"
+msgstr "Hreinsa feril"
+
+msgid "Click the + button to add a file."
+msgstr "Smelltu á + hnappinn til að bæta við skrá."
+
+msgid "Client ID"
+msgstr ""
+
+msgid "Client Secret (optional)"
+msgstr ""
+
+msgid "Cloud"
+msgstr "Ský"
+
+msgid "Compact vault list"
+msgstr ""
+
+msgid "Configure Google OAuth"
+msgstr ""
+
+msgid "Configure Nextcloud Passwords"
+msgstr "Stilla Nextcloud Passwords"
+
+msgid "Configure WebDAV"
+msgstr "Stilla WebDAV"
+
+msgid "Configure failed"
+msgstr "Uppsetning mistókst"
+
+msgid "Configured"
+msgstr "Stillt"
+
+msgid "Confirm Password"
+msgstr "Staðfesta lykilorð"
+
+msgid "Confirm new password"
+msgstr "Staðfestu nýja lykilorðið"
+
+msgid "Confirm password"
+msgstr "Staðfesta lykilorð"
+
+msgid "Conflicts resolved"
+msgstr ""
+
+msgid "Copy"
+msgstr "Afrita"
+
+msgid "Copy Code"
+msgstr "Afrita kóða"
+
+msgid "Copy Password"
+msgstr "Afrita lykilorð"
+
+msgid "Copy to Clipboard"
+msgstr "Afrita á klemmuspjald"
+
+msgid "Create Master Password"
+msgstr "Búa til aðallykilorð"
+
+msgid "Created locally"
+msgstr ""
+
+msgid "Created on Nextcloud"
+msgstr ""
+
+msgid "Current master password"
+msgstr "Núverandi aðallykilorð"
+
+msgid "Current parameters"
+msgstr "Núverandi færibreytur"
+
+msgid "Current password"
+msgstr "Núverandi lykilorð"
+
+msgid "Data"
+msgstr "Gögn"
+
+msgid "Decrypt failed"
+msgstr "Afkóðun mistókst"
+
+msgid "Delete"
+msgstr "Eyða"
+
+msgid "Delete 2FA Entry?"
+msgstr "Eyða 2FA færslu?"
+
+msgid "Delete Password?"
+msgstr "Eyða lykilorði?"
+
+msgid "Delete attachment"
+msgstr "Eyða viðhengi"
+
+msgid "Delete permanently"
+msgstr "Eyða varanlega"
+
+msgid ""
+"Deleted entries stay in the trash for this many days, then are permanently "
+"removed on next app start. Set 0 to bypass the trash."
+msgstr ""
+"Eyddum færslum er haldið í ruslinu í þennan marga daga, síðan er þeim eytt "
+"varanlega við næsta ræsingu forrits. Stilltu 0 til að sleppa ruslinu."
+
+msgid "Deleted on Nextcloud"
+msgstr ""
+
+msgid "Digits"
+msgstr "Tölustafir"
+
+msgid "Digits (0-9)"
+msgstr "Tölustafir (0-9)"
+
 msgid "Disable"
 msgstr "Gera óvirkt"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:332
+msgid "Disabled"
+msgstr "Óvirkt"
+
+msgid "Done"
+msgstr "Lokið"
+
+msgid "Downloading remote changes"
+msgstr ""
+
+msgid ""
+"Downloads the most recent backup as ~/.local/share/ashypass/"
+"passwords.restored.db"
+msgstr ""
+"Sækir nýjasta öryggisafrit sem ~/.local/share/ashypass/passwords.restored.db"
+
+msgid "Edit"
+msgstr "Breyta"
+
+msgid "Edit 2FA Entry"
+msgstr "Breyta 2FA færslu"
+
+msgid "Edit Password"
+msgstr "Breyta lykilorði"
+
+msgid "Empty trash"
+msgstr "Tæma ruslið"
+
 msgid "Enable / Update"
 msgstr "Virkja / Uppfæra"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:352
-msgid "Quick-unlock enabled"
-msgstr "Hraðopnun virkjuð"
+msgid "Enabled for this session"
+msgstr "Virkt fyrir þessa lotu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:358
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2091
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2181
-msgid "Unlock the vault first"
-msgstr "Opnaðu hvelfinguna fyrst"
+msgid "Enabled on this device"
+msgstr ""
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:380
+msgid "Encrypt KeePass export"
+msgstr "Dulkóða KeePass útflutning"
+
+msgid "Encrypt export"
+msgstr "Dulkóða útflutning"
+
+msgid "Encrypted export complete"
+msgstr "Dulkóðuðum útflutningi lokið"
+
+msgid "Encrypted snapshot upload with conflict detection"
+msgstr "Dulkóðuð skyndimyndaupphleðsla með árekstrarskynjun"
+
+msgid ""
+"Encrypted vault uploaded as-is over HTTPS. Works with any RFC 4918 server."
+msgstr ""
+"Dulkóðuð hvelfing hlaðið upp óbreytt yfir HTTPS. Virkar með hvaða RFC 4918 "
+"þjóni sem er."
+
+msgid "Encrypted vault uploaded as-is. Folder: \"AshyPass Backups\"."
+msgstr "Dulkóðuð hvelfing hlaðið upp óbreytt. Mappa: \"AshyPass Backups\"."
+
+msgid "Encrypted with your master key. Stored inside the vault."
+msgstr "Dulkóðað með aðallyklinum þínum. Geymt inni í hirslunni."
+
+msgid "Enter the master password for this .kdbx file."
+msgstr "Sláðu inn aðallykilorð fyrir þessa .kdbx-skrá."
+
+msgid "Enter the password used when this file was exported."
+msgstr "Sláðu inn lykilorðið sem notað var þegar þessi skrá var flutt út."
+
+msgid "Enter your master password to unlock"
+msgstr "Sláðu inn aðal lykilorðið þitt til að opna"
+
+msgid "Entry deleted"
+msgstr "Færslu eytt"
+
+msgid "Entry restored"
+msgstr "Færsla endurheimt"
+
+msgid "Entry updated"
+msgstr "Færslu uppfært"
+
+msgid "Error"
+msgstr "Villa"
+
+msgid "Error saving password"
+msgstr "Villa við að vista lykilorð"
+
+msgid "Exclude Ambiguous Characters"
+msgstr "Sleppa óljósum stöfum"
+
+msgid "Export"
+msgstr "Flytja út"
+
+msgid "Export complete"
+msgstr "Útflutningi lokið"
+
+msgid "Export encrypted (.ashy)"
+msgstr "Flytja út dulritað (.ashy)"
+
+msgid "Export failed"
+msgstr "Útflutningur mistókst"
+
+msgid "Export to CSV (plaintext)"
+msgstr "Flytja út í CSV (hreinn texti)"
+
+msgid "Export to KeePass (.kdbx)"
+msgstr "Flytja út í KeePass (.kdbx)"
+
+msgid "Export vault to CSV"
+msgstr "Flytja út hvelfingu í CSV"
+
+msgid "Failed to read history"
+msgstr "Mistókst að lesa sögu"
+
+msgid "Failed to setup master password"
+msgstr "Mistókst að setja upp aðallykilorð"
+
+msgid "Failed to unlock vault"
+msgstr "Mistókst að opna hvelfingu"
+
+msgid "Favorite"
+msgstr "Eftirlæti"
+
+msgid "Favorites"
+msgstr "Eftirlæti"
+
+msgid "Fetch and display site icons next to vault entries"
+msgstr "Sækja og birta táknmyndir vefsvæða við hlið hvelfingarfærslna"
+
+msgid "Fetching remote passwords"
+msgstr ""
+
+msgid "Findings"
+msgstr "Niðurstöður"
+
+msgid "Finishing synchronization"
+msgstr ""
+
+msgid "Focus Search"
+msgstr "Einbeita leit"
+
+msgid "Folder"
+msgstr "Mappa"
+
+msgid ""
+"For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
+"dav/files/USERNAME"
+msgstr ""
+"Fyrir Nextcloud lítur grunnslóðin svona út: https://cloud.example.com/"
+"remote.php/dav/files/NOTANDANAFN"
+
+msgid "Generate Backup Phrase"
+msgstr "Búa til öryggisafritunarorðasamband"
+
+msgid "Generate New"
+msgstr "Mynda nýtt"
+
+msgid "Generate Password"
+msgstr "Búa til lykilorð"
+
+msgid "Generated Password"
+msgstr "Myndað lykilorð"
+
+msgid "Generation Type"
+msgstr "Myndunargerð"
+
+msgid "Generator"
+msgstr "Framleiðandi"
+
+msgid "Google Drive"
+msgstr "Google Drive"
+
+msgid "Groups"
+msgstr "Hópar"
+
+msgid "History cleared"
+msgstr "Ferill hreinsaður"
+
+msgid "Import"
+msgstr "Flytja inn"
+
+msgid "Import .ashy"
+msgstr "Flytja inn .ashy"
+
+msgid "Import 1Password (.1pux)"
+msgstr "Flytja inn 1Password (.1pux)"
+
+msgid "Import Aegis (TOTP)"
+msgstr "Flytja inn Aegis (TOTP)"
+
+msgid "Import Bitwarden (JSON)"
+msgstr "Flytja inn Bitwarden (JSON)"
+
+msgid "Import CSV"
+msgstr "Flytja inn CSV"
+
+msgid "Import KeePass (.kdbx)"
+msgstr "Flytja inn KeePass (.kdbx)"
+
+msgid "Import andOTP"
+msgstr "Flytja inn andOTP"
+
+msgid "Import complete"
+msgstr "Innflutningi lokið"
+
+msgid "Import failed"
+msgstr "Innflutningur mistókst"
+
+msgid "Import from .ashy"
+msgstr "Flytja inn úr .ashy"
+
+msgid "Incorrect PIN"
+msgstr "Rangt PIN-númer"
+
+msgid "Incorrect master password"
+msgstr "Rangt aðal lykilorð"
+
+msgid "KDBX3/KDBX4 password-protected database"
+msgstr "KDBX3/KDBX4 gagnagrunnur verndaður með lykilorði"
+
+msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
+msgstr "KDBX4 með Argon2id + AES-256. Opnast í KeePassXC, KeeWeb o.fl."
+
+msgid "KeePass export complete"
+msgstr "KeePass-útflutningi lokið"
+
+msgid "Keep deleted entries for (days)"
+msgstr "Geyma eyddar færslur í (daga)"
+
+msgid "Key"
+msgstr "Lykill"
+
+msgid "Key Derivation (Argon2id)"
+msgstr "Lyklaafleiðsla (Argon2id)"
+
+msgid "Key registered"
+msgstr "Lykli skráð"
+
+msgid "Key removed"
+msgstr "Lykli fjarlægt"
+
+msgid "Keyboard Shortcuts"
+msgstr "Flýtilyklar"
+
+msgid "Keyring error"
+msgstr "Villa í lyklakippu"
+
+msgid "Large 2FA codes"
+msgstr ""
+
+msgid "Length"
+msgstr "Lengd"
+
+msgid "Lock"
+msgstr "Læsa"
+
+msgid "Lock Vault"
+msgstr "Læsa hvelfingu"
+
+msgid "Lock vault when idle for this long"
+msgstr "Læsa hvelfingu þegar hún er í aðgerðaleysi svona lengi"
+
+msgid "Lowercase Letters (a-z)"
+msgstr "Lágstafir (a-z)"
+
+msgid "Mark entries that are linked to Nextcloud Passwords"
+msgstr ""
+
+msgid "Mark passwords as favorite with the star icon"
+msgstr "Merktu lykilorð sem eftirlæti með stjörnutákninu"
+
+msgid "Master Password"
+msgstr "Aðal lykilorð"
+
+msgid "Master password"
+msgstr "Aðallykilorð"
+
+msgid "Master password changed."
+msgstr "Aðallykilorði hefur verið breytt."
+
+msgid "Master password is in the keyring"
+msgstr "Aðallykilorð er í lyklakippunni"
+
+msgid "Navigation"
+msgstr "Flakk"
+
+msgid "New Entry"
+msgstr "Ný færsla"
+
+msgid "New PIN (4+ chars)"
+msgstr "Nýtt PIN (4+ stafir)"
+
+msgid "New password"
+msgstr "Nýtt lykilorð"
+
+msgid "Nextcloud Passwords"
+msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords connected"
+msgstr "Nextcloud Passwords tengt"
+
+msgid ""
+"Nextcloud requires a filled password, so these local entries were not sent."
+msgstr ""
+
+msgid "Nextcloud sync finished."
+msgstr ""
+
+msgid "No 2FA Codes"
+msgstr "Engir 2FA kóðar"
+
+msgid "No 2FA codes match your search"
+msgstr "Engir 2FA kóðar passa við leitina þína"
+
+msgid "No Favorites"
+msgstr "Engin eftirlæti"
+
+msgid "No Passwords Stored"
+msgstr "Engin lykilorð geymd"
+
+msgid "No Results"
+msgstr "Engar niðurstöður"
+
+msgid "No attachments"
+msgstr "Engar viðhengi"
+
+msgid "No issues found."
+msgstr "Engin vandamál fundust."
+
+msgid "No keys registered"
+msgstr "Engir lyklar skráðir"
+
+msgid "No passwords match your search"
+msgstr "Engin lykilorð passa við leitina þína"
+
+msgid "No previous passwords recorded."
+msgstr "Engin fyrri lykilorð skráð."
+
+msgid "Not configured"
+msgstr "Ekki stillt"
+
+msgid "Not run yet"
+msgstr "Ekki keyrt enn"
+
+msgid "Not set"
+msgstr "Ekki stillt"
+
+msgid "Not signed in"
+msgstr "Ekki skráð/ur inn"
+
+msgid "Not stored"
+msgstr "Ekki geymt"
+
+msgid "Notes"
+msgstr "Athugasemdir"
+
+msgid "Number of Words"
+msgstr "Fjöldi orða"
+
+msgid "OAuth client not configured at build time"
+msgstr "OAuth-biðlari ekki stilltur við smíði"
+
+msgid "OK"
+msgstr "Í lagi"
+
+msgid "Older versions appear here after the password is changed."
+msgstr "Eldri útgáfur birtast hér eftir að lykilorði er breytt."
+
+msgid "Open .ashy export"
+msgstr "Opna .ashy útflutning"
+
+msgid "Open KeePass database"
+msgstr "Opna KeePass-gagnagrunn"
+
+msgid "Open Settings"
+msgstr "Opna stillingar"
+
+msgid "Opens the browser for OAuth consent"
+msgstr "Opnar vafra fyrir OAuth-samþykki"
+
+msgid "PIN"
+msgstr "PIN-númer"
+
+msgid "PIN Code"
+msgstr "PIN-númer"
+
+msgid "PIN Options"
+msgstr "PIN-valkostir"
+
+msgid "Passphrase"
+msgstr "Setningarlykilorð"
+
+msgid "Passphrase Options"
+msgstr "Lykilorðasamsetningarvalkostir"
+
+msgid "Password"
+msgstr "Lykilorð"
+
+msgid "Password / app-password"
+msgstr "Lykilorð / app-lykilorð"
+
+msgid "Password History"
+msgstr "Lykilorðasaga"
+
+msgid "Password Options"
+msgstr "Lykilorðsvalkostir"
+
+msgid "Password added"
+msgstr "Lykilorði bætt við"
+
+msgid "Password copied to clipboard"
+msgstr "Lykilorð afritað á klemmuspjald"
+
+msgid "Password deleted"
+msgstr "Lykilorði eytt"
+
+msgid "Password generated"
+msgstr "Lykilorð búið til"
+
+msgid "Password history"
+msgstr "Lykilorðasaga"
+
+msgid "Password must be at least"
+msgstr "Lykilorð verður að vera að minnsta kosti"
+
+msgid "Password too short"
+msgstr "Lykilorðið er of stutt"
+
+msgid "Password updated"
+msgstr "Lykilorð uppfært"
+
+msgid "Passwordless entries ignored"
+msgstr ""
+
+msgid "Passwords do not match"
+msgstr "Lykilorð passa ekki"
+
+msgid "Passwords do not match."
+msgstr "Lykilorðin eru ekki eins."
+
+msgid "Period (seconds)"
+msgstr "Tímabil (sekúndur)"
+
+msgid "Permanently deleted"
+msgstr "Eytt varanlega"
+
+msgid "Permanently deletes every trashed entry."
+msgstr "Eymir varanlega allar færslur í ruslinu."
+
+msgid ""
+"Pick a password for the .kdbx file. You will need it to open the database."
+msgstr ""
+"Veldu lykilorð fyrir .kdbx skrána. Þú munt þurfa það til að opna "
+"gagnagrunninn."
+
+msgid "Pick a password to protect this .ashy file. You will need it to import."
+msgstr ""
+"Veldu lykilorð til að vernda þessa .ashy skrá. Þú munt þurfa það til að "
+"flytja inn."
+
+msgid "Plain JSON export from Aegis Authenticator"
+msgstr "Venjuleg JSON útflutningur úr Aegis Authenticator"
+
+msgid "Plain JSON export from andOTP"
+msgstr "Hreint JSON-útflutningur frá andOTP"
+
+msgid "Please create your master password in the Vault tab first."
+msgstr "Vinsamlegast búðu fyrst til aðal lykilorðið þitt í Vault flipanum."
+
+msgid "Please enter a password"
+msgstr "Vinsamlegast sláðu inn lykilorð"
+
+msgid "Please enter your PIN"
+msgstr "Vinsamlegast sláðu inn PIN-númerið þitt"
+
+msgid "Please wait while AshyPass talks to Nextcloud"
+msgstr ""
+
+msgid "Plug in your authenticator and click Register"
+msgstr "Tengdu auðkennislykilinn þinn og smelltu á Skrá"
+
+msgid ""
+"Prefer the encrypted .ashy export. The CSV path stores credentials in "
+"plaintext."
+msgstr ""
+"Notaðu frekar dulritaða .ashy-útflutninginn. CSV-slóðin geymir skilríki í "
+"hreinum texta."
+
+msgid "Preparing synchronization"
+msgstr ""
+
+msgid "Quick Unlock"
+msgstr "Flýtilæsing"
+
+msgid "Quick-unlock PIN"
+msgstr "Flýtilás PIN-númer"
+
 msgid "Quick-unlock disabled"
 msgstr "Hraðopnun óvirkjuð"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:390
-msgid "System Keyring"
-msgstr "Kerfislyklakippa"
+msgid "Quick-unlock enabled"
+msgstr "Hraðopnun virkjuð"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:392
+msgid "Quick-unlock failed"
+msgstr "Flýtilás mistókst"
+
+msgid "Quit"
+msgstr "Hætta"
+
+msgid "Read failed"
+msgstr "Lestur mistókst"
+
+msgid "Refresh listing"
+msgstr "Endurnýja lista"
+
+msgid "Register Security Key"
+msgstr "Skrá öryggislykil"
+
+msgid "Register failed"
+msgstr "Skráning mistókst"
+
+msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
+msgstr ""
+
+msgid "Remote generation:"
+msgstr "Fjartengd kynslóð:"
+
+msgid "Remove"
+msgstr "Fjarlægja"
+
+msgid "Removed from keyring"
+msgstr "Fjarlægt úr lyklakippu"
+
+msgid "Required to encrypt the snapshot before upload"
+msgstr "Nauðsynlegt til að dulkóða skyndimyndina áður en hún er hlaðið upp"
+
+msgid "Restore"
+msgstr "Endurheimta"
+
+msgid "Restore failed"
+msgstr "Endurheimt mistókst"
+
+msgid "Restore from an Ashy Pass encrypted export"
+msgstr "Endurheimta úr dulrituðum útflutningi frá Ashy Pass"
+
+msgid "Restore latest"
+msgstr "Endurheimta nýjasta"
+
+msgid "Restored to"
+msgstr "Endurheimt í"
+
+msgid "Retention"
+msgstr "Geymslutími"
+
+msgid "Run"
+msgstr "Keyra"
+
+msgid "Run Audit"
+msgstr "Keyra úttekt"
+
+msgid "Running audit..."
+msgstr ""
+
+msgid "Save"
+msgstr "Vista"
+
+msgid "Save KeePass export"
+msgstr "Vista KeePass-útflutning"
+
+msgid "Save as…"
+msgstr "Vista sem…"
+
+msgid "Save attachment"
+msgstr "Vista viðhengi"
+
+msgid "Save encrypted export"
+msgstr "Vista dulkóðaðan útflutning"
+
+msgid "Save failed"
+msgstr "Vista mistókst"
+
+msgid "Saves all entries as plaintext"
+msgstr "Vistar allar færslur sem hreinan texta"
+
+msgid ""
+"Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
+msgstr ""
+"Skanna hvelfinguna fyrir veikum, tvíteknum, gömlum, brotnum færslum og "
+"færslum án tveggja þátta auðkenningar."
+
+msgid "Scanning vault..."
+msgstr ""
+
+msgid "Search"
+msgstr "Leita"
+
+msgid "Search 2FA codes…"
+msgstr "Leita að 2FA kóðum…"
+
+msgid "Search passwords…"
+msgstr "Leita að lykilorðum…"
+
+msgid "Security"
+msgstr "Öryggi"
+
+msgid "Security Keys"
+msgstr "Öryggislyklar"
+
+msgid "Sending local changes"
+msgstr ""
+
+msgid ""
+"Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
+"locally for 7 days."
+msgstr ""
+"Sendir aðeins fyrstu 5 sextánstafa stafina af SHA-1(lykilorð) á hverja "
+"færslu. Geymt í skyndiminni í 7 daga."
+
+msgid "Separator"
+msgstr "Aðgreiningartákn"
+
+msgid "Server URL"
+msgstr "Vefslóð þjóns"
+
+msgid ""
+"Server URL (e.g. https://cloud.example.com), username and an app password."
+msgstr ""
+"Vefslóð þjóns (t.d. https://cloud.example.com), notandanafn og lykilorð "
+"forrits."
+
+msgid "Server URL, username, app password"
+msgstr "Vefslóð þjóns, notandanafn, forritslykilorð"
+
+msgid "Server URL, username, app-password"
+msgstr "Vefslóð þjóns, notandanafn, app-lykilorð"
+
+msgid "Session"
+msgstr "Setustund"
+
+msgid "Set a category on entries to organize them into groups"
+msgstr "Settu flokk á færslur til að raða þeim í hópa"
+
+msgid "Set — generate a new one to replace it"
+msgstr "Stillt — búðu til nýtt til að skipta því út"
+
+msgid "Settings"
+msgstr "Stillingar"
+
+msgid "Show 2FA"
+msgstr "Sýna 2FA"
+
+msgid "Show Generator"
+msgstr "Sýna rafall"
+
+msgid "Show Nextcloud badges"
+msgstr ""
+
+msgid "Show Vault"
+msgstr "Sýna hólf"
+
+msgid "Show favicons"
+msgstr "Sýna táknmyndir vefsvæða"
+
+msgid "Sign in failed"
+msgstr "Innskráning mistókst"
+
+msgid "Sign in to Google"
+msgstr "Skrá inn á Google"
+
+msgid "Sign out"
+msgstr "Skrá út"
+
+msgid "Sign out failed"
+msgstr "Útskráning mistókst"
+
+msgid "Signed in"
+msgstr "Skráð/ur inn"
+
+msgid "Signed in to Google Drive"
+msgstr "Skráður inn á Google Drive"
+
+msgid "Signed out"
+msgstr "Útskráður/Útskráð"
+
+msgid "Snapshot uploaded"
+msgstr "Skyndimynd hlaðið upp"
+
+msgid "Starting..."
+msgstr ""
+
+msgid "Status"
+msgstr "Staða"
+
+msgid "Stay Unlocked"
+msgstr "Haltu áfram opnu"
+
+msgid "Store"
+msgstr "Geyma"
+
 msgid ""
 "Store the master password in the desktop's Secret Service (GNOME Keyring, "
 "KWallet, etc.) so Ashy Pass can unlock automatically on start. The keyring "
@@ -819,149 +1010,195 @@ msgstr ""
 "læst með innskráningarlykilorðinu þínu — slökktu á þessu ef margir notendur "
 "deila skjáborðslotunni."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:400
-msgid "Current master password"
-msgstr "Núverandi aðallykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:409
-msgid "Master password is in the keyring"
-msgstr "Aðallykilorð er í lyklakippunni"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:411
-msgid "Not stored"
-msgstr "Ekki geymt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:424
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:685
-msgid "Remove"
-msgstr "Fjarlægja"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:425
-msgid "Store"
-msgstr "Geyma"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:441
-msgid "Type the current master password first"
-msgstr "Sláðu fyrst inn núverandi aðallykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:456
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1850
-msgid "Wrong master password"
-msgstr "Rangt aðallykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:468
 msgid "Stored in system keyring"
 msgstr "Geymt í lyklakippu kerfis"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:476
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:501
-msgid "Keyring error"
-msgstr "Villa í lyklakippu"
+msgid "Strength"
+msgstr "Styrkur"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:493
-msgid "Removed from keyring"
-msgstr "Fjarlægt úr lyklakippu"
+msgid "Strong Password"
+msgstr "Sterkt lykilorð"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:514
-msgid "Key Derivation (Argon2id)"
-msgstr "Lyklaafleiðsla (Argon2id)"
+msgid "Summary"
+msgstr "Samantekt"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:516
-msgid ""
-"Higher costs slow brute force but also slow unlock. Auto-tune picks values "
-"calibrated to ~500 ms on this machine. Existing master hashes keep their "
-"original costs; tuned values apply on the next master password change."
+msgid "Symbols (!@#$…)"
+msgstr "Tákn (!@#$…)"
+
+msgid "Sync completed"
 msgstr ""
-"Hærri kostnaður hægir á þvingunaraðferðum en hægir einnig á opnun. Sjálfvirk"
-" stilling velur gildi sem eru stillt á ~500 ms á þessari vél. Núverandi "
-"aðallykilsammöndun heldur upprunalegum kostnaði; stillt gildi taka gildi við"
-" næstu breytingu á aðallykilorði."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:524
-msgid "Current parameters"
-msgstr "Núverandi færibreytur"
+msgid "Sync completed with errors"
+msgstr ""
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:542
-msgid "Auto-tune"
-msgstr "Sjálfvirk stilling"
+msgid "Sync conflict"
+msgstr "Samstillingarárekstur"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:543
-msgid "Benchmark this machine (~5 s)"
-msgstr "Viðmiðunarmæling á þessari vél (~5 sek)"
+msgid "Sync conflict detected"
+msgstr "Samstillingarárekstur greindur"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:547
-msgid "Run"
-msgstr "Keyra"
+msgid "Sync errors"
+msgstr "Samstillingarvillur"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:626
-msgid "Security Keys"
-msgstr "Öryggislyklar"
+msgid "Sync failed"
+msgstr "Samstilling mistókst"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:628
-msgid "Register up to 2 FIDO2 authenticators (YubiKey, Solo, etc.)"
-msgstr "Skráðu allt að 2 FIDO2 auðkenningartæki (YubiKey, Solo o.s.frv.)"
+msgid "Sync now"
+msgstr "Samstilla núna"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:668
-msgid "No keys registered"
-msgstr "Engir lyklar skráðir"
+msgid "Synchronizing Nextcloud"
+msgstr ""
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:669
-msgid "Plug in your authenticator and click Register"
-msgstr "Tengdu auðkennislykilinn þinn og smelltu á Skrá"
+msgid "Synchronizing..."
+msgstr ""
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:678
-msgid "Key"
-msgstr "Lykill"
+msgid "Syncing folders"
+msgstr ""
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:705
-msgid "Key removed"
-msgstr "Lykli fjarlægt"
+msgid "System Keyring"
+msgstr "Kerfislyklakippa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:728
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:743
-msgid "Register Security Key"
-msgstr "Skrá öryggislykil"
+msgid "TOTP Secret (Base32)"
+msgstr "TOTP Leyndarmál (Base32)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:740
+msgid "TOTP Settings"
+msgstr "TOTP stillingar"
+
+msgid "TOTP code copied"
+msgstr "TOTP kóði afritaður"
+
+msgid "Tags (comma-separated)"
+msgstr "Merki (kommu-aðskilin)"
+
+msgid "This action cannot be undone."
+msgstr "Ekki er hægt að afturkalla þessa aðgerð."
+
+msgid "This device generation:"
+msgstr "Kynslóð þessa tækis:"
+
+msgid "Title"
+msgstr "Titill"
+
 msgid "Touch your key…"
 msgstr "Snertu lykilinn þinn…"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:749
-msgid "Key registered"
-msgstr "Lykli skráð"
+msgid "Trash is empty."
+msgstr "Ruslið er tómt."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:751
-msgid "Register failed"
-msgstr "Skráning mistókst"
+msgid "Trashed entries"
+msgstr "Færslur í rusli"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:767
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:831
-msgid "Backup Phrase"
-msgstr "Öryggisafritunarorðasamband"
+msgid "Two-Factor Authentication"
+msgstr "Tveggja þátta auðkenning"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:769
-msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
+msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
-"12 orða BIP-39 setning til að opna án öryggislykils. Birtist einu sinni."
+"Tvíhliða sátt: draga fjartengt, ýta staðvært, leysa með því að nýjasta vinnur"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:774
-msgid "Backup phrase"
-msgstr "Öryggisafritunarorðasamband"
+msgid ""
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
+"an app password from Settings → Security."
+msgstr ""
+"Tvíhliða samstilling við opinbera 'Passwords' forritið á Nextcloud-þjóninum "
+"þínum. Notaðu forritslykilorð frá Stillingar → Öryggi."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:776
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:815
-msgid "Set — generate a new one to replace it"
-msgstr "Stillt — búðu til nýtt til að skipta því út"
+msgid "Type the current master password first"
+msgstr "Sláðu fyrst inn núverandi aðallykilorð"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:777
-msgid "Not set"
-msgstr "Ekki stillt"
+msgid "URL"
+msgstr "Vefslóð"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:783
-msgid "Generate Backup Phrase"
-msgstr "Búa til öryggisafritunarorðasamband"
+msgid "URL, username and password are required"
+msgstr "Vefslóð, notandanafn og lykilorð eru nauðsynleg"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:833
+msgid "Uncategorized"
+msgstr "Óflokkað"
+
+msgid "Unencrypted 1Password 8 export archive"
+msgstr "Ódulkóðaður útflutningsskjalasafn úr 1Password 8"
+
+msgid "Unencrypted Bitwarden vault export"
+msgstr "Ódulkóðuð útflutningur úr Bitwarden hvelfingu"
+
+msgid "Unlock"
+msgstr "Opna"
+
+msgid "Unlock Vault"
+msgstr "Opna hvelfingu"
+
+msgid "Unlock the vault first"
+msgstr "Opnaðu hvelfinguna fyrst"
+
+msgid "Unlock with PIN"
+msgstr "Opna með PIN-númeri"
+
+msgid "Updated locally"
+msgstr ""
+
+msgid "Updated on Nextcloud"
+msgstr ""
+
+msgid "Upload anyway"
+msgstr "Hlaða upp engu að síður"
+
+msgid "Upload the current vault file to Drive"
+msgstr "Hlaða upp núverandi hvelfingarskrá á Drive"
+
+msgid "Upload the current vault file to WebDAV"
+msgstr "Hlaða upp núverandi hvelfingarskrá á WebDAV"
+
+msgid "Uppercase Letters (A-Z)"
+msgstr "Hástafir (A-Z)"
+
+msgid "Use larger digits for easier reading"
+msgstr ""
+
+msgid "Use master password instead"
+msgstr "Nota aðallykilorð í staðinn"
+
+msgid "Use tighter spacing for long password lists"
+msgstr ""
+
+msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
+msgstr ""
+"Notað til að opna hólfið. Breyting á því dulkóðar öll vistuð gögn að nýju."
+
+msgid "Username"
+msgstr "Notandanafn"
+
+msgid "Vault"
+msgstr "Hvelfing"
+
+msgid "Vault List"
+msgstr "Listi yfir hvelfingar"
+
+msgid "Vault already in sync"
+msgstr "Hvel þegar samstillt"
+
+msgid "Vault locked due to inactivity"
+msgstr "Hólf læst vegna aðgerðaleysis"
+
+msgid "Vault must be unlocked to configure"
+msgstr "Hvelfingin verður að vera opnuð til að stilla"
+
+msgid "Vault will lock soon"
+msgstr "Hólf mun læsast fljótlega"
+
+msgid "Vault will lock soon due to inactivity"
+msgstr "Hvelfing mun læsast fljótlega vegna aðgerðaleysis"
+
+msgid "Waiting for Nextcloud..."
+msgstr ""
+
+msgid "WebDAV / Nextcloud"
+msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV configured"
+msgstr "WebDAV stillt"
+
+msgid "Working..."
+msgstr ""
+
 msgid ""
 "Write these 12 words down and keep them safe. This is the only time they "
 "will be shown."
@@ -969,662 +1206,61 @@ msgstr ""
 "Skrifaðu þessi 12 orð niður og geymdu þau á öruggum stað. Þetta er í eina "
 "skiptið sem þau verða sýnd."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:852
-msgid "Done"
-msgstr "Lokið"
+msgid "Wrong master password"
+msgstr "Rangt aðallykilorð"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:864
-msgid "Vault List"
-msgstr "Listi yfir hvelfingar"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:868
-msgid "Show favicons"
-msgstr "Sýna táknmyndir vefsvæða"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:869
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Sækja og birta táknmyndir vefsvæða við hlið hvelfingarfærslna"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:895
-msgid "Import"
-msgstr "Flytja inn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:897
-msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
-msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:905
-msgid "Import CSV"
-msgstr "Flytja inn CSV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:906
-msgid "Bitwarden, Chrome, 1Password compatible columns"
-msgstr "Dálkar sem samrýmast Bitwarden, Chrome og 1Password"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:912
-msgid "Import Bitwarden (JSON)"
-msgstr "Flytja inn Bitwarden (JSON)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:913
-msgid "Unencrypted Bitwarden vault export"
-msgstr "Ódulkóðuð útflutningur úr Bitwarden hvelfingu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:919
-msgid "Import 1Password (.1pux)"
-msgstr "Flytja inn 1Password (.1pux)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:920
-msgid "Unencrypted 1Password 8 export archive"
-msgstr "Ódulkóðaður útflutningsskjalasafn úr 1Password 8"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:926
-msgid "Import Aegis (TOTP)"
-msgstr "Flytja inn Aegis (TOTP)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:927
-msgid "Plain JSON export from Aegis Authenticator"
-msgstr "Venjuleg JSON útflutningur úr Aegis Authenticator"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:933
-msgid "Import andOTP"
-msgstr "Flytja inn andOTP"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:934
-msgid "Plain JSON export from andOTP"
-msgstr "Hreint JSON-útflutningur frá andOTP"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:941
-msgid "Export"
-msgstr "Flytja út"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:943
-msgid ""
-"Prefer the encrypted .ashy export. The CSV path stores credentials in "
-"plaintext."
-msgstr ""
-"Notaðu frekar dulritaða .ashy-útflutninginn. CSV-slóðin geymir skilríki í "
-"hreinum texta."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:949
-msgid "Export encrypted (.ashy)"
-msgstr "Flytja út dulritað (.ashy)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:951
-msgid ""
-"Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
-msgstr ""
-"Argon2id + AES-256-GCM, verndað með lykilorði. Hægt að flytja aftur inn með "
-"Ashy Pass."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:970
-msgid "Import from .ashy"
-msgstr "Flytja inn úr .ashy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:971
-msgid "Restore from an Ashy Pass encrypted export"
-msgstr "Endurheimta úr dulrituðum útflutningi frá Ashy Pass"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:989
-msgid "Export to KeePass (.kdbx)"
-msgstr "Flytja út í KeePass (.kdbx)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:991
-msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
-msgstr "KDBX4 með Argon2id + AES-256. Opnast í KeePassXC, KeeWeb o.fl."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1010
-msgid "Import KeePass (.kdbx)"
-msgstr "Flytja inn KeePass (.kdbx)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1011
-msgid "KDBX3/KDBX4 password-protected database"
-msgstr "KDBX3/KDBX4 gagnagrunnur verndaður með lykilorði"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1029
-msgid "Export to CSV (plaintext)"
-msgstr "Flytja út í CSV (hreinn texti)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1030
-msgid "Saves all entries as plaintext"
-msgstr "Vistar allar færslur sem hreinan texta"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1098
-msgid "Choose a CSV file"
-msgstr "Veldu CSV-skrá"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1099
-msgid "Choose an Aegis JSON export"
-msgstr "Veldu Aegis JSON-útflutning"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1100
-msgid "Choose an andOTP JSON export"
-msgstr "Veldu andOTP JSON útflutning"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1101
-msgid "Choose a Bitwarden JSON export"
-msgstr "Veldu Bitwarden JSON útflutning"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1102
-msgid "Choose a 1Password .1pux archive"
-msgstr "Veldu 1Password .1pux skjalasafn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1169
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1254
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1340
-msgid "Import complete"
-msgstr "Innflutningi lokið"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1170
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1257
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1341
-msgid "Import failed"
-msgstr "Innflutningur mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1180
-msgid "Encrypt export"
-msgstr "Dulkóða útflutning"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1181
-msgid ""
-"Pick a password to protect this .ashy file. You will need it to import."
-msgstr ""
-"Veldu lykilorð til að vernda þessa .ashy skrá. Þú munt þurfa það til að "
-"flytja inn."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1189
-msgid "Save encrypted export"
-msgstr "Vista dulkóðaðan útflutning"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1210
-msgid "Encrypted export complete"
-msgstr "Dulkóðuðum útflutningi lokið"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1213
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1299
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1426
-msgid "Export failed"
-msgstr "Útflutningur mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1225
-msgid "Open .ashy export"
-msgstr "Opna .ashy útflutning"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1244
-msgid "Import .ashy"
-msgstr "Flytja inn .ashy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1245
-msgid "Enter the password used when this file was exported."
-msgstr "Sláðu inn lykilorðið sem notað var þegar þessi skrá var flutt út."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1270
-msgid "Encrypt KeePass export"
-msgstr "Dulkóða KeePass útflutning"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1271
-msgid ""
-"Pick a password for the .kdbx file. You will need it to open the database."
-msgstr ""
-"Veldu lykilorð fyrir .kdbx skrána. Þú munt þurfa það til að opna "
-"gagnagrunninn."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1279
-msgid "Save KeePass export"
-msgstr "Vista KeePass-útflutning"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1297
-msgid "KeePass export complete"
-msgstr "KeePass-útflutningi lokið"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1309
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1331
-msgid "Open KeePass database"
-msgstr "Opna KeePass-gagnagrunn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1332
-msgid "Enter the master password for this .kdbx file."
-msgstr "Sláðu inn aðallykilorð fyrir þessa .kdbx-skrá."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1359
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1397
-msgid "OK"
-msgstr "Í lagi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1367
-msgid "Confirm password"
-msgstr "Staðfesta lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1409
-msgid "Export vault to CSV"
-msgstr "Flytja út hvelfingu í CSV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1425
-msgid "Export complete"
-msgstr "Útflutningi lokið"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1441
-msgid "Google Drive"
-msgstr "Google Drive"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1443
-msgid "Encrypted vault uploaded as-is. Folder: \"AshyPass Backups\"."
-msgstr "Dulkóðuð hvelfing hlaðið upp óbreytt. Mappa: \"AshyPass Backups\"."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1450
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1490
-msgid "Signed in"
-msgstr "Skráð/ur inn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1452
-msgid "OAuth client not configured at build time"
-msgstr "OAuth-biðlari ekki stilltur við smíði"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1454
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1482
-msgid "Not signed in"
-msgstr "Ekki skráð/ur inn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1461
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1491
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1577
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1608
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1967
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1997
-msgid "Sign out"
-msgstr "Skrá út"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1463
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1483
-msgid "Sign in to Google"
-msgstr "Skrá inn á Google"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1465
-msgid "Opens the browser for OAuth consent"
-msgstr "Opnar vafra fyrir OAuth-samþykki"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1479
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1593
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1983
-msgid "Sign out failed"
-msgstr "Útskráning mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1484
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1598
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1988
-msgid "Signed out"
-msgstr "Útskráður/Útskráð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1492
-msgid "Signed in to Google Drive"
-msgstr "Skráður inn á Google Drive"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1494
-msgid "Sign in failed"
-msgstr "Innskráning mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1501
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1616
-msgid "Back up now"
-msgstr "Taka öryggisafrit núna"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1502
-msgid "Upload the current vault file to Drive"
-msgstr "Hlaða upp núverandi hvelfingarskrá á Drive"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1515
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1635
-msgid "Backup uploaded"
-msgstr "Öryggisafrit hlaðið upp"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1516
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1631
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1636
-msgid "Backup failed"
-msgstr "Öryggisafrit mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1523
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1665
-msgid "Restore latest"
-msgstr "Endurheimta nýjasta"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1524
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1667
-msgid ""
-"Downloads the most recent backup as "
-"~/.local/share/ashypass/passwords.restored.db"
-msgstr ""
-"Sækir nýjasta öryggisafrit sem ~/.local/share/ashypass/passwords.restored.db"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1547
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1692
-msgid "Restored to"
-msgstr "Endurheimt í"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1549
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1694
-msgid "Restore failed"
-msgstr "Endurheimt mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1564
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1712
-msgid "WebDAV / Nextcloud"
-msgstr "WebDAV / Nextcloud"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1566
-msgid ""
-"Encrypted vault uploaded as-is over HTTPS. Works with any RFC 4918 server."
-msgstr ""
-"Dulkóðuð hvelfing hlaðið upp óbreytt yfir HTTPS. Virkar með hvaða RFC 4918 "
-"þjóni sem er."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1572
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1607
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1958
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1996
-msgid "Configured"
-msgstr "Stillt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1572
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1596
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1960
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1986
-msgid "Not configured"
-msgstr "Ekki stillt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1577
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1597
-msgid "Configure WebDAV"
-msgstr "Stilla WebDAV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1578
-msgid "Server URL, username, app-password"
-msgstr "Vefslóð þjóns, notandanafn, app-lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1617
-msgid "Upload the current vault file to WebDAV"
-msgstr "Hlaða upp núverandi hvelfingarskrá á WebDAV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1646
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2005
-msgid "Sync now"
-msgstr "Samstilla núna"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1648
-msgid "Encrypted snapshot upload with conflict detection"
-msgstr "Dulkóðuð skyndimyndaupphleðsla með árekstrarskynjun"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1714
-msgid ""
-"For Nextcloud, the base URL looks like "
-"https://cloud.example.com/remote.php/dav/files/USERNAME"
-msgstr ""
-"Fyrir Nextcloud lítur grunnslóðin svona út: "
-"https://cloud.example.com/remote.php/dav/files/NOTANDANAFN"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1723
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2044
-msgid "Server URL"
-msgstr "Vefslóð þjóns"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1727
-msgid "Password / app-password"
-msgstr "Lykilorð / app-lykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1730
-msgid "Folder"
-msgstr "Mappa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1764
-msgid "URL, username and password are required"
-msgstr "Vefslóð, notandanafn og lykilorð eru nauðsynleg"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1769
-msgid "WebDAV configured"
-msgstr "WebDAV stillt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1772
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2081
-msgid "Configure failed"
-msgstr "Uppsetning mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1799
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1894
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2129
-msgid "Sync failed"
-msgstr "Samstilling mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1805
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1875
-msgid "Vault already in sync"
-msgstr "Hvel þegar samstillt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1837
-msgid "Master password"
-msgstr "Aðallykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1838
-msgid "Required to encrypt the snapshot before upload"
-msgstr "Nauðsynlegt til að dulkóða skyndimyndina áður en hún er hlaðið upp"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1869
-msgid "Snapshot uploaded"
-msgstr "Skyndimynd hlaðið upp"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1883
-msgid "Sync conflict"
-msgstr "Samstillingarárekstur"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1910
-msgid "Sync conflict detected"
-msgstr "Samstillingarárekstur greindur"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1913
-msgid ""
-"Another device uploaded a newer snapshot since this device last synced. "
-"Uploading now would orphan the remote changes."
-msgstr ""
-"Annað tæki hlaðið upp nýrri skyndimynd síðan þetta tæki samstillti síðast. "
-"Ef hlaðið er upp núna verða fjartengdu breytingarnar munaðarlausar."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1914
-msgid "This device generation:"
-msgstr "Kynslóð þessa tækis:"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1915
-msgid "Remote generation:"
-msgstr "Fjartengd kynslóð:"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1919
-msgid "Upload anyway"
-msgstr "Hlaða upp engu að síður"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1949
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2034
-msgid "Nextcloud Passwords"
-msgstr "Nextcloud Passwords"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1951
-msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use"
-" an app password from Settings → Security."
-msgstr ""
-"Tvíhliða samstilling við opinbera 'Passwords' forritið á Nextcloud-þjóninum "
-"þínum. Notaðu forritslykilorð frá Stillingar → Öryggi."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1969
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1987
-msgid "Configure Nextcloud Passwords"
-msgstr "Stilla Nextcloud Passwords"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1971
-msgid "Server URL, username, app password"
-msgstr "Vefslóð þjóns, notandanafn, forritslykilorð"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2007
-msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
-msgstr ""
-"Tvíhliða sátt: draga fjartengt, ýta staðvært, leysa með því að nýjasta "
-"vinnur"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2036
-msgid ""
-"Server URL (e.g. https://cloud.example.com), username and an app password."
-msgstr ""
-"Vefslóð þjóns (t.d. https://cloud.example.com), notandanafn og lykilorð "
-"forrits."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2047
-msgid "App password"
-msgstr "Lykilorð forrits"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2078
-msgid "Nextcloud Passwords connected"
-msgstr "Nextcloud Passwords tengt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2104
-msgid "Sync"
-msgstr "Samstilla"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2120
-msgid "Sync errors"
-msgstr "Samstillingarvillur"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2143
-msgid "Audit Options"
-msgstr "Valmöguleikar úttektar"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2145
-msgid ""
-"Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
-msgstr ""
-"Skanna hvelfinguna fyrir veikum, tvíteknum, gömlum, brotnum færslum og "
-"færslum án tveggja þátta auðkenningar."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2149
-msgid "Check Have I Been Pwned (online)"
-msgstr "Athuga Have I Been Pwned (á netinu)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2151
-msgid ""
-"Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
-"locally for 7 days."
-msgstr ""
-"Sendir aðeins fyrstu 5 sextánstafa stafina af SHA-1(lykilorð) á hverja "
-"færslu. Geymt í skyndiminni í 7 daga."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2157
-msgid "Run Audit"
-msgstr "Keyra úttekt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2165
-msgid "Summary"
-msgstr "Samantekt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2167
-msgid "Not run yet"
-msgstr "Ekki keyrt enn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2173
-msgid "Findings"
-msgstr "Niðurstöður"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2190
-msgid "Audit failed"
-msgstr "Úttekt mistókst"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2197
-msgid "entries scanned"
-msgstr "færslur skannaðar"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2202
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2225
-msgid "weak"
-msgstr "veikt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2204
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2226
-msgid "duplicate"
-msgstr "afrit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2206
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2227
-msgid "old"
-msgstr "gamalt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2208
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2228
 msgid "breached"
 msgstr "brotist inn"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2210
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2229
+msgid "characters"
+msgstr "stafir"
+
+msgid "duplicate"
+msgstr "afrit"
+
+msgid "entries removed"
+msgstr "færslum eytt"
+
+msgid "entries scanned"
+msgstr "færslur skannaðar"
+
 msgid "no 2FA"
 msgstr "engin 2FA"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2214
-msgid "All clear"
-msgstr "Allt í lagi"
+msgid "old"
+msgstr "gamalt"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2215
-msgid "No issues found."
-msgstr "Engin vandamál fundust."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2234
 msgid "seen"
 msgstr "séð"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2288
-msgid "Retention"
-msgstr "Geymslutími"
+msgid "weak"
+msgstr "veikt"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2290
-msgid ""
-"Deleted entries stay in the trash for this many days, then are permanently "
-"removed on next app start. Set 0 to bypass the trash."
-msgstr ""
-"Eyddum færslum er haldið í ruslinu í þennan marga daga, síðan er þeim eytt "
-"varanlega við næsta ræsingu forrits. Stilltu 0 til að sleppa ruslinu."
+#~ msgid "No Groups"
+#~ msgstr "Engir hópar"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2295
-msgid "Keep deleted entries for (days)"
-msgstr "Geyma eyddar færslur í (daga)"
+#~ msgid ""
+#~ "After auto-lock, unlock with a short PIN instead of the master password. "
+#~ "The PIN guards a key cached in memory only — it is discarded when the app "
+#~ "closes."
+#~ msgstr ""
+#~ "Eftir sjálfvirka læsingu skaltu opna með stuttu PIN-númeri í stað "
+#~ "aðallykilorðsins. PIN-númerið verndar lykil sem er geymt í vinnsluminni "
+#~ "eingöngu — það er eytt þegar forritið lokast."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2309
-msgid "Trashed entries"
-msgstr "Færslur í rusli"
+#~ msgid ""
+#~ "Higher costs slow brute force but also slow unlock. Auto-tune picks "
+#~ "values calibrated to ~500 ms on this machine. Existing master hashes keep "
+#~ "their original costs; tuned values apply on the next master password "
+#~ "change."
+#~ msgstr ""
+#~ "Hærri kostnaður hægir á þvingunaraðferðum en hægir einnig á opnun. "
+#~ "Sjálfvirk stilling velur gildi sem eru stillt á ~500 ms á þessari vél. "
+#~ "Núverandi aðallykilsammöndun heldur upprunalegum kostnaði; stillt gildi "
+#~ "taka gildi við næstu breytingu á aðallykilorði."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2337
-msgid "Trash is empty."
-msgstr "Ruslið er tómt."
+#~ msgid "Register up to 2 FIDO2 authenticators (YubiKey, Solo, etc.)"
+#~ msgstr "Skráðu allt að 2 FIDO2 auðkenningartæki (YubiKey, Solo o.s.frv.)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2357
-msgid "Restore"
-msgstr "Endurheimta"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2363
-msgid "Delete permanently"
-msgstr "Eyða varanlega"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2378
-msgid "Entry restored"
-msgstr "Færsla endurheimt"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2405
-msgid "Permanently deleted"
-msgstr "Eytt varanlega"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2433
-msgid "Refresh listing"
-msgstr "Endurnýja lista"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2443
-msgid "Empty trash"
-msgstr "Tæma ruslið"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2444
-msgid "Permanently deletes every trashed entry."
-msgstr "Eymir varanlega allar færslur í ruslinu."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2455
-msgid "entries removed"
-msgstr "færslum eytt"
+#~ msgid "Sync"
+#~ msgstr "Samstilla"

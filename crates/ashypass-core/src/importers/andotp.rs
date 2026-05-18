@@ -31,14 +31,20 @@ struct Raw {
     kind: String,
 }
 
-fn default_algo() -> String { "SHA1".into() }
-fn default_digits() -> u8 { 6 }
-fn default_period() -> u32 { 30 }
+fn default_algo() -> String {
+    "SHA1".into()
+}
+fn default_digits() -> u8 {
+    6
+}
+fn default_period() -> u32 {
+    30
+}
 
 pub fn import_plain(path: impl AsRef<Path>) -> Result<Vec<AndotpEntry>> {
     let data = std::fs::read_to_string(path)?;
-    let raws: Vec<Raw> = serde_json::from_str(&data)
-        .map_err(|e| Error::Other(format!("andotp json: {e}")))?;
+    let raws: Vec<Raw> =
+        serde_json::from_str(&data).map_err(|e| Error::Other(format!("andotp json: {e}")))?;
     Ok(raws
         .into_iter()
         .filter(|r| r.kind.is_empty() || r.kind.eq_ignore_ascii_case("totp"))

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-12 19:20\n"
+"POT-Creation-Date: 2026-05-18 15:56-0300\n"
 "PO-Revision-Date: 2026-05-12 19:20\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -12,802 +12,993 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:188
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:218
-msgid "Ashy Pass"
-msgstr "Ashy Pass"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:191
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:221
-msgid "Enter your master password to unlock"
-msgstr "Zadejte své hlavní heslo pro odemčení"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:196
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:228
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:152
-msgid "Master Password"
-msgstr "Hlavní heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:205
-msgid "Unlock"
-msgstr "Odemknout"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:230
-msgid "Search 2FA codes…"
-msgstr "Hledat 2FA kódy…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:249
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:520
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:350
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:909
-msgid "All"
-msgstr "Vše"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:270
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:372
-msgid "No 2FA Codes"
-msgstr "Žádné 2FA kódy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:271
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:373
-msgid "Add a TOTP secret to an entry to see live codes here."
-msgstr "Přidejte TOTP tajemství k položce, abyste zde viděli živé kódy."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:315
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:607
-msgid "Please enter a password"
-msgstr "Zadejte prosím heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:319
-msgid "Please create your master password in the Vault tab first."
-msgstr "Nejprve vytvořte své hlavní heslo v záložce Trezor."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:332
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:622
-msgid "Incorrect master password"
-msgstr "Nesprávné hlavní heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:335
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:625
-msgid "Failed to unlock vault"
-msgstr "Nepodařilo se odemknout trezor"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:366
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:698
-msgid "No Results"
-msgstr "Žádné výsledky"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:367
-msgid "No 2FA codes match your search"
-msgstr "Žádné 2FA kódy neodpovídají vašemu vyhledávání"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:456
-msgid "Copy Code"
-msgstr "Zkopírovat kód"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:468
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:849
-msgid "Edit"
-msgstr "Upravit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:480
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:618
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:877
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1069
-msgid "Delete"
-msgstr "Smazat"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:596
-msgid "TOTP code copied"
-msgstr "TOTP kód zkopírován"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:607
-msgid "Delete 2FA Entry?"
-msgstr "Smazat položku 2FA?"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:610
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1061
-msgid "Are you sure you want to delete"
-msgstr "Opravdu chcete smazat"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:612
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1063
-msgid "This action cannot be undone."
-msgstr "Tuto akci nelze vrátit zpět."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:617
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:646
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1068
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1159
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1358
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1717
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1918
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2039
-msgid "Cancel"
-msgstr "Zrušit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:625
-msgid "Entry deleted"
-msgstr "Položka smazána"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:642
-msgid "Edit 2FA Entry"
-msgstr "Upravit položku 2FA"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:647
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1160
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1718
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2040
-msgid "Save"
-msgstr "Uložit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:652
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1165
-msgid "Title"
-msgstr "Název"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:655
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1171
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1725
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2045
-msgid "Username"
-msgstr "Uživatelské jméno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:660
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1237
-msgid "URL"
-msgstr "URL"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:665
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1249
-msgid "Category"
-msgstr "Kategorie"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:670
-msgid "TOTP Settings"
-msgstr "Nastavení TOTP"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:673
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1270
-msgid "TOTP Secret (Base32)"
-msgstr "Tajemství TOTP (Base32)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:682
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1279
-msgid "Algorithm"
-msgstr "Algoritmus"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:694
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1301
-msgid "Digits"
-msgstr "Číslice"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:701
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1315
-msgid "Period (seconds)"
-msgstr "Perioda (sekundy)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:750
-msgid "Entry updated"
-msgstr "Záznam aktualizován"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:756
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:294
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:242
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:701
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:796
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:803
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:811
-msgid "Error"
-msgstr "Chyba"
-
-#. ---- Generated password group ----
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:77
-msgid "Generated Password"
-msgstr "Vygenerované heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:79
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:137
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1177
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1364
-msgid "Password"
-msgstr "Heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:95
-msgid "Strength"
-msgstr "Síla"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:120
-msgid "Copy to Clipboard"
-msgstr "Kopírovat do schránky"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:124
-msgid "Generate New"
-msgstr "Vygenerovat nové"
-
-#. ---- Type selector ----
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:130
-msgid "Generation Type"
-msgstr "Typ generování"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:140
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1191
-msgid "Passphrase"
-msgstr "Heslo (fráze)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:143
-msgid "PIN"
-msgstr "PIN"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:339
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:930
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1013
-msgid "Password copied to clipboard"
-msgstr "Heslo zkopírováno do schránky"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:356
-msgid "Password Options"
-msgstr "Možnosti hesla"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:367
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:467
-msgid "Length"
-msgstr "Délka"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:373
-msgid "Uppercase Letters (A-Z)"
-msgstr "Velká písmena (A-Z)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:379
-msgid "Lowercase Letters (a-z)"
-msgstr "Malá písmena (a-z)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:385
-msgid "Digits (0-9)"
-msgstr "Číslice (0-9)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:391
-msgid "Symbols (!@#$…)"
-msgstr "Speciální znaky (!@#$…)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:397
-msgid "Exclude Ambiguous Characters"
-msgstr "Vyloučit nejednoznačné znaky"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:398
-msgid "Avoid characters like 0, O, 1, l, I"
-msgstr "Vyhýbat se znakům jako 0, O, 1, l, I"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:421
-msgid "Passphrase Options"
-msgstr "Možnosti fráze"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:432
-msgid "Number of Words"
-msgstr "Počet slov"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:437
-msgid "Separator"
-msgstr "Oddělovač"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:441
-msgid "Capitalize Words"
-msgstr "Psát slova s velkým písmenem"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:447
-msgid "Add Number at End"
-msgstr "Přidat číslo na konec"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:456
-msgid "PIN Options"
-msgstr "Možnosti PIN kódu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:254
-msgid "Confirm Password"
-msgstr "Potvrdit heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:260
-msgid "Quick-unlock PIN"
-msgstr "PIN pro rychlé odemknutí"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:272
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:536
-msgid "Unlock Vault"
-msgstr "Odemknout trezor"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:278
-msgid "Unlock with PIN"
-msgstr "Odemknout PINem"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:285
-msgid "Use master password instead"
-msgstr "Použít místo toho hlavní heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:324
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:473
-msgid "Vault will lock soon due to inactivity"
-msgstr "Trezor se brzy zamkne kvůli nečinnosti"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:325
-msgid "Stay Unlocked"
-msgstr "Zůstat odemčený"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:331
-msgid "Search passwords…"
-msgstr "Hledat hesla…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:371
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:703
-msgid "No Passwords Stored"
-msgstr "Žádná uložená hesla"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:372
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:704
-msgid "Add your first password using the + button"
-msgstr "Přidejte své první heslo pomocí tlačítka +"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:540
-msgid "Create Master Password"
-msgstr "Vytvořit hlavní heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:576
-msgid "Please enter your PIN"
-msgstr "Zadejte prosím svůj PIN"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:587
-msgid "Incorrect PIN"
-msgstr "Nesprávný PIN"
-
-#. Cache may have been lost (e.g. dev path) — fall back.
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:592
-msgid "Quick-unlock failed"
-msgstr "Rychlé odemknutí se nezdařilo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:633
-msgid "Password must be at least"
-msgstr "Heslo musí mít alespoň"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:635
-msgid "characters"
-msgstr "znaků"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:640
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1395
-msgid "Passwords do not match"
-msgstr "Hesla se neshodují"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:650
-msgid "Failed to setup master password"
-msgstr "Nepodařilo se nastavit hlavní heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:693
-msgid "No Favorites"
-msgstr "Žádné oblíbené"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:694
-msgid "Mark passwords as favorite with the star icon"
-msgstr "Označte hesla jako oblíbená pomocí ikony hvězdičky"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:699
-msgid "No passwords match your search"
-msgstr "Žádná hesla neodpovídají vašemu vyhledávání"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:735
-msgid "No Groups"
-msgstr "Žádné skupiny"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:737
-msgid "Set a category on entries to organize them into groups"
-msgstr "Nastavte položkám kategorii pro jejich uspořádání do skupin"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:766
-msgid "Uncategorized"
-msgstr "Nekategorizované"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:821
-msgid "Favorite"
-msgstr "Oblíbené"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:835
-msgid "Copy Password"
-msgstr "Kopírovat heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:863
-msgid "Password history"
-msgstr "Historie hesel"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:968
-msgid "Failed to read history"
-msgstr "Nepodařilo se načíst historii"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:974
-msgid "Password History"
-msgstr "Historie hesel"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:987
-msgid "No previous passwords recorded."
-msgstr "Nebyla zaznamenána žádná předchozí hesla."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:989
-msgid "Older versions appear here after the password is changed."
-msgstr "Starší verze se zde zobrazí po změně hesla."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1004
-msgid "Copy"
-msgstr "Kopírovat"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1025
-msgid "Clear history"
-msgstr "Vymazat historii"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1036
-msgid "History cleared"
-msgstr "Historie vymazána"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1058
-msgid "Delete Password?"
-msgstr "Smazat heslo?"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1076
-msgid "Password deleted"
-msgstr "Heslo smazáno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1152
-msgid "Edit Password"
-msgstr "Upravit heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1154
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:72
-msgid "Add Password"
-msgstr "Přidat heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1185
-msgid "Generate Password"
-msgstr "Vygenerovat heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1190
-msgid "Strong Password"
-msgstr "Silné heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1192
-msgid "PIN Code"
-msgstr "PIN kód"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1203
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1216
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1228
-msgid "Password generated"
-msgstr "Heslo vygenerováno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1243
-msgid "Notes"
-msgstr "Poznámky"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1256
-msgid "Tags (comma-separated)"
-msgstr "Štítky (oddělené čárkou)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1266
-msgid "Two-Factor Authentication"
-msgstr "Dvoufaktorové ověření"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1332
-msgid "Attachments"
-msgstr "Přílohy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1333
-msgid "Encrypted with your master key. Stored inside the vault."
-msgstr "Šifrováno vaším hlavním klíčem. Uloženo v trezoru."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1338
-msgid "Add file"
-msgstr "Přidat soubor"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1362
-msgid "No attachments"
-msgstr "Žádné přílohy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1363
-msgid "Click the + button to add a file."
-msgstr "Kliknutím na tlačítko + přidáte soubor."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1381
-msgid "Save as…"
-msgstr "Uložit jako…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1394
-msgid "Save attachment"
-msgstr "Uložit přílohu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1409
-msgid "Attachment saved"
-msgstr "Příloha uložena"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1413
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1499
-msgid "Save failed"
-msgstr "Uložení se nezdařilo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1418
-msgid "Attachment not found"
-msgstr "Příloha nenalezena"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1422
-msgid "Decrypt failed"
-msgstr "Dešifrování se nezdařilo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1433
-msgid "Delete attachment"
-msgstr "Smazat přílohu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1444
-msgid "Attachment deleted"
-msgstr "Příloha smazána"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1465
-msgid "Add attachment"
-msgstr "Přidat přílohu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1476
-msgid "Read failed"
-msgstr "Čtení se nezdařilo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1493
-msgid "Attachment added"
-msgstr "Příloha přidána"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1599
-msgid "Password updated"
-msgstr "Heslo aktualizováno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1601
-msgid "Password added"
-msgstr "Heslo přidáno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1608
-msgid "Error saving password"
-msgstr "Chyba při ukládání hesla"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:61
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:145
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:501
-msgid "Generator"
-msgstr "Generátor"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:66
-msgid "Search"
-msgstr "Hledat"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:78
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:603
-msgid "Lock Vault"
-msgstr "Zamknout trezor"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:99
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:578
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:610
-msgid "Keyboard Shortcuts"
-msgstr "Klávesové zkratky"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:102
-msgid "About"
-msgstr "O aplikaci"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:103
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:611
-msgid "Quit"
-msgstr "Ukončit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:146
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:499
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:600
-msgid "Vault"
-msgstr "Trezor"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:147
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:500
-msgid "2FA"
-msgstr "2FA"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:157
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:463
-msgid "Groups"
-msgstr "Skupiny"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:160
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:471
-msgid "Favorites"
-msgstr "Oblíbené"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:163
-msgid "Lock"
-msgstr "Zamknout"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:172
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:117
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:121
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:132
-msgid "Settings"
-msgstr "Nastavení"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:240
-msgid "Vault locked due to inactivity"
-msgstr "Trezor uzamčen z důvodu nečinnosti"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:257
-msgid "Vault will lock soon"
-msgstr "Trezor bude brzy uzamčen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:591
-msgid "Navigation"
-msgstr "Navigace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:593
-msgid "Show Vault"
-msgstr "Zobrazit trezor"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:594
-msgid "Show 2FA"
-msgstr "Zobrazit 2FA"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:595
-msgid "Show Generator"
-msgstr "Zobrazit generátor"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:596
-msgid "Focus Search"
-msgstr "Zaměřit vyhledávání"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:602
-msgid "New Entry"
-msgstr "Nový záznam"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:607
-msgid "Application"
-msgstr "Aplikace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:609
-msgid "Open Settings"
-msgstr "Otevřít nastavení"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:52
-msgid "Security"
-msgstr "Zabezpečení"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:53
-msgid "Data"
-msgstr "Data"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:54
-msgid "Cloud"
-msgstr "Cloud"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:55
-msgid "Appearance"
-msgstr "Vzhled"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:154
-msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
-msgstr ""
-"Používá se k odemknutí trezoru. Jeho změna znovu zašifruje všechna uložená "
-"data."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:159
-msgid "Current password"
-msgstr "Aktuální heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:162
-msgid "New password"
-msgstr "Nové heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:165
-msgid "Confirm new password"
-msgstr "Potvrdit nové heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:168
-msgid "Change Master Password"
-msgstr "Změnit hlavní heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:211
-msgid "All fields are required."
-msgstr "Všechna pole jsou povinná."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:219
-msgid "Password too short"
-msgstr "Heslo je příliš krátké"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:227
-msgid "Passwords do not match."
-msgstr "Hesla se neshodují."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:234
-msgid "Master password changed."
-msgstr "Hlavní heslo bylo změněno."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:254
-msgid "Session"
-msgstr "Relace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:258
-msgid "Auto-lock after (seconds)"
-msgstr "Automatické uzamčení po (sekundách)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:259
-msgid "Lock vault when idle for this long"
-msgstr "Uzamknout trezor při nečinnosti po tuto dobu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:274
-msgid "Clear clipboard after (seconds)"
-msgstr "Vymazat schránku po (sekundách)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:275
 msgid "0 disables auto-clear"
 msgstr "0 vypíná automatické mazání"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:290
-msgid "Quick Unlock"
-msgstr "Rychlé odemknutí"
+msgid "2FA"
+msgstr "2FA"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:292
-msgid ""
-"After auto-lock, unlock with a short PIN instead of the master password. The"
-" PIN guards a key cached in memory only — it is discarded when the app "
-"closes."
+msgid "2FA Codes"
 msgstr ""
-"Po automatickém uzamčení odemykejte krátkým PINem místo hlavního hesla. PIN "
-"chrání klíč uložený pouze v paměti – po zavření aplikace je zahozen."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:299
-msgid "New PIN (4+ chars)"
-msgstr "Nový PIN (4+ znaků)"
+msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
+msgstr ""
+"12slovná fráze BIP-39 pro odemknutí bez bezpečnostního klíče. Zobrazena "
+"pouze jednou."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:304
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:404
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1448
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1571
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1956
-msgid "Status"
-msgstr "Stav"
+msgid "About"
+msgstr "O aplikaci"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:313
-msgid "Enabled for this session"
-msgstr "Povoleno pro tuto relaci"
+msgid "Add Number at End"
+msgstr "Přidat číslo na konec"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:315
-msgid "Disabled"
-msgstr "Zakázáno"
+msgid "Add Password"
+msgstr "Přidat heslo"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:317
-msgid "Vault must be unlocked to configure"
-msgstr "Pro konfiguraci musí být trezor odemčen"
+msgid "Add a TOTP secret to an entry to see live codes here."
+msgstr "Přidejte TOTP tajemství k položce, abyste zde viděli živé kódy."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:331
+msgid "Add attachment"
+msgstr "Přidat přílohu"
+
+msgid "Add file"
+msgstr "Přidat soubor"
+
+msgid "Add your first password using the + button"
+msgstr "Přidejte své první heslo pomocí tlačítka +"
+
+msgid ""
+"After auto-lock or restart, unlock with a short PIN instead of the master "
+"password on this device. The vault key is stored encrypted by the PIN."
+msgstr ""
+
+msgid "Algorithm"
+msgstr "Algoritmus"
+
+msgid "All"
+msgstr "Vše"
+
+msgid "All clear"
+msgstr "Vše v pořádku"
+
+msgid "All fields are required."
+msgstr "Všechna pole jsou povinná."
+
+msgid ""
+"Another device uploaded a newer snapshot since this device last synced. "
+"Uploading now would orphan the remote changes."
+msgstr ""
+"Jiné zařízení nahrálo novější snímek od poslední synchronizace tohoto "
+"zařízení. Nahráním nyní by došlo k osiření vzdálených změn."
+
+msgid "App password"
+msgstr "Heslo aplikace"
+
+msgid "Appearance"
+msgstr "Vzhled"
+
+msgid "Application"
+msgstr "Aplikace"
+
+msgid "Applying local deletions"
+msgstr ""
+
+msgid "Are you sure you want to delete"
+msgstr "Opravdu chcete smazat"
+
+msgid "Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
+msgstr ""
+"Argon2id + AES-256-GCM, chráněno heslem. Lze znovu importovat pomocí Ashy "
+"Pass."
+
+msgid ""
+"Argon2id turns your master password into the vault encryption key; it is not "
+"a physical security key. Higher costs slow brute force but also slow unlock. "
+"Auto-tune picks values calibrated to ~500 ms on this machine. Existing "
+"master hashes keep their original costs; tuned values apply on the next "
+"master password change."
+msgstr ""
+
+msgid "Ashy Pass"
+msgstr "Ashy Pass"
+
+msgid "Attachment added"
+msgstr "Příloha přidána"
+
+msgid "Attachment deleted"
+msgstr "Příloha smazána"
+
+msgid "Attachment not found"
+msgstr "Příloha nenalezena"
+
+msgid "Attachment saved"
+msgstr "Příloha uložena"
+
+msgid "Attachments"
+msgstr "Přílohy"
+
+msgid "Audit Options"
+msgstr "Možnosti auditu"
+
+msgid "Audit failed"
+msgstr "Audit selhal"
+
+msgid "Auto-lock after (seconds)"
+msgstr "Automatické uzamčení po (sekundách)"
+
+msgid "Auto-tune"
+msgstr "Automatické ladění"
+
+msgid "Avoid characters like 0, O, 1, l, I"
+msgstr "Vyhýbat se znakům jako 0, O, 1, l, I"
+
+msgid "Back up now"
+msgstr "Zálohovat nyní"
+
+msgid "Backup Phrase"
+msgstr "Záložní fráze"
+
+msgid "Backup failed"
+msgstr "Zálohování se nezdařilo"
+
+msgid "Backup phrase"
+msgstr "Záložní fráze"
+
+msgid "Backup uploaded"
+msgstr "Záloha nahrána"
+
+msgid "Benchmark this machine (~5 s)"
+msgstr "Srovnávací test tohoto počítače (~5 s)"
+
+msgid "Bitwarden, Chrome, 1Password compatible columns"
+msgstr "Sloupce kompatibilní s Bitwarden, Chrome, 1Password"
+
+msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
+msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
+
+msgid "Cancel"
+msgstr "Zrušit"
+
+msgid "Capitalize Words"
+msgstr "Psát slova s velkým písmenem"
+
+msgid "Category"
+msgstr "Kategorie"
+
+msgid "Change Master Password"
+msgstr "Změnit hlavní heslo"
+
+msgid "Check Have I Been Pwned (online)"
+msgstr "Zkontrolovat Have I Been Pwned (online)"
+
+msgid "Choose a 1Password .1pux archive"
+msgstr "Vyberte archiv .1pux z 1Password"
+
+msgid "Choose a Bitwarden JSON export"
+msgstr "Vyberte export JSON z Bitwardenu"
+
+msgid "Choose a CSV file"
+msgstr "Vyberte soubor CSV"
+
+msgid "Choose an Aegis JSON export"
+msgstr "Vyberte export Aegis JSON"
+
+msgid "Choose an andOTP JSON export"
+msgstr "Vyberte export JSON z andOTP"
+
+msgid "Clear clipboard after (seconds)"
+msgstr "Vymazat schránku po (sekundách)"
+
+msgid "Clear history"
+msgstr "Vymazat historii"
+
+msgid "Click the + button to add a file."
+msgstr "Kliknutím na tlačítko + přidáte soubor."
+
+msgid "Client ID"
+msgstr ""
+
+msgid "Client Secret (optional)"
+msgstr ""
+
+msgid "Cloud"
+msgstr "Cloud"
+
+msgid "Compact vault list"
+msgstr ""
+
+msgid "Configure Google OAuth"
+msgstr ""
+
+msgid "Configure Nextcloud Passwords"
+msgstr "Konfigurovat Nextcloud Passwords"
+
+msgid "Configure WebDAV"
+msgstr "Konfigurovat WebDAV"
+
+msgid "Configure failed"
+msgstr "Konfigurace se nezdařila"
+
+msgid "Configured"
+msgstr "Nakonfigurováno"
+
+msgid "Confirm Password"
+msgstr "Potvrdit heslo"
+
+msgid "Confirm new password"
+msgstr "Potvrdit nové heslo"
+
+msgid "Confirm password"
+msgstr "Potvrdit heslo"
+
+msgid "Conflicts resolved"
+msgstr ""
+
+msgid "Copy"
+msgstr "Kopírovat"
+
+msgid "Copy Code"
+msgstr "Zkopírovat kód"
+
+msgid "Copy Password"
+msgstr "Kopírovat heslo"
+
+msgid "Copy to Clipboard"
+msgstr "Kopírovat do schránky"
+
+msgid "Create Master Password"
+msgstr "Vytvořit hlavní heslo"
+
+msgid "Created locally"
+msgstr ""
+
+msgid "Created on Nextcloud"
+msgstr ""
+
+msgid "Current master password"
+msgstr "Aktuální hlavní heslo"
+
+msgid "Current parameters"
+msgstr "Aktuální parametry"
+
+msgid "Current password"
+msgstr "Aktuální heslo"
+
+msgid "Data"
+msgstr "Data"
+
+msgid "Decrypt failed"
+msgstr "Dešifrování se nezdařilo"
+
+msgid "Delete"
+msgstr "Smazat"
+
+msgid "Delete 2FA Entry?"
+msgstr "Smazat položku 2FA?"
+
+msgid "Delete Password?"
+msgstr "Smazat heslo?"
+
+msgid "Delete attachment"
+msgstr "Smazat přílohu"
+
+msgid "Delete permanently"
+msgstr "Trvale odstranit"
+
+msgid ""
+"Deleted entries stay in the trash for this many days, then are permanently "
+"removed on next app start. Set 0 to bypass the trash."
+msgstr ""
+"Smazané položky zůstávají v koši po tento počet dní, poté jsou při příštím "
+"spuštění aplikace trvale odstraněny. Nastavte 0 pro přeskočení koše."
+
+msgid "Deleted on Nextcloud"
+msgstr ""
+
+msgid "Digits"
+msgstr "Číslice"
+
+msgid "Digits (0-9)"
+msgstr "Číslice (0-9)"
+
 msgid "Disable"
 msgstr "Zakázat"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:332
+msgid "Disabled"
+msgstr "Zakázáno"
+
+msgid "Done"
+msgstr "Hotovo"
+
+msgid "Downloading remote changes"
+msgstr ""
+
+msgid ""
+"Downloads the most recent backup as ~/.local/share/ashypass/"
+"passwords.restored.db"
+msgstr ""
+"Stáhne nejnovější zálohu jako ~/.local/share/ashypass/passwords.restored.db"
+
+msgid "Edit"
+msgstr "Upravit"
+
+msgid "Edit 2FA Entry"
+msgstr "Upravit položku 2FA"
+
+msgid "Edit Password"
+msgstr "Upravit heslo"
+
+msgid "Empty trash"
+msgstr "Vysypat koš"
+
 msgid "Enable / Update"
 msgstr "Povolit / Aktualizovat"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:352
-msgid "Quick-unlock enabled"
-msgstr "Rychlé odemčení povoleno"
+msgid "Enabled for this session"
+msgstr "Povoleno pro tuto relaci"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:358
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2091
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2181
-msgid "Unlock the vault first"
-msgstr "Nejprve odemkněte trezor"
+msgid "Enabled on this device"
+msgstr ""
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:380
+msgid "Encrypt KeePass export"
+msgstr "Zašifrovat export z KeePassu"
+
+msgid "Encrypt export"
+msgstr "Zašifrovat export"
+
+msgid "Encrypted export complete"
+msgstr "Zašifrovaný export dokončen"
+
+msgid "Encrypted snapshot upload with conflict detection"
+msgstr "Nahrání šifrovaného snímku s detekcí konfliktů"
+
+msgid ""
+"Encrypted vault uploaded as-is over HTTPS. Works with any RFC 4918 server."
+msgstr ""
+"Zašifrovaný trezor nahrán beze změn přes HTTPS. Funguje s libovolným "
+"serverem RFC 4918."
+
+msgid "Encrypted vault uploaded as-is. Folder: \"AshyPass Backups\"."
+msgstr ""
+"Zašifrovaný trezor nahrán v původní podobě. Složka: \"AshyPass Backups\"."
+
+msgid "Encrypted with your master key. Stored inside the vault."
+msgstr "Šifrováno vaším hlavním klíčem. Uloženo v trezoru."
+
+msgid "Enter the master password for this .kdbx file."
+msgstr "Zadejte hlavní heslo pro tento soubor .kdbx."
+
+msgid "Enter the password used when this file was exported."
+msgstr "Zadejte heslo, které bylo použito při exportu tohoto souboru."
+
+msgid "Enter your master password to unlock"
+msgstr "Zadejte své hlavní heslo pro odemčení"
+
+msgid "Entry deleted"
+msgstr "Položka smazána"
+
+msgid "Entry restored"
+msgstr "Položka obnovena"
+
+msgid "Entry updated"
+msgstr "Záznam aktualizován"
+
+msgid "Error"
+msgstr "Chyba"
+
+msgid "Error saving password"
+msgstr "Chyba při ukládání hesla"
+
+msgid "Exclude Ambiguous Characters"
+msgstr "Vyloučit nejednoznačné znaky"
+
+msgid "Export"
+msgstr "Exportovat"
+
+msgid "Export complete"
+msgstr "Export dokončen"
+
+msgid "Export encrypted (.ashy)"
+msgstr "Exportovat šifrovaně (.ashy)"
+
+msgid "Export failed"
+msgstr "Export se nezdařil"
+
+msgid "Export to CSV (plaintext)"
+msgstr "Exportovat do CSV (prostý text)"
+
+msgid "Export to KeePass (.kdbx)"
+msgstr "Exportovat do KeePass (.kdbx)"
+
+msgid "Export vault to CSV"
+msgstr "Exportovat trezor do CSV"
+
+msgid "Failed to read history"
+msgstr "Nepodařilo se načíst historii"
+
+msgid "Failed to setup master password"
+msgstr "Nepodařilo se nastavit hlavní heslo"
+
+msgid "Failed to unlock vault"
+msgstr "Nepodařilo se odemknout trezor"
+
+msgid "Favorite"
+msgstr "Oblíbené"
+
+msgid "Favorites"
+msgstr "Oblíbené"
+
+msgid "Fetch and display site icons next to vault entries"
+msgstr "Načíst a zobrazit ikony stránek vedle položek v trezoru"
+
+msgid "Fetching remote passwords"
+msgstr ""
+
+msgid "Findings"
+msgstr "Nálezy"
+
+msgid "Finishing synchronization"
+msgstr ""
+
+msgid "Focus Search"
+msgstr "Zaměřit vyhledávání"
+
+msgid "Folder"
+msgstr "Složka"
+
+msgid ""
+"For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
+"dav/files/USERNAME"
+msgstr ""
+"Pro Nextcloud vypadá základní URL jako https://cloud.example.com/remote.php/"
+"dav/files/UŽIVATELSKÉ_JMÉNO"
+
+msgid "Generate Backup Phrase"
+msgstr "Vygenerovat záložní frázi"
+
+msgid "Generate New"
+msgstr "Vygenerovat nové"
+
+msgid "Generate Password"
+msgstr "Vygenerovat heslo"
+
+msgid "Generated Password"
+msgstr "Vygenerované heslo"
+
+msgid "Generation Type"
+msgstr "Typ generování"
+
+msgid "Generator"
+msgstr "Generátor"
+
+msgid "Google Drive"
+msgstr "Google Drive"
+
+msgid "Groups"
+msgstr "Skupiny"
+
+msgid "History cleared"
+msgstr "Historie vymazána"
+
+msgid "Import"
+msgstr "Importovat"
+
+msgid "Import .ashy"
+msgstr "Importovat .ashy"
+
+msgid "Import 1Password (.1pux)"
+msgstr "Importovat 1Password (.1pux)"
+
+msgid "Import Aegis (TOTP)"
+msgstr "Importovat Aegis (TOTP)"
+
+msgid "Import Bitwarden (JSON)"
+msgstr "Importovat Bitwarden (JSON)"
+
+msgid "Import CSV"
+msgstr "Importovat CSV"
+
+msgid "Import KeePass (.kdbx)"
+msgstr "Importovat KeePass (.kdbx)"
+
+msgid "Import andOTP"
+msgstr "Importovat andOTP"
+
+msgid "Import complete"
+msgstr "Import dokončen"
+
+msgid "Import failed"
+msgstr "Import se nezdařil"
+
+msgid "Import from .ashy"
+msgstr "Importovat z .ashy"
+
+msgid "Incorrect PIN"
+msgstr "Nesprávný PIN"
+
+msgid "Incorrect master password"
+msgstr "Nesprávné hlavní heslo"
+
+msgid "KDBX3/KDBX4 password-protected database"
+msgstr "Databáze KDBX3/KDBX4 chráněná heslem"
+
+msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
+msgstr "KDBX4 s Argon2id + AES-256. Lze otevřít v KeePassXC, KeeWeb atd."
+
+msgid "KeePass export complete"
+msgstr "Export KeePass dokončen"
+
+msgid "Keep deleted entries for (days)"
+msgstr "Ponechat smazané položky (dny)"
+
+msgid "Key"
+msgstr "Klíč"
+
+msgid "Key Derivation (Argon2id)"
+msgstr "Odvození klíče (Argon2id)"
+
+msgid "Key registered"
+msgstr "Klíč zaregistrován"
+
+msgid "Key removed"
+msgstr "Klíč odebrán"
+
+msgid "Keyboard Shortcuts"
+msgstr "Klávesové zkratky"
+
+msgid "Keyring error"
+msgstr "Chyba klíčenky"
+
+msgid "Large 2FA codes"
+msgstr ""
+
+msgid "Length"
+msgstr "Délka"
+
+msgid "Lock"
+msgstr "Zamknout"
+
+msgid "Lock Vault"
+msgstr "Zamknout trezor"
+
+msgid "Lock vault when idle for this long"
+msgstr "Uzamknout trezor při nečinnosti po tuto dobu"
+
+msgid "Lowercase Letters (a-z)"
+msgstr "Malá písmena (a-z)"
+
+msgid "Mark entries that are linked to Nextcloud Passwords"
+msgstr ""
+
+msgid "Mark passwords as favorite with the star icon"
+msgstr "Označte hesla jako oblíbená pomocí ikony hvězdičky"
+
+msgid "Master Password"
+msgstr "Hlavní heslo"
+
+msgid "Master password"
+msgstr "Hlavní heslo"
+
+msgid "Master password changed."
+msgstr "Hlavní heslo bylo změněno."
+
+msgid "Master password is in the keyring"
+msgstr "Hlavní heslo je v klíčence"
+
+msgid "Navigation"
+msgstr "Navigace"
+
+msgid "New Entry"
+msgstr "Nový záznam"
+
+msgid "New PIN (4+ chars)"
+msgstr "Nový PIN (4+ znaků)"
+
+msgid "New password"
+msgstr "Nové heslo"
+
+msgid "Nextcloud Passwords"
+msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords connected"
+msgstr "Nextcloud Passwords připojeno"
+
+msgid ""
+"Nextcloud requires a filled password, so these local entries were not sent."
+msgstr ""
+
+msgid "Nextcloud sync finished."
+msgstr ""
+
+msgid "No 2FA Codes"
+msgstr "Žádné 2FA kódy"
+
+msgid "No 2FA codes match your search"
+msgstr "Žádné 2FA kódy neodpovídají vašemu vyhledávání"
+
+msgid "No Favorites"
+msgstr "Žádné oblíbené"
+
+msgid "No Passwords Stored"
+msgstr "Žádná uložená hesla"
+
+msgid "No Results"
+msgstr "Žádné výsledky"
+
+msgid "No attachments"
+msgstr "Žádné přílohy"
+
+msgid "No issues found."
+msgstr "Nebyly nalezeny žádné problémy."
+
+msgid "No keys registered"
+msgstr "Nejsou registrovány žádné klíče"
+
+msgid "No passwords match your search"
+msgstr "Žádná hesla neodpovídají vašemu vyhledávání"
+
+msgid "No previous passwords recorded."
+msgstr "Nebyla zaznamenána žádná předchozí hesla."
+
+msgid "Not configured"
+msgstr "Nenakonfigurováno"
+
+msgid "Not run yet"
+msgstr "Zatím nespouštěno"
+
+msgid "Not set"
+msgstr "Nenastaveno"
+
+msgid "Not signed in"
+msgstr "Nepřihlášen"
+
+msgid "Not stored"
+msgstr "Neuloženo"
+
+msgid "Notes"
+msgstr "Poznámky"
+
+msgid "Number of Words"
+msgstr "Počet slov"
+
+msgid "OAuth client not configured at build time"
+msgstr "OAuth klient nebyl při sestavení nakonfigurován"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Older versions appear here after the password is changed."
+msgstr "Starší verze se zde zobrazí po změně hesla."
+
+msgid "Open .ashy export"
+msgstr "Otevřít export .ashy"
+
+msgid "Open KeePass database"
+msgstr "Otevřít databázi KeePass"
+
+msgid "Open Settings"
+msgstr "Otevřít nastavení"
+
+msgid "Opens the browser for OAuth consent"
+msgstr "Otevře prohlížeč pro souhlas OAuth"
+
+msgid "PIN"
+msgstr "PIN"
+
+msgid "PIN Code"
+msgstr "PIN kód"
+
+msgid "PIN Options"
+msgstr "Možnosti PIN kódu"
+
+msgid "Passphrase"
+msgstr "Heslo (fráze)"
+
+msgid "Passphrase Options"
+msgstr "Možnosti fráze"
+
+msgid "Password"
+msgstr "Heslo"
+
+msgid "Password / app-password"
+msgstr "Heslo / heslo aplikace"
+
+msgid "Password History"
+msgstr "Historie hesel"
+
+msgid "Password Options"
+msgstr "Možnosti hesla"
+
+msgid "Password added"
+msgstr "Heslo přidáno"
+
+msgid "Password copied to clipboard"
+msgstr "Heslo zkopírováno do schránky"
+
+msgid "Password deleted"
+msgstr "Heslo smazáno"
+
+msgid "Password generated"
+msgstr "Heslo vygenerováno"
+
+msgid "Password history"
+msgstr "Historie hesel"
+
+msgid "Password must be at least"
+msgstr "Heslo musí mít alespoň"
+
+msgid "Password too short"
+msgstr "Heslo je příliš krátké"
+
+msgid "Password updated"
+msgstr "Heslo aktualizováno"
+
+msgid "Passwordless entries ignored"
+msgstr ""
+
+msgid "Passwords do not match"
+msgstr "Hesla se neshodují"
+
+msgid "Passwords do not match."
+msgstr "Hesla se neshodují."
+
+msgid "Period (seconds)"
+msgstr "Perioda (sekundy)"
+
+msgid "Permanently deleted"
+msgstr "Trvale smazáno"
+
+msgid "Permanently deletes every trashed entry."
+msgstr "Trvale smaže všechny položky v koši."
+
+msgid ""
+"Pick a password for the .kdbx file. You will need it to open the database."
+msgstr ""
+"Zvolte heslo pro soubor .kdbx. Budete ho potřebovat k otevření databáze."
+
+msgid "Pick a password to protect this .ashy file. You will need it to import."
+msgstr ""
+"Zvolte heslo pro ochranu tohoto souboru .ashy. Budete ho potřebovat pro "
+"import."
+
+msgid "Plain JSON export from Aegis Authenticator"
+msgstr "Prostý JSON export z Aegis Authenticator"
+
+msgid "Plain JSON export from andOTP"
+msgstr "Export ve formátu Plain JSON z andOTP"
+
+msgid "Please create your master password in the Vault tab first."
+msgstr "Nejprve vytvořte své hlavní heslo v záložce Trezor."
+
+msgid "Please enter a password"
+msgstr "Zadejte prosím heslo"
+
+msgid "Please enter your PIN"
+msgstr "Zadejte prosím svůj PIN"
+
+msgid "Please wait while AshyPass talks to Nextcloud"
+msgstr ""
+
+msgid "Plug in your authenticator and click Register"
+msgstr "Připojte svůj autentizátor a klikněte na Registrovat"
+
+msgid ""
+"Prefer the encrypted .ashy export. The CSV path stores credentials in "
+"plaintext."
+msgstr ""
+"Upřednostněte šifrovaný export .ashy. Cesta CSV ukládá přihlašovací údaje v "
+"prostém textu."
+
+msgid "Preparing synchronization"
+msgstr ""
+
+msgid "Quick Unlock"
+msgstr "Rychlé odemknutí"
+
+msgid "Quick-unlock PIN"
+msgstr "PIN pro rychlé odemknutí"
+
 msgid "Quick-unlock disabled"
 msgstr "Rychlé odemčení zakázáno"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:390
-msgid "System Keyring"
-msgstr "Systémová klíčenka"
+msgid "Quick-unlock enabled"
+msgstr "Rychlé odemčení povoleno"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:392
+msgid "Quick-unlock failed"
+msgstr "Rychlé odemknutí se nezdařilo"
+
+msgid "Quit"
+msgstr "Ukončit"
+
+msgid "Read failed"
+msgstr "Čtení se nezdařilo"
+
+msgid "Refresh listing"
+msgstr "Obnovit seznam"
+
+msgid "Register Security Key"
+msgstr "Registrovat bezpečnostní klíč"
+
+msgid "Register failed"
+msgstr "Registrace selhala"
+
+msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
+msgstr ""
+
+msgid "Remote generation:"
+msgstr "Vzdálená generace:"
+
+msgid "Remove"
+msgstr "Odebrat"
+
+msgid "Removed from keyring"
+msgstr "Odebráno z klíčenky"
+
+msgid "Required to encrypt the snapshot before upload"
+msgstr "Vyžadováno pro zašifrování snímku před nahráním"
+
+msgid "Restore"
+msgstr "Obnovit"
+
+msgid "Restore failed"
+msgstr "Obnovení se nezdařilo"
+
+msgid "Restore from an Ashy Pass encrypted export"
+msgstr "Obnovit ze šifrovaného exportu Ashy Pass"
+
+msgid "Restore latest"
+msgstr "Obnovit nejnovější"
+
+msgid "Restored to"
+msgstr "Obnoveno do"
+
+msgid "Retention"
+msgstr "Uchování"
+
+msgid "Run"
+msgstr "Spustit"
+
+msgid "Run Audit"
+msgstr "Spustit audit"
+
+msgid "Running audit..."
+msgstr ""
+
+msgid "Save"
+msgstr "Uložit"
+
+msgid "Save KeePass export"
+msgstr "Uložit export KeePass"
+
+msgid "Save as…"
+msgstr "Uložit jako…"
+
+msgid "Save attachment"
+msgstr "Uložit přílohu"
+
+msgid "Save encrypted export"
+msgstr "Uložit zašifrovaný export"
+
+msgid "Save failed"
+msgstr "Uložení se nezdařilo"
+
+msgid "Saves all entries as plaintext"
+msgstr "Uloží všechny položky jako prostý text"
+
+msgid ""
+"Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
+msgstr ""
+"Prohledat trezor na slabé, duplicitní, staré, prolomené a položky bez 2FA."
+
+msgid "Scanning vault..."
+msgstr ""
+
+msgid "Search"
+msgstr "Hledat"
+
+msgid "Search 2FA codes…"
+msgstr "Hledat 2FA kódy…"
+
+msgid "Search passwords…"
+msgstr "Hledat hesla…"
+
+msgid "Security"
+msgstr "Zabezpečení"
+
+msgid "Security Keys"
+msgstr "Bezpečnostní klíče"
+
+msgid "Sending local changes"
+msgstr ""
+
+msgid ""
+"Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
+"locally for 7 days."
+msgstr ""
+"Odesílá pouze prvních 5 hex znaků SHA-1(hesla) na položku. Ukládá se lokálně "
+"do mezipaměti na 7 dní."
+
+msgid "Separator"
+msgstr "Oddělovač"
+
+msgid "Server URL"
+msgstr "URL serveru"
+
+msgid ""
+"Server URL (e.g. https://cloud.example.com), username and an app password."
+msgstr ""
+"URL serveru (např. https://cloud.example.com), uživatelské jméno a heslo "
+"aplikace."
+
+msgid "Server URL, username, app password"
+msgstr "URL serveru, uživatelské jméno, heslo aplikace"
+
+msgid "Server URL, username, app-password"
+msgstr "URL serveru, uživatelské jméno, heslo aplikace"
+
+msgid "Session"
+msgstr "Relace"
+
+msgid "Set a category on entries to organize them into groups"
+msgstr "Nastavte položkám kategorii pro jejich uspořádání do skupin"
+
+msgid "Set — generate a new one to replace it"
+msgstr "Nastavit — vygenerovat novou pro nahrazení stávající"
+
+msgid "Settings"
+msgstr "Nastavení"
+
+msgid "Show 2FA"
+msgstr "Zobrazit 2FA"
+
+msgid "Show Generator"
+msgstr "Zobrazit generátor"
+
+msgid "Show Nextcloud badges"
+msgstr ""
+
+msgid "Show Vault"
+msgstr "Zobrazit trezor"
+
+msgid "Show favicons"
+msgstr "Zobrazit favikony"
+
+msgid "Sign in failed"
+msgstr "Přihlášení se nezdařilo"
+
+msgid "Sign in to Google"
+msgstr "Přihlásit se k Google"
+
+msgid "Sign out"
+msgstr "Odhlásit se"
+
+msgid "Sign out failed"
+msgstr "Odhlášení se nezdařilo"
+
+msgid "Signed in"
+msgstr "Přihlášen"
+
+msgid "Signed in to Google Drive"
+msgstr "Přihlášeno k Disku Google"
+
+msgid "Signed out"
+msgstr "Odhlášeno"
+
+msgid "Snapshot uploaded"
+msgstr "Snímek nahrán"
+
+msgid "Starting..."
+msgstr ""
+
+msgid "Status"
+msgstr "Stav"
+
+msgid "Stay Unlocked"
+msgstr "Zůstat odemčený"
+
+msgid "Store"
+msgstr "Úložiště"
+
 msgid ""
 "Store the master password in the desktop's Secret Service (GNOME Keyring, "
 "KWallet, etc.) so Ashy Pass can unlock automatically on start. The keyring "
@@ -819,150 +1010,197 @@ msgstr ""
 "Klíčenka je uzamčena vaším přihlašovacím heslem – tuto možnost vypněte, "
 "pokud desktopovou relaci sdílí více uživatelů."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:400
-msgid "Current master password"
-msgstr "Aktuální hlavní heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:409
-msgid "Master password is in the keyring"
-msgstr "Hlavní heslo je v klíčence"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:411
-msgid "Not stored"
-msgstr "Neuloženo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:424
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:685
-msgid "Remove"
-msgstr "Odebrat"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:425
-msgid "Store"
-msgstr "Úložiště"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:441
-msgid "Type the current master password first"
-msgstr "Nejprve zadejte aktuální hlavní heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:456
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1850
-msgid "Wrong master password"
-msgstr "Nesprávné hlavní heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:468
 msgid "Stored in system keyring"
 msgstr "Uloženo v systémové klíčence"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:476
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:501
-msgid "Keyring error"
-msgstr "Chyba klíčenky"
+msgid "Strength"
+msgstr "Síla"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:493
-msgid "Removed from keyring"
-msgstr "Odebráno z klíčenky"
+msgid "Strong Password"
+msgstr "Silné heslo"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:514
-msgid "Key Derivation (Argon2id)"
-msgstr "Odvození klíče (Argon2id)"
+msgid "Summary"
+msgstr "Souhrn"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:516
-msgid ""
-"Higher costs slow brute force but also slow unlock. Auto-tune picks values "
-"calibrated to ~500 ms on this machine. Existing master hashes keep their "
-"original costs; tuned values apply on the next master password change."
+msgid "Symbols (!@#$…)"
+msgstr "Speciální znaky (!@#$…)"
+
+msgid "Sync completed"
 msgstr ""
-"Vyšší náklady zpomalují útok hrubou silou, ale také zpomalují odemykání. "
-"Automatické ladění volí hodnoty kalibrované na ~500 ms na tomto počítači. "
-"Stávající hashe hlavního hesla si zachovávají své původní náklady; vyladěné "
-"hodnoty se použijí při příští změně hlavního hesla."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:524
-msgid "Current parameters"
-msgstr "Aktuální parametry"
+msgid "Sync completed with errors"
+msgstr ""
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:542
-msgid "Auto-tune"
-msgstr "Automatické ladění"
+msgid "Sync conflict"
+msgstr "Konflikt synchronizace"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:543
-msgid "Benchmark this machine (~5 s)"
-msgstr "Srovnávací test tohoto počítače (~5 s)"
+msgid "Sync conflict detected"
+msgstr "Zjištěn konflikt synchronizace"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:547
-msgid "Run"
-msgstr "Spustit"
+msgid "Sync errors"
+msgstr "Chyby synchronizace"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:626
-msgid "Security Keys"
-msgstr "Bezpečnostní klíče"
+msgid "Sync failed"
+msgstr "Synchronizace se nezdařila"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:628
-msgid "Register up to 2 FIDO2 authenticators (YubiKey, Solo, etc.)"
-msgstr "Zaregistrujte až 2 FIDO2 autentizátory (YubiKey, Solo atd.)"
+msgid "Sync now"
+msgstr "Synchronizovat nyní"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:668
-msgid "No keys registered"
-msgstr "Nejsou registrovány žádné klíče"
+msgid "Synchronizing Nextcloud"
+msgstr ""
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:669
-msgid "Plug in your authenticator and click Register"
-msgstr "Připojte svůj autentizátor a klikněte na Registrovat"
+msgid "Synchronizing..."
+msgstr ""
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:678
-msgid "Key"
-msgstr "Klíč"
+msgid "Syncing folders"
+msgstr ""
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:705
-msgid "Key removed"
-msgstr "Klíč odebrán"
+msgid "System Keyring"
+msgstr "Systémová klíčenka"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:728
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:743
-msgid "Register Security Key"
-msgstr "Registrovat bezpečnostní klíč"
+msgid "TOTP Secret (Base32)"
+msgstr "Tajemství TOTP (Base32)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:740
+msgid "TOTP Settings"
+msgstr "Nastavení TOTP"
+
+msgid "TOTP code copied"
+msgstr "TOTP kód zkopírován"
+
+msgid "Tags (comma-separated)"
+msgstr "Štítky (oddělené čárkou)"
+
+msgid "This action cannot be undone."
+msgstr "Tuto akci nelze vrátit zpět."
+
+msgid "This device generation:"
+msgstr "Generace tohoto zařízení:"
+
+msgid "Title"
+msgstr "Název"
+
 msgid "Touch your key…"
 msgstr "Dotkněte se svého klíče…"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:749
-msgid "Key registered"
-msgstr "Klíč zaregistrován"
+msgid "Trash is empty."
+msgstr "Koš je prázdný."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:751
-msgid "Register failed"
-msgstr "Registrace selhala"
+msgid "Trashed entries"
+msgstr "Položky v koši"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:767
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:831
-msgid "Backup Phrase"
-msgstr "Záložní fráze"
+msgid "Two-Factor Authentication"
+msgstr "Dvoufaktorové ověření"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:769
-msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
+msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
-"12slovná fráze BIP-39 pro odemknutí bez bezpečnostního klíče. Zobrazena "
-"pouze jednou."
+"Obousměrné sladění: stáhnout vzdálené, nahrát místní, řešit podle poslední "
+"změny"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:774
-msgid "Backup phrase"
-msgstr "Záložní fráze"
+msgid ""
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
+"an app password from Settings → Security."
+msgstr ""
+"Obousměrná synchronizace s oficiální aplikací 'Passwords' na vašem serveru "
+"Nextcloud. Použijte heslo aplikace z Nastavení → Zabezpečení."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:776
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:815
-msgid "Set — generate a new one to replace it"
-msgstr "Nastavit — vygenerovat novou pro nahrazení stávající"
+msgid "Type the current master password first"
+msgstr "Nejprve zadejte aktuální hlavní heslo"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:777
-msgid "Not set"
-msgstr "Nenastaveno"
+msgid "URL"
+msgstr "URL"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:783
-msgid "Generate Backup Phrase"
-msgstr "Vygenerovat záložní frázi"
+msgid "URL, username and password are required"
+msgstr "URL, uživatelské jméno a heslo jsou povinné"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:833
+msgid "Uncategorized"
+msgstr "Nekategorizované"
+
+msgid "Unencrypted 1Password 8 export archive"
+msgstr "Nešifrovaný export archivu 1Password 8"
+
+msgid "Unencrypted Bitwarden vault export"
+msgstr "Nešifrovaný export trezoru Bitwarden"
+
+msgid "Unlock"
+msgstr "Odemknout"
+
+msgid "Unlock Vault"
+msgstr "Odemknout trezor"
+
+msgid "Unlock the vault first"
+msgstr "Nejprve odemkněte trezor"
+
+msgid "Unlock with PIN"
+msgstr "Odemknout PINem"
+
+msgid "Updated locally"
+msgstr ""
+
+msgid "Updated on Nextcloud"
+msgstr ""
+
+msgid "Upload anyway"
+msgstr "Přesto nahrát"
+
+msgid "Upload the current vault file to Drive"
+msgstr "Nahrát aktuální soubor trezoru na Disk"
+
+msgid "Upload the current vault file to WebDAV"
+msgstr "Nahrát aktuální soubor trezoru na WebDAV"
+
+msgid "Uppercase Letters (A-Z)"
+msgstr "Velká písmena (A-Z)"
+
+msgid "Use larger digits for easier reading"
+msgstr ""
+
+msgid "Use master password instead"
+msgstr "Použít místo toho hlavní heslo"
+
+msgid "Use tighter spacing for long password lists"
+msgstr ""
+
+msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
+msgstr ""
+"Používá se k odemknutí trezoru. Jeho změna znovu zašifruje všechna uložená "
+"data."
+
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+msgid "Vault"
+msgstr "Trezor"
+
+msgid "Vault List"
+msgstr "Seznam trezoru"
+
+msgid "Vault already in sync"
+msgstr "Trezor je již synchronizován"
+
+msgid "Vault locked due to inactivity"
+msgstr "Trezor uzamčen z důvodu nečinnosti"
+
+msgid "Vault must be unlocked to configure"
+msgstr "Pro konfiguraci musí být trezor odemčen"
+
+msgid "Vault will lock soon"
+msgstr "Trezor bude brzy uzamčen"
+
+msgid "Vault will lock soon due to inactivity"
+msgstr "Trezor se brzy zamkne kvůli nečinnosti"
+
+msgid "Waiting for Nextcloud..."
+msgstr ""
+
+msgid "WebDAV / Nextcloud"
+msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV configured"
+msgstr "WebDAV nakonfigurován"
+
+msgid "Working..."
+msgstr ""
+
 msgid ""
 "Write these 12 words down and keep them safe. This is the only time they "
 "will be shown."
@@ -970,660 +1208,60 @@ msgstr ""
 "Zapište si těchto 12 slov a bezpečně je uschovejte. Budou zobrazena pouze "
 "nyní."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:852
-msgid "Done"
-msgstr "Hotovo"
+msgid "Wrong master password"
+msgstr "Nesprávné hlavní heslo"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:864
-msgid "Vault List"
-msgstr "Seznam trezoru"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:868
-msgid "Show favicons"
-msgstr "Zobrazit favikony"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:869
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Načíst a zobrazit ikony stránek vedle položek v trezoru"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:895
-msgid "Import"
-msgstr "Importovat"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:897
-msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
-msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:905
-msgid "Import CSV"
-msgstr "Importovat CSV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:906
-msgid "Bitwarden, Chrome, 1Password compatible columns"
-msgstr "Sloupce kompatibilní s Bitwarden, Chrome, 1Password"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:912
-msgid "Import Bitwarden (JSON)"
-msgstr "Importovat Bitwarden (JSON)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:913
-msgid "Unencrypted Bitwarden vault export"
-msgstr "Nešifrovaný export trezoru Bitwarden"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:919
-msgid "Import 1Password (.1pux)"
-msgstr "Importovat 1Password (.1pux)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:920
-msgid "Unencrypted 1Password 8 export archive"
-msgstr "Nešifrovaný export archivu 1Password 8"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:926
-msgid "Import Aegis (TOTP)"
-msgstr "Importovat Aegis (TOTP)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:927
-msgid "Plain JSON export from Aegis Authenticator"
-msgstr "Prostý JSON export z Aegis Authenticator"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:933
-msgid "Import andOTP"
-msgstr "Importovat andOTP"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:934
-msgid "Plain JSON export from andOTP"
-msgstr "Export ve formátu Plain JSON z andOTP"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:941
-msgid "Export"
-msgstr "Exportovat"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:943
-msgid ""
-"Prefer the encrypted .ashy export. The CSV path stores credentials in "
-"plaintext."
-msgstr ""
-"Upřednostněte šifrovaný export .ashy. Cesta CSV ukládá přihlašovací údaje v "
-"prostém textu."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:949
-msgid "Export encrypted (.ashy)"
-msgstr "Exportovat šifrovaně (.ashy)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:951
-msgid ""
-"Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
-msgstr ""
-"Argon2id + AES-256-GCM, chráněno heslem. Lze znovu importovat pomocí Ashy "
-"Pass."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:970
-msgid "Import from .ashy"
-msgstr "Importovat z .ashy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:971
-msgid "Restore from an Ashy Pass encrypted export"
-msgstr "Obnovit ze šifrovaného exportu Ashy Pass"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:989
-msgid "Export to KeePass (.kdbx)"
-msgstr "Exportovat do KeePass (.kdbx)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:991
-msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
-msgstr "KDBX4 s Argon2id + AES-256. Lze otevřít v KeePassXC, KeeWeb atd."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1010
-msgid "Import KeePass (.kdbx)"
-msgstr "Importovat KeePass (.kdbx)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1011
-msgid "KDBX3/KDBX4 password-protected database"
-msgstr "Databáze KDBX3/KDBX4 chráněná heslem"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1029
-msgid "Export to CSV (plaintext)"
-msgstr "Exportovat do CSV (prostý text)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1030
-msgid "Saves all entries as plaintext"
-msgstr "Uloží všechny položky jako prostý text"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1098
-msgid "Choose a CSV file"
-msgstr "Vyberte soubor CSV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1099
-msgid "Choose an Aegis JSON export"
-msgstr "Vyberte export Aegis JSON"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1100
-msgid "Choose an andOTP JSON export"
-msgstr "Vyberte export JSON z andOTP"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1101
-msgid "Choose a Bitwarden JSON export"
-msgstr "Vyberte export JSON z Bitwardenu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1102
-msgid "Choose a 1Password .1pux archive"
-msgstr "Vyberte archiv .1pux z 1Password"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1169
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1254
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1340
-msgid "Import complete"
-msgstr "Import dokončen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1170
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1257
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1341
-msgid "Import failed"
-msgstr "Import se nezdařil"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1180
-msgid "Encrypt export"
-msgstr "Zašifrovat export"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1181
-msgid ""
-"Pick a password to protect this .ashy file. You will need it to import."
-msgstr ""
-"Zvolte heslo pro ochranu tohoto souboru .ashy. Budete ho potřebovat pro "
-"import."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1189
-msgid "Save encrypted export"
-msgstr "Uložit zašifrovaný export"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1210
-msgid "Encrypted export complete"
-msgstr "Zašifrovaný export dokončen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1213
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1299
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1426
-msgid "Export failed"
-msgstr "Export se nezdařil"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1225
-msgid "Open .ashy export"
-msgstr "Otevřít export .ashy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1244
-msgid "Import .ashy"
-msgstr "Importovat .ashy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1245
-msgid "Enter the password used when this file was exported."
-msgstr "Zadejte heslo, které bylo použito při exportu tohoto souboru."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1270
-msgid "Encrypt KeePass export"
-msgstr "Zašifrovat export z KeePassu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1271
-msgid ""
-"Pick a password for the .kdbx file. You will need it to open the database."
-msgstr ""
-"Zvolte heslo pro soubor .kdbx. Budete ho potřebovat k otevření databáze."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1279
-msgid "Save KeePass export"
-msgstr "Uložit export KeePass"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1297
-msgid "KeePass export complete"
-msgstr "Export KeePass dokončen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1309
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1331
-msgid "Open KeePass database"
-msgstr "Otevřít databázi KeePass"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1332
-msgid "Enter the master password for this .kdbx file."
-msgstr "Zadejte hlavní heslo pro tento soubor .kdbx."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1359
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1397
-msgid "OK"
-msgstr "OK"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1367
-msgid "Confirm password"
-msgstr "Potvrdit heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1409
-msgid "Export vault to CSV"
-msgstr "Exportovat trezor do CSV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1425
-msgid "Export complete"
-msgstr "Export dokončen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1441
-msgid "Google Drive"
-msgstr "Google Drive"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1443
-msgid "Encrypted vault uploaded as-is. Folder: \"AshyPass Backups\"."
-msgstr "Zašifrovaný trezor nahrán v původní podobě. Složka: \"AshyPass Backups\"."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1450
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1490
-msgid "Signed in"
-msgstr "Přihlášen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1452
-msgid "OAuth client not configured at build time"
-msgstr "OAuth klient nebyl při sestavení nakonfigurován"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1454
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1482
-msgid "Not signed in"
-msgstr "Nepřihlášen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1461
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1491
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1577
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1608
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1967
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1997
-msgid "Sign out"
-msgstr "Odhlásit se"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1463
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1483
-msgid "Sign in to Google"
-msgstr "Přihlásit se k Google"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1465
-msgid "Opens the browser for OAuth consent"
-msgstr "Otevře prohlížeč pro souhlas OAuth"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1479
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1593
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1983
-msgid "Sign out failed"
-msgstr "Odhlášení se nezdařilo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1484
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1598
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1988
-msgid "Signed out"
-msgstr "Odhlášeno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1492
-msgid "Signed in to Google Drive"
-msgstr "Přihlášeno k Disku Google"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1494
-msgid "Sign in failed"
-msgstr "Přihlášení se nezdařilo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1501
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1616
-msgid "Back up now"
-msgstr "Zálohovat nyní"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1502
-msgid "Upload the current vault file to Drive"
-msgstr "Nahrát aktuální soubor trezoru na Disk"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1515
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1635
-msgid "Backup uploaded"
-msgstr "Záloha nahrána"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1516
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1631
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1636
-msgid "Backup failed"
-msgstr "Zálohování se nezdařilo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1523
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1665
-msgid "Restore latest"
-msgstr "Obnovit nejnovější"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1524
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1667
-msgid ""
-"Downloads the most recent backup as "
-"~/.local/share/ashypass/passwords.restored.db"
-msgstr ""
-"Stáhne nejnovější zálohu jako ~/.local/share/ashypass/passwords.restored.db"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1547
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1692
-msgid "Restored to"
-msgstr "Obnoveno do"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1549
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1694
-msgid "Restore failed"
-msgstr "Obnovení se nezdařilo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1564
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1712
-msgid "WebDAV / Nextcloud"
-msgstr "WebDAV / Nextcloud"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1566
-msgid ""
-"Encrypted vault uploaded as-is over HTTPS. Works with any RFC 4918 server."
-msgstr ""
-"Zašifrovaný trezor nahrán beze změn přes HTTPS. Funguje s libovolným "
-"serverem RFC 4918."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1572
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1607
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1958
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1996
-msgid "Configured"
-msgstr "Nakonfigurováno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1572
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1596
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1960
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1986
-msgid "Not configured"
-msgstr "Nenakonfigurováno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1577
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1597
-msgid "Configure WebDAV"
-msgstr "Konfigurovat WebDAV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1578
-msgid "Server URL, username, app-password"
-msgstr "URL serveru, uživatelské jméno, heslo aplikace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1617
-msgid "Upload the current vault file to WebDAV"
-msgstr "Nahrát aktuální soubor trezoru na WebDAV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1646
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2005
-msgid "Sync now"
-msgstr "Synchronizovat nyní"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1648
-msgid "Encrypted snapshot upload with conflict detection"
-msgstr "Nahrání šifrovaného snímku s detekcí konfliktů"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1714
-msgid ""
-"For Nextcloud, the base URL looks like "
-"https://cloud.example.com/remote.php/dav/files/USERNAME"
-msgstr ""
-"Pro Nextcloud vypadá základní URL jako "
-"https://cloud.example.com/remote.php/dav/files/UŽIVATELSKÉ_JMÉNO"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1723
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2044
-msgid "Server URL"
-msgstr "URL serveru"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1727
-msgid "Password / app-password"
-msgstr "Heslo / heslo aplikace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1730
-msgid "Folder"
-msgstr "Složka"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1764
-msgid "URL, username and password are required"
-msgstr "URL, uživatelské jméno a heslo jsou povinné"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1769
-msgid "WebDAV configured"
-msgstr "WebDAV nakonfigurován"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1772
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2081
-msgid "Configure failed"
-msgstr "Konfigurace se nezdařila"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1799
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1894
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2129
-msgid "Sync failed"
-msgstr "Synchronizace se nezdařila"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1805
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1875
-msgid "Vault already in sync"
-msgstr "Trezor je již synchronizován"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1837
-msgid "Master password"
-msgstr "Hlavní heslo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1838
-msgid "Required to encrypt the snapshot before upload"
-msgstr "Vyžadováno pro zašifrování snímku před nahráním"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1869
-msgid "Snapshot uploaded"
-msgstr "Snímek nahrán"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1883
-msgid "Sync conflict"
-msgstr "Konflikt synchronizace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1910
-msgid "Sync conflict detected"
-msgstr "Zjištěn konflikt synchronizace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1913
-msgid ""
-"Another device uploaded a newer snapshot since this device last synced. "
-"Uploading now would orphan the remote changes."
-msgstr ""
-"Jiné zařízení nahrálo novější snímek od poslední synchronizace tohoto "
-"zařízení. Nahráním nyní by došlo k osiření vzdálených změn."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1914
-msgid "This device generation:"
-msgstr "Generace tohoto zařízení:"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1915
-msgid "Remote generation:"
-msgstr "Vzdálená generace:"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1919
-msgid "Upload anyway"
-msgstr "Přesto nahrát"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1949
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2034
-msgid "Nextcloud Passwords"
-msgstr "Nextcloud Passwords"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1951
-msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use"
-" an app password from Settings → Security."
-msgstr ""
-"Obousměrná synchronizace s oficiální aplikací 'Passwords' na vašem serveru "
-"Nextcloud. Použijte heslo aplikace z Nastavení → Zabezpečení."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1969
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1987
-msgid "Configure Nextcloud Passwords"
-msgstr "Konfigurovat Nextcloud Passwords"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1971
-msgid "Server URL, username, app password"
-msgstr "URL serveru, uživatelské jméno, heslo aplikace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2007
-msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
-msgstr ""
-"Obousměrné sladění: stáhnout vzdálené, nahrát místní, řešit podle poslední "
-"změny"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2036
-msgid ""
-"Server URL (e.g. https://cloud.example.com), username and an app password."
-msgstr ""
-"URL serveru (např. https://cloud.example.com), uživatelské jméno a heslo "
-"aplikace."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2047
-msgid "App password"
-msgstr "Heslo aplikace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2078
-msgid "Nextcloud Passwords connected"
-msgstr "Nextcloud Passwords připojeno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2104
-msgid "Sync"
-msgstr "Synchronizace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2120
-msgid "Sync errors"
-msgstr "Chyby synchronizace"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2143
-msgid "Audit Options"
-msgstr "Možnosti auditu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2145
-msgid ""
-"Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
-msgstr ""
-"Prohledat trezor na slabé, duplicitní, staré, prolomené a položky bez 2FA."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2149
-msgid "Check Have I Been Pwned (online)"
-msgstr "Zkontrolovat Have I Been Pwned (online)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2151
-msgid ""
-"Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
-"locally for 7 days."
-msgstr ""
-"Odesílá pouze prvních 5 hex znaků SHA-1(hesla) na položku. Ukládá se lokálně"
-" do mezipaměti na 7 dní."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2157
-msgid "Run Audit"
-msgstr "Spustit audit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2165
-msgid "Summary"
-msgstr "Souhrn"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2167
-msgid "Not run yet"
-msgstr "Zatím nespouštěno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2173
-msgid "Findings"
-msgstr "Nálezy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2190
-msgid "Audit failed"
-msgstr "Audit selhal"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2197
-msgid "entries scanned"
-msgstr "prohledaných položek"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2202
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2225
-msgid "weak"
-msgstr "slabé"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2204
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2226
-msgid "duplicate"
-msgstr "duplicitní"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2206
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2227
-msgid "old"
-msgstr "staré"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2208
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2228
 msgid "breached"
 msgstr "prolomené"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2210
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2229
+msgid "characters"
+msgstr "znaků"
+
+msgid "duplicate"
+msgstr "duplicitní"
+
+msgid "entries removed"
+msgstr "položek odstraněno"
+
+msgid "entries scanned"
+msgstr "prohledaných položek"
+
 msgid "no 2FA"
 msgstr "bez 2FA"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2214
-msgid "All clear"
-msgstr "Vše v pořádku"
+msgid "old"
+msgstr "staré"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2215
-msgid "No issues found."
-msgstr "Nebyly nalezeny žádné problémy."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2234
 msgid "seen"
 msgstr "zobrazeno"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2288
-msgid "Retention"
-msgstr "Uchování"
+msgid "weak"
+msgstr "slabé"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2290
-msgid ""
-"Deleted entries stay in the trash for this many days, then are permanently "
-"removed on next app start. Set 0 to bypass the trash."
-msgstr ""
-"Smazané položky zůstávají v koši po tento počet dní, poté jsou při příštím "
-"spuštění aplikace trvale odstraněny. Nastavte 0 pro přeskočení koše."
+#~ msgid "No Groups"
+#~ msgstr "Žádné skupiny"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2295
-msgid "Keep deleted entries for (days)"
-msgstr "Ponechat smazané položky (dny)"
+#~ msgid ""
+#~ "After auto-lock, unlock with a short PIN instead of the master password. "
+#~ "The PIN guards a key cached in memory only — it is discarded when the app "
+#~ "closes."
+#~ msgstr ""
+#~ "Po automatickém uzamčení odemykejte krátkým PINem místo hlavního hesla. "
+#~ "PIN chrání klíč uložený pouze v paměti – po zavření aplikace je zahozen."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2309
-msgid "Trashed entries"
-msgstr "Položky v koši"
+#~ msgid ""
+#~ "Higher costs slow brute force but also slow unlock. Auto-tune picks "
+#~ "values calibrated to ~500 ms on this machine. Existing master hashes keep "
+#~ "their original costs; tuned values apply on the next master password "
+#~ "change."
+#~ msgstr ""
+#~ "Vyšší náklady zpomalují útok hrubou silou, ale také zpomalují odemykání. "
+#~ "Automatické ladění volí hodnoty kalibrované na ~500 ms na tomto počítači. "
+#~ "Stávající hashe hlavního hesla si zachovávají své původní náklady; "
+#~ "vyladěné hodnoty se použijí při příští změně hlavního hesla."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2337
-msgid "Trash is empty."
-msgstr "Koš je prázdný."
+#~ msgid "Register up to 2 FIDO2 authenticators (YubiKey, Solo, etc.)"
+#~ msgstr "Zaregistrujte až 2 FIDO2 autentizátory (YubiKey, Solo atd.)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2357
-msgid "Restore"
-msgstr "Obnovit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2363
-msgid "Delete permanently"
-msgstr "Trvale odstranit"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2378
-msgid "Entry restored"
-msgstr "Položka obnovena"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2405
-msgid "Permanently deleted"
-msgstr "Trvale smazáno"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2433
-msgid "Refresh listing"
-msgstr "Obnovit seznam"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2443
-msgid "Empty trash"
-msgstr "Vysypat koš"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2444
-msgid "Permanently deletes every trashed entry."
-msgstr "Trvale smaže všechny položky v koši."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2455
-msgid "entries removed"
-msgstr "položek odstraněno"
+#~ msgid "Sync"
+#~ msgstr "Synchronizace"

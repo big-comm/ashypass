@@ -5,12 +5,14 @@
 use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
-use crate::ui::{generator_view::GeneratorView, settings_dialog, totp_view::TotpView, vault_view::VaultView};
+use crate::ui::{
+    generator_view::GeneratorView, settings_dialog, totp_view::TotpView, vault_view::VaultView,
+};
 use adw::prelude::*;
 use ashypass_core::config::{
     WINDOW_DEFAULT_HEIGHT, WINDOW_DEFAULT_WIDTH, WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH,
 };
-use gtk::gio;
+use gtk::{gdk, gio};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -140,11 +142,28 @@ impl MainWindow {
             .margin_bottom(12)
             .build();
 
-        let nav_buttons: RefCell<HashMap<&'static str, gtk::Button>> =
-            RefCell::new(HashMap::new());
-        add_nav_item(&nav_box, &nav_buttons, "generator", "view-reveal-symbolic", tr!("Generator"));
-        add_nav_item(&nav_box, &nav_buttons, "vault", "dialog-password-symbolic", tr!("Vault"));
-        add_nav_item(&nav_box, &nav_buttons, "totp", "auth-sim-symbolic", tr!("2FA"));
+        let nav_buttons: RefCell<HashMap<&'static str, gtk::Button>> = RefCell::new(HashMap::new());
+        add_nav_item(
+            &nav_box,
+            &nav_buttons,
+            "generator",
+            "view-reveal-symbolic",
+            tr!("Generator"),
+        );
+        add_nav_item(
+            &nav_box,
+            &nav_buttons,
+            "vault",
+            "dialog-password-symbolic",
+            tr!("Vault"),
+        );
+        add_nav_item(
+            &nav_box,
+            &nav_buttons,
+            "totp",
+            "auth-sim-symbolic",
+            tr!("2FA"),
+        );
 
         let auth_separator = gtk::Separator::builder()
             .orientation(gtk::Orientation::Horizontal)
@@ -154,13 +173,39 @@ impl MainWindow {
             .build();
         nav_box.append(&auth_separator);
 
-        add_nav_item(&nav_box, &nav_buttons, "groups", "folder-symbolic", tr!("Groups"));
-        nav_buttons.borrow().get("groups").unwrap().set_visible(false);
+        add_nav_item(
+            &nav_box,
+            &nav_buttons,
+            "groups",
+            "folder-symbolic",
+            tr!("Groups"),
+        );
+        nav_buttons
+            .borrow()
+            .get("groups")
+            .unwrap()
+            .set_visible(false);
 
-        add_nav_item(&nav_box, &nav_buttons, "favorites", "emblem-favorite-symbolic", tr!("Favorites"));
-        nav_buttons.borrow().get("favorites").unwrap().set_visible(false);
+        add_nav_item(
+            &nav_box,
+            &nav_buttons,
+            "favorites",
+            "emblem-favorite-symbolic",
+            tr!("Favorites"),
+        );
+        nav_buttons
+            .borrow()
+            .get("favorites")
+            .unwrap()
+            .set_visible(false);
 
-        add_nav_item(&nav_box, &nav_buttons, "lock", "system-lock-screen-symbolic", tr!("Lock"));
+        add_nav_item(
+            &nav_box,
+            &nav_buttons,
+            "lock",
+            "system-lock-screen-symbolic",
+            tr!("Lock"),
+        );
         nav_buttons.borrow().get("lock").unwrap().set_visible(false);
 
         let bottom_sep = gtk::Separator::builder()
@@ -169,7 +214,13 @@ impl MainWindow {
             .margin_bottom(6)
             .build();
         nav_box.append(&bottom_sep);
-        add_nav_item(&nav_box, &nav_buttons, "settings", "emblem-system-symbolic", tr!("Settings"));
+        add_nav_item(
+            &nav_box,
+            &nav_buttons,
+            "settings",
+            "emblem-system-symbolic",
+            tr!("Settings"),
+        );
 
         scroll.set_child(Some(&nav_box));
         sidebar_toolbar.set_content(Some(&scroll));
@@ -252,11 +303,7 @@ impl MainWindow {
             let events = state.events.clone();
             let cb: Rc<dyn Fn(u64)> = Rc::new(move |remaining| {
                 let toast = adw::Toast::builder()
-                    .title(format!(
-                        "{} ({}s)",
-                        tr!("Vault will lock soon"),
-                        remaining
-                    ))
+                    .title(format!("{} ({}s)", tr!("Vault will lock soon"), remaining))
                     .timeout(3)
                     .build();
                 toast_cl.add_toast(toast);
@@ -301,9 +348,15 @@ impl MainWindow {
         {
             let key_ctl = gtk::EventControllerKey::new();
             let sess = state.session.clone();
-            key_ctl.connect_key_pressed(move |_, _, _, _| {
+            let inner_cl = inner.clone();
+            let window_cl = window.clone();
+            key_ctl.connect_key_pressed(move |_, keyval, _, modifiers| {
                 SessionManager::on_activity(&sess);
-                glib::Propagation::Proceed
+                if inner_cl.handle_type_to_search(&window_cl, keyval, modifiers) {
+                    glib::Propagation::Stop
+                } else {
+                    glib::Propagation::Proceed
+                }
             });
             window.add_controller(key_ctl);
         }
@@ -402,10 +455,7 @@ impl MainWindow {
         window.add_action(&shortcuts_action);
         app.set_accels_for_action("win.shortcuts", &["<Primary>question", "F1"]);
 
-        Self {
-            window,
-            inner,
-        }
+        Self { window, inner }
     }
 
     pub fn present(&self) {
@@ -455,11 +505,7 @@ fn on_nav_clicked(
 ) {
     match name {
         "settings" => {
-            settings_dialog::present(
-                window,
-                inner.state.clone(),
-                inner.toast_overlay.clone(),
-            );
+            settings_dialog::present(window, inner.state.clone(), inner.toast_overlay.clone());
         }
         "lock" => {
             inner.vault_view.lock_vault();
@@ -521,8 +567,14 @@ impl MainWindowInner {
 
         if name == "totp" {
             self.totp_view.refresh();
+            if !authed {
+                self.totp_view.focus_auth_field();
+            }
         } else if name == "vault" {
             self.vault_view.show_all_view();
+            if !authed {
+                self.vault_view.focus_auth_field();
+            }
         }
     }
 
@@ -542,9 +594,15 @@ impl MainWindowInner {
 
         self.auth_separator.set_visible(authed);
         let map = self.nav_buttons.borrow();
-        if let Some(b) = map.get("groups") { b.set_visible(authed); }
-        if let Some(b) = map.get("favorites") { b.set_visible(authed); }
-        if let Some(b) = map.get("lock") { b.set_visible(authed); }
+        if let Some(b) = map.get("groups") {
+            b.set_visible(authed);
+        }
+        if let Some(b) = map.get("favorites") {
+            b.set_visible(authed);
+        }
+        if let Some(b) = map.get("lock") {
+            b.set_visible(authed);
+        }
     }
 
     fn on_search_toggled(&self, active: bool) {
@@ -576,10 +634,88 @@ impl MainWindowInner {
             .visible_child_name()
             .map(|s| s.to_string())
             .unwrap_or_default();
-        if current == "vault" && self.state.session.borrow().is_authenticated() {
-            self.vault_view.search_entry.grab_focus();
+        if !self.state.session.borrow().is_authenticated() {
+            return;
+        }
+        match current.as_str() {
+            "vault" => {
+                self.search_button.set_active(true);
+                self.vault_view.search_entry.grab_focus();
+            }
+            "totp" => {
+                self.search_button.set_active(true);
+                self.totp_view.search_entry.grab_focus();
+            }
+            _ => {}
         }
     }
+
+    fn handle_type_to_search(
+        &self,
+        window: &adw::ApplicationWindow,
+        keyval: gdk::Key,
+        modifiers: gdk::ModifierType,
+    ) -> bool {
+        if self.search_button.is_active()
+            || !self.search_button.is_visible()
+            || !self.state.session.borrow().is_authenticated()
+            || focus_is_text_input(gtk::prelude::GtkWindowExt::focus(window).as_ref())
+            || modifiers.intersects(
+                gdk::ModifierType::CONTROL_MASK
+                    | gdk::ModifierType::ALT_MASK
+                    | gdk::ModifierType::SUPER_MASK
+                    | gdk::ModifierType::META_MASK,
+            )
+        {
+            return false;
+        }
+
+        let Some(ch) = keyval.to_unicode() else {
+            return false;
+        };
+        if ch.is_control() || ch.is_whitespace() {
+            return false;
+        }
+
+        let current = self
+            .content_stack
+            .visible_child_name()
+            .map(|s| s.to_string())
+            .unwrap_or_default();
+        match current.as_str() {
+            "vault" => {
+                self.search_button.set_active(true);
+                self.vault_view.search_entry.set_text(&ch.to_string());
+                self.vault_view.search_entry.set_position(-1);
+                self.vault_view.search_entry.grab_focus();
+                true
+            }
+            "totp" => {
+                self.search_button.set_active(true);
+                self.totp_view.search_entry.set_text(&ch.to_string());
+                self.totp_view.search_entry.set_position(-1);
+                self.totp_view.search_entry.grab_focus();
+                true
+            }
+            _ => false,
+        }
+    }
+}
+
+fn focus_is_text_input(focus: Option<&gtk::Widget>) -> bool {
+    let mut current = focus.cloned();
+    while let Some(widget) = current {
+        if widget.is::<gtk::Editable>()
+            || widget.is::<gtk::TextView>()
+            || widget.is::<gtk::SpinButton>()
+            || widget.is::<adw::EntryRow>()
+            || widget.is::<adw::PasswordEntryRow>()
+        {
+            return true;
+        }
+        current = widget.parent();
+    }
+    false
 }
 
 fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
@@ -607,10 +743,7 @@ fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
         ),
         (
             tr!("Vault"),
-            &[
-                ("Ctrl+N", tr!("New Entry")),
-                ("Ctrl+L", tr!("Lock Vault")),
-            ],
+            &[("Ctrl+N", tr!("New Entry")), ("Ctrl+L", tr!("Lock Vault"))],
         ),
         (
             tr!("Application"),

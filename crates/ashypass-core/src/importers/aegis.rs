@@ -47,8 +47,8 @@ struct AegisInfo {
 
 pub fn import_plain(path: impl AsRef<Path>) -> Result<Vec<AegisEntry>> {
     let data = std::fs::read_to_string(path)?;
-    let parsed: AegisFile = serde_json::from_str(&data)
-        .map_err(|e| Error::Other(format!("aegis json: {e}")))?;
+    let parsed: AegisFile =
+        serde_json::from_str(&data).map_err(|e| Error::Other(format!("aegis json: {e}")))?;
     let mut out = Vec::new();
     for raw in parsed.db.entries {
         if !raw.kind.eq_ignore_ascii_case("totp") {

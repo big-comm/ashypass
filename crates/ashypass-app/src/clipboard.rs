@@ -27,18 +27,15 @@ pub fn copy(text: &str, seconds: u64) {
         };
         let cb = display.clipboard();
         let expected = expected.clone();
-        cb.read_text_async(
-            None::<&gio::Cancellable>,
-            move |res| {
-                if let Ok(Some(current)) = res {
-                    if current.as_str() == expected {
-                        if let Some(display) = gdk::Display::default() {
-                            display.clipboard().set_text("");
-                        }
+        cb.read_text_async(None::<&gio::Cancellable>, move |res| {
+            if let Ok(Some(current)) = res {
+                if current.as_str() == expected {
+                    if let Some(display) = gdk::Display::default() {
+                        display.clipboard().set_text("");
                     }
                 }
-            },
-        );
+            }
+        });
         glib::ControlFlow::Break
     });
 }

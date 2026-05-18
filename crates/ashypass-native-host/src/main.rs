@@ -39,7 +39,9 @@
 
 use anyhow::{anyhow, bail, Context, Result};
 use ashypass_core::db::vault::{PasswordEntry, Vault};
-use ashypass_core::generator::{generate_passphrase, generate_password, generate_pin, PasswordConfig};
+use ashypass_core::generator::{
+    generate_passphrase, generate_password, generate_pin, PasswordConfig,
+};
 use serde::{Deserialize, Serialize};
 use std::io::{Read, Write};
 
@@ -101,9 +103,13 @@ fn print_help() {
     println!("Usage:");
     println!("  ashypass-native-host                    # browser wire mode (stdin/stdout)");
     println!("  ashypass-native-host --install <ext-id>... # write manifests into Chrome/Firefox profile dirs");
-    println!("  ashypass-native-host --print-manifest <ext-id>  # print Chrome-style manifest to stdout");
+    println!(
+        "  ashypass-native-host --print-manifest <ext-id>  # print Chrome-style manifest to stdout"
+    );
     println!();
-    println!("Extension id is the Chrome/Firefox extension id that's allowed to talk to this host.");
+    println!(
+        "Extension id is the Chrome/Firefox extension id that's allowed to talk to this host."
+    );
     println!("You can pass multiple ids to allow several builds (dev, beta, prod).");
 }
 
@@ -115,10 +121,18 @@ fn print_help() {
 #[serde(tag = "cmd", rename_all = "snake_case")]
 enum Request {
     Ping,
-    List { query: Option<String> },
-    Search { query: String },
-    MatchUrl { url: String },
-    Get { id: i64 },
+    List {
+        query: Option<String>,
+    },
+    Search {
+        query: String,
+    },
+    MatchUrl {
+        url: String,
+    },
+    Get {
+        id: i64,
+    },
     Generate {
         length: Option<usize>,
         kind: Option<String>,
@@ -440,11 +454,7 @@ fn install_manifests(extension_ids: &[String]) -> Result<()> {
         println!("wrote {}", path.display());
         written += 1;
     }
-    if firefox_target
-        .parent()
-        .map(|p| p.exists())
-        .unwrap_or(false)
-    {
+    if firefox_target.parent().map(|p| p.exists()).unwrap_or(false) {
         std::fs::create_dir_all(&firefox_target)?;
         let path = firefox_target.join(format!("{EXTENSION_NAME}.json"));
         std::fs::write(&path, firefox.as_bytes())?;
@@ -452,11 +462,17 @@ fn install_manifests(extension_ids: &[String]) -> Result<()> {
         written += 1;
     }
     if written == 0 {
-        println!("no supported browser config directories found under {}", home.display());
+        println!(
+            "no supported browser config directories found under {}",
+            home.display()
+        );
         println!("install Chrome/Chromium/Brave/Edge/Vivaldi or Firefox first, then re-run.");
     } else {
         println!("\n{written} manifest file(s) installed.");
-        println!("The browser will now allow extension(s) {:?} to spawn this binary.", extension_ids);
+        println!(
+            "The browser will now allow extension(s) {:?} to spawn this binary.",
+            extension_ids
+        );
     }
     Ok(())
 }
@@ -472,7 +488,10 @@ mod tests {
             Some("example.com".into())
         );
         assert_eq!(url_host("example.com"), Some("example.com".into()));
-        assert_eq!(url_host("https://USER:PW@host.tld:8443/x"), Some("host.tld".into()));
+        assert_eq!(
+            url_host("https://USER:PW@host.tld:8443/x"),
+            Some("host.tld".into())
+        );
         assert_eq!(url_host(""), None);
     }
 

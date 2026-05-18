@@ -21,6 +21,7 @@ echo "[1/3] Extracting strings from ${#SOURCES[@]} files → $POT"
 xgettext \
     --from-code=UTF-8 \
     --language=Rust \
+    --keyword='tr!' \
     --keyword=tr \
     --keyword=tr_static \
     --package-name=ashypass \

@@ -145,8 +145,8 @@ pub fn pkce_pair() -> (String, String) {
 pub fn login(creds: &ClientCredentials) -> Result<Token> {
     let (verifier, challenge) = pkce_pair();
 
-    let listener = TcpListener::bind("127.0.0.1:0")
-        .map_err(|e| Error::Other(format!("oauth bind: {e}")))?;
+    let listener =
+        TcpListener::bind("127.0.0.1:0").map_err(|e| Error::Other(format!("oauth bind: {e}")))?;
     let port = listener
         .local_addr()
         .map_err(|e| Error::Other(format!("oauth addr: {e}")))?
@@ -162,12 +162,10 @@ pub fn login(creds: &ClientCredentials) -> Result<Token> {
          &code_challenge_method=S256\
          &access_type=offline\
          &prompt=consent",
-        cid = url::form_urlencoded::byte_serialize(creds.client_id.as_bytes())
-            .collect::<String>(),
-        redirect = url::form_urlencoded::byte_serialize(redirect_uri.as_bytes())
-            .collect::<String>(),
-        scope = url::form_urlencoded::byte_serialize(DRIVE_SCOPE.as_bytes())
-            .collect::<String>(),
+        cid = url::form_urlencoded::byte_serialize(creds.client_id.as_bytes()).collect::<String>(),
+        redirect =
+            url::form_urlencoded::byte_serialize(redirect_uri.as_bytes()).collect::<String>(),
+        scope = url::form_urlencoded::byte_serialize(DRIVE_SCOPE.as_bytes()).collect::<String>(),
         ch = challenge,
     );
 
@@ -281,13 +279,13 @@ fn wait_for_code(listener: &TcpListener) -> Result<String> {
     let (mut stream, _) = listener
         .accept()
         .map_err(|e| Error::Other(format!("accept: {e}")))?;
-    stream
-        .set_read_timeout(Some(Duration::from_secs(120)))
-        .ok();
+    stream.set_read_timeout(Some(Duration::from_secs(120))).ok();
 
-    let mut reader = BufReader::new(stream.try_clone().map_err(|e| {
-        Error::Other(format!("clone: {e}"))
-    })?);
+    let mut reader = BufReader::new(
+        stream
+            .try_clone()
+            .map_err(|e| Error::Other(format!("clone: {e}")))?,
+    );
     let mut first_line = String::new();
     reader
         .read_line(&mut first_line)
@@ -316,10 +314,7 @@ fn wait_for_code(listener: &TcpListener) -> Result<String> {
         .split_whitespace()
         .nth(1)
         .ok_or_else(|| Error::Other("oauth callback: malformed request".into()))?;
-    let query = path
-        .split_once('?')
-        .map(|(_, q)| q)
-        .unwrap_or("");
+    let query = path.split_once('?').map(|(_, q)| q).unwrap_or("");
 
     let mut code = None;
     let mut err = None;

@@ -35,9 +35,7 @@
 //!   the hundreds of entries; for thousands you'd want a `since` cursor —
 //!   v2.0 of the API supports that.
 
-use crate::db::vault::{
-    NewEntry, NextcloudFolderMapping, NextcloudMapping, UpdateEntry, Vault,
-};
+use crate::db::vault::{NewEntry, NextcloudFolderMapping, NextcloudMapping, UpdateEntry, Vault};
 use crate::sync::nextcloud_passwords::{
     NcCreateOrUpdate, NcFolder, NcFolderCreate, NcPassword, NextcloudPasswordsClient,
 };
@@ -261,8 +259,7 @@ where
                         // the last sync, do not silently discard that edit:
                         // preserve it by creating a fresh remote item unless
                         // the caller explicitly prefers remote state.
-                        let local_changed =
-                            local_full.updated_at > map.local_updated_at_snapshot;
+                        let local_changed = local_full.updated_at > map.local_updated_at_snapshot;
                         if local_changed && policy != ConflictResolution::PreferRemote {
                             if is_passwordless(&local_full) {
                                 report.stats.skipped_passwordless += 1;
@@ -343,7 +340,8 @@ where
                         }
                         let mut payload = build_create_payload(
                             &local_full,
-                            folders.remote_uuid_for_local_category(local_full.category.as_deref())?,
+                            folders
+                                .remote_uuid_for_local_category(local_full.category.as_deref())?,
                         );
                         payload.id = Some(map.nc_uuid.clone());
                         match client.update(&payload) {
@@ -366,12 +364,7 @@ where
                         }
                     }
                     (false, true) => {
-                        if apply_remote_to_local(
-                            vault,
-                            local_full.id,
-                            &remote,
-                            remote_category,
-                        )? {
+                        if apply_remote_to_local(vault, local_full.id, &remote, remote_category)? {
                             update_mapping_after_pull(vault, local_full.id, &remote, &map)?;
                             report.stats.updated_locally += 1;
                         }
@@ -538,12 +531,20 @@ impl<'a> FolderResolver<'a> {
         if let Some(mapping) = self.vault.nc_folder_mapping_for_name(local_name)? {
             return Ok(mapping.nc_uuid);
         }
-        if let Some(uuid) = self.remote_uuid_by_label.get(&folder_key(local_name)).cloned() {
-            let folder = self.remote_by_uuid.get(&uuid).cloned().unwrap_or_else(|| NcFolder {
-                id: uuid.clone(),
-                label: local_name.to_string(),
-                ..Default::default()
-            });
+        if let Some(uuid) = self
+            .remote_uuid_by_label
+            .get(&folder_key(local_name))
+            .cloned()
+        {
+            let folder = self
+                .remote_by_uuid
+                .get(&uuid)
+                .cloned()
+                .unwrap_or_else(|| NcFolder {
+                    id: uuid.clone(),
+                    label: local_name.to_string(),
+                    ..Default::default()
+                });
             self.upsert_local_mapping(local_name, &folder)?;
             return Ok(uuid);
         }
@@ -568,7 +569,8 @@ impl<'a> FolderResolver<'a> {
         self.upsert_local_mapping(local_name, &folder)?;
         self.remote_uuid_by_label
             .insert(folder_key(local_name), folder.id.clone());
-        self.remote_by_uuid.insert(folder.id.clone(), folder.clone());
+        self.remote_by_uuid
+            .insert(folder.id.clone(), folder.clone());
         Ok(folder.id)
     }
 
@@ -655,10 +657,7 @@ fn resolve_conflict(policy: ConflictResolution, local_ts: i64, remote_ts: i64) -
     }
 }
 
-fn build_create_payload(
-    e: &crate::db::vault::PasswordEntry,
-    folder: String,
-) -> NcCreateOrUpdate {
+fn build_create_payload(e: &crate::db::vault::PasswordEntry, folder: String) -> NcCreateOrUpdate {
     NcCreateOrUpdate {
         id: None,
         label: e.title.clone(),

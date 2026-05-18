@@ -34,11 +34,7 @@ struct NextcloudProgressUi {
     progress: gtk::ProgressBar,
 }
 
-pub fn present(
-    parent: &impl IsA<gtk::Widget>,
-    state: SharedState,
-    _toast: adw::ToastOverlay,
-) {
+pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::ToastOverlay) {
     let parent_widget = parent.upcast_ref::<gtk::Widget>().clone();
     let dialog_slot: Rc<RefCell<Option<adw::Dialog>>> = Rc::new(RefCell::new(None));
     let toast = adw::ToastOverlay::new();
@@ -61,6 +57,8 @@ pub fn present(
         state.clone(),
         settings.clone(),
         toast.clone(),
+        parent_widget.clone(),
+        dialog_slot.clone(),
     );
 
     let data_page = adw::PreferencesPage::builder().build();
@@ -83,7 +81,7 @@ pub fn present(
     );
 
     let appearance_page = adw::PreferencesPage::builder().build();
-    populate_appearance(&appearance_page, settings);
+    populate_appearance(&appearance_page, settings, state.clone());
 
     // Sidebar + content stack: trades the bottom ViewSwitcherBar for a real
     // left rail (GNOME-Settings style). NavigationSplitView is responsive —
@@ -92,7 +90,11 @@ pub fn present(
         ("security", "security-high-symbolic", &security_page),
         ("data", "folder-symbolic", &data_page),
         ("cloud", "folder-remote-symbolic", &cloud_page),
-        ("appearance", "preferences-desktop-appearance-symbolic", &appearance_page),
+        (
+            "appearance",
+            "preferences-desktop-appearance-symbolic",
+            &appearance_page,
+        ),
     ];
     let labels: [&str; 4] = [
         tr!("Security"),
@@ -258,6 +260,7 @@ fn populate_security(
 
     {
         let state = state.clone();
+        let settings = settings.clone();
         let cur = current_row.clone();
         let new_e = new_row.clone();
         let conf = confirm_row.clone();
@@ -289,8 +292,14 @@ fn populate_security(
                 status.add_css_class("error");
                 return;
             }
-            match state.vault.borrow_mut().change_master_password(&cur_pw, &new_pw) {
+            match state
+                .vault
+                .borrow_mut()
+                .change_master_password(&cur_pw, &new_pw)
+            {
                 Ok(()) => {
+                    settings.borrow_mut().quick_unlock = None;
+                    let _ = settings.borrow().save();
                     status.set_text(tr!("Master password changed."));
                     status.remove_css_class("error");
                     status.add_css_class("success");
@@ -349,9 +358,9 @@ fn populate_security(
     let qu_group = adw::PreferencesGroup::builder()
         .title(tr!("Quick Unlock"))
         .description(tr!(
-            "After auto-lock, unlock with a short PIN instead of the master \
-             password. The PIN guards a key cached in memory only — it is \
-             discarded when the app closes."
+            "After auto-lock or restart, unlock with a short PIN instead of \
+             the master password on this device. The vault key is stored \
+             encrypted by the PIN."
         ))
         .build();
 
@@ -360,16 +369,22 @@ fn populate_security(
         .build();
     qu_group.add(&pin_row);
 
-    let qu_status_row = adw::ActionRow::builder()
-        .title(tr!("Status"))
-        .build();
+    let qu_status_row = adw::ActionRow::builder().title(tr!("Status")).build();
     let qu_status_lbl = gtk::Label::new(None);
     qu_status_lbl.add_css_class("dim-label");
     let render_qu_status = {
         let state = state.clone();
+        let settings = settings.clone();
         move || {
             let v = state.vault.borrow();
-            if v.is_quick_unlock_available() {
+            let persisted = settings
+                .borrow()
+                .quick_unlock
+                .as_ref()
+                .is_some_and(|p| p.is_configured());
+            if persisted {
+                tr!("Enabled on this device")
+            } else if v.is_quick_unlock_available() {
                 tr!("Enabled for this session")
             } else if v.is_unlocked() {
                 tr!("Disabled")
@@ -397,49 +412,66 @@ fn populate_security(
 
     {
         let state = state.clone();
+        let settings = settings.clone();
         let pin_row = pin_row.clone();
         let status_lbl = qu_status_lbl.clone();
         let toast = toast.clone();
         let render = render_qu_status.clone();
         qu_enable_btn.connect_clicked(move |_| {
             let pin = pin_row.text().to_string();
-            let r = state.vault.borrow_mut().enable_quick_unlock(&pin);
+            let r = state
+                .vault
+                .borrow_mut()
+                .enable_persistent_quick_unlock(&pin);
             match r {
-                Ok(()) => {
+                Ok(prefs) => {
+                    settings.borrow_mut().quick_unlock = Some(prefs);
+                    let _ = settings.borrow().save();
                     pin_row.set_text("");
                     status_lbl.set_label(render());
-                    toast.add_toast(adw::Toast::builder()
-                        .title(tr!("Quick-unlock enabled"))
-                        .timeout(3)
-                        .build());
+                    toast.add_toast(
+                        adw::Toast::builder()
+                            .title(tr!("Quick-unlock enabled"))
+                            .timeout(3)
+                            .build(),
+                    );
                 }
                 Err(ashypass_core::Error::Locked) => {
-                    toast.add_toast(adw::Toast::builder()
-                        .title(tr!("Unlock the vault first"))
-                        .timeout(3)
-                        .build());
+                    toast.add_toast(
+                        adw::Toast::builder()
+                            .title(tr!("Unlock the vault first"))
+                            .timeout(3)
+                            .build(),
+                    );
                 }
                 Err(e) => {
-                    toast.add_toast(adw::Toast::builder()
-                        .title(format!("{e}"))
-                        .timeout(3)
-                        .build());
+                    toast.add_toast(
+                        adw::Toast::builder()
+                            .title(format!("{e}"))
+                            .timeout(3)
+                            .build(),
+                    );
                 }
             }
         });
     }
     {
         let state = state.clone();
+        let settings = settings.clone();
         let status_lbl = qu_status_lbl.clone();
         let toast = toast.clone();
         let render = render_qu_status.clone();
         qu_disable_btn.connect_clicked(move |_| {
             state.vault.borrow_mut().disable_quick_unlock();
+            settings.borrow_mut().quick_unlock = None;
+            let _ = settings.borrow().save();
             status_lbl.set_label(render());
-            toast.add_toast(adw::Toast::builder()
-                .title(tr!("Quick-unlock disabled"))
-                .timeout(3)
-                .build());
+            toast.add_toast(
+                adw::Toast::builder()
+                    .title(tr!("Quick-unlock disabled"))
+                    .timeout(3)
+                    .build(),
+            );
         });
     }
 
@@ -544,25 +576,23 @@ fn populate_security(
     {
         let toast = toast.clone();
         let kr_status_lbl = kr_status_lbl.clone();
-        kr_remove_btn.connect_clicked(move |_| {
-            match ashypass_core::keyring::delete_master() {
-                Ok(()) => {
-                    kr_status_lbl.set_label(render_kr_status());
-                    toast.add_toast(
-                        adw::Toast::builder()
-                            .title(tr!("Removed from keyring"))
-                            .timeout(3)
-                            .build(),
-                    );
-                }
-                Err(e) => {
-                    toast.add_toast(
-                        adw::Toast::builder()
-                            .title(format!("{}: {e}", tr!("Keyring error")))
-                            .timeout(4)
-                            .build(),
-                    );
-                }
+        kr_remove_btn.connect_clicked(move |_| match ashypass_core::keyring::delete_master() {
+            Ok(()) => {
+                kr_status_lbl.set_label(render_kr_status());
+                toast.add_toast(
+                    adw::Toast::builder()
+                        .title(tr!("Removed from keyring"))
+                        .timeout(3)
+                        .build(),
+                );
+            }
+            Err(e) => {
+                toast.add_toast(
+                    adw::Toast::builder()
+                        .title(format!("{}: {e}", tr!("Keyring error")))
+                        .timeout(4)
+                        .build(),
+                );
             }
         });
     }
@@ -573,7 +603,8 @@ fn populate_security(
     let kdf_group = adw::PreferencesGroup::builder()
         .title(tr!("Key Derivation (Argon2id)"))
         .description(tr!(
-            "Higher costs slow brute force but also slow unlock. \
+            "Argon2id turns your master password into the vault encryption key; \
+             it is not a physical security key. Higher costs slow brute force but also slow unlock. \
              Auto-tune picks values calibrated to ~500 ms on this machine. \
              Existing master hashes keep their original costs; tuned values \
              apply on the next master password change."
@@ -685,7 +716,7 @@ fn populate_two_factor(page: &adw::PreferencesPage, toast: adw::ToastOverlay) {
     let keys_group = adw::PreferencesGroup::builder()
         .title(tr!("Security Keys"))
         .description(tr!(
-            "Register up to 2 FIDO2 authenticators (YubiKey, Solo, etc.)"
+            "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
         ))
         .build();
 
@@ -918,7 +949,11 @@ fn present_backup_phrase_dialog(anchor: &impl IsA<gtk::Widget>, phrase: &str) {
 // Appearance
 // ---------------------------------------------------------------------------
 
-fn populate_appearance(page: &adw::PreferencesPage, settings: Rc<RefCell<Settings>>) {
+fn populate_appearance(
+    page: &adw::PreferencesPage,
+    settings: Rc<RefCell<Settings>>,
+    state: SharedState,
+) {
     let group = adw::PreferencesGroup::builder()
         .title(tr!("Vault List"))
         .build();
@@ -930,13 +965,65 @@ fn populate_appearance(page: &adw::PreferencesPage, settings: Rc<RefCell<Setting
         .build();
     {
         let settings = settings.clone();
+        let state = state.clone();
         favicons_row.connect_active_notify(move |row| {
             settings.borrow_mut().show_favicons = row.is_active();
             let _ = settings.borrow().save();
+            state.events.emit(crate::events::AppEvent::VaultChanged);
         });
     }
     group.add(&favicons_row);
+
+    let sync_badges_row = adw::SwitchRow::builder()
+        .title(tr!("Show Nextcloud badges"))
+        .subtitle(tr!("Mark entries that are linked to Nextcloud Passwords"))
+        .active(settings.borrow().show_sync_badges)
+        .build();
+    {
+        let settings = settings.clone();
+        let state = state.clone();
+        sync_badges_row.connect_active_notify(move |row| {
+            settings.borrow_mut().show_sync_badges = row.is_active();
+            let _ = settings.borrow().save();
+            state.events.emit(crate::events::AppEvent::VaultChanged);
+        });
+    }
+    group.add(&sync_badges_row);
+
+    let compact_row = adw::SwitchRow::builder()
+        .title(tr!("Compact vault list"))
+        .subtitle(tr!("Use tighter spacing for long password lists"))
+        .active(settings.borrow().compact_vault_list)
+        .build();
+    {
+        let settings = settings.clone();
+        let state = state.clone();
+        compact_row.connect_active_notify(move |row| {
+            settings.borrow_mut().compact_vault_list = row.is_active();
+            let _ = settings.borrow().save();
+            state.events.emit(crate::events::AppEvent::VaultChanged);
+        });
+    }
+    group.add(&compact_row);
     page.add(&group);
+
+    let two_factor_group = adw::PreferencesGroup::builder()
+        .title(tr!("2FA Codes"))
+        .build();
+    let large_totp_row = adw::SwitchRow::builder()
+        .title(tr!("Large 2FA codes"))
+        .subtitle(tr!("Use larger digits for easier reading"))
+        .active(settings.borrow().large_totp_codes)
+        .build();
+    {
+        let settings = settings.clone();
+        large_totp_row.connect_active_notify(move |row| {
+            settings.borrow_mut().large_totp_codes = row.is_active();
+            let _ = settings.borrow().save();
+        });
+    }
+    two_factor_group.add(&large_totp_row);
+    page.add(&two_factor_group);
 }
 
 // ---------------------------------------------------------------------------
@@ -1268,12 +1355,7 @@ fn locked_notice_group(
     row.add_prefix(&gtk::Image::from_icon_name("system-lock-screen-symbolic"));
     row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
     row.connect_activated(move |_| {
-        show_settings_unlock_dialog(
-            &parent,
-            state.clone(),
-            toast.clone(),
-            dialog_slot.clone(),
-        );
+        show_settings_unlock_dialog(&parent, state.clone(), toast.clone(), dialog_slot.clone());
     });
     group.add(&row);
     group
@@ -1296,7 +1378,14 @@ fn show_settings_unlock_dialog(
         .close_response("cancel")
         .build();
     dialog.add_response("cancel", tr!("Cancel"));
-    dialog.add_response("unlock", if has_master { tr!("Unlock Vault") } else { tr!("Save") });
+    dialog.add_response(
+        "unlock",
+        if has_master {
+            tr!("Unlock Vault")
+        } else {
+            tr!("Save")
+        },
+    );
     dialog.set_response_appearance("unlock", adw::ResponseAppearance::Suggested);
 
     let password_row = adw::PasswordEntryRow::builder()
@@ -1316,6 +1405,7 @@ fn show_settings_unlock_dialog(
     }
     dialog.set_extra_child(Some(&list));
 
+    let password_row_focus = password_row.clone();
     {
         let parent = parent.clone();
         let state = state.clone();
@@ -1347,6 +1437,11 @@ fn show_settings_unlock_dialog(
 
             match result {
                 Ok(()) => {
+                    if !has_master {
+                        let mut settings = Settings::load();
+                        settings.quick_unlock = None;
+                        let _ = settings.save();
+                    }
                     SessionManager::login(&state.session);
                     state.events.emit(crate::events::AppEvent::VaultChanged);
                     dlg.close();
@@ -1365,14 +1460,12 @@ fn show_settings_unlock_dialog(
         });
     }
     dialog.present(Some(parent));
+    glib::idle_add_local_once(move || {
+        password_row_focus.grab_focus();
+    });
 }
 
-fn run_import(
-    state: SharedState,
-    toast: adw::ToastOverlay,
-    kind: ImportKind,
-    anchor: gtk::Widget,
-) {
+fn run_import(state: SharedState, toast: adw::ToastOverlay, kind: ImportKind, anchor: gtk::Widget) {
     let dialog = gtk::FileDialog::builder()
         .title(match kind {
             ImportKind::Csv => tr!("Choose a CSV file"),
@@ -1407,50 +1500,35 @@ fn run_import(
     dialog.set_filters(Some(&filters));
 
     let parent = anchor.root().and_then(|r| r.downcast::<gtk::Window>().ok());
-    dialog.open(
-        parent.as_ref(),
-        None::<&gio::Cancellable>,
-        move |result| {
-            let Ok(file) = result else { return };
-            let Some(path) = file.path() else { return };
-            let outcome: ashypass_core::Result<usize> = (|| match kind {
-                ImportKind::Csv => {
-                    let entries = ashypass_core::importers::import_csv(&path)?;
-                    ashypass_core::importers::import_csv_entries(&state.vault.borrow(), entries)
-                }
-                ImportKind::Aegis => {
-                    let entries = ashypass_core::importers::aegis::import_plain(&path)?;
-                    ashypass_core::importers::import_aegis_entries(
-                        &state.vault.borrow(),
-                        entries,
-                    )
-                }
-                ImportKind::Andotp => {
-                    let entries = ashypass_core::importers::andotp::import_plain(&path)?;
-                    ashypass_core::importers::import_andotp_entries(
-                        &state.vault.borrow(),
-                        entries,
-                    )
-                }
-                ImportKind::Bitwarden => {
-                    ashypass_core::importers::bitwarden::import_into_vault(
-                        &state.vault.borrow(),
-                        &path,
-                    )
-                }
-                ImportKind::Onepassword => {
-                    ashypass_core::importers::onepassword::import_into_vault(
-                        &state.vault.borrow(),
-                        &path,
-                    )
-                }
-            })();
-            match outcome {
-                Ok(n) => show_toast(&toast, &format!("{} ({n})", tr!("Import complete"))),
-                Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Import failed"))),
+    dialog.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+        let Ok(file) = result else { return };
+        let Some(path) = file.path() else { return };
+        let outcome: ashypass_core::Result<usize> = (|| match kind {
+            ImportKind::Csv => {
+                let entries = ashypass_core::importers::import_csv(&path)?;
+                ashypass_core::importers::import_csv_entries(&state.vault.borrow(), entries)
             }
-        },
-    );
+            ImportKind::Aegis => {
+                let entries = ashypass_core::importers::aegis::import_plain(&path)?;
+                ashypass_core::importers::import_aegis_entries(&state.vault.borrow(), entries)
+            }
+            ImportKind::Andotp => {
+                let entries = ashypass_core::importers::andotp::import_plain(&path)?;
+                ashypass_core::importers::import_andotp_entries(&state.vault.borrow(), entries)
+            }
+            ImportKind::Bitwarden => {
+                ashypass_core::importers::bitwarden::import_into_vault(&state.vault.borrow(), &path)
+            }
+            ImportKind::Onepassword => ashypass_core::importers::onepassword::import_into_vault(
+                &state.vault.borrow(),
+                &path,
+            ),
+        })();
+        match outcome {
+            Ok(n) => show_toast(&toast, &format!("{} ({n})", tr!("Import complete"))),
+            Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Import failed"))),
+        }
+    });
 }
 
 fn run_export_ashy(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget) {
@@ -1474,27 +1552,21 @@ fn run_export_ashy(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Wi
                 let state = state.clone();
                 let toast = toast.clone();
                 let password = password.clone();
-                dialog.save(
-                    parent.as_ref(),
-                    None::<&gio::Cancellable>,
-                    move |result| {
-                        let Ok(file) = result else { return };
-                        let Some(path) = file.path() else { return };
-                        match ashypass_core::importers::ashy::export_vault(
-                            &state.vault.borrow(),
-                            &path,
-                            &password,
-                        ) {
-                            Ok(n) => show_toast(
-                                &toast,
-                                &format!("{} ({n})", tr!("Encrypted export complete")),
-                            ),
-                            Err(e) => {
-                                show_toast(&toast, &format!("{}: {e}", tr!("Export failed")))
-                            }
-                        }
-                    },
-                );
+                dialog.save(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+                    let Ok(file) = result else { return };
+                    let Some(path) = file.path() else { return };
+                    match ashypass_core::importers::ashy::export_vault(
+                        &state.vault.borrow(),
+                        &path,
+                        &password,
+                    ) {
+                        Ok(n) => show_toast(
+                            &toast,
+                            &format!("{} ({n})", tr!("Encrypted export complete")),
+                        ),
+                        Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Export failed"))),
+                    }
+                });
             }
         },
     );
@@ -1509,38 +1581,33 @@ fn run_import_ashy(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Wi
     let state_cl = state.clone();
     let toast_cl = toast.clone();
     let anchor_cl = anchor.clone();
-    dialog.open(
-        parent.as_ref(),
-        None::<&gio::Cancellable>,
-        move |result| {
-            let Ok(file) = result else { return };
-            let Some(path) = file.path() else { return };
-            let state = state_cl.clone();
-            let toast = toast_cl.clone();
-            let parent_window =
-                anchor_cl.root().and_then(|r| r.downcast::<gtk::Window>().ok());
-            prompt_password(
-                parent_window.as_ref(),
-                tr!("Import .ashy"),
-                tr!("Enter the password used when this file was exported."),
-                false,
-                move |password| {
-                    match ashypass_core::importers::ashy::import_into_vault(
-                        &state.vault.borrow(),
-                        &path,
-                        &password,
-                    ) {
-                        Ok(n) => {
-                            show_toast(&toast, &format!("{} ({n})", tr!("Import complete")));
-                        }
-                        Err(e) => {
-                            show_toast(&toast, &format!("{}: {e}", tr!("Import failed")));
-                        }
-                    }
-                },
-            );
-        },
-    );
+    dialog.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+        let Ok(file) = result else { return };
+        let Some(path) = file.path() else { return };
+        let state = state_cl.clone();
+        let toast = toast_cl.clone();
+        let parent_window = anchor_cl
+            .root()
+            .and_then(|r| r.downcast::<gtk::Window>().ok());
+        prompt_password(
+            parent_window.as_ref(),
+            tr!("Import .ashy"),
+            tr!("Enter the password used when this file was exported."),
+            false,
+            move |password| match ashypass_core::importers::ashy::import_into_vault(
+                &state.vault.borrow(),
+                &path,
+                &password,
+            ) {
+                Ok(n) => {
+                    show_toast(&toast, &format!("{} ({n})", tr!("Import complete")));
+                }
+                Err(e) => {
+                    show_toast(&toast, &format!("{}: {e}", tr!("Import failed")));
+                }
+            },
+        );
+    });
 }
 
 fn run_export_kdbx(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget) {
@@ -1572,10 +1639,9 @@ fn run_export_kdbx(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Wi
                         &path,
                         &password,
                     ) {
-                        Ok(n) => show_toast(
-                            &toast,
-                            &format!("{} ({n})", tr!("KeePass export complete")),
-                        ),
+                        Ok(n) => {
+                            show_toast(&toast, &format!("{} ({n})", tr!("KeePass export complete")))
+                        }
                         Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Export failed"))),
                     }
                 });
@@ -1605,21 +1671,21 @@ fn run_import_kdbx(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Wi
         let Some(path) = file.path() else { return };
         let state = state_cl.clone();
         let toast = toast_cl.clone();
-        let parent_window = anchor_cl.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+        let parent_window = anchor_cl
+            .root()
+            .and_then(|r| r.downcast::<gtk::Window>().ok());
         prompt_password(
             parent_window.as_ref(),
             tr!("Open KeePass database"),
             tr!("Enter the master password for this .kdbx file."),
             false,
-            move |password| {
-                match ashypass_core::importers::keepass::import_into_vault(
-                    &state.vault.borrow(),
-                    &path,
-                    &password,
-                ) {
-                    Ok(n) => show_toast(&toast, &format!("{} ({n})", tr!("Import complete"))),
-                    Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Import failed"))),
-                }
+            move |password| match ashypass_core::importers::keepass::import_into_vault(
+                &state.vault.borrow(),
+                &path,
+                &password,
+            ) {
+                Ok(n) => show_toast(&toast, &format!("{} ({n})", tr!("Import complete"))),
+                Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Import failed"))),
             },
         );
     });
@@ -1634,7 +1700,10 @@ fn prompt_password<F>(
 ) where
     F: Fn(String) + 'static,
 {
-    let dialog = adw::AlertDialog::builder().heading(heading).body(body).build();
+    let dialog = adw::AlertDialog::builder()
+        .heading(heading)
+        .body(body)
+        .build();
     dialog.add_response("cancel", tr!("Cancel"));
     dialog.add_response("ok", tr!("OK"));
     dialog.set_default_response(Some("ok"));
@@ -1692,21 +1761,17 @@ fn run_export_csv(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Wid
         .build();
 
     let parent = anchor.root().and_then(|r| r.downcast::<gtk::Window>().ok());
-    dialog.save(
-        parent.as_ref(),
-        None::<&gio::Cancellable>,
-        move |result| {
-            let Ok(file) = result else { return };
-            let Some(path) = file.path() else { return };
-            match ashypass_core::importers::vault_import::export_vault_to_csv(
-                &state.vault.borrow(),
-                &path,
-            ) {
-                Ok(n) => show_toast(&toast, &format!("{} ({n})", tr!("Export complete"))),
-                Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Export failed"))),
-            }
-        },
-    );
+    dialog.save(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+        let Ok(file) = result else { return };
+        let Some(path) = file.path() else { return };
+        match ashypass_core::importers::vault_import::export_vault_to_csv(
+            &state.vault.borrow(),
+            &path,
+        ) {
+            Ok(n) => show_toast(&toast, &format!("{} ({n})", tr!("Export complete"))),
+            Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Export failed"))),
+        }
+    });
 }
 
 // ---------------------------------------------------------------------------
@@ -1744,8 +1809,7 @@ fn populate_cloud(
         .build();
     group.add(&status_row);
 
-    let drive_action_rows: Rc<RefCell<Vec<adw::ActionRow>>> =
-        Rc::new(RefCell::new(Vec::new()));
+    let drive_action_rows: Rc<RefCell<Vec<adw::ActionRow>>> = Rc::new(RefCell::new(Vec::new()));
     let google_signin_row: Rc<RefCell<Option<adw::ActionRow>>> = Rc::new(RefCell::new(None));
 
     let configure_row = adw::ActionRow::builder()
@@ -1855,7 +1919,9 @@ fn populate_cloud(
 
     let restore_row = adw::ActionRow::builder()
         .title(tr!("Restore latest"))
-        .subtitle(tr!("Downloads the most recent backup as ~/.local/share/ashypass/passwords.restored.db"))
+        .subtitle(tr!(
+            "Downloads the most recent backup as ~/.local/share/ashypass/passwords.restored.db"
+        ))
         .activatable(true)
         .build();
     restore_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
@@ -1877,10 +1943,7 @@ fn populate_cloud(
                 Ok(dest)
             })();
             match outcome {
-                Ok(p) => show_toast(
-                    &toast,
-                    &format!("{}: {}", tr!("Restored to"), p.display()),
-                ),
+                Ok(p) => show_toast(&toast, &format!("{}: {}", tr!("Restored to"), p.display())),
                 Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Restore failed"))),
             }
         });
@@ -1946,7 +2009,11 @@ fn show_google_oauth_dialog(
         let secret = client_secret.text().trim().to_string();
         let cfg = ashypass_core::backup::ClientCredentials {
             client_id: id,
-            client_secret: if secret.is_empty() { None } else { Some(secret) },
+            client_secret: if secret.is_empty() {
+                None
+            } else {
+                Some(secret)
+            },
         };
         match cfg.save() {
             Ok(()) => {
@@ -1975,15 +2042,22 @@ fn build_webdav_group(state: SharedState, toast: adw::ToastOverlay) -> adw::Pref
 
     let status_row = adw::ActionRow::builder()
         .title(tr!("Status"))
-        .subtitle(if logged_in { tr!("Configured") } else { tr!("Not configured") })
+        .subtitle(if logged_in {
+            tr!("Configured")
+        } else {
+            tr!("Not configured")
+        })
         .build();
     group.add(&status_row);
 
-    let webdav_action_rows: Rc<RefCell<Vec<adw::ActionRow>>> =
-        Rc::new(RefCell::new(Vec::new()));
+    let webdav_action_rows: Rc<RefCell<Vec<adw::ActionRow>>> = Rc::new(RefCell::new(Vec::new()));
 
     let configure_row = adw::ActionRow::builder()
-        .title(if logged_in { tr!("Sign out") } else { tr!("Configure WebDAV") })
+        .title(if logged_in {
+            tr!("Sign out")
+        } else {
+            tr!("Configure WebDAV")
+        })
         .subtitle(tr!("Server URL, username, app-password"))
         .activatable(true)
         .build();
@@ -2058,9 +2132,7 @@ fn build_webdav_group(state: SharedState, toast: adw::ToastOverlay) -> adw::Pref
     // can be detected before they get clobbered.
     let sync_row = adw::ActionRow::builder()
         .title(tr!("Sync now"))
-        .subtitle(tr!(
-            "Encrypted snapshot upload with conflict detection"
-        ))
+        .subtitle(tr!("Encrypted snapshot upload with conflict detection"))
         .activatable(true)
         .build();
     sync_row.add_suffix(&gtk::Image::from_icon_name("emblem-synchronizing-symbolic"));
@@ -2103,10 +2175,7 @@ fn build_webdav_group(state: SharedState, toast: adw::ToastOverlay) -> adw::Pref
                 Ok(dest)
             })();
             match outcome {
-                Ok(p) => show_toast(
-                    &toast,
-                    &format!("{}: {}", tr!("Restored to"), p.display()),
-                ),
+                Ok(p) => show_toast(&toast, &format!("{}: {}", tr!("Restored to"), p.display())),
                 Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Restore failed"))),
             }
         });
@@ -2135,9 +2204,7 @@ fn show_webdav_dialog<F>(
     dialog.set_default_response(Some("save"));
     dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
 
-    let url_row = adw::EntryRow::builder()
-        .title(tr!("Server URL"))
-        .build();
+    let url_row = adw::EntryRow::builder().title(tr!("Server URL")).build();
     let user_row = adw::EntryRow::builder().title(tr!("Username")).build();
     let pass_row = adw::PasswordEntryRow::builder()
         .title(tr!("Password / app-password"))
@@ -2206,10 +2273,7 @@ fn run_webdav_sync(
     use ashypass_core::backup::sync as sync_mod;
 
     if !force {
-        let plan = match sync_mod::plan_push(
-            &state.vault.borrow(),
-            &state.webdav.borrow(),
-        ) {
+        let plan = match sync_mod::plan_push(&state.vault.borrow(), &state.webdav.borrow()) {
             Ok(p) => p,
             Err(e) => {
                 show_toast(&toast, &format!("{}: {e}", tr!("Sync failed")));
@@ -2308,9 +2372,7 @@ fn do_webdav_push(state: SharedState, toast: adw::ToastOverlay, master: String, 
         Err(e) => {
             let msg = format!("{e}");
             show_toast(&toast, &format!("{}: {msg}", tr!("Sync failed")));
-            state
-                .events
-                .emit(crate::events::AppEvent::SyncFailed(msg));
+            state.events.emit(crate::events::AppEvent::SyncFailed(msg));
         }
     }
 }
@@ -2342,9 +2404,7 @@ fn show_sync_conflict_dialog(
         if resp != "force" {
             return;
         }
-        let parent = dlg
-            .parent()
-            .and_then(|w| w.downcast::<gtk::Window>().ok());
+        let parent = dlg.parent().and_then(|w| w.downcast::<gtk::Window>().ok());
         run_webdav_sync(parent.as_ref(), state.clone(), toast.clone(), true);
     });
     dialog.present(parent);
@@ -2380,8 +2440,7 @@ fn build_nextcloud_passwords_group(
         .build();
     group.add(&status_row);
 
-    let nextcloud_action_rows: Rc<RefCell<Vec<adw::ActionRow>>> =
-        Rc::new(RefCell::new(Vec::new()));
+    let nextcloud_action_rows: Rc<RefCell<Vec<adw::ActionRow>>> = Rc::new(RefCell::new(Vec::new()));
 
     let configure_row = adw::ActionRow::builder()
         .title(if logged_in {
@@ -2775,11 +2834,9 @@ fn finish_nextcloud_sync(
                 }
             }
             show_message_dialog(parent, heading, &body);
-            state
-                .events
-                .emit(crate::events::AppEvent::SyncCompleted {
-                    filename: "nextcloud".into(),
-                });
+            state.events.emit(crate::events::AppEvent::SyncCompleted {
+                filename: "nextcloud".into(),
+            });
         }
         Err(e) => {
             let msg = format!("{}: {e}", tr!("Sync failed"));
@@ -2801,6 +2858,8 @@ fn populate_audit(
     state: SharedState,
     settings: Rc<RefCell<Settings>>,
     toast: adw::ToastOverlay,
+    parent: gtk::Widget,
+    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) {
     let opts_group = adw::PreferencesGroup::builder()
         .title(tr!("Audit Options"))
@@ -2827,12 +2886,17 @@ fn populate_audit(
         .title(tr!("Run Audit"))
         .activatable(true)
         .build();
+    let run_spinner = gtk::Spinner::new();
+    run_spinner.set_visible(false);
     let run_arrow = gtk::Image::from_icon_name("go-next-symbolic");
+    run_row.add_suffix(&run_spinner);
     run_row.add_suffix(&run_arrow);
     opts_group.add(&run_row);
     page.add(&opts_group);
 
-    let summary_group = adw::PreferencesGroup::builder().title(tr!("Summary")).build();
+    let summary_group = adw::PreferencesGroup::builder()
+        .title(tr!("Summary"))
+        .build();
     let summary_row = adw::ActionRow::builder()
         .title(tr!("Not run yet"))
         .subtitle("")
@@ -2840,7 +2904,9 @@ fn populate_audit(
     summary_group.add(&summary_row);
     page.add(&summary_group);
 
-    let findings_group = adw::PreferencesGroup::builder().title(tr!("Findings")).build();
+    let findings_group = adw::PreferencesGroup::builder()
+        .title(tr!("Findings"))
+        .build();
     page.add(&findings_group);
 
     let finding_rows: Rc<RefCell<Vec<adw::ActionRow>>> = Rc::new(RefCell::new(Vec::new()));
@@ -2848,9 +2914,12 @@ fn populate_audit(
     let summary_row_cl = summary_row.clone();
     let hibp_row_cl = hibp_row.clone();
     let finding_rows_cl = finding_rows.clone();
+    let run_spinner_cl = run_spinner.clone();
+    let run_arrow_cl = run_arrow.clone();
     run_row.connect_activated(move |trigger| {
         if !state.vault.borrow().is_unlocked() {
             show_toast(&toast, tr!("Unlock the vault first"));
+            show_settings_unlock_dialog(&parent, state.clone(), toast.clone(), dialog_slot.clone());
             return;
         }
         let state = state.clone();
@@ -2859,8 +2928,15 @@ fn populate_audit(
         let summary_row = summary_row_cl.clone();
         let hibp_row = hibp_row_cl.clone();
         let finding_rows = finding_rows_cl.clone();
+        let run_spinner = run_spinner_cl.clone();
+        let run_arrow = run_arrow_cl.clone();
         let trigger = trigger.clone();
         trigger.set_sensitive(false);
+        trigger.set_title(tr!("Running audit..."));
+        trigger.set_subtitle(tr!("Scanning vault..."));
+        run_arrow.set_visible(false);
+        run_spinner.set_visible(true);
+        run_spinner.start();
         for existing in finding_rows.borrow_mut().drain(..) {
             findings_group.remove(&existing);
         }
@@ -2868,15 +2944,20 @@ fn populate_audit(
             Ok(parts) => parts,
             Err(e) => {
                 show_toast(&toast, &format!("{}: {e}", tr!("Audit failed")));
+                trigger.set_title(tr!("Run Audit"));
+                trigger.set_subtitle("");
                 trigger.set_sensitive(true);
+                run_spinner.stop();
+                run_spinner.set_visible(false);
+                run_arrow.set_visible(true);
                 return;
             }
         };
         let mut opts = ashypass_core::audit::AuditOptions::defaults();
         opts.check_hibp = hibp_row.is_active();
-        summary_row.set_title(tr!("Run Audit"));
-        summary_row.set_subtitle("");
-        show_toast(&toast, tr!("Run Audit"));
+        summary_row.set_title(tr!("Running audit..."));
+        summary_row.set_subtitle(tr!("Scanning vault..."));
+        show_toast(&toast, tr!("Running audit..."));
 
         let (sender, receiver) = std::sync::mpsc::channel::<AuditResult>();
         std::thread::spawn(move || {
@@ -2888,8 +2969,9 @@ fn populate_audit(
             let _ = sender.send(outcome);
         });
 
-        glib::timeout_add_local(std::time::Duration::from_millis(150), move || {
-            match receiver.try_recv() {
+        glib::timeout_add_local(
+            std::time::Duration::from_millis(150),
+            move || match receiver.try_recv() {
                 Ok(Ok(report)) => {
                     render_audit_report(
                         &report,
@@ -2898,22 +2980,41 @@ fn populate_audit(
                         &finding_rows,
                         &toast,
                     );
+                    trigger.set_title(tr!("Run Audit"));
+                    trigger.set_subtitle("");
                     trigger.set_sensitive(true);
+                    run_spinner.stop();
+                    run_spinner.set_visible(false);
+                    run_arrow.set_visible(true);
                     glib::ControlFlow::Break
                 }
                 Ok(Err(e)) => {
                     show_toast(&toast, &format!("{}: {e}", tr!("Audit failed")));
+                    summary_row.set_title(tr!("Audit failed"));
+                    summary_row.set_subtitle(&e);
+                    trigger.set_title(tr!("Run Audit"));
+                    trigger.set_subtitle("");
                     trigger.set_sensitive(true);
+                    run_spinner.stop();
+                    run_spinner.set_visible(false);
+                    run_arrow.set_visible(true);
                     glib::ControlFlow::Break
                 }
                 Err(std::sync::mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
                 Err(std::sync::mpsc::TryRecvError::Disconnected) => {
                     show_toast(&toast, tr!("Audit failed"));
+                    summary_row.set_title(tr!("Audit failed"));
+                    summary_row.set_subtitle("");
+                    trigger.set_title(tr!("Run Audit"));
+                    trigger.set_subtitle("");
                     trigger.set_sensitive(true);
+                    run_spinner.stop();
+                    run_spinner.set_visible(false);
+                    run_arrow.set_visible(true);
                     glib::ControlFlow::Break
                 }
-            }
-        });
+            },
+        );
     });
 }
 
@@ -2991,30 +3092,6 @@ fn render_audit_report(
     );
 }
 
-fn clear_group(group: &adw::PreferencesGroup) {
-    while let Some(child) = group.first_child() {
-        // The PreferencesGroup wraps its rows in an internal ListBox; finding
-        // the actual ListBoxRow and removing via the group's `remove` keeps
-        // the layout sane. For non-row children (the internal header), skip.
-        if let Some(row) = child.downcast_ref::<adw::PreferencesRow>() {
-            group.remove(row);
-        } else if let Some(boxw) = child.downcast_ref::<gtk::Box>() {
-            // walk into the internal box for ListBoxRow children
-            let mut c = boxw.first_child();
-            while let Some(node) = c {
-                let next = node.next_sibling();
-                if let Some(row) = node.downcast_ref::<adw::PreferencesRow>() {
-                    group.remove(row);
-                }
-                c = next;
-            }
-            break;
-        } else {
-            break;
-        }
-    }
-}
-
 // ---------------------------------------------------------------------------
 // Trash
 // ---------------------------------------------------------------------------
@@ -3053,6 +3130,7 @@ fn populate_trash(
     page.add(&list_group);
 
     let list_holder = Rc::new(RefCell::new(list_group.clone()));
+    let trash_rows: Rc<RefCell<Vec<gtk::Widget>>> = Rc::new(RefCell::new(Vec::new()));
     // Self-referential render closure: stored in a RefCell so button handlers
     // built during rendering can re-invoke it once it's installed.
     let render_slot: RenderSlot = Rc::new(RefCell::new(None));
@@ -3061,16 +3139,18 @@ fn populate_trash(
         let holder = list_holder.clone();
         let toast = toast.clone();
         let render_slot = render_slot.clone();
+        let trash_rows = trash_rows.clone();
         Rc::new(move || {
             let group = holder.borrow().clone();
-            clear_group(&group);
+            for row in trash_rows.borrow_mut().drain(..) {
+                group.remove(&row);
+            }
             let entries = match state.vault.borrow().list_trash() {
                 Ok(v) => v,
                 Err(e) => {
-                    let row = adw::ActionRow::builder()
-                        .title(format!("{e}"))
-                        .build();
+                    let row = adw::ActionRow::builder().title(format!("{e}")).build();
                     group.add(&row);
+                    trash_rows.borrow_mut().push(row.upcast());
                     return;
                 }
             };
@@ -3079,6 +3159,7 @@ fn populate_trash(
                     .title(tr!("Trash is empty."))
                     .build();
                 group.add(&row);
+                trash_rows.borrow_mut().push(row.upcast());
                 return;
             }
             for t in entries {
@@ -3116,20 +3197,24 @@ fn populate_trash(
                         let r = state.vault.borrow().restore_from_trash(trash_id);
                         match r {
                             Ok(Some(_)) => {
-                                toast.add_toast(adw::Toast::builder()
-                                    .title(tr!("Entry restored"))
-                                    .timeout(3)
-                                    .build());
+                                toast.add_toast(
+                                    adw::Toast::builder()
+                                        .title(tr!("Entry restored"))
+                                        .timeout(3)
+                                        .build(),
+                                );
                                 if let Some(cb) = render_slot.borrow().clone() {
                                     (cb)();
                                 }
                             }
                             Ok(None) => {}
                             Err(e) => {
-                                toast.add_toast(adw::Toast::builder()
-                                    .title(format!("{e}"))
-                                    .timeout(3)
-                                    .build());
+                                toast.add_toast(
+                                    adw::Toast::builder()
+                                        .title(format!("{e}"))
+                                        .timeout(3)
+                                        .build(),
+                                );
                             }
                         }
                     });
@@ -3143,19 +3228,23 @@ fn populate_trash(
                         let r = state.vault.borrow().delete_from_trash(trash_id);
                         match r {
                             Ok(_) => {
-                                toast.add_toast(adw::Toast::builder()
-                                    .title(tr!("Permanently deleted"))
-                                    .timeout(3)
-                                    .build());
+                                toast.add_toast(
+                                    adw::Toast::builder()
+                                        .title(tr!("Permanently deleted"))
+                                        .timeout(3)
+                                        .build(),
+                                );
                                 if let Some(cb) = render_slot.borrow().clone() {
                                     (cb)();
                                 }
                             }
                             Err(e) => {
-                                toast.add_toast(adw::Toast::builder()
-                                    .title(format!("{e}"))
-                                    .timeout(3)
-                                    .build());
+                                toast.add_toast(
+                                    adw::Toast::builder()
+                                        .title(format!("{e}"))
+                                        .timeout(3)
+                                        .build(),
+                                );
                             }
                         }
                     });
@@ -3164,6 +3253,7 @@ fn populate_trash(
                 row.add_suffix(&restore_btn);
                 row.add_suffix(&purge_btn);
                 group.add(&row);
+                trash_rows.borrow_mut().push(row.upcast());
             }
         })
     };
@@ -3190,21 +3280,23 @@ fn populate_trash(
         let state = state.clone();
         let toast = toast.clone();
         let render = render.clone();
-        empty_row.connect_activated(move |_| {
-            match state.vault.borrow().empty_trash() {
-                Ok(n) => {
-                    toast.add_toast(adw::Toast::builder()
+        empty_row.connect_activated(move |_| match state.vault.borrow().empty_trash() {
+            Ok(n) => {
+                toast.add_toast(
+                    adw::Toast::builder()
                         .title(format!("{} {}", n, tr!("entries removed")))
                         .timeout(3)
-                        .build());
-                    (render)();
-                }
-                Err(e) => {
-                    toast.add_toast(adw::Toast::builder()
+                        .build(),
+                );
+                (render)();
+            }
+            Err(e) => {
+                toast.add_toast(
+                    adw::Toast::builder()
                         .title(format!("{e}"))
                         .timeout(3)
-                        .build());
-                }
+                        .build(),
+                );
             }
         });
     }

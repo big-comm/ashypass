@@ -7,7 +7,9 @@
 
 use anyhow::{anyhow, bail, Context, Result};
 use ashypass_core::db::vault::{NewEntry, PasswordEntry, Vault};
-use ashypass_core::generator::{generate_passphrase, generate_password, generate_pin, PasswordConfig};
+use ashypass_core::generator::{
+    generate_passphrase, generate_password, generate_pin, PasswordConfig,
+};
 use ashypass_core::totp::{generate_totp, Algorithm};
 use clap::{Args, Parser, Subcommand};
 
@@ -126,8 +128,8 @@ fn unlock_vault(vault: &mut Vault) -> Result<()> {
         }
     }
 
-    let password = rpassword::prompt_password("Master password: ")
-        .context("reading password from tty")?;
+    let password =
+        rpassword::prompt_password("Master password: ").context("reading password from tty")?;
     vault.unlock(&password).map_err(|e| anyhow!("{e}"))?;
     Ok(())
 }
@@ -152,7 +154,9 @@ fn run_list(vault: &Vault, a: ListArgs) -> Result<()> {
     let mut entries = if let Some(t) = a.tag.as_deref() {
         vault.entries_with_tag(t).map_err(|e| anyhow!("{e}"))?
     } else {
-        vault.list(a.search.as_deref()).map_err(|e| anyhow!("{e}"))?
+        vault
+            .list(a.search.as_deref())
+            .map_err(|e| anyhow!("{e}"))?
     };
     if let Some(c) = a.category.as_deref() {
         entries.retain(|e| e.category.as_deref() == Some(c));
@@ -162,7 +166,12 @@ fn run_list(vault: &Vault, a: ListArgs) -> Result<()> {
         return Ok(());
     }
     // Column widths sized to the longest visible value.
-    let title_w = entries.iter().map(|e| e.title.len()).max().unwrap_or(5).max(5);
+    let title_w = entries
+        .iter()
+        .map(|e| e.title.len())
+        .max()
+        .unwrap_or(5)
+        .max(5);
     let user_w = entries
         .iter()
         .map(|e| e.username.as_deref().unwrap_or("").len())
@@ -269,8 +278,7 @@ fn compute_totp(e: &PasswordEntry) -> Result<String> {
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_secs())
         .unwrap_or(0);
-    generate_totp(secret, algo, e.totp_digits, e.totp_period, now)
-        .map_err(|e| anyhow!("{e}"))
+    generate_totp(secret, algo, e.totp_digits, e.totp_period, now).map_err(|e| anyhow!("{e}"))
 }
 
 /// Accept either a numeric id or an exact title match.
@@ -281,10 +289,7 @@ fn find_entry(vault: &Vault, sel: &str) -> Result<PasswordEntry> {
         }
     }
     let entries = vault.list(None).map_err(|e| anyhow!("{e}"))?;
-    let matches: Vec<PasswordEntry> = entries
-        .into_iter()
-        .filter(|e| e.title == sel)
-        .collect();
+    let matches: Vec<PasswordEntry> = entries.into_iter().filter(|e| e.title == sel).collect();
     match matches.len() {
         0 => bail!("no entry matches {sel:?}"),
         1 => Ok(matches.into_iter().next().unwrap()),

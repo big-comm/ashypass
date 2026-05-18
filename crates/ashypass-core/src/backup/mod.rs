@@ -3,10 +3,10 @@
 //! OAuth 2.0 PKCE loopback flow + multipart upload to a per-app folder
 //! created under the user's Drive root via the `drive.file` scope.
 
-pub mod oauth;
 pub mod drive;
-pub mod webdav;
+pub mod oauth;
 pub mod sync;
+pub mod webdav;
 
 pub use drive::{BackupService, DriveFile};
 pub use oauth::{ClientCredentials, Token};

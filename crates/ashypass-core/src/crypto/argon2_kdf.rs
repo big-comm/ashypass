@@ -1,11 +1,11 @@
 //! Argon2id verification + Argon2id-based key derivation.
 
+use super::key::DerivedKey;
 use crate::{Error, Result};
 use argon2::{
     password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
     Algorithm, Argon2, Params, Version,
 };
-use super::key::DerivedKey;
 
 /// Matches the original Python parameters in CRYPTO_SPEC.md.
 fn params() -> Params {

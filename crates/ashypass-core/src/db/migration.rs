@@ -19,13 +19,34 @@ type LegacyEncryptedRow = (i64, Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>);
 /// Add columns introduced after the initial Python release (idempotent).
 pub fn add_missing_columns(conn: &Connection) -> Result<()> {
     let alters = [
-        ("master",    "ALTER TABLE master ADD COLUMN crypto_version INTEGER NOT NULL DEFAULT 1"),
-        ("passwords", "ALTER TABLE passwords ADD COLUMN totp_secret_encrypted BLOB"),
-        ("passwords", "ALTER TABLE passwords ADD COLUMN totp_algorithm TEXT DEFAULT 'SHA1'"),
-        ("passwords", "ALTER TABLE passwords ADD COLUMN totp_digits INTEGER DEFAULT 6"),
-        ("passwords", "ALTER TABLE passwords ADD COLUMN totp_period INTEGER DEFAULT 30"),
-        ("passwords", "ALTER TABLE passwords ADD COLUMN category TEXT"),
-        ("passwords", "ALTER TABLE passwords ADD COLUMN favorite INTEGER DEFAULT 0"),
+        (
+            "master",
+            "ALTER TABLE master ADD COLUMN crypto_version INTEGER NOT NULL DEFAULT 1",
+        ),
+        (
+            "passwords",
+            "ALTER TABLE passwords ADD COLUMN totp_secret_encrypted BLOB",
+        ),
+        (
+            "passwords",
+            "ALTER TABLE passwords ADD COLUMN totp_algorithm TEXT DEFAULT 'SHA1'",
+        ),
+        (
+            "passwords",
+            "ALTER TABLE passwords ADD COLUMN totp_digits INTEGER DEFAULT 6",
+        ),
+        (
+            "passwords",
+            "ALTER TABLE passwords ADD COLUMN totp_period INTEGER DEFAULT 30",
+        ),
+        (
+            "passwords",
+            "ALTER TABLE passwords ADD COLUMN category TEXT",
+        ),
+        (
+            "passwords",
+            "ALTER TABLE passwords ADD COLUMN favorite INTEGER DEFAULT 0",
+        ),
     ];
     for (_, sql) in &alters {
         // Ignore "duplicate column" — the cheapest way is to attempt and swallow.

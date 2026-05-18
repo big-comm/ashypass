@@ -173,9 +173,7 @@ pub(crate) fn parse_generation(name: &str) -> Option<u64> {
 }
 
 fn snapshot_filename(generation: u64, unix_ts: i64) -> String {
-    format!(
-        "{SNAPSHOT_PREFIX}{generation:010}-{unix_ts}{SNAPSHOT_SUFFIX}"
-    )
+    format!("{SNAPSHOT_PREFIX}{generation:010}-{unix_ts}{SNAPSHOT_SUFFIX}")
 }
 
 fn tempfile_path(filename: &str) -> Result<std::path::PathBuf> {
@@ -187,7 +185,10 @@ fn tempfile_path(filename: &str) -> Result<std::path::PathBuf> {
 
 /// Convenience: download the latest snapshot's bytes into `dest` so the caller
 /// can offer the user a "Pull" action when a conflict is detected.
-pub fn download_latest(webdav: &WebdavService, dest: impl AsRef<Path>) -> Result<Option<WebdavFile>> {
+pub fn download_latest(
+    webdav: &WebdavService,
+    dest: impl AsRef<Path>,
+) -> Result<Option<WebdavFile>> {
     let mut files = webdav.list_backups()?;
     files.retain(|f| parse_generation(&f.name).is_some());
     files.sort_by_key(|f| parse_generation(&f.name).unwrap_or(0));

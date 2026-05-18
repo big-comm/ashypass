@@ -4,7 +4,7 @@
 //! a `Report`. Network checks (HIBP) are opt-in and run synchronously — the UI
 //! is expected to call this from a worker thread.
 
-use crate::db::{vault::Vault, vault::PasswordEntry};
+use crate::db::{vault::PasswordEntry, vault::Vault};
 use crate::hibp;
 use crate::strength;
 use crate::Result;
@@ -148,7 +148,12 @@ pub fn run(vault: &Vault, opts: AuditOptions) -> Result<Report> {
         }
     }
 
-    findings.sort_by(|a, b| b.kinds.len().cmp(&a.kinds.len()).then(a.title.cmp(&b.title)));
+    findings.sort_by(|a, b| {
+        b.kinds
+            .len()
+            .cmp(&a.kinds.len())
+            .then(a.title.cmp(&b.title))
+    });
 
     Ok(Report {
         total_entries: summaries.len(),

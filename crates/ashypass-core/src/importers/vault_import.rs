@@ -30,8 +30,16 @@ pub fn import_csv_entries(vault: &Vault, entries: Vec<CsvEntry>) -> Result<usize
 pub fn import_aegis_entries(vault: &Vault, entries: Vec<AegisEntry>) -> Result<usize> {
     let mut n = 0;
     for e in entries {
-        let title = if e.issuer.is_empty() { e.label.clone() } else { e.issuer.clone() };
-        let username = if e.issuer.is_empty() { None } else { Some(e.label) };
+        let title = if e.issuer.is_empty() {
+            e.label.clone()
+        } else {
+            e.issuer.clone()
+        };
+        let username = if e.issuer.is_empty() {
+            None
+        } else {
+            Some(e.label)
+        };
         let new_entry = NewEntry {
             title,
             username,
@@ -53,8 +61,16 @@ pub fn import_aegis_entries(vault: &Vault, entries: Vec<AegisEntry>) -> Result<u
 pub fn import_andotp_entries(vault: &Vault, entries: Vec<AndotpEntry>) -> Result<usize> {
     let mut n = 0;
     for e in entries {
-        let title = if e.issuer.is_empty() { e.label.clone() } else { e.issuer.clone() };
-        let username = if e.issuer.is_empty() { None } else { Some(e.label) };
+        let title = if e.issuer.is_empty() {
+            e.label.clone()
+        } else {
+            e.issuer.clone()
+        };
+        let username = if e.issuer.is_empty() {
+            None
+        } else {
+            Some(e.label)
+        };
         let new_entry = NewEntry {
             title,
             username,
@@ -74,7 +90,11 @@ pub fn import_andotp_entries(vault: &Vault, entries: Vec<AndotpEntry>) -> Result
 }
 
 fn opt_str(s: String) -> Option<String> {
-    if s.is_empty() { None } else { Some(s) }
+    if s.is_empty() {
+        None
+    } else {
+        Some(s)
+    }
 }
 
 /// Decrypt every entry and emit a Chrome-compatible CSV file.

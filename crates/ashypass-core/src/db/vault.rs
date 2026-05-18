@@ -7,6 +7,7 @@
 //! 3. CRUD: `add`, `list`, `get` (decrypts), `update`, `delete`, `toggle_favorite`.
 
 use crate::crypto::{aes_gcm_v2, argon2_kdf, DerivedKey};
+use crate::settings::QuickUnlockPrefs;
 use crate::{db::migration, db::schema, Error, Result};
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use rand::RngCore;
@@ -383,10 +384,7 @@ impl Vault {
         Ok(m)
     }
 
-    pub fn nc_folder_mapping_for_uuid(
-        &self,
-        uuid: &str,
-    ) -> Result<Option<NextcloudFolderMapping>> {
+    pub fn nc_folder_mapping_for_uuid(&self, uuid: &str) -> Result<Option<NextcloudFolderMapping>> {
         let m = self
             .conn
             .query_row(
@@ -503,11 +501,11 @@ impl Vault {
     /// changing the vault's lock state. Used by the system-keyring opt-in to
     /// confirm the user typed the right master before persisting it.
     pub fn verify_master_password(&self, password: &str) -> Result<bool> {
-        let hash: String = self.conn.query_row(
-            "SELECT password_hash FROM master WHERE id = 1",
-            [],
-            |r| r.get(0),
-        )?;
+        let hash: String =
+            self.conn
+                .query_row("SELECT password_hash FROM master WHERE id = 1", [], |r| {
+                    r.get(0)
+                })?;
         argon2_kdf::verify_master(password, &hash)
     }
 
@@ -544,6 +542,28 @@ impl Vault {
         Ok(())
     }
 
+    /// Configure quick-unlock and return the encrypted, device-local state that
+    /// lets the app restore it after restart.
+    pub fn enable_persistent_quick_unlock(&mut self, pin: &str) -> Result<QuickUnlockPrefs> {
+        self.enable_quick_unlock(pin)?;
+        let key = self.cached_key.as_ref().ok_or(Error::Locked)?;
+        let pin_hash = self
+            .quick_pin_hash
+            .clone()
+            .ok_or_else(|| Error::Other("quick-unlock hash missing".into()))?;
+
+        let mut salt = [0u8; 32];
+        rand::thread_rng().fill_bytes(&mut salt);
+        let wrapping_key = argon2_kdf::derive_key_v2(pin, &salt)?;
+        let encrypted_key = aes_gcm_v2::encrypt(&wrapping_key, key.as_bytes())?;
+
+        Ok(QuickUnlockPrefs {
+            pin_hash,
+            salt: URL_SAFE_NO_PAD.encode(salt),
+            encrypted_key: URL_SAFE_NO_PAD.encode(encrypted_key),
+        })
+    }
+
     /// Re-acquire the encryption key using a previously-set quick-unlock PIN.
     /// Fails if quick-unlock was never configured this session, or if the PIN
     /// is wrong. Wrong PIN does not clear the cache — caller decides whether
@@ -561,6 +581,32 @@ impl Vault {
             .clone()
             .ok_or(Error::Other("quick-unlock cache missing".into()))?;
         self.key = Some(key);
+        Ok(())
+    }
+
+    /// Re-acquire the encryption key from persisted quick-unlock state.
+    pub fn quick_unlock_persistent(&mut self, pin: &str, prefs: &QuickUnlockPrefs) -> Result<()> {
+        if !prefs.is_configured() {
+            return Err(Error::Other("quick-unlock not configured".into()));
+        }
+        if !argon2_kdf::verify_master(pin, &prefs.pin_hash)? {
+            return Err(Error::InvalidMasterPassword);
+        }
+
+        let salt = URL_SAFE_NO_PAD.decode(&prefs.salt)?;
+        let encrypted_key = URL_SAFE_NO_PAD.decode(&prefs.encrypted_key)?;
+        let wrapping_key = argon2_kdf::derive_key_v2(pin, &salt)?;
+        let key_bytes = aes_gcm_v2::decrypt(&wrapping_key, &encrypted_key)?;
+        if key_bytes.len() != 32 {
+            return Err(Error::Crypto("quick-unlock key has invalid length".into()));
+        }
+
+        let mut raw = [0u8; 32];
+        raw.copy_from_slice(&key_bytes);
+        let key = DerivedKey::new(raw);
+        self.key = Some(key.clone());
+        self.cached_key = Some(key);
+        self.quick_pin_hash = Some(prefs.pin_hash.clone());
         Ok(())
     }
 
@@ -691,7 +737,9 @@ impl Vault {
                     notes: None,
                     totp_secret: None,
                     has_totp: totp_blob.is_some(),
-                    totp_algorithm: r.get::<_, Option<String>>(5)?.unwrap_or_else(|| "SHA1".into()),
+                    totp_algorithm: r
+                        .get::<_, Option<String>>(5)?
+                        .unwrap_or_else(|| "SHA1".into()),
                     totp_digits: r.get::<_, Option<i64>>(6)?.unwrap_or(6) as u8,
                     totp_period: r.get::<_, Option<i64>>(7)?.unwrap_or(30) as u32,
                     category: r.get(8)?,
@@ -745,7 +793,9 @@ impl Vault {
             url: row.get(5)?,
             totp_secret: totp_blob.as_ref().map(|b| self.decrypt(b)).transpose()?,
             has_totp: totp_blob.is_some(),
-            totp_algorithm: row.get::<_, Option<String>>(7)?.unwrap_or_else(|| "SHA1".into()),
+            totp_algorithm: row
+                .get::<_, Option<String>>(7)?
+                .unwrap_or_else(|| "SHA1".into()),
             totp_digits: row.get::<_, Option<i64>>(8)?.unwrap_or(6) as u8,
             totp_period: row.get::<_, Option<i64>>(9)?.unwrap_or(30) as u32,
             category: row.get(10)?,
@@ -1009,9 +1059,19 @@ impl Vault {
                 params![trash_id],
                 |r| {
                     Ok((
-                        r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?,
-                        r.get(5)?, r.get(6)?, r.get(7)?, r.get(8)?,
-                        r.get(9)?, r.get(10)?, r.get(11)?, r.get(12)?,
+                        r.get(0)?,
+                        r.get(1)?,
+                        r.get(2)?,
+                        r.get(3)?,
+                        r.get(4)?,
+                        r.get(5)?,
+                        r.get(6)?,
+                        r.get(7)?,
+                        r.get(8)?,
+                        r.get(9)?,
+                        r.get(10)?,
+                        r.get(11)?,
+                        r.get(12)?,
                     ))
                 },
             )
@@ -1024,12 +1084,19 @@ impl Vault {
                 category, favorite, created_at, updated_at)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             params![
-                row.0, row.1, row.2, row.3, row.4, row.5,
+                row.0,
+                row.1,
+                row.2,
+                row.3,
+                row.4,
+                row.5,
                 row.6.unwrap_or_else(|| "SHA1".into()),
                 row.7.unwrap_or(6),
                 row.8.unwrap_or(30),
-                row.9, row.10.unwrap_or(0),
-                row.11.unwrap_or(now), row.12.unwrap_or(now),
+                row.9,
+                row.10.unwrap_or(0),
+                row.11.unwrap_or(now),
+                row.12.unwrap_or(now),
             ],
         )?;
         let new_id = self.conn.last_insert_rowid();
@@ -1080,7 +1147,11 @@ impl Vault {
     pub fn toggle_favorite(&self, id: i64) -> Result<bool> {
         let current: Option<i64> = self
             .conn
-            .query_row("SELECT favorite FROM passwords WHERE id = ?", params![id], |r| r.get(0))
+            .query_row(
+                "SELECT favorite FROM passwords WHERE id = ?",
+                params![id],
+                |r| r.get(0),
+            )
             .ok();
         let Some(cur) = current else { return Ok(false) };
         let new = if cur == 0 { 1 } else { 0 };
@@ -1228,7 +1299,9 @@ impl Vault {
                     notes: None,
                     totp_secret: None,
                     has_totp: totp_blob.is_some(),
-                    totp_algorithm: r.get::<_, Option<String>>(5)?.unwrap_or_else(|| "SHA1".into()),
+                    totp_algorithm: r
+                        .get::<_, Option<String>>(5)?
+                        .unwrap_or_else(|| "SHA1".into()),
                     totp_digits: r.get::<_, Option<i64>>(6)?.unwrap_or(6) as u8,
                     totp_period: r.get::<_, Option<i64>>(7)?.unwrap_or(30) as u32,
                     category: r.get(8)?,
@@ -1402,11 +1475,17 @@ impl Vault {
                 let new_pw = aes_gcm_v2::encrypt(&new_key, &pw_pt)?;
 
                 let new_notes = match notes {
-                    Some(b) => Some(aes_gcm_v2::encrypt(&new_key, &aes_gcm_v2::decrypt(&old_key, &b)?)?),
+                    Some(b) => Some(aes_gcm_v2::encrypt(
+                        &new_key,
+                        &aes_gcm_v2::decrypt(&old_key, &b)?,
+                    )?),
                     None => None,
                 };
                 let new_totp = match totp {
-                    Some(b) => Some(aes_gcm_v2::encrypt(&new_key, &aes_gcm_v2::decrypt(&old_key, &b)?)?),
+                    Some(b) => Some(aes_gcm_v2::encrypt(
+                        &new_key,
+                        &aes_gcm_v2::decrypt(&old_key, &b)?,
+                    )?),
                     None => None,
                 };
                 upd.execute(params![new_pw, new_notes, new_totp, id])?;
@@ -1418,6 +1497,8 @@ impl Vault {
         }
         tx.commit()?;
         self.key = Some(new_key);
+        self.cached_key = None;
+        self.quick_pin_hash = None;
         self.notify_change();
         Ok(())
     }
@@ -1429,4 +1510,41 @@ fn normalize_folder_name(name: &str) -> Result<String> {
         return Err(Error::InvalidInput("folder name is required".into()));
     }
     Ok(name.to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn persistent_quick_unlock_survives_reopen() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let path = tmp.path().to_path_buf();
+
+        let mut vault = Vault::open(&path).unwrap();
+        vault
+            .set_master_password("correct horse battery staple")
+            .unwrap();
+        vault
+            .add(NewEntry {
+                title: "Example".into(),
+                password: "secret".into(),
+                ..NewEntry::default()
+            })
+            .unwrap();
+        let prefs = vault.enable_persistent_quick_unlock("1234").unwrap();
+        drop(vault);
+
+        let mut reopened = Vault::open(&path).unwrap();
+        assert!(!reopened.is_unlocked());
+        assert!(matches!(
+            reopened.quick_unlock_persistent("0000", &prefs),
+            Err(Error::InvalidMasterPassword)
+        ));
+        reopened.quick_unlock_persistent("1234", &prefs).unwrap();
+
+        let entries = reopened.list(None).unwrap();
+        assert_eq!(entries.len(), 1);
+        assert_eq!(entries[0].title, "Example");
+    }
 }

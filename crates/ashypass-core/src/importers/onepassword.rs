@@ -148,7 +148,9 @@ pub fn parse_file(path: impl AsRef<Path>) -> Result<Vec<NewEntry>> {
         }
     }
     if !found {
-        return Err(Error::Other("1pux: export.data not found in archive".into()));
+        return Err(Error::Other(
+            "1pux: export.data not found in archive".into(),
+        ));
     }
     parse_str(&data)
 }
@@ -169,7 +171,9 @@ pub fn parse_str(text: &str) -> Result<Vec<NewEntry>> {
                 if item.category_uuid != "001" {
                     continue;
                 }
-                let Some(details) = item.details else { continue };
+                let Some(details) = item.details else {
+                    continue;
+                };
                 let (mut username, mut password) = (None::<String>, None::<String>);
                 for f in details.login_fields {
                     let designation = f.designation.unwrap_or_default();
@@ -182,7 +186,9 @@ pub fn parse_str(text: &str) -> Result<Vec<NewEntry>> {
                         _ => {}
                     }
                 }
-                let Some(password) = password.filter(|s| !s.is_empty()) else { continue };
+                let Some(password) = password.filter(|s| !s.is_empty()) else {
+                    continue;
+                };
 
                 let totp_secret = details
                     .sections

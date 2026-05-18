@@ -27,13 +27,19 @@ pub fn host_of(raw: &str) -> Option<String> {
     } else {
         format!("https://{raw}")
     };
-    Url::parse(&with_scheme).ok().and_then(|u| u.host_str().map(|s| s.to_string()))
+    Url::parse(&with_scheme)
+        .ok()
+        .and_then(|u| u.host_str().map(|s| s.to_string()))
 }
 
 /// Look up `host` in the on-disk cache. Returns `None` if not cached yet.
 pub fn lookup(host: &str) -> Option<PathBuf> {
     let p = cache_path(host);
-    if p.exists() { Some(p) } else { None }
+    if p.exists() {
+        Some(p)
+    } else {
+        None
+    }
 }
 
 /// Fetch `host`'s favicon and store it under `favicons_dir()`. Blocking.

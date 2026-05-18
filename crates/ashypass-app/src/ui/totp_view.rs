@@ -108,17 +108,18 @@ impl TotpView {
                     id.remove();
                 }
                 let inner_weak = Rc::downgrade(&inner_cl);
-                let id = glib::timeout_add_local(std::time::Duration::from_millis(150), move || {
-                    let Some(inner) = inner_weak.upgrade() else {
-                        return glib::ControlFlow::Break;
-                    };
-                    *inner.search_reload_id.borrow_mut() = None;
-                    let text = inner.search_entry.text().trim().to_string();
-                    let search = if text.is_empty() { None } else { Some(text) };
-                    inner.load_entries(search.as_deref());
-                    SessionManager::on_activity(&inner.state.session);
-                    glib::ControlFlow::Break
-                });
+                let id =
+                    glib::timeout_add_local(std::time::Duration::from_millis(150), move || {
+                        let Some(inner) = inner_weak.upgrade() else {
+                            return glib::ControlFlow::Break;
+                        };
+                        *inner.search_reload_id.borrow_mut() = None;
+                        let text = inner.search_entry.text().trim().to_string();
+                        let search = if text.is_empty() { None } else { Some(text) };
+                        inner.load_entries(search.as_deref());
+                        SessionManager::on_activity(&inner.state.session);
+                        glib::ControlFlow::Break
+                    });
                 *inner_cl.search_reload_id.borrow_mut() = Some(id);
             });
         }
@@ -145,6 +146,7 @@ impl TotpView {
             self.inner.main_stack.set_visible_child_name("locked");
             self.inner.master_entry.set_text("");
             self.inner.auth_error.set_visible(false);
+            self.focus_auth_field();
             return;
         }
         self.inner.load_entries(None);
@@ -155,10 +157,15 @@ impl TotpView {
         self.inner.stop_timer();
         self.inner.rows.borrow_mut().clear();
         self.inner.main_stack.set_visible_child_name("locked");
+        self.focus_auth_field();
     }
 
     pub fn set_on_auth_changed(&self, cb: Box<dyn Fn()>) {
         *self.inner.on_auth_changed.borrow_mut() = Some(cb);
+    }
+
+    pub fn focus_auth_field(&self) {
+        self.inner.focus_auth_field();
     }
 }
 
@@ -181,7 +188,10 @@ fn build_auth_page() -> (adw::Clamp, adw::PasswordEntryRow, gtk::Label, gtk::But
     content.append(&icon);
 
     let title = gtk::Label::new(None);
-    title.set_markup(&format!("<span size='xx-large' weight='bold'>{}</span>", tr!("Ashy Pass")));
+    title.set_markup(&format!(
+        "<span size='xx-large' weight='bold'>{}</span>",
+        tr!("Ashy Pass")
+    ));
     content.append(&title);
 
     let subtitle = gtk::Label::new(Some(tr!("Enter your master password to unlock")));
@@ -189,7 +199,9 @@ fn build_auth_page() -> (adw::Clamp, adw::PasswordEntryRow, gtk::Label, gtk::But
     content.append(&subtitle);
 
     let group = adw::PreferencesGroup::new();
-    let master_entry = adw::PasswordEntryRow::builder().title(tr!("Master Password")).build();
+    let master_entry = adw::PasswordEntryRow::builder()
+        .title(tr!("Master Password"))
+        .build();
     group.add(&master_entry);
     content.append(&group);
 
@@ -264,6 +276,13 @@ fn build_totp_page() -> (
 }
 
 impl Inner {
+    fn focus_auth_field(&self) {
+        let target = self.master_entry.clone().upcast::<gtk::Widget>();
+        glib::idle_add_local_once(move || {
+            target.grab_focus();
+        });
+    }
+
     fn notify_auth_changed(&self) {
         if let Some(cb) = self.on_auth_changed.borrow().as_ref() {
             cb();
@@ -286,8 +305,16 @@ impl Inner {
             self.show_auth_error(tr!("Please enter a password"));
             return;
         }
-        if !self.state.vault.borrow().has_master_password().unwrap_or(false) {
-            self.show_auth_error(tr!("Please create your master password in the Vault tab first."));
+        if !self
+            .state
+            .vault
+            .borrow()
+            .has_master_password()
+            .unwrap_or(false)
+        {
+            self.show_auth_error(tr!(
+                "Please create your master password in the Vault tab first."
+            ));
             return;
         }
         let r = self.state.vault.borrow_mut().unlock(&pwd);
@@ -366,14 +393,20 @@ impl Inner {
         }
 
         self.content_stack.set_visible_child_name("list");
+        let large_codes = ashypass_core::settings::Settings::load().large_totp_codes;
         for (entry, secret) in entries {
-            let row = self.build_row(&entry, secret);
+            let row = self.build_row(&entry, secret, large_codes);
             self.list_box.append(&row);
         }
         self.start_timer();
     }
 
-    fn build_row(self: &Rc<Self>, entry: &PasswordEntry, secret: String) -> gtk::ListBoxRow {
+    fn build_row(
+        self: &Rc<Self>,
+        entry: &PasswordEntry,
+        secret: String,
+        large_codes: bool,
+    ) -> gtk::ListBoxRow {
         let row = gtk::ListBoxRow::new();
         row.set_activatable(false);
 
@@ -400,8 +433,12 @@ impl Inner {
 
         let code_label = gtk::Label::new(Some("------"));
         code_label.add_css_class("monospace");
-        code_label.add_css_class("title-1");
-        code_label.add_css_class("totp-code");
+        if large_codes {
+            code_label.add_css_class("title-1");
+            code_label.add_css_class("totp-code");
+        } else {
+            code_label.add_css_class("title-2");
+        }
         code_label.set_xalign(0.0);
         center.append(&code_label);
 
@@ -563,7 +600,11 @@ impl Inner {
         };
         let trash_enabled = ashypass_core::settings::Settings::load().trash_retention_days > 0;
         let body = if trash_enabled {
-            format!("{} '{}'?", tr!("Are you sure you want to delete"), entry.title)
+            format!(
+                "{} '{}'?",
+                tr!("Are you sure you want to delete"),
+                entry.title
+            )
         } else {
             format!(
                 "{} '{}'? {}",
@@ -622,7 +663,10 @@ impl Inner {
 
         let form = adw::PreferencesGroup::new();
 
-        let title_entry = adw::EntryRow::builder().title(tr!("Title")).text(&entry.title).build();
+        let title_entry = adw::EntryRow::builder()
+            .title(tr!("Title"))
+            .text(&entry.title)
+            .build();
         form.add(&title_entry);
         let username_entry = adw::EntryRow::builder()
             .title(tr!("Username"))
@@ -634,7 +678,9 @@ impl Inner {
             .text(entry.url.as_deref().unwrap_or(""))
             .build();
         form.add(&url_entry);
-        let totp_group = adw::PreferencesGroup::builder().title(tr!("TOTP Settings")).build();
+        let totp_group = adw::PreferencesGroup::builder()
+            .title(tr!("TOTP Settings"))
+            .build();
 
         let totp_entry = adw::PasswordEntryRow::builder()
             .title(tr!("TOTP Secret (Base32)"))
@@ -663,7 +709,8 @@ impl Inner {
             .build();
         totp_group.add(&digits_row);
 
-        let period_adj = gtk::Adjustment::new(entry.totp_period as f64, 15.0, 60.0, 15.0, 15.0, 0.0);
+        let period_adj =
+            gtk::Adjustment::new(entry.totp_period as f64, 15.0, 60.0, 15.0, 15.0, 0.0);
         let period_row = adw::SpinRow::builder()
             .title(tr!("Period (seconds)"))
             .adjustment(&period_adj)
@@ -737,5 +784,9 @@ fn clear_list_box(lb: &gtk::ListBox) {
 
 fn trim_to_opt(s: &glib::GString) -> Option<String> {
     let t = s.trim();
-    if t.is_empty() { None } else { Some(t.to_string()) }
+    if t.is_empty() {
+        None
+    } else {
+        Some(t.to_string())
+    }
 }

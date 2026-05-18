@@ -4,8 +4,8 @@
 //! reconciles state against external password managers that expose a CRUD
 //! API. Today the only backend is the Nextcloud Passwords app.
 
-pub mod nextcloud_passwords;
 pub mod nextcloud_engine;
+pub mod nextcloud_passwords;
 
 pub use nextcloud_engine::{
     ConflictResolution, NextcloudSyncPhase, NextcloudSyncProgress, SyncReport, SyncStats,

@@ -23,8 +23,7 @@ use std::path::Path;
 pub fn parse_file(path: impl AsRef<Path>, password: &str) -> Result<Vec<NewEntry>> {
     let mut file = File::open(&path)?;
     let key = DatabaseKey::new().with_password(password);
-    let db = Database::open(&mut file, key)
-        .map_err(|e| Error::Other(format!("kdbx open: {e}")))?;
+    let db = Database::open(&mut file, key).map_err(|e| Error::Other(format!("kdbx open: {e}")))?;
     Ok(collect_entries(&db))
 }
 

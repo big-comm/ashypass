@@ -18,10 +18,7 @@ use std::collections::HashMap;
 /// All Ashy Pass keyring items carry these attribute pairs so we can find
 /// them again and so they don't collide with other apps' secrets.
 fn attributes(kind: &'static str) -> HashMap<&'static str, &'static str> {
-    HashMap::from([
-        ("application", "ashypass"),
-        ("kind", kind),
-    ])
+    HashMap::from([("application", "ashypass"), ("kind", kind)])
 }
 
 const MASTER_PASSWORD_KIND: &str = "master-password";

@@ -18,7 +18,9 @@ impl Algorithm {
             "SHA1" => Ok(Self::Sha1),
             "SHA256" => Ok(Self::Sha256),
             "SHA512" => Ok(Self::Sha512),
-            other => Err(Error::InvalidInput(format!("unsupported algorithm: {other}"))),
+            other => Err(Error::InvalidInput(format!(
+                "unsupported algorithm: {other}"
+            ))),
         }
     }
     pub fn as_str(&self) -> &'static str {
@@ -37,7 +39,10 @@ pub fn generate_totp(
     period: u32,
     timestamp: u64,
 ) -> Result<String> {
-    let cleaned: String = base32_secret.chars().filter(|c| !c.is_whitespace()).collect();
+    let cleaned: String = base32_secret
+        .chars()
+        .filter(|c| !c.is_whitespace())
+        .collect();
     let upper = cleaned.to_ascii_uppercase();
     let key = base32::decode(base32::Alphabet::Rfc4648 { padding: false }, &upper)
         .ok_or_else(|| Error::InvalidInput("invalid base32 secret".into()))?;
@@ -167,7 +172,9 @@ mod percent_encoding {
             }
             // Use into_owned-style return
             std::str::from_utf8(&out)?;
-            Ok(std::borrow::Cow::Owned(unsafe { String::from_utf8_unchecked(out) }))
+            Ok(std::borrow::Cow::Owned(unsafe {
+                String::from_utf8_unchecked(out)
+            }))
         }
     }
 }

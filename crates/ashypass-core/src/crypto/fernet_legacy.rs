@@ -42,7 +42,11 @@ pub fn derive_fernet_keys(password: &str, salt_text: &str) -> Result<([u8; 16], 
 }
 
 /// Decrypt a single Fernet token (urlsafe-b64 string OR raw bytes of that string).
-pub fn decrypt_token(signing_key: &[u8; 16], encryption_key: &[u8; 16], token: &[u8]) -> Result<Vec<u8>> {
+pub fn decrypt_token(
+    signing_key: &[u8; 16],
+    encryption_key: &[u8; 16],
+    token: &[u8],
+) -> Result<Vec<u8>> {
     // Token may be stored as bytes-of-ascii (Python's `bytes` from .encrypt()).
     // Trim trailing whitespace just in case.
     let token_str = std::str::from_utf8(token)
@@ -60,10 +64,7 @@ pub fn decrypt_token(signing_key: &[u8; 16], encryption_key: &[u8; 16], token: &
         }
     }
     if data[0] != FERNET_VERSION {
-        return Err(Error::Crypto(format!(
-            "fernet: bad version {:#x}",
-            data[0]
-        )));
+        return Err(Error::Crypto(format!("fernet: bad version {:#x}", data[0])));
     }
 
     let hmac_pos = data.len() - 32;
