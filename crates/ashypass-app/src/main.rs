@@ -149,6 +149,18 @@ fn init_css() {
             color: rgba(98, 160, 234, 0.70);
         }
 
+        .favorite-active {
+            color: #62a0ea;
+        }
+
+        .favorite-active:backdrop {
+            color: rgba(98, 160, 234, 0.70);
+        }
+
+        .favorite-inactive {
+            color: rgba(255, 255, 255, 0.58);
+        }
+
         .totp-code {
             font-size: 1.28em;
             font-weight: 700;

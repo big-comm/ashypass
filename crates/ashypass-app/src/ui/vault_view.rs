@@ -1056,11 +1056,11 @@ impl Inner {
 
         // Favorite toggle
         let fav_btn = gtk::Button::builder()
-            .icon_name(if entry.favorite { "starred-symbolic" } else { "non-starred-symbolic" })
             .valign(gtk::Align::Center)
             .tooltip_text(tr!("Favorite"))
             .build();
         fav_btn.add_css_class("flat");
+        set_favorite_button_state(&fav_btn, entry.favorite);
         {
             let inner_cl = self.clone();
             let id = entry.id;
@@ -1186,11 +1186,7 @@ impl Inner {
 
     fn toggle_favorite(self: &Rc<Self>, id: i64, btn: &gtk::Button) {
         if let Ok(new_state) = self.state.vault.borrow().toggle_favorite(id) {
-            btn.set_icon_name(if new_state {
-                "starred-symbolic"
-            } else {
-                "non-starred-symbolic"
-            });
+            set_favorite_button_state(btn, new_state);
         }
         SessionManager::on_activity(&self.state.session);
     }
@@ -1615,13 +1611,15 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
         attach_group.set_header_suffix(Some(&add_btn));
 
         let render: RenderSlot = Rc::new(RefCell::new(None));
+        let attachment_rows: Rc<RefCell<Vec<gtk::Widget>>> = Rc::new(RefCell::new(Vec::new()));
         let attach_group_cl = attach_group.clone();
         let inner_for_render = inner.clone();
         let render_fn: Rc<dyn Fn()> = Rc::new({
             let render_slot = render.clone();
+            let attachment_rows = attachment_rows.clone();
             move || {
                 // Clear existing rows; we re-add them from a fresh listing.
-                while let Some(child) = attach_group_cl.first_child() {
+                for child in attachment_rows.borrow_mut().drain(..) {
                     attach_group_cl.remove(&child);
                 }
                 let entries = inner_for_render
@@ -1637,6 +1635,9 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
                         .sensitive(false)
                         .build();
                     attach_group_cl.add(&row);
+                    attachment_rows
+                        .borrow_mut()
+                        .push(row.upcast::<gtk::Widget>());
                     return;
                 }
                 for att in entries {
@@ -1723,6 +1724,9 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
                     row.add_suffix(&del_btn);
 
                     attach_group_cl.add(&row);
+                    attachment_rows
+                        .borrow_mut()
+                        .push(row.upcast::<gtk::Widget>());
                 }
             }
         });
@@ -1889,6 +1893,24 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
 // ============================================================================
 // Helpers
 // ============================================================================
+
+fn set_favorite_button_state(btn: &gtk::Button, favorite: bool) {
+    btn.set_icon_name(if favorite {
+        "starred-symbolic"
+    } else {
+        "non-starred-symbolic"
+    });
+    btn.remove_css_class(if favorite {
+        "favorite-inactive"
+    } else {
+        "favorite-active"
+    });
+    btn.add_css_class(if favorite {
+        "favorite-active"
+    } else {
+        "favorite-inactive"
+    });
+}
 
 fn clear_list_box(lb: &gtk::ListBox) {
     while let Some(row) = lb.first_child() {
