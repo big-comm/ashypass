@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-18 15:56-0300\n"
+"POT-Creation-Date: 2026-05-18 22:30-0300\n"
 "PO-Revision-Date: 2026-05-12 19:35\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -12,58 +12,96 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:344
 msgid "0 disables auto-clear"
 msgstr "0 disabilita la cancellazione automatica"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:165
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:564
 msgid "2FA"
 msgstr "2FA"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1011
 msgid "2FA Codes"
-msgstr ""
+msgstr "Codici 2FA"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:798
+msgid "2FA code added"
+msgstr "Codice 2FA aggiunto"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:859
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "Una frase BIP-39 di 12 parole per sbloccare senza chiave di sicurezza. "
 "Mostrata una sola volta."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:104
 msgid "About"
 msgstr "Informazioni"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:659
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:604
+msgid "Add 2FA Code"
+msgstr "Aggiungi codice 2FA"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:459
 msgid "Add Number at End"
 msgstr "Aggiungi numero alla fine"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1548
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:74
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:606
 msgid "Add Password"
 msgstr "Aggiungi password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:265
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:393
 msgid "Add a TOTP secret to an entry to see live codes here."
 msgstr "Aggiungi un segreto TOTP a una voce per vedere i codici live qui."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1869
 msgid "Add attachment"
 msgstr "Aggiungi allegato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1736
 msgid "Add file"
 msgstr "Aggiungi file"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:415
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:872
 msgid "Add your first password using the + button"
 msgstr "Aggiungi la tua prima password usando il pulsante +"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:361
 msgid ""
 "After auto-lock or restart, unlock with a short PIN instead of the master "
 "password on this device. The vault key is stored encrypted by the PIN."
 msgstr ""
+"Dopo il blocco automatico o il riavvio, sblocca con un PIN breve invece "
+"della password principale su questo dispositivo. La chiave del vault è "
+"memorizzata crittografata dal PIN."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:686
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:861
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1675
 msgid "Algorithm"
 msgstr "Algoritmo"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:393
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1272
 msgid "All"
 msgstr "Tutti"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3051
 msgid "All clear"
 msgstr "Tutto a posto"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:274
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2006
 msgid "All fields are required."
 msgstr "Tutti i campi sono obbligatori."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2391
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
 "Uploading now would orphan the remote changes."
@@ -72,219 +110,338 @@ msgstr ""
 "sincronizzazione di questo dispositivo. Caricare ora renderebbe orfane le "
 "modifiche remote."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2557
 msgid "App password"
 msgstr "Password per l'app"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:103
 msgid "Appearance"
 msgstr "Aspetto"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:781
 msgid "Application"
 msgstr "Applicazione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1334
 msgid "Applying local deletions"
-msgstr ""
+msgstr "Applicazione eliminazioni locali"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:613
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:619
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1429
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1435
 msgid "Are you sure you want to delete"
 msgstr "Sei sicuro di voler eliminare"
 
-msgid "Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1107
+msgid ""
+"Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
 msgstr ""
 "Argon2id + AES-256-GCM, protetto da password. Reimportabile da Ashy Pass."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:606
 msgid ""
-"Argon2id turns your master password into the vault encryption key; it is not "
-"a physical security key. Higher costs slow brute force but also slow unlock. "
-"Auto-tune picks values calibrated to ~500 ms on this machine. Existing "
-"master hashes keep their original costs; tuned values apply on the next "
-"master password change."
+"Argon2id turns your master password into the vault encryption key; it is not"
+" a physical security key. Higher costs slow brute force but also slow "
+"unlock. Auto-tune picks values calibrated to ~500 ms on this machine. "
+"Existing master hashes keep their original costs; tuned values apply on the "
+"next master password change."
 msgstr ""
+"Argon2id trasforma la tua password principale nella chiave di crittografia "
+"del vault; non è una chiave di sicurezza fisica. Costi più elevati "
+"rallentano la forza bruta ma rallentano anche lo sblocco. L'ottimizzazione "
+"automatica sceglie valori calibrati a ~500 ms su questa macchina. Gli hash "
+"della password principale esistenti mantengono i loro costi originali; i "
+"valori ottimizzati si applicano al prossimo cambio della password "
+"principale."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:201
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:258
 msgid "Ashy Pass"
 msgstr "Ashy Pass"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1897
 msgid "Attachment added"
 msgstr "Allegato aggiunto"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1845
 msgid "Attachment deleted"
 msgstr "Allegato eliminato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1821
 msgid "Attachment not found"
 msgstr "Allegato non trovato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1812
 msgid "Attachment saved"
 msgstr "Allegato salvato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1728
 msgid "Attachments"
 msgstr "Allegati"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2865
 msgid "Audit Options"
 msgstr "Opzioni di controllo"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2946
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2992
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2993
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3005
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3006
 msgid "Audit failed"
 msgstr "Controllo fallito"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:327
 msgid "Auto-lock after (seconds)"
 msgstr "Blocco automatico dopo (secondi)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:633
 msgid "Auto-tune"
 msgstr "Sintonizzazione automatica"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:405
 msgid "Avoid characters like 0, O, 1, l, I"
 msgstr "Evita caratteri come 0, O, 1, l, I"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1898
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2103
 msgid "Back up now"
 msgstr "Esegui backup ora"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:857
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:921
 msgid "Backup Phrase"
 msgstr "Frase di backup"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1914
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2119
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2124
 msgid "Backup failed"
 msgstr "Backup fallito"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:864
 msgid "Backup phrase"
 msgstr "Frase di backup"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1913
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2123
 msgid "Backup uploaded"
 msgstr "Backup caricato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:634
 msgid "Benchmark this machine (~5 s)"
 msgstr "Benchmark di questa macchina (~5 s)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1062
 msgid "Bitwarden, Chrome, 1Password compatible columns"
 msgstr "Colonne compatibili con Bitwarden, Chrome, 1Password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1053
 msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
 msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1380
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1707
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1976
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2202
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2396
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2549
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2630
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:630
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:663
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:826
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1080
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1447
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1553
 msgid "Cancel"
 msgstr "Annulla"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:453
 msgid "Capitalize Words"
 msgstr "Parole in maiuscolo"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1645
 msgid "Category"
 msgstr "Categoria"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:230
 msgid "Change Master Password"
 msgstr "Cambia password principale"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2871
 msgid "Check Have I Been Pwned (online)"
 msgstr "Verifica Have I Been Pwned (online)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1475
 msgid "Choose a 1Password .1pux archive"
 msgstr "Scegli un archivio .1pux di 1Password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1474
 msgid "Choose a Bitwarden JSON export"
 msgstr "Scegli un'esportazione JSON di Bitwarden"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1471
 msgid "Choose a CSV file"
 msgstr "Scegli un file CSV"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1472
 msgid "Choose an Aegis JSON export"
 msgstr "Scegli un'esportazione JSON di Aegis"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1473
 msgid "Choose an andOTP JSON export"
 msgstr "Scegli un esportazione JSON di andOTP"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:343
 msgid "Clear clipboard after (seconds)"
 msgstr "Cancella appunti dopo (secondi)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1394
 msgid "Clear history"
 msgstr "Cancella cronologia"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1763
 msgid "Click the + button to add a file."
 msgstr "Fai clic sul pulsante + per aggiungere un file."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1981
 msgid "Client ID"
-msgstr ""
+msgstr "ID cliente"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1983
 msgid "Client Secret (optional)"
-msgstr ""
+msgstr "Segreto cliente (opzionale)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:102
 msgid "Cloud"
 msgstr "Cloud"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:994
 msgid "Compact vault list"
-msgstr ""
+msgstr "Elenco vault compatto"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1816
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1973
 msgid "Configure Google OAuth"
-msgstr ""
+msgstr "Configura OAuth di Google"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2449
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2470
 msgid "Configure Nextcloud Passwords"
 msgstr "Configura Nextcloud Passwords"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2059
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2078
 msgid "Configure WebDAV"
 msgstr "Configura WebDAV"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2028
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2255
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2602
 msgid "Configure failed"
 msgstr "Configurazione fallita"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1818
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2022
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2026
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2046
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2091
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2436
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2489
 msgid "Configured"
 msgstr "Configurato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1395
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:295
 msgid "Confirm Password"
 msgstr "Conferma password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:227
 msgid "Confirm new password"
 msgstr "Conferma nuova password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1716
 msgid "Confirm password"
 msgstr "Conferma password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2799
 msgid "Conflicts resolved"
-msgstr ""
+msgstr "Conflitti risolti"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1373
 msgid "Copy"
 msgstr "Copia"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:484
 msgid "Copy Code"
 msgstr "Copia codice"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1196
 msgid "Copy Password"
 msgstr "Copia Password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:122
 msgid "Copy to Clipboard"
 msgstr "Copia negli appunti"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1375
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:650
 msgid "Create Master Password"
 msgstr "Crea password principale"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2789
 msgid "Created locally"
-msgstr ""
+msgstr "Creato localmente"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2791
 msgid "Created on Nextcloud"
-msgstr ""
+msgstr "Creato su Nextcloud"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:492
 msgid "Current master password"
 msgstr "Password principale corrente"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:615
 msgid "Current parameters"
 msgstr "Parametri attuali"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:221
 msgid "Current password"
 msgstr "Password corrente"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:101
 msgid "Data"
 msgstr "Dati"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1824
 msgid "Decrypt failed"
 msgstr "Decifratura fallita"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:508
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:631
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1238
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1448
 msgid "Delete"
 msgstr "Elimina"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:625
 msgid "Delete 2FA Entry?"
 msgstr "Eliminare l'elemento 2FA?"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1442
 msgid "Delete Password?"
 msgstr "Eliminare la password?"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1834
 msgid "Delete attachment"
 msgstr "Elimina allegato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3186
 msgid "Delete permanently"
 msgstr "Elimina definitivamente"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3109
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -293,499 +450,750 @@ msgstr ""
 "vengono rimosse definitivamente al prossimo avvio dell'app. Imposta 0 per "
 "saltare il cestino."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2797
 msgid "Deleted on Nextcloud"
-msgstr ""
+msgstr "Eliminato su Nextcloud"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:694
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:873
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1697
 msgid "Digits"
 msgstr "Cifre"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:392
 msgid "Digits (0-9)"
 msgstr "Cifre (0-9)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:406
 msgid "Disable"
 msgstr "Disabilita"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:390
 msgid "Disabled"
 msgstr "Disabilitato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:942
 msgid "Done"
 msgstr "Fatto"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1338
 msgid "Downloading remote changes"
-msgstr ""
+msgstr "Download delle modifiche remote"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1923
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2154
 msgid ""
-"Downloads the most recent backup as ~/.local/share/ashypass/"
-"passwords.restored.db"
+"Downloads the most recent backup as "
+"~/.local/share/ashypass/passwords.restored.db"
 msgstr ""
-"Scarica il backup più recente come ~/.local/share/ashypass/"
-"passwords.restored.db"
+"Scarica il backup più recente come "
+"~/.local/share/ashypass/passwords.restored.db"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:496
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1210
 msgid "Edit"
 msgstr "Modifica"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:822
 msgid "Edit 2FA Entry"
 msgstr "Modifica elemento 2FA"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1546
 msgid "Edit Password"
 msgstr "Modifica password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3275
 msgid "Empty trash"
 msgstr "Svuota cestino"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:407
 msgid "Enable / Update"
 msgstr "Abilita / Aggiorna"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:388
 msgid "Enabled for this session"
 msgstr "Abilitato per questa sessione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:386
 msgid "Enabled on this device"
-msgstr ""
+msgstr "Abilitato su questo dispositivo"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1617
 msgid "Encrypt KeePass export"
 msgstr "Crittografa esportazione KeePass"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1538
 msgid "Encrypt export"
 msgstr "Esportazione crittografata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1565
 msgid "Encrypted export complete"
 msgstr "Esportazione crittografata completata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2135
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Caricamento di snapshot crittografato con rilevamento conflitti"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2039
 msgid ""
 "Encrypted vault uploaded as-is over HTTPS. Works with any RFC 4918 server."
 msgstr ""
 "Vault crittografato caricato così com'è tramite HTTPS. Funziona con "
 "qualsiasi server RFC 4918."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1796
 msgid "Encrypted vault uploaded as-is. Folder: \"AshyPass Backups\"."
-msgstr ""
-"Vault crittografato caricato così com'è. Cartella: \"AshyPass Backups\"."
+msgstr "Vault crittografato caricato così com'è. Cartella: \"AshyPass Backups\"."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1730
 msgid "Encrypted with your master key. Stored inside the vault."
 msgstr ""
 "Crittografato con la tua chiave master. Archiviato all'interno del vault."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1680
 msgid "Enter the master password for this .kdbx file."
 msgstr "Inserisci la password principale per questo file .kdbx."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1595
 msgid "Enter the password used when this file was exported."
 msgstr "Inserisci la password usata quando questo file è stato esportato."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:205
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:262
 msgid "Enter your master password to unlock"
 msgstr "Inserisci la password principale per sbloccare"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:644
 msgid "Entry deleted"
 msgstr "Elemento eliminato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3202
 msgid "Entry restored"
 msgstr "Voce ripristinata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:930
 msgid "Entry updated"
 msgstr "Voce aggiornata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:299
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:311
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:793
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:886
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:893
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:901
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:804
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:936
 msgid "Error"
 msgstr "Errore"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1111
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:2022
 msgid "Error saving password"
 msgstr "Errore durante il salvataggio della password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:404
 msgid "Exclude Ambiguous Characters"
 msgstr "Escludi caratteri ambigui"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1097
 msgid "Export"
 msgstr "Esporta"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1771
 msgid "Export complete"
 msgstr "Esportazione completata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1105
 msgid "Export encrypted (.ashy)"
 msgstr "Esportazione crittografata (.ashy)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1567
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1645
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1772
 msgid "Export failed"
 msgstr "Esportazione fallita"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1185
 msgid "Export to CSV (plaintext)"
 msgstr "Esporta in CSV (testo semplice)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1145
 msgid "Export to KeePass (.kdbx)"
 msgstr "Esporta in KeePass (.kdbx)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1758
 msgid "Export vault to CSV"
 msgstr "Esporta vault in CSV"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1337
 msgid "Failed to read history"
 msgstr "Impossibile leggere la cronologia"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:807
 msgid "Failed to setup master password"
 msgstr "Impossibile configurare la password principale"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1457
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:341
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:777
 msgid "Failed to unlock vault"
 msgstr "Impossibile sbloccare il vault"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1181
 msgid "Favorite"
 msgstr "Preferito"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:194
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:535
 msgid "Favorites"
 msgstr "Preferiti"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:963
 msgid "Fetch and display site icons next to vault entries"
-msgstr "Recupera e mostra le icone dei siti accanto alle voci della cassaforte"
-
-msgid "Fetching remote passwords"
 msgstr ""
+"Recupera e mostra le icone dei siti accanto alle voci della cassaforte"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1335
+msgid "Fetching remote passwords"
+msgstr "Recupero password remote"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2908
 msgid "Findings"
 msgstr "Risultati"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1339
 msgid "Finishing synchronization"
-msgstr ""
+msgstr "Completamento sincronizzazione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:773
 msgid "Focus Search"
 msgstr "Cerca"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2213
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1019
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1076
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1084
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1105
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1151
 msgid "Folder"
 msgstr "Cartella"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2199
 msgid ""
-"For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
-"dav/files/USERNAME"
+"For Nextcloud, the base URL looks like "
+"https://cloud.example.com/remote.php/dav/files/USERNAME"
 msgstr ""
-"Per Nextcloud, l'URL di base è simile a https://cloud.example.com/remote.php/"
-"dav/files/NOMEUTENTE"
+"Per Nextcloud, l'URL di base è simile a "
+"https://cloud.example.com/remote.php/dav/files/NOMEUTENTE"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:873
 msgid "Generate Backup Phrase"
 msgstr "Genera frase di backup"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:126
 msgid "Generate New"
 msgstr "Genera nuova"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1581
 msgid "Generate Password"
 msgstr "Genera password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:78
 msgid "Generated Password"
 msgstr "Password generata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:133
 msgid "Generation Type"
 msgstr "Tipo di generazione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:63
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:151
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:565
 msgid "Generator"
 msgstr "Generatore"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1794
 msgid "Google Drive"
 msgstr "Google Drive"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:181
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:527
 msgid "Groups"
 msgstr "Gruppi"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1405
 msgid "History cleared"
 msgstr "Cronologia cancellata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1051
 msgid "Import"
 msgstr "Importa"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1594
 msgid "Import .ashy"
 msgstr "Importa .ashy"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1075
 msgid "Import 1Password (.1pux)"
 msgstr "Importa 1Password (.1pux)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1082
 msgid "Import Aegis (TOTP)"
 msgstr "Importa Aegis (TOTP)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1068
 msgid "Import Bitwarden (JSON)"
 msgstr "Importa Bitwarden (JSON)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1061
 msgid "Import CSV"
 msgstr "Importa CSV"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1166
 msgid "Import KeePass (.kdbx)"
 msgstr "Importa KeePass (.kdbx)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1089
 msgid "Import andOTP"
 msgstr "Importa andOTP"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1528
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1603
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1687
 msgid "Import complete"
 msgstr "Importazione completata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1529
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1606
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1688
 msgid "Import failed"
 msgstr "Importazione fallita"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1126
 msgid "Import from .ashy"
 msgstr "Importa da .ashy"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:731
 msgid "Incorrect PIN"
 msgstr "PIN errato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1454
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:338
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:774
 msgid "Incorrect master password"
 msgstr "Password principale errata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:756
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:779
+msgid "Invalid TOTP secret"
+msgstr "Segreto TOTP non valido"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:772
+msgid "Invalid TOTP settings"
+msgstr "Impostazioni TOTP non valide"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1167
 msgid "KDBX3/KDBX4 password-protected database"
 msgstr "Database protetto da password KDBX3/KDBX4"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1147
 msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
 msgstr "KDBX4 con Argon2id + AES-256. Si apre in KeePassXC, KeeWeb, ecc."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1643
 msgid "KeePass export complete"
 msgstr "Esportazione KeePass completata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3114
 msgid "Keep deleted entries for (days)"
 msgstr "Conserva le voci eliminate per (giorni)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:771
 msgid "Key"
 msgstr "Chiave"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:604
 msgid "Key Derivation (Argon2id)"
 msgstr "Derivazione della chiave (Argon2id)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:839
 msgid "Key registered"
 msgstr "Chiave registrata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:797
 msgid "Key removed"
 msgstr "Chiave rimossa"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:101
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:755
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:784
 msgid "Keyboard Shortcuts"
 msgstr "Scorciatoie da tastiera"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:568
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:592
 msgid "Keyring error"
 msgstr "Errore del portachiavi"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1014
 msgid "Large 2FA codes"
-msgstr ""
+msgstr "Codici 2FA grandi"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:374
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:487
 msgid "Length"
 msgstr "Lunghezza"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:207
 msgid "Lock"
 msgstr "Blocca"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:80
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:778
 msgid "Lock Vault"
 msgstr "Blocca Vault"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:328
 msgid "Lock vault when idle for this long"
 msgstr "Blocca il vault quando rimane inattivo per questo periodo"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:386
 msgid "Lowercase Letters (a-z)"
 msgstr "Lettere minuscole (a-z)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:979
 msgid "Mark entries that are linked to Nextcloud Passwords"
-msgstr ""
+msgstr "Contrassegna le voci collegate a Nextcloud Passwords"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:862
 msgid "Mark passwords as favorite with the star icon"
 msgstr "Contrassegna le password come preferite con l'icona a stella"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:214
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1392
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:211
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:269
 msgid "Master Password"
 msgstr "Password principale"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2317
 msgid "Master password"
 msgstr "Password principale"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:303
 msgid "Master password changed."
 msgstr "Password principale modificata."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:501
 msgid "Master password is in the keyring"
 msgstr "La password principale è nel portachiavi"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:768
 msgid "Navigation"
 msgstr "Navigazione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:778
 msgid "New Entry"
 msgstr "Nuova voce"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:368
 msgid "New PIN (4+ chars)"
 msgstr "Nuovo PIN (4+ caratteri)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:224
 msgid "New password"
 msgstr "Nuova password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2427
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2544
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1170
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2592
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2623
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords connesso"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2813
 msgid ""
 "Nextcloud requires a filled password, so these local entries were not sent."
 msgstr ""
+"Nextcloud richiede una password compilata, quindi queste voci locali non "
+"sono state inviate."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2788
 msgid "Nextcloud sync finished."
-msgstr ""
+msgstr "Sincronizzazione Nextcloud completata."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:264
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:392
 msgid "No 2FA Codes"
 msgstr "Nessun codice 2FA"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:387
 msgid "No 2FA codes match your search"
 msgstr "Nessun codice 2FA corrisponde alla tua ricerca"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:861
 msgid "No Favorites"
 msgstr "Nessun Preferito"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:414
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:871
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:970
 msgid "No Passwords Stored"
 msgstr "Nessuna password salvata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:386
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:866
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:919
 msgid "No Results"
 msgstr "Nessun risultato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1762
 msgid "No attachments"
 msgstr "Nessun allegato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3052
 msgid "No issues found."
 msgstr "Nessun problema trovato."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:761
 msgid "No keys registered"
 msgstr "Nessuna chiave registrata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:867
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:921
 msgid "No passwords match your search"
 msgstr "Nessuna password corrisponde alla tua ricerca"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1356
 msgid "No previous passwords recorded."
 msgstr "Nessuna password precedente registrata."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1805
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1879
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2048
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2077
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2438
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2469
 msgid "Not configured"
 msgstr "Non configurato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2901
 msgid "Not run yet"
 msgstr "Non ancora eseguito"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:867
 msgid "Not set"
 msgstr "Non impostata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1807
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1870
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2021
 msgid "Not signed in"
 msgstr "Accesso non effettuato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:503
 msgid "Not stored"
 msgstr "Non memorizzata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1639
 msgid "Notes"
 msgstr "Note"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:441
 msgid "Number of Words"
 msgstr "Numero di parole"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1820
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1974
 msgid "OAuth client not configured at build time"
 msgstr "Client OAuth non configurato al momento della compilazione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1251
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1708
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1746
 msgid "OK"
 msgstr "OK"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1358
 msgid "Older versions appear here after the password is changed."
 msgstr ""
 "Le versioni precedenti appaiono qui dopo che la password è stata modificata."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1577
 msgid "Open .ashy export"
 msgstr "Apri esportazione .ashy"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1655
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1679
 msgid "Open KeePass database"
 msgstr "Apri database KeePass"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:783
 msgid "Open Settings"
 msgstr "Apri Impostazioni"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1851
 msgid "Opens the browser for OAuth consent"
 msgstr "Apre il browser per il consenso OAuth"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:147
 msgid "PIN"
 msgstr "PIN"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1588
 msgid "PIN Code"
 msgstr "Codice PIN"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:475
 msgid "PIN Options"
 msgstr "Opzioni PIN"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:144
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1587
 msgid "Passphrase"
 msgstr "Frase di accesso"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:429
 msgid "Passphrase Options"
 msgstr "Opzioni passphrase"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:81
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:141
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1713
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1572
 msgid "Password"
 msgstr "Password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2210
 msgid "Password / app-password"
 msgstr "Password / password dell'app"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1343
 msgid "Password History"
 msgstr "Cronologia Password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:362
 msgid "Password Options"
 msgstr "Opzioni password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:2015
 msgid "Password added"
 msgstr "Password aggiunta"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:344
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1303
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1382
 msgid "Password copied to clipboard"
 msgstr "Password copiata negli appunti"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1461
 msgid "Password deleted"
 msgstr "Password eliminata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1599
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1612
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1624
 msgid "Password generated"
 msgstr "Password generata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1224
 msgid "Password history"
 msgstr "Cronologia password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:785
 msgid "Password must be at least"
 msgstr "La password deve contenere almeno"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:282
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1428
 msgid "Password too short"
 msgstr "Password troppo corta"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:2013
 msgid "Password updated"
 msgstr "Password aggiornata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2805
 msgid "Passwordless entries ignored"
-msgstr ""
+msgstr "Voci senza password ignorate"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1432
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1744
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:792
 msgid "Passwords do not match"
 msgstr "Le password non coincidono"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:290
 msgid "Passwords do not match."
 msgstr "Le password non coincidono."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:677
+msgid "Paste a Base32 secret or an otpauth:// URI"
+msgstr "Incolla un segreto Base32 o un URI otpauth://"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:701
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:881
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1711
 msgid "Period (seconds)"
 msgstr "Periodo (secondi)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3233
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:646
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1463
 msgid "Permanently deleted"
 msgstr "Eliminato definitivamente"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3276
 msgid "Permanently deletes every trashed entry."
 msgstr "Elimina definitivamente ogni voce nel cestino."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1618
 msgid ""
 "Pick a password for the .kdbx file. You will need it to open the database."
 msgstr ""
 "Scegli una password per il file .kdbx. Ti servirà per aprire il database."
 
-msgid "Pick a password to protect this .ashy file. You will need it to import."
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1539
+msgid ""
+"Pick a password to protect this .ashy file. You will need it to import."
 msgstr ""
 "Scegli una password per proteggere questo file .ashy. Ti servirà per "
 "importarlo."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1083
 msgid "Plain JSON export from Aegis Authenticator"
 msgstr "Esportazione JSON semplice da Aegis Authenticator"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1090
 msgid "Plain JSON export from andOTP"
 msgstr "Esportazione JSON semplice da andOTP"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:324
 msgid "Please create your master password in the Vault tab first."
 msgstr "Crea prima la tua password principale nella scheda Vault."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:313
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:754
 msgid "Please enter a password"
 msgstr "Inserisci una password"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:698
 msgid "Please enter your PIN"
 msgstr "Inserisci il tuo PIN"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2687
 msgid "Please wait while AshyPass talks to Nextcloud"
-msgstr ""
+msgstr "Attendere mentre AshyPass comunica con Nextcloud"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:762
 msgid "Plug in your authenticator and click Register"
 msgstr "Collega il tuo autenticatore e clicca su Registra"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1099
 msgid ""
 "Prefer the encrypted .ashy export. The CSV path stores credentials in "
 "plaintext."
@@ -793,216 +1201,328 @@ msgstr ""
 "Preferisci l'esportazione .ashy crittografata. Il percorso CSV salva le "
 "credenziali in testo semplice."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1277
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1333
 msgid "Preparing synchronization"
-msgstr ""
+msgstr "Preparazione sincronizzazione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:359
 msgid "Quick Unlock"
 msgstr "Sblocco rapido"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:301
 msgid "Quick-unlock PIN"
 msgstr "PIN di sblocco rapido"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:471
 msgid "Quick-unlock disabled"
 msgstr "Sblocco rapido disabilitato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:434
 msgid "Quick-unlock enabled"
 msgstr "Sblocco rapido abilitato"
 
+#. Cache may have been lost (e.g. dev path) — fall back.
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:736
 msgid "Quick-unlock failed"
 msgstr "Sblocco rapido fallito"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:105
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:785
 msgid "Quit"
 msgstr "Esci"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1880
 msgid "Read failed"
 msgstr "Lettura fallita"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3265
 msgid "Refresh listing"
 msgstr "Aggiorna elenco"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:818
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:833
 msgid "Register Security Key"
 msgstr "Registra chiave di sicurezza"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:841
 msgid "Register failed"
 msgstr "Registrazione fallita"
 
-msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
-msgstr ""
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:719
+msgid ""
+"Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
+msgstr "Registra fino a 2 autenticatori FIDO2 fisici (YubiKey, SoloKey, ecc.)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2393
 msgid "Remote generation:"
 msgstr "Generazione remota:"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:516
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:778
 msgid "Remove"
 msgstr "Rimuovi"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:584
 msgid "Removed from keyring"
 msgstr "Rimosso dal portachiavi"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2318
 msgid "Required to encrypt the snapshot before upload"
 msgstr "Necessario per crittografare lo snapshot prima del caricamento"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3180
 msgid "Restore"
 msgstr "Ripristina"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1947
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2179
 msgid "Restore failed"
 msgstr "Ripristino fallito"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1127
 msgid "Restore from an Ashy Pass encrypted export"
 msgstr "Ripristina da un'esportazione crittografata di Ashy Pass"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1921
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2152
 msgid "Restore latest"
 msgstr "Ripristina l'ultimo"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1946
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2178
 msgid "Restored to"
 msgstr "Ripristinato in"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3107
 msgid "Retention"
 msgstr "Conservazione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:638
 msgid "Run"
 msgstr "Esegui"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2886
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2947
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2983
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2995
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3008
 msgid "Run Audit"
 msgstr "Esegui controllo"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2935
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2958
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2960
 msgid "Running audit..."
-msgstr ""
+msgstr "Esecuzione audit..."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1386
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1977
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2203
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2550
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:664
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:827
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1081
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1554
 msgid "Save"
 msgstr "Salva"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1626
 msgid "Save KeePass export"
 msgstr "Salva esportazione KeePass"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1786
 msgid "Save as…"
 msgstr "Salva con nome…"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1797
 msgid "Save attachment"
 msgstr "Salva allegato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1547
 msgid "Save encrypted export"
 msgstr "Salva esportazione crittografata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1816
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1903
 msgid "Save failed"
 msgstr "Salvataggio fallito"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1186
 msgid "Saves all entries as plaintext"
 msgstr "Salva tutte le voci come testo semplice"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2867
 msgid ""
 "Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
 msgstr ""
 "Analizza il vault per voci deboli, duplicate, vecchie, violate e senza 2FA."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2936
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2959
 msgid "Scanning vault..."
-msgstr ""
+msgstr "Scansione del vault in corso..."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:68
 msgid "Search"
 msgstr "Cerca"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:243
 msgid "Search 2FA codes…"
 msgstr "Cerca codici 2FA…"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:373
 msgid "Search passwords…"
 msgstr "Cerca password…"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:100
 msgid "Security"
 msgstr "Sicurezza"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:717
 msgid "Security Keys"
 msgstr "Chiavi di sicurezza"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1337
 msgid "Sending local changes"
-msgstr ""
+msgstr "Invio delle modifiche locali"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2873
 msgid ""
 "Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
 "locally for 7 days."
 msgstr ""
-"Invia solo i primi 5 caratteri esadecimali di SHA-1(password) per ogni voce. "
-"Memorizzato nella cache locale per 7 giorni."
+"Invia solo i primi 5 caratteri esadecimali di SHA-1(password) per ogni voce."
+" Memorizzato nella cache locale per 7 giorni."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:447
 msgid "Separator"
 msgstr "Separatore"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2207
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2554
 msgid "Server URL"
 msgstr "URL del server"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2546
 msgid ""
 "Server URL (e.g. https://cloud.example.com), username and an app password."
 msgstr ""
 "URL del server (es. https://cloud.example.com), nome utente e una password "
 "per l'app."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2451
 msgid "Server URL, username, app password"
 msgstr "URL del server, nome utente, password dell'app"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2061
 msgid "Server URL, username, app-password"
 msgstr "URL del server, nome utente, password dell'app"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:323
 msgid "Session"
 msgstr "Sessione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1021
 msgid "Set a category on entries to organize them into groups"
 msgstr "Imposta una categoria sulle voci per organizzarle in gruppi"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:866
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:905
 msgid "Set — generate a new one to replace it"
 msgstr "Imposta — generane una nuova per sostituirla"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:165
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:169
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:181
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:222
 msgid "Settings"
 msgstr "Impostazioni"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:771
 msgid "Show 2FA"
 msgstr "Mostra 2FA"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:772
 msgid "Show Generator"
 msgstr "Mostra Generatore"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:978
 msgid "Show Nextcloud badges"
-msgstr ""
+msgstr "Mostra badge di Nextcloud"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:770
 msgid "Show Vault"
 msgstr "Mostra Vault"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:962
 msgid "Show favicons"
 msgstr "Mostra favicon"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1891
 msgid "Sign in failed"
 msgstr "Accesso fallito"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1849
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1871
 msgid "Sign in to Google"
 msgstr "Accedi con Google"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1847
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1885
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2057
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2092
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2447
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2490
 msgid "Sign out"
 msgstr "Esci"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1867
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2074
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2466
 msgid "Sign out failed"
 msgstr "Disconnessione fallita"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1803
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1884
 msgid "Signed in"
 msgstr "Accesso effettuato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1889
 msgid "Signed in to Google Drive"
 msgstr "Accesso a Google Drive effettuato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1875
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2082
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2474
 msgid "Signed out"
 msgstr "Disconnesso"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2349
 msgid "Snapshot uploaded"
 msgstr "Snapshot caricato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1293
 msgid "Starting..."
-msgstr ""
+msgstr "Avvio in corso..."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:372
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:496
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1801
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2044
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2434
 msgid "Status"
 msgstr "Stato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:367
 msgid "Stay Unlocked"
 msgstr "Rimani sbloccato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:517
 msgid "Store"
 msgstr "Archivia"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:484
 msgid ""
 "Store the master password in the desktop's Secret Service (GNOME Keyring, "
 "KWallet, etc.) so Ashy Pass can unlock automatically on start. The keyring "
@@ -1015,197 +1535,309 @@ msgstr ""
 "accesso — disabilita questa opzione se più utenti condividono la sessione "
 "del desktop."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:560
 msgid "Stored in system keyring"
 msgstr "Archiviato nel portachiavi di sistema"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:97
 msgid "Strength"
 msgstr "Complessità"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1586
 msgid "Strong Password"
 msgstr "Password sicura"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2898
 msgid "Summary"
 msgstr "Riepilogo"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:398
 msgid "Symbols (!@#$…)"
 msgstr "Simboli (!@#$…)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2781
 msgid "Sync completed"
-msgstr ""
+msgstr "Sincronizzazione completata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2783
 msgid "Sync completed with errors"
-msgstr ""
+msgstr "Sincronizzazione completata con errori"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2363
 msgid "Sync conflict"
 msgstr "Conflitto di sincronizzazione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2388
 msgid "Sync conflict detected"
 msgstr "Rilevato conflitto di sincronizzazione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2823
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2825
 msgid "Sync errors"
 msgstr "Errori di sincronizzazione"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2279
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2374
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2675
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2677
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2729
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2731
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2842
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2844
 msgid "Sync failed"
 msgstr "Sincronizzazione fallita"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2134
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2502
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2631
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2764
 msgid "Sync now"
 msgstr "Sincronizza ora"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1258
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2690
 msgid "Synchronizing Nextcloud"
-msgstr ""
+msgstr "Sincronizzazione di Nextcloud"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2686
 msgid "Synchronizing..."
-msgstr ""
+msgstr "Sincronizzazione in corso..."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1336
 msgid "Syncing folders"
-msgstr ""
+msgstr "Sincronizzazione delle cartelle"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:482
 msgid "System Keyring"
 msgstr "Portachiavi di sistema"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:680
+msgid "TOTP Secret"
+msgstr "Segreto TOTP"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:852
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1666
 msgid "TOTP Secret (Base32)"
 msgstr "Segreto TOTP (Base32)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:676
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:848
 msgid "TOTP Settings"
 msgstr "Impostazioni TOTP"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:599
 msgid "TOTP code copied"
 msgstr "Codice TOTP copiato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:729
+msgid "TOTP secret is required"
+msgstr "Il segreto TOTP è obbligatorio"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1652
 msgid "Tags (comma-separated)"
 msgstr "Tag (separati da virgole)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:621
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1437
 msgid "This action cannot be undone."
 msgstr "Questa azione non può essere annullata."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2392
 msgid "This device generation:"
 msgstr "Generazione di questo dispositivo:"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:668
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:833
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1559
 msgid "Title"
 msgstr "Titolo"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:830
 msgid "Touch your key…"
 msgstr "Tocca la tua chiave…"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3159
 msgid "Trash is empty."
 msgstr "Il cestino è vuoto."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3128
 msgid "Trashed entries"
 msgstr "Voci nel cestino"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1662
 msgid "Two-Factor Authentication"
 msgstr "Autenticazione a due fattori"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2504
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2625
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2766
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
-"Riconciliazione bidirezionale: scarica remoto, carica locale, risolvi con il "
-"più recente"
+"Riconciliazione bidirezionale: scarica remoto, carica locale, risolvi con il"
+" più recente"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2429
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use"
+" an app password from Settings → Security."
 msgstr ""
 "Sincronizzazione bidirezionale con l'app ufficiale 'Passwords' sul tuo "
-"server Nextcloud. Utilizza una password dell'app da Impostazioni → Sicurezza."
+"server Nextcloud. Utilizza una password dell'app da Impostazioni → "
+"Sicurezza."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:533
 msgid "Type the current master password first"
 msgstr "Digita prima la password principale corrente"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:672
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:843
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1633
 msgid "URL"
 msgstr "URL"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2247
 msgid "URL, username and password are required"
 msgstr "URL, nome utente e password sono obbligatori"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:982
 msgid "Uncategorized"
 msgstr "Non categorizzato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1076
 msgid "Unencrypted 1Password 8 export archive"
 msgstr "Archivio di esportazione non crittografato di 1Password 8"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1069
 msgid "Unencrypted Bitwarden vault export"
 msgstr "Esportazione non crittografata della cassaforte Bitwarden"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:221
 msgid "Unlock"
 msgstr "Sblocca"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1352
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1373
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1384
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:313
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:646
 msgid "Unlock Vault"
 msgstr "Sblocca Vault"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:442
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2617
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2660
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2667
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2921
 msgid "Unlock the vault first"
 msgstr "Sblocca prima il vault"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:319
 msgid "Unlock with PIN"
 msgstr "Sblocca con PIN"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2793
 msgid "Updated locally"
-msgstr ""
+msgstr "Aggiornato localmente"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2795
 msgid "Updated on Nextcloud"
-msgstr ""
+msgstr "Aggiornato su Nextcloud"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2397
 msgid "Upload anyway"
 msgstr "Carica comunque"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1899
 msgid "Upload the current vault file to Drive"
 msgstr "Carica il file vault corrente su Drive"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2104
 msgid "Upload the current vault file to WebDAV"
 msgstr "Carica il file del vault corrente su WebDAV"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:380
 msgid "Uppercase Letters (A-Z)"
 msgstr "Lettere maiuscole (A-Z)"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1015
 msgid "Use larger digits for easier reading"
-msgstr ""
+msgstr "Usa cifre più grandi per una lettura più facile"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:326
 msgid "Use master password instead"
 msgstr "Usa la password principale"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:995
 msgid "Use tighter spacing for long password lists"
-msgstr ""
+msgstr "Usa spaziatura più stretta per elenchi di password lunghi"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:216
 msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
 msgstr ""
 "Utilizzata per sbloccare il vault. Modificandola, tutti i dati memorizzati "
 "vengono ricrittografati."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2208
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2555
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:670
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:838
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1565
 msgid "Username"
 msgstr "Nome utente"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:158
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:563
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:777
 msgid "Vault"
 msgstr "Vault"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:958
 msgid "Vault List"
 msgstr "Elenco Cassaforte"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2285
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2355
 msgid "Vault already in sync"
 msgstr "Vault già sincronizzato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:291
 msgid "Vault locked due to inactivity"
 msgstr "Vault bloccato per inattività"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:392
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1351
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2666
 msgid "Vault must be unlocked to configure"
 msgstr "Il vault deve essere sbloccato per configurare"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:306
 msgid "Vault will lock soon"
 msgstr "Il vault si bloccherà a breve"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:366
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:544
 msgid "Vault will lock soon due to inactivity"
 msgstr "Il vault si bloccherà a breve per inattività"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1284
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1315
 msgid "Waiting for Nextcloud..."
-msgstr ""
+msgstr "In attesa di Nextcloud..."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2037
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2197
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2252
 msgid "WebDAV configured"
 msgstr "WebDAV configurato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1316
 msgid "Working..."
-msgstr ""
+msgstr "In elaborazione..."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:923
 msgid ""
 "Write these 12 words down and keep them safe. This is the only time they "
 "will be shown."
@@ -1213,33 +1845,51 @@ msgstr ""
 "Scrivi queste 12 parole e conservale al sicuro. Verranno mostrate solo "
 "questa volta."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:548
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2330
 msgid "Wrong master password"
 msgstr "Password principale errata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3042
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3070
 msgid "breached"
 msgstr "violata"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:787
 msgid "characters"
 msgstr "caratteri"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3038
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3068
 msgid "duplicate"
 msgstr "duplicato"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3287
 msgid "entries removed"
 msgstr "voci rimosse"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3031
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3058
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3091
 msgid "entries scanned"
 msgstr "voci analizzate"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3044
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3071
 msgid "no 2FA"
 msgstr "senza 2FA"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3040
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3069
 msgid "old"
 msgstr "vecchia"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3076
 msgid "seen"
 msgstr "vista"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3036
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3067
 msgid "weak"
 msgstr "debole"
 
@@ -1247,8 +1897,8 @@ msgstr "debole"
 #~ msgstr "Nessun Gruppo"
 
 #~ msgid ""
-#~ "After auto-lock, unlock with a short PIN instead of the master password. "
-#~ "The PIN guards a key cached in memory only — it is discarded when the app "
+#~ "After auto-lock, unlock with a short PIN instead of the master password. The"
+#~ " PIN guards a key cached in memory only — it is discarded when the app "
 #~ "closes."
 #~ msgstr ""
 #~ "Dopo il blocco automatico, sblocca con un PIN breve invece della password "
@@ -1256,16 +1906,15 @@ msgstr "debole"
 #~ "eliminata quando l'app viene chiusa."
 
 #~ msgid ""
-#~ "Higher costs slow brute force but also slow unlock. Auto-tune picks "
-#~ "values calibrated to ~500 ms on this machine. Existing master hashes keep "
-#~ "their original costs; tuned values apply on the next master password "
-#~ "change."
+#~ "Higher costs slow brute force but also slow unlock. Auto-tune picks values "
+#~ "calibrated to ~500 ms on this machine. Existing master hashes keep their "
+#~ "original costs; tuned values apply on the next master password change."
 #~ msgstr ""
-#~ "Costi più elevati rallentano la forza bruta ma rallentano anche lo "
-#~ "sblocco. La sintonizzazione automatica seleziona valori calibrati su ~500 "
-#~ "ms su questa macchina. Gli hash della password principale esistenti "
-#~ "mantengono i loro costi originali; i valori sintonizzati vengono "
-#~ "applicati al prossimo cambio della password principale."
+#~ "Costi più elevati rallentano la forza bruta ma rallentano anche lo sblocco. "
+#~ "La sintonizzazione automatica seleziona valori calibrati su ~500 ms su "
+#~ "questa macchina. Gli hash della password principale esistenti mantengono i "
+#~ "loro costi originali; i valori sintonizzati vengono applicati al prossimo "
+#~ "cambio della password principale."
 
 #~ msgid "Register up to 2 FIDO2 authenticators (YubiKey, Solo, etc.)"
 #~ msgstr "Registra fino a 2 autenticatori FIDO2 (YubiKey, Solo, ecc.)"

@@ -255,8 +255,8 @@ impl MainWindow {
 
         // Header buttons
         {
-            let vault = vault_view.clone();
-            add_button.connect_clicked(move |_| vault.show_add_dialog());
+            let inner_cl = inner.clone();
+            add_button.connect_clicked(move |_| inner_cl.on_add_clicked());
         }
         {
             let inner_cl = inner.clone();
@@ -399,8 +399,17 @@ impl MainWindow {
             let inner_cl = inner.clone();
             new_action.connect_activate(move |_, _| {
                 if inner_cl.state.session.borrow().is_authenticated() {
-                    inner_cl.select_nav("vault");
-                    inner_cl.vault_view.show_add_dialog();
+                    let current = inner_cl
+                        .content_stack
+                        .visible_child_name()
+                        .map(|s| s.to_string())
+                        .unwrap_or_default();
+                    if current == "totp" {
+                        inner_cl.totp_view.show_add_dialog();
+                    } else {
+                        inner_cl.select_nav("vault");
+                        inner_cl.vault_view.show_add_dialog();
+                    }
                 }
             });
         }
@@ -559,8 +568,9 @@ impl MainWindowInner {
         self.content_title.set_label(title);
 
         let is_vault = name == "vault";
+        let is_totp = name == "totp";
         let authed = self.state.session.borrow().is_authenticated();
-        self.add_button.set_visible(is_vault && authed);
+        self.add_button.set_visible((is_vault || is_totp) && authed);
         self.lock_button.set_visible(is_vault && authed);
 
         self.update_auth_nav();
@@ -586,9 +596,15 @@ impl MainWindowInner {
             .map(|s| s.to_string())
             .unwrap_or_default();
         let is_vault = current == "vault";
+        let is_totp = current == "totp";
         let is_searchable = current == "vault" || current == "totp";
 
-        self.add_button.set_visible(is_vault && authed);
+        self.add_button.set_visible((is_vault || is_totp) && authed);
+        self.add_button.set_tooltip_text(Some(if is_totp {
+            tr!("Add 2FA Code")
+        } else {
+            tr!("Add Password")
+        }));
         self.lock_button.set_visible(is_vault && authed);
         self.search_button.set_visible(is_searchable && authed);
 
@@ -624,6 +640,22 @@ impl MainWindowInner {
                     self.totp_view.search_entry.grab_focus();
                 }
             }
+            _ => {}
+        }
+    }
+
+    fn on_add_clicked(&self) {
+        if !self.state.session.borrow().is_authenticated() {
+            return;
+        }
+        let current = self
+            .content_stack
+            .visible_child_name()
+            .map(|s| s.to_string())
+            .unwrap_or_default();
+        match current.as_str() {
+            "vault" => self.vault_view.show_add_dialog(),
+            "totp" => self.totp_view.show_add_dialog(),
             _ => {}
         }
     }

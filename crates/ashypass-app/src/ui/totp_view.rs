@@ -8,8 +8,8 @@ use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
 use adw::prelude::*;
-use ashypass_core::db::vault::{PasswordEntry, UpdateEntry};
-use ashypass_core::totp::{generate_totp, remaining_seconds, Algorithm};
+use ashypass_core::db::vault::{NewEntry, PasswordEntry, UpdateEntry};
+use ashypass_core::totp::{generate_totp, parse_otpauth, remaining_seconds, Algorithm};
 use gtk::glib;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -166,6 +166,14 @@ impl TotpView {
 
     pub fn focus_auth_field(&self) {
         self.inner.focus_auth_field();
+    }
+
+    pub fn show_add_dialog(&self) {
+        if self.inner.state.session.borrow().is_authenticated()
+            && self.inner.state.vault.borrow().is_unlocked()
+        {
+            self.inner.show_add_dialog();
+        }
     }
 }
 
@@ -646,6 +654,164 @@ impl Inner {
         dialog.present(Some(self.toast.upcast_ref::<gtk::Widget>()));
     }
 
+    fn show_add_dialog(self: &Rc<Self>) {
+        let dialog = adw::AlertDialog::builder()
+            .heading(tr!("Add 2FA Code"))
+            .default_response("save")
+            .close_response("cancel")
+            .build();
+        dialog.add_response("cancel", tr!("Cancel"));
+        dialog.add_response("save", tr!("Save"));
+        dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
+
+        let form = adw::PreferencesGroup::new();
+        let title_entry = adw::EntryRow::builder().title(tr!("Title")).build();
+        form.add(&title_entry);
+        let username_entry = adw::EntryRow::builder().title(tr!("Username")).build();
+        form.add(&username_entry);
+        let url_entry = adw::EntryRow::builder().title(tr!("URL")).build();
+        form.add(&url_entry);
+
+        let totp_group = adw::PreferencesGroup::builder()
+            .title(tr!("TOTP Settings"))
+            .description(tr!("Paste a Base32 secret or an otpauth:// URI"))
+            .build();
+        let totp_entry = adw::PasswordEntryRow::builder()
+            .title(tr!("TOTP Secret"))
+            .build();
+        totp_group.add(&totp_entry);
+
+        let algo_model = gtk::StringList::new(&["SHA1", "SHA256", "SHA512"]);
+        let algo_row = adw::ComboRow::builder()
+            .title(tr!("Algorithm"))
+            .model(&algo_model)
+            .build();
+        algo_row.set_selected(0);
+        totp_group.add(&algo_row);
+
+        let digits_adj = gtk::Adjustment::new(6.0, 6.0, 8.0, 2.0, 2.0, 0.0);
+        let digits_row = adw::SpinRow::builder()
+            .title(tr!("Digits"))
+            .adjustment(&digits_adj)
+            .build();
+        totp_group.add(&digits_row);
+
+        let period_adj = gtk::Adjustment::new(30.0, 15.0, 60.0, 15.0, 15.0, 0.0);
+        let period_row = adw::SpinRow::builder()
+            .title(tr!("Period (seconds)"))
+            .adjustment(&period_adj)
+            .build();
+        totp_group.add(&period_row);
+
+        let content = gtk::Box::builder()
+            .orientation(gtk::Orientation::Vertical)
+            .spacing(12)
+            .build();
+        content.set_size_request(500, -1);
+        content.append(&form);
+        content.append(&totp_group);
+        dialog.set_extra_child(Some(&content));
+
+        let inner_cl = self.clone();
+        let title_entry_focus = title_entry.clone();
+        dialog.connect_response(None, move |dlg, response| {
+            if response != "save" {
+                dlg.close();
+                return;
+            }
+
+            let mut title = title_entry.text().trim().to_string();
+            let mut username = trim_to_opt(&username_entry.text());
+            let url = trim_to_opt(&url_entry.text());
+            let secret_input = totp_entry.text().trim().to_string();
+            if secret_input.is_empty() {
+                totp_entry.add_css_class("error");
+                inner_cl.show_toast(tr!("TOTP secret is required"));
+                return;
+            }
+
+            let mut algo = selected_algorithm(&algo_row).to_string();
+            let mut digits = digits_row.value() as u8;
+            let mut period = period_row.value() as u32;
+            let secret = if secret_input.to_ascii_lowercase().starts_with("otpauth://") {
+                match parse_otpauth(&secret_input) {
+                    Ok(parsed) => {
+                        if title.is_empty() {
+                            title = if parsed.issuer.is_empty() {
+                                parsed.label.clone()
+                            } else {
+                                parsed.issuer.clone()
+                            };
+                        }
+                        if username.is_none() && !parsed.issuer.is_empty() {
+                            username = Some(parsed.label.clone());
+                        }
+                        algo = parsed.algorithm.as_str().to_string();
+                        digits = parsed.digits;
+                        period = parsed.period;
+                        parsed.secret
+                    }
+                    Err(e) => {
+                        totp_entry.add_css_class("error");
+                        inner_cl.show_toast(&format!("{}: {e}", tr!("Invalid TOTP secret")));
+                        return;
+                    }
+                }
+            } else {
+                secret_input
+            };
+
+            if title.is_empty() {
+                title_entry.add_css_class("error");
+                return;
+            }
+            title_entry.remove_css_class("error");
+            totp_entry.remove_css_class("error");
+            if !(6..=8).contains(&digits) || period == 0 {
+                totp_entry.add_css_class("error");
+                inner_cl.show_toast(tr!("Invalid TOTP settings"));
+                return;
+            }
+
+            let algorithm = Algorithm::parse(&algo).unwrap_or(Algorithm::Sha1);
+            if let Err(e) = generate_totp(&secret, algorithm, digits, period, 0) {
+                totp_entry.add_css_class("error");
+                inner_cl.show_toast(&format!("{}: {e}", tr!("Invalid TOTP secret")));
+                return;
+            }
+
+            let new_entry = NewEntry {
+                title,
+                username,
+                password: String::new(),
+                notes: None,
+                url,
+                totp_secret: Some(secret),
+                totp_algorithm: Some(algo),
+                totp_digits: Some(digits),
+                totp_period: Some(period),
+                category: Some("2FA".into()),
+            };
+
+            match inner_cl.state.vault.borrow().add(new_entry) {
+                Ok(_) => {
+                    inner_cl.show_toast(tr!("2FA code added"));
+                    inner_cl.load_entries(None);
+                    SessionManager::on_activity(&inner_cl.state.session);
+                    dlg.close();
+                }
+                Err(e) => {
+                    inner_cl.show_toast(&format!("{}: {e}", tr!("Error")));
+                }
+            }
+        });
+
+        dialog.present(Some(self.toast.upcast_ref::<gtk::Widget>()));
+        glib::idle_add_local_once(move || {
+            title_entry_focus.grab_focus();
+        });
+    }
+
     fn show_edit_dialog(self: &Rc<Self>, id: i64) {
         let entry = match self.state.vault.borrow().get(id) {
             Ok(Some(e)) => e,
@@ -788,5 +954,13 @@ fn trim_to_opt(s: &glib::GString) -> Option<String> {
         None
     } else {
         Some(t.to_string())
+    }
+}
+
+fn selected_algorithm(row: &adw::ComboRow) -> &'static str {
+    match row.selected() {
+        1 => "SHA256",
+        2 => "SHA512",
+        _ => "SHA1",
     }
 }
