@@ -255,3 +255,127 @@ counter         = 1234567890 / 30 = 41152263
 7. **Clipboard auto-clear** — both passwords and TOTP codes scheduled for clear; only cleared if contents still match what was written.
 8. **Optional 2FA** — vault key is XOR-mixed with an authenticator-derived secret; loss of token still allows recovery via the BIP39 backup phrase, whose hash is the only persisted proof.
 9. **Zero-knowledge cloud backup** — Google Drive only ever sees the encrypted SQLite file.
+
+---
+
+## External Drive Encryption (LUKS2)
+
+The `ashypass-drives` crate adds optional full-volume encryption for
+removable storage (USB sticks, external HDDs/SSDs). Unlike the password
+vault, which operates on individual database columns, drive encryption
+must protect every sector of the block device — a different threat model
+and therefore a different cipher mode.
+
+### Why LUKS2, not a homegrown stack
+
+`dm-crypt` + LUKS2 is the Linux kernel's audited full-disk encryption
+layer, used by every mainstream distribution's installer. AES-NI hardware
+acceleration in the kernel is something userspace cannot match. We wrap
+`cryptsetup` rather than re-implement.
+
+### Parameters (single source of truth: `crates/ashypass-drives/src/luks.rs`)
+
+| Parameter            | Value                  | Rationale |
+|----------------------|------------------------|-----------|
+| LUKS version         | 2                      | Argon2id support; per-keyslot KDF tuning; JSON metadata |
+| Cipher               | `aes-xts-plain64`      | NIST-approved storage-at-rest mode; `plain64` IV works above 2 TiB |
+| Key size             | 512 bits               | XTS splits into two 256-bit keys → AES-256 effective |
+| Hash (AF splitter)   | SHA-256                | |
+| KDF                  | Argon2id               | Memory-hard; GPU/ASIC-resistant |
+| KDF memory           | 1 048 576 KiB (1 GiB)  | Floor; cryptsetup may raise based on host RAM |
+| KDF parallelism      | 4                      | |
+| KDF iter-time        | 2 000 ms               | Target unlock latency |
+| Sector size          | 4096 bytes             | Matches modern flash; avoids 512↔4K translation cost |
+| Master key entropy   | `--use-random`         | Pulls from `/dev/random` at format time |
+| Passphrase transport | stdin via `--key-file=-` | Never appears in argv or `/proc/<pid>/cmdline` |
+
+### Pre-format wipe
+
+`cryptsetup luksFormat` does not erase the data region. To make recovered
+plaintext from prior writes indistinguishable from ciphertext, we open the
+device with a plain dm-crypt mapping keyed from `/dev/urandom`, then write
+zeros through that mapping. The kernel encrypts the zeros at AES-NI speed
+(GB/s), so the device sees random-looking ciphertext across every sector.
+
+For SSDs, `blkdiscard --secure` is offered as a faster opt-in, with a
+clear warning that its guarantees depend on the device firmware.
+
+### Safety preconditions
+
+Before any destructive operation, `safety::inspect` refuses to proceed if:
+
+- the device is not flagged removable or hotplug, **and** `allow_fixed` is off;
+- the device is read-only;
+- any partition is currently mounted;
+- the device or any partition backs the running root filesystem (`/proc/mounts`);
+- the device holds an active swap area (`/proc/swaps`);
+- the device is referenced in `/etc/crypttab`.
+
+The device is then re-resolved through `/dev/disk/by-id/...` and pinned for
+the remainder of the pipeline, so udev re-numbering during a hotplug storm
+cannot redirect the operation to a sibling.
+
+### Privilege
+
+Privileged calls (`cryptsetup`, `dd`, `mkfs.*`, `blkdiscard`) are dispatched
+via `pkexec`, mediated by the polkit policy in
+`usr/share/polkit-1/actions/com.bigcommunity.ashypass.drives.policy`.
+
+### Passphrase handling
+
+Passphrases live in `ashypass_drives::Passphrase`, which `Zeroize`s its
+buffer on drop and is never `Clone`. They are written straight to the
+child's stdin and never logged or echoed.
+
+### Future work (not in this iteration)
+
+- FIDO2 keyslot enrollment via `systemd-cryptenroll --fido2-device=auto`.
+- Keyfile keyslot whose key material is stored as a vault item.
+- Privileged helper binary (`/usr/libexec/ashypass/drives-helper`) with a
+  scoped polkit action ID, replacing direct `pkexec cryptsetup` so users
+  get a branded prompt and we limit what the elevated process can do.
+- Loopback integration tests gated behind `cargo test -- --ignored`.
+
+---
+
+## Updates (2026-05-23)
+
+- **`drives info --json`**: emits the full LUKS2 metadata via `cryptsetup
+  luksDump --dump-json-metadata`, including the Argon2id keyslot tuning
+  parameters (memory, iterations, parallelism) that the human-readable
+  dump omits.
+- **`drives format --quick`**: opt-in shortcut for `--wipe none`. Documented
+  as Mint/Cryptomator-equivalent: instant, but prior plaintext outside the
+  LUKS data region may survive.
+- **`drives enroll-fido2`**: wraps `systemd-cryptenroll --fido2-device=auto`
+  to add a FIDO2 hardware-token keyslot on an existing volume. Toggles for
+  PIN and user-presence (touch) are exposed as flags.
+- **Wipe progress source switched** from `dd status=progress` stderr parsing
+  to `/proc/diskstats` polled on a 200 ms cadence in a `std::thread::scope`
+  worker. Reason: the `dd → sudo → pty → pipe` chain buffers progress
+  updates unreliably; the kernel's diskstats counter is impossible to
+  buffer-out-of.
+- **Plain-mode wipe key material** is now read by Ashy Pass (64 random
+  bytes from `/dev/urandom`) and piped to `cryptsetup` via stdin
+  (`--key-file -`), instead of pointing `cryptsetup` at `/dev/urandom`
+  directly. Avoids version-dependent behaviour where `--keyfile-size` is
+  ignored for special files and `cryptsetup` reads urandom forever.
+
+### Privileged helper
+
+A separate binary `ashypass-drives-helper` is now shipped under
+`/usr/libexec/ashypass/`. Launched once via `pkexec` (single polkit
+authentication), it accepts JSON-Lines requests on stdin and writes
+responses on stdout. Operations: `luks-format`, `luks-open`, `luks-close`,
+`wipe`, `mkfs`, `shutdown`. Passphrases are transmitted base64-encoded so
+binary data is safe across the line protocol.
+
+The polkit action `com.bigcommunity.ashypass.drives.helper` is annotated
+with `org.freedesktop.policykit.exec.path` pointing at the helper, and
+`allow_active=auth_admin_keep` so a session-wide authentication covers
+the entire encrypt/unlock workflow.
+
+Client side, `ashypass_drives::helper_client::HelperClient` spawns the
+helper and exposes typed methods. The GUI wizard does not yet route
+through it (still uses `PkexecRunner`, one prompt per call); the switch
+is mechanical and tracked as future work.

@@ -1,0 +1,20 @@
+[package]
+name = "ashypass-drives"
+description = "External drive encryption (LUKS2) for Ashy Pass"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+log.workspace = true
+zeroize.workspace = true
+libc = "0.2"

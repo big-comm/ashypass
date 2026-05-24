@@ -1,0 +1,20 @@
+[package]
+name = "ashypass-drives-helper"
+description = "Privileged backend executor for Ashy Pass drive encryption — invoked via pkexec, drives one polkit prompt per session"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "ashypass-drives-helper"
+path = "src/main.rs"
+
+[dependencies]
+ashypass-drives.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+anyhow.workspace = true

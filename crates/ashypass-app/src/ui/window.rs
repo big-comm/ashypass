@@ -6,7 +6,8 @@ use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
 use crate::ui::{
-    generator_view::GeneratorView, settings_dialog, totp_view::TotpView, vault_view::VaultView,
+    drives_view::DrivesView, generator_view::GeneratorView, settings_dialog,
+    totp_view::TotpView, vault_view::VaultView,
 };
 use adw::prelude::*;
 use ashypass_core::config::{
@@ -84,10 +85,12 @@ impl MainWindow {
         let vault_view = VaultView::new(state.clone(), toast_overlay.clone());
         let totp_view = TotpView::new(state.clone(), toast_overlay.clone());
         let generator_view = GeneratorView::new(toast_overlay.clone());
+        let drives_view = DrivesView::new(toast_overlay.clone());
 
         content_stack.add_named(&vault_view.root, Some("vault"));
         content_stack.add_named(&totp_view.root, Some("totp"));
         content_stack.add_named(&generator_view.root, Some("generator"));
+        content_stack.add_named(&drives_view.root, Some("drives"));
 
         // Build the content's ToolbarView (header + stack)
         let content_toolbar = adw::ToolbarView::new();
@@ -163,6 +166,13 @@ impl MainWindow {
             "totp",
             "auth-sim-symbolic",
             tr!("2FA"),
+        );
+        add_nav_item(
+            &nav_box,
+            &nav_buttons,
+            "drives",
+            "drive-removable-media-symbolic",
+            tr!("Drives"),
         );
 
         let auth_separator = gtk::Separator::builder()
@@ -563,6 +573,7 @@ impl MainWindowInner {
             "vault" => tr!("Vault"),
             "totp" => tr!("2FA"),
             "generator" => tr!("Generator"),
+            "drives" => tr!("Drives"),
             other => other,
         };
         self.content_title.set_label(title);
