@@ -16,8 +16,8 @@ msgstr ""
 msgid "0 disables auto-clear"
 msgstr "0 отключает автоочистку"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:165
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:564
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:168
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:574
 msgid "2FA"
 msgstr "2FA"
 
@@ -35,12 +35,12 @@ msgstr ""
 "Фраза BIP-39 из 12 слов для входа без ключа безопасности. Показывается один "
 "раз."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:104
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:107
 msgid "About"
 msgstr "О программе"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:659
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:604
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:615
 msgid "Add 2FA Code"
 msgstr "Добавить код 2FA"
 
@@ -49,8 +49,8 @@ msgid "Add Number at End"
 msgstr "Добавить цифру в конце"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1548
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:74
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:606
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:75
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:617
 msgid "Add Password"
 msgstr "Добавить пароль"
 
@@ -81,9 +81,9 @@ msgstr ""
 "коротким PIN-кодом вместо мастер-пароля. Ключ хранилища хранится "
 "зашифрованным с помощью PIN-кода."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1675
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:686
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:861
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1675
 msgid "Algorithm"
 msgstr "Алгоритм"
 
@@ -118,7 +118,7 @@ msgstr "Пароль приложения"
 msgid "Appearance"
 msgstr "Внешний вид"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:781
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:792
 msgid "Application"
 msgstr "Приложение"
 
@@ -126,10 +126,10 @@ msgstr "Приложение"
 msgid "Applying local deletions"
 msgstr "Применение локальных удалений"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:613
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:619
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1429
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1435
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:613
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:619
 msgid "Are you sure you want to delete"
 msgstr "Вы уверены, что хотите удалить"
 
@@ -155,8 +155,8 @@ msgstr ""
 "пароля сохраняют свои исходные затраты; настроенные значения применяются при"
 " следующей смене мастер-пароля."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:201
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:258
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:201
 msgid "Ashy Pass"
 msgstr "Ashy Pass"
 
@@ -248,12 +248,15 @@ msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2396
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2549
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2630
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:630
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:663
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:826
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1080
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1447
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1553
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:630
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:663
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:826
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:159
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:679
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:819
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -418,10 +421,10 @@ msgstr "Данные"
 msgid "Decrypt failed"
 msgstr "Ошибка расшифровки"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:508
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:631
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1238
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1448
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:508
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:631
 msgid "Delete"
 msgstr "Удалить"
 
@@ -454,9 +457,9 @@ msgstr ""
 msgid "Deleted on Nextcloud"
 msgstr "Удалено на Nextcloud"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1697
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:694
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:873
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1697
 msgid "Digits"
 msgstr "Цифры"
 
@@ -489,8 +492,8 @@ msgstr ""
 "Загружает последнюю резервную копию как "
 "~/.local/share/ashypass/passwords.restored.db"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:496
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1210
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:496
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -558,8 +561,8 @@ msgstr "Введите мастер-пароль для этого файла .k
 msgid "Enter the password used when this file was exported."
 msgstr "Введите пароль, который использовался при экспорте этого файла."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:205
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:262
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:205
 msgid "Enter your master password to unlock"
 msgstr "Введите мастер-пароль для разблокировки"
 
@@ -583,6 +586,7 @@ msgstr "Запись обновлена"
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:901
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:804
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:936
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:610
 msgid "Error"
 msgstr "Ошибка"
 
@@ -634,8 +638,8 @@ msgid "Failed to setup master password"
 msgstr "Не удалось настроить мастер-пароль"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1457
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:341
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:777
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:341
 msgid "Failed to unlock vault"
 msgstr "Не удалось разблокировать хранилище"
 
@@ -643,8 +647,8 @@ msgstr "Не удалось разблокировать хранилище"
 msgid "Favorite"
 msgstr "Избранное"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:194
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:535
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:204
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:545
 msgid "Favorites"
 msgstr "Избранное"
 
@@ -664,7 +668,7 @@ msgstr "Результаты"
 msgid "Finishing synchronization"
 msgstr "Завершение синхронизации"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:773
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:784
 msgid "Focus Search"
 msgstr "Фокус на поиске"
 
@@ -705,9 +709,9 @@ msgstr "Сгенерированный пароль"
 msgid "Generation Type"
 msgstr "Тип генерации"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:63
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:151
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:565
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:64
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:154
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:575
 msgid "Generator"
 msgstr "Генератор"
 
@@ -715,8 +719,8 @@ msgstr "Генератор"
 msgid "Google Drive"
 msgstr "Google Drive"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:181
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:527
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:191
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:537
 msgid "Groups"
 msgstr "Группы"
 
@@ -777,8 +781,8 @@ msgid "Incorrect PIN"
 msgstr "Неверный PIN-код"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1454
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:338
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:774
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:338
 msgid "Incorrect master password"
 msgstr "Неверный мастер-пароль"
 
@@ -823,9 +827,9 @@ msgstr "Ключ зарегистрирован"
 msgid "Key removed"
 msgstr "Ключ удалён"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:101
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:755
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:784
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:104
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:766
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:795
 msgid "Keyboard Shortcuts"
 msgstr "Сочетания клавиш"
 
@@ -843,12 +847,13 @@ msgstr "Крупные 2FA-коды"
 msgid "Length"
 msgstr "Длина"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:207
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:533
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:217
 msgid "Lock"
 msgstr "Заблокировать"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:80
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:778
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:81
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:789
 msgid "Lock Vault"
 msgstr "Заблокировать хранилище"
 
@@ -870,8 +875,8 @@ msgstr "Отмечайте пароли как избранные с помощ�
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:214
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1392
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:211
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:269
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:211
 msgid "Master Password"
 msgstr "Мастер-пароль"
 
@@ -887,11 +892,11 @@ msgstr "Мастер-пароль изменён."
 msgid "Master password is in the keyring"
 msgstr "Мастер-пароль находится в связке ключей"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:768
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:779
 msgid "Navigation"
 msgstr "Навигация"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:778
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:789
 msgid "New Entry"
 msgstr "Новая запись"
 
@@ -944,9 +949,9 @@ msgstr "Нет избранного"
 msgid "No Passwords Stored"
 msgstr "Нет сохраненных паролей"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:386
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:866
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:919
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:386
 msgid "No Results"
 msgstr "Нет результатов"
 
@@ -1030,7 +1035,7 @@ msgstr "Открыть .ashy экспорт"
 msgid "Open KeePass database"
 msgstr "Открыть базу данных KeePass"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:783
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:794
 msgid "Open Settings"
 msgstr "Открыть настройки"
 
@@ -1052,6 +1057,9 @@ msgstr "Параметры PIN-кода"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:144
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1587
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:213
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:218
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:668
 msgid "Passphrase"
 msgstr "Парольная фраза"
 
@@ -1133,15 +1141,15 @@ msgstr "Пароли не совпадают."
 msgid "Paste a Base32 secret or an otpauth:// URI"
 msgstr "Вставьте секрет Base32 или URI otpauth://"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1711
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:701
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:881
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1711
 msgid "Period (seconds)"
 msgstr "Период (секунды)"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3233
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:646
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1463
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:646
 msgid "Permanently deleted"
 msgstr "Окончательно удалено"
 
@@ -1173,8 +1181,8 @@ msgstr "Экспорт в формате Plain JSON из andOTP"
 msgid "Please create your master password in the Vault tab first."
 msgstr "Сначала создайте мастер-пароль на вкладке «Хранилище»."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:313
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:754
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:313
 msgid "Please enter a password"
 msgstr "Пожалуйста, введите пароль"
 
@@ -1224,8 +1232,8 @@ msgstr "Быстрая разблокировка включена"
 msgid "Quick-unlock failed"
 msgstr "Быстрая разблокировка не удалась"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:105
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:785
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:108
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:796
 msgid "Quit"
 msgstr "Выйти"
 
@@ -1319,10 +1327,10 @@ msgstr "Выполнение проверки..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1977
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2203
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2550
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:664
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:827
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1081
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1554
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:664
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:827
 msgid "Save"
 msgstr "Сохранить"
 
@@ -1363,7 +1371,7 @@ msgstr ""
 msgid "Scanning vault..."
 msgstr "Сканирование хранилища..."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:68
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:69
 msgid "Search"
 msgstr "Поиск"
 
@@ -1435,15 +1443,15 @@ msgstr "Установлена — создайте новую, чтобы за�
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:165
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:169
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:181
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:222
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:232
 msgid "Settings"
 msgstr "Настройки"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:771
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:782
 msgid "Show 2FA"
 msgstr "Показать 2FA"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:772
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:783
 msgid "Show Generator"
 msgstr "Показать генератор"
 
@@ -1451,7 +1459,7 @@ msgstr "Показать генератор"
 msgid "Show Nextcloud badges"
 msgstr "Показывать значки Nextcloud"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:770
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:781
 msgid "Show Vault"
 msgstr "Показать хранилище"
 
@@ -1540,6 +1548,7 @@ msgid "Stored in system keyring"
 msgstr "Сохранено в системной связке ключей"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:97
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:225
 msgid "Strength"
 msgstr "Надёжность"
 
@@ -1615,8 +1624,8 @@ msgstr "Системная связка ключей"
 msgid "TOTP Secret"
 msgstr "Секрет TOTP"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:852
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1666
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:852
 msgid "TOTP Secret (Base32)"
 msgstr "Секрет TOTP (Base32)"
 
@@ -1637,8 +1646,8 @@ msgstr "Требуется секрет TOTP"
 msgid "Tags (comma-separated)"
 msgstr "Теги (через запятую)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:621
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1437
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:621
 msgid "This action cannot be undone."
 msgstr "Это действие нельзя отменить."
 
@@ -1646,9 +1655,9 @@ msgstr "Это действие нельзя отменить."
 msgid "This device generation:"
 msgstr "Поколение этого устройства:"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1559
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:668
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:833
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1559
 msgid "Title"
 msgstr "Название"
 
@@ -1689,9 +1698,9 @@ msgstr ""
 msgid "Type the current master password first"
 msgstr "Сначала введите текущий мастер-пароль"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1633
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:672
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:843
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1633
 msgid "URL"
 msgstr "URL"
 
@@ -1712,6 +1721,8 @@ msgid "Unencrypted Bitwarden vault export"
 msgstr "Незашифрованный экспорт хранилища Bitwarden"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:221
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:616
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:680
 msgid "Unlock"
 msgstr "Разблокировать"
 
@@ -1779,15 +1790,15 @@ msgstr ""
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2208
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2555
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1565
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:670
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:838
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1565
 msgid "Username"
 msgstr "Имя пользователя"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:158
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:563
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:777
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:161
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:573
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:788
 msgid "Vault"
 msgstr "Хранилище"
 
@@ -1800,7 +1811,7 @@ msgstr "Список хранилища"
 msgid "Vault already in sync"
 msgstr "Хранилище уже синхронизировано"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:291
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:301
 msgid "Vault locked due to inactivity"
 msgstr "Хранилище заблокировано из-за бездействия"
 
@@ -1810,7 +1821,7 @@ msgstr "Хранилище заблокировано из-за бездейст
 msgid "Vault must be unlocked to configure"
 msgstr "Для настройки необходимо разблокировать хранилище"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:306
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:316
 msgid "Vault will lock soon"
 msgstr "Хранилище скоро заблокируется"
 
@@ -1892,6 +1903,394 @@ msgstr "просмотрено"
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3067
 msgid "weak"
 msgstr "слабый"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:91
+msgid ""
+"Preview — drive encryption backend not yet enabled. Listing is read-only."
+msgstr ""
+"Предпросмотр — бэкенд шифрования дисков ещё не включён. Просмотр только для "
+"чтения."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:107
+msgid "Rescan drives"
+msgstr "Пересканировать диски"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:120
+msgid "No external drives detected"
+msgstr "Внешние диски не обнаружены"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:122
+msgid "Plug in a USB drive or external disk, then press Rescan."
+msgstr ""
+"Подключите USB-накопитель или внешний диск, затем нажмите «Пересканировать»."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:185
+msgid "Failed to scan drives"
+msgstr "Не удалось выполнить сканирование дисков"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:274
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:400
+msgid "read-only"
+msgstr "только для чтения"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:288
+msgid "Encrypt…"
+msgstr "Зашифровать…"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:289
+msgid "Launch the encryption wizard"
+msgstr "Запустить мастер шифрования"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:312
+msgid "Whole device — no partition table"
+msgstr "Всё устройство — без таблицы разделов"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:348
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:103
+msgid "Vendor"
+msgstr "Производитель"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:351
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:104
+msgid "Model"
+msgstr "Модель"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:354
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:105
+msgid "Serial"
+msgstr "Серийный номер"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:364
+msgid "Bus / media"
+msgstr "Шина / носитель"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:376
+msgid "none"
+msgstr "нет"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:377
+msgid "Partition table"
+msgstr "Таблица разделов"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:385
+msgid "allocated"
+msgstr "выделено"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:387
+msgid "free"
+msgstr "свободно"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:392
+msgid "Capacity"
+msgstr "Емкость"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:399
+msgid "Write protection"
+msgstr "Защита от записи"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:455
+msgid "flash storage"
+msgstr "флэш-накопитель"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:456
+msgid "rotational (HDD)"
+msgstr "вращающийся (HDD)"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:457
+msgid "solid-state"
+msgstr "твердотельный"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:488
+msgid "not mounted"
+msgstr "не смонтирован"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:536
+msgid "Close active mapping"
+msgstr "Закрыть активное отображение"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:599
+msgid "Add FIDO2 token keyslot"
+msgstr "Добавить ключевой слот токена FIDO2"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:617
+msgid "Open the encrypted partition"
+msgstr "Открыть зашифрованный раздел"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:672
+msgid "free of"
+msgstr "свободно из"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:38
+msgid "Encrypt Drive"
+msgstr "Зашифровать диск"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:77
+msgid "Confirm Device"
+msgstr "Подтвердить устройство"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:89
+msgid "This will erase everything on the drive"
+msgstr "Это приведет к удалению всех данных на диске"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:91
+msgid ""
+"All partitions, files, and filesystem signatures will be permanently "
+"destroyed."
+msgstr ""
+"Все разделы, файлы и сигнатуры файловых систем будут безвозвратно "
+"уничтожены."
+
+#. Device details grid.
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:102
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:787
+msgid "Device"
+msgstr "Устройство"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:106
+msgid "Size"
+msgstr "Размер"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:107
+msgid "Path"
+msgstr "Путь"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:121
+msgid "Will destroy"
+msgstr "Будет уничтожено"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:131
+msgid "Safety checks passed"
+msgstr "Проверки безопасности пройдены"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:140
+msgid "Safety checks failed"
+msgstr "Проверки безопасности не пройдены"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:150
+msgid "Safety check error"
+msgstr "Ошибка проверки безопасности"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:161
+msgid "I understand — Continue"
+msgstr "Я понимаю — продолжить"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:205
+msgid "Set Passphrase"
+msgstr "Задать парольную фразу"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:215
+msgid ""
+"At least 8 characters. A four-word passphrase from the EFF wordlist is a "
+"strong default."
+msgstr ""
+"Не менее 8 символов. Надежный вариант по умолчанию — парольная фраза из "
+"четырех слов из списка EFF."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:219
+msgid "Repeat"
+msgstr "Повторите"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:245
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:358
+msgid "Back"
+msgstr "Назад"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:246
+msgid "Continue"
+msgstr "Продолжить"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:313
+msgid "Options"
+msgstr "Параметры"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:320
+msgid "Label"
+msgstr "Метка"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:325
+msgid "Filesystem"
+msgstr "Файловая система"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:331
+msgid "Encrypted zero (recommended — slow but secure)"
+msgstr "Зашифрованный ноль (рекомендуется — медленно, но безопасно)"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:332
+msgid "Secure discard (SSD/NVMe only, near-instant)"
+msgstr "Безопасное удаление (только SSD/NVMe, почти мгновенно)"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:333
+msgid "Random pass (slowest)"
+msgstr "Случайный проход (самый медленный)"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:334
+msgid "None — quick, leaves prior data recoverable"
+msgstr "Нет — быстро, но оставляет предыдущие данные восстанавливаемыми"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:337
+msgid "Pre-format wipe"
+msgstr "Предварительная очистка"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:343
+msgid "Allow TRIM through encrypted mapping"
+msgstr "Разрешить TRIM через зашифрованное отображение"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:345
+msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
+msgstr ""
+"Помогает износу SSD, но раскрывает устройству шаблоны свободного "
+"пространства."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:359
+msgid "Encrypt"
+msgstr "Зашифровать"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:415
+msgid "Encrypting…"
+msgstr "Шифрование…"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:423
+msgid "Preparing…"
+msgstr "Подготовка…"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:430
+msgid "…"
+msgstr "…"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:439
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:633
+msgid "Safety check"
+msgstr "Проверка безопасности"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:440
+msgid "Wipe device"
+msgstr "Очистить устройство"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:441
+msgid "Write LUKS2 header"
+msgstr "Записать заголовок LUKS2"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:442
+msgid "Open encrypted mapping"
+msgstr "Открыть зашифрованное отображение"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:443
+msgid "Create filesystem"
+msgstr "Создать файловую систему"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:444
+msgid "Close mapping"
+msgstr "Закрыть отображение"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:459
+msgid "Close"
+msgstr "Закрыть"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:480
+msgid "Internal error: no passphrase set"
+msgstr "Внутренняя ошибка: парольная фраза не задана"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:599
+msgid "Done."
+msgstr "Готово."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:603
+msgid "Encrypted as"
+msgstr "Зашифровано как"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:609
+msgid "Failed"
+msgstr "Ошибка"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:634
+msgid "Wiping device"
+msgstr "Очистка устройства"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:635
+msgid "Writing LUKS2 header"
+msgstr "Запись заголовка LUKS2"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:636
+msgid "Opening encrypted mapping"
+msgstr "Открытие зашифрованного отображения"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:637
+msgid "Creating filesystem"
+msgstr "Создание файловой системы"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:638
+msgid "Closing mapping"
+msgstr "Закрытие отображения"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:656
+msgid "Unlock Drive"
+msgstr "Разблокировать диск"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:664
+msgid "Encrypted device"
+msgstr "Зашифрованное устройство"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:704
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:844
+msgid "Empty passphrase"
+msgstr "Пустая парольная фраза"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:708
+msgid "Unlocking…"
+msgstr "Разблокировка…"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:732
+msgid "Unlocked at"
+msgstr "Разблокировано в"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:771
+msgid "Enrol FIDO2 Token"
+msgstr "Зарегистрировать FIDO2-токен"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:779
+msgid "Add a hardware token keyslot"
+msgstr "Добавить слот ключа аппаратного токена"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:781
+msgid ""
+"Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
+"device when prompted. Your current passphrase is required to authorise the "
+"new keyslot."
+msgstr ""
+"Вставьте ваш FIDO2-токен (Yubikey, Nitrokey и т.д.) и подтвердите действие "
+"на устройстве по запросу. Для авторизации нового слота ключа требуется ваша "
+"текущая парольная фраза."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:795
+msgid "Current passphrase"
+msgstr "Текущая парольная фраза"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:802
+msgid "Require PIN at unlock"
+msgstr "Запрашивать PIN при разблокировке"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:806
+msgid "Require user-presence (touch the token)"
+msgstr "Требовать присутствие пользователя (коснитесь токена)"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:820
+msgid "Enrol"
+msgstr "Зарегистрировать"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:848
+msgid "Talking to your token… check the device for a touch prompt."
+msgstr ""
+"Взаимодействие с вашим токеном… проверьте устройство на наличие запроса "
+"касания."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:873
+msgid "FIDO2 keyslot added"
+msgstr "Слот ключа FIDO2 добавлен"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:175
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:576
+msgid "Drives"
+msgstr "Диски"
 
 #~ msgid "No Groups"
 #~ msgstr "Нет групп"

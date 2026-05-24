@@ -16,8 +16,8 @@ msgstr ""
 msgid "0 disables auto-clear"
 msgstr "0 מבטל ניקוי אוטומטי"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:165
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:564
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:168
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:574
 msgid "2FA"
 msgstr "אימות דו-שלבי"
 
@@ -33,12 +33,12 @@ msgstr "קוד 2FA נוסף"
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr "ביטוי BIP-39 בן 12 מילים לפתיחה ללא מפתח אבטחה. מוצג פעם אחת בלבד."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:104
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:107
 msgid "About"
 msgstr "אודות"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:659
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:604
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:615
 msgid "Add 2FA Code"
 msgstr "הוסף קוד 2FA"
 
@@ -47,8 +47,8 @@ msgid "Add Number at End"
 msgstr "הוסף ספרה בסוף"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1548
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:74
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:606
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:75
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:617
 msgid "Add Password"
 msgstr "הוסף סיסמה"
 
@@ -78,9 +78,9 @@ msgstr ""
 "לאחר נעילה אוטומטית או אתחול, בטל נעילה באמצעות קוד PIN קצר במקום סיסמת האב "
 "במכשיר זה. מפתח הכספת מאוחסן מוצפן באמצעות ה-PIN."
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1675
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:686
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:861
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1675
 msgid "Algorithm"
 msgstr "אלגוריתם"
 
@@ -114,7 +114,7 @@ msgstr "סיסמת אפליקציה"
 msgid "Appearance"
 msgstr "מראה"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:781
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:792
 msgid "Application"
 msgstr "יישום"
 
@@ -122,10 +122,10 @@ msgstr "יישום"
 msgid "Applying local deletions"
 msgstr "מחיקות מקומיות מיושמות"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:613
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:619
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1429
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1435
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:613
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:619
 msgid "Are you sure you want to delete"
 msgstr "האם אתה בטוח שברצונך למחוק"
 
@@ -149,8 +149,8 @@ msgstr ""
 "קיימים שומרים על העלויות המקוריות שלהם; ערכים מכוונים יחולו בשינוי הבא של "
 "סיסמת האב."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:201
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:258
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:201
 msgid "Ashy Pass"
 msgstr "Ashy Pass"
 
@@ -242,12 +242,15 @@ msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2396
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2549
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2630
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:630
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:663
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:826
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1080
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1447
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1553
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:630
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:663
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:826
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:159
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:679
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:819
 msgid "Cancel"
 msgstr "ביטול"
 
@@ -412,10 +415,10 @@ msgstr "נתונים"
 msgid "Decrypt failed"
 msgstr "הפענוח נכשל"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:508
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:631
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1238
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1448
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:508
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:631
 msgid "Delete"
 msgstr "מחיקה"
 
@@ -447,9 +450,9 @@ msgstr ""
 msgid "Deleted on Nextcloud"
 msgstr "נמחק ב-Nextcloud"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1697
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:694
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:873
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1697
 msgid "Digits"
 msgstr "ספרות"
 
@@ -482,8 +485,8 @@ msgstr ""
 "מוריד את הגיבוי העדכני ביותר בתור "
 "~/.local/share/ashypass/passwords.restored.db"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:496
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1210
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:496
 msgid "Edit"
 msgstr "עריכה"
 
@@ -548,8 +551,8 @@ msgstr "הזן את סיסמת האב עבור קובץ .kdbx זה."
 msgid "Enter the password used when this file was exported."
 msgstr "הזן את הסיסמה ששימשה בעת ייצוא קובץ זה."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:205
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:262
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:205
 msgid "Enter your master password to unlock"
 msgstr "הזן את סיסמת האב שלך לפתיחה"
 
@@ -573,6 +576,7 @@ msgstr "הערך עודכן"
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:901
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:804
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:936
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:610
 msgid "Error"
 msgstr "שגיאה"
 
@@ -624,8 +628,8 @@ msgid "Failed to setup master password"
 msgstr "נכשל בהגדרת סיסמת האב"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1457
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:341
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:777
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:341
 msgid "Failed to unlock vault"
 msgstr "פתיחת הכספת נכשלה"
 
@@ -633,8 +637,8 @@ msgstr "פתיחת הכספת נכשלה"
 msgid "Favorite"
 msgstr "מועדף"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:194
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:535
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:204
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:545
 msgid "Favorites"
 msgstr "מועדפים"
 
@@ -654,7 +658,7 @@ msgstr "ממצאים"
 msgid "Finishing synchronization"
 msgstr "מסיים סנכרון"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:773
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:784
 msgid "Focus Search"
 msgstr "מיקוד חיפוש"
 
@@ -695,9 +699,9 @@ msgstr "סיסמה שנוצרה"
 msgid "Generation Type"
 msgstr "סוג יצירה"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:63
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:151
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:565
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:64
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:154
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:575
 msgid "Generator"
 msgstr "מחולל"
 
@@ -705,8 +709,8 @@ msgstr "מחולל"
 msgid "Google Drive"
 msgstr "Google Drive"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:181
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:527
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:191
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:537
 msgid "Groups"
 msgstr "קבוצות"
 
@@ -767,8 +771,8 @@ msgid "Incorrect PIN"
 msgstr "PIN שגוי"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1454
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:338
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:774
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:338
 msgid "Incorrect master password"
 msgstr "סיסמת אב שגויה"
 
@@ -813,9 +817,9 @@ msgstr "מפתח נרשם"
 msgid "Key removed"
 msgstr "מפתח הוסר"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:101
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:755
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:784
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:104
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:766
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:795
 msgid "Keyboard Shortcuts"
 msgstr "קיצורי מקלדת"
 
@@ -833,12 +837,13 @@ msgstr "קודי אימות דו-שלביים גדולים"
 msgid "Length"
 msgstr "אורך"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:207
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:533
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:217
 msgid "Lock"
 msgstr "נעילה"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:80
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:778
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:81
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:789
 msgid "Lock Vault"
 msgstr "נעילת הכספת"
 
@@ -860,8 +865,8 @@ msgstr "סמן סיסמאות כמועדפות באמצעות סמל הכוכב"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:214
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1392
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:211
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:269
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:211
 msgid "Master Password"
 msgstr "סיסמת אב"
 
@@ -877,11 +882,11 @@ msgstr "סיסמת האב שונתה."
 msgid "Master password is in the keyring"
 msgstr "סיסמת האב נמצאת במחזיק המפתחות"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:768
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:779
 msgid "Navigation"
 msgstr "ניווט"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:778
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:789
 msgid "New Entry"
 msgstr "ערך חדש"
 
@@ -932,9 +937,9 @@ msgstr "אין מועדפים"
 msgid "No Passwords Stored"
 msgstr "אין סיסמאות שמורות"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:386
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:866
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:919
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:386
 msgid "No Results"
 msgstr "אין תוצאות"
 
@@ -1018,7 +1023,7 @@ msgstr "פתח ייצוא .ashy"
 msgid "Open KeePass database"
 msgstr "פתיחת מסד נתונים של KeePass"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:783
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:794
 msgid "Open Settings"
 msgstr "פתיחת הגדרות"
 
@@ -1040,6 +1045,9 @@ msgstr "אפשרויות PIN"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:144
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1587
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:213
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:218
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:668
 msgid "Passphrase"
 msgstr "משפט סיסמה"
 
@@ -1121,15 +1129,15 @@ msgstr "הסיסמאות אינן תואמות."
 msgid "Paste a Base32 secret or an otpauth:// URI"
 msgstr "הדבק סוד Base32 או URI מסוג otpauth://"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1711
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:701
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:881
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1711
 msgid "Period (seconds)"
 msgstr "תקופה (שניות)"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3233
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:646
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1463
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:646
 msgid "Permanently deleted"
 msgstr "נמחק לצמיתות"
 
@@ -1159,8 +1167,8 @@ msgstr "ייצוא JSON פשוט מ-andOTP"
 msgid "Please create your master password in the Vault tab first."
 msgstr "אנא צור תחילה את סיסמת האב שלך בלשונית הכספת."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:313
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:754
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:313
 msgid "Please enter a password"
 msgstr "אנא הזן סיסמה"
 
@@ -1209,8 +1217,8 @@ msgstr "פתיחה מהירה מופעלת"
 msgid "Quick-unlock failed"
 msgstr "הפתיחה המהירה נכשלה"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:105
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:785
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:108
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:796
 msgid "Quit"
 msgstr "יציאה"
 
@@ -1302,10 +1310,10 @@ msgstr "מריץ ביקורת..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1977
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2203
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2550
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:664
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:827
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1081
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1554
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:664
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:827
 msgid "Save"
 msgstr "שמירה"
 
@@ -1345,7 +1353,7 @@ msgstr ""
 msgid "Scanning vault..."
 msgstr "סורק את הכספת..."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:68
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:69
 msgid "Search"
 msgstr "חיפוש"
 
@@ -1416,15 +1424,15 @@ msgstr "לא הוגדר — צור אחד חדש כדי להחליפו"
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:165
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:169
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:181
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:222
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:232
 msgid "Settings"
 msgstr "הגדרות"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:771
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:782
 msgid "Show 2FA"
 msgstr "הצגת אימות דו-שלבי"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:772
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:783
 msgid "Show Generator"
 msgstr "הצגת מחולל"
 
@@ -1432,7 +1440,7 @@ msgstr "הצגת מחולל"
 msgid "Show Nextcloud badges"
 msgstr "הצג תגי Nextcloud"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:770
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:781
 msgid "Show Vault"
 msgstr "הצגת הכספת"
 
@@ -1520,6 +1528,7 @@ msgid "Stored in system keyring"
 msgstr "מאוחסן במחזיק המפתחות של המערכת"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:97
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:225
 msgid "Strength"
 msgstr "חוזק"
 
@@ -1595,8 +1604,8 @@ msgstr "מחזיק מפתחות מערכת"
 msgid "TOTP Secret"
 msgstr "סוד TOTP"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:852
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1666
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:852
 msgid "TOTP Secret (Base32)"
 msgstr "סוד TOTP (Base32)"
 
@@ -1617,8 +1626,8 @@ msgstr "נדרש סוד TOTP"
 msgid "Tags (comma-separated)"
 msgstr "תגיות (מופרדות בפסיקים)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:621
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1437
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:621
 msgid "This action cannot be undone."
 msgstr "לא ניתן לבטל פעולה זו."
 
@@ -1626,9 +1635,9 @@ msgstr "לא ניתן לבטל פעולה זו."
 msgid "This device generation:"
 msgstr "דור מכשיר זה:"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1559
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:668
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:833
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1559
 msgid "Title"
 msgstr "כותרת"
 
@@ -1666,9 +1675,9 @@ msgstr ""
 msgid "Type the current master password first"
 msgstr "הקלד תחילה את סיסמת האב הנוכחית"
 
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1633
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:672
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:843
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1633
 msgid "URL"
 msgstr "כתובת URL"
 
@@ -1689,6 +1698,8 @@ msgid "Unencrypted Bitwarden vault export"
 msgstr "ייצוא כספת Bitwarden לא מוצפן"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:221
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:616
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:680
 msgid "Unlock"
 msgstr "פתח"
 
@@ -1754,15 +1765,15 @@ msgstr "משמש לפתיחת הכספת. שינוי שלו מצפין מחדש 
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2208
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2555
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1565
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:670
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:838
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1565
 msgid "Username"
 msgstr "שם משתמש"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:158
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:563
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:777
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:161
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:573
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:788
 msgid "Vault"
 msgstr "כספת"
 
@@ -1775,7 +1786,7 @@ msgstr "רשימת הכספת"
 msgid "Vault already in sync"
 msgstr "הכספת כבר מסונכרנת"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:291
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:301
 msgid "Vault locked due to inactivity"
 msgstr "הכספת ננעלה עקב חוסר פעילות"
 
@@ -1785,7 +1796,7 @@ msgstr "הכספת ננעלה עקב חוסר פעילות"
 msgid "Vault must be unlocked to configure"
 msgstr "יש לבטל את נעילת הכספת כדי להגדיר"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:306
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:316
 msgid "Vault will lock soon"
 msgstr "הכספת תינעל בקרוב"
 
@@ -1866,6 +1877,385 @@ msgstr "נראה"
 #: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3067
 msgid "weak"
 msgstr "חלש"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:91
+msgid ""
+"Preview — drive encryption backend not yet enabled. Listing is read-only."
+msgstr ""
+"תצוגה מקדימה — מנגנון ההצפנה של הכונן עדיין לא מופעל. הרשימה לקריאה בלבד."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:107
+msgid "Rescan drives"
+msgstr "סרוק כוננים מחדש"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:120
+msgid "No external drives detected"
+msgstr "לא זוהו כוננים חיצוניים"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:122
+msgid "Plug in a USB drive or external disk, then press Rescan."
+msgstr "חבר כונן USB או דיסק חיצוני, ולחץ על סרוק מחדש."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:185
+msgid "Failed to scan drives"
+msgstr "סריקת הכוננים נכשלה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:274
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:400
+msgid "read-only"
+msgstr "לקריאה בלבד"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:288
+msgid "Encrypt…"
+msgstr "הצפנה…"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:289
+msgid "Launch the encryption wizard"
+msgstr "הפעל את אשף ההצפנה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:312
+msgid "Whole device — no partition table"
+msgstr "התקן שלם — ללא טבלת מחיצות"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:348
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:103
+msgid "Vendor"
+msgstr "יצרן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:351
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:104
+msgid "Model"
+msgstr "דגם"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:354
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:105
+msgid "Serial"
+msgstr "מספר סידורי"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:364
+msgid "Bus / media"
+msgstr "אפיק / מדיה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:376
+msgid "none"
+msgstr "אין"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:377
+msgid "Partition table"
+msgstr "טבלת מחיצות"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:385
+msgid "allocated"
+msgstr "מוקצה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:387
+msgid "free"
+msgstr "פנוי"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:392
+msgid "Capacity"
+msgstr "קיבולת"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:399
+msgid "Write protection"
+msgstr "הגנת כתיבה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:455
+msgid "flash storage"
+msgstr "אחסון פלאש"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:456
+msgid "rotational (HDD)"
+msgstr "סיבובי (HDD)"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:457
+msgid "solid-state"
+msgstr "מצב מוצק"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:488
+msgid "not mounted"
+msgstr "לא מורכב"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:536
+msgid "Close active mapping"
+msgstr "סגור מיפוי פעיל"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:599
+msgid "Add FIDO2 token keyslot"
+msgstr "הוסף חריץ מפתח FIDO2"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:617
+msgid "Open the encrypted partition"
+msgstr "פתח את המחיצה המוצפנת"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:672
+msgid "free of"
+msgstr "פנוי מתוך"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:38
+msgid "Encrypt Drive"
+msgstr "הצפן כונן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:77
+msgid "Confirm Device"
+msgstr "אשר התקן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:89
+msgid "This will erase everything on the drive"
+msgstr "פעולה זו תמחק את כל הנתונים בכונן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:91
+msgid ""
+"All partitions, files, and filesystem signatures will be permanently "
+"destroyed."
+msgstr "כל המחיצות, הקבצים וחתימות מערכות הקבצים יושמדו לצמיתות."
+
+#. Device details grid.
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:102
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:787
+msgid "Device"
+msgstr "התקן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:106
+msgid "Size"
+msgstr "גודל"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:107
+msgid "Path"
+msgstr "נתיב"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:121
+msgid "Will destroy"
+msgstr "יושמד"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:131
+msgid "Safety checks passed"
+msgstr "בדיקות הבטיחות עברו בהצלחה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:140
+msgid "Safety checks failed"
+msgstr "בדיקות הבטיחות נכשלו"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:150
+msgid "Safety check error"
+msgstr "שגיאה בבדיקת בטיחות"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:161
+msgid "I understand — Continue"
+msgstr "אני מבין/ה — המשך"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:205
+msgid "Set Passphrase"
+msgstr "הגדר משפט סיסמה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:215
+msgid ""
+"At least 8 characters. A four-word passphrase from the EFF wordlist is a "
+"strong default."
+msgstr ""
+"לפחות 8 תווים. משפט סיסמה בן ארבע מילים מרשימת המילים של EFF הוא ברירת מחדל "
+"חזקה."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:219
+msgid "Repeat"
+msgstr "חזור"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:245
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:358
+msgid "Back"
+msgstr "חזרה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:246
+msgid "Continue"
+msgstr "המשך"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:313
+msgid "Options"
+msgstr "אפשרויות"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:320
+msgid "Label"
+msgstr "תווית"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:325
+msgid "Filesystem"
+msgstr "מערכת קבצים"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:331
+msgid "Encrypted zero (recommended — slow but secure)"
+msgstr "אפס מוצפן (מומלץ — איטי אך מאובטח)"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:332
+msgid "Secure discard (SSD/NVMe only, near-instant)"
+msgstr "מחיקה מאובטחת (SSD/NVMe בלבד, כמעט מיידי)"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:333
+msgid "Random pass (slowest)"
+msgstr "מעבר אקראי (האיטי ביותר)"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:334
+msgid "None — quick, leaves prior data recoverable"
+msgstr "ללא — מהיר, משאיר נתונים קודמים ניתנים לשחזור"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:337
+msgid "Pre-format wipe"
+msgstr "מחיקה לפני עיצוב"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:343
+msgid "Allow TRIM through encrypted mapping"
+msgstr "אפשר TRIM דרך מיפוי מוצפן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:345
+msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
+msgstr "מסייע לאיזון שחיקה של SSD אך חושף תבניות שטח פנוי להתקן."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:359
+msgid "Encrypt"
+msgstr "הצפן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:415
+msgid "Encrypting…"
+msgstr "מצפין…"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:423
+msgid "Preparing…"
+msgstr "מתכונן…"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:430
+msgid "…"
+msgstr "…"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:439
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:633
+msgid "Safety check"
+msgstr "בדיקת בטיחות"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:440
+msgid "Wipe device"
+msgstr "מחיקת התקן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:441
+msgid "Write LUKS2 header"
+msgstr "כתיבת כותרת LUKS2"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:442
+msgid "Open encrypted mapping"
+msgstr "פתיחת מיפוי מוצפן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:443
+msgid "Create filesystem"
+msgstr "יצירת מערכת קבצים"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:444
+msgid "Close mapping"
+msgstr "סגירת מיפוי"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:459
+msgid "Close"
+msgstr "סגור"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:480
+msgid "Internal error: no passphrase set"
+msgstr "שגיאה פנימית: לא הוגדרה סיסמה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:599
+msgid "Done."
+msgstr "בוצע."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:603
+msgid "Encrypted as"
+msgstr "מוצפן כ-"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:609
+msgid "Failed"
+msgstr "נכשל"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:634
+msgid "Wiping device"
+msgstr "מחיקת התקן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:635
+msgid "Writing LUKS2 header"
+msgstr "כתיבת כותרת LUKS2"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:636
+msgid "Opening encrypted mapping"
+msgstr "פתיחת מיפוי מוצפן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:637
+msgid "Creating filesystem"
+msgstr "יצירת מערכת קבצים"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:638
+msgid "Closing mapping"
+msgstr "סגירת מיפוי"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:656
+msgid "Unlock Drive"
+msgstr "פתיחת כונן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:664
+msgid "Encrypted device"
+msgstr "מכשיר מוצפן"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:704
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:844
+msgid "Empty passphrase"
+msgstr "ביטוי סיסמה ריק"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:708
+msgid "Unlocking…"
+msgstr "מבטל נעילה…"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:732
+msgid "Unlocked at"
+msgstr "בוטלה נעילה ב-"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:771
+msgid "Enrol FIDO2 Token"
+msgstr "רישום אסימון FIDO2"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:779
+msgid "Add a hardware token keyslot"
+msgstr "הוספת חריץ מפתח לאסימון חומרה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:781
+msgid ""
+"Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
+"device when prompted. Your current passphrase is required to authorise the "
+"new keyslot."
+msgstr ""
+"הכנס את אסימון ה-FIDO2 שלך (Yubikey, Nitrokey וכו') ואשר במכשיר כשתתבקש. "
+"נדרש ביטוי הסיסמה הנוכחי שלך כדי לאשר את חריץ המפתח החדש."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:795
+msgid "Current passphrase"
+msgstr "ביטוי סיסמה נוכחי"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:802
+msgid "Require PIN at unlock"
+msgstr "דרוש קוד PIN בעת ביטול הנעילה"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:806
+msgid "Require user-presence (touch the token)"
+msgstr "דרוש נוכחות משתמש (גע באסימון)"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:820
+msgid "Enrol"
+msgstr "רישום"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:848
+msgid "Talking to your token… check the device for a touch prompt."
+msgstr "מדבר עם האסימון שלך… בדוק את המכשיר להנחיית מגע."
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:873
+msgid "FIDO2 keyslot added"
+msgstr "חריץ מפתח FIDO2 נוסף"
+
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:175
+#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:576
+msgid "Drives"
+msgstr "כוננים"
 
 #~ msgid "No Groups"
 #~ msgstr "אין קבוצות"
