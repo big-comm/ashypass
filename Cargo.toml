@@ -4,6 +4,8 @@ members = [
     "crates/ashypass-core",
     "crates/ashypass-app",
     "crates/ashypass-cli",
+    "crates/ashypass-drives",
+    "crates/ashypass-drives-helper",
     "crates/ashypass-native-host",
 ]
 
@@ -62,6 +64,7 @@ secret-service = { version = "5", features = ["rt-tokio-crypto-rust"] }
 
 # Internal
 ashypass-core = { path = "crates/ashypass-core" }
+ashypass-drives = { path = "crates/ashypass-drives" }
 
 [profile.release]
 opt-level = 3

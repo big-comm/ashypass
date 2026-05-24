@@ -18,6 +18,7 @@ fido2 = ["ashypass-core/fido2"]
 
 [dependencies]
 ashypass-core.workspace = true
+ashypass-drives.workspace = true
 gtk = { package = "gtk4", version = "0.9", features = ["v4_12"] }
 adw = { package = "libadwaita", version = "0.7", features = ["v1_5"] }
 glib = "0.20"

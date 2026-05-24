@@ -1,3 +1,5 @@
+pub mod drives_view;
+pub mod drives_wizard;
 pub mod generator_view;
 pub mod i18n;
 pub mod settings_dialog;

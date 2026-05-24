@@ -179,6 +179,7 @@ version = "3.0.0"
 dependencies = [
  "anyhow",
  "ashypass-core",
+ "ashypass-drives",
  "chrono",
  "dirs",
  "env_logger",
@@ -203,7 +204,9 @@ version = "3.0.0"
 dependencies = [
  "anyhow",
  "ashypass-core",
+ "ashypass-drives",
  "clap",
+ "libc",
  "rpassword",
 ]
 
@@ -246,6 +249,29 @@ dependencies = [
  "zeroize",
  "zip",
  "zxcvbn",
+]
+
+[[package]]
+name = "ashypass-drives"
+version = "3.0.0"
+dependencies = [
+ "libc",
+ "log",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+ "zeroize",
+]
+
+[[package]]
+name = "ashypass-drives-helper"
+version = "3.0.0"
+dependencies = [
+ "anyhow",
+ "ashypass-drives",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
 ]
 
 [[package]]

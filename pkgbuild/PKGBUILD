@@ -10,6 +10,15 @@ depends=(
     'gettext'
     'sqlite'
     'openssl'
+    'cryptsetup'
+    'util-linux'
+    'e2fsprogs'
+    'polkit'
+)
+optdepends=(
+    'btrfs-progs: Btrfs filesystem support for encrypted drives'
+    'xfsprogs: XFS filesystem support for encrypted drives'
+    'systemd: FIDO2 token enrolment via systemd-cryptenroll'
 )
 makedepends=(
     'rust'
@@ -44,7 +53,8 @@ build() {
     cargo build --release --locked \
         --bin ashypass \
         --bin ashypass-cli \
-        --bin ashypass-native-host
+        --bin ashypass-native-host \
+        --bin ashypass-drives-helper
 }
 
 check() {
@@ -60,6 +70,12 @@ package() {
     install -Dm755 "target/release/ashypass"              "${pkgdir}/usr/bin/ashypass"
     install -Dm755 "target/release/ashypass-cli"          "${pkgdir}/usr/bin/ashypass-cli"
     install -Dm755 "target/release/ashypass-native-host"  "${pkgdir}/usr/lib/${pkgname}/ashypass-native-host"
+
+    # Privileged drive-encryption helper. Installed under /usr/libexec/ so
+    # only the polkit-mediated `pkexec` invocation can launch it elevated;
+    # users never need to run it directly.
+    install -Dm755 "target/release/ashypass-drives-helper" \
+                   "${pkgdir}/usr/libexec/${pkgname}/ashypass-drives-helper"
 
     if [ -d "usr/share" ]; then
         cp -a usr/share "${pkgdir}/usr/"
