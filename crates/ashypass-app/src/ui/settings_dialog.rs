@@ -2776,77 +2776,262 @@ fn finish_nextcloud_sync(
 ) {
     match result {
         Ok(r) => {
-            let s = &r.stats;
-            let heading = if s.errors.is_empty() {
-                tr!("Sync completed")
-            } else {
-                tr!("Sync completed with errors")
-            };
-            show_toast(&toast, heading);
-            let mut body = format!(
-                "{}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}\n{}: {}",
-                tr!("Nextcloud sync finished."),
-                tr!("Created locally"),
-                s.created_locally,
-                tr!("Created on Nextcloud"),
-                s.created_remotely,
-                tr!("Updated locally"),
-                s.updated_locally,
-                tr!("Updated on Nextcloud"),
-                s.updated_remotely,
-                tr!("Deleted on Nextcloud"),
-                s.deleted_remotely,
-                tr!("Conflicts resolved"),
-                s.conflicts,
-            );
-            if s.skipped_passwordless > 0 {
-                let skipped = format!(
-                    "{}: {}",
-                    tr!("Passwordless entries ignored"),
-                    s.skipped_passwordless
-                );
-                show_toast(&toast, &skipped);
-                body.push_str("\n\n");
-                body.push_str(&skipped);
-                body.push('\n');
-                body.push_str(tr!(
-                    "Nextcloud requires a filled password, so these local entries were not sent."
-                ));
-            }
-            if !s.errors.is_empty() {
-                let head = s.errors.first().cloned().unwrap_or_default();
-                let extra = if s.errors.len() > 1 {
-                    format!(" (+{} more)", s.errors.len() - 1)
-                } else {
-                    String::new()
-                };
-                show_toast(&toast, &format!("{}: {head}{extra}", tr!("Sync errors")));
-                body.push_str("\n\n");
-                body.push_str(tr!("Sync errors"));
-                body.push_str(":\n");
-                for err in s.errors.iter().take(5) {
-                    body.push_str("- ");
-                    body.push_str(err);
-                    body.push('\n');
-                }
-                if s.errors.len() > 5 {
-                    body.push_str(&format!("... +{} more", s.errors.len() - 5));
-                }
-            }
-            show_message_dialog(parent, heading, &body);
+            present_sync_success_dialog(parent, &toast, &r);
             state.events.emit(crate::events::AppEvent::SyncCompleted {
                 filename: "nextcloud".into(),
             });
         }
         Err(e) => {
-            let msg = format!("{}: {e}", tr!("Sync failed"));
-            show_toast(&toast, &msg);
-            show_message_dialog(parent, tr!("Sync failed"), &msg);
+            // Concise toast + structured dialog with the raw error tucked
+            // behind an expander so the surface stays calm.
+            show_toast(&toast, tr!("Sync failed"));
+            present_sync_failure_dialog(parent, &e);
             state
                 .events
                 .emit(crate::events::AppEvent::SyncFailed(e.to_string()));
         }
     }
+}
+
+/// Render a structured success dialog using `adw::AlertDialog` with a
+/// custom extra_child built from `adw::PreferencesGroup` rows. Zero-count
+/// rows are omitted, the passphrase-less note is surfaced separately, and
+/// errors collapse behind an expander.
+pub(super) fn present_sync_success_dialog(
+    parent: Option<&gtk::Window>,
+    toast: &adw::ToastOverlay,
+    report: &ashypass_core::sync::SyncReport,
+) {
+    let s = &report.stats;
+    let has_errors = !s.errors.is_empty();
+    let total_changes = s.created_locally
+        + s.created_remotely
+        + s.updated_locally
+        + s.updated_remotely
+        + s.deleted_remotely;
+
+    // ---- concise toast: ONE summary line, no per-bucket spam ----
+    let toast_msg = if has_errors {
+        format!(
+            "{}: {}",
+            tr!("Sync com problemas"),
+            s.errors.len()
+        )
+    } else if total_changes == 0 && s.conflicts == 0 {
+        tr!("Tudo já estava sincronizado").to_string()
+    } else if total_changes == 1 {
+        tr!("1 entrada sincronizada").to_string()
+    } else {
+        format!("{} {}", total_changes, tr!("entradas sincronizadas"))
+    };
+    show_toast(toast, &toast_msg);
+
+    let heading = if has_errors {
+        tr!("Sincronização concluída com avisos")
+    } else if total_changes == 0 && s.conflicts == 0 {
+        tr!("Tudo em sincronia")
+    } else {
+        tr!("Sincronização concluída")
+    };
+
+    let body_text = if has_errors {
+        tr!("A sincronização terminou, mas alguns itens reportaram erro.")
+    } else if total_changes == 0 && s.conflicts == 0 {
+        tr!("Nada mudou — o Ashy Pass e o Nextcloud já estavam alinhados.")
+    } else {
+        tr!("Reconciliação bidirecional concluída com sucesso.")
+    };
+
+    let dialog = adw::AlertDialog::builder()
+        .heading(heading)
+        .body(body_text)
+        .build();
+    dialog.add_response("ok", tr!("Pronto"));
+    dialog.set_default_response(Some("ok"));
+    dialog.set_close_response("ok");
+
+    let content = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(16)
+        .margin_top(8)
+        .build();
+
+    // -- Push (Ashy Pass → Nextcloud) ----------------------------------
+    let push_rows: Vec<(&str, usize, &str)> = [
+        (tr!("Criadas remotamente"), s.created_remotely, "list-add-symbolic"),
+        (tr!("Atualizadas remotamente"), s.updated_remotely, "document-edit-symbolic"),
+        (tr!("Removidas remotamente"), s.deleted_remotely, "edit-delete-symbolic"),
+    ]
+    .into_iter()
+    .filter(|(_, n, _)| *n > 0)
+    .collect();
+    if !push_rows.is_empty() {
+        let group = adw::PreferencesGroup::builder()
+            .title(tr!("Enviado para o Nextcloud"))
+            .build();
+        for (label, n, icon) in push_rows {
+            group.add(&sync_count_row(label, n, icon, "accent"));
+        }
+        content.append(&group);
+    }
+
+    // -- Pull (Nextcloud → Ashy Pass) ----------------------------------
+    let pull_rows: Vec<(&str, usize, &str)> = [
+        (tr!("Criadas localmente"), s.created_locally, "list-add-symbolic"),
+        (tr!("Atualizadas localmente"), s.updated_locally, "document-edit-symbolic"),
+    ]
+    .into_iter()
+    .filter(|(_, n, _)| *n > 0)
+    .collect();
+    if !pull_rows.is_empty() {
+        let group = adw::PreferencesGroup::builder()
+            .title(tr!("Recebido do Nextcloud"))
+            .build();
+        for (label, n, icon) in pull_rows {
+            group.add(&sync_count_row(label, n, icon, "success"));
+        }
+        content.append(&group);
+    }
+
+    // -- Conflicts -----------------------------------------------------
+    if s.conflicts > 0 {
+        let group = adw::PreferencesGroup::builder()
+            .title(tr!("Conflitos"))
+            .description(tr!(
+                "Resolvidos automaticamente pela política 'última edição vence'."
+            ))
+            .build();
+        group.add(&sync_count_row(
+            tr!("Itens reconciliados"),
+            s.conflicts,
+            "view-refresh-symbolic",
+            "warning",
+        ));
+        for (title, decision) in report.conflict_details.iter().take(5) {
+            let r = adw::ActionRow::builder()
+                .title(title)
+                .subtitle(match *decision {
+                    "local" => tr!("Mantida a versão local"),
+                    "remote" => tr!("Mantida a versão remota"),
+                    other => other,
+                })
+                .build();
+            group.add(&r);
+        }
+        content.append(&group);
+    }
+
+    // -- Passwordless skip (informational, not an error) ---------------
+    if s.skipped_passwordless > 0 {
+        let group = adw::PreferencesGroup::new();
+        let row = adw::ActionRow::builder()
+            .title(format!(
+                "{} {}",
+                s.skipped_passwordless,
+                tr!("entradas sem senha foram ignoradas")
+            ))
+            .subtitle(tr!(
+                "O Nextcloud Passwords exige um campo de senha preenchido. Edite essas entradas no Ashy Pass adicionando uma senha para que sejam enviadas."
+            ))
+            .build();
+        let icon = gtk::Image::from_icon_name("dialog-information-symbolic");
+        icon.add_css_class("accent");
+        row.add_prefix(&icon);
+        group.add(&row);
+        content.append(&group);
+    }
+
+    // -- Errors (collapsed by default) ---------------------------------
+    if has_errors {
+        let group = adw::PreferencesGroup::builder()
+            .title(tr!("Detalhes dos erros"))
+            .build();
+        let expander = adw::ExpanderRow::builder()
+            .title(format!(
+                "{} {}",
+                s.errors.len(),
+                if s.errors.len() == 1 {
+                    tr!("erro reportado")
+                } else {
+                    tr!("erros reportados")
+                }
+            ))
+            .build();
+        let icon = gtk::Image::from_icon_name("dialog-warning-symbolic");
+        icon.add_css_class("warning");
+        expander.add_prefix(&icon);
+        for err in s.errors.iter().take(10) {
+            let r = adw::ActionRow::builder().title(err.as_str()).build();
+            r.add_css_class("monospace");
+            expander.add_row(&r);
+        }
+        if s.errors.len() > 10 {
+            let r = adw::ActionRow::builder()
+                .title(format!("… +{} mais", s.errors.len() - 10))
+                .build();
+            r.add_css_class("dim-label");
+            expander.add_row(&r);
+        }
+        group.add(&expander);
+        content.append(&group);
+    }
+
+    // If nothing happened (no rows above), the dialog body already says
+    // "Tudo em sincronia" — leave the extra_child empty.
+    if content.first_child().is_some() {
+        dialog.set_extra_child(Some(&content));
+    }
+
+    dialog.present(parent);
+}
+
+fn sync_count_row(
+    label: &str,
+    count: usize,
+    icon_name: &str,
+    icon_class: &str,
+) -> adw::ActionRow {
+    let row = adw::ActionRow::builder().title(label).build();
+    let icon = gtk::Image::from_icon_name(icon_name);
+    icon.add_css_class(icon_class);
+    row.add_prefix(&icon);
+    let count_label = gtk::Label::builder()
+        .label(count.to_string())
+        .valign(gtk::Align::Center)
+        .build();
+    count_label.add_css_class("monospace");
+    count_label.add_css_class("title-4");
+    count_label.add_css_class(icon_class);
+    row.add_suffix(&count_label);
+    row
+}
+
+pub(super) fn present_sync_failure_dialog(parent: Option<&gtk::Window>, error: &str) {
+    let dialog = adw::AlertDialog::builder()
+        .heading(tr!("Não foi possível sincronizar"))
+        .body(tr!(
+            "O Ashy Pass não conseguiu falar com o Nextcloud. Verifique sua conexão, o endereço do servidor e a senha de aplicativo."
+        ))
+        .build();
+    dialog.add_response("ok", tr!("Entendi"));
+    dialog.set_default_response(Some("ok"));
+    dialog.set_close_response("ok");
+
+    // Tuck the raw error behind an expander so the surface stays calm.
+    let group = adw::PreferencesGroup::new();
+    let expander = adw::ExpanderRow::builder()
+        .title(tr!("Ver detalhe técnico"))
+        .build();
+    let icon = gtk::Image::from_icon_name("dialog-error-symbolic");
+    icon.add_css_class("error");
+    expander.add_prefix(&icon);
+    let err_row = adw::ActionRow::builder().title(error).build();
+    err_row.add_css_class("monospace");
+    expander.add_row(&err_row);
+    group.add(&expander);
+
+    dialog.set_extra_child(Some(&group));
+    dialog.present(parent);
 }
 
 // ---------------------------------------------------------------------------

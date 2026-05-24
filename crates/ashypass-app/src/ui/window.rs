@@ -286,6 +286,16 @@ impl MainWindow {
             state.session.borrow_mut().timeout_seconds = s.lock_timeout.max(15);
         }
 
+        // Install Nextcloud Passwords auto-sync. The scheduler subscribes to
+        // VaultChanged for debounced push, runs a periodic pull on its own
+        // timer, and surfaces errors through the same toast overlay we use
+        // for everything else.
+        let auto_sync_handle =
+            crate::auto_sync::install(state.clone(), toast_overlay.clone());
+        // Kick off one sync after vault is unlocked elsewhere (see the
+        // on_auth_changed wiring below).
+        let auto_sync_handle_for_unlock = auto_sync_handle.clone();
+
         // Wire session lock callback to refresh the UI when timer expires.
         // Also publishes a `SessionLocked` event on the app bus so other views
         // can react without needing direct callback wiring.
@@ -324,11 +334,18 @@ impl MainWindow {
             state.session.borrow_mut().set_warning_callback(cb);
         }
 
-        // Wire vault-view auth-changed callback to refresh sidebar
+        // Wire vault-view auth-changed callback to refresh sidebar.
+        // Also pings the Nextcloud auto-sync scheduler on unlock so the
+        // first view is fresh from the server (honours sync_on_unlock).
         {
             let inner_cl = inner.clone();
+            let state_cl = state.clone();
+            let auto_sync = auto_sync_handle_for_unlock.clone();
             vault_view.set_on_auth_changed(Box::new(move || {
                 inner_cl.update_auth_nav();
+                if state_cl.vault.borrow().is_unlocked() {
+                    auto_sync.on_vault_unlocked();
+                }
             }));
         }
         {
