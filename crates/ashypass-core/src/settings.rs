@@ -51,6 +51,15 @@ pub struct Settings {
     /// Trash retention in days. Entries deleted longer ago are purged on app
     /// start. 0 disables the trash entirely (deletes are immediate).
     pub trash_retention_days: u32,
+    /// Run a Nextcloud Passwords reconcile automatically: after every vault
+    /// mutation (debounced) and at a periodic interval. Default on — the
+    /// scheduler still no-ops when Nextcloud isn't configured.
+    pub nextcloud_auto_sync: bool,
+    /// Minutes between periodic background syncs. 0 disables periodic; the
+    /// debounced post-edit sync still runs.
+    pub nextcloud_auto_sync_interval_minutes: u32,
+    /// Trigger one sync when the vault is unlocked.
+    pub nextcloud_sync_on_unlock: bool,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -81,6 +90,9 @@ impl Default for Settings {
             audit_check_hibp: false,
             quick_unlock: None,
             trash_retention_days: 30,
+            nextcloud_auto_sync: true,
+            nextcloud_auto_sync_interval_minutes: 5,
+            nextcloud_sync_on_unlock: true,
         }
     }
 }

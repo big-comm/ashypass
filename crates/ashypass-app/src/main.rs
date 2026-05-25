@@ -1,5 +1,6 @@
 //! Ashy Pass — GTK4/libadwaita password manager (Rust port).
 
+mod auto_sync;
 mod clipboard;
 mod events;
 mod favicons;
@@ -70,6 +71,19 @@ fn main() -> glib::ExitCode {
             init_css();
             let win = ui::MainWindow::new(app, state);
             win.present();
+
+            // Dev-only preview harnesses, enabled by env var. Designed to
+            // exercise dialogs that normally require external setup (a
+            // configured Nextcloud server, a token, etc.) so we can iterate
+            // on visuals without the full integration. Each harness shows
+            // its dialog as soon as the window is on screen and then
+            // exits — the value can be a comma-separated list.
+            if let Ok(preview) = std::env::var("ASHYPASS_PREVIEW") {
+                for kind in preview.split(',').map(str::trim).filter(|s| !s.is_empty()) {
+                    ui::preview::present(kind, &win.window);
+                }
+            }
+
             *window_holder.borrow_mut() = Some(win);
         });
     }
