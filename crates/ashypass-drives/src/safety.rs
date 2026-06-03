@@ -54,7 +54,7 @@ pub fn inspect(device: &Path, policy: SafetyPolicy) -> Result<SafetyReport> {
     let mut reasons = Vec::new();
     let mut allow = true;
 
-    if !policy.allow_fixed && !(drive.removable || drive.hotplug) {
+    if !(policy.allow_fixed || drive.removable || drive.hotplug) {
         allow = false;
         reasons.push("device is not removable or hotplug-capable".into());
     }

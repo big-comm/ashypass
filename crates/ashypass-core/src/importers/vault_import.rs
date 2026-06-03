@@ -102,7 +102,7 @@ pub fn export_vault_to_csv(vault: &Vault, path: impl AsRef<Path>) -> Result<usiz
     let list = vault.list(None)?;
     let mut rows = Vec::with_capacity(list.len());
     for e in list {
-        let full = match vault.get(e.id)? {
+        let full = match vault.get_without_touch(e.id)? {
             Some(v) => v,
             None => continue,
         };

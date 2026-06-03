@@ -46,7 +46,7 @@ pub const PBKDF_MEMORY_KIB: u32 = 1_048_576; // 1 GiB
 pub const PBKDF_PARALLEL: u32 = 4;
 pub const SECTOR_SIZE: u32 = 4096;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct FormatOptions {
     pub label: String,
     /// LUKS2 *user-friendly* device label (`--subsystem`). Helps users find
@@ -56,16 +56,6 @@ pub struct FormatOptions {
     /// device. Off by default; useful for SSDs where you accept the leak in
     /// exchange for TRIM-driven wear levelling.
     pub allow_discards: bool,
-}
-
-impl Default for FormatOptions {
-    fn default() -> Self {
-        Self {
-            label: String::new(),
-            subsystem: None,
-            allow_discards: false,
-        }
-    }
 }
 
 /// Build the argv for `cryptsetup luksFormat`. Pure function — no I/O — so

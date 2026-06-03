@@ -25,7 +25,6 @@ use crate::events::AppEvent;
 use crate::state::SharedState;
 use ashypass_core::settings::Settings;
 use ashypass_core::sync::{nextcloud_engine, ConflictResolution, SyncReport};
-use adw::prelude::*;
 use gtk::glib;
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;

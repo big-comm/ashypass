@@ -289,7 +289,7 @@ fn build_key_page(
         let state_cl = state.clone();
         let pw_cl = pw.clone();
         next.connect_clicked(move |_| {
-            state_cl.borrow_mut().passphrase = Some(Passphrase::from_str(pw_cl.text().as_str()));
+            state_cl.borrow_mut().passphrase = Some(Passphrase::from_text(pw_cl.text().as_str()));
             let opts_page = build_options_page(&nav_cl, drive_cl.clone(), state_cl.clone());
             nav_cl.push(&opts_page);
         });

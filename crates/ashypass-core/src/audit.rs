@@ -69,7 +69,7 @@ pub fn run(vault: &Vault, opts: AuditOptions) -> Result<Report> {
     let summaries = vault.list(None)?;
     let mut decrypted: Vec<PasswordEntry> = Vec::with_capacity(summaries.len());
     for s in &summaries {
-        if let Some(e) = vault.get(s.id)? {
+        if let Some(e) = vault.get_without_touch(s.id)? {
             decrypted.push(e);
         }
     }

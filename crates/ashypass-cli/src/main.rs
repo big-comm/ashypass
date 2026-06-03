@@ -244,8 +244,8 @@ fn run_drives(action: DrivesAction) -> Result<()> {
                 return Ok(());
             }
             println!(
-                "{:<12} {:>10} {:<5} {:<20} {:<24} {}",
-                "DEVICE", "SIZE", "BUS", "VENDOR", "MODEL", "FLAGS"
+                "{:<12} {:>10} {:<5} {:<20} {:<24} FLAGS",
+                "DEVICE", "SIZE", "BUS", "VENDOR", "MODEL"
             );
             for d in drives {
                 let mut flags = Vec::new();
@@ -409,9 +409,14 @@ fn run_drives(action: DrivesAction) -> Result<()> {
                 .unwrap_or_else(|| mapper_name_for(label.as_deref().unwrap_or("ashypass")));
             let passphrase = prompt_passphrase("LUKS passphrase: ")?;
             let runner = auto_runner();
-            let mapped =
-                unlock_existing(runner.as_ref(), &device, &mapper.trim_start_matches("ashypass_"), &passphrase, allow_discards)
-                    .map_err(|e| anyhow!("unlock failed: {e}"))?;
+            let mapped = unlock_existing(
+                runner.as_ref(),
+                &device,
+                mapper.trim_start_matches("ashypass_"),
+                &passphrase,
+                allow_discards,
+            )
+            .map_err(|e| anyhow!("unlock failed: {e}"))?;
             println!("Unlocked at {}", mapped.display());
             Ok(())
         }

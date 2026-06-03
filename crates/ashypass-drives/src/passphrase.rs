@@ -15,7 +15,7 @@ impl Passphrase {
     /// Read a passphrase from a UTF-8 string. The original `String` is **not**
     /// zeroized — callers that hold the original should pass `bytes.into_bytes()`
     /// directly, or use [`Passphrase::from_string_zeroizing`].
-    pub fn from_str(s: &str) -> Self {
+    pub fn from_text(s: &str) -> Self {
         Self(s.as_bytes().to_vec())
     }
 

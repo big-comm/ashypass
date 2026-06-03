@@ -33,7 +33,47 @@ CREATE TABLE IF NOT EXISTS passwords (
 pub const CREATE_INDEXES: &[&str] = &[
     "CREATE INDEX IF NOT EXISTS idx_passwords_title ON passwords(title)",
     "CREATE INDEX IF NOT EXISTS idx_passwords_username ON passwords(username)",
+    "CREATE INDEX IF NOT EXISTS idx_passwords_url ON passwords(url)",
+    "CREATE INDEX IF NOT EXISTS idx_passwords_category_title ON passwords(category, title)",
+    "CREATE INDEX IF NOT EXISTS idx_passwords_favorite_title ON passwords(favorite, title)",
 ];
+
+pub const CREATE_SEARCH_META: &str = r#"
+CREATE TABLE IF NOT EXISTS search_meta (
+    key    TEXT PRIMARY KEY,
+    value  TEXT NOT NULL
+)
+"#;
+
+const FTS_READY_KEY: &str = "passwords_fts_trigram_v1";
+
+const CREATE_PASSWORDS_FTS: &str = r#"
+CREATE VIRTUAL TABLE IF NOT EXISTS passwords_fts USING fts5(
+    title,
+    username,
+    url,
+    content='passwords',
+    content_rowid='id',
+    tokenize='trigram'
+);
+
+CREATE TRIGGER IF NOT EXISTS passwords_fts_ai AFTER INSERT ON passwords BEGIN
+    INSERT INTO passwords_fts(rowid, title, username, url)
+    VALUES (new.id, new.title, coalesce(new.username, ''), coalesce(new.url, ''));
+END;
+
+CREATE TRIGGER IF NOT EXISTS passwords_fts_ad AFTER DELETE ON passwords BEGIN
+    INSERT INTO passwords_fts(passwords_fts, rowid, title, username, url)
+    VALUES ('delete', old.id, old.title, coalesce(old.username, ''), coalesce(old.url, ''));
+END;
+
+CREATE TRIGGER IF NOT EXISTS passwords_fts_au AFTER UPDATE OF title, username, url ON passwords BEGIN
+    INSERT INTO passwords_fts(passwords_fts, rowid, title, username, url)
+    VALUES ('delete', old.id, old.title, coalesce(old.username, ''), coalesce(old.url, ''));
+    INSERT INTO passwords_fts(rowid, title, username, url)
+    VALUES (new.id, new.title, coalesce(new.username, ''), coalesce(new.url, ''));
+END;
+"#;
 
 pub const CREATE_PASSWORDS_HISTORY: &str = r#"
 CREATE TABLE IF NOT EXISTS passwords_history (
@@ -220,6 +260,31 @@ pub fn initialize(conn: &rusqlite::Connection) -> rusqlite::Result<()> {
     conn.execute(CREATE_NEXTCLOUD_TOMBSTONES, [])?;
     for s in CREATE_INDEXES {
         conn.execute(s, [])?;
+    }
+    conn.execute(CREATE_SEARCH_META, [])?;
+    let _ = initialize_password_search(conn);
+    Ok(())
+}
+
+fn initialize_password_search(conn: &rusqlite::Connection) -> rusqlite::Result<()> {
+    conn.execute_batch(CREATE_PASSWORDS_FTS)?;
+
+    let ready: Option<String> = conn
+        .query_row(
+            "SELECT value FROM search_meta WHERE key = ?",
+            [FTS_READY_KEY],
+            |r| r.get(0),
+        )
+        .ok();
+    if ready.as_deref() != Some("1") {
+        conn.execute(
+            "INSERT INTO passwords_fts(passwords_fts) VALUES ('rebuild')",
+            [],
+        )?;
+        conn.execute(
+            "INSERT OR REPLACE INTO search_meta (key, value) VALUES (?, '1')",
+            [FTS_READY_KEY],
+        )?;
     }
     Ok(())
 }

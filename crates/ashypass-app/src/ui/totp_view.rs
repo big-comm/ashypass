@@ -560,6 +560,20 @@ impl Inner {
         }
     }
 
+    fn current_search(&self) -> Option<String> {
+        let text = self.search_entry.text().trim().to_string();
+        if text.is_empty() {
+            None
+        } else {
+            Some(text)
+        }
+    }
+
+    fn reload_current_filter(self: &Rc<Self>) {
+        let search = self.current_search();
+        self.load_entries(search.as_deref());
+    }
+
     fn update_displays(&self) {
         let now = chrono::Utc::now().timestamp() as u64;
         let rows = self.rows.borrow();
@@ -645,7 +659,7 @@ impl Inner {
                     } else {
                         tr!("Permanently deleted")
                     });
-                    inner_cl.load_entries(None);
+                    inner_cl.reload_current_filter();
                     SessionManager::on_activity(&inner_cl.state.session);
                 }
             }
@@ -796,7 +810,7 @@ impl Inner {
             match inner_cl.state.vault.borrow().add(new_entry) {
                 Ok(_) => {
                     inner_cl.show_toast(tr!("2FA code added"));
-                    inner_cl.load_entries(None);
+                    inner_cl.reload_current_filter();
                     SessionManager::on_activity(&inner_cl.state.session);
                     dlg.close();
                 }
@@ -928,7 +942,7 @@ impl Inner {
             match inner_cl.state.vault.borrow().update(id, change) {
                 Ok(_) => {
                     inner_cl.show_toast(tr!("Entry updated"));
-                    inner_cl.load_entries(None);
+                    inner_cl.reload_current_filter();
                     SessionManager::on_activity(&inner_cl.state.session);
                     dlg.close();
                 }

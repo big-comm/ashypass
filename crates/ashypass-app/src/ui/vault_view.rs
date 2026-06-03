@@ -23,6 +23,8 @@ type AuthChangedCb = Box<dyn Fn()>;
 type TotpWidget = (gtk::Label, gtk::ProgressBar, i64, String, u8, u32);
 type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
 
+const PASSWORD_RENDER_BATCH_SIZE: usize = 64;
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum ViewMode {
     All,
@@ -59,6 +61,8 @@ struct Inner {
     timeout_banner: adw::Banner,
     search_entry: gtk::SearchEntry,
     search_reload_id: RefCell<Option<glib::SourceId>>,
+    event_reload_id: RefCell<Option<glib::SourceId>>,
+    render_source_id: RefCell<Option<glib::SourceId>>,
     category_bar: gtk::Box,
     category_dropdown: gtk::DropDown,
     category_model: RefCell<gtk::StringList>,
@@ -139,6 +143,8 @@ impl VaultView {
             timeout_banner,
             search_entry: search_entry.clone(),
             search_reload_id: RefCell::new(None),
+            event_reload_id: RefCell::new(None),
+            render_source_id: RefCell::new(None),
             category_bar,
             category_dropdown,
             category_model: RefCell::new(category_model),
@@ -194,6 +200,8 @@ impl VaultView {
     pub fn lock_vault(&self) {
         self.inner.stop_totp_timer();
         self.inner.cancel_pending_search_reload();
+        self.inner.cancel_pending_event_reload();
+        self.inner.cancel_pending_render();
         self.inner.state.vault.borrow_mut().lock();
         self.inner.timeout_banner.set_revealed(false);
         self.inner.update_view();
@@ -494,6 +502,7 @@ fn wire_auth(inner: &Rc<Inner>) {
 fn wire_vault(inner: &Rc<Inner>) {
     let inner_cl = inner.clone();
     inner.search_entry.connect_search_changed(move |_| {
+        inner_cl.cancel_pending_event_reload();
         if let Some(id) = inner_cl.search_reload_id.borrow_mut().take() {
             id.remove();
         }
@@ -517,6 +526,7 @@ fn wire_vault(inner: &Rc<Inner>) {
         if inner_cl.updating_categories.get() {
             return;
         }
+        inner_cl.cancel_pending_event_reload();
         if let Some(id) = inner_cl.search_reload_id.borrow_mut().take() {
             id.remove();
         }
@@ -560,7 +570,7 @@ fn wire_events(inner: &Rc<Inner>) {
             | crate::events::AppEvent::SyncCompleted { .. }
                 if inner.can_show_vault_data() =>
             {
-                inner.update_view();
+                inner.schedule_reload_current_filter();
             }
             crate::events::AppEvent::SessionLocked => inner.update_view(),
             _ => {}
@@ -630,6 +640,10 @@ impl Inner {
             self.main_stack.set_visible_child_name("vault");
             self.load_passwords(None);
         } else {
+            self.cancel_pending_search_reload();
+            self.cancel_pending_event_reload();
+            self.cancel_pending_render();
+            self.stop_totp_timer();
             let has_master = self
                 .state
                 .vault
@@ -816,6 +830,8 @@ impl Inner {
             return;
         }
         self.main_stack.set_visible_child_name("vault");
+        self.cancel_pending_event_reload();
+        self.cancel_pending_render();
         self.stop_totp_timer();
         self.totp_widgets.borrow_mut().clear();
         clear_list_box(&self.list_box);
@@ -881,15 +897,12 @@ impl Inner {
 
         self.content_stack.set_visible_child_name("list");
         let nextcloud_synced_ids = self.nextcloud_synced_ids();
-        for entry in entries {
-            let row = self.create_password_row(
-                &entry,
-                ui_settings.show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
-                ui_settings.show_favicons,
-            );
-            self.list_box.append(&row);
-        }
-        self.start_totp_timer();
+        self.render_password_rows(
+            entries,
+            nextcloud_synced_ids,
+            ui_settings.show_sync_badges,
+            ui_settings.show_favicons,
+        );
     }
 
     fn load_grouped(
@@ -1051,6 +1064,18 @@ impl Inner {
         self.restore_scroll(scroll_y);
     }
 
+    fn schedule_reload_current_filter(self: &Rc<Self>) {
+        self.cancel_pending_search_reload();
+        self.cancel_pending_event_reload();
+        let inner = self.clone();
+        let id = glib::timeout_add_local(std::time::Duration::from_millis(50), move || {
+            *inner.event_reload_id.borrow_mut() = None;
+            inner.reload_current_filter();
+            glib::ControlFlow::Break
+        });
+        *self.event_reload_id.borrow_mut() = Some(id);
+    }
+
     fn restore_scroll(&self, value: f64) {
         let adjustment = self.list_scrolled.vadjustment();
         glib::idle_add_local_once(move || {
@@ -1103,7 +1128,6 @@ impl Inner {
             match inner_cl.state.vault.borrow().create_folder(&name) {
                 Ok(_) => {
                     inner_cl.show_toast(&format!("{}: {name}", tr!("Folder")));
-                    inner_cl.reload_current_filter();
                     SessionManager::on_activity(&inner_cl.state.session);
                     dlg.close();
                 }
@@ -1122,6 +1146,53 @@ impl Inner {
             .nc_all_mappings()
             .map(|items| items.into_iter().map(|m| m.entry_id).collect())
             .unwrap_or_default()
+    }
+
+    fn render_password_rows(
+        self: &Rc<Self>,
+        entries: Vec<PasswordEntry>,
+        nextcloud_synced_ids: HashSet<i64>,
+        show_sync_badges: bool,
+        show_favicons: bool,
+    ) {
+        self.cancel_pending_render();
+        let first_end = PASSWORD_RENDER_BATCH_SIZE.min(entries.len());
+        for entry in &entries[..first_end] {
+            let row = self.create_password_row(
+                entry,
+                show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
+                show_favicons,
+            );
+            self.list_box.append(&row);
+        }
+
+        if first_end >= entries.len() {
+            self.start_totp_timer();
+            return;
+        }
+
+        let inner = self.clone();
+        let mut index = first_end;
+        let id = glib::idle_add_local(move || {
+            let end = (index + PASSWORD_RENDER_BATCH_SIZE).min(entries.len());
+            for entry in &entries[index..end] {
+                let row = inner.create_password_row(
+                    entry,
+                    show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
+                    show_favicons,
+                );
+                inner.list_box.append(&row);
+            }
+            index = end;
+            if index >= entries.len() {
+                *inner.render_source_id.borrow_mut() = None;
+                inner.start_totp_timer();
+                glib::ControlFlow::Break
+            } else {
+                glib::ControlFlow::Continue
+            }
+        });
+        *self.render_source_id.borrow_mut() = Some(id);
     }
 
     fn apply_vault_list_density(&self, compact: bool) {
@@ -1462,7 +1533,6 @@ impl Inner {
                     } else {
                         tr!("Permanently deleted")
                     });
-                    inner_cl.reload_current_filter();
                     SessionManager::on_activity(&inner_cl.state.session);
                 }
             }
@@ -1498,6 +1568,18 @@ impl Inner {
 
     fn cancel_pending_search_reload(&self) {
         if let Some(id) = self.search_reload_id.borrow_mut().take() {
+            id.remove();
+        }
+    }
+
+    fn cancel_pending_event_reload(&self) {
+        if let Some(id) = self.event_reload_id.borrow_mut().take() {
+            id.remove();
+        }
+    }
+
+    fn cancel_pending_render(&self) {
+        if let Some(id) = self.render_source_id.borrow_mut().take() {
             id.remove();
         }
     }
@@ -2014,7 +2096,6 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
                 } else {
                     tr!("Password added")
                 });
-                inner_cl.reload_current_filter();
                 SessionManager::on_activity(&inner_cl.state.session);
                 dlg.close();
             }

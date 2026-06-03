@@ -7,10 +7,45 @@
 use ashypass_core::favicons;
 use gtk::glib;
 use gtk::prelude::*;
+use std::cell::RefCell;
+use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::{mpsc, Arc, LazyLock, Mutex};
 
 const FALLBACK_ICON: &str = "dialog-password-symbolic";
+const FETCH_WORKERS: usize = 4;
+
+struct FetchRequest {
+    host: String,
+    reply: mpsc::Sender<Option<PathBuf>>,
+}
+
+static FETCHER: LazyLock<mpsc::Sender<FetchRequest>> = LazyLock::new(|| {
+    let (tx, rx) = mpsc::channel::<FetchRequest>();
+    let rx = Arc::new(Mutex::new(rx));
+    for _ in 0..FETCH_WORKERS {
+        let rx = rx.clone();
+        std::thread::spawn(move || loop {
+            let request = {
+                let Ok(rx) = rx.lock() else {
+                    return;
+                };
+                rx.recv()
+            };
+            let Ok(request) = request else {
+                return;
+            };
+            let path = favicons::fetch_blocking(&request.host).ok();
+            let _ = request.reply.send(path);
+        });
+    }
+    tx
+});
+
+thread_local! {
+    static CACHE: RefCell<HashMap<String, Option<PathBuf>>> = RefCell::new(HashMap::new());
+    static PENDING: RefCell<HashSet<String>> = RefCell::new(HashSet::new());
+}
 
 pub fn apply(image: &gtk::Image, url: Option<&str>, pixel: i32) {
     image.set_pixel_size(pixel);
@@ -20,34 +55,60 @@ pub fn apply(image: &gtk::Image, url: Option<&str>, pixel: i32) {
         return;
     };
 
+    if let Some(cached) = CACHE.with(|cache| cache.borrow().get(&host).cloned()) {
+        match cached {
+            Some(path) => image.set_from_file(Some(&path)),
+            None => image.set_icon_name(Some(FALLBACK_ICON)),
+        }
+        return;
+    }
+
     if let Some(path) = favicons::lookup(&host) {
+        CACHE.with(|cache| {
+            cache.borrow_mut().insert(host, Some(path.clone()));
+        });
         image.set_from_file(Some(&path));
         return;
     }
 
     image.set_icon_name(Some(FALLBACK_ICON));
+    let already_pending = PENDING.with(|pending| !pending.borrow_mut().insert(host.clone()));
+    if already_pending {
+        return;
+    }
 
     let image_weak = image.downgrade();
-    let result: Arc<Mutex<Option<PathBuf>>> = Arc::new(Mutex::new(None));
-    let result_thread = result.clone();
-    let host_for_thread = host.clone();
+    let (reply, rx) = mpsc::channel();
+    if FETCHER
+        .send(FetchRequest {
+            host: host.clone(),
+            reply,
+        })
+        .is_err()
+    {
+        PENDING.with(|pending| {
+            pending.borrow_mut().remove(&host);
+        });
+        return;
+    }
 
-    std::thread::spawn(move || {
-        if let Ok(path) = favicons::fetch_blocking(&host_for_thread) {
-            *result_thread.lock().unwrap() = Some(path);
-        }
-    });
-
-    // Poll the result on the main loop until the worker thread finishes
-    // (typically <2s). One-shot delayed read keeps the UI quiet on success.
-    glib::timeout_add_seconds_local(2, move || {
-        let path_opt = result.lock().unwrap().clone();
+    glib::timeout_add_local(std::time::Duration::from_millis(250), move || {
+        let path_opt = match rx.try_recv() {
+            Ok(path_opt) => path_opt,
+            Err(mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
+            Err(mpsc::TryRecvError::Disconnected) => None,
+        };
+        CACHE.with(|cache| {
+            cache.borrow_mut().insert(host.clone(), path_opt.clone());
+        });
+        PENDING.with(|pending| {
+            pending.borrow_mut().remove(&host);
+        });
         if let Some(path) = path_opt {
             if let Some(img) = image_weak.upgrade() {
                 img.set_from_file(Some(&path));
             }
-            return glib::ControlFlow::Break;
         }
-        glib::ControlFlow::Continue
+        glib::ControlFlow::Break
     });
 }

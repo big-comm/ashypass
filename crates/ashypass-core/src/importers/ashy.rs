@@ -95,7 +95,7 @@ pub fn export_vault(vault: &Vault, path: impl AsRef<Path>, export_password: &str
     let summaries = vault.list(None)?;
     let mut entries: Vec<ExportEntry> = Vec::with_capacity(summaries.len());
     for s in &summaries {
-        if let Some(full) = vault.get(s.id)? {
+        if let Some(full) = vault.get_without_touch(s.id)? {
             entries.push(entry_from(full));
         }
     }

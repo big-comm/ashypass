@@ -11,7 +11,7 @@ use crate::settings::QuickUnlockPrefs;
 use crate::{db::migration, db::schema, Error, Result};
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use rand::RngCore;
-use rusqlite::{params, params_from_iter, types::Value, Connection, OptionalExtension};
+use rusqlite::{params, params_from_iter, types::Value, Connection, OptionalExtension, Row};
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
@@ -705,9 +705,16 @@ impl Vault {
         let mut clauses: Vec<&str> = Vec::new();
         let mut params_vec: Vec<Value> = Vec::new();
 
-        if let Some(q) = search.filter(|s| !s.trim().is_empty()) {
-            let pat = format!("%{q}%");
-            clauses.push("(title LIKE ? OR username LIKE ? OR url LIKE ?)");
+        let search = search.map(str::trim).filter(|s| !s.is_empty());
+        if let Some(q) = search {
+            if let Some(fts_query) = fts_query(q) {
+                if let Ok(rows) = self.list_filtered_fts(&fts_query, category) {
+                    return Ok(rows);
+                }
+            }
+
+            let pat = like_pattern(q);
+            clauses.push("(title LIKE ? ESCAPE '\\' OR username LIKE ? ESCAPE '\\' OR url LIKE ? ESCAPE '\\')");
             params_vec.push(pat.clone().into());
             params_vec.push(pat.clone().into());
             params_vec.push(pat.into());
@@ -726,29 +733,32 @@ impl Vault {
 
         let mut stmt = self.conn.prepare(&sql)?;
         let rows = stmt
-            .query_map(params_from_iter(params_vec), |r| {
-                let totp_blob: Option<Vec<u8>> = r.get(4)?;
-                Ok(PasswordEntry {
-                    id: r.get(0)?,
-                    title: r.get(1)?,
-                    username: r.get(2)?,
-                    url: r.get(3)?,
-                    password: None,
-                    notes: None,
-                    totp_secret: None,
-                    has_totp: totp_blob.is_some(),
-                    totp_algorithm: r
-                        .get::<_, Option<String>>(5)?
-                        .unwrap_or_else(|| "SHA1".into()),
-                    totp_digits: r.get::<_, Option<i64>>(6)?.unwrap_or(6) as u8,
-                    totp_period: r.get::<_, Option<i64>>(7)?.unwrap_or(30) as u32,
-                    category: r.get(8)?,
-                    favorite: r.get::<_, Option<i64>>(9)?.unwrap_or(0) != 0,
-                    created_at: r.get(10)?,
-                    updated_at: r.get(11)?,
-                    last_accessed: r.get(12)?,
-                })
-            })?
+            .query_map(params_from_iter(params_vec), password_summary_from_row)?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        Ok(rows)
+    }
+
+    fn list_filtered_fts(
+        &self,
+        search: &str,
+        category: Option<&str>,
+    ) -> Result<Vec<PasswordEntry>> {
+        let base = "SELECT p.id, p.title, p.username, p.url,
+                           p.totp_secret_encrypted, p.totp_algorithm, p.totp_digits, p.totp_period,
+                           p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed
+                    FROM passwords_fts
+                    JOIN passwords p ON p.id = passwords_fts.rowid
+                    WHERE passwords_fts MATCH ?";
+        let mut params_vec: Vec<Value> = vec![search.to_string().into()];
+        let sql = if let Some(category) = category.filter(|s| !s.is_empty()) {
+            params_vec.push(category.to_string().into());
+            format!("{base} AND p.category = ? ORDER BY p.title")
+        } else {
+            format!("{base} ORDER BY p.title")
+        };
+        let mut stmt = self.conn.prepare(&sql)?;
+        let rows = stmt
+            .query_map(params_from_iter(params_vec), password_summary_from_row)?
             .collect::<rusqlite::Result<Vec<_>>>()?;
         Ok(rows)
     }
@@ -769,6 +779,14 @@ impl Vault {
     }
 
     pub fn get(&self, id: i64) -> Result<Option<PasswordEntry>> {
+        self.get_inner(id, true)
+    }
+
+    pub fn get_without_touch(&self, id: i64) -> Result<Option<PasswordEntry>> {
+        self.get_inner(id, false)
+    }
+
+    fn get_inner(&self, id: i64, touch: bool) -> Result<Option<PasswordEntry>> {
         let mut stmt = self.conn.prepare(
             "SELECT id, title, username, password_encrypted, notes_encrypted, url,
                     totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
@@ -806,11 +824,13 @@ impl Vault {
         };
         drop(rows);
         drop(stmt);
-        let now = chrono::Utc::now().timestamp();
-        self.conn.execute(
-            "UPDATE passwords SET last_accessed = ? WHERE id = ?",
-            params![now, id],
-        )?;
+        if touch {
+            let now = chrono::Utc::now().timestamp();
+            self.conn.execute(
+                "UPDATE passwords SET last_accessed = ? WHERE id = ?",
+                params![now, id],
+            )?;
+        }
         Ok(Some(entry))
     }
 
@@ -1212,6 +1232,20 @@ impl Vault {
             )?;
             tag_ids.push(id);
         }
+        tag_ids.sort_unstable();
+
+        let mut current_stmt = self.conn.prepare(
+            "SELECT tag_id FROM entry_tags
+             WHERE entry_id = ?
+             ORDER BY tag_id",
+        )?;
+        let current_ids = current_stmt
+            .query_map(params![entry_id], |r| r.get::<_, i64>(0))?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        drop(current_stmt);
+        if current_ids == tag_ids {
+            return Ok(());
+        }
 
         self.conn.execute(
             "DELETE FROM entry_tags WHERE entry_id = ?",
@@ -1512,6 +1546,54 @@ fn normalize_folder_name(name: &str) -> Result<String> {
     Ok(name.to_string())
 }
 
+fn password_summary_from_row(r: &Row<'_>) -> rusqlite::Result<PasswordEntry> {
+    let totp_blob: Option<Vec<u8>> = r.get(4)?;
+    Ok(PasswordEntry {
+        id: r.get(0)?,
+        title: r.get(1)?,
+        username: r.get(2)?,
+        url: r.get(3)?,
+        password: None,
+        notes: None,
+        totp_secret: None,
+        has_totp: totp_blob.is_some(),
+        totp_algorithm: r
+            .get::<_, Option<String>>(5)?
+            .unwrap_or_else(|| "SHA1".into()),
+        totp_digits: r.get::<_, Option<i64>>(6)?.unwrap_or(6) as u8,
+        totp_period: r.get::<_, Option<i64>>(7)?.unwrap_or(30) as u32,
+        category: r.get(8)?,
+        favorite: r.get::<_, Option<i64>>(9)?.unwrap_or(0) != 0,
+        created_at: r.get(10)?,
+        updated_at: r.get(11)?,
+        last_accessed: r.get(12)?,
+    })
+}
+
+fn fts_query(search: &str) -> Option<String> {
+    let trimmed = search.trim();
+    if trimmed.chars().count() < 3 {
+        return None;
+    }
+    Some(format!("\"{}\"", trimmed.replace('"', "\"\"")))
+}
+
+fn like_pattern(search: &str) -> String {
+    let mut escaped = String::with_capacity(search.len() + 2);
+    escaped.push('%');
+    for ch in search.chars() {
+        match ch {
+            '%' | '_' | '\\' => {
+                escaped.push('\\');
+                escaped.push(ch);
+            }
+            _ => escaped.push(ch),
+        }
+    }
+    escaped.push('%');
+    escaped
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1546,5 +1628,65 @@ mod tests {
         let entries = reopened.list(None).unwrap();
         assert_eq!(entries.len(), 1);
         assert_eq!(entries[0].title, "Example");
+    }
+
+    #[test]
+    fn search_matches_substrings_and_escapes_like_wildcards() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = Vault::open(tmp.path()).unwrap();
+        vault
+            .set_master_password("correct horse battery staple")
+            .unwrap();
+        vault
+            .add(NewEntry {
+                title: "Example".into(),
+                username: Some("alice".into()),
+                password: "secret".into(),
+                url: Some("https://example.test".into()),
+                ..NewEntry::default()
+            })
+            .unwrap();
+        vault
+            .add(NewEntry {
+                title: "100% Literal".into(),
+                password: "secret".into(),
+                ..NewEntry::default()
+            })
+            .unwrap();
+
+        let substring = vault.list(Some("amp")).unwrap();
+        assert_eq!(substring.len(), 1);
+        assert_eq!(substring[0].title, "Example");
+
+        let wildcard = vault.list(Some("%")).unwrap();
+        assert_eq!(wildcard.len(), 1);
+        assert_eq!(wildcard[0].title, "100% Literal");
+    }
+
+    #[test]
+    fn get_without_touch_does_not_update_last_accessed() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = Vault::open(tmp.path()).unwrap();
+        vault
+            .set_master_password("correct horse battery staple")
+            .unwrap();
+        let id = vault
+            .add(NewEntry {
+                title: "Example".into(),
+                password: "secret".into(),
+                ..NewEntry::default()
+            })
+            .unwrap();
+
+        assert!(vault.list(None).unwrap()[0].last_accessed.is_none());
+        vault.get_without_touch(id).unwrap().unwrap();
+        assert!(vault.list(None).unwrap()[0].last_accessed.is_none());
+
+        vault.get(id).unwrap().unwrap();
+        let touched = vault.list(None).unwrap()[0].last_accessed;
+        assert!(touched.is_some());
+
+        vault.get_without_touch(id).unwrap().unwrap();
+        assert_eq!(vault.list(None).unwrap()[0].last_accessed, touched);
     }
 }

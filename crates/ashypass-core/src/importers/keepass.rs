@@ -149,7 +149,7 @@ pub fn export_vault(vault: &Vault, path: impl AsRef<Path>, password: &str) -> Re
     let mut exported = 0usize;
     for summary in listing {
         // Re-fetch through `get` to obtain the decrypted password and TOTP.
-        let full = match vault.get(summary.id)? {
+        let full = match vault.get_without_touch(summary.id)? {
             Some(f) => f,
             None => continue,
         };

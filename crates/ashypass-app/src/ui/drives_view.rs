@@ -218,9 +218,7 @@ impl Inner {
     }
 }
 
-/// A cheap fingerprint of the device topology: path + size + partition layout
-/// + mounted state. Changes here are the only thing that should trigger a
-/// rebuild.
+/// Cheap fingerprint of device topology. Only changes here should rebuild rows.
 fn signature(drives: &[Drive]) -> String {
     let mut s = String::new();
     for d in drives {

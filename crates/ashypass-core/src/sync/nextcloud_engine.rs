@@ -200,7 +200,7 @@ where
     ));
     for (idx, summary) in local_entries.iter().enumerate() {
         // Need the decrypted entry to push to the server.
-        let local_full = match vault.get(summary.id)? {
+        let local_full = match vault.get_without_touch(summary.id)? {
             Some(e) => e,
             None => {
                 progress(NextcloudSyncProgress::new(
