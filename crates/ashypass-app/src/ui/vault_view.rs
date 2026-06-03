@@ -24,12 +24,53 @@ type TotpWidget = (gtk::Label, gtk::ProgressBar, i64, String, u8, u32);
 type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
 
 const PASSWORD_RENDER_BATCH_SIZE: usize = 64;
+const PASSWORD_SEARCH_DEBOUNCE_MS: u64 = 60;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum ViewMode {
     All,
     Favorites,
     Groups,
+}
+
+struct PasswordListCache {
+    entries: Vec<PasswordEntry>,
+    search_index: Vec<String>,
+    categories: Vec<String>,
+}
+
+impl PasswordListCache {
+    fn new(entries: Vec<PasswordEntry>, categories: Vec<String>) -> Self {
+        let search_index = entries.iter().map(password_search_text).collect();
+        Self {
+            entries,
+            search_index,
+            categories,
+        }
+    }
+
+    fn filtered_indices(&self, search: Option<&str>, category: Option<&str>) -> Vec<usize> {
+        let needle = search
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+            .map(str::to_lowercase);
+
+        self.entries
+            .iter()
+            .enumerate()
+            .filter(|(_, entry)| {
+                category.is_none_or(|category| {
+                    entry.category.as_deref().filter(|s| !s.is_empty()) == Some(category)
+                })
+            })
+            .filter(|(idx, _)| {
+                needle
+                    .as_ref()
+                    .is_none_or(|needle| self.search_index[*idx].contains(needle))
+            })
+            .map(|(idx, _)| idx)
+            .collect()
+    }
 }
 
 pub struct VaultView {
@@ -68,10 +109,12 @@ struct Inner {
     category_model: RefCell<gtk::StringList>,
     category_names: RefCell<Vec<String>>,
     updating_categories: Cell<bool>,
-    list_box: gtk::ListBox,
+    list_box: RefCell<gtk::ListBox>,
     list_scrolled: gtk::ScrolledWindow,
     empty_status: adw::StatusPage,
     content_stack: gtk::Stack,
+    password_cache: RefCell<Option<Rc<PasswordListCache>>>,
+    nextcloud_synced_ids_cache: RefCell<Option<HashSet<i64>>>,
 
     view_mode: Cell<ViewMode>,
     expanded_folders: RefCell<HashSet<String>>,
@@ -150,10 +193,12 @@ impl VaultView {
             category_model: RefCell::new(category_model),
             category_names: RefCell::new(Vec::new()),
             updating_categories: Cell::new(false),
-            list_box,
+            list_box: RefCell::new(list_box),
             list_scrolled,
             empty_status,
             content_stack,
+            password_cache: RefCell::new(None),
+            nextcloud_synced_ids_cache: RefCell::new(None),
             view_mode: Cell::new(ViewMode::All),
             expanded_folders: RefCell::new(HashSet::new()),
             totp_widgets: RefCell::new(Vec::new()),
@@ -407,14 +452,7 @@ fn build_vault_page() -> (
     main_box.append(&category_bar);
 
     let scrolled = gtk::ScrolledWindow::builder().vexpand(true).build();
-    let list_box = gtk::ListBox::builder()
-        .selection_mode(gtk::SelectionMode::None)
-        .margin_top(12)
-        .margin_bottom(12)
-        .margin_start(12)
-        .margin_end(12)
-        .build();
-    list_box.add_css_class("boxed-list");
+    let list_box = new_password_list_box();
     scrolled.set_child(Some(&list_box));
 
     let empty_status = adw::StatusPage::builder()
@@ -444,6 +482,18 @@ fn build_vault_page() -> (
         empty_status,
         content_stack,
     )
+}
+
+fn new_password_list_box() -> gtk::ListBox {
+    let list_box = gtk::ListBox::builder()
+        .selection_mode(gtk::SelectionMode::None)
+        .margin_top(12)
+        .margin_bottom(12)
+        .margin_start(12)
+        .margin_end(12)
+        .build();
+    list_box.add_css_class("boxed-list");
+    list_box
 }
 
 // ============================================================================
@@ -507,17 +557,20 @@ fn wire_vault(inner: &Rc<Inner>) {
             id.remove();
         }
         let inner_weak = Rc::downgrade(&inner_cl);
-        let id = glib::timeout_add_local(std::time::Duration::from_millis(150), move || {
-            let Some(inner) = inner_weak.upgrade() else {
-                return glib::ControlFlow::Break;
-            };
-            *inner.search_reload_id.borrow_mut() = None;
-            let text = inner.search_entry.text().trim().to_string();
-            let search = if text.is_empty() { None } else { Some(text) };
-            inner.load_passwords(search.as_deref());
-            SessionManager::on_activity(&inner.state.session);
-            glib::ControlFlow::Break
-        });
+        let id = glib::timeout_add_local(
+            std::time::Duration::from_millis(PASSWORD_SEARCH_DEBOUNCE_MS),
+            move || {
+                let Some(inner) = inner_weak.upgrade() else {
+                    return glib::ControlFlow::Break;
+                };
+                *inner.search_reload_id.borrow_mut() = None;
+                let text = inner.search_entry.text().trim().to_string();
+                let search = if text.is_empty() { None } else { Some(text) };
+                inner.load_passwords(search.as_deref());
+                SessionManager::on_activity(&inner.state.session);
+                glib::ControlFlow::Break
+            },
+        );
         *inner_cl.search_reload_id.borrow_mut() = Some(id);
     });
 
@@ -570,9 +623,13 @@ fn wire_events(inner: &Rc<Inner>) {
             | crate::events::AppEvent::SyncCompleted { .. }
                 if inner.can_show_vault_data() =>
             {
+                inner.invalidate_list_caches();
                 inner.schedule_reload_current_filter();
             }
-            crate::events::AppEvent::SessionLocked => inner.update_view(),
+            crate::events::AppEvent::SessionLocked => {
+                inner.invalidate_list_caches();
+                inner.update_view();
+            }
             _ => {}
         }
     });
@@ -640,6 +697,7 @@ impl Inner {
             self.main_stack.set_visible_child_name("vault");
             self.load_passwords(None);
         } else {
+            self.invalidate_list_caches();
             self.cancel_pending_search_reload();
             self.cancel_pending_event_reload();
             self.cancel_pending_render();
@@ -834,7 +892,7 @@ impl Inner {
         self.cancel_pending_render();
         self.stop_totp_timer();
         self.totp_widgets.borrow_mut().clear();
-        clear_list_box(&self.list_box);
+        self.reset_password_list_box();
         let ui_settings = Settings::load();
         self.apply_vault_list_density(ui_settings.compact_vault_list);
 
@@ -844,29 +902,29 @@ impl Inner {
         } else {
             None
         };
-        if mode == ViewMode::All {
-            self.update_category_filter(selected_category.as_deref());
-        } else {
-            self.category_bar.set_visible(false);
-        }
-
-        let mut entries = match self
-            .state
-            .vault
-            .borrow()
-            .list_filtered(search, selected_category.as_deref())
-        {
-            Ok(v) => v,
+        let cache = match self.password_cache() {
+            Ok(cache) => cache,
             Err(e) => {
                 log::error!("vault.list failed: {e}");
                 return;
             }
         };
 
+        if mode == ViewMode::All && (search.is_none() || self.category_names.borrow().is_empty()) {
+            self.update_category_filter(selected_category.as_deref(), &cache.categories);
+        } else if mode == ViewMode::All {
+            self.category_bar
+                .set_visible(!self.category_names.borrow().is_empty());
+        } else {
+            self.category_bar.set_visible(false);
+        }
+
+        let mut entries = cache.filtered_indices(search, selected_category.as_deref());
+
         if mode == ViewMode::Favorites {
-            entries.retain(|p| p.favorite);
+            entries.retain(|idx| cache.entries[*idx].favorite);
         } else if mode == ViewMode::Groups {
-            self.load_grouped(entries, search.is_some(), &ui_settings);
+            self.load_grouped(cache, entries, search.is_some(), &ui_settings);
             return;
         }
 
@@ -896,8 +954,9 @@ impl Inner {
         }
 
         self.content_stack.set_visible_child_name("list");
-        let nextcloud_synced_ids = self.nextcloud_synced_ids();
+        let nextcloud_synced_ids = self.nextcloud_synced_ids(ui_settings.show_sync_badges);
         self.render_password_rows(
+            cache,
             entries,
             nextcloud_synced_ids,
             ui_settings.show_sync_badges,
@@ -907,22 +966,24 @@ impl Inner {
 
     fn load_grouped(
         self: &Rc<Self>,
-        entries: Vec<PasswordEntry>,
+        cache: Rc<PasswordListCache>,
+        entries: Vec<usize>,
         filtering: bool,
         ui_settings: &Settings,
     ) {
         use std::collections::BTreeMap;
-        let mut groups: BTreeMap<String, Vec<PasswordEntry>> = BTreeMap::new();
-        let mut uncategorized: Vec<PasswordEntry> = Vec::new();
+        let mut groups: BTreeMap<String, Vec<usize>> = BTreeMap::new();
+        let mut uncategorized: Vec<usize> = Vec::new();
         if !filtering {
-            for folder in self.state.vault.borrow().categories().unwrap_or_default() {
-                groups.entry(folder).or_default();
+            for folder in &cache.categories {
+                groups.entry(folder.clone()).or_default();
             }
         }
-        for p in entries {
-            match p.category.clone().filter(|s| !s.is_empty()) {
-                Some(cat) => groups.entry(cat).or_default().push(p),
-                None => uncategorized.push(p),
+        for idx in entries {
+            let entry = &cache.entries[idx];
+            match entry.category.as_deref().filter(|s| !s.is_empty()) {
+                Some(cat) => groups.entry(cat.to_string()).or_default().push(idx),
+                None => uncategorized.push(idx),
             }
         }
 
@@ -941,7 +1002,7 @@ impl Inner {
         }
 
         self.content_stack.set_visible_child_name("list");
-        let nextcloud_synced_ids = self.nextcloud_synced_ids();
+        let nextcloud_synced_ids = self.nextcloud_synced_ids(ui_settings.show_sync_badges);
         self.add_create_folder_row();
 
         for (cat, items) in groups {
@@ -967,23 +1028,24 @@ impl Inner {
                     inner_cl.toggle_group_folder(&cat);
                 });
             }
-            self.list_box.append(&row);
+            self.list_box.borrow().append(&row);
 
             if expanded {
-                for e in items {
+                for idx in items {
+                    let entry = &cache.entries[idx];
                     let row = self.create_password_row(
-                        &e,
-                        ui_settings.show_sync_badges && nextcloud_synced_ids.contains(&e.id),
+                        entry,
+                        ui_settings.show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
                         ui_settings.show_favicons,
                     );
-                    self.list_box.append(&row);
+                    self.list_box.borrow().append(&row);
                 }
                 if items_empty {
                     let empty = adw::ActionRow::builder()
                         .title(tr!("No Passwords Stored"))
                         .sensitive(false)
                         .build();
-                    self.list_box.append(&empty);
+                    self.list_box.borrow().append(&empty);
                 }
             }
         }
@@ -1010,16 +1072,17 @@ impl Inner {
                     inner_cl.toggle_group_folder("");
                 });
             }
-            self.list_box.append(&row);
+            self.list_box.borrow().append(&row);
 
             if expanded {
-                for e in uncategorized {
+                for idx in uncategorized {
+                    let entry = &cache.entries[idx];
                     let row = self.create_password_row(
-                        &e,
-                        ui_settings.show_sync_badges && nextcloud_synced_ids.contains(&e.id),
+                        entry,
+                        ui_settings.show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
                         ui_settings.show_favicons,
                     );
-                    self.list_box.append(&row);
+                    self.list_box.borrow().append(&row);
                 }
             }
         }
@@ -1045,7 +1108,7 @@ impl Inner {
                 inner_cl.show_add_folder_dialog();
             });
         }
-        self.list_box.append(&row);
+        self.list_box.borrow().append(&row);
     }
 
     fn current_search(&self) -> Option<String> {
@@ -1074,6 +1137,25 @@ impl Inner {
             glib::ControlFlow::Break
         });
         *self.event_reload_id.borrow_mut() = Some(id);
+    }
+
+    fn invalidate_list_caches(&self) {
+        self.password_cache.borrow_mut().take();
+        self.nextcloud_synced_ids_cache.borrow_mut().take();
+        self.category_names.borrow_mut().clear();
+    }
+
+    fn password_cache(&self) -> ashypass_core::Result<Rc<PasswordListCache>> {
+        if let Some(cache) = self.password_cache.borrow().as_ref() {
+            return Ok(cache.clone());
+        }
+
+        let vault = self.state.vault.borrow();
+        let entries = vault.list(None)?;
+        let categories = vault.categories().unwrap_or_default();
+        let cache = Rc::new(PasswordListCache::new(entries, categories));
+        *self.password_cache.borrow_mut() = Some(cache.clone());
+        Ok(cache)
     }
 
     fn restore_scroll(&self, value: f64) {
@@ -1139,31 +1221,42 @@ impl Inner {
         dialog.present(Some(self.toast.upcast_ref::<gtk::Widget>()));
     }
 
-    fn nextcloud_synced_ids(&self) -> HashSet<i64> {
-        self.state
+    fn nextcloud_synced_ids(&self, enabled: bool) -> HashSet<i64> {
+        if !enabled {
+            return HashSet::new();
+        }
+        if let Some(ids) = self.nextcloud_synced_ids_cache.borrow().as_ref() {
+            return ids.clone();
+        }
+        let ids: HashSet<i64> = self
+            .state
             .vault
             .borrow()
             .nc_all_mappings()
             .map(|items| items.into_iter().map(|m| m.entry_id).collect())
-            .unwrap_or_default()
+            .unwrap_or_default();
+        *self.nextcloud_synced_ids_cache.borrow_mut() = Some(ids.clone());
+        ids
     }
 
     fn render_password_rows(
         self: &Rc<Self>,
-        entries: Vec<PasswordEntry>,
+        cache: Rc<PasswordListCache>,
+        entries: Vec<usize>,
         nextcloud_synced_ids: HashSet<i64>,
         show_sync_badges: bool,
         show_favicons: bool,
     ) {
         self.cancel_pending_render();
         let first_end = PASSWORD_RENDER_BATCH_SIZE.min(entries.len());
-        for entry in &entries[..first_end] {
+        for idx in &entries[..first_end] {
+            let entry = &cache.entries[*idx];
             let row = self.create_password_row(
                 entry,
                 show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
                 show_favicons,
             );
-            self.list_box.append(&row);
+            self.list_box.borrow().append(&row);
         }
 
         if first_end >= entries.len() {
@@ -1172,16 +1265,18 @@ impl Inner {
         }
 
         let inner = self.clone();
+        let cache = cache.clone();
         let mut index = first_end;
         let id = glib::idle_add_local(move || {
             let end = (index + PASSWORD_RENDER_BATCH_SIZE).min(entries.len());
-            for entry in &entries[index..end] {
+            for idx in &entries[index..end] {
+                let entry = &cache.entries[*idx];
                 let row = inner.create_password_row(
                     entry,
                     show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
                     show_favicons,
                 );
-                inner.list_box.append(&row);
+                inner.list_box.borrow().append(&row);
             }
             index = end;
             if index >= entries.len() {
@@ -1195,12 +1290,19 @@ impl Inner {
         *self.render_source_id.borrow_mut() = Some(id);
     }
 
+    fn reset_password_list_box(&self) {
+        let list_box = new_password_list_box();
+        self.list_scrolled.set_child(Some(&list_box));
+        *self.list_box.borrow_mut() = list_box;
+    }
+
     fn apply_vault_list_density(&self, compact: bool) {
         let margin = if compact { 6 } else { 12 };
-        self.list_box.set_margin_top(margin);
-        self.list_box.set_margin_bottom(margin);
-        self.list_box.set_margin_start(margin);
-        self.list_box.set_margin_end(margin);
+        let list_box = self.list_box.borrow();
+        list_box.set_margin_top(margin);
+        list_box.set_margin_bottom(margin);
+        list_box.set_margin_start(margin);
+        list_box.set_margin_end(margin);
     }
 
     fn create_password_row(
@@ -1334,20 +1436,19 @@ impl Inner {
         }
     }
 
-    fn update_category_filter(&self, selected: Option<&str>) {
+    fn update_category_filter(&self, selected: Option<&str>, cats: &[String]) {
         self.updating_categories.set(true);
-        let cats = self.state.vault.borrow().categories().unwrap_or_default();
 
-        if *self.category_names.borrow() != cats {
+        if self.category_names.borrow().as_slice() != cats {
             let mut items: Vec<&str> = Vec::with_capacity(1 + cats.len());
             items.push(tr!("All"));
-            for c in &cats {
+            for c in cats {
                 items.push(c.as_str());
             }
             let model = gtk::StringList::new(&items);
             self.category_dropdown.set_model(Some(&model));
             *self.category_model.borrow_mut() = model;
-            *self.category_names.borrow_mut() = cats.clone();
+            *self.category_names.borrow_mut() = cats.to_vec();
         }
 
         let selected_idx = selected
@@ -2130,10 +2231,18 @@ fn set_favorite_button_state(btn: &gtk::Button, favorite: bool) {
     });
 }
 
-fn clear_list_box(lb: &gtk::ListBox) {
-    while let Some(row) = lb.first_child() {
-        lb.remove(&row);
+fn password_search_text(entry: &PasswordEntry) -> String {
+    let mut text = String::new();
+    text.push_str(&entry.title.to_lowercase());
+    if let Some(username) = entry.username.as_deref().filter(|s| !s.is_empty()) {
+        text.push('\n');
+        text.push_str(&username.to_lowercase());
     }
+    if let Some(url) = entry.url.as_deref().filter(|s| !s.is_empty()) {
+        text.push('\n');
+        text.push_str(&url.to_lowercase());
+    }
+    text
 }
 
 fn trim_to_opt(s: &glib::GString) -> Option<String> {
@@ -2202,3 +2311,69 @@ fn mime_guess_from_ext(filename: &str) -> Option<String> {
 }
 
 use gtk::gio;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn test_entry(
+        id: i64,
+        title: &str,
+        username: Option<&str>,
+        url: Option<&str>,
+        category: Option<&str>,
+        favorite: bool,
+    ) -> PasswordEntry {
+        PasswordEntry {
+            id,
+            title: title.to_string(),
+            username: username.map(str::to_string),
+            url: url.map(str::to_string),
+            password: None,
+            notes: None,
+            totp_secret: None,
+            totp_algorithm: "SHA1".to_string(),
+            totp_digits: 6,
+            totp_period: 30,
+            has_totp: false,
+            category: category.map(str::to_string),
+            favorite,
+            created_at: 0,
+            updated_at: 0,
+            last_accessed: None,
+        }
+    }
+
+    #[test]
+    fn password_cache_filters_metadata_without_database_roundtrip() {
+        let cache = PasswordListCache::new(
+            vec![
+                test_entry(
+                    1,
+                    "GitHub",
+                    Some("octo"),
+                    Some("https://github.com"),
+                    Some("Work"),
+                    true,
+                ),
+                test_entry(
+                    2,
+                    "Bank",
+                    Some("bruno"),
+                    Some("https://bank.example"),
+                    Some("Personal"),
+                    false,
+                ),
+            ],
+            vec!["Personal".to_string(), "Work".to_string()],
+        );
+
+        assert_eq!(cache.filtered_indices(Some("git"), None), vec![0]);
+        assert_eq!(cache.filtered_indices(Some("OCTO"), None), vec![0]);
+        assert_eq!(cache.filtered_indices(Some("bank.example"), None), vec![1]);
+        assert_eq!(cache.filtered_indices(None, Some("Work")), vec![0]);
+        assert!(cache
+            .filtered_indices(Some("github"), Some("Personal"))
+            .is_empty());
+    }
+}
