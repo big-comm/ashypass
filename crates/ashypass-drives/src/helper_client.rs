@@ -64,8 +64,12 @@ enum HelperResponse {
         #[expect(dead_code, reason = "protocol marker; presence means success")]
         ok: bool,
     },
-    Error { error: String },
-    Progress { progress: ProgressPayload },
+    Error {
+        error: String,
+    },
+    Progress {
+        progress: ProgressPayload,
+    },
 }
 
 #[derive(Debug, Deserialize)]
@@ -87,14 +91,20 @@ impl HelperClient {
         let path = helper_path();
         let mut cmd = Command::new("pkexec");
         cmd.arg(&path);
-        cmd.stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::inherit());
+        cmd.stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::inherit());
         let mut child = cmd.spawn().map_err(|e| match e.kind() {
             std::io::ErrorKind::NotFound => Error::MissingTool("pkexec".into()),
             _ => Error::Io(e),
         })?;
         let stdin = child.stdin.take().expect("piped");
         let stdout = BufReader::new(child.stdout.take().expect("piped"));
-        Ok(Self { child, stdin, stdout })
+        Ok(Self {
+            child,
+            stdin,
+            stdout,
+        })
     }
 
     fn round_trip(
@@ -175,10 +185,7 @@ impl HelperClient {
     }
 
     pub fn mkfs(&mut self, mapped: &Path, fs: &str, label: &str) -> Result<()> {
-        self.round_trip(
-            &HelperRequest::Mkfs { mapped, fs, label },
-            &mut |_| {},
-        )
+        self.round_trip(&HelperRequest::Mkfs { mapped, fs, label }, &mut |_| {})
     }
 }
 
@@ -196,8 +203,7 @@ impl Drop for HelperClient {
 
 /// Minimal RFC 4648 base64 encoder so this module has zero extra crates.
 fn b64_encode(bytes: &[u8]) -> String {
-    const T: &[u8; 64] =
-        b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    const T: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     let mut out = String::with_capacity(bytes.len().div_ceil(3) * 4);
     let mut i = 0;
     while i + 3 <= bytes.len() {

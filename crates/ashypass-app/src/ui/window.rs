@@ -6,8 +6,8 @@ use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
 use crate::ui::{
-    drives_view::DrivesView, generator_view::GeneratorView, settings_dialog,
-    totp_view::TotpView, vault_view::VaultView,
+    drives_view::DrivesView, generator_view::GeneratorView, settings_dialog, totp_view::TotpView,
+    vault_view::VaultView,
 };
 use adw::prelude::*;
 use ashypass_core::config::{
@@ -290,8 +290,7 @@ impl MainWindow {
         // VaultChanged for debounced push, runs a periodic pull on its own
         // timer, and surfaces errors through the same toast overlay we use
         // for everything else.
-        let auto_sync_handle =
-            crate::auto_sync::install(state.clone(), toast_overlay.clone());
+        let auto_sync_handle = crate::auto_sync::install(state.clone(), toast_overlay.clone());
         // Kick off one sync after vault is unlocked elsewhere (see the
         // on_auth_changed wiring below).
         let auto_sync_handle_for_unlock = auto_sync_handle.clone();

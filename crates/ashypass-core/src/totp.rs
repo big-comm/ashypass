@@ -39,6 +39,7 @@ pub fn generate_totp(
     period: u32,
     timestamp: u64,
 ) -> Result<String> {
+    validate_parameters(digits, period)?;
     let cleaned: String = base32_secret
         .chars()
         .filter(|c| !c.is_whitespace())
@@ -46,6 +47,9 @@ pub fn generate_totp(
     let upper = cleaned.to_ascii_uppercase();
     let key = base32::decode(base32::Alphabet::Rfc4648 { padding: false }, &upper)
         .ok_or_else(|| Error::InvalidInput("invalid base32 secret".into()))?;
+    if key.is_empty() {
+        return Err(Error::InvalidInput("TOTP secret is empty".into()));
+    }
     let counter = timestamp / period as u64;
     let counter_bytes = counter.to_be_bytes();
 
@@ -81,7 +85,22 @@ pub fn generate_totp(
 }
 
 pub fn remaining_seconds(period: u32, now: u64) -> u32 {
+    if period == 0 {
+        return 0;
+    }
     period - (now % period as u64) as u32
+}
+
+pub fn validate_parameters(digits: u8, period: u32) -> Result<()> {
+    if !matches!(digits, 6 | 8) {
+        return Err(Error::InvalidInput("TOTP digits must be 6 or 8".into()));
+    }
+    if !(1..=300).contains(&period) {
+        return Err(Error::InvalidInput(
+            "TOTP period must be between 1 and 300 seconds".into(),
+        ));
+    }
+    Ok(())
 }
 
 #[derive(Debug, Clone)]
@@ -119,12 +138,21 @@ pub fn parse_otpauth(uri: &str) -> Result<OtpAuth> {
             "secret" => secret = Some(v.to_string()),
             "issuer" => issuer = Some(v.to_string()),
             "algorithm" => algorithm = Algorithm::parse(&v)?,
-            "digits" => digits = v.parse().unwrap_or(6),
-            "period" => period = v.parse().unwrap_or(30),
+            "digits" => {
+                digits = v
+                    .parse()
+                    .map_err(|_| Error::InvalidInput("invalid TOTP digits".into()))?
+            }
+            "period" => {
+                period = v
+                    .parse()
+                    .map_err(|_| Error::InvalidInput("invalid TOTP period".into()))?
+            }
             _ => {}
         }
     }
     let secret = secret.ok_or_else(|| Error::InvalidInput("missing secret".into()))?;
+    generate_totp(&secret, algorithm, digits, period, 0)?;
     let (issuer, account) = match decoded_path.split_once(':') {
         Some((i, a)) => (issuer.unwrap_or_else(|| i.to_string()), a.to_string()),
         None => (issuer.unwrap_or_default(), decoded_path.clone()),
@@ -220,5 +248,13 @@ mod tests {
         assert_eq!(p.secret, "JBSWY3DPEHPK3PXP");
         assert_eq!(p.digits, 6);
         assert_eq!(p.period, 30);
+    }
+
+    #[test]
+    fn rejects_invalid_parameters_without_panicking() {
+        assert!(generate_totp("JBSWY3DPEHPK3PXP", Algorithm::Sha1, 7, 30, 0).is_err());
+        assert!(generate_totp("JBSWY3DPEHPK3PXP", Algorithm::Sha1, 6, 0, 0).is_err());
+        assert_eq!(remaining_seconds(0, 123), 0);
+        assert!(parse_otpauth("otpauth://totp/test?secret=JBSWY3DPEHPK3PXP&digits=nope").is_err());
     }
 }

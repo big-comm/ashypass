@@ -115,6 +115,29 @@ CREATE TABLE IF NOT EXISTS passwords_trash (
 pub const CREATE_TRASH_INDEX: &str =
     "CREATE INDEX IF NOT EXISTS idx_trash_deleted_at ON passwords_trash(deleted_at)";
 
+pub const CREATE_PASSWORDS_HISTORY_TRASH: &str = r#"
+CREATE TABLE IF NOT EXISTS passwords_history_trash (
+    original_history_id    INTEGER NOT NULL UNIQUE,
+    trash_id               INTEGER NOT NULL,
+    password_encrypted     BLOB    NOT NULL,
+    changed_at             INTEGER NOT NULL,
+    FOREIGN KEY (trash_id) REFERENCES passwords_trash(id) ON DELETE CASCADE
+)
+"#;
+
+pub const CREATE_ATTACHMENTS_TRASH: &str = r#"
+CREATE TABLE IF NOT EXISTS attachments_trash (
+    original_attachment_id INTEGER NOT NULL UNIQUE,
+    trash_id               INTEGER NOT NULL,
+    filename               TEXT    NOT NULL,
+    mime_type              TEXT,
+    ciphertext             BLOB    NOT NULL,
+    size_bytes             INTEGER NOT NULL,
+    created_at             INTEGER NOT NULL,
+    FOREIGN KEY (trash_id) REFERENCES passwords_trash(id) ON DELETE CASCADE
+)
+"#;
+
 /// Tag catalog: free-form labels users assign to entries. Decoupled from
 /// `category` (which is single-valued) so an entry can carry several tags.
 pub const CREATE_TAGS: &str = r#"
@@ -243,6 +266,8 @@ pub fn initialize(conn: &rusqlite::Connection) -> rusqlite::Result<()> {
     conn.execute(CREATE_HISTORY_INDEX, [])?;
     conn.execute(CREATE_PASSWORDS_TRASH, [])?;
     conn.execute(CREATE_TRASH_INDEX, [])?;
+    conn.execute(CREATE_PASSWORDS_HISTORY_TRASH, [])?;
+    conn.execute(CREATE_ATTACHMENTS_TRASH, [])?;
     conn.execute(CREATE_TAGS, [])?;
     conn.execute(CREATE_ENTRY_TAGS, [])?;
     conn.execute(CREATE_ENTRY_TAGS_INDEX, [])?;
@@ -262,8 +287,44 @@ pub fn initialize(conn: &rusqlite::Connection) -> rusqlite::Result<()> {
         conn.execute(s, [])?;
     }
     conn.execute(CREATE_SEARCH_META, [])?;
+    migrate_orphaned_trash_children(conn)?;
     let _ = initialize_password_search(conn);
     Ok(())
+}
+
+/// Older builds left history and attachments orphaned when foreign keys were
+/// disabled. Move those rows under the matching trash record before enabling
+/// strict enforcement. The migration is additive and transactional.
+fn migrate_orphaned_trash_children(conn: &rusqlite::Connection) -> rusqlite::Result<()> {
+    let tx = conn.unchecked_transaction()?;
+    tx.execute_batch(
+        r#"
+        INSERT OR IGNORE INTO passwords_history_trash
+            (original_history_id, trash_id, password_encrypted, changed_at)
+        SELECT h.id, t.id, h.password_encrypted, h.changed_at
+          FROM passwords_history h
+          JOIN passwords_trash t ON t.original_id = h.entry_id
+          LEFT JOIN passwords p ON p.id = h.entry_id
+         WHERE p.id IS NULL;
+
+        DELETE FROM passwords_history
+         WHERE id IN (SELECT original_history_id FROM passwords_history_trash);
+
+        INSERT OR IGNORE INTO attachments_trash
+            (original_attachment_id, trash_id, filename, mime_type,
+             ciphertext, size_bytes, created_at)
+        SELECT a.id, t.id, a.filename, a.mime_type,
+               a.ciphertext, a.size_bytes, a.created_at
+          FROM attachments a
+          JOIN passwords_trash t ON t.original_id = a.entry_id
+          LEFT JOIN passwords p ON p.id = a.entry_id
+         WHERE p.id IS NULL;
+
+        DELETE FROM attachments
+         WHERE id IN (SELECT original_attachment_id FROM attachments_trash);
+        "#,
+    )?;
+    tx.commit()
 }
 
 fn initialize_password_search(conn: &rusqlite::Connection) -> rusqlite::Result<()> {

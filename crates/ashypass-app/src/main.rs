@@ -210,7 +210,9 @@ fn show_about(app: &adw::Application) {
         .version(env!("CARGO_PKG_VERSION"))
         .developer_name("Big Community")
         .license_type(gtk::License::MitX11)
-        .comments("Modern password generator and encrypted password vault")
+        .comments(tr!(
+            "Modern password generator and encrypted password vault"
+        ))
         .website("https://github.com/big-comm")
         .issue_url("https://github.com/big-comm/ashypass/issues")
         .build();

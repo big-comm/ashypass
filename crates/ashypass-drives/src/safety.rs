@@ -98,10 +98,12 @@ pub fn inspect(device: &Path, policy: SafetyPolicy) -> Result<SafetyReport> {
 }
 
 fn first_mounted_partition(drive: &Drive) -> Option<String> {
-    drive
-        .partitions
-        .iter()
-        .find_map(|p| p.mountpoint.clone())
+    drive.mountpoint.clone().or_else(|| {
+        drive
+            .partitions
+            .iter()
+            .find_map(|p| p.mountpoint.clone().or_else(|| p.inner_mountpoint.clone()))
+    })
 }
 
 /// True if the device or any of its partitions backs `/`.
@@ -135,6 +137,12 @@ fn hosts_rootfs(drive: &Drive) -> Result<bool> {
         if resolved.as_path() == Path::new(&p.path) {
             return Ok(true);
         }
+        if p.active_mapping
+            .as_ref()
+            .is_some_and(|name| resolved.as_path() == Path::new(&format!("/dev/mapper/{name}")))
+        {
+            return Ok(true);
+        }
     }
     Ok(false)
 }
@@ -164,15 +172,32 @@ fn listed_in_crypttab(drive: &Drive) -> Result<bool> {
     let Ok(crypttab) = fs::read_to_string("/etc/crypttab") else {
         return Ok(false);
     };
-    let needles: Vec<&str> = std::iter::once(drive.path.as_str())
-        .chain(drive.partitions.iter().map(|p| p.path.as_str()))
+    let devices: Vec<PathBuf> = std::iter::once(PathBuf::from(&drive.path))
+        .chain(
+            drive
+                .partitions
+                .iter()
+                .map(|partition| PathBuf::from(&partition.path)),
+        )
+        .map(|path| fs::canonicalize(&path).unwrap_or(path))
         .collect();
     Ok(crypttab.lines().any(|line| {
         let trimmed = line.trim();
         if trimmed.is_empty() || trimmed.starts_with('#') {
             return false;
         }
-        needles.iter().any(|n| trimmed.contains(n))
+        let Some(source) = trimmed.split_whitespace().nth(1) else {
+            return false;
+        };
+        let source_path = if let Some(uuid) = source.strip_prefix("UUID=") {
+            PathBuf::from("/dev/disk/by-uuid").join(uuid)
+        } else if source.starts_with("/dev/") {
+            PathBuf::from(source)
+        } else {
+            return false;
+        };
+        let resolved = fs::canonicalize(&source_path).unwrap_or(source_path);
+        devices.iter().any(|device| device == &resolved)
     }))
 }
 

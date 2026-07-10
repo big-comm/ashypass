@@ -50,12 +50,7 @@ pub fn build_mkfs_spec(fs: Filesystem, mapped_device: &Path, label: &str) -> Com
     }
 }
 
-pub fn mkfs(
-    runner: &dyn Runner,
-    mapped_device: &Path,
-    fs: Filesystem,
-    label: &str,
-) -> Result<()> {
+pub fn mkfs(runner: &dyn Runner, mapped_device: &Path, fs: Filesystem, label: &str) -> Result<()> {
     runner
         .run(build_mkfs_spec(fs, mapped_device, label))
         .map(|_| ())

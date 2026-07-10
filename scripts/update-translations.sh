@@ -24,6 +24,8 @@ xgettext \
     --keyword='tr!' \
     --keyword=tr \
     --keyword=tr_static \
+    --keyword='trn!:1,2' \
+    --keyword=ngettext:1,2 \
     --package-name=ashypass \
     --copyright-holder="Ashy Pass contributors" \
     --add-comments=TRANSLATORS \
@@ -37,6 +39,7 @@ shopt -s nullglob
 for po in "$LOCALE_DIR"/*.po; do
     [ "$(basename "$po")" = "ashypass.pot" ] && continue
     msgmerge --quiet --update --backup=none --no-fuzzy-matching "$po" "$POT"
+    msgattrib --no-obsolete --output-file="$po" "$po"
 done
 
 echo "[3/3] Compiling .mo into $MO_ROOT/<lang>/LC_MESSAGES/ashypass.mo"

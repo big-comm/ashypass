@@ -99,10 +99,21 @@ fn build_confirm_page(
     content.append(&warning);
 
     // Device details grid.
-    let info = adw::PreferencesGroup::builder().title(tr!("Device")).build();
-    info.add(&detail_row(tr!("Vendor"), drive.vendor.as_deref().unwrap_or("—")));
-    info.add(&detail_row(tr!("Model"), drive.model.as_deref().unwrap_or("—")));
-    info.add(&detail_row(tr!("Serial"), drive.serial.as_deref().unwrap_or("—")));
+    let info = adw::PreferencesGroup::builder()
+        .title(tr!("Device"))
+        .build();
+    info.add(&detail_row(
+        tr!("Vendor"),
+        drive.vendor.as_deref().unwrap_or("—"),
+    ));
+    info.add(&detail_row(
+        tr!("Model"),
+        drive.model.as_deref().unwrap_or("—"),
+    ));
+    info.add(&detail_row(
+        tr!("Serial"),
+        drive.serial.as_deref().unwrap_or("—"),
+    ));
     info.add(&detail_row(tr!("Size"), &human_size(drive.size_bytes)));
     info.add(&detail_row(tr!("Path"), &drive.path));
     if !drive.partitions.is_empty() {
@@ -215,8 +226,12 @@ fn build_key_page(
             "At least 8 characters. A four-word passphrase from the EFF wordlist is a strong default."
         ))
         .build();
-    let pw = adw::PasswordEntryRow::builder().title(tr!("Passphrase")).build();
-    let pw2 = adw::PasswordEntryRow::builder().title(tr!("Repeat")).build();
+    let pw = adw::PasswordEntryRow::builder()
+        .title(tr!("Passphrase"))
+        .build();
+    let pw2 = adw::PasswordEntryRow::builder()
+        .title(tr!("Repeat"))
+        .build();
     group.add(&pw);
     group.add(&pw2);
     content.append(&group);
@@ -267,7 +282,7 @@ fn build_key_page(
             let s2 = pw2_cl.text();
             let (score_u8, word) = legacy_score(s.as_str());
             bar_cl.set_value(score_u8 as f64);
-            lbl_cl.set_label(word);
+            lbl_cl.set_label(crate::ui::i18n::localized_strength_label(word));
             let valid = s.len() >= 8 && s == s2;
             next_cl.set_sensitive(valid);
         });
@@ -297,7 +312,6 @@ fn build_key_page(
 
     page
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────
 // Step 3 — options
@@ -473,7 +487,11 @@ fn build_run_page(
     let wipe_mode = st.wipe_mode.unwrap_or(WipeMode::EncryptedZero);
     let filesystem = st.filesystem;
     let allow_discards = st.allow_discards;
-    let label = if st.label.is_empty() { "ashypass".to_string() } else { st.label.clone() };
+    let label = if st.label.is_empty() {
+        "ashypass".to_string()
+    } else {
+        st.label.clone()
+    };
     drop(st);
 
     let Some(passphrase_bytes) = passphrase else {
@@ -517,13 +535,7 @@ fn build_run_page(
         let mut alive = true;
         loop {
             match receiver.try_recv() {
-                Ok(ev) => handle_event(
-                    ev,
-                    &row_map,
-                    &status_label_cl,
-                    &progress_cl,
-                    &close_btn_cl,
-                ),
+                Ok(ev) => handle_event(ev, &row_map, &status_label_cl, &progress_cl, &close_btn_cl),
                 Err(std::sync::mpsc::TryRecvError::Empty) => break,
                 Err(std::sync::mpsc::TryRecvError::Disconnected) => {
                     alive = false;
@@ -598,11 +610,7 @@ fn handle_event(
         UiEvent::Done(Ok(label)) => {
             status_label.set_label(tr!("Done."));
             progress.set_fraction(1.0);
-            progress.set_text(Some(&format!(
-                "{}: {}",
-                tr!("Encrypted as"),
-                label
-            )));
+            progress.set_text(Some(&format!("{}: {}", tr!("Encrypted as"), label)));
             close_btn.set_sensitive(true);
         }
         UiEvent::Done(Err(msg)) => {
@@ -725,8 +733,9 @@ pub fn present_unlock(
             let status_done = status_cl.clone();
             let toast_done = toast_cl.clone();
             let btn_done = btn.clone();
-            glib::timeout_add_local(std::time::Duration::from_millis(120), move || {
-                match receiver.try_recv() {
+            glib::timeout_add_local(
+                std::time::Duration::from_millis(120),
+                move || match receiver.try_recv() {
                     Ok(UnlockResult::Ok(path)) => {
                         let t = adw::Toast::builder()
                             .title(format!("{}: {path}", tr!("Unlocked at")))
@@ -743,8 +752,8 @@ pub fn present_unlock(
                     }
                     Err(std::sync::mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
                     Err(std::sync::mpsc::TryRecvError::Disconnected) => glib::ControlFlow::Break,
-                }
-            });
+                },
+            );
         });
     }
 }
@@ -845,7 +854,9 @@ pub fn present_enroll_fido2(
                 return;
             }
             btn.set_sensitive(false);
-            status_cl.set_label(tr!("Talking to your token… check the device for a touch prompt."));
+            status_cl.set_label(tr!(
+                "Talking to your token… check the device for a touch prompt."
+            ));
 
             let (sender, receiver) = std::sync::mpsc::channel::<UnlockResult>();
             let device = device_path.clone();
@@ -866,8 +877,9 @@ pub fn present_enroll_fido2(
             let status_done = status_cl.clone();
             let toast_done = toast_cl.clone();
             let btn_done = btn.clone();
-            glib::timeout_add_local(std::time::Duration::from_millis(120), move || {
-                match receiver.try_recv() {
+            glib::timeout_add_local(
+                std::time::Duration::from_millis(120),
+                move || match receiver.try_recv() {
                     Ok(UnlockResult::Ok(_)) => {
                         let t = adw::Toast::builder()
                             .title(tr!("FIDO2 keyslot added"))
@@ -884,8 +896,8 @@ pub fn present_enroll_fido2(
                     }
                     Err(std::sync::mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
                     Err(std::sync::mpsc::TryRecvError::Disconnected) => glib::ControlFlow::Break,
-                }
-            });
+                },
+            );
         });
     }
 }

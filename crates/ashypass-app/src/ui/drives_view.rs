@@ -331,10 +331,7 @@ fn drive_details_row(drive: &Drive) -> adw::ActionRow {
 
     let mut row_idx: i32 = 0;
     let push = |grid: &gtk::Grid, idx: &mut i32, label: &str, value: gtk::Widget| {
-        let lbl = gtk::Label::builder()
-            .label(label)
-            .xalign(1.0)
-            .build();
+        let lbl = gtk::Label::builder().label(label).xalign(1.0).build();
         lbl.add_css_class("caption");
         lbl.add_css_class("dim-label");
         grid.attach(&lbl, 0, *idx, 1, 1);
@@ -372,7 +369,12 @@ fn drive_details_row(drive: &Drive) -> adw::ActionRow {
             other => other.to_uppercase(),
         })
         .unwrap_or_else(|| tr!("none").to_string());
-    push(&grid, &mut row_idx, tr!("Partition table"), sans_value(&table));
+    push(
+        &grid,
+        &mut row_idx,
+        tr!("Partition table"),
+        sans_value(&table),
+    );
 
     let allocated: u64 = drive.partitions.iter().map(|p| p.size_bytes).sum();
     let unallocated = drive.size_bytes.saturating_sub(allocated);
@@ -486,7 +488,10 @@ fn partition_row(part: &Partition) -> adw::ActionRow {
         None => subtitle.push_str(tr!("not mounted")),
     }
 
-    let row = adw::ActionRow::builder().title(&title).subtitle(&subtitle).build();
+    let row = adw::ActionRow::builder()
+        .title(&title)
+        .subtitle(&subtitle)
+        .build();
 
     // Suffix box: usage bar (when mounted) above the filesystem badge.
     let suffix = gtk::Box::builder()
@@ -544,8 +549,7 @@ fn partition_row(part: &Partition) -> adw::ActionRow {
                 let mounted = inner_mp.is_some();
                 btn.set_sensitive(false);
 
-                let (sender, receiver) =
-                    std::sync::mpsc::channel::<Result<(), String>>();
+                let (sender, receiver) = std::sync::mpsc::channel::<Result<(), String>>();
                 std::thread::spawn(move || {
                     // Best-effort unmount first — Nautilus or any other
                     // client holding the mapping would block cryptsetup
@@ -563,13 +567,10 @@ fn partition_row(part: &Partition) -> adw::ActionRow {
                 });
 
                 let btn_done = btn.clone();
-                glib::timeout_add_local(
-                    std::time::Duration::from_millis(120),
-                    move || match receiver.try_recv() {
+                glib::timeout_add_local(std::time::Duration::from_millis(120), move || {
+                    match receiver.try_recv() {
                         Ok(Ok(())) => {
-                            eprintln!(
-                                "ashypass: locked /dev/mapper/{mapping_for_log}"
-                            );
+                            eprintln!("ashypass: locked /dev/mapper/{mapping_for_log}");
                             btn_done.set_sensitive(true);
                             glib::ControlFlow::Break
                         }
@@ -578,14 +579,12 @@ fn partition_row(part: &Partition) -> adw::ActionRow {
                             btn_done.set_sensitive(true);
                             glib::ControlFlow::Break
                         }
-                        Err(std::sync::mpsc::TryRecvError::Empty) => {
-                            glib::ControlFlow::Continue
-                        }
+                        Err(std::sync::mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
                         Err(std::sync::mpsc::TryRecvError::Disconnected) => {
                             glib::ControlFlow::Break
                         }
-                    },
-                );
+                    }
+                });
             });
             row.add_suffix(&lock_btn);
         } else {

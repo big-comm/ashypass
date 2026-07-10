@@ -7,7 +7,7 @@
 //! into the cache — locales don't churn at runtime and the working set is
 //! bounded by the number of distinct UI strings.
 
-use gettextrs::gettext;
+use gettextrs::{gettext, ngettext};
 use std::cell::RefCell;
 use std::collections::HashMap;
 
@@ -31,9 +31,31 @@ pub fn tr_static(source: &'static str) -> &'static str {
     })
 }
 
+pub fn tr_plural(singular: &'static str, plural: &'static str, count: usize) -> String {
+    ngettext(singular, plural, count.min(u32::MAX as usize) as u32)
+}
+
+pub fn localized_strength_label(label: &str) -> &str {
+    match label {
+        "Very Weak" => tr_static("Very Weak"),
+        "Weak" => tr_static("Weak"),
+        "Medium" => tr_static("Medium"),
+        "Strong" => tr_static("Strong"),
+        "Very Strong" => tr_static("Very Strong"),
+        other => other,
+    }
+}
+
 #[macro_export]
 macro_rules! tr {
     ($s:literal) => {
         $crate::ui::i18n::tr_static($s)
+    };
+}
+
+#[macro_export]
+macro_rules! trn {
+    ($singular:literal, $plural:literal, $count:expr) => {
+        $crate::ui::i18n::tr_plural($singular, $plural, $count)
     };
 }

@@ -6,10 +6,11 @@
 
 use crate::passphrase::Passphrase;
 use crate::{Error, Result};
+use std::fmt;
 use std::io::{BufRead, BufReader, Write};
 use std::process::{Command, Stdio};
+use zeroize::Zeroize;
 
-#[derive(Debug, Clone)]
 pub struct CommandSpec {
     pub program: String,
     pub args: Vec<String>,
@@ -19,6 +20,26 @@ pub struct CommandSpec {
     /// terminal instead of capturing it. Used for long-running tools that
     /// emit progress to stderr (e.g. `dd status=progress`).
     pub inherit_stderr: bool,
+}
+
+impl fmt::Debug for CommandSpec {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("CommandSpec")
+            .field("program", &self.program)
+            .field("args", &self.args)
+            .field("stdin_bytes", &self.stdin_bytes.as_ref().map(Vec::len))
+            .field("inherit_stderr", &self.inherit_stderr)
+            .finish()
+    }
+}
+
+impl Drop for CommandSpec {
+    fn drop(&mut self) {
+        if let Some(bytes) = self.stdin_bytes.as_mut() {
+            bytes.zeroize();
+        }
+    }
 }
 
 impl CommandSpec {
@@ -120,7 +141,12 @@ impl Runner for SudoRunner {
         argv.push("--".to_string());
         argv.push(spec.program.clone());
         argv.extend(spec.args.iter().cloned());
-        execute("sudo", &argv, spec.stdin_bytes.as_deref(), spec.inherit_stderr)
+        execute(
+            "sudo",
+            &argv,
+            spec.stdin_bytes.as_deref(),
+            spec.inherit_stderr,
+        )
     }
     fn run_streaming(
         &self,
@@ -156,7 +182,12 @@ impl Runner for PkexecRunner {
         let mut argv = Vec::with_capacity(spec.args.len() + 1);
         argv.push(spec.program.clone());
         argv.extend(spec.args.iter().cloned());
-        execute("pkexec", &argv, spec.stdin_bytes.as_deref(), spec.inherit_stderr)
+        execute(
+            "pkexec",
+            &argv,
+            spec.stdin_bytes.as_deref(),
+            spec.inherit_stderr,
+        )
     }
     fn run_streaming(
         &self,
@@ -166,7 +197,12 @@ impl Runner for PkexecRunner {
         let mut argv = Vec::with_capacity(spec.args.len() + 1);
         argv.push(spec.program.clone());
         argv.extend(spec.args.iter().cloned());
-        execute_streaming("pkexec", &argv, spec.stdin_bytes.as_deref(), on_stderr_chunk)
+        execute_streaming(
+            "pkexec",
+            &argv,
+            spec.stdin_bytes.as_deref(),
+            on_stderr_chunk,
+        )
     }
 }
 

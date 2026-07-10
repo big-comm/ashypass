@@ -318,7 +318,8 @@ impl Inner {
 
     fn update_strength(&self, pwd: &str) {
         let (score, level) = check_password_strength(pwd);
-        self.strength_label.set_text(level);
+        self.strength_label
+            .set_text(crate::ui::i18n::localized_strength_label(level));
         self.strength_bar.set_value(score as f64);
 
         self.strength_label.remove_css_class("success");

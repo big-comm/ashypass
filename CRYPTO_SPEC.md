@@ -114,7 +114,7 @@ Only used for reading entries during the v1 → v2 migration.
 salt = SaltString::generate(OsRng)    // Argon2 16-byte random salt, base64 encoded
 ```
 
-The salt is stored verbatim as text in `master.salt`. On master password change a fresh salt is generated and **every** encrypted column is re-encrypted inside a single SQLite transaction.
+The salt is stored verbatim as text in `master.salt`. On master password change a fresh salt is generated and every encrypted active-password, history, trash, and attachment column is re-encrypted inside a single SQLite transaction.
 
 ## Database Schema (v2)
 
@@ -173,9 +173,16 @@ Supported algorithms: `SHA1` (default), `SHA256`, `SHA512`.
 otpauth://totp/{issuer}:{account}?secret={BASE32}&issuer={issuer}&algorithm={algo}&digits={digits}&period={period}
 ```
 
-## Optional Second Factor — FIDO2
+## Reserved Vault Second Factor — FIDO2 (Not Enforced)
 
-When enabled, unlock requires (master password) AND (authenticator OR backup phrase). The vault key is derived as:
+The current release does not register or assert CTAP2 credentials and does
+not mix a FIDO2 result into the vault key. The UI is disabled and existing
+preview configuration is preserved for a future compatible migration. The
+construction below is design documentation only, not a current security
+property. FIDO2 enrollment for external LUKS2 drives is independent and uses
+`systemd-cryptenroll`.
+
+The reserved design would require (master password) AND (authenticator OR backup phrase):
 
 ```
 vault_key   = Argon2id(master_password, salt)              // as above
@@ -253,7 +260,7 @@ counter         = 1234567890 / 30 = 41152263
 5. **Atomic migration** — v1 → v2 happens inside one transaction; partial failure rolls back.
 6. **TOTP secrets encrypted** — same v2 envelope as passwords.
 7. **Clipboard auto-clear** — both passwords and TOTP codes scheduled for clear; only cleared if contents still match what was written.
-8. **Optional 2FA** — vault key is XOR-mixed with an authenticator-derived secret; loss of token still allows recovery via the BIP39 backup phrase, whose hash is the only persisted proof.
+8. **Reserved 2FA design is not claimed** — CTAP2 vault protection remains disabled until registration, assertion, and recovery are fully implemented and tested.
 9. **Zero-knowledge cloud backup** — Google Drive only ever sees the encrypted SQLite file.
 
 ---

@@ -19,6 +19,7 @@ pub struct Drive {
     pub removable: bool,
     pub hotplug: bool,
     pub read_only: bool,
+    pub mountpoint: Option<String>,
     /// `true` for spinning disks, `false` for SSD/NVMe/USB-flash.
     pub rotational: bool,
     /// `"gpt"`, `"dos"` (MBR), or `None` if no partition table is present.
@@ -172,6 +173,7 @@ pub fn list_all() -> Result<Vec<Drive>> {
             removable: node.rm.unwrap_or(false),
             hotplug: node.hotplug.unwrap_or(false),
             read_only: node.ro.unwrap_or(false),
+            mountpoint: node.mountpoint.clone(),
             rotational: node.rota.unwrap_or(false),
             partition_table: clean(node.pttype),
             partitions,

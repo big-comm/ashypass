@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-18 22:30-0300\n"
+"POT-Creation-Date: 2026-07-09 21:42-0300\n"
 "PO-Revision-Date: 2026-05-12 19:19\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -11,68 +11,55 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:344
 msgid "0 disables auto-clear"
 msgstr "0 деактивира автоматичното изчистване"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:168
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:591
 msgid "2FA"
 msgstr "2FA"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1011
 msgid "2FA Codes"
 msgstr "2FA кодове"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:798
 msgid "2FA code added"
 msgstr "2FA кодът е добавен"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:859
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "Фраза от 12 думи по BIP-39 за отключване без ключ за сигурност. Показва се "
 "веднъж."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:107
 msgid "About"
 msgstr "Относно"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:659
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:632
 msgid "Add 2FA Code"
 msgstr "Добавяне на 2FA код"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:459
+msgid "Add FIDO2 token keyslot"
+msgstr "Добавяне на ключов слот за FIDO2 токен"
+
 msgid "Add Number at End"
 msgstr "Добавяне на число в края"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1548
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:75
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:634
 msgid "Add Password"
 msgstr "Добавяне на парола"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:265
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:393
 msgid "Add a TOTP secret to an entry to see live codes here."
 msgstr "Добавете TOTP тайна към запис, за да виждате кодове на живо тук."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1869
+msgid "Add a hardware token keyslot"
+msgstr "Добавяне на ключов слот за хардуерен токен"
+
 msgid "Add attachment"
 msgstr "Добавяне на прикачен файл"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1736
 msgid "Add file"
 msgstr "Добавяне на файл"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:415
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:872
 msgid "Add your first password using the + button"
 msgstr "Добавете първата си парола чрез бутона +"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:361
 msgid ""
 "After auto-lock or restart, unlock with a short PIN instead of the master "
 "password on this device. The vault key is stored encrypted by the PIN."
@@ -81,27 +68,28 @@ msgstr ""
 "главната парола на това устройство. Ключът на хранилището се съхранява "
 "криптиран от PIN кода."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1675
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:686
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:861
 msgid "Algorithm"
 msgstr "Алгоритъм"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:393
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1272
 msgid "All"
 msgstr "Всички"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3236
 msgid "All clear"
 msgstr "Всичко е наред"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:274
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2006
 msgid "All fields are required."
 msgstr "Всички полета са задължителни."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2391
+msgid ""
+"All partitions, files, and filesystem signatures will be permanently "
+"destroyed."
+msgstr ""
+"Всички дялове, файлове и файлови системни сигнатури ще бъдат безвъзвратно "
+"унищожени."
+
+msgid "Allow TRIM through encrypted mapping"
+msgstr "Разрешаване на TRIM през криптираното картографиране"
+
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
 "Uploading now would orphan the remote changes."
@@ -110,1922 +98,50 @@ msgstr ""
 "последно се синхронизира. Качването сега би оставило отдалечените промени "
 "без наследник."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2557
 msgid "App password"
 msgstr "Парола за приложение"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:103
 msgid "Appearance"
 msgstr "Външен вид"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:809
 msgid "Application"
 msgstr "Приложение"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1334
 msgid "Applying local deletions"
 msgstr "Прилагане на локални изтривания"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1429
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1435
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:613
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:619
 msgid "Are you sure you want to delete"
 msgstr "Сигурни ли сте, че искате да изтриете"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1107
-msgid ""
-"Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
+msgid "Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
 msgstr ""
 "Argon2id + AES-256-GCM, защитен с парола. Може да бъде повторно импортиран "
 "от Ashy Pass."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:606
 msgid ""
-"Argon2id turns your master password into the vault encryption key; it is not"
-" a physical security key. Higher costs slow brute force but also slow "
-"unlock. Auto-tune picks values calibrated to ~500 ms on this machine. "
-"Existing master hashes keep their original costs; tuned values apply on the "
-"next master password change."
+"Argon2id turns your master password into the vault encryption key; it is not "
+"a physical security key. Higher costs slow brute force but also slow unlock. "
+"Auto-tune picks values calibrated to ~500 ms on this machine. Existing "
+"master hashes keep their original costs; tuned values apply on the next "
+"master password change."
 msgstr ""
-"Argon2id превръща главната ви парола в ключ за криптиране на хранилището; не"
-" е физически защитен ключ. По-високите разходи забавят грубата сила, но също"
-" така забавят отключването. Автоматичното настройване избира стойности, "
-"калибрирани за ~500 ms на тази машина. Съществуващите главни хешове запазват"
-" оригиналните си разходи; настроените стойности се прилагат при следващата "
+"Argon2id превръща главната ви парола в ключ за криптиране на хранилището; не "
+"е физически защитен ключ. По-високите разходи забавят грубата сила, но също "
+"така забавят отключването. Автоматичното настройване избира стойности, "
+"калибрирани за ~500 ms на тази машина. Съществуващите главни хешове запазват "
+"оригиналните си разходи; настроените стойности се прилагат при следващата "
 "промяна на главната парола."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:258
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:201
 msgid "Ashy Pass"
 msgstr "Ashy Pass"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1897
-msgid "Attachment added"
-msgstr "Прикаченият файл е добавен"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1845
-msgid "Attachment deleted"
-msgstr "Прикаченият файл е изтрит"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1821
-msgid "Attachment not found"
-msgstr "Прикаченият файл не е намерен"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1812
-msgid "Attachment saved"
-msgstr "Прикаченият файл е запазен"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1728
-msgid "Attachments"
-msgstr "Прикачени файлове"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3050
-msgid "Audit Options"
-msgstr "Опции за одит"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3131
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3177
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3178
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3190
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3191
-msgid "Audit failed"
-msgstr "Одитът неуспешен"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:327
-msgid "Auto-lock after (seconds)"
-msgstr "Автоматично заключване след (секунди)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:633
-msgid "Auto-tune"
-msgstr "Автоматично настройване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:405
-msgid "Avoid characters like 0, O, 1, l, I"
-msgstr "Избягвайте символи като 0, O, 1, l, I"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1898
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2103
-msgid "Back up now"
-msgstr "Архивирай сега"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:857
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:921
-msgid "Backup Phrase"
-msgstr "Резервна фраза"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1914
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2119
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2124
-msgid "Backup failed"
-msgstr "Архивирането е неуспешно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:864
-msgid "Backup phrase"
-msgstr "Резервна фраза"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1913
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2123
-msgid "Backup uploaded"
-msgstr "Архивирането е качено"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:634
-msgid "Benchmark this machine (~5 s)"
-msgstr "Бенчмарк на тази машина (~5 s)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1062
-msgid "Bitwarden, Chrome, 1Password compatible columns"
-msgstr "Колони, съвместими с Bitwarden, Chrome, 1Password"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1053
-msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
-msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1080
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1447
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1553
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:630
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:663
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:826
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:159
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:679
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:819
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1380
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1707
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1976
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2202
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2396
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2549
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2630
-msgid "Cancel"
-msgstr "Отказ"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:453
-msgid "Capitalize Words"
-msgstr "Главна буква за всяка дума"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1645
-msgid "Category"
-msgstr "Категория"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:230
-msgid "Change Master Password"
-msgstr "Промяна на главната парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3056
-msgid "Check Have I Been Pwned (online)"
-msgstr "Проверка в Have I Been Pwned (онлайн)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1475
-msgid "Choose a 1Password .1pux archive"
-msgstr "Изберете .1pux архив от 1Password"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1474
-msgid "Choose a Bitwarden JSON export"
-msgstr "Изберете JSON експорт от Bitwarden"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1471
-msgid "Choose a CSV file"
-msgstr "Изберете CSV файл"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1472
-msgid "Choose an Aegis JSON export"
-msgstr "Изберете JSON експорт от Aegis"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1473
-msgid "Choose an andOTP JSON export"
-msgstr "Изберете JSON експорт от andOTP"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:343
-msgid "Clear clipboard after (seconds)"
-msgstr "Изчистване на клипборда след (секунди)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1394
-msgid "Clear history"
-msgstr "Изчистване на историята"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1763
-msgid "Click the + button to add a file."
-msgstr "Натиснете бутона +, за да добавите файл."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1981
-msgid "Client ID"
-msgstr "ID на клиента"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1983
-msgid "Client Secret (optional)"
-msgstr "Клиентска тайна (по избор)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:102
-msgid "Cloud"
-msgstr "Облак"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:994
-msgid "Compact vault list"
-msgstr "Компактен списък на хранилището"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1816
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1973
-msgid "Configure Google OAuth"
-msgstr "Конфигуриране на Google OAuth"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2449
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2470
-msgid "Configure Nextcloud Passwords"
-msgstr "Конфигуриране на Nextcloud Passwords"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2059
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2078
-msgid "Configure WebDAV"
-msgstr "Конфигуриране на WebDAV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2028
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2255
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2602
-msgid "Configure failed"
-msgstr "Конфигурирането неуспешно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1818
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2022
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2026
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2046
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2091
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2436
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2489
-msgid "Configured"
-msgstr "Конфигуриран"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:295
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1395
-msgid "Confirm Password"
-msgstr "Потвърдете паролата"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:227
-msgid "Confirm new password"
-msgstr "Потвърдете новата парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1716
-msgid "Confirm password"
-msgstr "Потвърдете паролата"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1373
-msgid "Copy"
-msgstr "Копиране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:484
-msgid "Copy Code"
-msgstr "Копиране на код"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1196
-msgid "Copy Password"
-msgstr "Копиране на парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:122
-msgid "Copy to Clipboard"
-msgstr "Копиране в клипборда"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:650
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1375
-msgid "Create Master Password"
-msgstr "Създаване на главна парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:492
-msgid "Current master password"
-msgstr "Текуща главна парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:615
-msgid "Current parameters"
-msgstr "Текущи параметри"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:221
-msgid "Current password"
-msgstr "Текуща парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:101
-msgid "Data"
-msgstr "Данни"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1824
-msgid "Decrypt failed"
-msgstr "Декриптирането неуспешно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1238
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1448
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:508
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:631
-msgid "Delete"
-msgstr "Изтриване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:625
-msgid "Delete 2FA Entry?"
-msgstr "Да изтрия 2FA записа?"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1442
-msgid "Delete Password?"
-msgstr "Да се изтрие паролата?"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1834
-msgid "Delete attachment"
-msgstr "Изтриване на прикачения файл"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3371
-msgid "Delete permanently"
-msgstr "Изтриване завинаги"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3294
 msgid ""
-"Deleted entries stay in the trash for this many days, then are permanently "
-"removed on next app start. Set 0 to bypass the trash."
+"Ashy Pass could not reach Nextcloud. Check your connection, server address, "
+"and app password."
 msgstr ""
-"Изтритите записи остават в кошчето за този брой дни, след което се премахват"
-" завинаги при следващото стартиране на приложението. Задайте 0, за да "
-"пропуснете кошчето."
+"Ashy Pass не успя да се свърже с Nextcloud. Проверете връзката си, адреса на "
+"сървъра и паролата за приложението."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1697
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:694
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:873
-msgid "Digits"
-msgstr "Цифри"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:392
-msgid "Digits (0-9)"
-msgstr "Цифри (0-9)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:406
-msgid "Disable"
-msgstr "Деактивиране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:390
-msgid "Disabled"
-msgstr "Деактивирано"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:942
-msgid "Done"
-msgstr "Готово"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1338
-msgid "Downloading remote changes"
-msgstr "Изтегляне на отдалечени промени"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1923
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2154
-msgid ""
-"Downloads the most recent backup as "
-"~/.local/share/ashypass/passwords.restored.db"
-msgstr ""
-"Изтегля най-новото архивиране като "
-"~/.local/share/ashypass/passwords.restored.db"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1210
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:496
-msgid "Edit"
-msgstr "Редактиране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:822
-msgid "Edit 2FA Entry"
-msgstr "Редактиране на 2FA запис"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1546
-msgid "Edit Password"
-msgstr "Редактиране на парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3460
-msgid "Empty trash"
-msgstr "Изпразване на кошчето"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:407
-msgid "Enable / Update"
-msgstr "Активиране / Обновяване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:388
-msgid "Enabled for this session"
-msgstr "Активирано за тази сесия"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:386
-msgid "Enabled on this device"
-msgstr "Активирано на това устройство"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1617
-msgid "Encrypt KeePass export"
-msgstr "Криптиране на KeePass експорт"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1538
-msgid "Encrypt export"
-msgstr "Криптиране на експорта"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1565
-msgid "Encrypted export complete"
-msgstr "Криптираният експорт завърши"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2135
-msgid "Encrypted snapshot upload with conflict detection"
-msgstr "Качване на криптиран моментен снимка с откриване на конфликти"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2039
-msgid ""
-"Encrypted vault uploaded as-is over HTTPS. Works with any RFC 4918 server."
-msgstr ""
-"Криптираният трезор се качва както е през HTTPS. Работи с всеки RFC 4918 "
-"сървър."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1796
-msgid "Encrypted vault uploaded as-is. Folder: \"AshyPass Backups\"."
-msgstr "Криптираното хранилище е качено както е. Папка: \"AshyPass Backups\"."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1730
-msgid "Encrypted with your master key. Stored inside the vault."
-msgstr "Криптирано с вашия главен ключ. Съхранявано в трезора."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1680
-msgid "Enter the master password for this .kdbx file."
-msgstr "Въведете главната парола за този .kdbx файл."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1595
-msgid "Enter the password used when this file was exported."
-msgstr "Въведете паролата, използвана при експортирането на този файл."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:262
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:205
-msgid "Enter your master password to unlock"
-msgstr "Въведете главната си парола за отключване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:644
-msgid "Entry deleted"
-msgstr "Записът е изтрит"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3387
-msgid "Entry restored"
-msgstr "Възстановен запис"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:930
-msgid "Entry updated"
-msgstr "Записът е актуализиран"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:299
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:804
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:936
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:610
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:311
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:793
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:886
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:893
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:901
-msgid "Error"
-msgstr "Грешка"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1111
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:2022
-msgid "Error saving password"
-msgstr "Грешка при запазване на паролата"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:404
-msgid "Exclude Ambiguous Characters"
-msgstr "Изключване на двусмислени символи"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1097
-msgid "Export"
-msgstr "Експорт"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1771
-msgid "Export complete"
-msgstr "Експортът завърши"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1105
-msgid "Export encrypted (.ashy)"
-msgstr "Криптиран експорт (.ashy)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1567
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1645
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1772
-msgid "Export failed"
-msgstr "Експортът не успя"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1185
-msgid "Export to CSV (plaintext)"
-msgstr "Експорт в CSV (обикновен текст)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1145
-msgid "Export to KeePass (.kdbx)"
-msgstr "Експорт към KeePass (.kdbx)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1758
-msgid "Export vault to CSV"
-msgstr "Експортиране на хранилището в CSV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1337
-msgid "Failed to read history"
-msgstr "Неуспешно четене на историята"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:807
-msgid "Failed to setup master password"
-msgstr "Неуспешно настройване на главна парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:777
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:341
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1457
-msgid "Failed to unlock vault"
-msgstr "Неуспешно отключване на хранилището"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1181
-msgid "Favorite"
-msgstr "Любими"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:204
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:562
-msgid "Favorites"
-msgstr "Любими"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:963
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Извличане и показване на икони на сайтове до записите в хранилището"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1335
-msgid "Fetching remote passwords"
-msgstr "Извличане на отдалечени пароли"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3093
-msgid "Findings"
-msgstr "Констатации"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1339
-msgid "Finishing synchronization"
-msgstr "Завършване на синхронизацията"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:801
-msgid "Focus Search"
-msgstr "Фокус върху търсенето"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1019
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1076
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1084
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1105
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1151
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2213
-msgid "Folder"
-msgstr "Папка"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2199
-msgid ""
-"For Nextcloud, the base URL looks like "
-"https://cloud.example.com/remote.php/dav/files/USERNAME"
-msgstr ""
-"За Nextcloud, основният URL изглежда като "
-"https://cloud.example.com/remote.php/dav/files/USERNAME"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:873
-msgid "Generate Backup Phrase"
-msgstr "Генериране на резервна фраза"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:126
-msgid "Generate New"
-msgstr "Генериране на нова"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1581
-msgid "Generate Password"
-msgstr "Генериране на парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:78
-msgid "Generated Password"
-msgstr "Генерирана парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:133
-msgid "Generation Type"
-msgstr "Тип генериране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:64
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:154
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:592
-msgid "Generator"
-msgstr "Генератор"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1794
-msgid "Google Drive"
-msgstr "Google Drive"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:191
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:554
-msgid "Groups"
-msgstr "Групи"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1405
-msgid "History cleared"
-msgstr "Историята е изчистена"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1051
-msgid "Import"
-msgstr "Импортиране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1594
-msgid "Import .ashy"
-msgstr "Импортиране на .ashy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1075
-msgid "Import 1Password (.1pux)"
-msgstr "Импортиране от 1Password (.1pux)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1082
-msgid "Import Aegis (TOTP)"
-msgstr "Импортиране от Aegis (TOTP)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1068
-msgid "Import Bitwarden (JSON)"
-msgstr "Импортиране от Bitwarden (JSON)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1061
-msgid "Import CSV"
-msgstr "Импортиране на CSV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1166
-msgid "Import KeePass (.kdbx)"
-msgstr "Импорт от KeePass (.kdbx)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1089
-msgid "Import andOTP"
-msgstr "Импортиране от andOTP"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1528
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1603
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1687
-msgid "Import complete"
-msgstr "Импортирането завърши"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1529
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1606
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1688
-msgid "Import failed"
-msgstr "Импортирането не успя"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1126
-msgid "Import from .ashy"
-msgstr "Импорт от .ashy"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:731
-msgid "Incorrect PIN"
-msgstr "Грешен ПИН"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:774
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:338
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1454
-msgid "Incorrect master password"
-msgstr "Неправилна главна парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:756
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:779
-msgid "Invalid TOTP secret"
-msgstr "Невалидна TOTP тайна"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:772
-msgid "Invalid TOTP settings"
-msgstr "Невалидни TOTP настройки"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1167
-msgid "KDBX3/KDBX4 password-protected database"
-msgstr "База данни KDBX3/KDBX4, защитена с парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1147
-msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
-msgstr "KDBX4 с Argon2id + AES-256. Отваря се в KeePassXC, KeeWeb и др."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1643
-msgid "KeePass export complete"
-msgstr "KeePass експортът завърши"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3299
-msgid "Keep deleted entries for (days)"
-msgstr "Задържане на изтрити записи (в дни)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:771
-msgid "Key"
-msgstr "Ключ"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:604
-msgid "Key Derivation (Argon2id)"
-msgstr "Извличане на ключ (Argon2id)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:839
-msgid "Key registered"
-msgstr "Ключът е регистриран"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:797
-msgid "Key removed"
-msgstr "Ключът е премахнат"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:104
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:783
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:812
-msgid "Keyboard Shortcuts"
-msgstr "Клавишни комбинации"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:568
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:592
-msgid "Keyring error"
-msgstr "Грешка в ключодържателя"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1014
-msgid "Large 2FA codes"
-msgstr "Големи 2FA кодове"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:374
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:487
-msgid "Length"
-msgstr "Дължина"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:533
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:217
-msgid "Lock"
-msgstr "Заключване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:81
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:806
-msgid "Lock Vault"
-msgstr "Заключване на хранилището"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:328
-msgid "Lock vault when idle for this long"
-msgstr "Заключване на хранилището при неактивност за този период"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:386
-msgid "Lowercase Letters (a-z)"
-msgstr "Малки букви (a-z)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:979
-msgid "Mark entries that are linked to Nextcloud Passwords"
-msgstr "Маркирайте записи, които са свързани с Nextcloud Passwords"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:862
-msgid "Mark passwords as favorite with the star icon"
-msgstr "Маркирайте пароли като любими чрез иконата със звезда"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:269
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:211
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:214
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1392
-msgid "Master Password"
-msgstr "Главна парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2317
-msgid "Master password"
-msgstr "Главна парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:303
-msgid "Master password changed."
-msgstr "Главната парола е променена."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:501
-msgid "Master password is in the keyring"
-msgstr "Главната парола е в ключодържателя"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:796
-msgid "Navigation"
-msgstr "Навигация"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:806
-msgid "New Entry"
-msgstr "Нов запис"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:368
-msgid "New PIN (4+ chars)"
-msgstr "Нов ПИН (4+ символа)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:224
-msgid "New password"
-msgstr "Нова парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1170
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2427
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2544
-msgid "Nextcloud Passwords"
-msgstr "Nextcloud Passwords"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2592
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2623
-msgid "Nextcloud Passwords connected"
-msgstr "Nextcloud Passwords свързан"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:264
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:392
-msgid "No 2FA Codes"
-msgstr "Няма 2FA кодове"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:387
-msgid "No 2FA codes match your search"
-msgstr "Няма 2FA кодове, отговарящи на вашето търсене"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:861
-msgid "No Favorites"
-msgstr "Няма любими"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:414
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:871
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:970
-msgid "No Passwords Stored"
-msgstr "Няма запазени пароли"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:866
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:919
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:386
-msgid "No Results"
-msgstr "Няма резултати"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1762
-msgid "No attachments"
-msgstr "Няма прикачени файлове"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3237
-msgid "No issues found."
-msgstr "Няма открити проблеми."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:761
-msgid "No keys registered"
-msgstr "Няма регистрирани ключове"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:867
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:921
-msgid "No passwords match your search"
-msgstr "Няма пароли, отговарящи на вашето търсене"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1356
-msgid "No previous passwords recorded."
-msgstr "Няма записани предишни пароли."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1805
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1879
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2048
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2077
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2438
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2469
-msgid "Not configured"
-msgstr "Не е конфигуриран"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3086
-msgid "Not run yet"
-msgstr "Все още не е стартиран"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:867
-msgid "Not set"
-msgstr "Не е зададена"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1807
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1870
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2021
-msgid "Not signed in"
-msgstr "Не сте влезли"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:503
-msgid "Not stored"
-msgstr "Не е съхранена"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1639
-msgid "Notes"
-msgstr "Бележки"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:441
-msgid "Number of Words"
-msgstr "Брой думи"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1820
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1974
-msgid "OAuth client not configured at build time"
-msgstr "OAuth клиентът не е конфигуриран по време на компилиране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1251
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1708
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1746
-msgid "OK"
-msgstr "OK"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1358
-msgid "Older versions appear here after the password is changed."
-msgstr "По-старите версии се появяват тук след промяна на паролата."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1577
-msgid "Open .ashy export"
-msgstr "Отваряне на .ashy експорт"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1655
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1679
-msgid "Open KeePass database"
-msgstr "Отваряне на KeePass база данни"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:811
-msgid "Open Settings"
-msgstr "Отваряне на настройките"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1851
-msgid "Opens the browser for OAuth consent"
-msgstr "Отваря браузъра за OAuth съгласие"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:147
-msgid "PIN"
-msgstr "ПИН"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1588
-msgid "PIN Code"
-msgstr "ПИН код"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:475
-msgid "PIN Options"
-msgstr "Опции за ПИН"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:144
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1587
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:213
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:218
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:668
-msgid "Passphrase"
-msgstr "Парола (фраза)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:429
-msgid "Passphrase Options"
-msgstr "Опции за парола от думи"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:81
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:141
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1572
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1713
-msgid "Password"
-msgstr "Парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2210
-msgid "Password / app-password"
-msgstr "Парола / парола за приложение"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1343
-msgid "Password History"
-msgstr "История на паролите"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:362
-msgid "Password Options"
-msgstr "Опции за парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:2015
-msgid "Password added"
-msgstr "Паролата е добавена"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:344
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1303
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1382
-msgid "Password copied to clipboard"
-msgstr "Паролата е копирана в клипборда"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1461
-msgid "Password deleted"
-msgstr "Паролата е изтрита"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1599
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1612
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1624
-msgid "Password generated"
-msgstr "Паролата е генерирана"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1224
-msgid "Password history"
-msgstr "История на паролите"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:785
-msgid "Password must be at least"
-msgstr "Паролата трябва да бъде поне"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:282
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1428
-msgid "Password too short"
-msgstr "Паролата е твърде кратка"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:2013
-msgid "Password updated"
-msgstr "Паролата е актуализирана"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:792
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1432
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1744
-msgid "Passwords do not match"
-msgstr "Паролите не съвпадат"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:290
-msgid "Passwords do not match."
-msgstr "Паролите не съвпадат."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:677
-msgid "Paste a Base32 secret or an otpauth:// URI"
-msgstr "Поставете Base32 тайна или otpauth:// URI"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1711
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:701
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:881
-msgid "Period (seconds)"
-msgstr "Период (секунди)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1463
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:646
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3418
-msgid "Permanently deleted"
-msgstr "Изтрит за постоянно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3461
-msgid "Permanently deletes every trashed entry."
-msgstr "За постоянно изтрива всеки запис в кошчето."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1618
-msgid ""
-"Pick a password for the .kdbx file. You will need it to open the database."
-msgstr ""
-"Изберете парола за .kdbx файла. Ще ви трябва, за да отворите базата данни."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1539
-msgid ""
-"Pick a password to protect this .ashy file. You will need it to import."
-msgstr ""
-"Изберете парола за защита на този .ashy файл. Ще ви трябва, за да го "
-"импортирате."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1083
-msgid "Plain JSON export from Aegis Authenticator"
-msgstr "Обикновен JSON експорт от Aegis Authenticator"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1090
-msgid "Plain JSON export from andOTP"
-msgstr "Експорт в обикновен JSON от andOTP"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:324
-msgid "Please create your master password in the Vault tab first."
-msgstr "Моля, първо създайте главната си парола в раздела Vault."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:754
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:313
-msgid "Please enter a password"
-msgstr "Моля, въведете парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:698
-msgid "Please enter your PIN"
-msgstr "Моля, въведете вашия ПИН"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2687
-msgid "Please wait while AshyPass talks to Nextcloud"
-msgstr "Моля, изчакайте, докато AshyPass комуникира с Nextcloud"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:762
-msgid "Plug in your authenticator and click Register"
-msgstr "Свържете вашия удостоверител и натиснете Регистриране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1099
-msgid ""
-"Prefer the encrypted .ashy export. The CSV path stores credentials in "
-"plaintext."
-msgstr ""
-"Препоръчваме криптирания .ashy експорт. CSV пътят съхранява "
-"идентификационните данни в обикновен текст."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1277
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1333
-msgid "Preparing synchronization"
-msgstr "Подготовка на синхронизацията"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:359
-msgid "Quick Unlock"
-msgstr "Бързо отключване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:301
-msgid "Quick-unlock PIN"
-msgstr "ПИН за бързо отключване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:471
-msgid "Quick-unlock disabled"
-msgstr "Бързо отключване е деактивирано"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:434
-msgid "Quick-unlock enabled"
-msgstr "Бързо отключване е активирано"
-
-#. Cache may have been lost (e.g. dev path) — fall back.
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:736
-msgid "Quick-unlock failed"
-msgstr "Бързото отключване неуспешно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:108
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:813
-msgid "Quit"
-msgstr "Изход"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1880
-msgid "Read failed"
-msgstr "Четенето неуспешно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3450
-msgid "Refresh listing"
-msgstr "Обновяване на списъка"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:818
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:833
-msgid "Register Security Key"
-msgstr "Регистриране на ключ за сигурност"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:841
-msgid "Register failed"
-msgstr "Регистрирането неуспешно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:719
-msgid ""
-"Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
-msgstr ""
-"Регистрирайте до 2 физически FIDO2 удостоверителя (YubiKey, SoloKey и др.)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2393
-msgid "Remote generation:"
-msgstr "Отдалечено поколение:"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:516
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:778
-msgid "Remove"
-msgstr "Премахване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:584
-msgid "Removed from keyring"
-msgstr "Премахнато от ключодържателя"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2318
-msgid "Required to encrypt the snapshot before upload"
-msgstr "Необходима за криптиране на моментната снимка преди качване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3365
-msgid "Restore"
-msgstr "Възстановяване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1947
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2179
-msgid "Restore failed"
-msgstr "Възстановяването е неуспешно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1127
-msgid "Restore from an Ashy Pass encrypted export"
-msgstr "Възстановяване от криптиран експорт на Ashy Pass"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1921
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2152
-msgid "Restore latest"
-msgstr "Възстанови последното"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1946
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2178
-msgid "Restored to"
-msgstr "Възстановено в"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3292
-msgid "Retention"
-msgstr "Задържане"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:638
-msgid "Run"
-msgstr "Старт"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3071
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3132
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3168
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3180
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3193
-msgid "Run Audit"
-msgstr "Стартиране на одит"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3120
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3143
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3145
-msgid "Running audit..."
-msgstr "Извършване на одит..."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1081
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1554
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:664
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:827
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1386
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1977
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2203
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2550
-msgid "Save"
-msgstr "Запазване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1626
-msgid "Save KeePass export"
-msgstr "Запазване на KeePass експорт"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1786
-msgid "Save as…"
-msgstr "Запиши като…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1797
-msgid "Save attachment"
-msgstr "Запазване на прикачения файл"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1547
-msgid "Save encrypted export"
-msgstr "Запазване на криптиран експорт"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1816
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1903
-msgid "Save failed"
-msgstr "Запазването неуспешно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1186
-msgid "Saves all entries as plaintext"
-msgstr "Записва всички записи като обикновен текст"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3052
-msgid ""
-"Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
-msgstr ""
-"Сканирайте хранилището за слаби, дублирани, стари, компрометирани записи и "
-"такива без 2FA."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3121
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3144
-msgid "Scanning vault..."
-msgstr "Сканиране на хранилището..."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:69
-msgid "Search"
-msgstr "Търсене"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:243
-msgid "Search 2FA codes…"
-msgstr "Търсене на 2FA кодове…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:373
-msgid "Search passwords…"
-msgstr "Търсене на пароли…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:100
-msgid "Security"
-msgstr "Сигурност"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:717
-msgid "Security Keys"
-msgstr "Ключове за сигурност"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1337
-msgid "Sending local changes"
-msgstr "Изпращане на локални промени"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3058
-msgid ""
-"Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
-"locally for 7 days."
-msgstr ""
-"Изпраща само първите 5 шестнадесетични знака от SHA-1(парола) за всеки "
-"запис. Кешира се локално за 7 дни."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:447
-msgid "Separator"
-msgstr "Разделител"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2207
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2554
-msgid "Server URL"
-msgstr "URL на сървъра"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2546
-msgid ""
-"Server URL (e.g. https://cloud.example.com), username and an app password."
-msgstr ""
-"URL на сървъра (напр. https://cloud.example.com), потребителско име и парола"
-" за приложение."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2451
-msgid "Server URL, username, app password"
-msgstr "URL на сървъра, потребителско име, парола за приложение"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2061
-msgid "Server URL, username, app-password"
-msgstr "URL на сървъра, потребителско име, парола за приложение"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:323
-msgid "Session"
-msgstr "Сесия"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1021
-msgid "Set a category on entries to organize them into groups"
-msgstr "Задайте категория на записите, за да ги организирате в групи"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:866
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:905
-msgid "Set — generate a new one to replace it"
-msgstr "Зададена — генерирайте нова, за да я замените"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:165
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:169
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:181
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:232
-msgid "Settings"
-msgstr "Настройки"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:799
-msgid "Show 2FA"
-msgstr "Показване на 2FA"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:800
-msgid "Show Generator"
-msgstr "Показване на генератора"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:978
-msgid "Show Nextcloud badges"
-msgstr "Показване на значките на Nextcloud"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:798
-msgid "Show Vault"
-msgstr "Показване на хранилището"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:962
-msgid "Show favicons"
-msgstr "Показване на икони на сайтове"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1891
-msgid "Sign in failed"
-msgstr "Вписването е неуспешно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1849
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1871
-msgid "Sign in to Google"
-msgstr "Вход в Google"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1847
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1885
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2057
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2092
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2447
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2490
-msgid "Sign out"
-msgstr "Изход"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1867
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2074
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2466
-msgid "Sign out failed"
-msgstr "Изписването е неуспешно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1803
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1884
-msgid "Signed in"
-msgstr "Влезли сте"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1889
-msgid "Signed in to Google Drive"
-msgstr "Вписан в Google Drive"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1875
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2082
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2474
-msgid "Signed out"
-msgstr "Изписан"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2349
-msgid "Snapshot uploaded"
-msgstr "Моментната снимка е качена"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1293
-msgid "Starting..."
-msgstr "Стартиране..."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:372
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:496
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1801
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2044
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2434
-msgid "Status"
-msgstr "Състояние"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:367
-msgid "Stay Unlocked"
-msgstr "Оставане отключено"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:517
-msgid "Store"
-msgstr "Съхранение"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:484
-msgid ""
-"Store the master password in the desktop's Secret Service (GNOME Keyring, "
-"KWallet, etc.) so Ashy Pass can unlock automatically on start. The keyring "
-"is locked with your login password — disable this if multiple users share "
-"the desktop session."
-msgstr ""
-"Съхранявайте главната парола в Secret Service на работния плот (GNOME "
-"Keyring, KWallet и др.), за да може Ashy Pass да се отключва автоматично при"
-" стартиране. Ключодържателят е заключен с вашата парола за вход — "
-"деактивирайте това, ако няколко потребители споделят сесията на работния "
-"плот."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:560
-msgid "Stored in system keyring"
-msgstr "Съхранено в системния ключодържател"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:97
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:225
-msgid "Strength"
-msgstr "Сила"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1586
-msgid "Strong Password"
-msgstr "Силна парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3083
-msgid "Summary"
-msgstr "Обобщение"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:398
-msgid "Symbols (!@#$…)"
-msgstr "Символи (!@#$…)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2363
-msgid "Sync conflict"
-msgstr "Конфликт при синхронизация"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2388
-msgid "Sync conflict detected"
-msgstr "Открит е конфликт при синхронизация"
-
-#. Concise toast + structured dialog with the raw error tucked
-#. behind an expander so the surface stays calm.
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2279
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2374
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2675
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2677
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2729
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2731
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2787
-msgid "Sync failed"
-msgstr "Синхронизацията неуспешна"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2134
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2502
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2631
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2764
-msgid "Sync now"
-msgstr "Синхронизирай сега"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1258
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2690
-msgid "Synchronizing Nextcloud"
-msgstr "Синхронизиране с Nextcloud"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2686
-msgid "Synchronizing..."
-msgstr "Синхронизиране..."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1336
-msgid "Syncing folders"
-msgstr "Синхронизиране на папки"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:482
-msgid "System Keyring"
-msgstr "Системен ключодържател"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:680
-msgid "TOTP Secret"
-msgstr "TOTP тайна"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1666
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:852
-msgid "TOTP Secret (Base32)"
-msgstr "TOTP Secret (Base32)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:676
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:848
-msgid "TOTP Settings"
-msgstr "TOTP настройки"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:599
-msgid "TOTP code copied"
-msgstr "TOTP кодът е копиран"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:729
-msgid "TOTP secret is required"
-msgstr "TOTP тайната е задължителна"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1652
-msgid "Tags (comma-separated)"
-msgstr "Етикети (разделени със запетая)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1437
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:621
-msgid "This action cannot be undone."
-msgstr "Това действие не може да бъде отменено."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2392
-msgid "This device generation:"
-msgstr "Поколение на това устройство:"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1559
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:668
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:833
-msgid "Title"
-msgstr "Заглавие"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:830
-msgid "Touch your key…"
-msgstr "Докоснете вашия ключ…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3344
-msgid "Trash is empty."
-msgstr "Кошчето е празно."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3313
-msgid "Trashed entries"
-msgstr "Записи в кошчето"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1662
-msgid "Two-Factor Authentication"
-msgstr "Двуфакторно удостоверяване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2504
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2625
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2766
-msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
-msgstr ""
-"Двупосочно съгласуване: изтегляне от отдалеченото, качване на локалното, "
-"разрешаване чрез последната промяна"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2429
-msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use"
-" an app password from Settings → Security."
-msgstr ""
-"Двупосочна синхронизация с официалното приложение „Passwords“ на вашия "
-"Nextcloud сървър. Използвайте парола за приложение от Настройки → Сигурност."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:533
-msgid "Type the current master password first"
-msgstr "Първо въведете текущата главна парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1633
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:672
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:843
-msgid "URL"
-msgstr "URL"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2247
-msgid "URL, username and password are required"
-msgstr "URL, потребителско име и парола са задължителни"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:982
-msgid "Uncategorized"
-msgstr "Без категория"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1076
-msgid "Unencrypted 1Password 8 export archive"
-msgstr "Нешифрован експортен архив от 1Password 8"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1069
-msgid "Unencrypted Bitwarden vault export"
-msgstr "Нешифрован експорт на хранилище от Bitwarden"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:221
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:616
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:680
-msgid "Unlock"
-msgstr "Отключване"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:313
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:646
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1352
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1373
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1384
-msgid "Unlock Vault"
-msgstr "Отключване на хранилището"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:442
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2617
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2660
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2667
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3106
-msgid "Unlock the vault first"
-msgstr "Първо отключете сейфа"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:319
-msgid "Unlock with PIN"
-msgstr "Отключване с ПИН"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2397
-msgid "Upload anyway"
-msgstr "Качване въпреки това"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1899
-msgid "Upload the current vault file to Drive"
-msgstr "Качване на текущия файл на трезора в Drive"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2104
-msgid "Upload the current vault file to WebDAV"
-msgstr "Качване на текущия файл на хранилището в WebDAV"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:380
-msgid "Uppercase Letters (A-Z)"
-msgstr "Главни букви (A-Z)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1015
-msgid "Use larger digits for easier reading"
-msgstr "Използвайте по-големи цифри за по-лесно четене"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:326
-msgid "Use master password instead"
-msgstr "Използване на главна парола вместо това"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:995
-msgid "Use tighter spacing for long password lists"
-msgstr "Използвайте по-стегнато разстояние за дълги списъци с пароли"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:216
-msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
-msgstr ""
-"Използва се за отключване на хранилището. Промяната му прекриптира всички "
-"съхранени данни."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1565
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:670
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:838
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2208
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2555
-msgid "Username"
-msgstr "Потребителско име"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:161
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:590
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:805
-msgid "Vault"
-msgstr "Хранилище"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:958
-msgid "Vault List"
-msgstr "Списък на хранилището"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2285
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2355
-msgid "Vault already in sync"
-msgstr "Хранилището вече е синхронизирано"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:311
-msgid "Vault locked due to inactivity"
-msgstr "Хранилището е заключено поради неактивност"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:392
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1351
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2666
-msgid "Vault must be unlocked to configure"
-msgstr "Сейфът трябва да бъде отключен за настройка"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:326
-msgid "Vault will lock soon"
-msgstr "Хранилището ще се заключи скоро"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:366
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:544
-msgid "Vault will lock soon due to inactivity"
-msgstr "Хранилището ще се заключи скоро поради неактивност"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1284
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1315
-msgid "Waiting for Nextcloud..."
-msgstr "Изчакване на Nextcloud..."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2037
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2197
-msgid "WebDAV / Nextcloud"
-msgstr "WebDAV / Nextcloud"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2252
-msgid "WebDAV configured"
-msgstr "WebDAV е конфигуриран"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1316
-msgid "Working..."
-msgstr "Работи се..."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:923
-msgid ""
-"Write these 12 words down and keep them safe. This is the only time they "
-"will be shown."
-msgstr ""
-"Запишете тези 12 думи и ги пазете на сигурно място. Това е единственият път,"
-" когато ще бъдат показани."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:548
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2330
-msgid "Wrong master password"
-msgstr "Грешна главна парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3227
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3255
-msgid "breached"
-msgstr "компрометирана"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:787
-msgid "characters"
-msgstr "символа"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3223
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3253
-msgid "duplicate"
-msgstr "дублирана"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3472
-msgid "entries removed"
-msgstr "премахнати записа"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3216
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3243
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3276
-msgid "entries scanned"
-msgstr "сканирани записа"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3229
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3256
-msgid "no 2FA"
-msgstr "без 2FA"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3225
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3254
-msgid "old"
-msgstr "стара"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3261
-msgid "seen"
-msgstr "видяна"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3221
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3252
-msgid "weak"
-msgstr "слаба"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:91
-msgid ""
-"Preview — drive encryption backend not yet enabled. Listing is read-only."
-msgstr ""
-"Преглед — криптирането на устройството все още не е активирано. Списъкът е "
-"само за четене."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:107
-msgid "Rescan drives"
-msgstr "Пресканиране на устройства"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:120
-msgid "No external drives detected"
-msgstr "Няма открити външни устройства"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:122
-msgid "Plug in a USB drive or external disk, then press Rescan."
-msgstr ""
-"Свържете USB устройство или външен диск, след което натиснете Пресканиране."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:185
-msgid "Failed to scan drives"
-msgstr "Неуспешно сканиране на устройства"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:274
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:400
-msgid "read-only"
-msgstr "само за четене"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:288
-msgid "Encrypt…"
-msgstr "Криптиране…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:289
-msgid "Launch the encryption wizard"
-msgstr "Стартиране на съветника за криптиране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:312
-msgid "Whole device — no partition table"
-msgstr "Цяло устройство — без таблица на дяловете"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:348
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:103
-msgid "Vendor"
-msgstr "Производител"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:351
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:104
-msgid "Model"
-msgstr "Модел"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:354
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:105
-msgid "Serial"
-msgstr "Сериен номер"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:364
-msgid "Bus / media"
-msgstr "Шина / носител"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:376
-msgid "none"
-msgstr "няма"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:377
-msgid "Partition table"
-msgstr "Таблица на дяловете"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:385
-msgid "allocated"
-msgstr "разпределено"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:387
-msgid "free"
-msgstr "свободно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:392
-msgid "Capacity"
-msgstr "Капацитет"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:399
-msgid "Write protection"
-msgstr "Защита от запис"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:455
-msgid "flash storage"
-msgstr "флаш памет"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:456
-msgid "rotational (HDD)"
-msgstr "въртящ се (HDD)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:457
-msgid "solid-state"
-msgstr "твърдотелно"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:488
-msgid "not mounted"
-msgstr "не е монтиран"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:536
-msgid "Close active mapping"
-msgstr "Затваряне на активното картографиране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:599
-msgid "Add FIDO2 token keyslot"
-msgstr "Добавяне на ключов слот за FIDO2 токен"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:617
-msgid "Open the encrypted partition"
-msgstr "Отваряне на криптирания дял"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:672
-msgid "free of"
-msgstr "свободно от"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:38
-msgid "Encrypt Drive"
-msgstr "Криптиране на устройството"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:77
-msgid "Confirm Device"
-msgstr "Потвърдете устройството"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:89
-msgid "This will erase everything on the drive"
-msgstr "Това ще изтрие всичко на устройството"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:91
-msgid ""
-"All partitions, files, and filesystem signatures will be permanently "
-"destroyed."
-msgstr ""
-"Всички дялове, файлове и файлови системни сигнатури ще бъдат безвъзвратно "
-"унищожени."
-
-#. Device details grid.
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:102
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:787
-msgid "Device"
-msgstr "Устройство"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:106
-msgid "Size"
-msgstr "Размер"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:107
-msgid "Path"
-msgstr "Път"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:121
-msgid "Will destroy"
-msgstr "Ще унищожи"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:131
-msgid "Safety checks passed"
-msgstr "Проверките за безопасност преминати"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:140
-msgid "Safety checks failed"
-msgstr "Проверките за безопасност неуспешни"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:150
-msgid "Safety check error"
-msgstr "Грешка при проверка за безопасност"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:161
-msgid "I understand — Continue"
-msgstr "Разбирам — Продължи"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:205
-msgid "Set Passphrase"
-msgstr "Задайте парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:215
 msgid ""
 "At least 8 characters. A four-word passphrase from the EFF wordlist is a "
 "strong default."
@@ -2033,172 +149,530 @@ msgstr ""
 "Поне 8 знака. Парола от четири думи от списъка на EFF е надежден избор по "
 "подразбиране."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:219
-msgid "Repeat"
-msgstr "Повтори"
+msgid "Attachment added"
+msgstr "Прикаченият файл е добавен"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:245
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:358
+msgid "Attachment deleted"
+msgstr "Прикаченият файл е изтрит"
+
+msgid "Attachment not found"
+msgstr "Прикаченият файл не е намерен"
+
+msgid "Attachment saved"
+msgstr "Прикаченият файл е запазен"
+
+msgid "Attachments"
+msgstr "Прикачени файлове"
+
+msgid "Audit Options"
+msgstr "Опции за одит"
+
+msgid "Audit failed"
+msgstr "Одитът неуспешен"
+
+msgid "Auto-lock after (seconds)"
+msgstr "Автоматично заключване след (секунди)"
+
+msgid "Auto-tune"
+msgstr "Автоматично настройване"
+
+msgid "Avoid characters like 0, O, 1, l, I"
+msgstr "Избягвайте символи като 0, O, 1, l, I"
+
 msgid "Back"
 msgstr "Назад"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:246
+msgid "Back up now"
+msgstr "Архивирай сега"
+
+msgid "Backup Phrase"
+msgstr "Резервна фраза"
+
+msgid "Backup failed"
+msgstr "Архивирането е неуспешно"
+
+msgid "Backup phrase"
+msgstr "Резервна фраза"
+
+msgid "Backup uploaded"
+msgstr "Архивирането е качено"
+
+msgid "Benchmark this machine (~5 s)"
+msgstr "Бенчмарк на тази машина (~5 s)"
+
+msgid "Bitwarden, Chrome, 1Password compatible columns"
+msgstr "Колони, съвместими с Bitwarden, Chrome, 1Password"
+
+msgid "Bus / media"
+msgstr "Шина / носител"
+
+msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
+msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
+
+msgid "Cancel"
+msgstr "Отказ"
+
+msgid "Capacity"
+msgstr "Капацитет"
+
+msgid "Capitalize Words"
+msgstr "Главна буква за всяка дума"
+
+msgid "Category"
+msgstr "Категория"
+
+msgid "Change Master Password"
+msgstr "Промяна на главната парола"
+
+msgid "Check Have I Been Pwned (online)"
+msgstr "Проверка в Have I Been Pwned (онлайн)"
+
+msgid "Choose a 1Password .1pux archive"
+msgstr "Изберете .1pux архив от 1Password"
+
+msgid "Choose a Bitwarden JSON export"
+msgstr "Изберете JSON експорт от Bitwarden"
+
+msgid "Choose a CSV file"
+msgstr "Изберете CSV файл"
+
+msgid "Choose an Aegis JSON export"
+msgstr "Изберете JSON експорт от Aegis"
+
+msgid "Choose an andOTP JSON export"
+msgstr "Изберете JSON експорт от andOTP"
+
+msgid "Clear clipboard after (seconds)"
+msgstr "Изчистване на клипборда след (секунди)"
+
+msgid "Clear history"
+msgstr "Изчистване на историята"
+
+msgid "Click the + button to add a file."
+msgstr "Натиснете бутона +, за да добавите файл."
+
+msgid "Client ID"
+msgstr "ID на клиента"
+
+msgid "Client Secret (optional)"
+msgstr "Клиентска тайна (по избор)"
+
+msgid "Close"
+msgstr "Затваряне"
+
+msgid "Close active mapping"
+msgstr "Затваряне на активното картографиране"
+
+msgid "Close mapping"
+msgstr "Затваряне на картографиране"
+
+msgid "Closing mapping"
+msgstr "Затваряне на картографиране"
+
+msgid "Cloud"
+msgstr "Облак"
+
+msgid "Compact vault list"
+msgstr "Компактен списък на хранилището"
+
+msgid "Configure Google OAuth"
+msgstr "Конфигуриране на Google OAuth"
+
+msgid "Configure Nextcloud Passwords"
+msgstr "Конфигуриране на Nextcloud Passwords"
+
+msgid "Configure WebDAV"
+msgstr "Конфигуриране на WebDAV"
+
+msgid "Configure failed"
+msgstr "Конфигурирането неуспешно"
+
+msgid "Configured"
+msgstr "Конфигуриран"
+
+msgid "Confirm Device"
+msgstr "Потвърдете устройството"
+
+msgid "Confirm Password"
+msgstr "Потвърдете паролата"
+
+msgid "Confirm new password"
+msgstr "Потвърдете новата парола"
+
+msgid "Confirm password"
+msgstr "Потвърдете паролата"
+
+msgid "Conflicts"
+msgstr "Конфликти"
+
 msgid "Continue"
 msgstr "Продължи"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:313
-msgid "Options"
-msgstr "Опции"
+msgid "Copy"
+msgstr "Копиране"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:320
-msgid "Label"
-msgstr "Етикет"
+msgid "Copy Code"
+msgstr "Копиране на код"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:325
-msgid "Filesystem"
-msgstr "Файлова система"
+msgid "Copy Password"
+msgstr "Копиране на парола"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:331
+msgid "Copy to Clipboard"
+msgstr "Копиране в клипборда"
+
+msgid "Could not disable quick-unlock"
+msgstr "Бързото отключване не можа да бъде деактивирано"
+
+msgid "Could not sync"
+msgstr "Неуспешна синхронизация"
+
+msgid "Create Master Password"
+msgstr "Създаване на главна парола"
+
+msgid "Create filesystem"
+msgstr "Създаване на файлова система"
+
+msgid "Created locally"
+msgstr "Създадено локално"
+
+msgid "Created remotely"
+msgstr "Създадени отдалечено"
+
+msgid "Creating filesystem"
+msgstr "Създаване на файлова система"
+
+msgid "Current master password"
+msgstr "Текуща главна парола"
+
+msgid "Current parameters"
+msgstr "Текущи параметри"
+
+msgid "Current passphrase"
+msgstr "Текуща парола"
+
+msgid "Current password"
+msgstr "Текуща парола"
+
+msgid "Data"
+msgstr "Данни"
+
+msgid "Decrypt failed"
+msgstr "Декриптирането неуспешно"
+
+msgid "Delete"
+msgstr "Изтриване"
+
+msgid "Delete 2FA Entry?"
+msgstr "Да изтрия 2FA записа?"
+
+msgid "Delete Password?"
+msgstr "Да се изтрие паролата?"
+
+msgid "Delete attachment"
+msgstr "Изтриване на прикачения файл"
+
+msgid "Delete permanently"
+msgstr "Изтриване завинаги"
+
+msgid ""
+"Deleted entries stay in the trash for this many days, then are permanently "
+"removed on next app start. Set 0 to bypass the trash."
+msgstr ""
+"Изтритите записи остават в кошчето за този брой дни, след което се премахват "
+"завинаги при следващото стартиране на приложението. Задайте 0, за да "
+"пропуснете кошчето."
+
+msgid "Deleted remotely"
+msgstr "Премахнати отдалечено"
+
+msgid "Device"
+msgstr "Устройство"
+
+msgid "Digits"
+msgstr "Цифри"
+
+msgid "Digits (0-9)"
+msgstr "Цифри (0-9)"
+
+msgid "Disable"
+msgstr "Деактивиране"
+
+msgid "Disabled"
+msgstr "Деактивирано"
+
+msgid "Done"
+msgstr "Готово"
+
+msgid "Done."
+msgstr "Готово."
+
+msgid "Downloading remote changes"
+msgstr "Изтегляне на отдалечени промени"
+
+msgid "Drives"
+msgstr "Устройства"
+
+msgid "Edit"
+msgstr "Редактиране"
+
+msgid "Edit 2FA Entry"
+msgstr "Редактиране на 2FA запис"
+
+msgid "Edit Password"
+msgstr "Редактиране на парола"
+
+msgid "Empty passphrase"
+msgstr "Празна парола"
+
+msgid "Empty trash"
+msgstr "Изпразване на кошчето"
+
+msgid "Enable / Update"
+msgstr "Активиране / Обновяване"
+
+msgid "Enabled for this session"
+msgstr "Активирано за тази сесия"
+
+msgid "Enabled on this device"
+msgstr "Активирано на това устройство"
+
+msgid "Encrypt"
+msgstr "Криптиране"
+
+msgid "Encrypt Drive"
+msgstr "Криптиране на устройството"
+
+msgid "Encrypt KeePass export"
+msgstr "Криптиране на KeePass експорт"
+
+msgid "Encrypt export"
+msgstr "Криптиране на експорта"
+
+msgid "Encrypted as"
+msgstr "Криптирано като"
+
+msgid "Encrypted device"
+msgstr "Шифровано устройство"
+
+msgid "Encrypted export complete"
+msgstr "Криптираният експорт завърши"
+
+msgid "Encrypted snapshot upload with conflict detection"
+msgstr "Качване на криптиран моментен снимка с откриване на конфликти"
+
+msgid ""
+"Encrypted vault uploaded as-is over HTTPS. Works with any RFC 4918 server."
+msgstr ""
+"Криптираният трезор се качва както е през HTTPS. Работи с всеки RFC 4918 "
+"сървър."
+
+msgid "Encrypted vault uploaded as-is. Folder: \"AshyPass Backups\"."
+msgstr "Криптираното хранилище е качено както е. Папка: \"AshyPass Backups\"."
+
+msgid "Encrypted with your master key. Stored inside the vault."
+msgstr "Криптирано с вашия главен ключ. Съхранявано в трезора."
+
 msgid "Encrypted zero (recommended — slow but secure)"
 msgstr "Криптиране с нули (препоръчително — бавно, но сигурно)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:332
-msgid "Secure discard (SSD/NVMe only, near-instant)"
-msgstr "Сигурно изтриване (само SSD/NVMe, почти мигновено)"
+msgid "Encrypting…"
+msgstr "Криптиране…"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:333
-msgid "Random pass (slowest)"
-msgstr "Случайно презаписване (най-бавно)"
+msgid "Encrypt…"
+msgstr "Криптиране…"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:334
-msgid "None — quick, leaves prior data recoverable"
-msgstr "Без изтриване — бързо, но оставя предишни данни възстановими"
+msgid "Enrol"
+msgstr "Регистриране"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:337
-msgid "Pre-format wipe"
-msgstr "Предварително форматиране с изтриване"
+msgid "Enrol FIDO2 Token"
+msgstr "Регистриране на FIDO2 токен"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:343
-msgid "Allow TRIM through encrypted mapping"
-msgstr "Разрешаване на TRIM през криптираното картографиране"
+msgid "Enter the master password for this .kdbx file."
+msgstr "Въведете главната парола за този .kdbx файл."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:345
+msgid "Enter the password used when this file was exported."
+msgstr "Въведете паролата, използвана при експортирането на този файл."
+
+msgid "Enter your master password to unlock"
+msgstr "Въведете главната си парола за отключване"
+
+msgid "Entry deleted"
+msgstr "Записът е изтрит"
+
+msgid "Entry restored"
+msgstr "Възстановен запис"
+
+msgid "Entry updated"
+msgstr "Записът е актуализиран"
+
+msgid "Error"
+msgstr "Грешка"
+
+msgid "Error details"
+msgstr "Подробности за грешките"
+
+msgid "Error saving password"
+msgstr "Грешка при запазване на паролата"
+
+msgid "Everything is in sync"
+msgstr "Всичко е синхронизирано"
+
+msgid "Everything was already in sync"
+msgstr "Всичко вече беше синхронизирано"
+
+msgid "Exclude Ambiguous Characters"
+msgstr "Изключване на двусмислени символи"
+
+msgid "Export"
+msgstr "Експорт"
+
+msgid "Export complete"
+msgstr "Експортът завърши"
+
+msgid "Export encrypted (.ashy)"
+msgstr "Криптиран експорт (.ashy)"
+
+msgid "Export failed"
+msgstr "Експортът не успя"
+
+msgid "Export to CSV (plaintext)"
+msgstr "Експорт в CSV (обикновен текст)"
+
+msgid "Export to KeePass (.kdbx)"
+msgstr "Експорт към KeePass (.kdbx)"
+
+msgid "Export vault to CSV"
+msgstr "Експортиране на хранилището в CSV"
+
+msgid "FIDO2 keyslot added"
+msgstr "FIDO2 ключовият слот е добавен"
+
+msgid "FIDO2 vault protection unavailable"
+msgstr "FIDO2 защитата на хранилището не е налична"
+
+msgid "Failed"
+msgstr "Неуспешно"
+
+msgid "Failed to read history"
+msgstr "Неуспешно четене на историята"
+
+msgid "Failed to scan drives"
+msgstr "Неуспешно сканиране на устройства"
+
+msgid "Failed to setup master password"
+msgstr "Неуспешно настройване на главна парола"
+
+msgid "Failed to unlock vault"
+msgstr "Неуспешно отключване на хранилището"
+
+msgid "Favorite"
+msgstr "Любими"
+
+msgid "Favorites"
+msgstr "Любими"
+
+msgid "Fetch and display site icons next to vault entries"
+msgstr "Извличане и показване на икони на сайтове до записите в хранилището"
+
+msgid "Fetching remote passwords"
+msgstr "Извличане на отдалечени пароли"
+
+msgid "Filesystem"
+msgstr "Файлова система"
+
+msgid "Findings"
+msgstr "Констатации"
+
+msgid "Finishing synchronization"
+msgstr "Завършване на синхронизацията"
+
+msgid "Focus Search"
+msgstr "Фокус върху търсенето"
+
+msgid "Folder"
+msgstr "Папка"
+
+msgid ""
+"For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
+"dav/files/USERNAME"
+msgstr ""
+"За Nextcloud, основният URL изглежда като https://cloud.example.com/"
+"remote.php/dav/files/USERNAME"
+
+msgid "Generate Backup Phrase"
+msgstr "Генериране на резервна фраза"
+
+msgid "Generate New"
+msgstr "Генериране на нова"
+
+msgid "Generate Password"
+msgstr "Генериране на парола"
+
+msgid "Generated Password"
+msgstr "Генерирана парола"
+
+msgid "Generation Type"
+msgstr "Тип генериране"
+
+msgid "Generator"
+msgstr "Генератор"
+
+msgid "Google Drive"
+msgstr "Google Drive"
+
+msgid "Groups"
+msgstr "Групи"
+
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr ""
 "Помага за износването на SSD, но разкрива модели на свободно пространство "
 "пред устройството."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:359
-msgid "Encrypt"
-msgstr "Криптиране"
+msgid "History cleared"
+msgstr "Историята е изчистена"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:415
-msgid "Encrypting…"
-msgstr "Криптиране…"
+msgid "I understand — Continue"
+msgstr "Разбирам — Продължи"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:423
-msgid "Preparing…"
-msgstr "Подготовка…"
+msgid "Import"
+msgstr "Импортиране"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:430
-msgid "…"
-msgstr "…"
+msgid "Import .ashy"
+msgstr "Импортиране на .ashy"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:439
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:633
-msgid "Safety check"
-msgstr "Проверка за безопасност"
+msgid "Import 1Password (.1pux)"
+msgstr "Импортиране от 1Password (.1pux)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:440
-msgid "Wipe device"
-msgstr "Изтриване на устройството"
+msgid "Import Aegis (TOTP)"
+msgstr "Импортиране от Aegis (TOTP)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:441
-msgid "Write LUKS2 header"
-msgstr "Записване на LUKS2 заглавка"
+msgid "Import Bitwarden (JSON)"
+msgstr "Импортиране от Bitwarden (JSON)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:442
-msgid "Open encrypted mapping"
-msgstr "Отваряне на криптирано картографиране"
+msgid "Import CSV"
+msgstr "Импортиране на CSV"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:443
-msgid "Create filesystem"
-msgstr "Създаване на файлова система"
+msgid "Import KeePass (.kdbx)"
+msgstr "Импорт от KeePass (.kdbx)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:444
-msgid "Close mapping"
-msgstr "Затваряне на картографиране"
+msgid "Import andOTP"
+msgstr "Импортиране от andOTP"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:459
-msgid "Close"
-msgstr "Затваряне"
+msgid "Import complete"
+msgstr "Импортирането завърши"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:480
-msgid "Internal error: no passphrase set"
-msgstr "Вътрешна грешка: няма зададена парола"
+msgid "Import failed"
+msgstr "Импортирането не успя"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:599
-msgid "Done."
-msgstr "Готово."
+msgid "Import from .ashy"
+msgstr "Импорт от .ashy"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:603
-msgid "Encrypted as"
-msgstr "Криптирано като"
+msgid "Incorrect PIN"
+msgstr "Грешен ПИН"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:609
-msgid "Failed"
-msgstr "Неуспешно"
+msgid "Incorrect master password"
+msgstr "Неправилна главна парола"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:634
-msgid "Wiping device"
-msgstr "Изчистване на устройството"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:635
-msgid "Writing LUKS2 header"
-msgstr "Записване на LUKS2 заглавка"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:636
-msgid "Opening encrypted mapping"
-msgstr "Отваряне на криптирано картографиране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:637
-msgid "Creating filesystem"
-msgstr "Създаване на файлова система"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:638
-msgid "Closing mapping"
-msgstr "Затваряне на картографиране"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:656
-msgid "Unlock Drive"
-msgstr "Отключване на устройство"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:664
-msgid "Encrypted device"
-msgstr "Шифровано устройство"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:704
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:844
-msgid "Empty passphrase"
-msgstr "Празна парола"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:708
-msgid "Unlocking…"
-msgstr "Отключване…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:732
-msgid "Unlocked at"
-msgstr "Отключено на"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:771
-msgid "Enrol FIDO2 Token"
-msgstr "Регистриране на FIDO2 токен"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:779
-msgid "Add a hardware token keyslot"
-msgstr "Добавяне на ключов слот за хардуерен токен"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:781
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -2208,235 +682,985 @@ msgstr ""
 "устройството, когато бъдете подканени. Вашата текуща парола е необходима за "
 "упълномощаване на новия ключов слот."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:795
-msgid "Current passphrase"
-msgstr "Текуща парола"
+msgid "Internal error: no passphrase set"
+msgstr "Вътрешна грешка: няма зададена парола"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:802
-msgid "Require PIN at unlock"
-msgstr "Изискване на ПИН при отключване"
+msgid "Invalid TOTP secret"
+msgstr "Невалидна TOTP тайна"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:806
-msgid "Require user-presence (touch the token)"
-msgstr "Изискване на присъствие на потребител (докосване на токена)"
+msgid "Invalid TOTP settings"
+msgstr "Невалидни TOTP настройки"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:820
-msgid "Enrol"
-msgstr "Регистриране"
+msgid "KDBX3/KDBX4 password-protected database"
+msgstr "База данни KDBX3/KDBX4, защитена с парола"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:848
-msgid "Talking to your token… check the device for a touch prompt."
-msgstr ""
-"Свързване с вашия токен… проверете устройството за подкана за докосване."
+msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
+msgstr "KDBX4 с Argon2id + AES-256. Отваря се в KeePassXC, KeeWeb и др."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:873
-msgid "FIDO2 keyslot added"
-msgstr "FIDO2 ключовият слот е добавен"
+msgid "KeePass export complete"
+msgstr "KeePass експортът завърши"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:175
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:593
-msgid "Drives"
-msgstr "Устройства"
+msgid "Keep deleted entries for (days)"
+msgstr "Задържане на изтрити записи (в дни)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2817
-msgid "Sync com problemas"
-msgstr "Проблеми със синхронизацията"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2821
-msgid "Tudo já estava sincronizado"
-msgstr "Всичко вече беше синхронизирано"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2823
-msgid "1 entrada sincronizada"
-msgstr "1 запис синхронизиран"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2825
-msgid "entradas sincronizadas"
-msgstr "записа синхронизирани"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2830
-msgid "Sincronização concluída com avisos"
-msgstr "Синхронизацията завърши с предупреждения"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2832
-msgid "Tudo em sincronia"
-msgstr "Всичко е синхронизирано"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2834
-msgid "Sincronização concluída"
-msgstr "Синхронизацията завърши"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2838
-msgid "A sincronização terminou, mas alguns itens reportaram erro."
-msgstr "Синхронизацията приключи, но някои елементи докладваха грешка."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2840
-msgid "Nada mudou — o Ashy Pass e o Nextcloud já estavam alinhados."
-msgstr "Нищо не се промени — Ashy Pass и Nextcloud вече бяха синхронизирани."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2842
-msgid "Reconciliação bidirecional concluída com sucesso."
-msgstr "Двупосочната синхронизация завърши успешно."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2849
-msgid "Pronto"
-msgstr "Готово"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2861
-msgid "Criadas remotamente"
-msgstr "Създадени отдалечено"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2862
-msgid "Atualizadas remotamente"
-msgstr "Актуализирани отдалечено"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2863
-msgid "Removidas remotamente"
-msgstr "Премахнати отдалечено"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2870
-msgid "Enviado para o Nextcloud"
-msgstr "Изпратено към Nextcloud"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2880
-msgid "Criadas localmente"
-msgstr "Създадени локално"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2881
-msgid "Atualizadas localmente"
-msgstr "Актуализирани локално"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2888
-msgid "Recebido do Nextcloud"
-msgstr "Получени от Nextcloud"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2899
-msgid "Conflitos"
-msgstr "Конфликти"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2901
-msgid "Resolvidos automaticamente pela política 'última edição vence'."
-msgstr "Разрешени автоматично според правилото 'последната редакция печели'."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2905
-msgid "Itens reconciliados"
-msgstr "Обединени елементи"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2914
-msgid "Mantida a versão local"
+msgid "Kept local version"
 msgstr "Запазена локалната версия"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2915
-msgid "Mantida a versão remota"
+msgid "Kept remote version"
 msgstr "Запазена отдалечената версия"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2931
-msgid "entradas sem senha foram ignoradas"
-msgstr "записи без парола бяха пропуснати"
+msgid "Key"
+msgstr "Ключ"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2934
+msgid "Key Derivation (Argon2id)"
+msgstr "Извличане на ключ (Argon2id)"
+
+msgid "Key registered"
+msgstr "Ключът е регистриран"
+
+msgid "Key removed"
+msgstr "Ключът е премахнат"
+
+msgid "Keyboard Shortcuts"
+msgstr "Клавишни комбинации"
+
+msgid "Keyring error"
+msgstr "Грешка в ключодържателя"
+
+msgid "Label"
+msgstr "Етикет"
+
+msgid "Large 2FA codes"
+msgstr "Големи 2FA кодове"
+
+msgid "Launch the encryption wizard"
+msgstr "Стартиране на съветника за криптиране"
+
+msgid "Length"
+msgstr "Дължина"
+
+msgid "Lock"
+msgstr "Заключване"
+
+msgid "Lock Vault"
+msgstr "Заключване на хранилището"
+
+msgid "Lock vault when idle for this long"
+msgstr "Заключване на хранилището при неактивност за този период"
+
+msgid "Lowercase Letters (a-z)"
+msgstr "Малки букви (a-z)"
+
+msgid "Mark entries that are linked to Nextcloud Passwords"
+msgstr "Маркирайте записи, които са свързани с Nextcloud Passwords"
+
+msgid "Mark passwords as favorite with the star icon"
+msgstr "Маркирайте пароли като любими чрез иконата със звезда"
+
+msgid "Master Password"
+msgstr "Главна парола"
+
+msgid "Master password"
+msgstr "Главна парола"
+
+msgid "Master password changed."
+msgstr "Главната парола е променена."
+
+msgid "Master password is in the keyring"
+msgstr "Главната парола е в ключодържателя"
+
+msgid "Medium"
+msgstr "Средна"
+
+msgid "Model"
+msgstr "Модел"
+
+msgid "Modern password generator and encrypted password vault"
+msgstr "Съвременен генератор на пароли и криптирано хранилище за пароли"
+
+msgid "Navigation"
+msgstr "Навигация"
+
+msgid "New Entry"
+msgstr "Нов запис"
+
+msgid "New PIN (6+ chars)"
+msgstr "Нов ПИН (6+ символа)"
+
+msgid "New password"
+msgstr "Нова парола"
+
+msgid "Nextcloud Passwords"
+msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords connected"
+msgstr "Nextcloud Passwords свързан"
+
 msgid ""
-"O Nextcloud Passwords exige um campo de senha preenchido. Edite essas "
-"entradas no Ashy Pass adicionando uma senha para que sejam enviadas."
+"Nextcloud Passwords requires a non-empty password field. Add a password to "
+"these entries in Ashy Pass before sending them."
 msgstr ""
 "Nextcloud Passwords изисква попълнено поле за парола. Редактирайте тези "
 "записи в Ashy Pass, като добавите парола, за да бъдат изпратени."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2947
-msgid "Detalhes dos erros"
-msgstr "Подробности за грешките"
+msgid "No 2FA Codes"
+msgstr "Няма 2FA кодове"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2954
-msgid "erro reportado"
-msgstr "докладвана грешка"
+msgid "No 2FA codes match your search"
+msgstr "Няма 2FA кодове, отговарящи на вашето търсене"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2956
-msgid "erros reportados"
-msgstr "докладвани грешки"
+msgid "No Favorites"
+msgstr "Няма любими"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3011
-msgid "Não foi possível sincronizar"
-msgstr "Неуспешна синхронизация"
+msgid "No Passwords Stored"
+msgstr "Няма запазени пароли"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3013
-msgid ""
-"O Ashy Pass não conseguiu falar com o Nextcloud. Verifique sua conexão, o "
-"endereço do servidor e a senha de aplicativo."
+msgid "No Results"
+msgstr "Няма резултати"
+
+msgid "No attachments"
+msgstr "Няма прикачени файлове"
+
+msgid "No external drives detected"
+msgstr "Няма открити външни устройства"
+
+msgid "No issues found."
+msgstr "Няма открити проблеми."
+
+msgid "No keys registered"
+msgstr "Няма регистрирани ключове"
+
+msgid "No passwords match your search"
+msgstr "Няма пароли, отговарящи на вашето търсене"
+
+msgid "No previous passwords recorded."
+msgstr "Няма записани предишни пароли."
+
+msgid "No security key or recovery phrase changes can be made in this version."
 msgstr ""
-"Ashy Pass не успя да се свърже с Nextcloud. Проверете връзката си, адреса на"
-" сървъра и паролата за приложението."
+"В тази версия не могат да се правят промени по ключа за сигурност или "
+"фразата за възстановяване."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3016
-msgid "Entendi"
-msgstr "Разбрах"
+msgid "None — quick, leaves prior data recoverable"
+msgstr "Без изтриване — бързо, но оставя предишни данни възстановими"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3023
-msgid "Ver detalhe técnico"
+msgid "Not configured"
+msgstr "Не е конфигуриран"
+
+msgid "Not run yet"
+msgstr "Все още не е стартиран"
+
+msgid "Not set"
+msgstr "Не е зададена"
+
+msgid "Not signed in"
+msgstr "Не сте влезли"
+
+msgid "Not stored"
+msgstr "Не е съхранена"
+
+msgid "Notes"
+msgstr "Бележки"
+
+msgid "Nothing changed — Ashy Pass and Nextcloud were already aligned."
+msgstr "Нищо не се промени — Ashy Pass и Nextcloud вече бяха синхронизирани."
+
+msgid "Number of Words"
+msgstr "Брой думи"
+
+msgid "OAuth client not configured at build time"
+msgstr "OAuth клиентът не е конфигуриран по време на компилиране"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Older versions appear here after the password is changed."
+msgstr "По-старите версии се появяват тук след промяна на паролата."
+
+msgid "Open .ashy export"
+msgstr "Отваряне на .ashy експорт"
+
+msgid "Open KeePass database"
+msgstr "Отваряне на KeePass база данни"
+
+msgid "Open Settings"
+msgstr "Отваряне на настройките"
+
+msgid "Open encrypted mapping"
+msgstr "Отваряне на криптирано картографиране"
+
+msgid "Open the encrypted partition"
+msgstr "Отваряне на криптирания дял"
+
+msgid "Opening encrypted mapping"
+msgstr "Отваряне на криптирано картографиране"
+
+msgid "Opens the browser for OAuth consent"
+msgstr "Отваря браузъра за OAuth съгласие"
+
+msgid "Options"
+msgstr "Опции"
+
+msgid "PIN"
+msgstr "ПИН"
+
+msgid "PIN Code"
+msgstr "ПИН код"
+
+msgid "PIN Options"
+msgstr "Опции за ПИН"
+
+msgid "Partition table"
+msgstr "Таблица на дяловете"
+
+msgid "Passphrase"
+msgstr "Парола (фраза)"
+
+msgid "Passphrase Options"
+msgstr "Опции за парола от думи"
+
+msgid "Password"
+msgstr "Парола"
+
+msgid "Password / app-password"
+msgstr "Парола / парола за приложение"
+
+msgid "Password History"
+msgstr "История на паролите"
+
+msgid "Password Options"
+msgstr "Опции за парола"
+
+msgid "Password added"
+msgstr "Паролата е добавена"
+
+msgid "Password copied to clipboard"
+msgstr "Паролата е копирана в клипборда"
+
+msgid "Password deleted"
+msgstr "Паролата е изтрита"
+
+msgid "Password generated"
+msgstr "Паролата е генерирана"
+
+msgid "Password history"
+msgstr "История на паролите"
+
+msgid "Password must be at least"
+msgstr "Паролата трябва да бъде поне"
+
+msgid "Password too short"
+msgstr "Паролата е твърде кратка"
+
+msgid "Password updated"
+msgstr "Паролата е актуализирана"
+
+msgid "Passwords do not match"
+msgstr "Паролите не съвпадат"
+
+msgid "Passwords do not match."
+msgstr "Паролите не съвпадат."
+
+msgid "Paste a Base32 secret or an otpauth:// URI"
+msgstr "Поставете Base32 тайна или otpauth:// URI"
+
+msgid "Path"
+msgstr "Път"
+
+msgid "Period (seconds)"
+msgstr "Период (секунди)"
+
+msgid "Permanently deleted"
+msgstr "Изтрит за постоянно"
+
+msgid "Permanently deletes every trashed entry."
+msgstr "За постоянно изтрива всеки запис в кошчето."
+
+msgid ""
+"Pick a password for the .kdbx file. You will need it to open the database."
+msgstr ""
+"Изберете парола за .kdbx файла. Ще ви трябва, за да отворите базата данни."
+
+msgid "Pick a password to protect this .ashy file. You will need it to import."
+msgstr ""
+"Изберете парола за защита на този .ashy файл. Ще ви трябва, за да го "
+"импортирате."
+
+msgid "Plain JSON export from Aegis Authenticator"
+msgstr "Обикновен JSON експорт от Aegis Authenticator"
+
+msgid "Plain JSON export from andOTP"
+msgstr "Експорт в обикновен JSON от andOTP"
+
+msgid "Please create your master password in the Vault tab first."
+msgstr "Моля, първо създайте главната си парола в раздела Vault."
+
+msgid "Please enter a password"
+msgstr "Моля, въведете парола"
+
+msgid "Please enter your PIN"
+msgstr "Моля, въведете вашия ПИН"
+
+msgid "Please wait while AshyPass talks to Nextcloud"
+msgstr "Моля, изчакайте, докато AshyPass комуникира с Nextcloud"
+
+msgid "Plug in a USB drive or external disk, then press Rescan."
+msgstr ""
+"Свържете USB устройство или външен диск, след което натиснете Пресканиране."
+
+msgid "Plug in your authenticator and click Register"
+msgstr "Свържете вашия удостоверител и натиснете Регистриране"
+
+msgid "Pre-format wipe"
+msgstr "Предварително форматиране с изтриване"
+
+msgid ""
+"Prefer the encrypted .ashy export. The CSV path stores credentials in "
+"plaintext."
+msgstr ""
+"Препоръчваме криптирания .ashy експорт. CSV пътят съхранява "
+"идентификационните данни в обикновен текст."
+
+msgid "Preparing synchronization"
+msgstr "Подготовка на синхронизацията"
+
+msgid "Preparing…"
+msgstr "Подготовка…"
+
+msgid ""
+"Preview — drive encryption backend not yet enabled. Listing is read-only."
+msgstr ""
+"Преглед — криптирането на устройството все още не е активирано. Списъкът е "
+"само за четене."
+
+msgid "Quick Unlock"
+msgstr "Бързо отключване"
+
+msgid "Quick-unlock PIN"
+msgstr "ПИН за бързо отключване"
+
+msgid "Quick-unlock disabled"
+msgstr "Бързо отключване е деактивирано"
+
+msgid "Quick-unlock enabled"
+msgstr "Бързо отключване е активирано"
+
+msgid "Quick-unlock failed"
+msgstr "Бързото отключване неуспешно"
+
+msgid "Quit"
+msgstr "Изход"
+
+msgid "Random pass (slowest)"
+msgstr "Случайно презаписване (най-бавно)"
+
+msgid "Read failed"
+msgstr "Четенето неуспешно"
+
+msgid "Received from Nextcloud"
+msgstr "Получени от Nextcloud"
+
+msgid "Reconciled items"
+msgstr "Обединени елементи"
+
+msgid "Refresh listing"
+msgstr "Обновяване на списъка"
+
+msgid "Register Security Key"
+msgstr "Регистриране на ключ за сигурност"
+
+msgid "Register failed"
+msgstr "Регистрирането неуспешно"
+
+msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
+msgstr ""
+"Регистрирайте до 2 физически FIDO2 удостоверителя (YubiKey, SoloKey и др.)"
+
+msgid "Remote generation:"
+msgstr "Отдалечено поколение:"
+
+msgid "Remove"
+msgstr "Премахване"
+
+msgid "Removed from keyring"
+msgstr "Премахнато от ключодържателя"
+
+msgid "Repeat"
+msgstr "Повтори"
+
+msgid "Require PIN at unlock"
+msgstr "Изискване на ПИН при отключване"
+
+msgid "Require user-presence (touch the token)"
+msgstr "Изискване на присъствие на потребител (докосване на токена)"
+
+msgid "Required to encrypt the snapshot before upload"
+msgstr "Необходима за криптиране на моментната снимка преди качване"
+
+msgid "Rescan drives"
+msgstr "Пресканиране на устройства"
+
+msgid "Resolved automatically using the 'last edit wins' policy."
+msgstr "Разрешени автоматично според правилото 'последната редакция печели'."
+
+msgid "Restore"
+msgstr "Възстановяване"
+
+msgid "Restore failed"
+msgstr "Възстановяването е неуспешно"
+
+msgid "Restore from an Ashy Pass encrypted export"
+msgstr "Възстановяване от криптиран експорт на Ashy Pass"
+
+msgid "Restore latest"
+msgstr "Възстанови последното"
+
+msgid "Restored to"
+msgstr "Възстановено в"
+
+msgid "Retention"
+msgstr "Задържане"
+
+msgid "Run"
+msgstr "Старт"
+
+msgid "Run Audit"
+msgstr "Стартиране на одит"
+
+msgid "Running audit..."
+msgstr "Извършване на одит..."
+
+msgid "Safety check"
+msgstr "Проверка за безопасност"
+
+msgid "Safety check error"
+msgstr "Грешка при проверка за безопасност"
+
+msgid "Safety checks failed"
+msgstr "Проверките за безопасност неуспешни"
+
+msgid "Safety checks passed"
+msgstr "Проверките за безопасност преминати"
+
+msgid "Save"
+msgstr "Запазване"
+
+msgid "Save KeePass export"
+msgstr "Запазване на KeePass експорт"
+
+msgid "Save as…"
+msgstr "Запиши като…"
+
+msgid "Save attachment"
+msgstr "Запазване на прикачения файл"
+
+msgid "Save encrypted export"
+msgstr "Запазване на криптиран експорт"
+
+msgid "Save failed"
+msgstr "Запазването неуспешно"
+
+msgid "Saves all entries as plaintext"
+msgstr "Записва всички записи като обикновен текст"
+
+msgid ""
+"Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
+msgstr ""
+"Сканирайте хранилището за слаби, дублирани, стари, компрометирани записи и "
+"такива без 2FA."
+
+msgid "Scanning vault..."
+msgstr "Сканиране на хранилището..."
+
+msgid "Search"
+msgstr "Търсене"
+
+msgid "Search 2FA codes…"
+msgstr "Търсене на 2FA кодове…"
+
+msgid "Search passwords…"
+msgstr "Търсене на пароли…"
+
+msgid "Secure discard (SSD/NVMe only, near-instant)"
+msgstr "Сигурно изтриване (само SSD/NVMe, почти мигновено)"
+
+msgid "Security"
+msgstr "Сигурност"
+
+msgid "Security Keys"
+msgstr "Ключове за сигурност"
+
+msgid "Sending local changes"
+msgstr "Изпращане на локални промени"
+
+msgid ""
+"Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
+"locally for 7 days."
+msgstr ""
+"Изпраща само първите 5 шестнадесетични знака от SHA-1(парола) за всеки "
+"запис. Кешира се локално за 7 дни."
+
+msgid "Sent to Nextcloud"
+msgstr "Изпратено към Nextcloud"
+
+msgid "Separator"
+msgstr "Разделител"
+
+msgid "Serial"
+msgstr "Сериен номер"
+
+msgid "Server URL"
+msgstr "URL на сървъра"
+
+msgid ""
+"Server URL (e.g. https://cloud.example.com), username and an app password."
+msgstr ""
+"URL на сървъра (напр. https://cloud.example.com), потребителско име и парола "
+"за приложение."
+
+msgid "Server URL, username, app password"
+msgstr "URL на сървъра, потребителско име, парола за приложение"
+
+msgid "Server URL, username, app-password"
+msgstr "URL на сървъра, потребителско име, парола за приложение"
+
+msgid "Session"
+msgstr "Сесия"
+
+msgid "Set Passphrase"
+msgstr "Задайте парола"
+
+msgid "Set a category on entries to organize them into groups"
+msgstr "Задайте категория на записите, за да ги организирате в групи"
+
+msgid "Set — generate a new one to replace it"
+msgstr "Зададена — генерирайте нова, за да я замените"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Show 2FA"
+msgstr "Показване на 2FA"
+
+msgid "Show Generator"
+msgstr "Показване на генератора"
+
+msgid "Show Nextcloud badges"
+msgstr "Показване на значките на Nextcloud"
+
+msgid "Show Vault"
+msgstr "Показване на хранилището"
+
+msgid "Show favicons"
+msgstr "Показване на икони на сайтове"
+
+msgid "Show technical details"
 msgstr "Преглед на техническите детайли"
 
-#~ msgid "Conflicts resolved"
-#~ msgstr "Конфликтите са разрешени"
+msgid "Sign in failed"
+msgstr "Вписването е неуспешно"
 
-#~ msgid "Created locally"
-#~ msgstr "Създадено локално"
+msgid "Sign in to Google"
+msgstr "Вход в Google"
 
-#~ msgid "Created on Nextcloud"
-#~ msgstr "Създадено в Nextcloud"
+msgid "Sign out"
+msgstr "Изход"
 
-#~ msgid "Deleted on Nextcloud"
-#~ msgstr "Изтрито от Nextcloud"
+msgid "Sign out failed"
+msgstr "Изписването е неуспешно"
 
-#~ msgid ""
-#~ "Nextcloud requires a filled password, so these local entries were not sent."
-#~ msgstr ""
-#~ "Nextcloud изисква попълнена парола, така че тези локални записи не бяха "
-#~ "изпратени."
+msgid "Signed in"
+msgstr "Влезли сте"
 
-#~ msgid "Nextcloud sync finished."
-#~ msgstr "Синхронизацията с Nextcloud завърши."
+msgid "Signed in to Google Drive"
+msgstr "Вписан в Google Drive"
 
-#~ msgid "Passwordless entries ignored"
-#~ msgstr "Записи без парола са игнорирани"
+msgid "Signed out"
+msgstr "Изписан"
 
-#~ msgid "Sync completed"
-#~ msgstr "Синхронизацията завърши"
+msgid "Signing in…"
+msgstr "Влизане…"
 
-#~ msgid "Sync completed with errors"
-#~ msgstr "Синхронизацията завърши с грешки"
+msgid "Size"
+msgstr "Размер"
 
-#~ msgid "Sync errors"
-#~ msgstr "Грешки при синхронизиране"
+msgid "Snapshot uploaded"
+msgstr "Моментната снимка е качена"
 
-#~ msgid "Updated locally"
-#~ msgstr "Актуализирано локално"
+msgid "Starting..."
+msgstr "Стартиране..."
 
-#~ msgid "Updated on Nextcloud"
-#~ msgstr "Актуализирано в Nextcloud"
+msgid "Status"
+msgstr "Състояние"
 
-#~ msgid "No Groups"
-#~ msgstr "Няма групи"
+msgid "Stay Unlocked"
+msgstr "Оставане отключено"
 
-#~ msgid ""
-#~ "After auto-lock, unlock with a short PIN instead of the master password. The"
-#~ " PIN guards a key cached in memory only — it is discarded when the app "
-#~ "closes."
-#~ msgstr ""
-#~ "След автоматично заключване, отключвайте с кратък ПИН вместо с главната "
-#~ "парола. ПИНът защитава ключ, кеширан само в паметта — той се изтрива при "
-#~ "затваряне на приложението."
+msgid "Store"
+msgstr "Съхранение"
 
-#~ msgid ""
-#~ "Higher costs slow brute force but also slow unlock. Auto-tune picks values "
-#~ "calibrated to ~500 ms on this machine. Existing master hashes keep their "
-#~ "original costs; tuned values apply on the next master password change."
-#~ msgstr ""
-#~ "По-високите разходи забавят грубата сила, но също така забавят отключването."
-#~ " Автоматичното настройване избира стойности, калибрирани за ~500 ms на тази "
-#~ "машина. Съществуващите главни хешове запазват оригиналните си разходи; "
-#~ "настроените стойности се прилагат при следващата промяна на главната парола."
+msgid ""
+"Store the master password in the desktop's Secret Service (GNOME Keyring, "
+"KWallet, etc.) so Ashy Pass can unlock automatically on start. The keyring "
+"is locked with your login password — disable this if multiple users share "
+"the desktop session."
+msgstr ""
+"Съхранявайте главната парола в Secret Service на работния плот (GNOME "
+"Keyring, KWallet и др.), за да може Ashy Pass да се отключва автоматично при "
+"стартиране. Ключодържателят е заключен с вашата парола за вход — "
+"деактивирайте това, ако няколко потребители споделят сесията на работния "
+"плот."
 
-#~ msgid "Register up to 2 FIDO2 authenticators (YubiKey, Solo, etc.)"
-#~ msgstr "Регистрирайте до 2 FIDO2 удостоверителя (YubiKey, Solo и др.)"
+msgid "Stored in system keyring"
+msgstr "Съхранено в системния ключодържател"
 
-#~ msgid "Sync"
-#~ msgstr "Синхронизиране"
+msgid "Strength"
+msgstr "Сила"
+
+msgid "Strong"
+msgstr "Силна"
+
+msgid "Strong Password"
+msgstr "Силна парола"
+
+msgid "Summary"
+msgstr "Обобщение"
+
+msgid "Symbols (!@#$…)"
+msgstr "Символи (!@#$…)"
+
+msgid "Sync completed"
+msgstr "Синхронизацията завърши"
+
+msgid "Sync completed with issues"
+msgstr "Проблеми със синхронизацията"
+
+msgid "Sync completed with warnings"
+msgstr "Синхронизацията завърши с предупреждения"
+
+msgid "Sync conflict"
+msgstr "Конфликт при синхронизация"
+
+msgid "Sync conflict detected"
+msgstr "Открит е конфликт при синхронизация"
+
+msgid "Sync failed"
+msgstr "Синхронизацията неуспешна"
+
+msgid "Sync now"
+msgstr "Синхронизирай сега"
+
+msgid "Synchronizing Nextcloud"
+msgstr "Синхронизиране с Nextcloud"
+
+msgid "Synchronizing..."
+msgstr "Синхронизиране..."
+
+msgid "Syncing folders"
+msgstr "Синхронизиране на папки"
+
+msgid "System Keyring"
+msgstr "Системен ключодържател"
+
+msgid "System keyring unavailable"
+msgstr "Системният ключодържател не е наличен"
+
+msgid "TOTP Secret"
+msgstr "TOTP тайна"
+
+msgid "TOTP Secret (Base32)"
+msgstr "TOTP Secret (Base32)"
+
+msgid "TOTP Settings"
+msgstr "TOTP настройки"
+
+msgid "TOTP code copied"
+msgstr "TOTP кодът е копиран"
+
+msgid "TOTP secret is required"
+msgstr "TOTP тайната е задължителна"
+
+msgid "Tags (comma-separated)"
+msgstr "Етикети (разделени със запетая)"
+
+msgid "Talking to your token… check the device for a touch prompt."
+msgstr ""
+"Свързване с вашия токен… проверете устройството за подкана за докосване."
+
+msgid "The sync finished, but some items reported errors."
+msgstr "Синхронизацията приключи, но някои елементи докладваха грешка."
+
+msgid "This action cannot be undone."
+msgstr "Това действие не може да бъде отменено."
+
+msgid "This device generation:"
+msgstr "Поколение на това устройство:"
+
+msgid "This will erase everything on the drive"
+msgstr "Това ще изтрие всичко на устройството"
+
+msgid "Title"
+msgstr "Заглавие"
+
+msgid "Touch your key…"
+msgstr "Докоснете вашия ключ…"
+
+msgid "Trash is empty."
+msgstr "Кошчето е празно."
+
+msgid "Trashed entries"
+msgstr "Записи в кошчето"
+
+msgid "Two-Factor Authentication"
+msgstr "Двуфакторно удостоверяване"
+
+msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
+msgstr ""
+"Двупосочно съгласуване: изтегляне от отдалеченото, качване на локалното, "
+"разрешаване чрез последната промяна"
+
+msgid "Two-way reconciliation completed successfully."
+msgstr "Двупосочната синхронизация завърши успешно."
+
+msgid ""
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
+"an app password from Settings → Security."
+msgstr ""
+"Двупосочна синхронизация с официалното приложение „Passwords“ на вашия "
+"Nextcloud сървър. Използвайте парола за приложение от Настройки → Сигурност."
+
+msgid "Type the current master password first"
+msgstr "Първо въведете текущата главна парола"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "URL, username and password are required"
+msgstr "URL, потребителско име и парола са задължителни"
+
+msgid "Uncategorized"
+msgstr "Без категория"
+
+msgid "Understood"
+msgstr "Разбрах"
+
+msgid "Unencrypted 1Password 8 export archive"
+msgstr "Нешифрован експортен архив от 1Password 8"
+
+msgid "Unencrypted Bitwarden vault export"
+msgstr "Нешифрован експорт на хранилище от Bitwarden"
+
+msgid "Unlock"
+msgstr "Отключване"
+
+msgid "Unlock Drive"
+msgstr "Отключване на устройство"
+
+msgid "Unlock Vault"
+msgstr "Отключване на хранилището"
+
+msgid "Unlock the vault first"
+msgstr "Първо отключете сейфа"
+
+msgid "Unlock with PIN"
+msgstr "Отключване с ПИН"
+
+msgid "Unlocked at"
+msgstr "Отключено на"
+
+msgid "Unlocking…"
+msgstr "Отключване…"
+
+msgid "Updated locally"
+msgstr "Актуализирано локално"
+
+msgid "Updated remotely"
+msgstr "Актуализирани отдалечено"
+
+msgid "Upload anyway"
+msgstr "Качване въпреки това"
+
+msgid "Upload the current vault file to Drive"
+msgstr "Качване на текущия файл на трезора в Drive"
+
+msgid "Upload the current vault file to WebDAV"
+msgstr "Качване на текущия файл на хранилището в WebDAV"
+
+msgid "Uppercase Letters (A-Z)"
+msgstr "Главни букви (A-Z)"
+
+msgid "Use larger digits for easier reading"
+msgstr "Използвайте по-големи цифри за по-лесно четене"
+
+msgid "Use master password instead"
+msgstr "Използване на главна парола вместо това"
+
+msgid "Use tighter spacing for long password lists"
+msgstr "Използвайте по-стегнато разстояние за дълги списъци с пароли"
+
+msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
+msgstr ""
+"Използва се за отключване на хранилището. Промяната му прекриптира всички "
+"съхранени данни."
+
+msgid "Username"
+msgstr "Потребителско име"
+
+msgid "Vault"
+msgstr "Хранилище"
+
+msgid ""
+"Vault FIDO2 protection is unavailable until hardware registration and "
+"assertion are fully implemented. Existing configuration is preserved."
+msgstr ""
+"FIDO2 защитата на хранилището не е налична, докато регистрацията и "
+"удостоверяването с хардуер не бъдат напълно реализирани. Съществуващата "
+"конфигурация се запазва."
+
+msgid "Vault List"
+msgstr "Списък на хранилището"
+
+msgid "Vault already in sync"
+msgstr "Хранилището вече е синхронизирано"
+
+msgid "Vault locked due to inactivity"
+msgstr "Хранилището е заключено поради неактивност"
+
+msgid "Vault must be unlocked to configure"
+msgstr "Сейфът трябва да бъде отключен за настройка"
+
+msgid "Vault will lock soon"
+msgstr "Хранилището ще се заключи скоро"
+
+msgid "Vault will lock soon due to inactivity"
+msgstr "Хранилището ще се заключи скоро поради неактивност"
+
+msgid "Vendor"
+msgstr "Производител"
+
+msgid "Very Strong"
+msgstr "Много силна"
+
+msgid "Very Weak"
+msgstr "Много слаба"
+
+msgid "Waiting for Nextcloud..."
+msgstr "Изчакване на Nextcloud..."
+
+msgid "Weak"
+msgstr "Слаба"
+
+msgid "WebDAV / Nextcloud"
+msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV configured"
+msgstr "WebDAV е конфигуриран"
+
+msgid "Whole device — no partition table"
+msgstr "Цяло устройство — без таблица на дяловете"
+
+msgid "Will destroy"
+msgstr "Ще унищожи"
+
+msgid "Wipe device"
+msgstr "Изтриване на устройството"
+
+msgid "Wiping device"
+msgstr "Изчистване на устройството"
+
+msgid "Working..."
+msgstr "Работи се..."
+
+msgid "Write LUKS2 header"
+msgstr "Записване на LUKS2 заглавка"
+
+msgid "Write protection"
+msgstr "Защита от запис"
+
+msgid ""
+"Write these 12 words down and keep them safe. This is the only time they "
+"will be shown."
+msgstr ""
+"Запишете тези 12 думи и ги пазете на сигурно място. Това е единственият път, "
+"когато ще бъдат показани."
+
+msgid "Writing LUKS2 header"
+msgstr "Записване на LUKS2 заглавка"
+
+msgid "Wrong master password"
+msgstr "Грешна главна парола"
+
+msgid "allocated"
+msgstr "разпределено"
+
+msgid "breached"
+msgstr "компрометирана"
+
+msgid "characters"
+msgstr "символа"
+
+msgid "duplicate"
+msgstr "дублирана"
+
+msgid "entries removed"
+msgstr "премахнати записа"
+
+msgid "entries scanned"
+msgstr "сканирани записа"
+
+msgid "entry synchronized"
+msgid_plural "entries synchronized"
+msgstr[0] "синхронизиран запис"
+msgstr[1] "синхронизирани записа"
+
+msgid "flash storage"
+msgstr "флаш памет"
+
+msgid "free"
+msgstr "свободно"
+
+msgid "free of"
+msgstr "свободно от"
+
+msgid "more"
+msgstr "още"
+
+msgid "no 2FA"
+msgstr "без 2FA"
+
+msgid "none"
+msgstr "няма"
+
+msgid "not mounted"
+msgstr "не е монтиран"
+
+msgid "old"
+msgstr "стара"
+
+msgid "passwordless entry was skipped"
+msgid_plural "passwordless entries were skipped"
+msgstr[0] "запис без парола беше пропуснат"
+msgstr[1] "записа без парола бяха пропуснати"
+
+msgid "read-only"
+msgstr "само за четене"
+
+msgid "reported error"
+msgid_plural "reported errors"
+msgstr[0] "докладвана грешка"
+msgstr[1] "докладвани грешки"
+
+msgid "rotational (HDD)"
+msgstr "въртящ се (HDD)"
+
+msgid "seen"
+msgstr "видяна"
+
+msgid "solid-state"
+msgstr "твърдотелно"
+
+msgid "weak"
+msgstr "слаба"
+
+msgid "…"
+msgstr "…"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-18 22:30-0300\n"
+"POT-Creation-Date: 2026-07-09 21:42-0300\n"
 "PO-Revision-Date: 2026-05-12 19:28\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -11,68 +11,55 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:344
 msgid "0 disables auto-clear"
 msgstr "0 poistaa automaattisen tyhjennyksen käytöstä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:168
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:591
 msgid "2FA"
 msgstr "2FA"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1011
 msgid "2FA Codes"
 msgstr "2FA-koodit"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:798
 msgid "2FA code added"
 msgstr "2FA-koodi lisätty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:859
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "12-sanan BIP-39-lause, jolla voit avata lukituksen ilman suojausavainta. "
 "Näytetään kerran."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:107
 msgid "About"
 msgstr "Tietoja"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:659
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:632
 msgid "Add 2FA Code"
 msgstr "Lisää 2FA-koodi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:459
+msgid "Add FIDO2 token keyslot"
+msgstr "Lisää FIDO2-tunnistimen avainpaikka"
+
 msgid "Add Number at End"
 msgstr "Lisää numero loppuun"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1548
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:75
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:634
 msgid "Add Password"
 msgstr "Lisää salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:265
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:393
 msgid "Add a TOTP secret to an entry to see live codes here."
 msgstr "Lisää TOTP-salaisuus kohteeseen nähdäksesi live-koodit täällä."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1869
+msgid "Add a hardware token keyslot"
+msgstr "Lisää laitteistotunnisteen avainpaikka"
+
 msgid "Add attachment"
 msgstr "Lisää liite"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1736
 msgid "Add file"
 msgstr "Lisää tiedosto"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:415
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:872
 msgid "Add your first password using the + button"
 msgstr "Lisää ensimmäinen salasanasi +-painikkeella"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:361
 msgid ""
 "After auto-lock or restart, unlock with a short PIN instead of the master "
 "password on this device. The vault key is stored encrypted by the PIN."
@@ -81,27 +68,28 @@ msgstr ""
 "lyhyellä PIN-koodilla pääsalasanan sijaan tällä laitteella. Holvin avain on "
 "tallennettu PIN-koodilla salattuna."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1675
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:686
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:861
 msgid "Algorithm"
 msgstr "Algoritmi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:393
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1272
 msgid "All"
 msgstr "Kaikki"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3236
 msgid "All clear"
 msgstr "Kaikki kunnossa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:274
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2006
 msgid "All fields are required."
 msgstr "Kaikki kentät ovat pakollisia."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2391
+msgid ""
+"All partitions, files, and filesystem signatures will be permanently "
+"destroyed."
+msgstr ""
+"Kaikki osiot, tiedostot ja tiedostojärjestelmän allekirjoitukset tuhotaan "
+"pysyvästi."
+
+msgid "Allow TRIM through encrypted mapping"
+msgstr "Salli TRIM salatun kartoituksen läpi"
+
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
 "Uploading now would orphan the remote changes."
@@ -109,42 +97,31 @@ msgstr ""
 "Toinen laite on lähettänyt uudemman tilannevedoksen sen jälkeen, kun tämä "
 "laite viimeksi synkronoi. Lähettäminen nyt jättäisi etämuutokset orvoiksi."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2557
 msgid "App password"
 msgstr "Sovellussalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:103
 msgid "Appearance"
 msgstr "Ulkoasu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:809
 msgid "Application"
 msgstr "Sovellus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1334
 msgid "Applying local deletions"
 msgstr "Käytetään paikallisia poistoja"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1429
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1435
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:613
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:619
 msgid "Are you sure you want to delete"
 msgstr "Haluatko varmasti poistaa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1107
-msgid ""
-"Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
+msgid "Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
 msgstr ""
 "Argon2id + AES-256-GCM, salasanasuojattu. Uudelleentuotavissa Ashy Passilla."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:606
 msgid ""
-"Argon2id turns your master password into the vault encryption key; it is not"
-" a physical security key. Higher costs slow brute force but also slow "
-"unlock. Auto-tune picks values calibrated to ~500 ms on this machine. "
-"Existing master hashes keep their original costs; tuned values apply on the "
-"next master password change."
+"Argon2id turns your master password into the vault encryption key; it is not "
+"a physical security key. Higher costs slow brute force but also slow unlock. "
+"Auto-tune picks values calibrated to ~500 ms on this machine. Existing "
+"master hashes keep their original costs; tuned values apply on the next "
+"master password change."
 msgstr ""
 "Argon2id muuttaa pääsalasanasi holvin salausavaimeksi; se ei ole fyysinen "
 "suojausavain. Korkeammat kustannukset hidastavat raakaa voimaa, mutta "
@@ -153,284 +130,248 @@ msgstr ""
 "hajautusarvot säilyttävät alkuperäiset kustannuksensa; viritetyt arvot "
 "otetaan käyttöön seuraavan pääsalasanan vaihdon yhteydessä."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:258
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:201
 msgid "Ashy Pass"
 msgstr "Ashy Pass"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1897
+msgid ""
+"Ashy Pass could not reach Nextcloud. Check your connection, server address, "
+"and app password."
+msgstr ""
+"Ashy Pass ei saanut yhteyttä Nextcloudiin. Tarkista yhteytesi, palvelimen "
+"osoite ja sovellussalasana."
+
+msgid ""
+"At least 8 characters. A four-word passphrase from the EFF wordlist is a "
+"strong default."
+msgstr ""
+"Vähintään 8 merkkiä. Neljän sanan salalause EFF-sanaluettelosta on vahva "
+"oletus."
+
 msgid "Attachment added"
 msgstr "Liite lisätty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1845
 msgid "Attachment deleted"
 msgstr "Liite poistettu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1821
 msgid "Attachment not found"
 msgstr "Liitettä ei löydy"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1812
 msgid "Attachment saved"
 msgstr "Liite tallennettu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1728
 msgid "Attachments"
 msgstr "Liitteet"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3050
 msgid "Audit Options"
 msgstr "Tarkistusasetukset"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3131
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3177
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3178
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3190
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3191
 msgid "Audit failed"
 msgstr "Tarkistus epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:327
 msgid "Auto-lock after (seconds)"
 msgstr "Automaattinen lukitus (sekuntia)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:633
 msgid "Auto-tune"
 msgstr "Automaattinen viritys"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:405
 msgid "Avoid characters like 0, O, 1, l, I"
 msgstr "Vältä merkkejä kuten 0, O, 1, l, I"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1898
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2103
+msgid "Back"
+msgstr "Takaisin"
+
 msgid "Back up now"
 msgstr "Varmuuskopioi nyt"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:857
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:921
 msgid "Backup Phrase"
 msgstr "Varmuuskopiolause"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1914
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2119
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2124
 msgid "Backup failed"
 msgstr "Varmuuskopiointi epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:864
 msgid "Backup phrase"
 msgstr "Varmuuskopiolause"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1913
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2123
 msgid "Backup uploaded"
 msgstr "Varmuuskopio lähetetty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:634
 msgid "Benchmark this machine (~5 s)"
 msgstr "Mittaa tämä kone (~5 s)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1062
 msgid "Bitwarden, Chrome, 1Password compatible columns"
 msgstr "Bitwardenin, Chromen ja 1Passwordin kanssa yhteensopivat sarakkeet"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1053
+msgid "Bus / media"
+msgstr "Väylä / media"
+
 msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
 msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1080
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1447
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1553
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:630
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:663
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:826
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:159
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:679
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:819
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1380
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1707
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1976
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2202
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2396
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2549
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2630
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:453
+msgid "Capacity"
+msgstr "Kapasiteetti"
+
 msgid "Capitalize Words"
 msgstr "Isot alkukirjaimet"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1645
 msgid "Category"
 msgstr "Luokka"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:230
 msgid "Change Master Password"
 msgstr "Vaihda pääsalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3056
 msgid "Check Have I Been Pwned (online)"
 msgstr "Tarkista Have I Been Pwned (verkossa)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1475
 msgid "Choose a 1Password .1pux archive"
 msgstr "Valitse 1Password .1pux-arkisto"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1474
 msgid "Choose a Bitwarden JSON export"
 msgstr "Valitse Bitwarden JSON -vienti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1471
 msgid "Choose a CSV file"
 msgstr "Valitse CSV-tiedosto"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1472
 msgid "Choose an Aegis JSON export"
 msgstr "Valitse Aegis JSON -vienti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1473
 msgid "Choose an andOTP JSON export"
 msgstr "Valitse andOTP JSON -vienti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:343
 msgid "Clear clipboard after (seconds)"
 msgstr "Tyhjennä leikepöytä (sekuntia)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1394
 msgid "Clear history"
 msgstr "Tyhjennä historia"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1763
 msgid "Click the + button to add a file."
 msgstr "Napsauta +-painiketta lisätäksesi tiedoston."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1981
 msgid "Client ID"
 msgstr "Asiakastunnus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1983
 msgid "Client Secret (optional)"
 msgstr "Asiakassalaisuus (valinnainen)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:102
+msgid "Close"
+msgstr "Sulje"
+
+msgid "Close active mapping"
+msgstr "Sulje aktiivinen yhdistäminen"
+
+msgid "Close mapping"
+msgstr "Sulje yhdistäminen"
+
+msgid "Closing mapping"
+msgstr "Suljetaan yhdistämistä"
+
 msgid "Cloud"
 msgstr "Pilvi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:994
 msgid "Compact vault list"
 msgstr "Tiivis holviluettelo"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1816
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1973
 msgid "Configure Google OAuth"
 msgstr "Määritä Google OAuth"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2449
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2470
 msgid "Configure Nextcloud Passwords"
 msgstr "Määritä Nextcloud Passwords"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2059
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2078
 msgid "Configure WebDAV"
 msgstr "Määritä WebDAV"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2028
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2255
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2602
 msgid "Configure failed"
 msgstr "Määritys epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1818
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2022
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2026
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2046
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2091
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2436
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2489
 msgid "Configured"
 msgstr "Määritetty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:295
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1395
+msgid "Confirm Device"
+msgstr "Vahvista laite"
+
 msgid "Confirm Password"
 msgstr "Vahvista salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:227
 msgid "Confirm new password"
 msgstr "Vahvista uusi salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1716
 msgid "Confirm password"
 msgstr "Vahvista salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1373
+msgid "Conflicts"
+msgstr "Ristiriidat"
+
+msgid "Continue"
+msgstr "Jatka"
+
 msgid "Copy"
 msgstr "Kopioi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:484
 msgid "Copy Code"
 msgstr "Kopioi koodi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1196
 msgid "Copy Password"
 msgstr "Kopioi salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:122
 msgid "Copy to Clipboard"
 msgstr "Kopioi leikepöydälle"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:650
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1375
+msgid "Could not disable quick-unlock"
+msgstr "Pika-avausta ei voitu poistaa käytöstä"
+
+msgid "Could not sync"
+msgstr "Synkronointi epäonnistui"
+
 msgid "Create Master Password"
 msgstr "Luo pääsalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:492
+msgid "Create filesystem"
+msgstr "Luo tiedostojärjestelmä"
+
+msgid "Created locally"
+msgstr "Luotu paikallisesti"
+
+msgid "Created remotely"
+msgstr "Luotu etänä"
+
+msgid "Creating filesystem"
+msgstr "Luodaan tiedostojärjestelmää"
+
 msgid "Current master password"
 msgstr "Nykyinen pääsalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:615
 msgid "Current parameters"
 msgstr "Nykyiset parametrit"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:221
+msgid "Current passphrase"
+msgstr "Nykyinen salasana"
+
 msgid "Current password"
 msgstr "Nykyinen salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:101
 msgid "Data"
 msgstr "Tiedot"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1824
 msgid "Decrypt failed"
 msgstr "Salauksen purku epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1238
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1448
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:508
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:631
 msgid "Delete"
 msgstr "Poista"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:625
 msgid "Delete 2FA Entry?"
 msgstr "Poista 2FA-tietue?"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1442
 msgid "Delete Password?"
 msgstr "Poista salasana?"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1834
 msgid "Delete attachment"
 msgstr "Poista liite"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3371
 msgid "Delete permanently"
 msgstr "Poista pysyvästi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3294
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -439,1065 +380,920 @@ msgstr ""
 "jälkeen ne poistetaan pysyvästi seuraavan sovelluksen käynnistyksen "
 "yhteydessä. Aseta 0 ohittaaksesi roskakorin."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1697
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:694
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:873
+msgid "Deleted remotely"
+msgstr "Poistettu etänä"
+
+msgid "Device"
+msgstr "Laite"
+
 msgid "Digits"
 msgstr "Numerot"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:392
 msgid "Digits (0-9)"
 msgstr "Numerot (0-9)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:406
 msgid "Disable"
 msgstr "Poista käytöstä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:390
 msgid "Disabled"
 msgstr "Pois käytöstä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:942
 msgid "Done"
 msgstr "Valmis"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1338
+msgid "Done."
+msgstr "Valmis."
+
 msgid "Downloading remote changes"
 msgstr "Ladataan etämuutoksia"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1923
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2154
-msgid ""
-"Downloads the most recent backup as "
-"~/.local/share/ashypass/passwords.restored.db"
-msgstr ""
-"Lataa uusimman varmuuskopion tiedostoon "
-"~/.local/share/ashypass/passwords.restored.db"
+msgid "Drives"
+msgstr "Asemat"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1210
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:496
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:822
 msgid "Edit 2FA Entry"
 msgstr "Muokkaa 2FA-tietuetta"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1546
 msgid "Edit Password"
 msgstr "Muokkaa salasanaa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3460
+msgid "Empty passphrase"
+msgstr "Tyhjä salasana"
+
 msgid "Empty trash"
 msgstr "Tyhjennä roskakori"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:407
 msgid "Enable / Update"
 msgstr "Ota käyttöön / Päivitä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:388
 msgid "Enabled for this session"
 msgstr "Käytössä tämän istunnon ajan"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:386
 msgid "Enabled on this device"
 msgstr "Käytössä tällä laitteella"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1617
+msgid "Encrypt"
+msgstr "Salaa"
+
+msgid "Encrypt Drive"
+msgstr "Salaa asema"
+
 msgid "Encrypt KeePass export"
 msgstr "Salaa KeePass-vienti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1538
 msgid "Encrypt export"
 msgstr "Salaa vienti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1565
+msgid "Encrypted as"
+msgstr "Salattuna"
+
+msgid "Encrypted device"
+msgstr "Salattu laite"
+
 msgid "Encrypted export complete"
 msgstr "Salattu vienti valmis"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2135
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Salattu tilannevedoksen lähetys ristiriitojen tunnistuksella"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2039
 msgid ""
 "Encrypted vault uploaded as-is over HTTPS. Works with any RFC 4918 server."
 msgstr ""
 "Salattu holvi lähetetään sellaisenaan HTTPS:n yli. Toimii minkä tahansa RFC "
 "4918 -palvelimen kanssa."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1796
 msgid "Encrypted vault uploaded as-is. Folder: \"AshyPass Backups\"."
 msgstr "Salattu holvi ladattu sellaisenaan. Kansio: \"AshyPass Backups\"."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1730
 msgid "Encrypted with your master key. Stored inside the vault."
 msgstr "Salattu pääavaimellasi. Tallennettu holviin."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1680
+msgid "Encrypted zero (recommended — slow but secure)"
+msgstr "Salattu nollaus (suositeltu — hidas mutta turvallinen)"
+
+msgid "Encrypting…"
+msgstr "Salataan…"
+
+msgid "Encrypt…"
+msgstr "Salaa…"
+
+msgid "Enrol"
+msgstr "Rekisteröi"
+
+msgid "Enrol FIDO2 Token"
+msgstr "Rekisteröi FIDO2-tunniste"
+
 msgid "Enter the master password for this .kdbx file."
 msgstr "Anna tämän .kdbx-tiedoston pääsalasana."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1595
 msgid "Enter the password used when this file was exported."
 msgstr "Anna salasana, jota käytettiin tämän tiedoston viennissä."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:262
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:205
 msgid "Enter your master password to unlock"
 msgstr "Anna pääsalasana avataksesi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:644
 msgid "Entry deleted"
 msgstr "Tietue poistettu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3387
 msgid "Entry restored"
 msgstr "Merkintä palautettu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:930
 msgid "Entry updated"
 msgstr "Merkintä päivitetty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:299
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:804
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:936
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:610
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:311
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:793
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:886
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:893
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:901
 msgid "Error"
 msgstr "Virhe"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1111
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:2022
+msgid "Error details"
+msgstr "Virheiden tiedot"
+
 msgid "Error saving password"
 msgstr "Virhe tallentaessa salasanaa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:404
+msgid "Everything is in sync"
+msgstr "Kaikki synkronissa"
+
+msgid "Everything was already in sync"
+msgstr "Kaikki oli jo synkronoitu"
+
 msgid "Exclude Ambiguous Characters"
 msgstr "Jätä epäselvät merkit pois"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1097
 msgid "Export"
 msgstr "Vie"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1771
 msgid "Export complete"
 msgstr "Vienti valmis"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1105
 msgid "Export encrypted (.ashy)"
 msgstr "Vie salattuna (.ashy)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1567
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1645
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1772
 msgid "Export failed"
 msgstr "Vienti epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1185
 msgid "Export to CSV (plaintext)"
 msgstr "Vie CSV:ksi (selkokielinen)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1145
 msgid "Export to KeePass (.kdbx)"
 msgstr "Vie KeePassiin (.kdbx)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1758
 msgid "Export vault to CSV"
 msgstr "Vie holvi CSV-muotoon"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1337
+msgid "FIDO2 keyslot added"
+msgstr "FIDO2-avainpaikka lisätty"
+
+msgid "FIDO2 vault protection unavailable"
+msgstr "Holvin FIDO2-suojaus ei ole käytettävissä"
+
+msgid "Failed"
+msgstr "Epäonnistui"
+
 msgid "Failed to read history"
 msgstr "Historian lukeminen epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:807
+msgid "Failed to scan drives"
+msgstr "Levyjen haku epäonnistui"
+
 msgid "Failed to setup master password"
 msgstr "Pääsalasanan asettaminen epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:777
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:341
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1457
 msgid "Failed to unlock vault"
 msgstr "Tallelokeron avaaminen epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1181
 msgid "Favorite"
 msgstr "Suosikki"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:204
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:562
 msgid "Favorites"
 msgstr "Suosikit"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:963
 msgid "Fetch and display site icons next to vault entries"
 msgstr "Hae ja näytä sivustokuvakkeet tallelokeromerkintöjen vieressä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1335
 msgid "Fetching remote passwords"
 msgstr "Noudetaan etäsalasanat"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3093
+msgid "Filesystem"
+msgstr "Tiedostojärjestelmä"
+
 msgid "Findings"
 msgstr "Löydökset"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1339
 msgid "Finishing synchronization"
 msgstr "Viimeistellään synkronointia"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:801
 msgid "Focus Search"
 msgstr "Kohdista haku"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1019
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1076
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1084
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1105
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1151
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2213
 msgid "Folder"
 msgstr "Kansio"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2199
 msgid ""
-"For Nextcloud, the base URL looks like "
-"https://cloud.example.com/remote.php/dav/files/USERNAME"
+"For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
+"dav/files/USERNAME"
 msgstr ""
-"Nextcloudin perus-URL on muotoa "
-"https://cloud.example.com/remote.php/dav/files/KÄYTTÄJÄTUNNUS"
+"Nextcloudin perus-URL on muotoa https://cloud.example.com/remote.php/dav/"
+"files/KÄYTTÄJÄTUNNUS"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:873
 msgid "Generate Backup Phrase"
 msgstr "Luo varmuuskopiolause"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:126
 msgid "Generate New"
 msgstr "Luo uusi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1581
 msgid "Generate Password"
 msgstr "Luo salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:78
 msgid "Generated Password"
 msgstr "Luotu salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:133
 msgid "Generation Type"
 msgstr "Luontityyppi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:64
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:154
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:592
 msgid "Generator"
 msgstr "Generaattori"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1794
 msgid "Google Drive"
 msgstr "Google Drive"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:191
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:554
 msgid "Groups"
 msgstr "Ryhmät"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1405
+msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
+msgstr ""
+"Auttaa SSD-levyn kulumistasausta, mutta vuotaa vapaan tilan kuvioita "
+"laitteelle."
+
 msgid "History cleared"
 msgstr "Historia tyhjennetty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1051
+msgid "I understand — Continue"
+msgstr "Ymmärrän — Jatka"
+
 msgid "Import"
 msgstr "Tuo"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1594
 msgid "Import .ashy"
 msgstr "Tuo .ashy"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1075
 msgid "Import 1Password (.1pux)"
 msgstr "Tuo 1Password (.1pux)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1082
 msgid "Import Aegis (TOTP)"
 msgstr "Tuo Aegis (TOTP)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1068
 msgid "Import Bitwarden (JSON)"
 msgstr "Tuo Bitwarden (JSON)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1061
 msgid "Import CSV"
 msgstr "Tuo CSV"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1166
 msgid "Import KeePass (.kdbx)"
 msgstr "Tuo KeePassista (.kdbx)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1089
 msgid "Import andOTP"
 msgstr "Tuo andOTP"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1528
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1603
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1687
 msgid "Import complete"
 msgstr "Tuonti valmis"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1529
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1606
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1688
 msgid "Import failed"
 msgstr "Tuonti epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1126
 msgid "Import from .ashy"
 msgstr "Tuo .ashy-tiedostosta"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:731
 msgid "Incorrect PIN"
 msgstr "Väärä PIN-koodi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:774
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:338
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1454
 msgid "Incorrect master password"
 msgstr "Väärä pääsalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:756
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:779
+msgid ""
+"Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
+"device when prompted. Your current passphrase is required to authorise the "
+"new keyslot."
+msgstr ""
+"Aseta FIDO2-tunnisteesi (Yubikey, Nitrokey jne.) ja vahvista laitteella, kun "
+"sitä pyydetään. Nykyinen salasanasi vaaditaan uuden avainpaikan "
+"vahvistamiseen."
+
+msgid "Internal error: no passphrase set"
+msgstr "Sisäinen virhe: salasanaa ei ole asetettu"
+
 msgid "Invalid TOTP secret"
 msgstr "Virheellinen TOTP-salaisuus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:772
 msgid "Invalid TOTP settings"
 msgstr "Virheelliset TOTP-asetukset"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1167
 msgid "KDBX3/KDBX4 password-protected database"
 msgstr "KDBX3/KDBX4-salasanasuojattu tietokanta"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1147
 msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
 msgstr "KDBX4 Argon2id + AES-256. Avautuu KeePassXC:ssä, KeeWebissä jne."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1643
 msgid "KeePass export complete"
 msgstr "KeePass-vienti valmis"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3299
 msgid "Keep deleted entries for (days)"
 msgstr "Säilytä poistetut merkinnät (päivää)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:771
+msgid "Kept local version"
+msgstr "Paikallinen versio säilytetty"
+
+msgid "Kept remote version"
+msgstr "Etäversio säilytetty"
+
 msgid "Key"
 msgstr "Avain"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:604
 msgid "Key Derivation (Argon2id)"
 msgstr "Avaimenjohdanto (Argon2id)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:839
 msgid "Key registered"
 msgstr "Avain rekisteröity"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:797
 msgid "Key removed"
 msgstr "Avain poistettu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:104
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:783
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:812
 msgid "Keyboard Shortcuts"
 msgstr "Pikanäppäimet"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:568
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:592
 msgid "Keyring error"
 msgstr "Avainrengasvirhe"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1014
+msgid "Label"
+msgstr "Nimiö"
+
 msgid "Large 2FA codes"
 msgstr "Suuret kaksivaiheisen tunnistautumisen koodit"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:374
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:487
+msgid "Launch the encryption wizard"
+msgstr "Käynnistä salausvelho"
+
 msgid "Length"
 msgstr "Pituus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:533
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:217
 msgid "Lock"
 msgstr "Lukitse"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:81
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:806
 msgid "Lock Vault"
 msgstr "Lukitse holvi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:328
 msgid "Lock vault when idle for this long"
 msgstr "Lukitse holvi, kun tämä aika on kulunut käyttämättömänä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:386
 msgid "Lowercase Letters (a-z)"
 msgstr "Pienet kirjaimet (a-z)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:979
 msgid "Mark entries that are linked to Nextcloud Passwords"
-msgstr ""
-"Merkitse merkinnät, jotka on linkitetty Nextcloud Passwords -palveluun"
+msgstr "Merkitse merkinnät, jotka on linkitetty Nextcloud Passwords -palveluun"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:862
 msgid "Mark passwords as favorite with the star icon"
 msgstr "Merkitse salasanoja suosikeiksi tähtikuvakkeella"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:269
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:211
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:214
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1392
 msgid "Master Password"
 msgstr "Pääsalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2317
 msgid "Master password"
 msgstr "Pääsalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:303
 msgid "Master password changed."
 msgstr "Pääsalasana vaihdettu."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:501
 msgid "Master password is in the keyring"
 msgstr "Pääsalasana on avainnipussa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:796
+msgid "Medium"
+msgstr "Keskivahva"
+
+msgid "Model"
+msgstr "Malli"
+
+msgid "Modern password generator and encrypted password vault"
+msgstr "Moderni salasanageneraattori ja salattu salasanaholvi"
+
 msgid "Navigation"
 msgstr "Navigointi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:806
 msgid "New Entry"
 msgstr "Uusi merkintä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:368
-msgid "New PIN (4+ chars)"
-msgstr "Uusi PIN-koodi (väh. 4 merkkiä)"
+msgid "New PIN (6+ chars)"
+msgstr "Uusi PIN-koodi (vähintään 6 merkkiä)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:224
 msgid "New password"
 msgstr "Uusi salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1170
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2427
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2544
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2592
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2623
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords yhdistetty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:264
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:392
+msgid ""
+"Nextcloud Passwords requires a non-empty password field. Add a password to "
+"these entries in Ashy Pass before sending them."
+msgstr ""
+"Nextcloud Passwords edellyttää täytettyä salasanakenttää. Muokkaa näitä "
+"merkintöjä Ashy Passissa lisäämällä salasana, jotta ne voidaan lähettää."
+
 msgid "No 2FA Codes"
 msgstr "Ei 2FA-koodeja"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:387
 msgid "No 2FA codes match your search"
 msgstr "Yksikään 2FA-koodi ei vastaa hakua"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:861
 msgid "No Favorites"
 msgstr "Ei suosikkeja"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:414
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:871
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:970
 msgid "No Passwords Stored"
 msgstr "Ei tallennettuja salasanoja"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:866
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:919
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:386
 msgid "No Results"
 msgstr "Ei tuloksia"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1762
 msgid "No attachments"
 msgstr "Ei liitteitä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3237
+msgid "No external drives detected"
+msgstr "Ulkoisia asemia ei havaittu"
+
 msgid "No issues found."
 msgstr "Ei ongelmia havaittu."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:761
 msgid "No keys registered"
 msgstr "Ei rekisteröityjä avaimia"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:867
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:921
 msgid "No passwords match your search"
 msgstr "Hakua vastaavia salasanoja ei löytynyt"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1356
 msgid "No previous passwords recorded."
 msgstr "Edellisiä salasanoja ei ole tallennettu."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1805
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1879
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2048
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2077
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2438
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2469
+msgid "No security key or recovery phrase changes can be made in this version."
+msgstr ""
+"Tässä versiossa suojausavaimia tai varmuuskopiolauseita ei voi muuttaa."
+
+msgid "None — quick, leaves prior data recoverable"
+msgstr "Ei mitään — nopea, jättää aiemmat tiedot palautettaviksi"
+
 msgid "Not configured"
 msgstr "Ei määritetty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3086
 msgid "Not run yet"
 msgstr "Ei vielä suoritettu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:867
 msgid "Not set"
 msgstr "Ei asetettu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1807
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1870
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2021
 msgid "Not signed in"
 msgstr "Ei kirjautunut sisään"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:503
 msgid "Not stored"
 msgstr "Ei tallennettu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1639
 msgid "Notes"
 msgstr "Muistiinpanot"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:441
+msgid "Nothing changed — Ashy Pass and Nextcloud were already aligned."
+msgstr "Mikään ei muuttunut — Ashy Pass ja Nextcloud olivat jo linjassa."
+
 msgid "Number of Words"
 msgstr "Sanojen määrä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1820
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1974
 msgid "OAuth client not configured at build time"
 msgstr "OAuth-asiakasta ei ole määritetty rakennusvaiheessa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1251
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1708
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1746
 msgid "OK"
 msgstr "OK"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1358
 msgid "Older versions appear here after the password is changed."
 msgstr "Vanhemmat versiot näkyvät täällä salasanan vaihtamisen jälkeen."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1577
 msgid "Open .ashy export"
 msgstr "Avaa .ashy-vienti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1655
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1679
 msgid "Open KeePass database"
 msgstr "Avaa KeePass-tietokanta"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:811
 msgid "Open Settings"
 msgstr "Avaa asetukset"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1851
+msgid "Open encrypted mapping"
+msgstr "Avaa salattu yhdistäminen"
+
+msgid "Open the encrypted partition"
+msgstr "Avaa salattu osio"
+
+msgid "Opening encrypted mapping"
+msgstr "Avataan salattua yhdistämistä"
+
 msgid "Opens the browser for OAuth consent"
 msgstr "Avaa selaimen OAuth-suostumusta varten"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:147
+msgid "Options"
+msgstr "Asetukset"
+
 msgid "PIN"
 msgstr "PIN-koodi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1588
 msgid "PIN Code"
 msgstr "PIN-koodi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:475
 msgid "PIN Options"
 msgstr "PIN-koodin asetukset"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:144
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1587
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:213
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:218
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:668
+msgid "Partition table"
+msgstr "Osiotaulukko"
+
 msgid "Passphrase"
 msgstr "Tunnuslause"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:429
 msgid "Passphrase Options"
 msgstr "Tunnuslauseen asetukset"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:81
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:141
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1572
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1713
 msgid "Password"
 msgstr "Salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2210
 msgid "Password / app-password"
 msgstr "Salasana / sovellussalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1343
 msgid "Password History"
 msgstr "Salasanahistoria"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:362
 msgid "Password Options"
 msgstr "Salasanan asetukset"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:2015
 msgid "Password added"
 msgstr "Salasana lisätty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:344
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1303
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1382
 msgid "Password copied to clipboard"
 msgstr "Salasana kopioitu leikepöydälle"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1461
 msgid "Password deleted"
 msgstr "Salasana poistettu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1599
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1612
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1624
 msgid "Password generated"
 msgstr "Salasana luotu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1224
 msgid "Password history"
 msgstr "Salasanahistoria"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:785
 msgid "Password must be at least"
 msgstr "Salasanan on oltava vähintään"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:282
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1428
 msgid "Password too short"
 msgstr "Salasana on liian lyhyt"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:2013
 msgid "Password updated"
 msgstr "Salasana päivitetty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:792
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1432
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1744
 msgid "Passwords do not match"
 msgstr "Salasanat eivät täsmää"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:290
 msgid "Passwords do not match."
 msgstr "Salasanat eivät täsmää."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:677
 msgid "Paste a Base32 secret or an otpauth:// URI"
 msgstr "Liitä Base32-salaisuus tai otpauth://-osoite"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1711
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:701
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:881
+msgid "Path"
+msgstr "Polku"
+
 msgid "Period (seconds)"
 msgstr "Jakso (sekuntia)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1463
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:646
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3418
 msgid "Permanently deleted"
 msgstr "Poistettu pysyvästi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3461
 msgid "Permanently deletes every trashed entry."
 msgstr "Poistaa pysyvästi kaikki roskakoriin siirretyt merkinnät."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1618
 msgid ""
 "Pick a password for the .kdbx file. You will need it to open the database."
 msgstr ""
 "Valitse salasana .kdbx-tiedostolle. Tarvitset sitä tietokannan avaamiseen."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1539
-msgid ""
-"Pick a password to protect this .ashy file. You will need it to import."
+msgid "Pick a password to protect this .ashy file. You will need it to import."
 msgstr ""
 "Valitse salasana tämän .ashy-tiedoston suojaamiseksi. Tarvitset sitä "
 "tuodaksesi tiedoston."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1083
 msgid "Plain JSON export from Aegis Authenticator"
 msgstr "Tavallinen JSON-vienti Aegis Authenticatorista"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1090
 msgid "Plain JSON export from andOTP"
 msgstr "Tavallinen JSON-vienti andOTP:stä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:324
 msgid "Please create your master password in the Vault tab first."
 msgstr "Luo ensin pääsalasanasi Vault-välilehdellä."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:754
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:313
 msgid "Please enter a password"
 msgstr "Anna salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:698
 msgid "Please enter your PIN"
 msgstr "Anna PIN-koodisi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2687
 msgid "Please wait while AshyPass talks to Nextcloud"
 msgstr "Odota, kun AshyPass keskustelee Nextcloudin kanssa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:762
+msgid "Plug in a USB drive or external disk, then press Rescan."
+msgstr "Kytke USB-asema tai ulkoinen levy, ja paina sitten Etsi uudelleen."
+
 msgid "Plug in your authenticator and click Register"
 msgstr "Kytke autentikaattorisi ja napsauta Rekisteröi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1099
+msgid "Pre-format wipe"
+msgstr "Esialustuksen tyhjennys"
+
 msgid ""
 "Prefer the encrypted .ashy export. The CSV path stores credentials in "
 "plaintext."
 msgstr ""
 "Suosi salattua .ashy-vientiä. CSV-polku tallentaa tunnukset selkokielisenä."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1277
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1333
 msgid "Preparing synchronization"
 msgstr "Valmistellaan synkronointia"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:359
+msgid "Preparing…"
+msgstr "Valmistellaan…"
+
+msgid ""
+"Preview — drive encryption backend not yet enabled. Listing is read-only."
+msgstr ""
+"Esikatselu — levyjen salauspalvelua ei ole vielä otettu käyttöön. Listaus on "
+"vain luku -tilassa."
+
 msgid "Quick Unlock"
 msgstr "Pikalukituksen avaus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:301
 msgid "Quick-unlock PIN"
 msgstr "Pikavapautuksen PIN-koodi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:471
 msgid "Quick-unlock disabled"
 msgstr "Pikakäyttöönotto pois käytöstä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:434
 msgid "Quick-unlock enabled"
 msgstr "Pikakäyttöönotto käytössä"
 
-#. Cache may have been lost (e.g. dev path) — fall back.
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:736
 msgid "Quick-unlock failed"
 msgstr "Pikavapautus epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:108
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:813
 msgid "Quit"
 msgstr "Lopeta"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1880
+msgid "Random pass (slowest)"
+msgstr "Satunnainen kirjoitus (hitain)"
+
 msgid "Read failed"
 msgstr "Lukeminen epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3450
+msgid "Received from Nextcloud"
+msgstr "Vastaanotettu Nextcloudista"
+
+msgid "Reconciled items"
+msgstr "Täsmäytetyt kohteet"
+
 msgid "Refresh listing"
 msgstr "Päivitä listaus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:818
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:833
 msgid "Register Security Key"
 msgstr "Rekisteröi suojausavain"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:841
 msgid "Register failed"
 msgstr "Rekisteröinti epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:719
-msgid ""
-"Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
+msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr ""
-"Rekisteröi enintään 2 fyysistä FIDO2-todennuslaitetta (YubiKey, SoloKey "
-"jne.)"
+"Rekisteröi enintään 2 fyysistä FIDO2-todennuslaitetta (YubiKey, SoloKey jne.)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2393
 msgid "Remote generation:"
 msgstr "Etäsukupolvi:"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:516
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:778
 msgid "Remove"
 msgstr "Poista"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:584
 msgid "Removed from keyring"
 msgstr "Poistettu avainrenkaasta"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2318
+msgid "Repeat"
+msgstr "Toista"
+
+msgid "Require PIN at unlock"
+msgstr "Vaadi PIN-koodi avauksessa"
+
+msgid "Require user-presence (touch the token)"
+msgstr "Vaadi käyttäjän läsnäolo (kosketa tunnistetta)"
+
 msgid "Required to encrypt the snapshot before upload"
 msgstr "Vaaditaan tilannevedoksen salaamiseen ennen lähetystä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3365
+msgid "Rescan drives"
+msgstr "Etsi levyjä uudelleen"
+
+msgid "Resolved automatically using the 'last edit wins' policy."
+msgstr "Ratkaistu automaattisesti 'viimeisin muokkaus voittaa' -käytännöllä."
+
 msgid "Restore"
 msgstr "Palauta"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1947
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2179
 msgid "Restore failed"
 msgstr "Palautus epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1127
 msgid "Restore from an Ashy Pass encrypted export"
 msgstr "Palauta Ashy Passin salatusta viennistä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1921
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2152
 msgid "Restore latest"
 msgstr "Palauta uusin"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1946
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2178
 msgid "Restored to"
 msgstr "Palautettu kohteeseen"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3292
 msgid "Retention"
 msgstr "Säilytysaika"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:638
 msgid "Run"
 msgstr "Suorita"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3071
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3132
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3168
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3180
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3193
 msgid "Run Audit"
 msgstr "Suorita tarkistus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3120
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3143
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3145
 msgid "Running audit..."
 msgstr "Suoritetaan tarkistusta..."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1081
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1554
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:664
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:827
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1386
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1977
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2203
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2550
+msgid "Safety check"
+msgstr "Turvallisuustarkistus"
+
+msgid "Safety check error"
+msgstr "Turvallisuustarkistuksen virhe"
+
+msgid "Safety checks failed"
+msgstr "Turvallisuustarkistukset epäonnistuivat"
+
+msgid "Safety checks passed"
+msgstr "Turvallisuustarkistukset läpäisty"
+
 msgid "Save"
 msgstr "Tallenna"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1626
 msgid "Save KeePass export"
 msgstr "Tallenna KeePass-vienti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1786
 msgid "Save as…"
 msgstr "Tallenna nimellä…"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1797
 msgid "Save attachment"
 msgstr "Tallenna liite"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1547
 msgid "Save encrypted export"
 msgstr "Tallenna salattu vienti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1816
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1903
 msgid "Save failed"
 msgstr "Tallennus epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1186
 msgid "Saves all entries as plaintext"
 msgstr "Tallentaa kaikki merkinnät selkokielisenä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3052
 msgid ""
 "Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
 msgstr ""
 "Skannaa holvi heikkojen, kaksoiskappaleiden, vanhojen, vuotaneiden ja "
 "kaksivaiheista tunnistautumista vailla olevien merkintöjen varalta."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3121
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3144
 msgid "Scanning vault..."
 msgstr "Skannataan holvia..."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:69
 msgid "Search"
 msgstr "Haku"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:243
 msgid "Search 2FA codes…"
 msgstr "Etsi 2FA-koodeja…"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:373
 msgid "Search passwords…"
 msgstr "Etsi salasanoja…"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:100
+msgid "Secure discard (SSD/NVMe only, near-instant)"
+msgstr "Turvallinen tyhjennys (vain SSD/NVMe, lähes välitön)"
+
 msgid "Security"
 msgstr "Turvallisuus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:717
 msgid "Security Keys"
 msgstr "Turva-avaimet"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1337
 msgid "Sending local changes"
 msgstr "Lähetetään paikallisia muutoksia"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3058
 msgid ""
 "Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
 "locally for 7 days."
 msgstr ""
-"Lähettää vain SHA-1(salasana)-tiivisteen 5 ensimmäistä heksadesimaalimerkkiä"
-" merkintää kohden. Tallennetaan välimuistiin paikallisesti 7 päiväksi."
+"Lähettää vain SHA-1(salasana)-tiivisteen 5 ensimmäistä heksadesimaalimerkkiä "
+"merkintää kohden. Tallennetaan välimuistiin paikallisesti 7 päiväksi."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:447
+msgid "Sent to Nextcloud"
+msgstr "Lähetetty Nextcloudiin"
+
 msgid "Separator"
 msgstr "Erotin"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2207
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2554
+msgid "Serial"
+msgstr "Sarjanumero"
+
 msgid "Server URL"
 msgstr "Palvelimen URL"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2546
 msgid ""
 "Server URL (e.g. https://cloud.example.com), username and an app password."
 msgstr ""
 "Palvelimen URL (esim. https://cloud.example.com), käyttäjätunnus ja "
 "sovellussalasana."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2451
 msgid "Server URL, username, app password"
 msgstr "Palvelimen URL, käyttäjätunnus, sovellussalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2061
 msgid "Server URL, username, app-password"
 msgstr "Palvelimen URL, käyttäjätunnus, sovellussalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:323
 msgid "Session"
 msgstr "Istunto"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1021
+msgid "Set Passphrase"
+msgstr "Aseta salalause"
+
 msgid "Set a category on entries to organize them into groups"
 msgstr "Aseta merkinnöille luokka järjestääksesi ne ryhmiksi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:866
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:905
 msgid "Set — generate a new one to replace it"
 msgstr "Asetettu — luo uusi korvaamaan se"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:165
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:169
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:181
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:232
 msgid "Settings"
 msgstr "Asetukset"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:799
 msgid "Show 2FA"
 msgstr "Näytä 2FA"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:800
 msgid "Show Generator"
 msgstr "Näytä generaattori"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:978
 msgid "Show Nextcloud badges"
 msgstr "Näytä Nextcloud-merkit"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:798
 msgid "Show Vault"
 msgstr "Näytä tallelokero"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:962
 msgid "Show favicons"
 msgstr "Näytä suosikkikuvakkeet"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1891
+msgid "Show technical details"
+msgstr "Näytä tekninen yksityiskohta"
+
 msgid "Sign in failed"
 msgstr "Kirjautuminen epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1849
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1871
 msgid "Sign in to Google"
 msgstr "Kirjaudu Googleen"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1847
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1885
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2057
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2092
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2447
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2490
 msgid "Sign out"
 msgstr "Kirjaudu ulos"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1867
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2074
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2466
 msgid "Sign out failed"
 msgstr "Uloskirjautuminen epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1803
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1884
 msgid "Signed in"
 msgstr "Kirjautunut sisään"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1889
 msgid "Signed in to Google Drive"
 msgstr "Kirjauduttu Google Driveen"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1875
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2082
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2474
 msgid "Signed out"
 msgstr "Kirjauduttu ulos"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2349
+msgid "Signing in…"
+msgstr "Kirjaudutaan sisään…"
+
+msgid "Size"
+msgstr "Koko"
+
 msgid "Snapshot uploaded"
 msgstr "Tilannevedos lähetetty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1293
 msgid "Starting..."
 msgstr "Käynnistetään..."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:372
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:496
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1801
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2044
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2434
 msgid "Status"
 msgstr "Tila"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:367
 msgid "Stay Unlocked"
 msgstr "Pysy auki"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:517
 msgid "Store"
 msgstr "Tallenna"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:484
 msgid ""
 "Store the master password in the desktop's Secret Service (GNOME Keyring, "
 "KWallet, etc.) so Ashy Pass can unlock automatically on start. The keyring "
@@ -1509,292 +1305,272 @@ msgstr ""
 "yhteydessä. Avainnippu on lukittu kirjautumissalasanallasi — poista tämä "
 "käytöstä, jos useat käyttäjät jakavat työpöytäistunnon."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:560
 msgid "Stored in system keyring"
 msgstr "Tallennettu järjestelmän avainrenkaaseen"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:97
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:225
 msgid "Strength"
 msgstr "Vahvuus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1586
+msgid "Strong"
+msgstr "Vahva"
+
 msgid "Strong Password"
 msgstr "Vahva salasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3083
 msgid "Summary"
 msgstr "Yhteenveto"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:398
 msgid "Symbols (!@#$…)"
 msgstr "Erikoismerkit (!@#$…)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2363
+msgid "Sync completed"
+msgstr "Synkronointi valmis"
+
+msgid "Sync completed with issues"
+msgstr "Synkronointi epäonnistui"
+
+msgid "Sync completed with warnings"
+msgstr "Synkronointi valmis varoituksin"
+
 msgid "Sync conflict"
 msgstr "Synkronointikonflikti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2388
 msgid "Sync conflict detected"
 msgstr "Synkronointikonflikti havaittu"
 
-#. Concise toast + structured dialog with the raw error tucked
-#. behind an expander so the surface stays calm.
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2279
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2374
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2675
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2677
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2729
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2731
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2787
 msgid "Sync failed"
 msgstr "Synkronointi epäonnistui"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2134
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2502
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2631
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2764
 msgid "Sync now"
 msgstr "Synkronoi nyt"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1258
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2690
 msgid "Synchronizing Nextcloud"
 msgstr "Synkronoidaan Nextcloudia"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2686
 msgid "Synchronizing..."
 msgstr "Synkronoidaan..."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1336
 msgid "Syncing folders"
 msgstr "Synkronoidaan kansioita"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:482
 msgid "System Keyring"
 msgstr "Järjestelmän avainnippu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:680
+msgid "System keyring unavailable"
+msgstr "Järjestelmän avainnippu ei ole käytettävissä"
+
 msgid "TOTP Secret"
 msgstr "TOTP-salaisuus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1666
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:852
 msgid "TOTP Secret (Base32)"
 msgstr "TOTP-salausavain (Base32)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:676
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:848
 msgid "TOTP Settings"
 msgstr "TOTP-asetukset"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:599
 msgid "TOTP code copied"
 msgstr "TOTP-koodi kopioitu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:729
 msgid "TOTP secret is required"
 msgstr "TOTP-salaisuus vaaditaan"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1652
 msgid "Tags (comma-separated)"
 msgstr "Tunnisteet (pilkulla eroteltuna)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1437
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:621
+msgid "Talking to your token… check the device for a touch prompt."
+msgstr "Keskustellaan tunnisteesi kanssa… tarkista laitteelta kosketuskehotus."
+
+msgid "The sync finished, but some items reported errors."
+msgstr "Synkronointi päättyi, mutta joissakin kohteissa ilmeni virhe."
+
 msgid "This action cannot be undone."
 msgstr "Tätä toimintoa ei voi peruuttaa."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2392
 msgid "This device generation:"
 msgstr "Tämän laitteen sukupolvi:"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1559
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:668
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:833
+msgid "This will erase everything on the drive"
+msgstr "Tämä poistaa kaiken aseman tiedot"
+
 msgid "Title"
 msgstr "Otsikko"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:830
 msgid "Touch your key…"
 msgstr "Kosketa avaintasi…"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3344
 msgid "Trash is empty."
 msgstr "Roskakori on tyhjä."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3313
 msgid "Trashed entries"
 msgstr "Roskakorissa olevat merkinnät"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1662
 msgid "Two-Factor Authentication"
 msgstr "Kaksivaiheinen todennus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2504
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2625
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2766
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Kaksisuuntainen täsmäytys: hae etätiedot, lähetä paikalliset, ratkaise "
 "uusimman voittaa -periaatteella"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2429
+msgid "Two-way reconciliation completed successfully."
+msgstr "Kaksisuuntainen täsmäytys onnistui."
+
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use"
-" an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
+"an app password from Settings → Security."
 msgstr ""
 "Kaksisuuntainen synkronointi virallisen 'Passwords'-sovelluksen kanssa "
 "Nextcloud-palvelimellasi. Käytä sovellussalasanaa kohdasta Asetukset → "
 "Turvallisuus."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:533
 msgid "Type the current master password first"
 msgstr "Kirjoita ensin nykyinen pääsalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1633
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:672
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:843
 msgid "URL"
 msgstr "URL-osoite"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2247
 msgid "URL, username and password are required"
 msgstr "URL, käyttäjätunnus ja salasana ovat pakollisia"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:982
 msgid "Uncategorized"
 msgstr "Luokittelematon"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1076
+msgid "Understood"
+msgstr "Ymmärrä"
+
 msgid "Unencrypted 1Password 8 export archive"
 msgstr "Salaamaton 1Password 8 -vientiarkisto"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1069
 msgid "Unencrypted Bitwarden vault export"
 msgstr "Salaamaton Bitwarden-tallelokeron vienti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:221
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:616
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:680
 msgid "Unlock"
 msgstr "Avaa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:313
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:646
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1352
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1373
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1384
+msgid "Unlock Drive"
+msgstr "Avaa asema"
+
 msgid "Unlock Vault"
 msgstr "Avaa holvi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:442
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2617
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2660
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2667
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3106
 msgid "Unlock the vault first"
 msgstr "Avaa holvi ensin"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:319
 msgid "Unlock with PIN"
 msgstr "Avaa PIN-koodilla"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2397
+msgid "Unlocked at"
+msgstr "Avattu klo"
+
+msgid "Unlocking…"
+msgstr "Avataan…"
+
+msgid "Updated locally"
+msgstr "Päivitetty paikallisesti"
+
+msgid "Updated remotely"
+msgstr "Päivitetty etänä"
+
 msgid "Upload anyway"
 msgstr "Lähetä silti"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1899
 msgid "Upload the current vault file to Drive"
 msgstr "Lähetä nykyinen holvihakemisto Driveen"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2104
 msgid "Upload the current vault file to WebDAV"
 msgstr "Lähetä nykyinen holvi-tiedosto WebDAV:iin"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/generator_view.rs:380
 msgid "Uppercase Letters (A-Z)"
 msgstr "Isot kirjaimet (A-Z)"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1015
 msgid "Use larger digits for easier reading"
 msgstr "Käytä suurempia numeroita helpompaa lukemista varten"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:326
 msgid "Use master password instead"
 msgstr "Käytä pääsalasanaa sen sijaan"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:995
 msgid "Use tighter spacing for long password lists"
 msgstr "Käytä tiiviimpää välistystä pitkille salasanalistoille"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:216
 msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
 msgstr ""
 "Käytetään tallelokeron avaamiseen. Sen muuttaminen salaa uudelleen kaikki "
 "tallennetut tiedot."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:1565
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:670
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/totp_view.rs:838
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2208
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2555
 msgid "Username"
 msgstr "Käyttäjätunnus"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:161
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:590
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:805
 msgid "Vault"
 msgstr "Holvi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:958
+msgid ""
+"Vault FIDO2 protection is unavailable until hardware registration and "
+"assertion are fully implemented. Existing configuration is preserved."
+msgstr ""
+"Holvin FIDO2-suojaus ei ole käytettävissä, ennen kuin laitteiston "
+"rekisteröinti ja todennus on toteutettu kokonaan. Nykyinen määritys "
+"säilytetään."
+
 msgid "Vault List"
 msgstr "Tallelokeroluettelo"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2285
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2355
 msgid "Vault already in sync"
 msgstr "Tallelokero on jo synkronoitu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:311
 msgid "Vault locked due to inactivity"
 msgstr "Tallelokero lukittu toimettomuuden vuoksi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:392
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1351
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2666
 msgid "Vault must be unlocked to configure"
 msgstr "Holvi on avattava, jotta voit määrittää"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:326
 msgid "Vault will lock soon"
 msgstr "Tallelokero lukittuu pian"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:366
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:544
 msgid "Vault will lock soon due to inactivity"
 msgstr "Holvi lukittuu pian käyttämättömyyden vuoksi"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1284
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1315
+msgid "Vendor"
+msgstr "Valmistaja"
+
+msgid "Very Strong"
+msgstr "Erittäin vahva"
+
+msgid "Very Weak"
+msgstr "Erittäin heikko"
+
 msgid "Waiting for Nextcloud..."
 msgstr "Odotetaan Nextcloudia..."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2037
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2197
+msgid "Weak"
+msgstr "Heikko"
+
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2252
 msgid "WebDAV configured"
 msgstr "WebDAV määritetty"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:1316
+msgid "Whole device — no partition table"
+msgstr "Koko laite — ei osiotaulukkoa"
+
+msgid "Will destroy"
+msgstr "Tuhoaa"
+
+msgid "Wipe device"
+msgstr "Tyhjennä laite"
+
+msgid "Wiping device"
+msgstr "Tyhjennetään laitetta"
+
 msgid "Working..."
 msgstr "Työstetään..."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:923
+msgid "Write LUKS2 header"
+msgstr "Kirjoita LUKS2-otsikko"
+
+msgid "Write protection"
+msgstr "Kirjoitussuojaus"
+
 msgid ""
 "Write these 12 words down and keep them safe. This is the only time they "
 "will be shown."
@@ -1802,640 +1578,83 @@ msgstr ""
 "Kirjoita nämä 12 sanaa muistiin ja säilytä ne turvallisessa paikassa. Ne "
 "näytetään vain tämän kerran."
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:548
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2330
-msgid "Wrong master password"
-msgstr "Väärä pääsalasana"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3227
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3255
-msgid "breached"
-msgstr "tietovuodossa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/vault_view.rs:787
-msgid "characters"
-msgstr "merkkiä"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3223
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3253
-msgid "duplicate"
-msgstr "kaksoiskappale"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3472
-msgid "entries removed"
-msgstr "merkintää poistettu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3216
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3243
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3276
-msgid "entries scanned"
-msgstr "merkintää skannattu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3229
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3256
-msgid "no 2FA"
-msgstr "ei 2FA:ta"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3225
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3254
-msgid "old"
-msgstr "vanha"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3261
-msgid "seen"
-msgstr "nähty"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3221
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3252
-msgid "weak"
-msgstr "heikko"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:91
-msgid ""
-"Preview — drive encryption backend not yet enabled. Listing is read-only."
-msgstr ""
-"Esikatselu — levyjen salauspalvelua ei ole vielä otettu käyttöön. Listaus on"
-" vain luku -tilassa."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:107
-msgid "Rescan drives"
-msgstr "Etsi levyjä uudelleen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:120
-msgid "No external drives detected"
-msgstr "Ulkoisia asemia ei havaittu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:122
-msgid "Plug in a USB drive or external disk, then press Rescan."
-msgstr "Kytke USB-asema tai ulkoinen levy, ja paina sitten Etsi uudelleen."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:185
-msgid "Failed to scan drives"
-msgstr "Levyjen haku epäonnistui"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:274
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:400
-msgid "read-only"
-msgstr "vain luku"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:288
-msgid "Encrypt…"
-msgstr "Salaa…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:289
-msgid "Launch the encryption wizard"
-msgstr "Käynnistä salausvelho"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:312
-msgid "Whole device — no partition table"
-msgstr "Koko laite — ei osiotaulukkoa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:348
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:103
-msgid "Vendor"
-msgstr "Valmistaja"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:351
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:104
-msgid "Model"
-msgstr "Malli"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:354
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:105
-msgid "Serial"
-msgstr "Sarjanumero"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:364
-msgid "Bus / media"
-msgstr "Väylä / media"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:376
-msgid "none"
-msgstr "ei mitään"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:377
-msgid "Partition table"
-msgstr "Osiotaulukko"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:385
-msgid "allocated"
-msgstr "varattu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:387
-msgid "free"
-msgstr "vapaa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:392
-msgid "Capacity"
-msgstr "Kapasiteetti"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:399
-msgid "Write protection"
-msgstr "Kirjoitussuojaus"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:455
-msgid "flash storage"
-msgstr "flash-muisti"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:456
-msgid "rotational (HDD)"
-msgstr "pyörivä (HDD)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:457
-msgid "solid-state"
-msgstr "puolijohde"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:488
-msgid "not mounted"
-msgstr "ei asennettu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:536
-msgid "Close active mapping"
-msgstr "Sulje aktiivinen yhdistäminen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:599
-msgid "Add FIDO2 token keyslot"
-msgstr "Lisää FIDO2-tunnistimen avainpaikka"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:617
-msgid "Open the encrypted partition"
-msgstr "Avaa salattu osio"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_view.rs:672
-msgid "free of"
-msgstr "vapaa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:38
-msgid "Encrypt Drive"
-msgstr "Salaa asema"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:77
-msgid "Confirm Device"
-msgstr "Vahvista laite"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:89
-msgid "This will erase everything on the drive"
-msgstr "Tämä poistaa kaiken aseman tiedot"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:91
-msgid ""
-"All partitions, files, and filesystem signatures will be permanently "
-"destroyed."
-msgstr ""
-"Kaikki osiot, tiedostot ja tiedostojärjestelmän allekirjoitukset tuhotaan "
-"pysyvästi."
-
-#. Device details grid.
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:102
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:787
-msgid "Device"
-msgstr "Laite"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:106
-msgid "Size"
-msgstr "Koko"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:107
-msgid "Path"
-msgstr "Polku"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:121
-msgid "Will destroy"
-msgstr "Tuhoaa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:131
-msgid "Safety checks passed"
-msgstr "Turvallisuustarkistukset läpäisty"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:140
-msgid "Safety checks failed"
-msgstr "Turvallisuustarkistukset epäonnistuivat"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:150
-msgid "Safety check error"
-msgstr "Turvallisuustarkistuksen virhe"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:161
-msgid "I understand — Continue"
-msgstr "Ymmärrän — Jatka"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:205
-msgid "Set Passphrase"
-msgstr "Aseta salalause"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:215
-msgid ""
-"At least 8 characters. A four-word passphrase from the EFF wordlist is a "
-"strong default."
-msgstr ""
-"Vähintään 8 merkkiä. Neljän sanan salalause EFF-sanaluettelosta on vahva "
-"oletus."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:219
-msgid "Repeat"
-msgstr "Toista"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:245
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:358
-msgid "Back"
-msgstr "Takaisin"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:246
-msgid "Continue"
-msgstr "Jatka"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:313
-msgid "Options"
-msgstr "Asetukset"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:320
-msgid "Label"
-msgstr "Nimiö"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:325
-msgid "Filesystem"
-msgstr "Tiedostojärjestelmä"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:331
-msgid "Encrypted zero (recommended — slow but secure)"
-msgstr "Salattu nollaus (suositeltu — hidas mutta turvallinen)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:332
-msgid "Secure discard (SSD/NVMe only, near-instant)"
-msgstr "Turvallinen tyhjennys (vain SSD/NVMe, lähes välitön)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:333
-msgid "Random pass (slowest)"
-msgstr "Satunnainen kirjoitus (hitain)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:334
-msgid "None — quick, leaves prior data recoverable"
-msgstr "Ei mitään — nopea, jättää aiemmat tiedot palautettaviksi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:337
-msgid "Pre-format wipe"
-msgstr "Esialustuksen tyhjennys"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:343
-msgid "Allow TRIM through encrypted mapping"
-msgstr "Salli TRIM salatun kartoituksen läpi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:345
-msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
-msgstr ""
-"Auttaa SSD-levyn kulumistasausta, mutta vuotaa vapaan tilan kuvioita "
-"laitteelle."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:359
-msgid "Encrypt"
-msgstr "Salaa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:415
-msgid "Encrypting…"
-msgstr "Salataan…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:423
-msgid "Preparing…"
-msgstr "Valmistellaan…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:430
-msgid "…"
-msgstr "…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:439
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:633
-msgid "Safety check"
-msgstr "Turvallisuustarkistus"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:440
-msgid "Wipe device"
-msgstr "Tyhjennä laite"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:441
-msgid "Write LUKS2 header"
-msgstr "Kirjoita LUKS2-otsikko"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:442
-msgid "Open encrypted mapping"
-msgstr "Avaa salattu yhdistäminen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:443
-msgid "Create filesystem"
-msgstr "Luo tiedostojärjestelmä"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:444
-msgid "Close mapping"
-msgstr "Sulje yhdistäminen"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:459
-msgid "Close"
-msgstr "Sulje"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:480
-msgid "Internal error: no passphrase set"
-msgstr "Sisäinen virhe: salasanaa ei ole asetettu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:599
-msgid "Done."
-msgstr "Valmis."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:603
-msgid "Encrypted as"
-msgstr "Salattuna"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:609
-msgid "Failed"
-msgstr "Epäonnistui"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:634
-msgid "Wiping device"
-msgstr "Tyhjennetään laitetta"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:635
 msgid "Writing LUKS2 header"
 msgstr "Kirjoitetaan LUKS2-otsikkoa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:636
-msgid "Opening encrypted mapping"
-msgstr "Avataan salattua yhdistämistä"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:637
-msgid "Creating filesystem"
-msgstr "Luodaan tiedostojärjestelmää"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:638
-msgid "Closing mapping"
-msgstr "Suljetaan yhdistämistä"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:656
-msgid "Unlock Drive"
-msgstr "Avaa asema"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:664
-msgid "Encrypted device"
-msgstr "Salattu laite"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:704
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:844
-msgid "Empty passphrase"
-msgstr "Tyhjä salasana"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:708
-msgid "Unlocking…"
-msgstr "Avataan…"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:732
-msgid "Unlocked at"
-msgstr "Avattu klo"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:771
-msgid "Enrol FIDO2 Token"
-msgstr "Rekisteröi FIDO2-tunniste"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:779
-msgid "Add a hardware token keyslot"
-msgstr "Lisää laitteistotunnisteen avainpaikka"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:781
-msgid ""
-"Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
-"device when prompted. Your current passphrase is required to authorise the "
-"new keyslot."
-msgstr ""
-"Aseta FIDO2-tunnisteesi (Yubikey, Nitrokey jne.) ja vahvista laitteella, kun"
-" sitä pyydetään. Nykyinen salasanasi vaaditaan uuden avainpaikan "
-"vahvistamiseen."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:795
-msgid "Current passphrase"
-msgstr "Nykyinen salasana"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:802
-msgid "Require PIN at unlock"
-msgstr "Vaadi PIN-koodi avauksessa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:806
-msgid "Require user-presence (touch the token)"
-msgstr "Vaadi käyttäjän läsnäolo (kosketa tunnistetta)"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:820
-msgid "Enrol"
-msgstr "Rekisteröi"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:848
-msgid "Talking to your token… check the device for a touch prompt."
-msgstr ""
-"Keskustellaan tunnisteesi kanssa… tarkista laitteelta kosketuskehotus."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/drives_wizard.rs:873
-msgid "FIDO2 keyslot added"
-msgstr "FIDO2-avainpaikka lisätty"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:175
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/window.rs:593
-msgid "Drives"
-msgstr "Asemat"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2817
-msgid "Sync com problemas"
-msgstr "Synkronointi epäonnistui"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2821
-msgid "Tudo já estava sincronizado"
-msgstr "Kaikki oli jo synkronoitu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2823
-msgid "1 entrada sincronizada"
-msgstr "1 merkintä synkronoitu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2825
-msgid "entradas sincronizadas"
-msgstr "merkintää synkronoitu"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2830
-msgid "Sincronização concluída com avisos"
-msgstr "Synkronointi valmis varoituksin"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2832
-msgid "Tudo em sincronia"
-msgstr "Kaikki synkronissa"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2834
-msgid "Sincronização concluída"
-msgstr "Synkronointi valmis"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2838
-msgid "A sincronização terminou, mas alguns itens reportaram erro."
-msgstr "Synkronointi päättyi, mutta joissakin kohteissa ilmeni virhe."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2840
-msgid "Nada mudou — o Ashy Pass e o Nextcloud já estavam alinhados."
-msgstr "Mikään ei muuttunut — Ashy Pass ja Nextcloud olivat jo linjassa."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2842
-msgid "Reconciliação bidirecional concluída com sucesso."
-msgstr "Kaksisuuntainen täsmäytys onnistui."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2849
-msgid "Pronto"
-msgstr "Valmis"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2861
-msgid "Criadas remotamente"
-msgstr "Luotu etänä"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2862
-msgid "Atualizadas remotamente"
-msgstr "Päivitetty etänä"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2863
-msgid "Removidas remotamente"
-msgstr "Poistettu etänä"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2870
-msgid "Enviado para o Nextcloud"
-msgstr "Lähetetty Nextcloudiin"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2880
-msgid "Criadas localmente"
-msgstr "Luotu paikallisesti"
+msgid "Wrong master password"
+msgstr "Väärä pääsalasana"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2881
-msgid "Atualizadas localmente"
-msgstr "Päivitetty paikallisesti"
+msgid "allocated"
+msgstr "varattu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2888
-msgid "Recebido do Nextcloud"
-msgstr "Vastaanotettu Nextcloudista"
+msgid "breached"
+msgstr "tietovuodossa"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2899
-msgid "Conflitos"
-msgstr "Ristiriidat"
+msgid "characters"
+msgstr "merkkiä"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2901
-msgid "Resolvidos automaticamente pela política 'última edição vence'."
-msgstr "Ratkaistu automaattisesti 'viimeisin muokkaus voittaa' -käytännöllä."
+msgid "duplicate"
+msgstr "kaksoiskappale"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2905
-msgid "Itens reconciliados"
-msgstr "Täsmäytetyt kohteet"
+msgid "entries removed"
+msgstr "merkintää poistettu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2914
-msgid "Mantida a versão local"
-msgstr "Paikallinen versio säilytetty"
+msgid "entries scanned"
+msgstr "merkintää skannattu"
 
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2915
-msgid "Mantida a versão remota"
-msgstr "Etäversio säilytetty"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2931
-msgid "entradas sem senha foram ignoradas"
-msgstr "merkinnät ilman salasanaa ohitettiin"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2934
-msgid ""
-"O Nextcloud Passwords exige um campo de senha preenchido. Edite essas "
-"entradas no Ashy Pass adicionando uma senha para que sejam enviadas."
-msgstr ""
-"Nextcloud Passwords edellyttää täytettyä salasanakenttää. Muokkaa näitä "
-"merkintöjä Ashy Passissa lisäämällä salasana, jotta ne voidaan lähettää."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2947
-msgid "Detalhes dos erros"
-msgstr "Virheiden tiedot"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2954
-msgid "erro reportado"
-msgstr "raportoitu virhe"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:2956
-msgid "erros reportados"
-msgstr "raportoitua virhettä"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3011
-msgid "Não foi possível sincronizar"
-msgstr "Synkronointi epäonnistui"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3013
-msgid ""
-"O Ashy Pass não conseguiu falar com o Nextcloud. Verifique sua conexão, o "
-"endereço do servidor e a senha de aplicativo."
-msgstr ""
-"Ashy Pass ei saanut yhteyttä Nextcloudiin. Tarkista yhteytesi, palvelimen "
-"osoite ja sovellussalasana."
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3016
-msgid "Entendi"
-msgstr "Ymmärrä"
-
-#: /home/talesam/Servidor/GitHub/BigCommunity/ashypass/crates/ashypass-app/src/ui/settings_dialog.rs:3023
-msgid "Ver detalhe técnico"
-msgstr "Näytä tekninen yksityiskohta"
-
-#~ msgid "Conflicts resolved"
-#~ msgstr "Ristiriidat ratkaistu"
-
-#~ msgid "Created locally"
-#~ msgstr "Luotu paikallisesti"
-
-#~ msgid "Created on Nextcloud"
-#~ msgstr "Luotu Nextcloudissa"
-
-#~ msgid "Deleted on Nextcloud"
-#~ msgstr "Poistettu Nextcloudissa"
-
-#~ msgid ""
-#~ "Nextcloud requires a filled password, so these local entries were not sent."
-#~ msgstr ""
-#~ "Nextcloud vaatii täytetyn salasanan, joten näitä paikallisia merkintöjä ei "
-#~ "lähetetty."
-
-#~ msgid "Nextcloud sync finished."
-#~ msgstr "Nextcloud-synkronointi valmis."
-
-#~ msgid "Passwordless entries ignored"
-#~ msgstr "Salasanattomat merkinnät ohitettu"
-
-#~ msgid "Sync completed"
-#~ msgstr "Synkronointi valmis"
-
-#~ msgid "Sync completed with errors"
-#~ msgstr "Synkronointi valmis virheiden kanssa"
-
-#~ msgid "Sync errors"
-#~ msgstr "Synkronointivirheet"
-
-#~ msgid "Updated locally"
-#~ msgstr "Päivitetty paikallisesti"
-
-#~ msgid "Updated on Nextcloud"
-#~ msgstr "Päivitetty Nextcloudissa"
-
-#~ msgid "No Groups"
-#~ msgstr "Ei ryhmiä"
-
-#~ msgid ""
-#~ "After auto-lock, unlock with a short PIN instead of the master password. The"
-#~ " PIN guards a key cached in memory only — it is discarded when the app "
-#~ "closes."
-#~ msgstr ""
-#~ "Automaattisen lukituksen jälkeen avaa holvi lyhyellä PIN-koodilla "
-#~ "pääsalasanan sijaan. PIN-koodi suojaa muistissa välimuistissa olevaa avainta"
-#~ " – se hylätään, kun sovellus suljetaan."
-
-#~ msgid ""
-#~ "Higher costs slow brute force but also slow unlock. Auto-tune picks values "
-#~ "calibrated to ~500 ms on this machine. Existing master hashes keep their "
-#~ "original costs; tuned values apply on the next master password change."
-#~ msgstr ""
-#~ "Korkeammat kustannukset hidastavat raakaa voimaa, mutta hidastavat myös "
-#~ "avausta. Automaattinen viritys valitsee arvot, jotka on kalibroitu noin 500 "
-#~ "ms:iin tällä koneella. Olemassa olevat pääsalasanatiivisteet säilyttävät "
-#~ "alkuperäiset kustannuksensa; viritetyt arvot otetaan käyttöön seuraavan "
-#~ "pääsalasanan vaihdon yhteydessä."
-
-#~ msgid "Register up to 2 FIDO2 authenticators (YubiKey, Solo, etc.)"
-#~ msgstr "Rekisteröi enintään 2 FIDO2-todennuslaitetta (YubiKey, Solo jne.)"
-
-#~ msgid "Sync"
-#~ msgstr "Synkronoi"
+msgid "entry synchronized"
+msgid_plural "entries synchronized"
+msgstr[0] "merkintä synkronoitu"
+msgstr[1] "merkintää synkronoitu"
+
+msgid "flash storage"
+msgstr "flash-muisti"
+
+msgid "free"
+msgstr "vapaa"
+
+msgid "free of"
+msgstr "vapaa"
+
+msgid "more"
+msgstr "lisää"
+
+msgid "no 2FA"
+msgstr "ei 2FA:ta"
+
+msgid "none"
+msgstr "ei mitään"
+
+msgid "not mounted"
+msgstr "ei asennettu"
+
+msgid "old"
+msgstr "vanha"
+
+msgid "passwordless entry was skipped"
+msgid_plural "passwordless entries were skipped"
+msgstr[0] "salasanaton merkintä ohitettiin"
+msgstr[1] "salasanatonta merkintää ohitettiin"
+
+msgid "read-only"
+msgstr "vain luku"
+
+msgid "reported error"
+msgid_plural "reported errors"
+msgstr[0] "raportoitu virhe"
+msgstr[1] "raportoitua virhettä"
+
+msgid "rotational (HDD)"
+msgstr "pyörivä (HDD)"
+
+msgid "seen"
+msgstr "nähty"
+
+msgid "solid-state"
+msgstr "puolijohde"
+
+msgid "weak"
+msgstr "heikko"
+
+msgid "…"
+msgstr "…"

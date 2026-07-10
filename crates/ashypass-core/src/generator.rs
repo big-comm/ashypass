@@ -3,9 +3,10 @@
 use crate::config::{AMBIGUOUS_CHARS, DEFAULT_SYMBOLS, MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH};
 use crate::{Error, Result};
 use rand::seq::SliceRandom;
-use rand::{rngs::OsRng, Rng, RngCore};
+use rand::{rngs::OsRng, Rng};
 
-/// 150+ common English words. Future improvement: load EFF wordlist from disk.
+/// Legacy word list retained for API compatibility. Generation uses the full
+/// 2,048-word BIP39 English list below.
 pub const PASSPHRASE_WORDS: &[&str] = &[
     "able",
     "about",
@@ -193,82 +194,61 @@ pub fn generate_password(cfg: &PasswordConfig) -> Result<String> {
         )));
     }
 
-    let mut chars = String::new();
+    let mut classes: Vec<Vec<char>> = Vec::new();
     if cfg.use_lowercase {
-        chars.push_str("abcdefghijklmnopqrstuvwxyz");
+        classes.push(filtered_class(
+            "abcdefghijklmnopqrstuvwxyz",
+            cfg.exclude_ambiguous,
+        ));
     }
     if cfg.use_uppercase {
-        chars.push_str("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        classes.push(filtered_class(
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+            cfg.exclude_ambiguous,
+        ));
     }
     if cfg.use_digits {
-        chars.push_str("0123456789");
+        classes.push(filtered_class("0123456789", cfg.exclude_ambiguous));
     }
     if cfg.use_symbols {
-        if cfg.custom_symbols.is_empty() {
-            chars.push_str(DEFAULT_SYMBOLS);
+        let symbols = if cfg.custom_symbols.is_empty() {
+            DEFAULT_SYMBOLS
         } else {
-            chars.push_str(&cfg.custom_symbols);
-        }
+            &cfg.custom_symbols
+        };
+        classes.push(filtered_class(symbols, cfg.exclude_ambiguous));
     }
-
-    if cfg.exclude_ambiguous {
-        chars.retain(|c| !AMBIGUOUS_CHARS.contains(c));
-    }
-
-    if chars.is_empty() {
+    if classes.is_empty() {
         return Err(Error::InvalidInput("no character set selected".into()));
     }
+    if classes.iter().any(Vec::is_empty) {
+        return Err(Error::InvalidInput(
+            "a selected character set is empty after filtering".into(),
+        ));
+    }
+    if cfg.length < classes.len() {
+        return Err(Error::InvalidInput(
+            "length is too short for the selected character sets".into(),
+        ));
+    }
 
-    let chars: Vec<char> = chars.chars().collect();
+    let chars: Vec<char> = classes.iter().flatten().copied().collect();
     let mut rng = OsRng;
-    let mut password: Vec<char> = (0..cfg.length)
-        .map(|_| chars[rng.gen_range(0..chars.len())])
+    let mut password: Vec<char> = classes
+        .iter()
+        .map(|class| *class.choose(&mut rng).expect("validated non-empty class"))
         .collect();
-
-    ensure_complexity(&mut password, cfg, &mut rng);
+    password.extend((password.len()..cfg.length).map(|_| chars[rng.gen_range(0..chars.len())]));
+    password.shuffle(&mut rng);
 
     Ok(password.into_iter().collect())
 }
 
-fn ensure_complexity(pw: &mut [char], cfg: &PasswordConfig, rng: &mut OsRng) {
-    fn has(pw: &[char], class: &str) -> bool {
-        pw.iter().any(|c| class.contains(*c))
-    }
-    fn replace(pw: &mut [char], pool: &str, rng: &mut OsRng) {
-        if pool.is_empty() {
-            return;
-        }
-        let pool: Vec<char> = pool.chars().collect();
-        let idx = rng.gen_range(0..pw.len());
-        pw[idx] = pool[rng.gen_range(0..pool.len())];
-    }
-
-    if cfg.use_lowercase && !has(pw, "abcdefghijklmnopqrstuvwxyz") {
-        replace(pw, "abcdefghijklmnopqrstuvwxyz", rng);
-    }
-    if cfg.use_uppercase && !has(pw, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
-        replace(pw, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", rng);
-    }
-    if cfg.use_digits && !has(pw, "0123456789") {
-        replace(pw, "0123456789", rng);
-    }
-    if cfg.use_symbols {
-        let base = if cfg.custom_symbols.is_empty() {
-            DEFAULT_SYMBOLS.to_string()
-        } else {
-            cfg.custom_symbols.clone()
-        };
-        let filtered: String = if cfg.exclude_ambiguous {
-            base.chars()
-                .filter(|c| !AMBIGUOUS_CHARS.contains(*c))
-                .collect()
-        } else {
-            base
-        };
-        if !filtered.is_empty() && !has(pw, &filtered) {
-            replace(pw, &filtered, rng);
-        }
-    }
+fn filtered_class(class: &str, exclude_ambiguous: bool) -> Vec<char> {
+    class
+        .chars()
+        .filter(|character| !exclude_ambiguous || !AMBIGUOUS_CHARS.contains(*character))
+        .collect()
 }
 
 pub fn generate_passphrase(
@@ -280,7 +260,10 @@ pub fn generate_passphrase(
     let mut rng = OsRng;
     let mut parts: Vec<String> = (0..num_words)
         .map(|_| {
-            let w = PASSPHRASE_WORDS.choose(&mut rng).unwrap();
+            let w = bip39::Language::English
+                .word_list()
+                .choose(&mut rng)
+                .expect("BIP39 English word list is non-empty");
             if capitalize {
                 let mut s = w.to_string();
                 if let Some(c) = s.get_mut(0..1) {
@@ -301,7 +284,7 @@ pub fn generate_passphrase(
 pub fn generate_pin(length: usize) -> String {
     let mut rng = OsRng;
     (0..length)
-        .map(|_| char::from(b'0' + (rng.next_u32() % 10) as u8))
+        .map(|_| char::from(b'0' + rng.gen_range(0..10)))
         .collect()
 }
 
@@ -356,5 +339,27 @@ mod tests {
         let p = generate_pin(6);
         assert_eq!(p.len(), 6);
         assert!(p.chars().all(|c| c.is_ascii_digit()));
+    }
+
+    #[test]
+    fn every_selected_class_is_always_present() {
+        let cfg = PasswordConfig {
+            length: 8,
+            ..PasswordConfig::default()
+        };
+        for _ in 0..1_000 {
+            let password = generate_password(&cfg).unwrap();
+            assert!(password.chars().any(|c| c.is_ascii_lowercase()));
+            assert!(password.chars().any(|c| c.is_ascii_uppercase()));
+            assert!(password.chars().any(|c| c.is_ascii_digit()));
+            assert!(password.chars().any(|c| DEFAULT_SYMBOLS.contains(c)));
+            assert!(!password.chars().any(|c| AMBIGUOUS_CHARS.contains(c)));
+        }
+    }
+
+    #[test]
+    fn passphrases_use_the_full_bip39_word_list() {
+        assert_eq!(bip39::Language::English.word_list().len(), 2048);
+        assert!(PASSPHRASE_WORDS.len() < bip39::Language::English.word_list().len());
     }
 }

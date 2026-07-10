@@ -7,8 +7,11 @@
 use crate::backup::oauth::{self, ClientCredentials, Token};
 use crate::{Error, Result};
 use serde::{Deserialize, Serialize};
-use std::fs;
+use std::fs::{self, OpenOptions};
+use std::io::Write;
+use std::os::unix::fs::OpenOptionsExt;
 use std::path::Path;
+use std::sync::OnceLock;
 use std::time::Duration;
 
 const DRIVE_FILES: &str = "https://www.googleapis.com/drive/v3/files";
@@ -71,11 +74,17 @@ impl BackupService {
         Ok(token.access_token.clone())
     }
 
-    fn client(&self) -> Result<reqwest::blocking::Client> {
-        reqwest::blocking::Client::builder()
+    fn client(&self) -> Result<&'static reqwest::blocking::Client> {
+        static CLIENT: OnceLock<reqwest::blocking::Client> = OnceLock::new();
+        if let Some(client) = CLIENT.get() {
+            return Ok(client);
+        }
+        let client = reqwest::blocking::Client::builder()
             .timeout(Duration::from_secs(60))
             .build()
-            .map_err(|e| Error::Other(format!("drive http: {e}")))
+            .map_err(|e| Error::Other(format!("drive http: {e}")))?;
+        let _ = CLIENT.set(client);
+        Ok(CLIENT.get().expect("client was initialized"))
     }
 
     /// Look up the configured folder by name. Creates it if missing.
@@ -138,40 +147,42 @@ impl BackupService {
         Ok(created.id)
     }
 
-    /// Multipart upload of `path` into the backup folder. Returns the file id.
+    /// Resumable, streaming upload of `path` into the backup folder.
     pub fn upload(&mut self, path: impl AsRef<Path>, name: &str) -> Result<String> {
         let folder_id = self.ensure_folder()?;
         let access = self.refreshed_access_token()?;
-        let bytes = fs::read(path.as_ref())?;
         let client = self.client()?;
-
-        let boundary = format!(
-            "ashypass{}{}",
-            chrono::Utc::now().timestamp(),
-            rand::random::<u32>()
-        );
+        let size = fs::metadata(path.as_ref())?.len();
         let meta = serde_json::json!({
             "name": name,
             "parents": [folder_id],
         });
-        let mut body: Vec<u8> = Vec::with_capacity(bytes.len() + 512);
-        body.extend_from_slice(format!("--{boundary}\r\n").as_bytes());
-        body.extend_from_slice(b"Content-Type: application/json; charset=UTF-8\r\n\r\n");
-        body.extend_from_slice(meta.to_string().as_bytes());
-        body.extend_from_slice(format!("\r\n--{boundary}\r\n").as_bytes());
-        body.extend_from_slice(b"Content-Type: application/octet-stream\r\n\r\n");
-        body.extend_from_slice(&bytes);
-        body.extend_from_slice(format!("\r\n--{boundary}--\r\n").as_bytes());
-
-        let resp = client
+        let initiate = client
             .post(DRIVE_UPLOAD)
             .bearer_auth(&access)
-            .query(&[("uploadType", "multipart")])
-            .header(
-                "Content-Type",
-                format!("multipart/related; boundary={boundary}"),
-            )
-            .body(body)
+            .query(&[("uploadType", "resumable")])
+            .header("X-Upload-Content-Type", "application/octet-stream")
+            .header("X-Upload-Content-Length", size)
+            .json(&meta)
+            .send()
+            .map_err(|e| Error::Other(format!("upload initiate: {e}")))?;
+        if !initiate.status().is_success() {
+            return Err(Error::Other(format!(
+                "upload initiate: {}",
+                initiate.text().unwrap_or_default()
+            )));
+        }
+        let location = initiate
+            .headers()
+            .get(reqwest::header::LOCATION)
+            .and_then(|value| value.to_str().ok())
+            .ok_or_else(|| Error::Other("upload initiate: missing Location header".into()))?
+            .to_string();
+        let file = fs::File::open(path.as_ref())?;
+        let resp = client
+            .put(location)
+            .header(reqwest::header::CONTENT_LENGTH, size)
+            .body(reqwest::blocking::Body::new(file))
             .send()
             .map_err(|e| Error::Other(format!("upload: {e}")))?;
         if !resp.status().is_success() {
@@ -194,28 +205,41 @@ impl BackupService {
         let q = format!("'{folder_id}' in parents and trashed=false");
         #[derive(Deserialize)]
         struct ListResp {
+            #[serde(rename = "nextPageToken", default)]
+            next_page_token: Option<String>,
             files: Vec<DriveFile>,
         }
-        let resp = client
-            .get(DRIVE_FILES)
-            .bearer_auth(&access)
-            .query(&[
+        let mut page_token: Option<String> = None;
+        let mut files = Vec::new();
+        loop {
+            let mut request = client.get(DRIVE_FILES).bearer_auth(&access).query(&[
                 ("q", q.as_str()),
                 ("orderBy", "modifiedTime desc"),
-                ("fields", "files(id,name,modifiedTime,size)"),
-            ])
-            .send()
-            .map_err(|e| Error::Other(format!("list: {e}")))?;
-        if !resp.status().is_success() {
-            return Err(Error::Other(format!(
-                "list: {}",
-                resp.text().unwrap_or_default()
-            )));
+                ("fields", "nextPageToken,files(id,name,modifiedTime,size)"),
+                ("pageSize", "1000"),
+            ]);
+            if let Some(token) = page_token.as_deref() {
+                request = request.query(&[("pageToken", token)]);
+            }
+            let response = request
+                .send()
+                .map_err(|e| Error::Other(format!("list: {e}")))?;
+            if !response.status().is_success() {
+                return Err(Error::Other(format!(
+                    "list: {}",
+                    response.text().unwrap_or_default()
+                )));
+            }
+            let mut page: ListResp = response
+                .json()
+                .map_err(|e| Error::Other(format!("list parse: {e}")))?;
+            files.append(&mut page.files);
+            page_token = page.next_page_token;
+            if page_token.is_none() {
+                break;
+            }
         }
-        let list: ListResp = resp
-            .json()
-            .map_err(|e| Error::Other(format!("list parse: {e}")))?;
-        Ok(list.files)
+        Ok(files)
     }
 
     /// Download `file_id` to `dest`.
@@ -223,7 +247,7 @@ impl BackupService {
         let access = self.refreshed_access_token()?;
         let client = self.client()?;
         let url = format!("{DRIVE_FILES}/{file_id}?alt=media");
-        let resp = client
+        let mut resp = client
             .get(&url)
             .bearer_auth(&access)
             .send()
@@ -234,14 +258,7 @@ impl BackupService {
                 resp.text().unwrap_or_default()
             )));
         }
-        let bytes = resp
-            .bytes()
-            .map_err(|e| Error::Other(format!("download bytes: {e}")))?;
-        if let Some(parent) = dest.as_ref().parent() {
-            fs::create_dir_all(parent)?;
-        }
-        fs::write(dest.as_ref(), &bytes)?;
-        Ok(())
+        write_response_new(&mut resp, dest.as_ref())
     }
 
     pub fn delete(&mut self, file_id: &str) -> Result<()> {
@@ -271,4 +288,46 @@ impl Default for BackupService {
 
 fn escape_q(s: &str) -> String {
     s.replace('\\', "\\\\").replace('\'', "\\'")
+}
+
+fn write_response_new(response: &mut impl std::io::Read, destination: &Path) -> Result<()> {
+    let parent = destination.parent().unwrap_or_else(|| Path::new("."));
+    fs::create_dir_all(parent)?;
+    let temporary = parent.join(format!(
+        ".ashypass-drive-download-{}-{}.tmp",
+        std::process::id(),
+        rand::random::<u64>()
+    ));
+    let result: std::io::Result<()> = (|| {
+        let mut file = OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .mode(0o600)
+            .open(&temporary)?;
+        std::io::copy(response, &mut file)?;
+        file.flush()?;
+        file.sync_all()?;
+        fs::hard_link(&temporary, destination)?;
+        fs::remove_file(&temporary)
+    })();
+    if result.is_err() {
+        let _ = fs::remove_file(&temporary);
+    }
+    result.map_err(Error::from)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn downloaded_files_never_overwrite_existing_data() {
+        let directory = tempfile::tempdir().unwrap();
+        let destination = directory.path().join("backup.db");
+        let mut first = std::io::Cursor::new(b"first".to_vec());
+        write_response_new(&mut first, &destination).unwrap();
+        let mut second = std::io::Cursor::new(b"second".to_vec());
+        assert!(write_response_new(&mut second, &destination).is_err());
+        assert_eq!(fs::read(destination).unwrap(), b"first");
+    }
 }

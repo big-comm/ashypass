@@ -9,9 +9,18 @@ if [[ "${EUID}" -eq 0 ]]; then
 fi
 
 echo "Removing dev artifacts…"
-sudo rm -f /usr/libexec/ashypass/ashypass-drives-helper
+remove_unowned() {
+    local path=$1
+    if pacman -Qo "$path" >/dev/null 2>&1; then
+        echo "Keeping package-owned file: $path"
+    else
+        sudo rm -f "$path"
+    fi
+}
+
+remove_unowned /usr/libexec/ashypass/ashypass-drives-helper
 sudo rmdir --ignore-fail-on-non-empty /usr/libexec/ashypass 2>/dev/null || true
-sudo rm -f /usr/share/polkit-1/actions/com.bigcommunity.ashypass.drives.policy
+remove_unowned /usr/share/polkit-1/actions/com.bigcommunity.ashypass.drives.policy
 
 if pgrep -x polkitd >/dev/null 2>&1; then
     sudo pkill -HUP polkitd || true

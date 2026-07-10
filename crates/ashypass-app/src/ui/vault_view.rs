@@ -13,14 +13,12 @@ use ashypass_core::generator::{
     generate_passphrase, generate_password, generate_pin, PasswordConfig,
 };
 use ashypass_core::settings::Settings;
-use ashypass_core::totp::{generate_totp, remaining_seconds, Algorithm};
 use gtk::glib;
 use std::cell::{Cell, RefCell};
 use std::collections::HashSet;
 use std::rc::Rc;
 
 type AuthChangedCb = Box<dyn Fn()>;
-type TotpWidget = (gtk::Label, gtk::ProgressBar, i64, String, u8, u32);
 type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
 
 const PASSWORD_RENDER_BATCH_SIZE: usize = 64;
@@ -118,8 +116,6 @@ struct Inner {
 
     view_mode: Cell<ViewMode>,
     expanded_folders: RefCell<HashSet<String>>,
-    totp_widgets: RefCell<Vec<TotpWidget>>,
-    totp_timer_id: RefCell<Option<glib::SourceId>>,
 
     on_auth_changed: RefCell<Option<AuthChangedCb>>,
 }
@@ -201,8 +197,6 @@ impl VaultView {
             nextcloud_synced_ids_cache: RefCell::new(None),
             view_mode: Cell::new(ViewMode::All),
             expanded_folders: RefCell::new(HashSet::new()),
-            totp_widgets: RefCell::new(Vec::new()),
-            totp_timer_id: RefCell::new(None),
             on_auth_changed: RefCell::new(None),
         });
 
@@ -243,7 +237,6 @@ impl VaultView {
 
     /// Lock the vault triggered by user click or external (session timeout).
     pub fn lock_vault(&self) {
-        self.inner.stop_totp_timer();
         self.inner.cancel_pending_search_reload();
         self.inner.cancel_pending_event_reload();
         self.inner.cancel_pending_render();
@@ -544,7 +537,9 @@ fn wire_auth(inner: &Rc<Inner>) {
         } else {
             let (score, level) = ashypass_core::strength::legacy_score(s);
             inner_cl.strength_bar.set_value(score as f64);
-            inner_cl.strength_label.set_text(level);
+            inner_cl
+                .strength_label
+                .set_text(crate::ui::i18n::localized_strength_label(level));
         }
     });
 }
@@ -701,7 +696,6 @@ impl Inner {
             self.cancel_pending_search_reload();
             self.cancel_pending_event_reload();
             self.cancel_pending_render();
-            self.stop_totp_timer();
             let has_master = self
                 .state
                 .vault
@@ -710,6 +704,7 @@ impl Inner {
                 .unwrap_or(false);
             let quick = has_master
                 && (self.state.vault.borrow().is_quick_unlock_available()
+                    || ashypass_core::keyring::is_quick_unlock_stored()
                     || Settings::load()
                         .quick_unlock
                         .as_ref()
@@ -770,7 +765,15 @@ impl Inner {
             self.show_auth_error(tr!("Please enter your PIN"));
             return;
         }
-        let persistent_quick_unlock = Settings::load().quick_unlock;
+        let mut loaded_settings = Settings::load();
+        let legacy_quick_unlock = loaded_settings.quick_unlock.clone();
+        let keyring_quick_unlock = ashypass_core::keyring::load_quick_unlock()
+            .map_err(|error| log::warn!("quick-unlock keyring read failed: {error}"))
+            .ok()
+            .flatten();
+        let persistent_quick_unlock = keyring_quick_unlock
+            .as_ref()
+            .or(legacy_quick_unlock.as_ref());
         let r = {
             let mut vault = self.state.vault.borrow_mut();
             if vault.is_quick_unlock_available() {
@@ -795,6 +798,23 @@ impl Inner {
         };
         match r {
             Ok(()) => {
+                if keyring_quick_unlock.is_none() && legacy_quick_unlock.is_some() {
+                    if let Some(prefs) = legacy_quick_unlock.as_ref() {
+                        match ashypass_core::keyring::store_quick_unlock(prefs) {
+                            Ok(()) => {
+                                loaded_settings.quick_unlock = None;
+                                if let Err(error) = loaded_settings.save() {
+                                    log::warn!(
+                                        "could not clear migrated quick-unlock settings: {error}"
+                                    );
+                                }
+                            }
+                            Err(error) => log::warn!(
+                                "could not migrate quick-unlock state to keyring: {error}"
+                            ),
+                        }
+                    }
+                }
                 SessionManager::login(&self.state.session);
                 self.update_view();
                 self.notify_auth_changed();
@@ -804,12 +824,8 @@ impl Inner {
                 self.pin_entry.set_text("");
             }
             Err(e) => {
-                // Cache may have been lost (e.g. dev path) — fall back.
                 self.show_auth_error(&format!("{}: {e}", tr!("Quick-unlock failed")));
                 self.state.vault.borrow_mut().disable_quick_unlock();
-                let mut settings = Settings::load();
-                settings.quick_unlock = None;
-                let _ = settings.save();
                 self.show_master_unlock();
             }
         }
@@ -868,7 +884,9 @@ impl Inner {
                 Ok(()) => {
                     let mut settings = Settings::load();
                     settings.quick_unlock = None;
-                    let _ = settings.save();
+                    if let Err(error) = settings.save() {
+                        log::warn!("could not save settings: {error}");
+                    }
                     SessionManager::login(&self.state.session);
                     self.update_view();
                     self.notify_auth_changed();
@@ -890,8 +908,6 @@ impl Inner {
         self.main_stack.set_visible_child_name("vault");
         self.cancel_pending_event_reload();
         self.cancel_pending_render();
-        self.stop_totp_timer();
-        self.totp_widgets.borrow_mut().clear();
         self.reset_password_list_box();
         let ui_settings = Settings::load();
         self.apply_vault_list_density(ui_settings.compact_vault_list);
@@ -1086,8 +1102,6 @@ impl Inner {
                 }
             }
         }
-
-        self.start_totp_timer();
     }
 
     fn add_create_folder_row(self: &Rc<Self>) {
@@ -1260,7 +1274,6 @@ impl Inner {
         }
 
         if first_end >= entries.len() {
-            self.start_totp_timer();
             return;
         }
 
@@ -1281,7 +1294,6 @@ impl Inner {
             index = end;
             if index >= entries.len() {
                 *inner.render_source_id.borrow_mut() = None;
-                inner.start_totp_timer();
                 glib::ControlFlow::Break
             } else {
                 glib::ControlFlow::Continue
@@ -1642,31 +1654,6 @@ impl Inner {
         dialog.present(Some(self.toast.upcast_ref::<gtk::Widget>()));
     }
 
-    // ---- TOTP timer ----
-
-    fn start_totp_timer(self: &Rc<Self>) {
-        self.stop_totp_timer();
-        if self.totp_widgets.borrow().is_empty() {
-            return;
-        }
-        self.update_totp_displays();
-        let inner_weak = Rc::downgrade(self);
-        let id = glib::timeout_add_seconds_local(1, move || {
-            let Some(inner) = inner_weak.upgrade() else {
-                return glib::ControlFlow::Break;
-            };
-            inner.update_totp_displays();
-            glib::ControlFlow::Continue
-        });
-        *self.totp_timer_id.borrow_mut() = Some(id);
-    }
-
-    fn stop_totp_timer(&self) {
-        if let Some(id) = self.totp_timer_id.borrow_mut().take() {
-            id.remove();
-        }
-    }
-
     fn cancel_pending_search_reload(&self) {
         if let Some(id) = self.search_reload_id.borrow_mut().take() {
             id.remove();
@@ -1682,38 +1669,6 @@ impl Inner {
     fn cancel_pending_render(&self) {
         if let Some(id) = self.render_source_id.borrow_mut().take() {
             id.remove();
-        }
-    }
-
-    fn update_totp_displays(&self) {
-        let now = chrono::Utc::now().timestamp() as u64;
-        let widgets = self.totp_widgets.borrow();
-        for (label, progress, id, algo_str, digits, period) in widgets.iter() {
-            // Fetch secret each tick (decrypts via vault.get). Cheap since AES-GCM is fast.
-            let secret = {
-                let v = self.state.vault.borrow();
-                match v.get(*id) {
-                    Ok(Some(e)) => e.totp_secret,
-                    _ => None,
-                }
-            };
-            let Some(secret) = secret else {
-                label.set_text("------");
-                progress.set_fraction(0.0);
-                continue;
-            };
-            let algo = Algorithm::parse(algo_str).unwrap_or(Algorithm::Sha1);
-            match generate_totp(&secret, algo, *digits, *period, now) {
-                Ok(code) => {
-                    label.set_text(&code);
-                    let rem = remaining_seconds(*period, now);
-                    progress.set_fraction(rem as f64 / *period as f64);
-                }
-                Err(_) => {
-                    label.set_text("------");
-                    progress.set_fraction(0.0);
-                }
-            }
         }
     }
 }
@@ -1790,7 +1745,7 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
         let pe = password_entry.clone();
         let inner_cl = inner.clone();
         act_pass.connect_activate(move |_, _| {
-            let pw = generate_passphrase(4, "-", true, true);
+            let pw = generate_passphrase(6, "-", true, true);
             pe.set_text(&pw);
             inner_cl.show_toast(tr!("Password generated"));
         });

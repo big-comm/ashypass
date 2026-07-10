@@ -275,7 +275,7 @@ fn handle_get(vault: &Vault, id: i64) -> serde_json::Value {
 
 fn handle_generate(length: &Option<usize>, kind: &Option<String>) -> Result<String> {
     match kind.as_deref() {
-        Some("passphrase") => Ok(generate_passphrase(4, "-", true, true)),
+        Some("passphrase") => Ok(generate_passphrase(6, "-", true, true)),
         Some("pin") => Ok(generate_pin(length.unwrap_or(6))),
         Some("password") | None => {
             let cfg = PasswordConfig {

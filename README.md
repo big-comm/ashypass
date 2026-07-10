@@ -39,12 +39,12 @@ The project ships as a **multi-crate workspace**:
 ### Security
 - **AES-256-GCM** authenticated encryption per field (password, notes, TOTP secret).
 - **Argon2id** master verification *and* per-entry key derivation (`t=3, m=64 MiB, p=4` by default, auto-tuned at first run).
-- **Quick Unlock** via the Secret Service (GNOME Keyring / KWallet) so daily use doesn't require retyping the master password.
+- **Quick Unlock** with PIN-wrapped vault-key state stored in Secret Service (GNOME Keyring / KWallet), never in plaintext settings.
 - **Automatic session lock** with configurable idle timeout and pre-lock warning toast.
 - **Clipboard auto-clear** after a configurable interval; only clears if the contents are still the secret you copied.
 - **HIBP audit** with k-anonymity (only the first 5 hex digits of the SHA-1 hash are sent).
 - **Soft-delete trash** with configurable retention; entries are recoverable until purge.
-- **FIDO2 second-factor scaffolding** with BIP39 backup-phrase fallback. *CTAP2 hardware calls are stubbed; the storage layout and recovery flow are wired.*
+- Vault FIDO2 configuration is preserved but disabled until CTAP2 registration and assertion are fully implemented. LUKS FIDO2 enrollment remains available for external drives.
 - **Zero-knowledge** — the master password and derived keys never leave the machine.
 
 ### Vault
@@ -56,7 +56,7 @@ The project ships as a **multi-crate workspace**:
 
 ### Password generation
 - Strong passwords with configurable length and character classes.
-- Diceware-style passphrases (EFF wordlist).
+- Six-word passphrases by default from the 2,048-word BIP39 English list.
 - Numeric PINs.
 - Real-time strength meter (entropy-based: Weak → Very Strong).
 
@@ -65,7 +65,7 @@ The project ships as a **multi-crate workspace**:
 - **KeePass** (`.kdbx`) read-only import.
 - **1Password** export bundles.
 - **Aegis** and **andOTP** JSON for TOTP, auto-tagged under category `2FA`.
-- Native `.ashy` encrypted export / import.
+- Native `.ashy` v2 encrypted export with a complete SQLite snapshot; v1 remains import-compatible and full restores are written to a new validated file.
 - CSV export (Chrome-compatible).
 
 ### Cloud & sync
@@ -88,7 +88,7 @@ The project ships as a **multi-crate workspace**:
 - Sidebar-based settings dialog organised into **Security · Data · Cloud · Appearance** sections.
 - Default window 800×650, minimum 700×570.
 - Toast notifications, view stacks, and animated transitions.
-- gettext-based localization with **30 language catalogues** shipped (`bg, cs, da, de, el, en, es, et, fi, fr, he, hr, hu, is, it, ja, ko, nl, no, pl, pt, pt_BR, ro, ru, sk, sv, tr, uk, zh`).
+- gettext-based localization with **29 language catalogues** shipped (`bg, cs, da, de, el, en, es, et, fi, fr, he, hr, hu, is, it, ja, ko, nl, no, pl, pt, pt_BR, ro, ru, sk, sv, tr, uk, zh`).
 
 ## Status
 
@@ -109,8 +109,8 @@ The project ships as a **multi-crate workspace**:
 | CLI companion | Stable |
 | Quick Unlock via Secret Service | Stable |
 | Favicon fetch + cache | Stable |
-| FIDO2 hardware (CTAP2 register / assert) | Storage and backup-phrase wired; CTAP2 calls stubbed |
-| i18n (gettext-rs, 30 catalogues) | Fully translated and CI-compiled |
+| FIDO2 vault factor (CTAP2 register / assert) | Disabled until fully implemented; existing config preserved |
+| i18n (gettext-rs, 29 catalogues) | Translated and CI-compiled |
 
 ## System requirements
 
@@ -131,11 +131,7 @@ cargo build --release --workspace
 ./target/release/ashypass
 ```
 
-Enable the FIDO2 stack (CTAP2 wiring is still stubbed; see **Status**):
-
-```bash
-cargo build --release -p ashypass-app --features fido2
-```
+The `fido2` feature name is retained for build compatibility, but vault-factor UI remains disabled until the hardware flow is complete.
 
 Provide Google Drive credentials at build time (without these the Cloud Backup page shows a "not configured" notice):
 
@@ -159,14 +155,14 @@ cd pkgbuild
 makepkg -si
 ```
 
-The PKGBUILD compiles every `locale/*.po` into `usr/share/locale/<lang>/LC_MESSAGES/ashypass.mo`, installs the desktop file, icons, and native-messaging manifests for Chromium- and Firefox-based browsers.
+The PKGBUILD compiles every `locale/*.po` into `usr/share/locale/<lang>/LC_MESSAGES/ashypass.mo` and installs the desktop file, icons, native host binary, and privileged drive helper.
 
 ## Usage
 
 ### First run
 1. Launch Ashy Pass.
 2. Set a master password on the **Vault** tab — used to derive the AES-256-GCM key.
-3. (Optional) Enable Quick Unlock in **Settings → Security** to cache the master in the Secret Service.
+3. (Optional) Enable Quick Unlock in **Settings → Security** to store PIN-wrapped device state in Secret Service.
 4. Add entries, or import a CSV / KeePass database from **Settings → Data**.
 
 ### Generating passwords
@@ -180,32 +176,32 @@ The PKGBUILD compiles every `locale/*.po` into `usr/share/locale/<lang>/LC_MESSA
 ### Cloud sync & backup
 - **Nextcloud Passwords** — *Settings → Cloud → Nextcloud Passwords*: enter URL, username, app password, choose a folder, hit *Sync*. Conflicts are resolved by version timestamps.
 - **WebDAV backup** — *Settings → Cloud → WebDAV*: encrypted database is uploaded with a generation marker so concurrent writes don't silently overwrite.
-- **Google Drive backup** — *Settings → Cloud → Google Drive → Sign in*: the system browser opens an OAuth PKCE flow with a `127.0.0.1` callback. *Back up now* uploads the encrypted database; *Restore latest* downloads it as `passwords.restored.db`.
+- **Google Drive backup** — *Settings → Cloud → Google Drive → Sign in*: the system browser opens an OAuth PKCE flow with a `127.0.0.1` callback. *Back up now* uploads a consistent SQLite snapshot; *Restore latest* validates and saves a new timestamped `passwords-restored-*.db` without replacing the active vault.
 
 ### Browser extension
 1. Build / install `ashypass-native-host`.
-2. The package installs `com.bigcommunity.ashypass.json` manifests under `~/.config/<browser>/NativeMessagingHosts/`.
-3. The companion extension communicates via the manifest — see the project's extension repo.
+2. Create the browser-specific native-messaging manifest with the companion extension's actual extension ID and point it at `/usr/lib/ashypass/ashypass-native-host`.
+3. Install that manifest in the browser's documented `NativeMessagingHosts` directory. The package does not guess or install an extension ID.
 
 ### CLI
 ```bash
-ashypass-cli list                       # all entries (decrypted if keyring unlocked)
-ashypass-cli search github              # filter by query
-ashypass-cli copy <id>                  # copy password with auto-clear
-ashypass-cli generate --length 24       # generate without storing
-ashypass-cli add github.com --user me   # interactive add
+ashypass-cli list                       # all entry metadata
+ashypass-cli list --search github       # filter title, username, or URL
+ashypass-cli show <id-or-title>         # print one decrypted entry
+ashypass-cli gen --length 24            # generate without storing
+ashypass-cli add                        # interactive add
 ```
 
-### FIDO2 / YubiKey (preview)
-- *Settings → Security → Two-Factor → Register* — currently returns a "not yet wired" error; storage layout and backup-phrase recovery are implemented.
-- *Generate Backup Phrase* yields a 12-word BIP39 phrase shown once; only its Argon2id hash is persisted.
+### FIDO2 / YubiKey
+- Vault second-factor controls are intentionally unavailable until real CTAP2 registration and assertion are implemented.
+- External LUKS2 drives can still enroll FIDO2 keyslots through `systemd-cryptenroll`.
 
 ### Configuration
 
 | File | Purpose |
 |------|---------|
 | `~/.config/ashypass/settings.json` | UI prefs, lock / clipboard timeouts, generator defaults, trash retention |
-| `~/.config/ashypass/fido2.json` | Registered FIDO2 slots + backup-phrase hash |
+| `~/.config/ashypass/fido2.json` | Preserved preview FIDO2 configuration; not currently enforced |
 | `~/.local/share/ashypass/passwords.db` | Encrypted SQLite vault |
 | `~/.local/share/ashypass/token.json` | Google Drive OAuth tokens |
 | `~/.local/share/ashypass/favicons/` | Cached site icons |
@@ -227,8 +223,8 @@ ashypass/
 │   │       ├── sync/                 # nextcloud_passwords, nextcloud_engine
 │   │       ├── audit.rs · hibp.rs    # password-health + breach checks (k-anonymity)
 │   │       ├── favicons.rs           # fetch + on-disk cache
-│   │       ├── fido2.rs              # slots + BIP39 backup + CTAP2 stubs
-│   │       ├── keyring.rs            # Secret Service (Quick Unlock)
+│   │       ├── fido2.rs              # preserved preview schema; hardware disabled
+│   │       ├── keyring.rs            # Secret Service secrets and Quick Unlock state
 │   │       └── settings.rs           # serde-backed user prefs
 │   ├── ashypass-app/                 # GTK4 / libadwaita desktop UI
 │   │   └── src/
@@ -270,7 +266,7 @@ MIT — see [LICENSE](LICENSE).
 
 ## Acknowledgments
 
-- **EFF** — Diceware wordlist for passphrase generation.
+- **BIP39** — 2,048-word English list used for passphrase generation.
 - **GNOME** — GTK4 / libadwaita.
 - **RustCrypto** — `argon2`, `aes-gcm`, `pbkdf2`, `hmac`, `sha2`.
 - **rusqlite** — embedded SQLite bindings.

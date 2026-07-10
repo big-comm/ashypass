@@ -12,8 +12,11 @@ use crate::{Error, Result};
 use reqwest::blocking::Client;
 use reqwest::Method;
 use serde::{Deserialize, Serialize};
-use std::fs;
+use std::fs::{self, OpenOptions};
+use std::io::{Read, Write};
+use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 use std::time::Duration;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -58,6 +61,7 @@ impl WebdavService {
     /// Persist new config to disk after a successful PROPFIND check.
     pub fn login(&mut self, mut cfg: WebdavConfig) -> Result<()> {
         cfg.base_url = trim_trailing_slash(&cfg.base_url).to_string();
+        validate_server_url(&cfg.base_url)?;
         if cfg.folder.trim().is_empty() {
             cfg.folder = "AshyPass Backups".into();
         }
@@ -124,7 +128,7 @@ impl WebdavService {
         let cfg = self.require()?;
         let folder = self.folder_url()?;
         let url = format!("{folder}/{}", url_escape_path(remote_name));
-        let body = fs::read(local.as_ref())?;
+        let body = reqwest::blocking::Body::new(fs::File::open(local.as_ref())?);
         let client = http_client()?;
         let resp = client
             .put(&url)
@@ -143,7 +147,7 @@ impl WebdavService {
         let cfg = self.require()?;
         let url = self.folder_url()?;
         let client = http_client()?;
-        let resp = client
+        let mut resp = client
             .request(propfind(), &url)
             .basic_auth(&cfg.username, Some(&cfg.password))
             .header("Depth", "1")
@@ -159,15 +163,26 @@ impl WebdavService {
         if !(200..300).contains(&status) {
             return Err(Error::Other(format!("webdav propfind: HTTP {status}")));
         }
-        let body = resp
-            .text()
-            .map_err(|e| Error::Other(format!("webdav read body: {e}")))?;
+        const MAX_PROPFIND_BYTES: u64 = 16 * 1024 * 1024;
+        if resp
+            .content_length()
+            .is_some_and(|size| size > MAX_PROPFIND_BYTES)
+        {
+            return Err(Error::InvalidInput("WebDAV listing is too large".into()));
+        }
+        let mut body = String::new();
+        (&mut resp)
+            .take(MAX_PROPFIND_BYTES + 1)
+            .read_to_string(&mut body)?;
+        if body.len() as u64 > MAX_PROPFIND_BYTES {
+            return Err(Error::InvalidInput("WebDAV listing is too large".into()));
+        }
         Ok(parse_propfind(&body))
     }
 
     pub fn download(&self, href: &str, dest: impl AsRef<Path>) -> Result<()> {
         let cfg = self.require()?;
-        let url = href_to_url(&cfg.base_url, href);
+        let url = href_to_url(&cfg.base_url, href)?;
         let client = http_client()?;
         let mut resp = client
             .get(&url)
@@ -178,14 +193,12 @@ impl WebdavService {
         if !(200..300).contains(&status) {
             return Err(Error::Other(format!("webdav get: HTTP {status}")));
         }
-        let mut file = fs::File::create(dest.as_ref())?;
-        std::io::copy(&mut resp, &mut file)?;
-        Ok(())
+        write_response_new(&mut resp, dest.as_ref())
     }
 
     pub fn delete(&self, href: &str) -> Result<()> {
         let cfg = self.require()?;
-        let url = href_to_url(&cfg.base_url, href);
+        let url = href_to_url(&cfg.base_url, href)?;
         let client = http_client()?;
         let resp = client
             .delete(&url)
@@ -206,6 +219,7 @@ impl WebdavService {
 
     fn load_config() -> Option<WebdavConfig> {
         let path = Self::config_path();
+        let _ = crate::config::ensure_private_file(&path);
         let text = fs::read_to_string(&path).ok()?;
         let mut cfg: WebdavConfig = serde_json::from_str(&text).ok()?;
         if cfg.password.is_empty() {
@@ -247,16 +261,8 @@ impl WebdavService {
 
     fn write_config_file(cfg: &WebdavConfig) -> Result<()> {
         let path = Self::config_path();
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?;
-        }
         let text = serde_json::to_string_pretty(cfg)?;
-        fs::write(&path, text)?;
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            let _ = fs::set_permissions(&path, fs::Permissions::from_mode(0o600));
-        }
+        crate::config::atomic_write_private(&path, text.as_bytes())?;
         Ok(())
     }
 }
@@ -267,11 +273,17 @@ impl Default for WebdavService {
     }
 }
 
-fn http_client() -> Result<Client> {
-    Client::builder()
+fn http_client() -> Result<&'static Client> {
+    static CLIENT: OnceLock<Client> = OnceLock::new();
+    if let Some(client) = CLIENT.get() {
+        return Ok(client);
+    }
+    let client = Client::builder()
         .timeout(Duration::from_secs(60))
         .build()
-        .map_err(|e| Error::Other(format!("webdav http: {e}")))
+        .map_err(|e| Error::Other(format!("webdav http: {e}")))?;
+    let _ = CLIENT.set(client);
+    Ok(CLIENT.get().expect("client was initialized"))
 }
 
 fn propfind() -> Method {
@@ -289,7 +301,26 @@ const PROPFIND_BODY: &str = r#"<?xml version="1.0" encoding="utf-8"?>
 </d:propfind>"#;
 
 fn trim_trailing_slash(s: &str) -> &str {
-    s.strip_suffix('/').unwrap_or(s)
+    s.trim_end_matches('/')
+}
+
+fn validate_server_url(value: &str) -> Result<url::Url> {
+    let parsed = url::Url::parse(value)
+        .map_err(|error| Error::InvalidInput(format!("invalid WebDAV URL: {error}")))?;
+    let loopback = parsed
+        .host_str()
+        .is_some_and(|host| matches!(host, "localhost" | "127.0.0.1" | "::1"));
+    if parsed.scheme() != "https" && !(parsed.scheme() == "http" && loopback) {
+        return Err(Error::InvalidInput(
+            "WebDAV requires HTTPS except for a loopback test server".into(),
+        ));
+    }
+    if !parsed.username().is_empty() || parsed.password().is_some() || parsed.fragment().is_some() {
+        return Err(Error::InvalidInput(
+            "WebDAV URL must not contain credentials or a fragment".into(),
+        ));
+    }
+    Ok(parsed)
 }
 
 /// Percent-encode the parts of a path that aren't already safe. Splits on `/`
@@ -318,18 +349,46 @@ fn url_escape_segment(s: &str) -> String {
 
 /// Build an absolute URL from a server-returned `<d:href>`. Hrefs may be
 /// absolute paths (`/remote.php/dav/files/alice/foo`) or full URLs.
-fn href_to_url(base: &str, href: &str) -> String {
-    if href.starts_with("http://") || href.starts_with("https://") {
-        return href.to_string();
+fn href_to_url(base: &str, href: &str) -> Result<String> {
+    let base = validate_server_url(base)?;
+    let resolved = base
+        .join(href)
+        .map_err(|error| Error::InvalidInput(format!("invalid WebDAV href: {error}")))?;
+    if resolved.scheme() != base.scheme()
+        || resolved.host_str() != base.host_str()
+        || resolved.port_or_known_default() != base.port_or_known_default()
+    {
+        return Err(Error::InvalidInput(
+            "WebDAV server returned a cross-origin href".into(),
+        ));
     }
-    // Strip everything after the host from base, then append href.
-    let scheme_end = base.find("://").map(|i| i + 3).unwrap_or(0);
-    let host_end = base[scheme_end..]
-        .find('/')
-        .map(|i| scheme_end + i)
-        .unwrap_or(base.len());
-    let host_part = &base[..host_end];
-    format!("{host_part}{href}")
+    Ok(resolved.to_string())
+}
+
+fn write_response_new(response: &mut impl std::io::Read, destination: &Path) -> Result<()> {
+    let parent = destination.parent().unwrap_or_else(|| Path::new("."));
+    fs::create_dir_all(parent)?;
+    let temporary = parent.join(format!(
+        ".ashypass-download-{}-{}.tmp",
+        std::process::id(),
+        rand::random::<u64>()
+    ));
+    let result: std::io::Result<()> = (|| {
+        let mut file = OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .mode(0o600)
+            .open(&temporary)?;
+        std::io::copy(response, &mut file)?;
+        file.flush()?;
+        file.sync_all()?;
+        fs::hard_link(&temporary, destination)?;
+        fs::remove_file(&temporary)
+    })();
+    if result.is_err() {
+        let _ = fs::remove_file(&temporary);
+    }
+    result.map_err(Error::from)
 }
 
 /// Minimal PROPFIND XML parser. We pull `<d:href>`, `<d:displayname>`,
@@ -487,8 +546,31 @@ mod tests {
             href_to_url(
                 "https://cloud.example.com/remote.php/dav/files/alice",
                 "/remote.php/dav/files/alice/AshyPass%20Backups/a.ashy"
-            ),
+            )
+            .unwrap(),
             "https://cloud.example.com/remote.php/dav/files/alice/AshyPass%20Backups/a.ashy"
         );
+    }
+
+    #[test]
+    fn rejects_insecure_and_cross_origin_urls() {
+        assert!(validate_server_url("http://cloud.example.com/dav").is_err());
+        assert!(validate_server_url("http://127.0.0.1:8080/dav").is_ok());
+        assert!(href_to_url(
+            "https://cloud.example.com/dav",
+            "https://attacker.example/backup.db"
+        )
+        .is_err());
+    }
+
+    #[test]
+    fn downloads_do_not_replace_existing_files() {
+        let directory = tempfile::tempdir().unwrap();
+        let destination = directory.path().join("backup.db");
+        let mut first = std::io::Cursor::new(b"first".to_vec());
+        write_response_new(&mut first, &destination).unwrap();
+        let mut second = std::io::Cursor::new(b"second".to_vec());
+        assert!(write_response_new(&mut second, &destination).is_err());
+        assert_eq!(fs::read(destination).unwrap(), b"first");
     }
 }

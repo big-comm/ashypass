@@ -327,21 +327,14 @@ fn run_drives(action: DrivesAction) -> Result<()> {
             print_device_block(&device, &report);
 
             if !report.allow_destructive {
-                bail!(
-                    "Refusing to format: {}",
-                    report.reasons.join("; ")
-                );
+                bail!("Refusing to format: {}", report.reasons.join("; "));
             }
 
             if !i_understand_this_erases_everything {
                 let expected = device.to_string_lossy().to_string();
                 eprintln!();
-                eprintln!(
-                    "  ⚠ This will PERMANENTLY ERASE everything on {expected}."
-                );
-                eprintln!(
-                    "    To confirm, type the device path exactly (case-sensitive):"
-                );
+                eprintln!("  ⚠ This will PERMANENTLY ERASE everything on {expected}.");
+                eprintln!("    To confirm, type the device path exactly (case-sensitive):");
                 eprint!("    > ");
                 use std::io::Write as _;
                 std::io::stderr().flush().ok();
@@ -534,7 +527,7 @@ fn unlock_vault(vault: &mut Vault) -> Result<()> {
 
 fn run_gen(a: GenArgs) -> Result<()> {
     let pw = if a.passphrase {
-        generate_passphrase(4, "-", true, true)
+        generate_passphrase(6, "-", true, true)
     } else if a.pin {
         generate_pin(a.pin_length)
     } else {

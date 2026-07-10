@@ -35,7 +35,7 @@ subtle = "2.6"
 # Storage. Link against the system sqlite3 (rusqlite's `bundled` feature
 # builds it from source, which breaks under ld.lld + `-Wl,--as-needed`
 # on Arch-style packaging environments).
-rusqlite = { version = "0.32" }
+rusqlite = { version = "0.32", features = ["backup"] }
 
 # Async / HTTP
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "io-util"] }
@@ -46,7 +46,7 @@ serde_json = "1"
 
 # Errors & logging
 thiserror = "2"
-anyhow = "1"
+anyhow = "1.0.103"
 log = "0.4"
 env_logger = "0.11"
 
@@ -59,7 +59,7 @@ dirs = "5"
 bip39 = "2"
 zxcvbn = { version = "3", default-features = false }
 zip = { version = "2", default-features = false, features = ["deflate"] }
-keepass = { version = "0.12", features = ["save_kdbx4"] }
+keepass = { version = "0.13", features = ["save_kdbx4"] }
 secret-service = { version = "5", features = ["rt-tokio-crypto-rust"] }
 
 # Internal

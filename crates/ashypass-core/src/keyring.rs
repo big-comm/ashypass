@@ -23,6 +23,8 @@ fn attributes(kind: &'static str) -> HashMap<&'static str, &'static str> {
 
 const MASTER_PASSWORD_KIND: &str = "master-password";
 const LABEL: &str = "Ashy Pass — vault master password";
+const QUICK_UNLOCK_KIND: &str = "quick-unlock";
+const QUICK_UNLOCK_LABEL: &str = "Ashy Pass — quick-unlock state";
 
 fn service() -> Result<SecretService<'static>> {
     SecretService::connect(EncryptionType::Dh)
@@ -95,6 +97,25 @@ pub fn load_named_secret(kind: &'static str) -> Result<Option<String>> {
 /// Remove the stored master password. No-op if nothing is stored.
 pub fn delete_master() -> Result<()> {
     delete_named_secret(MASTER_PASSWORD_KIND)
+}
+
+pub fn store_quick_unlock(prefs: &crate::settings::QuickUnlockPrefs) -> Result<()> {
+    let serialized = serde_json::to_string(prefs)?;
+    store_named_secret(QUICK_UNLOCK_KIND, QUICK_UNLOCK_LABEL, &serialized)
+}
+
+pub fn load_quick_unlock() -> Result<Option<crate::settings::QuickUnlockPrefs>> {
+    load_named_secret(QUICK_UNLOCK_KIND)?
+        .map(|serialized| serde_json::from_str(&serialized).map_err(Error::from))
+        .transpose()
+}
+
+pub fn delete_quick_unlock() -> Result<()> {
+    delete_named_secret(QUICK_UNLOCK_KIND)
+}
+
+pub fn is_quick_unlock_stored() -> bool {
+    is_named_secret_stored(QUICK_UNLOCK_KIND)
 }
 
 /// Remove application secrets with the given kind. No-op if none are stored.

@@ -59,6 +59,7 @@ pub enum SyncAction {
 pub fn plan_push(vault: &Vault, webdav: &WebdavService) -> Result<SyncPlan> {
     let local = vault.current_generation()?;
     let last_synced = vault.last_synced_generation()?;
+    let last_remote = vault.last_remote_generation()?;
 
     // List remote snapshots. A 404 (folder absent) is treated as "no remote
     // history yet" — caller can then push the first snapshot freely.
@@ -73,15 +74,7 @@ pub fn plan_push(vault: &Vault, webdav: &WebdavService) -> Result<SyncPlan> {
 
     let remote_max = remote_max_generation(&files);
 
-    let action = if remote_max > last_synced {
-        SyncAction::Conflict {
-            unseen_remote_generation: remote_max,
-        }
-    } else if local <= last_synced {
-        SyncAction::NoChanges
-    } else {
-        SyncAction::Ready
-    };
+    let action = decide_action(local, last_synced, last_remote, remote_max);
 
     Ok(SyncPlan {
         local_generation: local,
@@ -120,8 +113,9 @@ pub fn push(
     webdav.ensure_folder()?;
 
     let local = plan.local_generation;
+    let upload_generation = next_upload_generation(local, plan.remote_max_generation);
     let ts = chrono::Utc::now().timestamp();
-    let name = snapshot_filename(local, ts);
+    let name = snapshot_filename(upload_generation, ts);
 
     // Encrypt to a temp file before uploading so a half-written upload never
     // overwrites the previous snapshot.
@@ -133,8 +127,7 @@ pub fn push(
 
     // After a forced push the local generation is now authoritative; record
     // both sides as equal so the next sync starts from a clean slate.
-    let remote_after_push = local.max(plan.remote_max_generation);
-    vault.mark_synced(local, remote_after_push, ts)?;
+    vault.mark_synced(local, upload_generation, ts)?;
 
     Ok(PushOutcome::Uploaded {
         plan,
@@ -162,6 +155,22 @@ fn remote_max_generation(files: &[WebdavFile]) -> u64 {
         .filter_map(|f| parse_generation(&f.name))
         .max()
         .unwrap_or(0)
+}
+
+fn decide_action(local: u64, last_synced: u64, last_remote: u64, remote_max: u64) -> SyncAction {
+    if remote_max > last_remote {
+        SyncAction::Conflict {
+            unseen_remote_generation: remote_max,
+        }
+    } else if local <= last_synced {
+        SyncAction::NoChanges
+    } else {
+        SyncAction::Ready
+    }
+}
+
+fn next_upload_generation(local: u64, remote_max: u64) -> u64 {
+    local.max(remote_max.saturating_add(1))
 }
 
 pub(crate) fn parse_generation(name: &str) -> Option<u64> {
@@ -277,5 +286,23 @@ mod tests {
             },
         ];
         assert_eq!(remote_max_generation(&files), 17);
+    }
+
+    #[test]
+    fn conflict_uses_last_observed_remote_generation() {
+        assert_eq!(decide_action(2, 2, 10, 10), SyncAction::NoChanges);
+        assert_eq!(
+            decide_action(2, 2, 10, 11),
+            SyncAction::Conflict {
+                unseen_remote_generation: 11
+            }
+        );
+        assert_eq!(decide_action(3, 2, 10, 10), SyncAction::Ready);
+    }
+
+    #[test]
+    fn forced_upload_advances_past_remote_generation() {
+        assert_eq!(next_upload_generation(3, 10), 11);
+        assert_eq!(next_upload_generation(12, 10), 12);
     }
 }

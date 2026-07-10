@@ -6,6 +6,7 @@
 //!    transparently invoke `migration::migrate_v1_to_v2()` on legacy DBs.
 //! 3. CRUD: `add`, `list`, `get` (decrypts), `update`, `delete`, `toggle_favorite`.
 
+use crate::config::{ensure_private_file, MIN_MASTER_PASSWORD_LENGTH};
 use crate::crypto::{aes_gcm_v2, argon2_kdf, DerivedKey};
 use crate::settings::QuickUnlockPrefs;
 use crate::{db::migration, db::schema, Error, Result};
@@ -13,11 +14,15 @@ use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use rand::RngCore;
 use rusqlite::{params, params_from_iter, types::Value, Connection, OptionalExtension, Row};
 use std::cell::RefCell;
+use std::fs::OpenOptions;
+use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
+use std::time::Duration;
 
 type ChangeListener = Rc<dyn Fn() + 'static>;
 type EncryptedEntryRow = (i64, Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>);
+type EncryptedPayload = (Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>);
 type TrashRow = (
     String,
     Option<String>,
@@ -156,9 +161,31 @@ pub struct PasswordEntry {
 impl Vault {
     pub fn open(path: impl AsRef<Path>) -> Result<Self> {
         let db_path = path.as_ref().to_path_buf();
+        if db_path != Path::new(":memory:") {
+            OpenOptions::new()
+                .write(true)
+                .create(true)
+                .truncate(false)
+                .mode(0o600)
+                .open(&db_path)?;
+            ensure_private_file(&db_path)?;
+        }
         let conn = Connection::open(&db_path)?;
+        conn.busy_timeout(Duration::from_secs(5))?;
+        conn.execute_batch(
+            "PRAGMA foreign_keys = ON;
+             PRAGMA journal_mode = WAL;
+             PRAGMA synchronous = NORMAL;",
+        )?;
         schema::initialize(&conn)?;
         migration::add_missing_columns(&conn)?;
+        let violation_count: i64 =
+            conn.query_row("SELECT COUNT(*) FROM pragma_foreign_key_check", [], |row| {
+                row.get(0)
+            })?;
+        if violation_count > 0 {
+            log::warn!("vault contains {violation_count} foreign-key violation(s)");
+        }
         Ok(Self {
             db_path,
             conn,
@@ -171,6 +198,62 @@ impl Vault {
 
     pub fn db_path(&self) -> &Path {
         &self.db_path
+    }
+
+    /// Create a consistent online SQLite backup. Existing files are never
+    /// overwritten, and a failed backup is removed before returning.
+    pub fn backup_to(&self, path: impl AsRef<Path>) -> Result<()> {
+        let path = path.as_ref();
+        OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .mode(0o600)
+            .open(path)?;
+        let result = (|| {
+            let mut destination = Connection::open(path)?;
+            let backup = rusqlite::backup::Backup::new(&self.conn, &mut destination)?;
+            backup.run_to_completion(128, Duration::from_millis(10), None)?;
+            drop(backup);
+            let integrity: String =
+                destination.query_row("PRAGMA integrity_check", [], |row| row.get(0))?;
+            if integrity != "ok" {
+                return Err(Error::Other(format!(
+                    "backup integrity check failed: {integrity}"
+                )));
+            }
+            destination.close().map_err(|(_, error)| error)?;
+            ensure_private_file(path)?;
+            Ok(())
+        })();
+        if result.is_err() {
+            let _ = std::fs::remove_file(path);
+        }
+        result
+    }
+
+    pub fn validate_database(path: impl AsRef<Path>) -> Result<()> {
+        let connection =
+            Connection::open_with_flags(path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)?;
+        let integrity: String =
+            connection.query_row("PRAGMA integrity_check", [], |row| row.get(0))?;
+        if integrity != "ok" {
+            return Err(Error::InvalidInput(format!(
+                "database integrity check failed: {integrity}"
+            )));
+        }
+        for table in ["master", "passwords"] {
+            let exists: i64 = connection.query_row(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = ?",
+                [table],
+                |row| row.get(0),
+            )?;
+            if exists != 1 {
+                return Err(Error::InvalidInput(format!(
+                    "database is missing the {table} table"
+                )));
+            }
+        }
+        Ok(())
     }
 
     pub fn open_with_session_key(path: impl AsRef<Path>, key: DerivedKey) -> Result<Self> {
@@ -189,6 +272,26 @@ impl Vault {
         F: Fn() + 'static,
     {
         self.listeners.borrow_mut().push(Rc::new(f));
+    }
+
+    /// Run a group of vault operations atomically. Used by importers so a
+    /// malformed or partially incompatible document cannot leave half an
+    /// import behind.
+    pub fn transaction<T, F>(&self, operation: F) -> Result<T>
+    where
+        F: FnOnce() -> Result<T>,
+    {
+        let transaction = self.conn.unchecked_transaction()?;
+        match operation() {
+            Ok(value) => {
+                transaction.commit()?;
+                Ok(value)
+            }
+            Err(error) => {
+                transaction.rollback()?;
+                Err(error)
+            }
+        }
     }
 
     fn notify_change(&self) {
@@ -479,6 +582,7 @@ impl Vault {
         if self.has_master_password()? {
             return Err(Error::MasterAlreadySet);
         }
+        validate_new_master_password(password)?;
         let mut salt = [0u8; 32];
         rand::thread_rng().fill_bytes(&mut salt);
         let salt_text = URL_SAFE_NO_PAD.encode(salt);
@@ -530,11 +634,13 @@ impl Vault {
     }
 
     /// Configure quick-unlock for the current session. Requires an unlocked
-    /// vault. The PIN must be at least 4 characters. The derived key is cached
+    /// vault. New PINs must contain at least 6 characters. The derived key is cached
     /// in memory; on session lock it can be restored with `quick_unlock(pin)`.
     pub fn enable_quick_unlock(&mut self, pin: &str) -> Result<()> {
-        if pin.len() < 4 {
-            return Err(Error::Other("PIN must be at least 4 characters".into()));
+        if pin.chars().count() < 6 {
+            return Err(Error::InvalidInput(
+                "PIN must contain at least 6 characters".into(),
+            ));
         }
         let key = self.key.clone().ok_or(Error::Locked)?;
         self.quick_pin_hash = Some(argon2_kdf::hash_master(pin)?);
@@ -644,6 +750,21 @@ impl Vault {
     }
 
     pub fn add(&self, entry: NewEntry) -> Result<i64> {
+        let totp_algorithm = entry
+            .totp_algorithm
+            .clone()
+            .unwrap_or_else(|| "SHA1".into());
+        let totp_digits = entry.totp_digits.unwrap_or(6);
+        let totp_period = entry.totp_period.unwrap_or(30);
+        let algorithm = crate::totp::Algorithm::parse(&totp_algorithm)?;
+        crate::totp::validate_parameters(totp_digits, totp_period)?;
+        if let Some(secret) = entry
+            .totp_secret
+            .as_deref()
+            .filter(|secret| !secret.is_empty())
+        {
+            crate::totp::generate_totp(secret, algorithm, totp_digits, totp_period, 0)?;
+        }
         let ts = chrono::Utc::now().timestamp();
         let pw = self.encrypt(&entry.password)?;
         let notes = entry
@@ -671,13 +792,9 @@ impl Vault {
                 notes,
                 entry.url,
                 totp,
-                if entry.totp_secret.is_some() {
-                    entry.totp_algorithm.unwrap_or_else(|| "SHA1".into())
-                } else {
-                    "SHA1".into()
-                },
-                entry.totp_digits.unwrap_or(6) as i64,
-                entry.totp_period.unwrap_or(30) as i64,
+                totp_algorithm,
+                totp_digits as i64,
+                totp_period as i64,
                 entry.category,
                 ts,
                 ts,
@@ -835,6 +952,28 @@ impl Vault {
     }
 
     pub fn update(&self, id: i64, change: UpdateEntry) -> Result<bool> {
+        if let Some(algorithm) = change.totp_algorithm.as_deref() {
+            crate::totp::Algorithm::parse(algorithm)?;
+        }
+        crate::totp::validate_parameters(
+            change.totp_digits.unwrap_or(6),
+            change.totp_period.unwrap_or(30),
+        )?;
+        if let Some(Some(secret)) = change.totp_secret.as_ref() {
+            if !secret.is_empty() {
+                let algorithm = crate::totp::Algorithm::parse(
+                    change.totp_algorithm.as_deref().unwrap_or("SHA1"),
+                )?;
+                crate::totp::generate_totp(
+                    secret,
+                    algorithm,
+                    change.totp_digits.unwrap_or(6),
+                    change.totp_period.unwrap_or(30),
+                    0,
+                )?;
+            }
+        }
+        let tx = self.conn.unchecked_transaction()?;
         let mut sets: Vec<&'static str> = Vec::new();
         let mut vals: Vec<Value> = Vec::new();
 
@@ -849,8 +988,7 @@ impl Vault {
         if let Some(p) = change.password {
             // Snapshot the previous encrypted password into history before
             // overwriting, so the user can recover old credentials.
-            let prev: Option<Vec<u8>> = self
-                .conn
+            let prev: Option<Vec<u8>> = tx
                 .query_row(
                     "SELECT password_encrypted FROM passwords WHERE id = ?",
                     params![id],
@@ -859,11 +997,11 @@ impl Vault {
                 .ok();
             if let Some(blob) = prev {
                 let ts = chrono::Utc::now().timestamp();
-                let _ = self.conn.execute(
+                tx.execute(
                     "INSERT INTO passwords_history (entry_id, password_encrypted, changed_at)
                      VALUES (?, ?, ?)",
                     params![id, blob, ts],
-                );
+                )?;
             }
             sets.push("password_encrypted = ?");
             vals.push(self.encrypt(&p)?.into());
@@ -917,7 +1055,8 @@ impl Vault {
         vals.push(id.into());
 
         let sql = format!("UPDATE passwords SET {} WHERE id = ?", sets.join(", "));
-        let n = self.conn.execute(&sql, params_from_iter(vals))?;
+        let n = tx.execute(&sql, params_from_iter(vals))?;
+        tx.commit()?;
         if n > 0 {
             self.notify_change();
         }
@@ -988,6 +1127,22 @@ impl Vault {
         if copied == 0 {
             return Ok(false);
         }
+        let trash_id = tx.last_insert_rowid();
+        tx.execute(
+            "INSERT INTO passwords_history_trash
+                (original_history_id, trash_id, password_encrypted, changed_at)
+             SELECT id, ?, password_encrypted, changed_at
+               FROM passwords_history WHERE entry_id = ?",
+            params![trash_id, id],
+        )?;
+        tx.execute(
+            "INSERT INTO attachments_trash
+                (original_attachment_id, trash_id, filename, mime_type,
+                 ciphertext, size_bytes, created_at)
+             SELECT id, ?, filename, mime_type, ciphertext, size_bytes, created_at
+               FROM attachments WHERE entry_id = ?",
+            params![trash_id, id],
+        )?;
         // If this entry was synced to Nextcloud Passwords, capture the UUID
         // as a tombstone so the next sync push deletes it remotely. The
         // mapping row itself disappears via ON DELETE CASCADE below; without
@@ -1098,7 +1253,8 @@ impl Vault {
             .ok();
         let Some(row) = row else { return Ok(None) };
         let now = chrono::Utc::now().timestamp();
-        self.conn.execute(
+        let tx = self.conn.unchecked_transaction()?;
+        tx.execute(
             "INSERT INTO passwords (title, username, password_encrypted, notes_encrypted, url,
                 totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
                 category, favorite, created_at, updated_at)
@@ -1119,11 +1275,27 @@ impl Vault {
                 row.12.unwrap_or(now),
             ],
         )?;
-        let new_id = self.conn.last_insert_rowid();
-        self.conn.execute(
+        let new_id = tx.last_insert_rowid();
+        tx.execute(
+            "INSERT INTO passwords_history (entry_id, password_encrypted, changed_at)
+             SELECT ?, password_encrypted, changed_at
+               FROM passwords_history_trash WHERE trash_id = ?
+               ORDER BY changed_at, original_history_id",
+            params![new_id, trash_id],
+        )?;
+        tx.execute(
+            "INSERT INTO attachments
+                (entry_id, filename, mime_type, ciphertext, size_bytes, created_at)
+             SELECT ?, filename, mime_type, ciphertext, size_bytes, created_at
+               FROM attachments_trash WHERE trash_id = ?
+               ORDER BY original_attachment_id",
+            params![new_id, trash_id],
+        )?;
+        tx.execute(
             "DELETE FROM passwords_trash WHERE id = ?",
             params![trash_id],
         )?;
+        tx.commit()?;
         self.notify_change();
         Ok(Some(new_id))
     }
@@ -1181,6 +1353,17 @@ impl Vault {
         )?;
         self.notify_change();
         Ok(new != 0)
+    }
+
+    pub fn set_favorite(&self, id: i64, favorite: bool) -> Result<bool> {
+        let n = self.conn.execute(
+            "UPDATE passwords SET favorite = ? WHERE id = ?",
+            params![i64::from(favorite), id],
+        )?;
+        if n > 0 {
+            self.notify_change();
+        }
+        Ok(n > 0)
     }
 
     // -----------------------------------------------------------------
@@ -1462,80 +1645,147 @@ impl Vault {
         Ok(rows)
     }
 
-    /// Change master password — re-encrypts every BLOB. Atomic.
+    /// Change master password and re-encrypt every protected value atomically.
     pub fn change_master_password(&mut self, current: &str, new: &str) -> Result<()> {
-        // verify current password against on-disk hash
-        let (hash, _salt) = self.conn.query_row(
-            "SELECT password_hash, salt FROM master WHERE id = 1",
-            [],
-            |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)),
-        )?;
+        let hash: String =
+            self.conn
+                .query_row("SELECT password_hash FROM master WHERE id = 1", [], |row| {
+                    row.get(0)
+                })?;
         if !argon2_kdf::verify_master(current, &hash)? {
             return Err(Error::InvalidMasterPassword);
         }
+        validate_new_master_password(new)?;
 
         let mut salt = [0u8; 32];
         rand::thread_rng().fill_bytes(&mut salt);
         let new_salt_text = URL_SAFE_NO_PAD.encode(salt);
         let new_key = argon2_kdf::derive_key_v2(new, new_salt_text.as_bytes())?;
         let new_hash = argon2_kdf::hash_master(new)?;
-
-        // collect plaintexts under the old key first
         let old_key = self.key()?.clone();
-        let entries: Vec<EncryptedEntryRow> = {
-            let mut stmt = self.conn.prepare(
-                "SELECT id, password_encrypted, notes_encrypted, totp_secret_encrypted FROM passwords",
-            )?;
-            let rows = stmt
-                .query_map([], |r| {
-                    Ok((
-                        r.get::<_, i64>(0)?,
-                        r.get::<_, Vec<u8>>(1)?,
-                        r.get::<_, Option<Vec<u8>>>(2)?,
-                        r.get::<_, Option<Vec<u8>>>(3)?,
-                    ))
-                })?
-                .collect::<rusqlite::Result<Vec<_>>>()?;
-            rows
-        };
+
+        let entries = collect_encrypted_entries(&self.conn, "passwords")?;
+        let trash_entries = collect_encrypted_entries(&self.conn, "passwords_trash")?;
+        let history =
+            collect_encrypted_blobs(&self.conn, "passwords_history", "id", "password_encrypted")?;
+        let trash_history = collect_encrypted_blobs(
+            &self.conn,
+            "passwords_history_trash",
+            "original_history_id",
+            "password_encrypted",
+        )?;
+        let attachments = collect_encrypted_blobs(&self.conn, "attachments", "id", "ciphertext")?;
+        let trash_attachments = collect_encrypted_blobs(
+            &self.conn,
+            "attachments_trash",
+            "original_attachment_id",
+            "ciphertext",
+        )?;
 
         let tx = self.conn.transaction()?;
-        {
-            let mut upd = tx.prepare(
-                "UPDATE passwords SET password_encrypted = ?, notes_encrypted = ?, totp_secret_encrypted = ? WHERE id = ?",
-            )?;
-            for (id, pw, notes, totp) in entries {
-                let pw_pt = aes_gcm_v2::decrypt(&old_key, &pw)?;
-                let new_pw = aes_gcm_v2::encrypt(&new_key, &pw_pt)?;
-
-                let new_notes = match notes {
-                    Some(b) => Some(aes_gcm_v2::encrypt(
-                        &new_key,
-                        &aes_gcm_v2::decrypt(&old_key, &b)?,
-                    )?),
-                    None => None,
-                };
-                let new_totp = match totp {
-                    Some(b) => Some(aes_gcm_v2::encrypt(
-                        &new_key,
-                        &aes_gcm_v2::decrypt(&old_key, &b)?,
-                    )?),
-                    None => None,
-                };
-                upd.execute(params![new_pw, new_notes, new_totp, id])?;
+        for (table, rows) in [("passwords", entries), ("passwords_trash", trash_entries)] {
+            let sql = format!(
+                "UPDATE {table} SET password_encrypted = ?, notes_encrypted = ?, \
+                 totp_secret_encrypted = ? WHERE id = ?"
+            );
+            let mut update = tx.prepare(&sql)?;
+            for (id, password, notes, totp) in rows {
+                let (password, notes, totp) =
+                    reencrypt_entry(&old_key, &new_key, password, notes, totp)?;
+                update.execute(params![password, notes, totp, id])?;
             }
-            tx.execute(
-                "UPDATE master SET password_hash = ?, salt = ? WHERE id = 1",
-                params![new_hash, new_salt_text],
-            )?;
         }
+        for (table, id_column, blob_column, rows) in [
+            ("passwords_history", "id", "password_encrypted", history),
+            (
+                "passwords_history_trash",
+                "original_history_id",
+                "password_encrypted",
+                trash_history,
+            ),
+            ("attachments", "id", "ciphertext", attachments),
+            (
+                "attachments_trash",
+                "original_attachment_id",
+                "ciphertext",
+                trash_attachments,
+            ),
+        ] {
+            let sql = format!("UPDATE {table} SET {blob_column} = ? WHERE {id_column} = ?");
+            let mut update = tx.prepare(&sql)?;
+            for (id, blob) in rows {
+                update.execute(params![reencrypt_blob(&old_key, &new_key, &blob)?, id])?;
+            }
+        }
+        tx.execute(
+            "UPDATE master SET password_hash = ?, salt = ? WHERE id = 1",
+            params![new_hash, new_salt_text],
+        )?;
         tx.commit()?;
+
         self.key = Some(new_key);
         self.cached_key = None;
         self.quick_pin_hash = None;
         self.notify_change();
         Ok(())
     }
+}
+
+fn validate_new_master_password(password: &str) -> Result<()> {
+    if password.chars().count() < MIN_MASTER_PASSWORD_LENGTH {
+        return Err(Error::InvalidInput(format!(
+            "master password must contain at least {MIN_MASTER_PASSWORD_LENGTH} characters"
+        )));
+    }
+    Ok(())
+}
+
+fn collect_encrypted_entries(conn: &Connection, table: &str) -> Result<Vec<EncryptedEntryRow>> {
+    let sql = format!(
+        "SELECT id, password_encrypted, notes_encrypted, totp_secret_encrypted FROM {table}"
+    );
+    let mut stmt = conn.prepare(&sql)?;
+    let rows = stmt
+        .query_map([], |row| {
+            Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?))
+        })?
+        .collect::<rusqlite::Result<Vec<_>>>()?;
+    Ok(rows)
+}
+
+fn collect_encrypted_blobs(
+    conn: &Connection,
+    table: &str,
+    id_column: &str,
+    blob_column: &str,
+) -> Result<Vec<(i64, Vec<u8>)>> {
+    let sql = format!("SELECT {id_column}, {blob_column} FROM {table}");
+    let mut stmt = conn.prepare(&sql)?;
+    let rows = stmt
+        .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?
+        .collect::<rusqlite::Result<Vec<_>>>()?;
+    Ok(rows)
+}
+
+fn reencrypt_blob(old_key: &DerivedKey, new_key: &DerivedKey, blob: &[u8]) -> Result<Vec<u8>> {
+    aes_gcm_v2::encrypt(new_key, &aes_gcm_v2::decrypt(old_key, blob)?)
+}
+
+fn reencrypt_entry(
+    old_key: &DerivedKey,
+    new_key: &DerivedKey,
+    password: Vec<u8>,
+    notes: Option<Vec<u8>>,
+    totp: Option<Vec<u8>>,
+) -> Result<EncryptedPayload> {
+    Ok((
+        reencrypt_blob(old_key, new_key, &password)?,
+        notes
+            .map(|blob| reencrypt_blob(old_key, new_key, &blob))
+            .transpose()?,
+        totp.map(|blob| reencrypt_blob(old_key, new_key, &blob))
+            .transpose()?,
+    ))
 }
 
 fn normalize_folder_name(name: &str) -> Result<String> {
@@ -1599,6 +1849,171 @@ mod tests {
     use super::*;
 
     #[test]
+    fn master_password_change_preserves_all_encrypted_data() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let path = tmp.path().to_path_buf();
+        let mut vault = Vault::open(&path).unwrap();
+        vault.set_master_password("old master password").unwrap();
+
+        let active_id = vault
+            .add(NewEntry {
+                title: "Active".into(),
+                password: "active-old".into(),
+                notes: Some("active-notes".into()),
+                totp_secret: Some("JBSWY3DPEHPK3PXP".into()),
+                ..NewEntry::default()
+            })
+            .unwrap();
+        vault
+            .update(
+                active_id,
+                UpdateEntry {
+                    password: Some("active-current".into()),
+                    ..UpdateEntry::default()
+                },
+            )
+            .unwrap();
+        let active_attachment = vault
+            .add_attachment(active_id, "active.bin", None, b"active attachment")
+            .unwrap();
+
+        let trash_source_id = vault
+            .add(NewEntry {
+                title: "Trashed".into(),
+                password: "trash-old".into(),
+                notes: Some("trash-notes".into()),
+                ..NewEntry::default()
+            })
+            .unwrap();
+        vault
+            .update(
+                trash_source_id,
+                UpdateEntry {
+                    password: Some("trash-current".into()),
+                    ..UpdateEntry::default()
+                },
+            )
+            .unwrap();
+        vault
+            .add_attachment(trash_source_id, "trash.bin", None, b"trash attachment")
+            .unwrap();
+
+        let now = chrono::Utc::now().timestamp();
+        let tx = vault.conn.unchecked_transaction().unwrap();
+        tx.execute(
+            "INSERT INTO passwords_trash (
+                original_id, title, username, password_encrypted, notes_encrypted,
+                url, totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
+                category, favorite, created_at, updated_at, deleted_at)
+             SELECT id, title, username, password_encrypted, notes_encrypted,
+                    url, totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
+                    category, favorite, created_at, updated_at, ?
+               FROM passwords WHERE id = ?",
+            params![now, trash_source_id],
+        )
+        .unwrap();
+        let trash_id = tx.last_insert_rowid();
+        tx.execute(
+            "INSERT INTO passwords_history_trash
+                (original_history_id, trash_id, password_encrypted, changed_at)
+             SELECT id, ?, password_encrypted, changed_at
+               FROM passwords_history WHERE entry_id = ?",
+            params![trash_id, trash_source_id],
+        )
+        .unwrap();
+        tx.execute(
+            "INSERT INTO attachments_trash
+                (original_attachment_id, trash_id, filename, mime_type,
+                 ciphertext, size_bytes, created_at)
+             SELECT id, ?, filename, mime_type, ciphertext, size_bytes, created_at
+               FROM attachments WHERE entry_id = ?",
+            params![trash_id, trash_source_id],
+        )
+        .unwrap();
+        tx.execute("DELETE FROM passwords WHERE id = ?", [trash_source_id])
+            .unwrap();
+        tx.commit().unwrap();
+
+        vault
+            .change_master_password("old master password", "new master password")
+            .unwrap();
+        vault.full_lock();
+        assert!(matches!(
+            vault.unlock("old master password"),
+            Err(Error::InvalidMasterPassword)
+        ));
+        vault.unlock("new master password").unwrap();
+
+        let active = vault.get_without_touch(active_id).unwrap().unwrap();
+        assert_eq!(active.password.as_deref(), Some("active-current"));
+        assert_eq!(active.notes.as_deref(), Some("active-notes"));
+        assert_eq!(
+            vault.password_history(active_id).unwrap()[0].password,
+            "active-old"
+        );
+        assert_eq!(
+            vault.get_attachment(active_attachment).unwrap().unwrap().1,
+            b"active attachment"
+        );
+
+        let restored_id = vault.restore_from_trash(trash_id).unwrap().unwrap();
+        let restored = vault.get_without_touch(restored_id).unwrap().unwrap();
+        assert_eq!(restored.password.as_deref(), Some("trash-current"));
+        assert_eq!(restored.notes.as_deref(), Some("trash-notes"));
+        assert_eq!(
+            vault.password_history(restored_id).unwrap()[0].password,
+            "trash-old"
+        );
+        let restored_attachment = vault.list_attachments(restored_id).unwrap()[0].id;
+        assert_eq!(
+            vault
+                .get_attachment(restored_attachment)
+                .unwrap()
+                .unwrap()
+                .1,
+            b"trash attachment"
+        );
+    }
+
+    #[test]
+    fn sqlite_safety_and_online_backup_are_enabled() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("vault.db");
+        let backup_path = directory.path().join("backup.db");
+        let mut vault = Vault::open(&path).unwrap();
+        vault.set_master_password("secure master password").unwrap();
+        vault
+            .add(NewEntry {
+                title: "Example".into(),
+                password: "secret".into(),
+                ..NewEntry::default()
+            })
+            .unwrap();
+
+        let foreign_keys: i64 = vault
+            .conn
+            .query_row("PRAGMA foreign_keys", [], |row| row.get(0))
+            .unwrap();
+        assert_eq!(foreign_keys, 1);
+        vault.backup_to(&backup_path).unwrap();
+        assert!(vault.backup_to(&backup_path).is_err());
+
+        let mut restored = Vault::open(&backup_path).unwrap();
+        restored.unlock("secure master password").unwrap();
+        assert_eq!(restored.list(None).unwrap().len(), 1);
+    }
+
+    #[test]
+    fn rejects_short_new_master_passwords() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = Vault::open(tmp.path()).unwrap();
+        assert!(matches!(
+            vault.set_master_password("short"),
+            Err(Error::InvalidInput(_))
+        ));
+    }
+
+    #[test]
     fn persistent_quick_unlock_survives_reopen() {
         let tmp = tempfile::NamedTempFile::new().unwrap();
         let path = tmp.path().to_path_buf();
@@ -1614,16 +2029,16 @@ mod tests {
                 ..NewEntry::default()
             })
             .unwrap();
-        let prefs = vault.enable_persistent_quick_unlock("1234").unwrap();
+        let prefs = vault.enable_persistent_quick_unlock("123456").unwrap();
         drop(vault);
 
         let mut reopened = Vault::open(&path).unwrap();
         assert!(!reopened.is_unlocked());
         assert!(matches!(
-            reopened.quick_unlock_persistent("0000", &prefs),
+            reopened.quick_unlock_persistent("000000", &prefs),
             Err(Error::InvalidMasterPassword)
         ));
-        reopened.quick_unlock_persistent("1234", &prefs).unwrap();
+        reopened.quick_unlock_persistent("123456", &prefs).unwrap();
 
         let entries = reopened.list(None).unwrap();
         assert_eq!(entries.len(), 1);

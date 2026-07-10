@@ -17,7 +17,8 @@ use crate::db::vault::{NewEntry, PasswordEntry, Vault};
 use crate::{Error, Result};
 use keepass::db::{fields, Database, EntryMut, GroupRef};
 use keepass::DatabaseKey;
-use std::fs::File;
+use std::fs::{File, OpenOptions};
+use std::os::unix::fs::OpenOptionsExt;
 use std::path::Path;
 
 pub fn parse_file(path: impl AsRef<Path>, password: &str) -> Result<Vec<NewEntry>> {
@@ -174,7 +175,11 @@ pub fn export_vault(vault: &Vault, path: impl AsRef<Path>, password: &str) -> Re
         exported += 1;
     }
 
-    let mut file = File::create(&path)?;
+    let mut file = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .mode(0o600)
+        .open(&path)?;
     db.save(&mut file, DatabaseKey::new().with_password(password))
         .map_err(|e| Error::Other(format!("kdbx save: {e}")))?;
     Ok(exported)

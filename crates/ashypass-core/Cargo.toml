@@ -10,7 +10,7 @@ repository.workspace = true
 
 [features]
 default = []
-fido2 = ["dep:ctap-hid-fido2"]
+fido2 = []
 
 [dependencies]
 argon2.workspace = true
@@ -44,8 +44,6 @@ zxcvbn.workspace = true
 zip.workspace = true
 keepass.workspace = true
 secret-service.workspace = true
-
-ctap-hid-fido2 = { version = "3", optional = true }
 
 [dev-dependencies]
 proptest = "1"

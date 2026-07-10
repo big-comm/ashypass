@@ -7,7 +7,7 @@
 //!  4. Block on the listener until Google redirects back with `?code=...`.
 //!  5. Exchange the code for an access + refresh token at the token endpoint.
 
-use crate::config::{config_dir, token_file};
+use crate::config::{atomic_write_private, config_dir, ensure_private_file, token_file};
 use crate::{Error, Result};
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use rand::RngCore;
@@ -16,7 +16,7 @@ use sha2::{Digest, Sha256};
 use std::fs;
 use std::io::{BufRead, BufReader, Write};
 use std::net::TcpListener;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 pub const GOOGLE_AUTH_URL: &str = "https://accounts.google.com/o/oauth2/v2/auth";
 pub const GOOGLE_TOKEN_URL: &str = "https://oauth2.googleapis.com/token";
@@ -40,22 +40,17 @@ impl Token {
 
     pub fn load() -> Option<Self> {
         let path = token_file();
+        let _ = ensure_private_file(&path);
         let text = fs::read_to_string(&path).ok()?;
-        serde_json::from_str(&text).ok()
+        let mut token: Self = serde_json::from_str(&text).ok()?;
+        token.token_uri = GOOGLE_TOKEN_URL.to_string();
+        Some(token)
     }
 
     pub fn save(&self) -> Result<()> {
         let path = token_file();
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?;
-        }
         let json = serde_json::to_string_pretty(self)?;
-        fs::write(&path, json)?;
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            let _ = fs::set_permissions(&path, fs::Permissions::from_mode(0o600));
-        }
+        atomic_write_private(&path, json.as_bytes())?;
         Ok(())
     }
 
@@ -101,21 +96,15 @@ impl ClientCredentials {
 
     pub fn save(&self) -> Result<()> {
         let path = credentials_file();
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?;
-        }
         let json = serde_json::to_string_pretty(self)?;
-        fs::write(&path, json)?;
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            let _ = fs::set_permissions(&path, fs::Permissions::from_mode(0o600));
-        }
+        atomic_write_private(&path, json.as_bytes())?;
         Ok(())
     }
 
     fn from_file() -> Option<Self> {
-        let text = fs::read_to_string(credentials_file()).ok()?;
+        let path = credentials_file();
+        let _ = ensure_private_file(&path);
+        let text = fs::read_to_string(path).ok()?;
         let creds: Self = serde_json::from_str(&text).ok()?;
         if creds.client_id.trim().is_empty() {
             None
@@ -144,6 +133,9 @@ pub fn pkce_pair() -> (String, String) {
 /// being returned.
 pub fn login(creds: &ClientCredentials) -> Result<Token> {
     let (verifier, challenge) = pkce_pair();
+    let mut state_bytes = [0u8; 32];
+    rand::thread_rng().fill_bytes(&mut state_bytes);
+    let state = URL_SAFE_NO_PAD.encode(state_bytes);
 
     let listener =
         TcpListener::bind("127.0.0.1:0").map_err(|e| Error::Other(format!("oauth bind: {e}")))?;
@@ -168,14 +160,18 @@ pub fn login(creds: &ClientCredentials) -> Result<Token> {
         scope = url::form_urlencoded::byte_serialize(DRIVE_SCOPE.as_bytes()).collect::<String>(),
         ch = challenge,
     );
+    let auth_url = format!(
+        "{auth_url}&state={}",
+        url::form_urlencoded::byte_serialize(state.as_bytes()).collect::<String>()
+    );
 
-    let _ = open_browser(&auth_url);
+    open_browser(&auth_url)?;
 
     listener
-        .set_nonblocking(false)
+        .set_nonblocking(true)
         .map_err(|e| Error::Other(format!("oauth nonblock: {e}")))?;
 
-    let code = wait_for_code(&listener)?;
+    let code = wait_for_code(&listener, &state)?;
 
     let client = reqwest::blocking::Client::builder()
         .timeout(Duration::from_secs(20))
@@ -249,7 +245,7 @@ pub fn refresh(token: &mut Token) -> Result<()> {
     }
 
     let resp = client
-        .post(&token.token_uri)
+        .post(GOOGLE_TOKEN_URL)
         .form(&form)
         .send()
         .map_err(|e| Error::Other(format!("refresh: {e}")))?;
@@ -272,30 +268,33 @@ pub fn refresh(token: &mut Token) -> Result<()> {
     Ok(())
 }
 
-fn wait_for_code(listener: &TcpListener) -> Result<String> {
-    listener
-        .set_nonblocking(false)
-        .map_err(|e| Error::Other(format!("set_nonblock: {e}")))?;
-    let (mut stream, _) = listener
-        .accept()
-        .map_err(|e| Error::Other(format!("accept: {e}")))?;
-    stream.set_read_timeout(Some(Duration::from_secs(120))).ok();
+fn wait_for_code(listener: &TcpListener, expected_state: &str) -> Result<String> {
+    let deadline = Instant::now() + Duration::from_secs(120);
+    let (mut stream, _) = loop {
+        match listener.accept() {
+            Ok(connection) => break connection,
+            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                if Instant::now() >= deadline {
+                    return Err(Error::Other("oauth callback timed out".into()));
+                }
+                std::thread::sleep(Duration::from_millis(50));
+            }
+            Err(error) => return Err(Error::Other(format!("accept: {error}"))),
+        }
+    };
+    stream.set_read_timeout(Some(Duration::from_secs(5))).ok();
 
     let mut reader = BufReader::new(
         stream
             .try_clone()
             .map_err(|e| Error::Other(format!("clone: {e}")))?,
     );
-    let mut first_line = String::new();
-    reader
-        .read_line(&mut first_line)
-        .map_err(|e| Error::Other(format!("read: {e}")))?;
+    let first_line = read_bounded_line(&mut reader, 8_192)?;
 
     // Drain headers
     loop {
-        let mut line = String::new();
-        let n = reader.read_line(&mut line).unwrap_or(0);
-        if n == 0 || line == "\r\n" || line == "\n" {
+        let line = read_bounded_line(&mut reader, 8_192)?;
+        if line.is_empty() || line == "\r\n" || line == "\n" {
             break;
         }
     }
@@ -318,6 +317,7 @@ fn wait_for_code(listener: &TcpListener) -> Result<String> {
 
     let mut code = None;
     let mut err = None;
+    let mut returned_state = None;
     for pair in query.split('&') {
         if let Some((k, v)) = pair.split_once('=') {
             let decoded = url::form_urlencoded::parse(format!("x={v}").as_bytes())
@@ -327,6 +327,7 @@ fn wait_for_code(listener: &TcpListener) -> Result<String> {
             match k {
                 "code" => code = Some(decoded),
                 "error" => err = Some(decoded),
+                "state" => returned_state = Some(decoded),
                 _ => {}
             }
         }
@@ -334,7 +335,28 @@ fn wait_for_code(listener: &TcpListener) -> Result<String> {
     if let Some(e) = err {
         return Err(Error::Other(format!("oauth callback: {e}")));
     }
+    if returned_state.as_deref() != Some(expected_state) {
+        return Err(Error::InvalidInput("oauth callback state mismatch".into()));
+    }
     code.ok_or_else(|| Error::Other("oauth callback: no code".into()))
+}
+
+fn read_bounded_line(reader: &mut impl BufRead, maximum: usize) -> Result<String> {
+    let mut bytes = Vec::new();
+    let read = {
+        let mut limited = std::io::Read::take(&mut *reader, (maximum + 1) as u64);
+        limited.read_until(b'\n', &mut bytes)?
+    };
+    if bytes.len() > maximum {
+        return Err(Error::InvalidInput(
+            "oauth callback request is too large".into(),
+        ));
+    }
+    if read == 0 {
+        return Ok(String::new());
+    }
+    String::from_utf8(bytes)
+        .map_err(|_| Error::InvalidInput("oauth callback request is not UTF-8".into()))
 }
 
 fn open_browser(url: &str) -> Result<()> {
@@ -350,4 +372,32 @@ fn open_browser(url: &str) -> Result<()> {
         .spawn()
         .map_err(|e| Error::Other(format!("open browser: {e}")))?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn pkce_values_are_random_and_url_safe() {
+        let first = pkce_pair();
+        let second = pkce_pair();
+        assert_ne!(first, second);
+        assert_eq!(first.0.len(), 43);
+        assert!(first
+            .0
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'_')));
+    }
+
+    #[test]
+    fn callback_lines_are_bounded() {
+        let mut valid = std::io::Cursor::new(b"GET / HTTP/1.1\r\n".to_vec());
+        assert_eq!(
+            read_bounded_line(&mut valid, 64).unwrap(),
+            "GET / HTTP/1.1\r\n"
+        );
+        let mut oversized = std::io::Cursor::new(vec![b'a'; 65]);
+        assert!(read_bounded_line(&mut oversized, 64).is_err());
+    }
 }

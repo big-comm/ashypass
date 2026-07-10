@@ -23,6 +23,7 @@
 
 use crate::events::AppEvent;
 use crate::state::SharedState;
+use crate::tr;
 use ashypass_core::settings::Settings;
 use ashypass_core::sync::{nextcloud_engine, ConflictResolution, SyncReport};
 use gtk::glib;
@@ -194,25 +195,26 @@ impl Inner {
                             &inner.toast,
                             &format!(
                                 "{} ({})",
-                                "Sync com problemas",
+                                tr!("Sync completed with issues"),
                                 report.stats.errors.len()
                             ),
                         );
                     }
                     // The sync may have inserted/updated entries locally —
                     // notify the rest of the UI so views refresh.
-                    if report.stats.created_locally + report.stats.updated_locally > 0 {
-                        inner
-                            .state
-                            .events
-                            .emit(AppEvent::VaultChanged);
+                    if report.stats.created_locally
+                        + report.stats.updated_locally
+                        + report.stats.deleted_locally
+                        > 0
+                    {
+                        inner.state.events.emit(AppEvent::VaultChanged);
                     }
                     inner.maybe_rerun();
                     glib::ControlFlow::Break
                 }
                 Ok(Err(msg)) => {
                     inner.in_flight.set(false);
-                    show_toast(&inner.toast, &format!("Falha no sync: {msg}"));
+                    show_toast(&inner.toast, &format!("{}: {msg}", tr!("Sync failed")));
                     inner.maybe_rerun();
                     glib::ControlFlow::Break
                 }

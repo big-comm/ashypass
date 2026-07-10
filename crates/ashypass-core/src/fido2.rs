@@ -6,8 +6,9 @@
 //! extension on that salt, and XOR the result into the Argon2-derived vault
 //! key. A BIP39 backup phrase doubles as fallback when no token is around.
 //!
-//! Build with `--features fido2` to enable real CTAP2 calls; without the
-//! feature, register/assert return a clear error so callers can fall back.
+//! Hardware registration/assertion is intentionally unavailable. The stored
+//! preview schema remains readable so a future implementation can migrate it
+//! without deleting user configuration.
 
 use crate::config::fido2_file;
 use crate::{Error, Result};
@@ -42,6 +43,7 @@ pub struct Fido2Config {
 impl Fido2Config {
     pub fn load() -> Self {
         let path = fido2_file();
+        let _ = crate::config::ensure_private_file(&path);
         match fs::read_to_string(&path) {
             Ok(text) => serde_json::from_str(&text).unwrap_or_default(),
             Err(_) => Self::default(),
@@ -50,10 +52,8 @@ impl Fido2Config {
 
     pub fn save(&self) -> Result<()> {
         let path = fido2_file();
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?;
-        }
-        fs::write(&path, serde_json::to_string_pretty(self)?)?;
+        let serialized = serde_json::to_string_pretty(self)?;
+        crate::config::atomic_write_private(&path, serialized.as_bytes())?;
         Ok(())
     }
 
@@ -102,13 +102,8 @@ pub fn wrap_key_from_hmac(hmac_secret: &[u8]) -> [u8; 32] {
 // ---------------------------------------------------------------------------
 // CTAP2 helpers.
 //
-// The real CTAP2 wire calls live behind the `fido2` feature so the default
-// build doesn't pull in HID dependencies. The current implementation of the
-// feature path is intentionally a stub returning a descriptive error — the
-// concrete `ctap-hid-fido2` API surface changes between minor versions and we
-// can't validate without a physical authenticator on the build host. The
-// storage, backup-phrase and UI flow are wired so that turning this on later
-// is a localized change to two functions.
+// Reserved CTAP2 helpers. Callers must not treat these stubs or the preview
+// configuration as a second factor.
 // ---------------------------------------------------------------------------
 
 #[derive(Debug, Clone)]
@@ -118,8 +113,8 @@ pub struct Assertion {
 
 pub fn register(_pin: Option<&str>, _nickname: Option<String>) -> Result<Fido2Slot> {
     Err(Error::Other(
-        "FIDO2 hardware registration is not yet wired in this build. \
-         Backup phrase fallback is available."
+        "FIDO2 vault protection is unavailable until hardware registration \
+         and assertion are fully implemented."
             .into(),
     ))
 }

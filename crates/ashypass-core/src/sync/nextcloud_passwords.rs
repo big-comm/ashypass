@@ -18,7 +18,9 @@ use reqwest::blocking::Client;
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE};
 use serde::{Deserialize, Deserializer, Serialize};
 use std::fs;
+use std::io::Read;
 use std::path::PathBuf;
+use std::sync::OnceLock;
 use std::time::Duration;
 
 /// Persisted config. Service password is stored in Secret Service when
@@ -129,6 +131,7 @@ impl NextcloudPasswordsClient {
     /// Probe the server and persist the config on success.
     pub fn login(&mut self, mut cfg: NcConfig) -> Result<()> {
         cfg.base_url = trim_trailing_slash(&cfg.base_url).to_string();
+        validate_server_url(&cfg.base_url)?;
         if cfg.base_url.is_empty() || cfg.username.is_empty() || cfg.app_password.is_empty() {
             return Err(Error::Other(
                 "base url, username and app password are required".into(),
@@ -225,6 +228,7 @@ impl NextcloudPasswordsClient {
         path: &str,
         body: Option<String>,
     ) -> Result<Response> {
+        validate_server_url(&cfg.base_url)?;
         let url = format!("{}/index.php/apps/passwords/api/1.0{}", cfg.base_url, path);
         let client = http_client()?;
         let mut req = match method {
@@ -242,13 +246,28 @@ impl NextcloudPasswordsClient {
         if let Some(b) = body {
             req = req.body(b);
         }
-        let resp = req
+        let mut resp = req
             .send()
             .map_err(|e| Error::Other(format!("nextcloud {method} {path}: {e}")))?;
         let status = resp.status().as_u16();
-        let body = resp
-            .text()
-            .map_err(|e| Error::Other(format!("nextcloud read body: {e}")))?;
+        const MAX_RESPONSE_BYTES: u64 = 64 * 1024 * 1024;
+        if resp
+            .content_length()
+            .is_some_and(|size| size > MAX_RESPONSE_BYTES)
+        {
+            return Err(Error::InvalidInput(
+                "Nextcloud response is too large".into(),
+            ));
+        }
+        let mut body = String::new();
+        (&mut resp)
+            .take(MAX_RESPONSE_BYTES + 1)
+            .read_to_string(&mut body)?;
+        if body.len() as u64 > MAX_RESPONSE_BYTES {
+            return Err(Error::InvalidInput(
+                "Nextcloud response is too large".into(),
+            ));
+        }
         Ok(Response { status, body })
     }
 
@@ -258,7 +277,9 @@ impl NextcloudPasswordsClient {
     }
 
     fn load_config() -> Option<NcConfig> {
-        let text = fs::read_to_string(Self::config_path()).ok()?;
+        let path = Self::config_path();
+        let _ = crate::config::ensure_private_file(&path);
+        let text = fs::read_to_string(path).ok()?;
         let mut cfg: NcConfig = serde_json::from_str(&text).ok()?;
         if cfg.app_password.is_empty() {
             cfg.app_password = crate::keyring::load_named_secret(APP_PASSWORD_SECRET_KIND)
@@ -299,16 +320,8 @@ impl NextcloudPasswordsClient {
 
     fn write_config_file(cfg: &NcConfig) -> Result<()> {
         let path = Self::config_path();
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?;
-        }
         let text = serde_json::to_string_pretty(cfg)?;
-        fs::write(&path, text)?;
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            let _ = fs::set_permissions(&path, fs::Permissions::from_mode(0o600));
-        }
+        crate::config::atomic_write_private(&path, text.as_bytes())?;
         Ok(())
     }
 }
@@ -406,18 +419,24 @@ fn nextcloud_error_message(body: &str) -> Option<String> {
 
 fn truncate_for_msg(s: &str) -> String {
     const LIMIT: usize = 240;
-    if s.len() <= LIMIT {
+    if s.chars().count() <= LIMIT {
         s.to_string()
     } else {
-        format!("{}…", &s[..LIMIT])
+        format!("{}…", s.chars().take(LIMIT).collect::<String>())
     }
 }
 
-fn http_client() -> Result<Client> {
-    Client::builder()
+fn http_client() -> Result<&'static Client> {
+    static CLIENT: OnceLock<Client> = OnceLock::new();
+    if let Some(client) = CLIENT.get() {
+        return Ok(client);
+    }
+    let client = Client::builder()
         .timeout(Duration::from_secs(60))
         .build()
-        .map_err(|e| Error::Other(format!("nextcloud http: {e}")))
+        .map_err(|e| Error::Other(format!("nextcloud http: {e}")))?;
+    let _ = CLIENT.set(client);
+    Ok(CLIENT.get().expect("client was initialized"))
 }
 
 fn default_headers() -> HeaderMap {
@@ -430,7 +449,26 @@ fn default_headers() -> HeaderMap {
 }
 
 fn trim_trailing_slash(s: &str) -> &str {
-    s.strip_suffix('/').unwrap_or(s)
+    s.trim_end_matches('/')
+}
+
+fn validate_server_url(value: &str) -> Result<()> {
+    let parsed = url::Url::parse(value)
+        .map_err(|error| Error::InvalidInput(format!("invalid Nextcloud URL: {error}")))?;
+    let loopback = parsed
+        .host_str()
+        .is_some_and(|host| matches!(host, "localhost" | "127.0.0.1" | "::1"));
+    if parsed.scheme() != "https" && !(parsed.scheme() == "http" && loopback) {
+        return Err(Error::InvalidInput(
+            "Nextcloud requires HTTPS except for a loopback test server".into(),
+        ));
+    }
+    if !parsed.username().is_empty() || parsed.password().is_some() || parsed.fragment().is_some() {
+        return Err(Error::InvalidInput(
+            "Nextcloud URL must not contain credentials or a fragment".into(),
+        ));
+    }
+    Ok(())
 }
 
 #[cfg(test)]
@@ -448,6 +486,14 @@ mod tests {
         assert_eq!(v[0].label, "GH");
         assert!(v[1].trashed);
         assert_eq!(v[1].folder, "f1");
+    }
+
+    #[test]
+    fn truncates_unicode_safely_and_requires_tls() {
+        let message = "á".repeat(300);
+        assert_eq!(truncate_for_msg(&message).chars().count(), 241);
+        assert!(validate_server_url("http://cloud.example.com").is_err());
+        assert!(validate_server_url("http://localhost:8080").is_ok());
     }
 
     #[test]

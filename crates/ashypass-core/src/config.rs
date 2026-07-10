@@ -1,4 +1,8 @@
-use std::path::PathBuf;
+use rand::RngCore;
+use std::fs::{self, OpenOptions};
+use std::io::{self, Write};
+use std::os::unix::fs::{OpenOptionsExt, PermissionsExt};
+use std::path::{Path, PathBuf};
 
 pub const APP_ID: &str = "com.bigcommunity.ashypass";
 pub const APP_NAME: &str = "Ashy Pass";
@@ -11,9 +15,9 @@ pub const MIN_MASTER_PASSWORD_LENGTH: usize = 8;
 pub const DEFAULT_PASSWORD_LENGTH: usize = 16;
 pub const MIN_PASSWORD_LENGTH: usize = 8;
 pub const MAX_PASSWORD_LENGTH: usize = 128;
-pub const DEFAULT_PASSPHRASE_WORDS: usize = 4;
-pub const MIN_PASSPHRASE_WORDS: usize = 3;
-pub const MAX_PASSPHRASE_WORDS: usize = 8;
+pub const DEFAULT_PASSPHRASE_WORDS: usize = 6;
+pub const MIN_PASSPHRASE_WORDS: usize = 5;
+pub const MAX_PASSPHRASE_WORDS: usize = 10;
 pub const DEFAULT_PIN_LENGTH: usize = 6;
 pub const MIN_PIN_LENGTH: usize = 4;
 pub const MAX_PIN_LENGTH: usize = 12;
@@ -59,7 +63,56 @@ pub fn fido2_file() -> PathBuf {
 }
 
 pub fn ensure_directories() -> std::io::Result<()> {
-    std::fs::create_dir_all(config_dir())?;
-    std::fs::create_dir_all(data_dir())?;
+    ensure_private_dir(&config_dir())?;
+    ensure_private_dir(&data_dir())?;
+    ensure_private_dir(&favicons_dir())?;
     Ok(())
+}
+
+pub fn ensure_private_dir(path: &Path) -> io::Result<()> {
+    fs::create_dir_all(path)?;
+    fs::set_permissions(path, fs::Permissions::from_mode(0o700))
+}
+
+pub fn ensure_private_file(path: &Path) -> io::Result<()> {
+    if path.exists() {
+        fs::set_permissions(path, fs::Permissions::from_mode(0o600))?;
+    }
+    Ok(())
+}
+
+/// Replace a private file atomically without following an attacker-controlled
+/// temporary symlink. Existing contents remain intact if any step fails.
+pub fn atomic_write_private(path: &Path, data: &[u8]) -> io::Result<()> {
+    let parent = path
+        .parent()
+        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "path has no parent"))?;
+    ensure_private_dir(parent)?;
+
+    let mut random = [0u8; 8];
+    rand::thread_rng().fill_bytes(&mut random);
+    let name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "invalid file name"))?;
+    let temporary = parent.join(format!(".{name}.{:016x}.tmp", u64::from_ne_bytes(random)));
+
+    let result = (|| {
+        let mut file = OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .mode(0o600)
+            .open(&temporary)?;
+        file.write_all(data)?;
+        file.sync_all()?;
+        fs::rename(&temporary, path)?;
+        ensure_private_file(path)?;
+        let directory = OpenOptions::new().read(true).open(parent)?;
+        directory.sync_all()
+    })();
+
+    if result.is_err() {
+        let _ = fs::remove_file(&temporary);
+    }
+    result
 }

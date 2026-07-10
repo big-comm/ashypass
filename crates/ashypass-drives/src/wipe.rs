@@ -153,7 +153,17 @@ fn wipe_random(runner: &dyn Runner, device: &Path, on_bytes: &mut dyn FnMut(u64)
         .arg("bs=4M")
         .arg("conv=fsync")
         .arg("status=none");
-    with_progress_poller(device, on_bytes, || runner.run(spec)).map(|_| ())
+    let expected = block_device_size(device);
+    let mut observed = 0;
+    let result = with_progress_poller(
+        device,
+        &mut |bytes| {
+            observed = bytes;
+            on_bytes(bytes);
+        },
+        || runner.run(spec),
+    );
+    tolerate_expected_device_full(result, observed, expected).map(|_| ())
 }
 
 fn wipe_secure_discard(runner: &dyn Runner, device: &Path) -> Result<()> {
@@ -205,28 +215,67 @@ fn wipe_encrypted_zero(
         .arg("bs=4M")
         .arg("conv=fsync")
         .arg("status=none");
-    let dd_result = with_progress_poller(device, on_bytes, || runner.run(zero));
+    let expected = block_device_size(device);
+    let mut observed = 0;
+    let dd_result = with_progress_poller(
+        device,
+        &mut |bytes| {
+            observed = bytes;
+            on_bytes(bytes);
+        },
+        || runner.run(zero),
+    );
 
     // 3. Always tear down the mapping, even if dd failed.
-    let close = CommandSpec::new("cryptsetup")
-        .arg("close")
-        .arg(WIPE_MAPPER);
+    let close = CommandSpec::new("cryptsetup").arg("close").arg(WIPE_MAPPER);
     let close_result = runner.run(close);
 
     // dd is expected to terminate with ENOSPC once it fills the device — dd
     // surfaces that as exit code 1, but every preceding sector has been
     // written. We tolerate that specific case.
-    match dd_result {
+    match tolerate_expected_device_full(dd_result, observed, expected) {
         Ok(_) => {}
-        Err(Error::CommandFailed { status: 1, .. }) => {
-            log::debug!("dd hit ENOSPC as expected at end of device");
-        }
         Err(e) => {
             let _ = close_result;
             return Err(e);
         }
     }
     close_result.map(|_| ())
+}
+
+fn block_device_size(device: &Path) -> Option<u64> {
+    let canonical = std::fs::canonicalize(device).ok()?;
+    let name = canonical.file_name()?.to_str()?;
+    let sectors = std::fs::read_to_string(format!("/sys/class/block/{name}/size"))
+        .ok()?
+        .trim()
+        .parse::<u64>()
+        .ok()?;
+    sectors.checked_mul(512)
+}
+
+fn tolerate_expected_device_full(
+    result: Result<crate::runner::CommandOutput>,
+    observed: u64,
+    expected: Option<u64>,
+) -> Result<crate::runner::CommandOutput> {
+    match result {
+        Err(Error::CommandFailed {
+            status: 1, stderr, ..
+        }) if stderr.to_ascii_lowercase().contains("no space left")
+            && expected.is_some_and(|size| {
+                let tolerance = (size / 100).clamp(1, 8 * 1024 * 1024);
+                observed >= size.saturating_sub(tolerance)
+            }) =>
+        {
+            log::debug!("dd reached the verified end of the block device");
+            Ok(crate::runner::CommandOutput {
+                stdout: Vec::new(),
+                stderr: Vec::new(),
+            })
+        }
+        other => other,
+    }
 }
 
 #[cfg(test)]
@@ -244,7 +293,22 @@ mod tests {
             Some(4194304000)
         );
         assert_eq!(parse_dd_bytes("0+1 records in"), None);
-        assert_eq!(parse_dd_bytes("dd: writing to '/dev/sda': No space left"), None);
+        assert_eq!(
+            parse_dd_bytes("dd: writing to '/dev/sda': No space left"),
+            None
+        );
         assert_eq!(parse_dd_bytes(""), None);
+    }
+
+    #[test]
+    fn only_tolerates_verified_enospc() {
+        let error = || Error::CommandFailed {
+            cmd: "dd".into(),
+            status: 1,
+            stderr: "No space left on device".into(),
+        };
+        assert!(tolerate_expected_device_full(Err(error()), 992, Some(1000)).is_ok());
+        assert!(tolerate_expected_device_full(Err(error()), 1, Some(1000)).is_err());
+        assert!(tolerate_expected_device_full(Err(error()), 1000, None).is_err());
     }
 }

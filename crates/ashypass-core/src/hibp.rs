@@ -47,7 +47,9 @@ fn cache_file() -> PathBuf {
 }
 
 fn load_cache() -> Cache {
-    fs::read_to_string(cache_file())
+    let path = cache_file();
+    let _ = crate::config::ensure_private_file(&path);
+    fs::read_to_string(path)
         .ok()
         .and_then(|s| serde_json::from_str(&s).ok())
         .unwrap_or_default()
@@ -55,10 +57,8 @@ fn load_cache() -> Cache {
 
 fn save_cache(c: &Cache) -> Result<()> {
     let path = cache_file();
-    if let Some(p) = path.parent() {
-        fs::create_dir_all(p)?;
-    }
-    fs::write(path, serde_json::to_string(c)?)?;
+    let serialized = serde_json::to_string(c)?;
+    crate::config::atomic_write_private(&path, serialized.as_bytes())?;
     Ok(())
 }
 

@@ -4,7 +4,8 @@
 //! settings files load without migration.
 
 use crate::config::{
-    settings_file, CLIPBOARD_CLEAR_SECONDS, DEFAULT_PASSWORD_LENGTH, SESSION_TIMEOUT_SECONDS,
+    atomic_write_private, ensure_private_file, settings_file, CLIPBOARD_CLEAR_SECONDS,
+    DEFAULT_PASSWORD_LENGTH, SESSION_TIMEOUT_SECONDS,
 };
 use crate::crypto::autotune::TunedParams;
 use crate::Result;
@@ -47,6 +48,9 @@ pub struct Settings {
     pub generator: GeneratorPrefs,
     pub argon2: TunedParams,
     pub audit_check_hibp: bool,
+    /// Legacy fallback. New quick-unlock state is stored in Secret Service
+    /// and this field is cleared after a successful migration.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub quick_unlock: Option<QuickUnlockPrefs>,
     /// Trash retention in days. Entries deleted longer ago are purged on app
     /// start. 0 disables the trash entirely (deletes are immediate).
@@ -100,6 +104,9 @@ impl Default for Settings {
 impl Settings {
     pub fn load() -> Self {
         let path = settings_file();
+        if let Err(error) = ensure_private_file(&path) {
+            log::warn!("could not secure settings permissions: {error}");
+        }
         match fs::read_to_string(&path) {
             Ok(text) => serde_json::from_str(&text).unwrap_or_default(),
             Err(_) => Self::default(),
@@ -108,11 +115,8 @@ impl Settings {
 
     pub fn save(&self) -> Result<()> {
         let path = settings_file();
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?;
-        }
         let json = serde_json::to_string_pretty(self)?;
-        fs::write(&path, json)?;
+        atomic_write_private(&path, json.as_bytes())?;
         Ok(())
     }
 }

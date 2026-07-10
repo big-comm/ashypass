@@ -31,7 +31,10 @@ pub enum Progress {
     /// Wiping is in progress. `copied` is bytes written so far, `total` is
     /// the device capacity. Emitted at the rate `dd status=progress` ticks
     /// (~once per second).
-    Wiping { copied: u64, total: u64 },
+    Wiping {
+        copied: u64,
+        total: u64,
+    },
 }
 
 #[derive(Debug, Clone)]
@@ -84,7 +87,13 @@ pub fn encrypt_new_drive(
     let mapper_name = mapper_name_for(&request.label);
 
     on_progress(Progress::Started(Step::LuksOpen));
-    let mapped = luks_open(runner, pinned, &mapper_name, passphrase, request.allow_discards)?;
+    let mapped = luks_open(
+        runner,
+        pinned,
+        &mapper_name,
+        passphrase,
+        request.allow_discards,
+    )?;
     on_progress(Progress::Finished(Step::LuksOpen));
 
     on_progress(Progress::Started(Step::MkFs));

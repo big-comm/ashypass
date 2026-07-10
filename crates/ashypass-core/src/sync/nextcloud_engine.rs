@@ -60,6 +60,7 @@ pub struct SyncStats {
     pub updated_remotely: usize,
     pub updated_locally: usize,
     pub deleted_remotely: usize,
+    pub deleted_locally: usize,
     pub skipped_passwordless: usize,
     pub conflicts: usize,
     pub errors: Vec<String>,
@@ -298,11 +299,15 @@ where
                                     .errors
                                     .push(format!("recreate {}: {e}", local_full.title)),
                             }
-                        } else if let Err(e) = vault.delete(local_full.id) {
-                            report
-                                .stats
-                                .errors
-                                .push(format!("delete local {}: {e}", local_full.title));
+                        } else {
+                            match vault.delete(local_full.id) {
+                                Ok(true) => report.stats.deleted_locally += 1,
+                                Ok(false) => {}
+                                Err(e) => report
+                                    .stats
+                                    .errors
+                                    .push(format!("delete local {}: {e}", local_full.title)),
+                            }
                         }
                         continue;
                     }
@@ -393,17 +398,23 @@ where
                                     )?,
                                 );
                                 payload.id = Some(map.nc_uuid.clone());
-                                if let Ok(updated) = client.update(&payload) {
-                                    let new_map = NextcloudMapping {
-                                        entry_id: local_full.id,
-                                        nc_uuid: map.nc_uuid.clone(),
-                                        last_synced_at: chrono::Utc::now().timestamp(),
-                                        local_updated_at_snapshot: local_full.updated_at,
-                                        remote_edited_snapshot: updated.edited,
-                                        remote_revision_snapshot: updated.revision,
-                                    };
-                                    vault.nc_mapping_upsert(&new_map)?;
-                                    report.stats.updated_remotely += 1;
+                                match client.update(&payload) {
+                                    Ok(updated) => {
+                                        let new_map = NextcloudMapping {
+                                            entry_id: local_full.id,
+                                            nc_uuid: map.nc_uuid.clone(),
+                                            last_synced_at: chrono::Utc::now().timestamp(),
+                                            local_updated_at_snapshot: local_full.updated_at,
+                                            remote_edited_snapshot: updated.edited,
+                                            remote_revision_snapshot: updated.revision,
+                                        };
+                                        vault.nc_mapping_upsert(&new_map)?;
+                                        report.stats.updated_remotely += 1;
+                                    }
+                                    Err(error) => report.stats.errors.push(format!(
+                                        "conflict update {}: {error}",
+                                        local_full.title
+                                    )),
                                 }
                             }
                             _ => {

@@ -93,11 +93,7 @@ pub fn build_format_spec(device: &Path, opts: &FormatOptions) -> CommandSpec {
     s.arg(device.to_string_lossy().into_owned())
 }
 
-pub fn build_open_spec(
-    device: &Path,
-    mapper_name: &str,
-    allow_discards: bool,
-) -> CommandSpec {
+pub fn build_open_spec(device: &Path, mapper_name: &str, allow_discards: bool) -> CommandSpec {
     let mut s = CommandSpec::new("cryptsetup")
         .arg("open")
         .arg("--type")

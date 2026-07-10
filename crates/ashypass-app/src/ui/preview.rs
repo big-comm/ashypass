@@ -41,6 +41,7 @@ fn present_sync_success(parent: &impl IsA<gtk::Window>) {
             created_remotely: 3,
             updated_remotely: 2,
             deleted_remotely: 1,
+            deleted_locally: 0,
             created_locally: 1,
             updated_locally: 4,
             conflicts: 0,
