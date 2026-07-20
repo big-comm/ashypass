@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+
+  <vendor>Big Community — Ashy Pass</vendor>
+  <vendor_url>https://github.com/big-comm/ashypass</vendor_url>
+  <icon_name>ashypass</icon_name>
+
+  <action id="com.bigcommunity.ashypass.drives.format">
+    <description>Encrypt an external drive with LUKS2</description>
+    <message>Authentication is required to encrypt an external drive.</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin</allow_active>
+    </defaults>
+  </action>
+
+  <action id="com.bigcommunity.ashypass.drives.unlock">
+    <description>Unlock an Ashy Pass encrypted drive</description>
+    <message>Authentication is required to unlock this encrypted drive.</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin</allow_active>
+    </defaults>
+  </action>
+
+  <action id="com.bigcommunity.ashypass.drives.manage-keys">
+    <description>Manage keyslots on an Ashy Pass encrypted drive</description>
+    <message>Authentication is required to add or remove keys on this drive.</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin</allow_active>
+    </defaults>
+  </action>
+
+  <action id="com.bigcommunity.ashypass.drives.helper">
+    <description>Run the Ashy Pass drive-encryption helper</description>
+    <message>Authentication is required to run drive encryption operations.</message>
+    <icon_name>ashypass</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/libexec/ashypass/ashypass-drives-helper</annotate>
+    <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
+  </action>
+
+</policyconfig>

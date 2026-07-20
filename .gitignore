@@ -57,6 +57,7 @@ favicons/
 
 # Documentation (Private)
 CLAUDE.md
+PLANNING.md
 docs/notes/
 *.draft.md
 
@@ -70,13 +71,20 @@ temp/
 Thumbs.db
 .directory
 
-# Build artifacts
+# Rust build artifacts
+/target/
+**/*.rs.bk
+*.pgo
+*.profraw
+
+# Packaging artifacts
 *.tar.gz
 *.tar.xz
 *.tar.zst
 *.pkg.tar.zst
 pkg/
-src/
+# (Cargo's src/ inside crates/ is fine; PKGBUILD-time src/ is at repo root)
+/src/
 
 # Configuration (sensitive)
 config.json
@@ -88,8 +96,8 @@ secrets/
 token.pickle
 *.pickle
 
-# Test files
-test_*.py
+# Test artifacts
+usr/share/ashypass/tests/
 tests/__pycache__/
 *.test
 

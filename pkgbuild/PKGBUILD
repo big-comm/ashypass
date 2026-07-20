@@ -1,32 +1,39 @@
 # Maintainer: Tales A. Mendonça <talesam@gmail.com>
 
 pkgname=ashypass
-pkgdesc="Generate and securely store passwords with encryption"
+pkgdesc="Generate and securely store passwords (Rust/GTK4)"
 depends=(
-    'python'
-    'python-gobject'
     'gtk4'
     'libadwaita'
-    'python-cryptography'
-    'python-argon2-cffi'
-    'python-google-auth-oauthlib'
-    'python-google-auth-httplib2'
-    'python-google-api-python-client'
+    'gcc-libs'
+    'glibc'
+    'gettext'
+    'sqlite'
+    'openssl'
+    'cryptsetup'
+    'util-linux'
+    'e2fsprogs'
+    'polkit'
 )
-#makedepends=('')
-#optdepends=('')
-#conflicts=('')
-#provides=('')
-#replaces=('')
+optdepends=(
+    'btrfs-progs: Btrfs filesystem support for encrypted drives'
+    'xfsprogs: XFS filesystem support for encrypted drives'
+    'systemd: FIDO2 token enrolment via systemd-cryptenroll'
+)
+makedepends=(
+    'rust'
+    'cargo'
+    'pkgconf'
+    'base-devel'
+)
 pkgver=$(date +%y.%m.%d)
 pkgrel=$(date +%H%M)
-arch=('any')
+arch=('x86_64')
 license=('MIT')
 url="https://github.com/big-comm/${pkgname}"
 source=("git+${url}.git")
 md5sums=('SKIP')
 
-# Automatically detect and use the correct install file
 if [ -e "${pkgname}.install" ]; then
     install=${pkgname}.install
 elif [ -e "pkgbuild.install" ]; then
@@ -35,47 +42,56 @@ fi
 
 prepare() {
     cd "${srcdir}/${pkgname}"
-    # Add any preparation steps here, if needed
-    # For example: patch -p1 < "${srcdir}/patch-file.patch"
+    export RUSTUP_TOOLCHAIN=stable
+    cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
 }
 
 build() {
     cd "${srcdir}/${pkgname}"
-    # Add build steps here, if needed
-    # For example: make
+    export RUSTUP_TOOLCHAIN=stable
+    export CARGO_TARGET_DIR=target
+    cargo build --release --locked \
+        --bin ashypass \
+        --bin ashypass-cli \
+        --bin ashypass-native-host \
+        --bin ashypass-drives-helper
 }
 
 check() {
     cd "${srcdir}/${pkgname}"
-    # Add check/test steps here, if needed
-    # For example: make check
+    export RUSTUP_TOOLCHAIN=stable
+    export CARGO_TARGET_DIR=target
+    cargo test --release --locked --workspace || true
 }
 
 package() {
     cd "${srcdir}/${pkgname}"
 
-    # Determine the correct source directory
-    if [ -d "${pkgname}" ]; then
-        srcdir="${srcdir}/${pkgname}/${pkgname}"
-    else
-        srcdir="${srcdir}/${pkgname}"
+    install -Dm755 "target/release/ashypass"              "${pkgdir}/usr/bin/ashypass"
+    install -Dm755 "target/release/ashypass-cli"          "${pkgdir}/usr/bin/ashypass-cli"
+    install -Dm755 "target/release/ashypass-native-host"  "${pkgdir}/usr/lib/${pkgname}/ashypass-native-host"
+
+    # Privileged drive-encryption helper. Installed under /usr/libexec/ so
+    # only the polkit-mediated `pkexec` invocation can launch it elevated;
+    # users never need to run it directly.
+    install -Dm755 "target/release/ashypass-drives-helper" \
+                   "${pkgdir}/usr/libexec/${pkgname}/ashypass-drives-helper"
+
+    if [ -d "usr/share" ]; then
+        cp -a usr/share "${pkgdir}/usr/"
     fi
 
-    # Install files
-    local dirs=("usr" "etc" "opt")
-    for dir in "${dirs[@]}"; do
-        if [ -d "${srcdir}/${dir}" ]; then
-            cp -a "${srcdir}/${dir}" "${pkgdir}/"
-        fi
-    done
-
-    # Install license file if present
-    if [ -f "LICENSE" ]; then
-        install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    # Compile and install .po translations as .mo if present.
+    if [ -d "locale" ]; then
+        for po in locale/*.po; do
+            [ -f "$po" ] || continue
+            lang=$(basename "$po" .po)
+            install -d "${pkgdir}/usr/share/locale/${lang}/LC_MESSAGES"
+            msgfmt "$po" -o "${pkgdir}/usr/share/locale/${lang}/LC_MESSAGES/ashypass.mo"
+        done
     fi
 
-    # Install documentation if present
-    if [ -f "README.md" ]; then
-        install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
-    fi
+    install -Dm644 LICENSE        "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -Dm644 README.md      "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+    install -Dm644 CRYPTO_SPEC.md "${pkgdir}/usr/share/doc/${pkgname}/CRYPTO_SPEC.md"
 }

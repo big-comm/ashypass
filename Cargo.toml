@@ -1,0 +1,77 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/ashypass-core",
+    "crates/ashypass-app",
+    "crates/ashypass-cli",
+    "crates/ashypass-drives",
+    "crates/ashypass-drives-helper",
+    "crates/ashypass-native-host",
+]
+
+[workspace.package]
+version = "3.0.0"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT"
+authors = ["Tales A. Mendonça <talesam@gmail.com>", "Big Community"]
+homepage = "https://github.com/big-comm/ashypass"
+repository = "https://github.com/big-comm/ashypass"
+
+[workspace.dependencies]
+# Crypto
+argon2 = "0.5"
+aes-gcm = "0.10"
+pbkdf2 = "0.12"
+sha2 = "0.10"
+sha1 = "0.10"
+hmac = "0.12"
+rand = "0.8"
+base32 = "0.5"
+base64 = "0.22"
+zeroize = { version = "1.8", features = ["zeroize_derive"] }
+subtle = "2.6"
+
+# Storage. Link against the system sqlite3 (rusqlite's `bundled` feature
+# builds it from source, which breaks under ld.lld + `-Wl,--as-needed`
+# on Arch-style packaging environments).
+rusqlite = { version = "0.32", features = ["backup"] }
+
+# Async / HTTP
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "io-util"] }
+reqwest = { version = "0.12", default-features = false, features = ["native-tls", "json", "stream", "blocking"] }
+url = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Errors & logging
+thiserror = "2"
+anyhow = "1.0.103"
+log = "0.4"
+env_logger = "0.11"
+
+# Utilities
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+csv = "1"
+gettext-rs = { version = "0.7", features = ["gettext-system"] }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "ico", "webp"] }
+dirs = "5"
+bip39 = "2"
+zxcvbn = { version = "3", default-features = false }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+keepass = { version = "0.13", features = ["save_kdbx4"] }
+secret-service = { version = "5", features = ["rt-tokio-crypto-rust"] }
+
+# Internal
+ashypass-core = { path = "crates/ashypass-core" }
+ashypass-drives = { path = "crates/ashypass-drives" }
+
+[profile.release]
+opt-level = 3
+lto = false
+codegen-units = 16
+strip = "symbols"
+panic = "abort"
+
+[profile.dev]
+opt-level = 1

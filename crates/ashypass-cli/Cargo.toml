@@ -1,0 +1,21 @@
+[package]
+name = "ashypass-cli"
+description = "Ashy Pass — command-line companion for the encrypted vault"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "ashypass-cli"
+path = "src/main.rs"
+
+[dependencies]
+ashypass-core.workspace = true
+ashypass-drives.workspace = true
+anyhow.workspace = true
+clap = { version = "4", features = ["derive"] }
+rpassword = "7"
+libc = "0.2"

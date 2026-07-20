@@ -1,0 +1,38 @@
+[package]
+name = "ashypass-app"
+description = "Ashy Pass — GTK4/libadwaita password manager"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "ashypass"
+path = "src/main.rs"
+
+[features]
+default = []
+fido2 = ["ashypass-core/fido2"]
+
+[dependencies]
+ashypass-core.workspace = true
+ashypass-drives.workspace = true
+gtk = { package = "gtk4", version = "0.9", features = ["v4_12"] }
+adw = { package = "libadwaita", version = "0.7", features = ["v1_5"] }
+glib = "0.20"
+gio = "0.20"
+gdk = { package = "gdk4", version = "0.9" }
+gettext-rs = { version = "0.7", features = ["gettext-system"] }
+tokio.workspace = true
+log.workspace = true
+env_logger.workspace = true
+anyhow.workspace = true
+serde_json.workspace = true
+serde.workspace = true
+chrono.workspace = true
+reqwest.workspace = true
+image.workspace = true
+url.workspace = true
+dirs.workspace = true
