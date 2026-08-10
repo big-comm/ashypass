@@ -40,6 +40,14 @@ impl Default for GeneratorPrefs {
 #[serde(default)]
 pub struct Settings {
     pub show_favicons: bool,
+    /// Allow falling back to Google's favicon service when a site serves no
+    /// `/favicon.ico`. Off by default: the query string carries the hostname,
+    /// so enabling it discloses part of the vault's contents to a third party.
+    pub favicon_third_party_fallback: bool,
+    /// Allow the browser native-messaging host to unlock the vault from the
+    /// system keyring and answer extension queries. Off disables browser
+    /// integration without having to remove the host manifests.
+    pub browser_integration: bool,
     pub show_sync_badges: bool,
     pub compact_vault_list: bool,
     pub large_totp_codes: bool,
@@ -66,17 +74,38 @@ pub struct Settings {
     pub nextcloud_sync_on_unlock: bool,
 }
 
+/// Wrapping-KDF generation for `QuickUnlockPrefs::encrypted_key`.
+///
+/// Absent (0) means the blob predates PIN-specific hardening and was wrapped
+/// with the standard vault parameters; it must keep being opened with those or
+/// existing users lose their PIN. New blobs are written as generation 1.
+pub const QUICK_UNLOCK_KDF_LEGACY: u32 = 0;
+pub const QUICK_UNLOCK_KDF_PIN_HARDENED: u32 = 1;
+
+/// Failed PIN attempts after which persisted quick-unlock state is destroyed
+/// and the master password is required again.
+pub const QUICK_UNLOCK_MAX_ATTEMPTS: u32 = 5;
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct QuickUnlockPrefs {
     pub pin_hash: String,
     pub salt: String,
     pub encrypted_key: String,
+    /// Consecutive wrong PINs. Reset on success; at
+    /// `QUICK_UNLOCK_MAX_ATTEMPTS` the caller wipes this state.
+    pub failed_attempts: u32,
+    /// See `QUICK_UNLOCK_KDF_*`.
+    pub kdf_version: u32,
 }
 
 impl QuickUnlockPrefs {
     pub fn is_configured(&self) -> bool {
         !self.pin_hash.is_empty() && !self.salt.is_empty() && !self.encrypted_key.is_empty()
+    }
+
+    pub fn attempts_exhausted(&self) -> bool {
+        self.failed_attempts >= QUICK_UNLOCK_MAX_ATTEMPTS
     }
 }
 
@@ -84,6 +113,8 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             show_favicons: true,
+            favicon_third_party_fallback: false,
+            browser_integration: true,
             show_sync_badges: true,
             compact_vault_list: false,
             large_totp_codes: true,

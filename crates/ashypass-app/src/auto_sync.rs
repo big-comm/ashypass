@@ -52,7 +52,7 @@ pub fn install(state: SharedState, toast: adw::ToastOverlay) -> Handle {
     // Subscribe to vault mutations — schedule a debounced sync.
     {
         let inner_for_sub = inner.clone();
-        inner.state.events.subscribe(move |event| {
+        let _permanent = inner.state.events.subscribe(move |event| {
             if matches!(event, AppEvent::VaultChanged) {
                 inner_for_sub.schedule_debounced();
             }

@@ -88,6 +88,19 @@ fn main() -> glib::ExitCode {
         });
     }
 
+    // Leaving the process must not leave secrets behind: wipe a still-pending
+    // clipboard copy and drop the session keys (including the quick-unlock
+    // cache) rather than relying on the allocator.
+    {
+        let state_holder = state_holder.clone();
+        app.connect_shutdown(move |_| {
+            clipboard::clear_on_exit();
+            if let Some(state) = state_holder.borrow().as_ref() {
+                state.vault.borrow_mut().full_lock();
+            }
+        });
+    }
+
     app.run()
 }
 

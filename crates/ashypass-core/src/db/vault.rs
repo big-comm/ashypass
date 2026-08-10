@@ -660,13 +660,15 @@ impl Vault {
 
         let mut salt = [0u8; 32];
         rand::thread_rng().fill_bytes(&mut salt);
-        let wrapping_key = argon2_kdf::derive_key_v2(pin, &salt)?;
+        let wrapping_key = argon2_kdf::derive_key_pin(pin, &salt)?;
         let encrypted_key = aes_gcm_v2::encrypt(&wrapping_key, key.as_bytes())?;
 
         Ok(QuickUnlockPrefs {
             pin_hash,
             salt: URL_SAFE_NO_PAD.encode(salt),
             encrypted_key: URL_SAFE_NO_PAD.encode(encrypted_key),
+            failed_attempts: 0,
+            kdf_version: crate::settings::QUICK_UNLOCK_KDF_PIN_HARDENED,
         })
     }
 
@@ -695,13 +697,24 @@ impl Vault {
         if !prefs.is_configured() {
             return Err(Error::Other("quick-unlock not configured".into()));
         }
+        if prefs.attempts_exhausted() {
+            return Err(Error::Other(
+                "quick-unlock disabled after too many wrong PINs".into(),
+            ));
+        }
         if !argon2_kdf::verify_master(pin, &prefs.pin_hash)? {
             return Err(Error::InvalidMasterPassword);
         }
 
         let salt = URL_SAFE_NO_PAD.decode(&prefs.salt)?;
         let encrypted_key = URL_SAFE_NO_PAD.decode(&prefs.encrypted_key)?;
-        let wrapping_key = argon2_kdf::derive_key_v2(pin, &salt)?;
+        // Blobs written before PIN hardening were wrapped with the standard
+        // vault KDF; honour whichever generation produced this one.
+        let wrapping_key = if prefs.kdf_version >= crate::settings::QUICK_UNLOCK_KDF_PIN_HARDENED {
+            argon2_kdf::derive_key_pin(pin, &salt)?
+        } else {
+            argon2_kdf::derive_key_v2(pin, &salt)?
+        };
         let key_bytes = aes_gcm_v2::decrypt(&wrapping_key, &encrypted_key)?;
         if key_bytes.len() != 32 {
             return Err(Error::Crypto("quick-unlock key has invalid length".into()));
@@ -1847,6 +1860,89 @@ fn like_pattern(search: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn unlocked_vault(path: &Path) -> Vault {
+        let mut vault = Vault::open(path).unwrap();
+        vault.set_master_password("master password here").unwrap();
+        vault
+    }
+
+    #[test]
+    fn persistent_quick_unlock_round_trips_with_hardened_kdf() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let prefs = vault.enable_persistent_quick_unlock("123456").unwrap();
+        assert_eq!(
+            prefs.kdf_version,
+            crate::settings::QUICK_UNLOCK_KDF_PIN_HARDENED,
+            "new blobs must record the PIN-hardened KDF generation"
+        );
+        assert_eq!(prefs.failed_attempts, 0);
+
+        let key_before = vault.key.clone().unwrap().as_bytes().to_owned();
+        vault.full_lock();
+        assert!(!vault.is_unlocked());
+
+        vault.quick_unlock_persistent("123456", &prefs).unwrap();
+        assert_eq!(vault.key.clone().unwrap().as_bytes(), &key_before);
+    }
+
+    #[test]
+    fn persistent_quick_unlock_rejects_wrong_pin() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let prefs = vault.enable_persistent_quick_unlock("123456").unwrap();
+        vault.full_lock();
+
+        assert!(matches!(
+            vault.quick_unlock_persistent("654321", &prefs),
+            Err(Error::InvalidMasterPassword)
+        ));
+        assert!(!vault.is_unlocked());
+    }
+
+    #[test]
+    fn persistent_quick_unlock_refuses_once_attempts_are_exhausted() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let mut prefs = vault.enable_persistent_quick_unlock("123456").unwrap();
+        vault.full_lock();
+
+        prefs.failed_attempts = crate::settings::QUICK_UNLOCK_MAX_ATTEMPTS;
+        // Even the *correct* PIN is refused: the budget is spent.
+        assert!(vault.quick_unlock_persistent("123456", &prefs).is_err());
+        assert!(!vault.is_unlocked());
+    }
+
+    #[test]
+    fn legacy_quick_unlock_blobs_still_open() {
+        // A blob written before PIN hardening records generation 0 and was
+        // wrapped with the standard vault KDF. It must keep working.
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let key = vault.key.clone().unwrap();
+
+        let mut salt = [0u8; 32];
+        rand::thread_rng().fill_bytes(&mut salt);
+        let legacy = QuickUnlockPrefs {
+            pin_hash: argon2_kdf::hash_master("123456").unwrap(),
+            salt: URL_SAFE_NO_PAD.encode(salt),
+            encrypted_key: URL_SAFE_NO_PAD.encode(
+                aes_gcm_v2::encrypt(
+                    &argon2_kdf::derive_key_v2("123456", &salt).unwrap(),
+                    key.as_bytes(),
+                )
+                .unwrap(),
+            ),
+            failed_attempts: 0,
+            kdf_version: crate::settings::QUICK_UNLOCK_KDF_LEGACY,
+        };
+
+        let key_before = key.as_bytes().to_owned();
+        vault.full_lock();
+        vault.quick_unlock_persistent("123456", &legacy).unwrap();
+        assert_eq!(vault.key.clone().unwrap().as_bytes(), &key_before);
+    }
 
     #[test]
     fn master_password_change_preserves_all_encrypted_data() {

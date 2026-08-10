@@ -401,7 +401,7 @@ impl Inner {
         }
 
         self.content_stack.set_visible_child_name("list");
-        let large_codes = ashypass_core::settings::Settings::load().large_totp_codes;
+        let large_codes = self.state.settings().large_totp_codes;
         for (entry, secret) in entries {
             let row = self.build_row(&entry, secret, large_codes);
             self.list_box.append(&row);
@@ -608,7 +608,7 @@ impl Inner {
         let algo = Algorithm::parse(&algorithm).unwrap_or(Algorithm::Sha1);
         let now = chrono::Utc::now().timestamp() as u64;
         if let Ok(code) = generate_totp(&secret, algo, digits, period, now) {
-            let seconds = ashypass_core::settings::Settings::load().clipboard_clear;
+            let seconds = self.state.settings().clipboard_clear;
             crate::clipboard::copy(&code, seconds);
             self.show_toast(tr!("TOTP code copied"));
         }
@@ -620,7 +620,7 @@ impl Inner {
             Ok(Some(e)) => e,
             _ => return,
         };
-        let trash_enabled = ashypass_core::settings::Settings::load().trash_retention_days > 0;
+        let trash_enabled = self.state.settings().trash_retention_days > 0;
         let body = if trash_enabled {
             format!(
                 "{} '{}'?",

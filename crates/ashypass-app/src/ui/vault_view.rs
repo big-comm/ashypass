@@ -111,6 +111,10 @@ struct Inner {
     list_scrolled: gtk::ScrolledWindow,
     empty_status: adw::StatusPage,
     content_stack: gtk::Stack,
+    /// The add/edit dialog while it is presented. Kept so locking the vault
+    /// can tear it down: leaving it up would show a decrypted password over a
+    /// locked vault, and saving from it would fail with a raw crypto error.
+    password_dialog: RefCell<Option<adw::AlertDialog>>,
     password_cache: RefCell<Option<Rc<PasswordListCache>>>,
     nextcloud_synced_ids_cache: RefCell<Option<HashSet<i64>>>,
 
@@ -193,6 +197,7 @@ impl VaultView {
             list_scrolled,
             empty_status,
             content_stack,
+            password_dialog: RefCell::new(None),
             password_cache: RefCell::new(None),
             nextcloud_synced_ids_cache: RefCell::new(None),
             view_mode: Cell::new(ViewMode::All),
@@ -240,7 +245,20 @@ impl VaultView {
         self.inner.cancel_pending_search_reload();
         self.inner.cancel_pending_event_reload();
         self.inner.cancel_pending_render();
+        // A password copied moments before the lock must not survive it.
+        crate::clipboard::clear_now();
+        // Drop the borrow before closing: `close()` re-enters our `closed`
+        // handler, which borrows the same cell.
+        let open_dialog = self.inner.password_dialog.borrow_mut().take();
+        if let Some(dialog) = open_dialog {
+            dialog.close();
+            self.inner
+                .show_toast(tr!("Vault locked — the open entry was not saved"));
+        }
         self.inner.state.vault.borrow_mut().lock();
+        // Keep the session in step with the vault: on the auto-lock path
+        // `logout` already did this, on the explicit-lock path nobody had.
+        SessionManager::mark_locked(&self.inner.state.session);
         self.inner.timeout_banner.set_revealed(false);
         self.inner.update_view();
         self.inner.notify_auth_changed();
@@ -609,7 +627,7 @@ fn wire_session_warning(inner: &Rc<Inner>) {
 
 fn wire_events(inner: &Rc<Inner>) {
     let inner_weak = Rc::downgrade(inner);
-    inner.state.events.subscribe(move |event| {
+    let _permanent = inner.state.events.subscribe(move |event| {
         let Some(inner) = inner_weak.upgrade() else {
             return;
         };
@@ -705,7 +723,9 @@ impl Inner {
             let quick = has_master
                 && (self.state.vault.borrow().is_quick_unlock_available()
                     || ashypass_core::keyring::is_quick_unlock_stored()
-                    || Settings::load()
+                    || self
+                        .state
+                        .settings()
                         .quick_unlock
                         .as_ref()
                         .is_some_and(|p| p.is_configured()));
@@ -765,7 +785,7 @@ impl Inner {
             self.show_auth_error(tr!("Please enter your PIN"));
             return;
         }
-        let mut loaded_settings = Settings::load();
+        let mut loaded_settings = (*self.state.settings()).clone();
         let legacy_quick_unlock = loaded_settings.quick_unlock.clone();
         let keyring_quick_unlock = ashypass_core::keyring::load_quick_unlock()
             .map_err(|error| log::warn!("quick-unlock keyring read failed: {error}"))
@@ -798,6 +818,14 @@ impl Inner {
         };
         match r {
             Ok(()) => {
+                // Correct PIN clears the failure budget.
+                if let Some(prefs) = persistent_quick_unlock.filter(|p| p.failed_attempts > 0) {
+                    let mut reset = prefs.clone();
+                    reset.failed_attempts = 0;
+                    if let Err(error) = ashypass_core::keyring::store_quick_unlock(&reset) {
+                        log::warn!("could not reset PIN attempt counter: {error}");
+                    }
+                }
                 if keyring_quick_unlock.is_none() && legacy_quick_unlock.is_some() {
                     if let Some(prefs) = legacy_quick_unlock.as_ref() {
                         match ashypass_core::keyring::store_quick_unlock(prefs) {
@@ -820,8 +848,28 @@ impl Inner {
                 self.notify_auth_changed();
             }
             Err(ashypass_core::Error::InvalidMasterPassword) => {
-                self.show_auth_error(tr!("Incorrect PIN"));
                 self.pin_entry.set_text("");
+                // Persisted PIN state has no rate limit of its own, so count
+                // wrong attempts and destroy it once the budget is spent.
+                match persistent_quick_unlock.cloned() {
+                    Some(prefs) => {
+                        let remaining = self.record_failed_pin_attempt(prefs);
+                        if remaining == 0 {
+                            self.show_auth_error(tr!(
+                                "Too many incorrect PINs — quick unlock disabled, use your master password"
+                            ));
+                            self.show_master_unlock();
+                        } else {
+                            self.show_auth_error(&format!(
+                                "{} ({} {})",
+                                tr!("Incorrect PIN"),
+                                remaining,
+                                tr!("attempts left")
+                            ));
+                        }
+                    }
+                    None => self.show_auth_error(tr!("Incorrect PIN")),
+                }
             }
             Err(e) => {
                 self.show_auth_error(&format!("{}: {e}", tr!("Quick-unlock failed")));
@@ -829,6 +877,44 @@ impl Inner {
                 self.show_master_unlock();
             }
         }
+    }
+
+    /// Persist one more failed PIN attempt and return how many remain. At zero
+    /// the persisted quick-unlock state is wiped from both the keyring and the
+    /// legacy settings file, so the master password is the only way back in.
+    fn record_failed_pin_attempt(
+        self: &Rc<Self>,
+        mut prefs: ashypass_core::settings::QuickUnlockPrefs,
+    ) -> u32 {
+        use ashypass_core::settings::QUICK_UNLOCK_MAX_ATTEMPTS;
+
+        prefs.failed_attempts = prefs.failed_attempts.saturating_add(1);
+        let remaining = QUICK_UNLOCK_MAX_ATTEMPTS.saturating_sub(prefs.failed_attempts);
+
+        if remaining == 0 {
+            self.state.vault.borrow_mut().disable_quick_unlock();
+            if let Err(error) = ashypass_core::keyring::delete_quick_unlock() {
+                log::warn!("could not clear quick-unlock keyring item: {error}");
+            }
+            if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
+                log::warn!("could not clear quick-unlock settings: {error}");
+            }
+            return 0;
+        }
+
+        // Best effort: if the counter cannot be persisted we still refuse this
+        // attempt, we just cannot enforce the budget across restarts.
+        if let Err(error) = ashypass_core::keyring::store_quick_unlock(&prefs) {
+            log::warn!("could not record failed PIN attempt: {error}");
+            let stored = prefs.clone();
+            if let Err(error) = self
+                .state
+                .update_settings(|s| s.quick_unlock = Some(stored))
+            {
+                log::warn!("could not record failed PIN attempt in settings: {error}");
+            }
+        }
+        remaining
     }
 
     fn show_auth_error(&self, msg: &str) {
@@ -882,9 +968,7 @@ impl Inner {
             }
             match self.state.vault.borrow_mut().set_master_password(&password) {
                 Ok(()) => {
-                    let mut settings = Settings::load();
-                    settings.quick_unlock = None;
-                    if let Err(error) = settings.save() {
+                    if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
                         log::warn!("could not save settings: {error}");
                     }
                     SessionManager::login(&self.state.session);
@@ -909,7 +993,7 @@ impl Inner {
         self.cancel_pending_event_reload();
         self.cancel_pending_render();
         self.reset_password_list_box();
-        let ui_settings = Settings::load();
+        let ui_settings = self.state.settings();
         self.apply_vault_list_density(ui_settings.compact_vault_list);
 
         let mode = self.view_mode.get();
@@ -1606,7 +1690,7 @@ impl Inner {
             Ok(Some(e)) => e,
             _ => return,
         };
-        let trash_enabled = ashypass_core::settings::Settings::load().trash_retention_days > 0;
+        let trash_enabled = self.state.settings().trash_retention_days > 0;
         let body = if trash_enabled {
             format!(
                 "{} '{}'?",
@@ -1780,20 +1864,74 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
     }
     form.add(&notes_entry);
 
+    // Category: free text, but the categories already in the vault are one
+    // click away. Typing a new name still creates it.
     let category_entry = adw::EntryRow::builder().title(tr!("Category")).build();
     if let Some(c) = entry.as_ref().and_then(|e| e.category.clone()) {
         category_entry.set_text(&c);
     }
+    let existing_categories = inner.state.vault.borrow().categories().unwrap_or_default();
+    if let Some(picker) =
+        build_value_picker(&existing_categories, tr!("Choose an existing category"), {
+            let target = category_entry.clone();
+            move |value| target.set_text(value)
+        })
+    {
+        category_entry.add_suffix(&picker);
+    }
     form.add(&category_entry);
 
-    let tags_entry = adw::EntryRow::builder()
-        .title(tr!("Tags (comma-separated)"))
-        .build();
+    let tags_entry = adw::EntryRow::builder().title(tr!("Tags")).build();
+    tags_entry.set_tooltip_text(Some(tr!(
+        "Separate tags with commas, for example: work, email, banking"
+    )));
     if let Some(eid) = entry.as_ref().map(|e| e.id) {
         let current = inner.state.vault.borrow().tags_of(eid).unwrap_or_default();
         tags_entry.set_text(&current.join(", "));
     }
+    let existing_tags: Vec<String> = inner
+        .state
+        .vault
+        .borrow()
+        .all_tags()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|(name, _count)| name)
+        .collect();
+    if let Some(picker) = build_value_picker(&existing_tags, tr!("Add an existing tag"), {
+        let target = tags_entry.clone();
+        move |value| append_tag(&target, value)
+    }) {
+        tags_entry.add_suffix(&picker);
+    }
     form.add(&tags_entry);
+
+    // Spell out the comma convention: a bare entry row gives the user no clue,
+    // and the example doubles as a hint that several tags are allowed.
+    let tags_hint = gtk::Label::builder()
+        .label(if existing_tags.is_empty() {
+            tr!("Comma-separated, e.g. work, email, banking").to_string()
+        } else {
+            format!(
+                "{} — {} {}",
+                tr!("Comma-separated, e.g. work, email, banking"),
+                tr!("in use:"),
+                existing_tags
+                    .iter()
+                    .take(6)
+                    .cloned()
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            )
+        })
+        .wrap(true)
+        .xalign(0.0)
+        .margin_top(4)
+        .margin_start(12)
+        .margin_end(12)
+        .build();
+    tags_hint.add_css_class("dim-label");
+    tags_hint.add_css_class("caption");
 
     // TOTP group
     let totp_group = adw::PreferencesGroup::builder()
@@ -1857,6 +1995,7 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
         .build();
     content.set_size_request(500, -1);
     content.append(&form);
+    content.append(&tags_hint);
     content.append(&totp_group);
 
     // Attachments: only available for entries that already exist on disk.
@@ -2060,6 +2199,14 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
             return;
         }
 
+        // Defensive: the vault can only be locked here if something locked it
+        // without going through `lock_vault` (which closes this dialog). Report
+        // it plainly instead of surfacing a "vault is locked" crypto error.
+        if !inner_cl.state.vault.borrow().is_unlocked() {
+            inner_cl.show_toast(tr!("Vault is locked — unlock it and try again"));
+            return;
+        }
+
         let title = title_entry_cl.text().trim().to_string();
         let password = password_entry_cl.text().to_string();
         let mut has_error = false;
@@ -2161,6 +2308,23 @@ fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
         }
     });
 
+    // Hold off auto-lock for as long as this form is open. A half-typed entry
+    // is work in progress: locking under the user would throw it away, and no
+    // amount of warning toast makes that acceptable. The countdown resumes when
+    // the dialog closes, by Save or Cancel.
+    SessionManager::inhibit(&inner.state.session);
+
+    // Track the live dialog so an explicit lock can dismiss it, and release the
+    // inhibitor once it goes away by any route.
+    {
+        let inner_cl = inner.clone();
+        dialog.connect_closed(move |_| {
+            inner_cl.password_dialog.borrow_mut().take();
+            SessionManager::release(&inner_cl.state.session);
+        });
+    }
+    *inner.password_dialog.borrow_mut() = Some(dialog.clone());
+
     dialog.present(Some(inner.toast.upcast_ref::<gtk::Widget>()));
 }
 
@@ -2184,6 +2348,74 @@ fn set_favorite_button_state(btn: &gtk::Button, favorite: bool) {
     } else {
         "favorite-inactive"
     });
+}
+
+/// Build a suffix menu button listing `values`, calling `pick` with whichever
+/// the user chooses. Returns `None` when there is nothing to offer yet, so a
+/// fresh vault does not grow a dead button.
+///
+/// The values are passed as action *targets* rather than baked into detailed
+/// action strings, so names containing quotes or parentheses cannot break the
+/// menu model.
+fn build_value_picker<F>(values: &[String], tooltip: &str, pick: F) -> Option<gtk::MenuButton>
+where
+    F: Fn(&str) + 'static,
+{
+    let values: Vec<String> = values
+        .iter()
+        .map(|v| v.trim().to_string())
+        .filter(|v| !v.is_empty())
+        .collect();
+    if values.is_empty() {
+        return None;
+    }
+
+    let button = gtk::MenuButton::builder()
+        .icon_name("view-list-symbolic")
+        .tooltip_text(tooltip)
+        .valign(gtk::Align::Center)
+        .build();
+    button.add_css_class("flat");
+
+    let action = gio::SimpleAction::new("pick", Some(glib::VariantTy::STRING));
+    action.connect_activate(move |_, target| {
+        if let Some(value) = target.and_then(|t| t.str()) {
+            pick(value);
+        }
+    });
+    let group = gio::SimpleActionGroup::new();
+    group.add_action(&action);
+
+    let menu = gio::Menu::new();
+    for value in &values {
+        let item = gio::MenuItem::new(Some(value), None);
+        item.set_action_and_target_value(Some("picker.pick"), Some(&value.to_variant()));
+        menu.append_item(&item);
+    }
+
+    button.insert_action_group("picker", Some(&group));
+    button.set_menu_model(Some(&menu));
+    Some(button)
+}
+
+/// Append `tag` to a comma-separated tag entry, skipping duplicates and
+/// normalising the separator so the field stays parseable.
+fn append_tag(entry: &adw::EntryRow, tag: &str) {
+    let mut tags: Vec<String> = entry
+        .text()
+        .split(',')
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .collect();
+    if tags
+        .iter()
+        .any(|existing| existing.eq_ignore_ascii_case(tag))
+    {
+        return;
+    }
+    tags.push(tag.to_string());
+    entry.set_text(&tags.join(", "));
+    entry.set_position(-1);
 }
 
 fn password_search_text(entry: &PasswordEntry) -> String {

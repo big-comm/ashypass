@@ -31,6 +31,18 @@
 //! `{ok: false, error: "vault locked — open the desktop app to unlock"}`
 //! and the extension surfaces that to the user.
 //!
+//! Unlocking is *lazy and expiring*, mirroring the desktop auto-lock:
+//!
+//! - The key is derived on the first request that needs vault data, not at
+//!   startup. A browser port opened while the keyring was unavailable
+//!   therefore recovers as soon as the user unlocks their session, instead of
+//!   answering "locked" for as long as the browser keeps the port open.
+//! - After `lock_timeout` seconds without a vault-touching request the key is
+//!   dropped again, so a long-lived browser process does not hold the vault
+//!   key in memory all day.
+//! - The `browser_integration` setting gates everything: when the user turns
+//!   it off, vault commands are refused without consulting the keyring.
+//!
 //! ## Installing the manifest
 //!
 //! Run `ashypass-native-host --install` once after building. That writes the
@@ -44,6 +56,7 @@ use ashypass_core::generator::{
 };
 use serde::{Deserialize, Serialize};
 use std::io::{Read, Write};
+use std::time::{Duration, Instant};
 
 const EXTENSION_NAME: &str = "com.bigcommunity.ashypass";
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -174,10 +187,73 @@ impl From<&PasswordEntry> for EntrySummary {
     }
 }
 
+/// Vault handle plus the expiring-unlock bookkeeping described in the module
+/// docs. `last_used` is the timestamp of the last request that needed the key.
+struct HostSession {
+    vault: Vault,
+    last_used: Option<Instant>,
+}
+
+impl HostSession {
+    fn open() -> Result<Self> {
+        let db_path = ashypass_core::config::database_path();
+        let vault = Vault::open(&db_path).context("opening vault")?;
+        Ok(Self {
+            vault,
+            last_used: None,
+        })
+    }
+
+    /// Idle window before the key is dropped. Follows the desktop auto-lock
+    /// setting so the browser never outlives the policy the user chose, with a
+    /// floor that keeps a normal fill-then-submit flow from re-deriving.
+    fn idle_timeout() -> Duration {
+        let seconds = ashypass_core::settings::Settings::load()
+            .lock_timeout
+            .max(30);
+        Duration::from_secs(seconds)
+    }
+
+    /// True when the vault is usable for this request. Drops an expired key
+    /// first, then unlocks from the keyring on demand.
+    fn ensure_unlocked(&mut self) -> bool {
+        if !ashypass_core::settings::Settings::load().browser_integration {
+            self.relock();
+            return false;
+        }
+
+        if let Some(last) = self.last_used {
+            if last.elapsed() >= Self::idle_timeout() {
+                self.relock();
+            }
+        }
+
+        if !self.vault.is_unlocked() && !self.unlock_from_keyring() {
+            return false;
+        }
+
+        self.last_used = Some(Instant::now());
+        true
+    }
+
+    fn unlock_from_keyring(&mut self) -> bool {
+        if !self.vault.has_master_password().unwrap_or(false) {
+            return false;
+        }
+        let Ok(Some(master)) = ashypass_core::keyring::load_master() else {
+            return false;
+        };
+        self.vault.unlock(&master).is_ok()
+    }
+
+    fn relock(&mut self) {
+        self.vault.full_lock();
+        self.last_used = None;
+    }
+}
+
 fn serve() -> Result<()> {
-    let db_path = ashypass_core::config::database_path();
-    let mut vault = Vault::open(&db_path).context("opening vault")?;
-    let unlocked = try_unlock(&mut vault);
+    let mut session = HostSession::open()?;
 
     loop {
         let req = match read_message::<Request>() {
@@ -189,35 +265,25 @@ fn serve() -> Result<()> {
             }
         };
 
-        let resp = match (&unlocked, &req) {
-            // Ping and generate work even when locked — they don't touch the
-            // vault contents.
-            (_, Request::Ping) => serde_json::json!({"ok": true, "version": VERSION}),
-            (_, Request::Generate { length, kind }) => match handle_generate(length, kind) {
+        // Ping and generate work even when locked — they don't touch the
+        // vault contents, so they must not trigger an unlock either.
+        let resp = match &req {
+            Request::Ping => serde_json::json!({"ok": true, "version": VERSION}),
+            Request::Generate { length, kind } => match handle_generate(length, kind) {
                 Ok(pw) => serde_json::json!({"ok": true, "password": pw}),
                 Err(e) => error_response(&e.to_string()),
             },
-            (false, _) => error_response(
-                "vault locked — open the desktop app and store the master password in the system keyring",
+            _ if !session.ensure_unlocked() => error_response(
+                "vault locked — open the desktop app, enable browser integration, and store the master password in the system keyring",
             ),
-            (true, Request::List { query }) => handle_list(&vault, query.as_deref()),
-            (true, Request::Search { query }) => handle_list(&vault, Some(query)),
-            (true, Request::MatchUrl { url }) => handle_match_url(&vault, url),
-            (true, Request::Get { id }) => handle_get(&vault, *id),
+            Request::List { query } => handle_list(&session.vault, query.as_deref()),
+            Request::Search { query } => handle_list(&session.vault, Some(query)),
+            Request::MatchUrl { url } => handle_match_url(&session.vault, url),
+            Request::Get { id } => handle_get(&session.vault, *id),
         };
 
         write_message(&resp)?;
     }
-}
-
-fn try_unlock(vault: &mut Vault) -> bool {
-    if !vault.has_master_password().unwrap_or(false) {
-        return false;
-    }
-    let Ok(Some(master)) = ashypass_core::keyring::load_master() else {
-        return false;
-    };
-    vault.unlock(&master).is_ok()
 }
 
 fn handle_list(vault: &Vault, query: Option<&str>) -> serde_json::Value {
@@ -347,8 +413,13 @@ fn url_host(input: &str) -> Option<String> {
     let no_scheme = s.split_once("://").map(|(_, r)| r).unwrap_or(s);
     let before_path = no_scheme.split('/').next().unwrap_or("");
     let before_query = before_path.split('?').next().unwrap_or("");
-    let host = before_query.split('@').next_back().unwrap_or("");
-    let host = host.split(':').next().unwrap_or("");
+    let authority = before_query.split('@').next_back().unwrap_or("");
+    // A bracketed IPv6 literal is full of colons, so strip the port only after
+    // the closing bracket; splitting on ':' first would reduce it to "[".
+    let host = match authority.strip_prefix('[') {
+        Some(rest) => rest.split_once(']').map(|(h, _)| h).unwrap_or(rest),
+        None => authority.split(':').next().unwrap_or(""),
+    };
     if host.is_empty() {
         None
     } else {
@@ -356,13 +427,98 @@ fn url_host(input: &str) -> Option<String> {
     }
 }
 
-/// Match `candidate` against `target` allowing a single www. shedding and
-/// suffix-style subdomain matches (so `mail.example.com` matches a stored
-/// `example.com` entry).
+/// Multi-label public suffixes common enough to matter here. Without this a
+/// suffix match would treat `github.io` or `com.br` as a registrable domain and
+/// happily offer one tenant's credentials on another tenant's subdomain.
+///
+/// This is deliberately a short list rather than a bundled Public Suffix List:
+/// the failure mode of a missing entry is a *refused* match (we fall back to
+/// requiring more labels), never a credential offered to the wrong site.
+const MULTI_LABEL_SUFFIXES: &[&str] = &[
+    "co.uk",
+    "org.uk",
+    "gov.uk",
+    "ac.uk",
+    "co.jp",
+    "com.br",
+    "net.br",
+    "org.br",
+    "gov.br",
+    "com.au",
+    "com.mx",
+    "com.ar",
+    "co.za",
+    "co.in",
+    "com.tr",
+    "github.io",
+    "gitlab.io",
+    "pages.dev",
+    "workers.dev",
+    "vercel.app",
+    "netlify.app",
+    "herokuapp.com",
+    "azurewebsites.net",
+    "cloudfront.net",
+    "s3.amazonaws.com",
+    "blogspot.com",
+    "wordpress.com",
+    "firebaseapp.com",
+    "web.app",
+    "appspot.com",
+    "glitch.me",
+    "onrender.com",
+    "fly.dev",
+    "duckdns.org",
+    "ngrok.io",
+];
+
+/// Number of trailing labels that belong to the public suffix plus one, i.e.
+/// the minimum label count of a registrable domain under `host`.
+fn registrable_label_count(host: &str) -> usize {
+    for suffix in MULTI_LABEL_SUFFIXES {
+        if host == *suffix || host.ends_with(&format!(".{suffix}")) {
+            return suffix.split('.').count() + 1;
+        }
+    }
+    2
+}
+
+/// The registrable domain of `host` (`mail.corp.example.co.uk` →
+/// `example.co.uk`). Returns `None` when `host` is itself a public suffix or
+/// otherwise has too few labels to own credentials.
+fn registrable_domain(host: &str) -> Option<String> {
+    // IP literals have no registrable domain; treating the last two octets as
+    // one would make 192.168.1.10 and 10.0.1.10 "the same site".
+    if host.parse::<std::net::IpAddr>().is_ok() || host.contains(':') {
+        return None;
+    }
+    let labels: Vec<&str> = host.split('.').filter(|l| !l.is_empty()).collect();
+    let needed = registrable_label_count(host);
+    if labels.len() < needed {
+        return None;
+    }
+    Some(labels[labels.len() - needed..].join("."))
+}
+
+/// Match `candidate` against `target`, allowing `www.` shedding and
+/// subdomain-style matches within one registrable domain (so a stored
+/// `example.com` entry is offered on `mail.example.com`).
+///
+/// Crossing a public-suffix boundary is refused: `github.io` must not match
+/// `attacker.github.io`, and two hosts that merely share a public suffix
+/// (`a.com.br` / `b.com.br`) are unrelated.
 fn host_match(candidate: &str, target: &str) -> bool {
     let c = candidate.trim_start_matches("www.");
     let t = target.trim_start_matches("www.");
-    c == t || t.ends_with(&format!(".{c}")) || c.ends_with(&format!(".{t}"))
+    if c == t {
+        return true;
+    }
+    // Both sides must resolve to the same registrable domain. IP literals and
+    // bare public suffixes yield `None` and so only ever match exactly.
+    match (registrable_domain(c), registrable_domain(t)) {
+        (Some(cd), Some(td)) => cd == td,
+        _ => false,
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -496,14 +652,46 @@ mod tests {
     }
 
     #[test]
+    fn url_host_keeps_ipv6_literals_intact() {
+        assert_eq!(url_host("http://[::1]:8080/x"), Some("::1".into()));
+        assert_eq!(
+            url_host("http://[2001:db8::5]/"),
+            Some("2001:db8::5".into())
+        );
+    }
+
+    #[test]
     fn host_match_handles_www_and_subdomains() {
         assert!(host_match("example.com", "example.com"));
         assert!(host_match("www.example.com", "example.com"));
         assert!(host_match("example.com", "www.example.com"));
         assert!(host_match("mail.example.com", "example.com"));
         assert!(host_match("example.com", "mail.example.com"));
+        assert!(host_match("a.corp.example.com", "b.example.com"));
         assert!(!host_match("attacker.com", "example.com"));
         assert!(!host_match("example.org", "example.com"));
+    }
+
+    #[test]
+    fn host_match_respects_public_suffix_boundaries() {
+        // A bare public suffix must not vouch for its tenants.
+        assert!(!host_match("github.io", "attacker.github.io"));
+        assert!(!host_match("attacker.github.io", "victim.github.io"));
+        assert!(!host_match("com.br", "banco.com.br"));
+        assert!(!host_match("a.com.br", "b.com.br"));
+        // …but real registrable domains under a multi-label suffix still work.
+        assert!(host_match("banco.com.br", "www.banco.com.br"));
+        assert!(host_match("login.banco.com.br", "banco.com.br"));
+        assert!(host_match("shop.co.uk", "www.shop.co.uk"));
+        assert!(!host_match("shop.co.uk", "other.co.uk"));
+    }
+
+    #[test]
+    fn host_match_rejects_ip_literal_confusion() {
+        assert!(host_match("192.168.1.10", "192.168.1.10"));
+        assert!(!host_match("192.168.1.10", "10.0.1.10"));
+        assert!(!host_match("192.168.1.10", "168.1.10"));
+        assert!(!host_match("2001:db8::5", "2001:db8::6"));
     }
 
     #[test]

@@ -23,7 +23,7 @@
 //! before iterating; that lets a subscriber call back into the bus during
 //! dispatch (e.g. emit a follow-up event) without panicking on `RefCell`.
 
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
 /// Application-wide signals. Add a variant here when a new emitter needs to
@@ -51,9 +51,14 @@ pub enum AppEvent {
 
 type Subscriber = Rc<dyn Fn(&AppEvent)>;
 
+/// Handle identifying one registration, for `unsubscribe`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SubscriptionId(u64);
+
 #[derive(Default)]
 pub struct EventBus {
-    subs: RefCell<Vec<Subscriber>>,
+    subs: RefCell<Vec<(SubscriptionId, Subscriber)>>,
+    next_id: Cell<u64>,
 }
 
 impl EventBus {
@@ -61,21 +66,40 @@ impl EventBus {
         Self::default()
     }
 
-    /// Register a listener for every event. There is currently no
-    /// unsubscribe — the bus lives for the whole application lifetime, and
-    /// subscribers should hold weak references to widgets when needed.
-    pub fn subscribe<F>(&self, f: F)
+    /// Register a listener for every event.
+    ///
+    /// Long-lived views can ignore the returned id — the bus lives as long as
+    /// the application. Anything shorter-lived than the bus (a dialog, a
+    /// transient view) must keep the id and `unsubscribe` when it goes away,
+    /// otherwise every re-open leaks another subscriber onto the dispatch list.
+    /// Subscribers that outlive their widgets should hold weak references.
+    #[must_use = "short-lived subscribers must unsubscribe; bind to `_` if the listener is permanent"]
+    pub fn subscribe<F>(&self, f: F) -> SubscriptionId
     where
         F: Fn(&AppEvent) + 'static,
     {
-        self.subs.borrow_mut().push(Rc::new(f));
+        let id = SubscriptionId(self.next_id.get());
+        self.next_id.set(self.next_id.get() + 1);
+        self.subs.borrow_mut().push((id, Rc::new(f)));
+        id
+    }
+
+    /// Remove a previously registered listener. Safe to call during dispatch
+    /// (the running `emit` iterates a snapshot) and safe to call twice.
+    pub fn unsubscribe(&self, id: SubscriptionId) {
+        self.subs.borrow_mut().retain(|(sub_id, _)| *sub_id != id);
     }
 
     /// Dispatch synchronously to all current subscribers. The list is cloned
-    /// first so re-entrant `emit` and `subscribe` calls from within a handler
-    /// are safe.
+    /// first so re-entrant `emit`, `subscribe` and `unsubscribe` calls from
+    /// within a handler are safe.
     pub fn emit(&self, event: AppEvent) {
-        let snapshot: Vec<Subscriber> = self.subs.borrow().clone();
+        let snapshot: Vec<Subscriber> = self
+            .subs
+            .borrow()
+            .iter()
+            .map(|(_, sub)| sub.clone())
+            .collect();
         for s in snapshot {
             s(&event);
         }
@@ -98,7 +122,7 @@ mod tests {
         let log = Rc::new(RefCell::new(Vec::<&'static str>::new()));
         {
             let log = log.clone();
-            bus.subscribe(move |e| {
+            let _ = bus.subscribe(move |e| {
                 if matches!(e, AppEvent::VaultChanged) {
                     log.borrow_mut().push("a");
                 }
@@ -106,7 +130,7 @@ mod tests {
         }
         {
             let log = log.clone();
-            bus.subscribe(move |e| {
+            let _ = bus.subscribe(move |e| {
                 if matches!(e, AppEvent::VaultChanged) {
                     log.borrow_mut().push("b");
                 }
@@ -123,9 +147,9 @@ mod tests {
         {
             let bus_outer = bus.clone();
             let calls = calls.clone();
-            bus.subscribe(move |_| {
+            let _ = bus.subscribe(move |_| {
                 let calls = calls.clone();
-                bus_outer.subscribe(move |_| {
+                let _ = bus_outer.subscribe(move |_| {
                     calls.set(calls.get() + 1);
                 });
             });
@@ -142,12 +166,63 @@ mod tests {
     }
 
     #[test]
+    fn unsubscribe_removes_only_that_listener() {
+        let bus = EventBus::new();
+        let a = Rc::new(Cell::new(0));
+        let b = Rc::new(Cell::new(0));
+        let id_a = {
+            let a = a.clone();
+            bus.subscribe(move |_| a.set(a.get() + 1))
+        };
+        let _id_b = {
+            let b = b.clone();
+            bus.subscribe(move |_| b.set(b.get() + 1))
+        };
+
+        bus.emit(AppEvent::VaultChanged);
+        assert_eq!((a.get(), b.get()), (1, 1));
+
+        bus.unsubscribe(id_a);
+        assert_eq!(bus.subscriber_count(), 1);
+        bus.emit(AppEvent::VaultChanged);
+        assert_eq!((a.get(), b.get()), (1, 2));
+
+        // Idempotent: unsubscribing twice is not an error.
+        bus.unsubscribe(id_a);
+        assert_eq!(bus.subscriber_count(), 1);
+    }
+
+    #[test]
+    fn unsubscribe_during_dispatch_takes_effect_next_emit() {
+        let bus = Rc::new(EventBus::new());
+        let calls = Rc::new(Cell::new(0));
+        let id: Rc<RefCell<Option<SubscriptionId>>> = Rc::new(RefCell::new(None));
+        let new_id = {
+            let calls = calls.clone();
+            let bus_inner = bus.clone();
+            let id = id.clone();
+            bus.subscribe(move |_| {
+                calls.set(calls.get() + 1);
+                if let Some(self_id) = *id.borrow() {
+                    bus_inner.unsubscribe(self_id);
+                }
+            })
+        };
+        *id.borrow_mut() = Some(new_id);
+
+        bus.emit(AppEvent::VaultChanged);
+        assert_eq!(calls.get(), 1);
+        bus.emit(AppEvent::VaultChanged);
+        assert_eq!(calls.get(), 1, "listener removed itself during dispatch");
+    }
+
+    #[test]
     fn payload_round_trips() {
         let bus = EventBus::new();
         let seen = Rc::new(RefCell::new(Vec::<String>::new()));
         {
             let seen = seen.clone();
-            bus.subscribe(move |e| {
+            let _ = bus.subscribe(move |e| {
                 if let AppEvent::SyncCompleted { filename } = e {
                     seen.borrow_mut().push(filename.clone());
                 }

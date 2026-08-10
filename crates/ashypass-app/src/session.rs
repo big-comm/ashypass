@@ -18,6 +18,9 @@ pub struct SessionManager {
     warning_id: Option<SourceId>,
     lock_callback: Option<Rc<dyn Fn()>>,
     warning_callback: Option<Rc<dyn Fn(u64)>>,
+    /// Outstanding `inhibit` calls. While non-zero the lock timer re-arms
+    /// instead of locking. See `SessionManager::inhibit`.
+    inhibitors: usize,
 }
 
 impl Default for SessionManager {
@@ -30,6 +33,7 @@ impl Default for SessionManager {
             warning_id: None,
             lock_callback: None,
             warning_callback: None,
+            inhibitors: 0,
         }
     }
 }
@@ -53,6 +57,31 @@ impl SessionManager {
         }
     }
 
+    /// Suspend auto-lock while the user is in the middle of something that
+    /// would be destroyed by locking — editing an entry, above all. Idle time
+    /// spent staring at a half-filled form is not idle time.
+    ///
+    /// Inhibiting does not stop the clock: when the timer fires it is simply
+    /// re-armed instead of locking, so the vault locks as soon as the last
+    /// inhibitor is released and the remaining idle time elapses. Every
+    /// `inhibit` must be paired with exactly one `release`.
+    pub fn inhibit(this: &Rc<RefCell<Self>>) {
+        this.borrow_mut().inhibitors += 1;
+    }
+
+    pub fn release(this: &Rc<RefCell<Self>>) {
+        {
+            let mut s = this.borrow_mut();
+            s.inhibitors = s.inhibitors.saturating_sub(1);
+            if s.inhibitors > 0 || !s.authenticated {
+                return;
+            }
+        }
+        // Last inhibitor gone: restart the idle countdown from now rather than
+        // locking immediately on whatever time passed while the form was open.
+        Self::reset_timeout(this);
+    }
+
     pub fn login(this: &Rc<RefCell<Self>>) {
         this.borrow_mut().authenticated = true;
         Self::reset_timeout(this);
@@ -68,6 +97,18 @@ impl SessionManager {
         if let Some(cb) = cb {
             cb();
         }
+    }
+
+    /// Record that the vault is locked without running the lock callback.
+    ///
+    /// Used by paths that lock the vault directly (the toolbar button, the
+    /// sidebar item): without this the session would stay "authenticated", so
+    /// the idle timer would keep running against a locked vault and
+    /// type-to-search would still think the vault was open.
+    pub fn mark_locked(this: &Rc<RefCell<Self>>) {
+        let mut s = this.borrow_mut();
+        s.authenticated = false;
+        s.cancel_timers();
     }
 
     fn cancel_timers(&mut self) {
@@ -102,7 +143,12 @@ impl SessionManager {
             let cb = {
                 let mut s = this_warn.borrow_mut();
                 s.warning_id = None;
-                s.warning_callback.clone()
+                // No point warning about a lock that is being held off.
+                if s.inhibitors > 0 {
+                    None
+                } else {
+                    s.warning_callback.clone()
+                }
             };
             if let Some(cb) = cb {
                 let remaining = this_warn.borrow().remaining();
@@ -115,8 +161,16 @@ impl SessionManager {
 
         let this_lock = this.clone();
         let lock_id = glib::timeout_add_seconds_local(timeout_secs as u32, move || {
-            this_lock.borrow_mut().timeout_id = None;
-            SessionManager::logout(&this_lock);
+            let inhibited = {
+                let mut s = this_lock.borrow_mut();
+                s.timeout_id = None;
+                s.inhibitors > 0
+            };
+            if inhibited {
+                SessionManager::reset_timeout(&this_lock);
+            } else {
+                SessionManager::logout(&this_lock);
+            }
             glib::ControlFlow::Break
         });
 

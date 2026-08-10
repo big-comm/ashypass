@@ -320,11 +320,22 @@ impl MainWindow {
         {
             let toast_cl = toast_overlay.clone();
             let events = state.events.clone();
+            let sess = state.session.clone();
             let cb: Rc<dyn Fn(u64)> = Rc::new(move |remaining| {
+                // The toast carries a one-click reprieve so a user who is
+                // mid-form (and therefore not generating input events) can keep
+                // the session alive instead of losing their work to the lock.
                 let toast = adw::Toast::builder()
                     .title(format!("{} ({}s)", tr!("Vault will lock soon"), remaining))
-                    .timeout(3)
+                    .button_label(tr!("Keep Unlocked"))
+                    .timeout(remaining.min(u32::MAX as u64) as u32)
                     .build();
+                {
+                    let sess = sess.clone();
+                    toast.connect_button_clicked(move |_| {
+                        SessionManager::on_activity(&sess);
+                    });
+                }
                 toast_cl.add_toast(toast);
                 events.emit(crate::events::AppEvent::SessionWarning {
                     seconds_left: remaining,
@@ -355,7 +366,7 @@ impl MainWindow {
         }
         {
             let inner_weak = Rc::downgrade(&inner);
-            state.events.subscribe(move |event| {
+            let _permanent = state.events.subscribe(move |event| {
                 if matches!(
                     event,
                     crate::events::AppEvent::VaultChanged
@@ -370,9 +381,14 @@ impl MainWindow {
         }
 
         // Window-wide activity tracker (key + click) — resets the auto-lock
-        // timer whenever the user is doing something.
+        // timer whenever the user is doing something. Both controllers run in
+        // the capture phase: entries and text views consume key presses before
+        // they bubble back to the window, so a bubble-phase controller would
+        // never see the user typing into a form and the vault would lock while
+        // they were still filling one in.
         {
             let key_ctl = gtk::EventControllerKey::new();
+            key_ctl.set_propagation_phase(gtk::PropagationPhase::Capture);
             let sess = state.session.clone();
             let inner_cl = inner.clone();
             let window_cl = window.clone();
@@ -718,6 +734,9 @@ impl MainWindowInner {
         if self.search_button.is_active()
             || !self.search_button.is_visible()
             || !self.state.session.borrow().is_authenticated()
+            // A presented dialog owns the keyboard; typing there must never
+            // leak into the search entry behind it.
+            || window.visible_dialog().is_some()
             || focus_is_text_input(gtk::prelude::GtkWindowExt::focus(window).as_ref())
             || modifiers.intersects(
                 gdk::ModifierType::CONTROL_MASK

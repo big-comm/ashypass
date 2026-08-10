@@ -1,6 +1,7 @@
 //! Favicon cache.
 //!
-//! Resolves `https://<host>/favicon.ico` (with a Google s2 fallback) and
+//! Resolves `https://<host>/favicon.ico` (with an opt-in Google s2 fallback,
+//! see `Settings::favicon_third_party_fallback`) and
 //! stores the raw bytes under `favicons/<host>.png`. The hostname is the
 //! cache key so different URLs for the same site share a single file.
 
@@ -13,6 +14,8 @@ use url::Url;
 
 const FETCH_TIMEOUT: Duration = Duration::from_secs(6);
 const MAX_BYTES: usize = 256 * 1024;
+const GENERIC_USER_AGENT: &str =
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36";
 
 pub fn cache_path(host: &str) -> PathBuf {
     favicons_dir().join(format!("{host}.png"))
@@ -52,16 +55,22 @@ pub fn fetch_blocking(host: &str) -> Result<PathBuf> {
         fs::create_dir_all(parent)?;
     }
 
+    // Deliberately generic: "AshyPass … favicon-fetch" would tell every site
+    // the user stores credentials for that they run this password manager.
     let client = reqwest::blocking::Client::builder()
         .timeout(FETCH_TIMEOUT)
-        .user_agent("AshyPass/3 favicon-fetch")
+        .user_agent(GENERIC_USER_AGENT)
         .build()
         .map_err(|e| Error::Other(format!("favicon http: {e}")))?;
 
-    let candidates = [
-        format!("https://{host}/favicon.ico"),
-        format!("https://www.google.com/s2/favicons?domain={host}&sz=64"),
-    ];
+    let mut candidates = vec![format!("https://{host}/favicon.ico")];
+    // The third-party fallback sends the hostname to Google, i.e. leaks which
+    // sites are in the vault. Opt-in only.
+    if crate::settings::Settings::load().favicon_third_party_fallback {
+        candidates.push(format!(
+            "https://www.google.com/s2/favicons?domain={host}&sz=64"
+        ));
+    }
 
     for url in &candidates {
         let resp = match client.get(url).send() {
