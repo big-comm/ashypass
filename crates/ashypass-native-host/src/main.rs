@@ -59,7 +59,7 @@ use std::io::{Read, Write};
 use std::time::{Duration, Instant};
 
 const EXTENSION_NAME: &str = "com.bigcommunity.ashypass";
-const VERSION: &str = env!("CARGO_PKG_VERSION");
+const VERSION: &str = ashypass_core::config::APP_VERSION;
 /// Maximum incoming payload accepted. Mirrors the Chrome limit (~1 MiB),
 /// guarding against a runaway extension stream.
 const MAX_MESSAGE_BYTES: u32 = 1024 * 1024;

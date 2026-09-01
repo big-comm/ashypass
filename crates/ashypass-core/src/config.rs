@@ -6,7 +6,20 @@ use std::path::{Path, PathBuf};
 
 pub const APP_ID: &str = "com.bigcommunity.ashypass";
 pub const APP_NAME: &str = "Ashy Pass";
-pub const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
+
+/// User-visible version, and the single place it is written.
+///
+/// This is a literal rather than `env!("CARGO_PKG_VERSION")` because the
+/// packaging tooling (`gitrepo`) bumps the version by rewriting an
+/// `APP_VERSION = "x.y.z"` constant in the tree, and it cannot see through the
+/// macro. Every place that shows a version — the About dialog, `--version`,
+/// the native host handshake — reads this constant so they can never disagree.
+///
+/// `version` in the workspace `Cargo.toml` is the *crate* version and is not
+/// what users see; the package's own `pkgver` is date-based (see
+/// `pkgbuild/PKGBUILD`). Keep it aligned with this constant when it matters,
+/// but nothing breaks if it lags behind a patch bump.
+pub const APP_VERSION: &str = "3.0.1";
 
 pub const SESSION_TIMEOUT_SECONDS: u64 = 30;
 pub const CLIPBOARD_CLEAR_SECONDS: u64 = 60;

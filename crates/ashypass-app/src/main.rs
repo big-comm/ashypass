@@ -220,7 +220,7 @@ fn show_about(app: &adw::Application) {
     let about = adw::AboutDialog::builder()
         .application_name(APP_NAME)
         .application_icon("ashypass")
-        .version(env!("CARGO_PKG_VERSION"))
+        .version(ashypass_core::config::APP_VERSION)
         .developer_name("Big Community")
         .license_type(gtk::License::MitX11)
         .comments(tr!(

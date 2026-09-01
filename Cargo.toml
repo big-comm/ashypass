@@ -10,6 +10,8 @@ members = [
 ]
 
 [workspace.package]
+# Crate version. The version users see comes from `APP_VERSION` in
+# `crates/ashypass-core/src/config.rs`, which the packaging tooling bumps.
 version = "3.0.0"
 edition = "2021"
 rust-version = "1.85"

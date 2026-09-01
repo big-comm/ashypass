@@ -17,7 +17,7 @@ use clap::{Args, Parser, Subcommand};
 #[command(
     name = "ashypass-cli",
     about = "Ashy Pass — terminal companion",
-    version
+    version = ashypass_core::config::APP_VERSION
 )]
 struct Cli {
     /// Override the vault database path. Defaults to the GUI's location.
