@@ -688,7 +688,7 @@ impl Inner {
             .build();
         let explain = gtk::Label::builder()
             .label(tr!(
-                "On the site you want to protect, open the two-step verification settings and choose an authenticator app. Copy the setup key (or the otpauth:// link) it shows and paste it below."
+                "On the site you want to protect, open the two-step verification settings and choose an authenticator app. Read the QR code it shows, or copy the setup key and paste it below."
             ))
             .wrap(true)
             .xalign(0.0)
@@ -786,6 +786,61 @@ impl Inner {
         error.set_accessible_role(gtk::AccessibleRole::Alert);
         crate::ui::widgets::describe(&key_row, &error);
         content.append(&error);
+
+        // Reading the QR code shown by the site fills the key (and, for a
+        // new access, the name and account it carries).
+        let qr_group = adw::PreferencesGroup::builder()
+            .title(tr!("Read the QR code"))
+            .description(tr!(
+                "The image is read on this computer only. A screen capture is deleted right after reading."
+            ))
+            .build();
+        let qr_status = gtk::Label::builder()
+            .xalign(0.0)
+            .wrap(true)
+            .visible(false)
+            .margin_top(8)
+            .build();
+        qr_status.set_accessible_role(gtk::AccessibleRole::Status);
+        let qr_buttons = {
+            let key_row = key_row.clone();
+            let title_row = title_row.clone();
+            let user_row = user_row.clone();
+            let target_row = target_row.clone();
+            let qr_status = qr_status.clone();
+            crate::ui::qr_scan::scan_buttons(move |result| {
+                qr_status.set_label(crate::ui::qr_scan::message_for(&result));
+                qr_status.set_visible(true);
+                if let crate::ui::qr_scan::ScanResult::Otpauth(uri) = result {
+                    qr_status.remove_css_class("error");
+                    key_row.set_text(&uri);
+                    if target_row.selected() == 0 {
+                        if let Ok(parsed) = ashypass_core::totp::parse_otpauth(&uri) {
+                            if title_row.text().is_empty() {
+                                let name = if parsed.issuer.is_empty() {
+                                    parsed.label.clone()
+                                } else {
+                                    parsed.issuer.clone()
+                                };
+                                title_row.set_text(&name);
+                            }
+                            if user_row.text().is_empty() && !parsed.issuer.is_empty() {
+                                user_row.set_text(&parsed.label);
+                            }
+                        }
+                    }
+                } else {
+                    qr_status.add_css_class("error");
+                }
+            })
+        };
+        let qr_box = gtk::Box::builder()
+            .orientation(gtk::Orientation::Vertical)
+            .build();
+        qr_box.append(&qr_buttons);
+        qr_box.append(&qr_status);
+        qr_group.add(&qr_box);
+        content.insert_child_after(&qr_group, Some(&target_group));
 
         let clamp = adw::Clamp::builder()
             .maximum_size(600)

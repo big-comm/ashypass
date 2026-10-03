@@ -370,6 +370,43 @@ pub fn present(
     totp_expander.add_row(&algo_row);
     totp_expander.add_row(&digits_row);
     totp_expander.add_row(&period_row);
+    // Read the site's QR code instead of copying the key by hand.
+    let qr_status = gtk::Label::builder()
+        .xalign(0.0)
+        .wrap(true)
+        .visible(false)
+        .margin_top(6)
+        .build();
+    qr_status.set_accessible_role(gtk::AccessibleRole::Status);
+    let qr_buttons = {
+        let totp_row = totp_row.clone();
+        let qr_status = qr_status.clone();
+        crate::ui::qr_scan::scan_buttons(move |result| {
+            qr_status.set_label(crate::ui::qr_scan::message_for(&result));
+            qr_status.set_visible(true);
+            if let crate::ui::qr_scan::ScanResult::Otpauth(uri) = result {
+                qr_status.remove_css_class("error");
+                totp_row.set_text(&uri);
+            } else {
+                qr_status.add_css_class("error");
+            }
+        })
+    };
+    let qr_box = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .margin_top(8)
+        .margin_bottom(8)
+        .margin_start(12)
+        .margin_end(12)
+        .build();
+    qr_box.append(&qr_buttons);
+    qr_box.append(&qr_status);
+    let qr_row = gtk::ListBoxRow::builder()
+        .activatable(false)
+        .selectable(false)
+        .child(&qr_box)
+        .build();
+    totp_expander.add_row(&qr_row);
     totp_group.add(&totp_expander);
     let totp_error = field_error_label();
     describe(&totp_row, &totp_error);
