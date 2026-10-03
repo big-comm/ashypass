@@ -114,14 +114,15 @@ pub(super) fn populate_protection(
     // --- Auto-lock -------------------------------------------------------
     let lock_group = adw::PreferencesGroup::builder()
         .title(tr!("Automatic lock"))
+        .description(tr!(
+            "A warning appears before it locks, with time to keep using it"
+        ))
         .build();
     {
         let state_cl = state.clone();
         let row = duration_row(
             tr!("Lock after inactivity"),
-            Some(tr!(
-                "A warning appears before it locks, with time to keep using it"
-            )),
+            None,
             LOCK_CHOICES,
             settings.lock_timeout,
             move |seconds| {
