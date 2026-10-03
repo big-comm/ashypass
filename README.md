@@ -1,141 +1,109 @@
-# Ashy Pass
+<p align="center">
+  <img src="usr/share/icons/hicolor/scalable/apps/ashypass.svg" alt="Ashy Pass" width="112" height="112">
+</p>
+
+<h1 align="center">Ashy Pass</h1>
 
 <p align="center">
-  <img src="https://github.com/big-comm/ashypass/blob/main/usr/share/icons/hicolor/scalable/apps/ashypass.svg" alt="Ashy Pass" width="128" height="128">
+  A modern, private password manager for the Linux desktop.<br>
+  Rust · GTK4 · libadwaita · Argon2id · AES-256-GCM
 </p>
 
 <p align="center">
-  <strong>Modern, encrypted password manager for Linux desktops.</strong><br>
-  Rust · GTK4 · libadwaita · AES-256-GCM · Argon2id
+  <a href="https://github.com/big-comm/ashypass/releases"><img src="https://img.shields.io/badge/version-3.0.1-blue.svg" alt="Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
+  <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/rust-1.85%2B-orange.svg" alt="Rust 1.85+"></a>
+  <a href="https://www.gtk.org/"><img src="https://img.shields.io/badge/GTK-4.12%2B-purple.svg" alt="GTK 4.12+"></a>
+  <a href="https://bigcommunity.com"><img src="https://img.shields.io/badge/BigCommunity-project-blue.svg" alt="BigCommunity"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/big-comm/ashypass/releases"><img src="https://img.shields.io/badge/version-3.0.0-blue.svg" alt="Version"/></a>
-  <a href="https://github.com/big-comm/ashypass/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License"/></a>
-  <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/rust-1.85+-orange.svg" alt="Rust"/></a>
-  <a href="https://www.gtk.org/"><img src="https://img.shields.io/badge/GTK-4.12+-purple.svg" alt="GTK"/></a>
-  <a href="https://bigcommunity.com"><img src="https://img.shields.io/badge/BigCommunity-Platform-blue" alt="BigCommunity"/></a>
+  <img src="docs/screenshots/passwords.png" alt="My passwords: the list with the details of the open entry" width="860">
 </p>
-
----
 
 ## Overview
 
-Ashy Pass is a desktop password manager designed around GNOME-style ergonomics and modern cryptography. The 3.x series is a ground-up rewrite in Rust on top of GTK4 / libadwaita, replacing the previous Python implementation.
+Ashy Pass keeps your passwords, verification codes and notes in an encrypted vault on your computer. The interface is organised around what you want to do: find an account and copy its password, read a two-step verification code, create a strong password, or keep a protected backup.
 
-The on-disk vault uses **AES-256-GCM** authenticated encryption with **Argon2id** key derivation. Legacy 2.x Fernet vaults are auto-migrated on first unlock — no manual export required.
+Nothing leaves your machine unless you turn on a sync or backup service. The vault is protected by a master password, derived with Argon2id and encrypted field by field with AES-256-GCM.
 
-The project ships as a **multi-crate workspace**:
-
-| Crate | Role |
-|-------|------|
-| `ashypass-core` | Pure library: crypto, vault, importers, generators, sync, backup. No GTK. |
-| `ashypass-app` | GTK4 / libadwaita desktop application. |
-| `ashypass-cli` | Terminal companion sharing the same vault and keyring item. |
-| `ashypass-native-host` | Chrome / Firefox native-messaging host for browser extensions. |
-
-## Features
-
-### Interface
-- Organised around tasks: **My passwords**, **Verification codes**, **Create password**, then **Backups** and **Settings**. Locking is a button; external drives live under *Tools* in the main menu.
-- *My passwords*: one list with folder and favourite filters, a visible *Copy password* button and a *More* menu per row; clicking a row opens its details. Wide windows show list and details side by side, narrow ones navigate between them (libadwaita breakpoints). The list is a virtualised `GtkListView`.
-- One unlock screen whose text always matches the method (master password or PIN), with a Caps Lock warning; key derivation runs off the main thread.
-- *Create password* gives a ready 20-character password with its real length and an *estimated* strength; *Save to vault…* keeps the value through an unlock.
-- *Backups* shows the last copy, what it contains and which password restores it. Imports start from the source app, show a preview and report skipped items; plain CSV exports require the master password and a warning.
-- Follows the system light/dark preference by default.
-
-### Data safety
-- Restoring a backup validates it completely, keeps the replaced vault as `passwords.db.before-restore-<timestamp>` and never changes anything on a wrong password.
-- Vaults, PIN records and settings written by 3.0.1 open unchanged and are upgraded in place (covered by `crates/ashypass-core/tests/legacy_vault.rs`); 3.0.1 can still read a vault used by this version.
-- Signing out of Nextcloud Passwords forgets the sync mappings, and a sync refuses to run when none of the mapped entries exist on the server.
-
-### Security
-- **AES-256-GCM** authenticated encryption per field (password, notes, TOTP secret).
-- **Argon2id** master verification *and* per-entry key derivation (`t=3, m=64 MiB, p=4` by default, auto-tuned at first run).
-- **Quick Unlock** with PIN-wrapped vault-key state stored in Secret Service (GNOME Keyring / KWallet), never in plaintext settings.
-- **Automatic session lock** with configurable idle timeout, a pre-lock warning banner, and locking when the screen locks or the computer sleeps.
-- **Clipboard auto-clear** after a configurable interval; only clears if the contents are still the secret you copied, and marks copies with `x-kde-passwordManagerHint` so history managers that honour it skip them.
-- **HIBP audit** with k-anonymity (only the first 5 hex digits of the SHA-1 hash are sent).
-- **Soft-delete trash** with configurable retention; entries are recoverable until purge.
-- Vault FIDO2 configuration is preserved but disabled until CTAP2 registration and assertion are fully implemented. LUKS FIDO2 enrollment remains available for external drives.
-- **Zero-knowledge** — the master password and derived keys never leave the machine.
-
-### Vault
-- Encrypted SQLite storage (rusqlite, `FK ON DELETE CASCADE`).
-- Categories, favorites, full-text search, and per-entry tags.
-- Per-entry **TOTP** with selectable algorithm (SHA1 / SHA256 / SHA512), digits (6 / 8), and period.
-- Favicon fetcher with on-disk cache (`<host>/favicon.ico` → Google `s2` fallback).
-- One-click copy with timed auto-clear and clipboard scoping.
-
-### Password generation
-- Strong passwords with configurable length and character classes.
-- Six-word passphrases by default from the 2,048-word BIP39 English list.
-- Numeric PINs.
-- Real-time strength meter (entropy-based: Weak → Very Strong).
-
-### Import / Export
-- **CSV** (Chrome, Firefox, Bitwarden-compatible).
-- **KeePass** (`.kdbx`) read-only import.
-- **1Password** export bundles.
-- **Aegis** and **andOTP** JSON for TOTP, auto-tagged under category `2FA`.
-- Native `.ashy` v2 encrypted export with a complete SQLite snapshot; v1 remains import-compatible and full restores are written to a new validated file.
-- CSV export (Chrome-compatible).
-
-### Cloud & sync
-- **Nextcloud Passwords** bidirectional sync (REST API v1.0) — folders, tags, password versions.
-- **WebDAV / Nextcloud Files** encrypted backup with generation-aware conflict detection.
-- **Google Drive** backup via direct REST + OAuth 2.0 PKCE (no Python SDK), uploading to a dedicated `AshyPass Backups` folder.
-- Each backend has list / restore / delete from inside Settings.
-
-### Browser integration
-- `ashypass-native-host` implements the Chrome native-messaging wire protocol (`u32` length prefix + UTF-8 JSON).
-- Supported commands: `ping`, `list`, `search`, `match_url`, `get`, `generate`.
-- Reuses the Secret Service item so the GUI's Quick Unlock policy applies — no separate browser unlock.
-
-### Terminal companion
-- `ashypass-cli`: list, search, copy, generate, and add entries from the shell.
-- Shares the GUI's vault file and keyring item; falls back to a silent stdin prompt when no stored master is available.
-
-### Interface
-- libadwaita styling; dark mode follows the desktop.
-- Sidebar-based settings dialog organised into **Security · Data · Cloud · Appearance** sections.
-- Default window 800×650, minimum 700×570.
-- Toast notifications, view stacks, and animated transitions.
-- gettext-based localization with **29 language catalogues** shipped (`bg, cs, da, de, el, en, es, et, fi, fr, he, hr, hu, is, it, ja, ko, nl, no, pl, pt, pt_BR, ro, ru, sk, sv, tr, uk, zh`).
-
-## Status
-
-| Area | State |
-|------|-------|
-| Core crypto (Argon2id + AES-256-GCM v2) | Stable |
-| v1 → v2 vault migration (Fernet → AES-GCM) | Stable |
-| Vault CRUD, search, categories, favorites, trash | Stable |
-| Password / passphrase / PIN generation + strength meter | Stable |
-| TOTP view + RFC 6238 generation | Stable |
-| HIBP audit (k-anonymity) | Stable |
-| Importers (CSV, Aegis, andOTP, KeePass, 1Password, `.ashy`) | Stable |
-| Settings dialog (sidebar layout) | Stable |
-| Google Drive backup (REST + OAuth PKCE) | Stable — requires build-time client ID |
-| WebDAV / Nextcloud Files backup | Stable |
-| Nextcloud Passwords bidirectional sync | Stable |
-| Browser native-messaging host | Stable |
-| CLI companion | Stable |
-| Quick Unlock via Secret Service | Stable |
-| Favicon fetch + cache | Stable |
-| FIDO2 vault factor (CTAP2 register / assert) | Disabled until fully implemented; existing config preserved |
-| i18n (gettext-rs, 29 catalogues) | Translated and CI-compiled |
-
-## System requirements
+## Highlights
 
 | | |
 |---|---|
-| OS | Linux with GTK 4.12+ |
-| Toolchain | Rust 1.85+, `pkg-config`, GTK4 / libadwaita dev headers |
-| Runtime libs | `gtk4`, `libadwaita`, `gettext`, `sqlite`, `openssl`, `glibc`, `gcc-libs`, optional Secret Service daemon (gnome-keyring / kwallet) |
-| Memory | ~50 MiB resident |
-| Disk | ~30 MiB binary + vault |
+| **My passwords** | One list with folder and favourite filters, a visible *Copy password* button on every row and a details page for the rest. Wide windows show the list and the details side by side. |
+| **Verification codes** | TOTP codes shown next to the service and account they belong to, with a countdown and one-click copy. Add a code by reading its QR code (image file, screen capture or clipboard) or by pasting the setup key. |
+| **Create password** | A ready 20-character password with its real length and an estimated strength; random words or a numeric PIN when a site needs them. *Save to vault…* keeps the value even if the vault has to be unlocked first. |
+| **Backups** | Protected `.ashy` copies with clear status: when the last copy was made, what it contains and which password restores it. Guided import from other apps with a preview before anything is written. |
+| **Synchronization** | Two-way sync with Nextcloud Passwords, plus encrypted copies on WebDAV or Google Drive. |
+| **Browser** | A native-messaging host lets the companion extension fill credentials. |
 
-## Building
+<table>
+  <tr>
+    <td><img src="docs/screenshots/verification-codes.png" alt="Verification codes" width="430"></td>
+    <td><img src="docs/screenshots/create-password-dark.png" alt="Create password, dark style" width="430"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Verification codes</sub></td>
+    <td align="center"><sub>Create password — follows the system dark style</sub></td>
+  </tr>
+</table>
+
+## Features
+
+### Security
+- **Argon2id + AES-256-GCM.** The master password is never stored; per-field encryption with random nonces. Parameters can be auto-tuned for this computer. See [CRYPTO_SPEC.md](CRYPTO_SPEC.md).
+- **Unlock off the main thread.** Key derivation runs in the background, so the window stays responsive. A key-check record detects a stale key instead of opening the vault with it.
+- **PIN on this computer (optional).** The vault key is wrapped by a PIN (4 or more characters) and kept in the system keyring. After 5 wrong attempts the PIN is removed and the master password is required.
+- **Forgot the master password?** If you unlock with the PIN, you can set a new master password by confirming the PIN; the vault is re-encrypted and the PIN keeps working. Without a PIN, Ashy Pass cannot recover the master password — it says so instead of promising otherwise.
+- **Automatic lock** after a period of inactivity, when the screen locks and when the computer sleeps, with a warning banner and time to keep using it. An open form cannot hold the lock off indefinitely.
+- **Clipboard hygiene.** Copied secrets are cleared after a configurable delay — only if the clipboard still holds what Ashy Pass copied — and marked with `x-kde-passwordManagerHint` so history managers that honour it skip them.
+- **Password health check** for weak, reused and old passwords, accounts without a verification code and, optionally, known breaches through Have I Been Pwned (k-anonymity: only a 5-character hash prefix is sent).
+- **Deleted items** are kept in a trash for a configurable number of days and can be restored.
+
+### Your data stays safe
+- **Restore never destroys.** A backup is fully validated before use; the vault it replaces is kept as `passwords.db.before-restore-<timestamp>`, and a wrong password changes nothing.
+- **Imports are all or nothing.** Each import runs in one transaction. A preview lists recognised items, duplicates and anything that cannot be imported; the result separates a complete import from a partial one.
+- **Upgrades keep everything.** Vaults, PIN records and settings written by 3.0.1 open unchanged and are upgraded in place, and 3.0.1 can still read a vault used by this version. A real 3.0.1 vault is part of the test suite (`crates/ashypass-core/tests/legacy_vault.rs`).
+- **Sync safety.** Signing out of Nextcloud Passwords forgets its mappings, and a sync refuses to run when none of the linked entries exist on the server.
+- **Unprotected exports are explicit.** A CSV export requires the master password, states what the file contains and is written with owner-only permissions.
+
+### Import and export
+- **Import from:** Bitwarden (JSON), 1Password (`.1pux`), KeePass / KeePassXC (`.kdbx`), browser exports from Chrome, Edge, Brave and Firefox (CSV), Aegis and andOTP (verification codes), and Ashy Pass backups. TOTP parameters, folders, tags, favourites, attachments and history are kept where the source provides them.
+- **Export to:** protected `.ashy` backups (complete database snapshot), KeePass `.kdbx`, or plain CSV.
+
+### Sync and cloud copies
+- **Nextcloud Passwords** — two-way sync (REST API v1.0) with folders, tags and conflict handling; the losing password of a conflict is kept in the entry's history.
+- **WebDAV / Nextcloud Files** — encrypted copies with generation-aware conflict detection.
+- **Google Drive** — encrypted copies over REST with OAuth 2.0 PKCE; tokens are stored in the system keyring.
+
+### More
+- **External drives** (*Tools → External drives*): list removable drives and encrypt them with LUKS2 through a polkit-protected helper, with the device identity checked before any destructive step.
+- **Command line:** `ashypass-cli` shares the vault and keyring with the desktop app.
+- **Adaptive layout** from narrow to wide windows, keyboard shortcuts, and accessible names on icon buttons.
+- **29 languages:** bg, cs, da, de, el, en, es, et, fi, fr, he, hr, hu, is, it, ja, ko, nl, no, pl, pt, pt_BR, ro, ru, sk, sv, tr, uk, zh.
+
+## Requirements
+
+| | |
+|---|---|
+| Operating system | Linux with GTK 4.12+ and libadwaita 1.5+ |
+| Build tools | Rust 1.85+, `pkg-config`, GTK4 and libadwaita development headers |
+| Runtime | `gtk4`, `libadwaita`, `gettext`, `sqlite`, `openssl`; optional Secret Service (GNOME Keyring or KWallet) for the PIN and automatic login |
+| External drives (optional) | `cryptsetup`, `polkit`; `systemd-cryptenroll` for FIDO2 keyslots |
+
+## Installation
+
+### Arch Linux, Manjaro and BigLinux
+
+```bash
+cd pkgbuild
+makepkg -si
+```
+
+The package installs the application, translations, icon, desktop file, browser host and the drive helper.
+
+### From source
 
 ```bash
 git clone https://github.com/big-comm/ashypass.git
@@ -144,9 +112,7 @@ cargo build --release --workspace
 ./target/release/ashypass
 ```
 
-The `fido2` feature name is retained for build compatibility, but vault-factor UI remains disabled until the hardware flow is complete.
-
-Provide Google Drive credentials at build time (without these the Cloud Backup page shows a "not configured" notice):
+Google Drive needs OAuth credentials at build time; without them the Google Drive section shows a "not configured" notice:
 
 ```bash
 ASHYPASS_GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com \
@@ -154,137 +120,90 @@ ASHYPASS_GOOGLE_CLIENT_SECRET=xxx \
   cargo build --release -p ashypass-app
 ```
 
-Build the auxiliary binaries:
+## Getting started
 
-```bash
-cargo build --release -p ashypass-cli           # produces ./target/release/ashypass-cli
-cargo build --release -p ashypass-native-host   # produces ./target/release/ashypass-native-host
-```
+1. **Create your vault.** Choose a master password and write it down somewhere safe — it cannot be recovered.
+2. **Bring your passwords.** *Backups → Import passwords* and pick the app you are coming from.
+3. **Optional:** set a PIN in *Settings → Protection* for quicker unlocking on this computer.
+4. **Make a backup.** *Backups → Create backup* writes a protected `.ashy` file; keep a copy off this computer.
 
-### Arch / Manjaro
+### Keyboard shortcuts
 
-```bash
-cd pkgbuild
-makepkg -si
-```
-
-The PKGBUILD compiles every `locale/*.po` into `usr/share/locale/<lang>/LC_MESSAGES/ashypass.mo` and installs the desktop file, icons, native host binary, and privileged drive helper.
-
-## Usage
-
-### First run
-1. Launch Ashy Pass.
-2. Set a master password on the **Vault** tab — used to derive the AES-256-GCM key.
-3. (Optional) Enable Quick Unlock in **Settings → Security** to store PIN-wrapped device state in Secret Service.
-4. Add entries, or import a CSV / KeePass database from **Settings → Data**.
-
-### Generating passwords
-- Use the **Generator** tab to pick a type, tweak options, and copy.
-- Inside the add/edit dialog, the password row carries a generate button (⚡) with presets: Strong, Passphrase, PIN, Custom.
-
-### TOTP
-- Edit any entry, paste a Base32 secret in the **TOTP Settings** group, choose algorithm/digits/period, save.
-- The **2FA** tab lists live codes; click to copy.
-
-### Cloud sync & backup
-- **Nextcloud Passwords** — *Settings → Cloud → Nextcloud Passwords*: enter URL, username, app password, choose a folder, hit *Sync*. Conflicts are resolved by version timestamps.
-- **WebDAV backup** — *Settings → Cloud → WebDAV*: encrypted database is uploaded with a generation marker so concurrent writes don't silently overwrite.
-- **Google Drive backup** — *Settings → Cloud → Google Drive → Sign in*: the system browser opens an OAuth PKCE flow with a `127.0.0.1` callback. *Back up now* uploads a consistent SQLite snapshot; *Restore latest* validates and saves a new timestamped `passwords-restored-*.db` without replacing the active vault.
+| Shortcut | Action |
+|---|---|
+| <kbd>Ctrl</kbd>+<kbd>1</kbd> … <kbd>Ctrl</kbd>+<kbd>4</kbd> | My passwords, Verification codes, Create password, Backups |
+| <kbd>Ctrl</kbd>+<kbd>F</kbd> | Search the current page |
+| <kbd>Ctrl</kbd>+<kbd>N</kbd> | Add a password (or a code on the codes page) |
+| <kbd>Ctrl</kbd>+<kbd>L</kbd> | Lock |
+| <kbd>Ctrl</kbd>+<kbd>,</kbd> | Settings |
+| <kbd>F1</kbd> | All shortcuts |
 
 ### Browser extension
-1. Build / install `ashypass-native-host`.
-2. Create the browser-specific native-messaging manifest with the companion extension's actual extension ID and point it at `/usr/lib/ashypass/ashypass-native-host`.
-3. Install that manifest in the browser's documented `NativeMessagingHosts` directory. The package does not guess or install an extension ID.
 
-### CLI
 ```bash
-ashypass-cli list                       # all entry metadata
-ashypass-cli list --search github       # filter title, username, or URL
-ashypass-cli show <id-or-title>         # print one decrypted entry
-ashypass-cli gen --length 24            # generate without storing
-ashypass-cli add                        # interactive add
+ashypass-native-host --install <extension-id>
 ```
 
-### FIDO2 / YubiKey
-- Vault second-factor controls are intentionally unavailable until real CTAP2 registration and assertion are implemented.
-- External LUKS2 drives can still enroll FIDO2 keyslots through `systemd-cryptenroll`.
+Registers the native-messaging manifest for Chrome and Firefox with the companion extension's ID. Access can be turned off in *Settings → Browser*.
 
-### Configuration
+### Command line
 
-| File | Purpose |
-|------|---------|
-| `~/.config/ashypass/settings.json` | UI prefs, lock / clipboard timeouts, generator defaults, trash retention |
-| `~/.config/ashypass/fido2.json` | Preserved preview FIDO2 configuration; not currently enforced |
-| `~/.local/share/ashypass/passwords.db` | Encrypted SQLite vault |
-| `~/.local/share/ashypass/token.json` | Google Drive OAuth tokens |
+```bash
+ashypass-cli list                     # entries, without secrets
+ashypass-cli list --search github     # filter by title, user or URL
+ashypass-cli show <id-or-title>       # one decrypted entry
+ashypass-cli totp <id-or-title>       # current verification code
+ashypass-cli gen --length 24          # generate a password
+ashypass-cli add                      # add an entry interactively
+ashypass-cli drives list              # removable drives
+```
+
+## Files
+
+| Path | Contents |
+|---|---|
+| `~/.local/share/ashypass/passwords.db` | Encrypted vault (SQLite) |
+| `~/.config/ashypass/settings.json` | Preferences: lock and clipboard delays, appearance, trash retention |
+| `~/.config/ashypass/backup-status.json` | When and where the last backup was made |
 | `~/.local/share/ashypass/favicons/` | Cached site icons |
+| System keyring | PIN record, optional master password, service credentials and tokens |
 
 ## Architecture
 
 ```
-ashypass/
-├── crates/
-│   ├── ashypass-core/                # Pure library — no GTK
-│   │   └── src/
-│   │       ├── crypto/               # argon2_kdf, aes_gcm_v2, fernet_legacy, key, autotune
-│   │       ├── db/                   # rusqlite vault, schema, migration v1→v2
-│   │       ├── generator.rs          # passwords / passphrases / PINs
-│   │       ├── strength.rs           # entropy-based strength meter
-│   │       ├── totp.rs               # RFC 6238 (SHA1 / SHA256 / SHA512)
-│   │       ├── importers/            # aegis, andotp, ashy, bitwarden, csv, keepass, onepassword
-│   │       ├── backup/               # drive, webdav, oauth, sync
-│   │       ├── sync/                 # nextcloud_passwords, nextcloud_engine
-│   │       ├── audit.rs · hibp.rs    # password-health + breach checks (k-anonymity)
-│   │       ├── favicons.rs           # fetch + on-disk cache
-│   │       ├── fido2.rs              # preserved preview schema; hardware disabled
-│   │       ├── keyring.rs            # Secret Service secrets and Quick Unlock state
-│   │       └── settings.rs           # serde-backed user prefs
-│   ├── ashypass-app/                 # GTK4 / libadwaita desktop UI
-│   │   └── src/
-│   │       ├── main.rs · state.rs · session.rs · clipboard.rs · events.rs
-│   │       └── ui/                   # window, vault_view, generator_view, totp_view,
-│   │                                 #   settings_dialog (sidebar), i18n (tr! macro)
-│   ├── ashypass-cli/                 # Terminal companion (shares vault + keyring)
-│   └── ashypass-native-host/         # Chrome/Firefox native-messaging host
-├── locale/                           # 30 .po files + ashypass.pot template
-├── scripts/                          # update-translations.sh, packaging helpers
-└── pkgbuild/                         # Arch / Manjaro PKGBUILD
+crates/
+├── ashypass-core           Library without GTK: crypto, vault, importers, sync, backup
+├── ashypass-app            GTK4 / libadwaita desktop application
+├── ashypass-cli            Terminal companion
+├── ashypass-native-host    Browser native-messaging host
+├── ashypass-drives         LUKS2 detection and encryption pipeline
+└── ashypass-drives-helper  Privileged helper started through polkit
+locale/                     Translations (.po) and template
+pkgbuild/                   Arch Linux package
 ```
 
-See [CRYPTO_SPEC.md](CRYPTO_SPEC.md) for the exact algorithm parameters and blob layout — useful for porting or interoperability.
-
-## Translations
-
-UI strings are wrapped in the `tr!()` macro, which delegates to `gettext_rs` and caches per-thread results behind a `&'static str`.
-
-To refresh the template and recompile catalogues after editing source strings:
+## Development
 
 ```bash
-./scripts/update-translations.sh
+cargo fmt --all
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+./scripts/update-translations.sh      # refresh the template, merge and compile catalogues
 ```
 
-The script runs `xgettext` (recognising both `tr!` and `tr_static!`), `msgmerge --no-fuzzy-matching` against every `locale/*.po`, and `msgfmt` into `usr/share/locale/<lang>/LC_MESSAGES/ashypass.mo`. The PKGBUILD performs the same compile step at packaging time, so the CI/CD pipeline only needs the source `.po` files committed.
+UI strings use the `tr!` and `trn!` macros (gettext). Write source strings in English; translations live in `locale/*.po`.
 
 ## Contributing
 
-1. Fork and create a feature branch from `main`.
-2. Run `cargo fmt --all` and `cargo clippy --workspace --all-targets -- -D warnings`.
-3. Add tests next to the code you touch (see existing `#[cfg(test)]` modules in `ashypass-core`).
-4. Keep commit messages in English; UI strings stay in English and are translated via the `.po` workflow above.
-5. Open a PR against `main`.
+Issues and pull requests are welcome. Please branch from `main`, keep `fmt`, `clippy` and the test suite green, add tests next to the code you change, and write commit messages in English.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+[MIT](LICENSE)
 
 ## Acknowledgments
 
-- **BIP39** — 2,048-word English list used for passphrase generation.
-- **GNOME** — GTK4 / libadwaita.
-- **RustCrypto** — `argon2`, `aes-gcm`, `pbkdf2`, `hmac`, `sha2`.
-- **rusqlite** — embedded SQLite bindings.
-- **Have I Been Pwned** — breach corpus consumed via the k-anonymity range API.
-- **Nextcloud** — Passwords and Files REST APIs.
+GNOME (GTK4 and libadwaita) · RustCrypto (`argon2`, `aes-gcm`, `sha2`) · rusqlite · `rqrr` (QR decoding) · Have I Been Pwned · Nextcloud · BIP39 word list
 
 ---
 
