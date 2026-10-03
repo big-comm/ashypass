@@ -60,7 +60,7 @@ impl WebdavService {
 
     /// Persist new config to disk after a successful PROPFIND check.
     pub fn login(&mut self, mut cfg: WebdavConfig) -> Result<()> {
-        cfg.base_url = trim_trailing_slash(&cfg.base_url).to_string();
+        cfg.base_url = crate::server_url::normalize(&cfg.base_url);
         validate_server_url(&cfg.base_url)?;
         if cfg.folder.trim().is_empty() {
             cfg.folder = "AshyPass Backups".into();
@@ -313,10 +313,6 @@ const PROPFIND_BODY: &str = r#"<?xml version="1.0" encoding="utf-8"?>
   </d:prop>
 </d:propfind>"#;
 
-fn trim_trailing_slash(s: &str) -> &str {
-    s.trim_end_matches('/')
-}
-
 fn validate_server_url(value: &str) -> Result<url::Url> {
     let parsed = url::Url::parse(value)
         .map_err(|error| Error::InvalidInput(format!("invalid WebDAV URL: {error}")))?;
@@ -540,9 +536,10 @@ mod tests {
     }
 
     #[test]
-    fn trim_slash() {
-        assert_eq!(trim_trailing_slash("https://x/y/"), "https://x/y");
-        assert_eq!(trim_trailing_slash("https://x/y"), "https://x/y");
+    fn a_typed_domain_becomes_a_valid_https_url() {
+        let url = crate::server_url::normalize("cloud.example.com/remote.php/dav/files/ana/");
+        assert_eq!(url, "https://cloud.example.com/remote.php/dav/files/ana");
+        assert!(validate_server_url(&url).is_ok());
     }
 
     #[test]

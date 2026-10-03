@@ -143,7 +143,7 @@ pub(super) fn show_nextcloud_dialog<F>(
     let dialog = adw::AlertDialog::builder()
         .heading(tr!("Nextcloud Passwords"))
         .body(tr!(
-            "Server URL (e.g. https://cloud.example.com), username and an app password."
+            "Server address (for example cloud.example.com), username and an app password."
         ))
         .build();
     dialog.add_response("cancel", tr!("Cancel"));

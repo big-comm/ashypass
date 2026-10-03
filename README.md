@@ -35,8 +35,7 @@ Nothing leaves your machine unless you turn on a sync or backup service. The vau
 | **Verification codes** | TOTP codes shown next to the service and account they belong to, with a countdown and one-click copy. Add a code by reading its QR code (image file, screen capture or clipboard) or by pasting the setup key. |
 | **Create password** | A ready 20-character password with its real length and an estimated strength; random words or a numeric PIN when a site needs them. *Save to vault…* keeps the value even if the vault has to be unlocked first. |
 | **Backups** | Protected `.ashy` copies with clear status: when the last copy was made, what it contains and which password restores it. Guided import from other apps with a preview before anything is written. |
-| **Synchronization** | Two-way sync with Nextcloud Passwords, plus encrypted copies on WebDAV or Google Drive. |
-| **Browser** | A native-messaging host lets the companion extension fill credentials. |
+| **Synchronization** | Two-way sync with Nextcloud Passwords, plus encrypted copies on WebDAV or Google Drive. Type just the server's domain — `https://` is added for you. |
 
 <table>
   <tr>
@@ -82,6 +81,11 @@ Nothing leaves your machine unless you turn on a sync or backup service. The vau
 - **Command line:** `ashypass-cli` shares the vault and keyring with the desktop app.
 - **Adaptive layout** from narrow to wide windows, keyboard shortcuts, and accessible names on icon buttons.
 - **29 languages:** bg, cs, da, de, el, en, es, et, fi, fr, he, hr, hu, is, it, ja, ko, nl, no, pl, pt, pt_BR, ro, ru, sk, sv, tr, uk, zh.
+
+## Not available yet
+
+- **Browser extension.** The native-messaging host is in place, but there is no published extension yet, so the option is hidden in Settings.
+- **Security keys (FIDO2) for the vault.** Kept out of the interface until registration and verification are fully implemented. External drives can already use FIDO2 keyslots.
 
 ## Requirements
 
@@ -138,14 +142,6 @@ ASHYPASS_GOOGLE_CLIENT_SECRET=xxx \
 | <kbd>Ctrl</kbd>+<kbd>,</kbd> | Settings |
 | <kbd>F1</kbd> | All shortcuts |
 
-### Browser extension
-
-```bash
-ashypass-native-host --install <extension-id>
-```
-
-Registers the native-messaging manifest for Chrome and Firefox with the companion extension's ID. Access can be turned off in *Settings → Browser*.
-
 ### Command line
 
 ```bash
@@ -175,7 +171,7 @@ crates/
 ├── ashypass-core           Library without GTK: crypto, vault, importers, sync, backup
 ├── ashypass-app            GTK4 / libadwaita desktop application
 ├── ashypass-cli            Terminal companion
-├── ashypass-native-host    Browser native-messaging host
+├── ashypass-native-host    Native-messaging host for a future browser extension
 ├── ashypass-drives         LUKS2 detection and encryption pipeline
 └── ashypass-drives-helper  Privileged helper started through polkit
 locale/                     Translations (.po) and template

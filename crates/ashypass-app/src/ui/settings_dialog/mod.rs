@@ -105,11 +105,9 @@ pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::
         dialog_slot.clone(),
     );
 
-    let browser = adw::PreferencesPage::builder()
-        .title(tr!("Browser"))
-        .icon_name("web-browser-symbolic")
-        .build();
-    populate_browser(&browser, state.clone());
+    // No "Browser" page yet: the native-messaging host exists, but there is
+    // no published extension to connect to it. `populate_browser` is kept
+    // for when there is one.
 
     let appearance = adw::PreferencesPage::builder()
         .title(tr!("Appearance"))
@@ -119,7 +117,6 @@ pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::
 
     dialog.add(&protection);
     dialog.add(&sync);
-    dialog.add(&browser);
     dialog.add(&appearance);
 
     state.track_sensitive_dialog(&dialog);

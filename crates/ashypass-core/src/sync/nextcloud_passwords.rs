@@ -130,7 +130,7 @@ impl NextcloudPasswordsClient {
 
     /// Probe the server and persist the config on success.
     pub fn login(&mut self, mut cfg: NcConfig) -> Result<()> {
-        cfg.base_url = trim_trailing_slash(&cfg.base_url).to_string();
+        cfg.base_url = crate::server_url::normalize_nextcloud(&cfg.base_url);
         validate_server_url(&cfg.base_url)?;
         if cfg.base_url.is_empty() || cfg.username.is_empty() || cfg.app_password.is_empty() {
             return Err(Error::Other(
@@ -458,10 +458,6 @@ fn default_headers() -> HeaderMap {
     h
 }
 
-fn trim_trailing_slash(s: &str) -> &str {
-    s.trim_end_matches('/')
-}
-
 fn validate_server_url(value: &str) -> Result<()> {
     let parsed = url::Url::parse(value)
         .map_err(|error| Error::InvalidInput(format!("invalid Nextcloud URL: {error}")))?;
@@ -567,8 +563,11 @@ mod tests {
     }
 
     #[test]
-    fn trim_slash_strips_one_trailing() {
-        assert_eq!(trim_trailing_slash("https://x.tld/"), "https://x.tld");
-        assert_eq!(trim_trailing_slash("https://x.tld"), "https://x.tld");
+    fn a_typed_domain_becomes_a_valid_https_url() {
+        let url = crate::server_url::normalize_nextcloud("cloud.example.com/");
+        assert_eq!(url, "https://cloud.example.com");
+        assert!(validate_server_url(&url).is_ok());
+        let http = crate::server_url::normalize_nextcloud("http://cloud.example.com");
+        assert!(validate_server_url(&http).is_err());
     }
 }

@@ -771,13 +771,6 @@ fn kdf_group(state: &SharedState) -> adw::PreferencesGroup {
         });
     }
     group.add(&expander);
-    let keys = adw::ActionRow::builder()
-        .title(tr!("Security keys (FIDO2)"))
-        .subtitle(tr!(
-            "Not available for the vault yet. External drives can use them."
-        ))
-        .build();
-    group.add(&keys);
     group
 }
 
@@ -838,6 +831,7 @@ fn legacy_backup_group(state: &SharedState, toast: &Toaster) -> Option<adw::Pref
     Some(group)
 }
 
+#[allow(dead_code)] // Restored when a browser extension is published.
 pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState) {
     let group = adw::PreferencesGroup::builder()
         .title(tr!("Browser extension"))

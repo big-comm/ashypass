@@ -14,6 +14,7 @@ pub mod favicons;
 pub mod generator;
 pub mod hibp;
 pub mod importers;
+pub mod server_url;
 pub mod settings;
 pub mod strength;
 pub mod sync;
