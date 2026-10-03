@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: English\n"
@@ -169,6 +169,15 @@ msgstr "Applying local deletions"
 
 msgid "Ashy Pass backups"
 msgstr "Ashy Pass backups"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -420,6 +429,15 @@ msgstr "Confirm new master password"
 
 msgid "Confirm password"
 msgstr "Confirm password"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Confirm your master password to create a backup."
@@ -882,6 +900,15 @@ msgstr ""
 "For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
 "dav/files/USERNAME"
 
+msgid "Forgot the master password"
+msgstr "Forgot the master password"
+
+msgid "Forgot the master password?"
+msgstr "Forgot the master password?"
+
+msgid "Forgot the master password…"
+msgstr "Forgot the master password…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -976,6 +1003,9 @@ msgstr "Import passwords…"
 
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Incorrect PIN. Nothing was changed."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1226,6 +1256,9 @@ msgstr "New folder…"
 msgid "New master password"
 msgstr "New master password"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "New master password set. Write it down somewhere safe."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1455,6 +1488,9 @@ msgstr "Other formats"
 # File: usr/share/ashypass/ui/vault_view.py, line: 581
 msgid "PIN"
 msgstr "PIN"
+
+msgid "PIN of this computer"
+msgstr "PIN of this computer"
 
 msgid "PIN on this computer"
 msgstr "PIN on this computer"
@@ -1853,6 +1889,12 @@ msgstr "Set PIN"
 msgid "Set Passphrase"
 msgstr "Set Passphrase"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Set a new one using the PIN of this computer"
+
+msgid "Set new master password"
+msgstr "Set new master password"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Set up, upload or download cloud copies"
 
@@ -2150,11 +2192,17 @@ msgid_plural ""
 msgstr[0] "The {} password in it stays in the vault and moves to “No folder”."
 msgstr[1] "The {} passwords in it stay in the vault and move to “No folder”."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "There is no PIN on this computer. Nothing was changed."
+
 msgid "There is nothing new to import."
 msgstr "There is nothing new to import."
 
 msgid "These options cannot produce a password."
 msgstr "These options cannot produce a password."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "This PIN no longer matches the vault. Nothing was changed."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2318,6 +2366,15 @@ msgstr "Unlock the vault to save the new password. It will not be lost."
 
 msgid "Unlock with PIN"
 msgstr "Unlock with PIN"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Unlock with the master password of the copy."

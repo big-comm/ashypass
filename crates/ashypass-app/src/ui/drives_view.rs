@@ -500,6 +500,7 @@ fn partition_row(part: &Partition, toast: &adw::ToastOverlay) -> adw::ActionRow 
     let row = adw::ActionRow::builder()
         .title(&title)
         .subtitle(&subtitle)
+        .use_markup(false)
         .build();
 
     // Suffix box: usage bar (when mounted) above the filesystem badge.

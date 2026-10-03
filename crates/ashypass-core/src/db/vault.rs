@@ -1788,6 +1788,35 @@ impl Vault {
         if !argon2_kdf::verify_master(current, &hash)? {
             return Err(Error::InvalidMasterPassword);
         }
+        self.rekey_with_new_master(new)
+    }
+
+    /// Set a new master password without the current one, proving instead
+    /// that the caller knows the quick-unlock PIN of this computer. This is
+    /// the recovery path for someone who only unlocks with the PIN and has
+    /// forgotten the master password: the PIN already gives full access to
+    /// the vault key, so it grants nothing new. The vault must be unlocked
+    /// and the PIN record must unwrap exactly the key in use.
+    pub fn reset_master_password_with_pin(
+        &mut self,
+        pin: &str,
+        prefs: &QuickUnlockPrefs,
+        new: &str,
+    ) -> Result<()> {
+        let current = self.key()?.clone();
+        let (from_pin, _) = derive_quick_unlock_key(pin, prefs)?;
+        if !bool::from(subtle::ConstantTimeEq::ct_eq(
+            from_pin.as_bytes().as_slice(),
+            current.as_bytes().as_slice(),
+        )) {
+            return Err(Error::KeyMismatch);
+        }
+        self.rekey_with_new_master(new)
+    }
+
+    /// Re-encrypt every protected value under a key derived from `new`, in
+    /// one transaction, and store the new master hash and verifier.
+    fn rekey_with_new_master(&mut self, new: &str) -> Result<()> {
         validate_new_master_password(new)?;
 
         let mut salt = [0u8; 32];

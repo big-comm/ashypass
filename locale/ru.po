@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:44\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -170,6 +170,15 @@ msgstr "Применение локальных удалений"
 
 msgid "Ashy Pass backups"
 msgstr "Резервные копии Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass не может восстановить мастер-пароль, а PIN на этом компьютере не "
+"настроен. Если у вас есть резервная копия и вы помните её пароли, "
+"восстановите её в разделе «Резервные копии» после создания нового хранилища."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -417,6 +426,15 @@ msgstr "Подтвердите новый мастер-пароль"
 
 msgid "Confirm password"
 msgstr "Подтвердите пароль"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Подтвердите PIN этого компьютера и задайте новый мастер-пароль. Всё "
+"хранилище будет зашифровано заново, PIN продолжит работать. Для старых "
+"резервных копий по-прежнему нужен мастер-пароль того времени."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Подтвердите мастер-пароль, чтобы создать резервную копию."
@@ -880,6 +898,15 @@ msgstr ""
 "Для Nextcloud базовый URL выглядит так: https://cloud.example.com/remote.php/"
 "dav/files/ИМЯ_ПОЛЬЗОВАТЕЛЯ"
 
+msgid "Forgot the master password"
+msgstr "Забыли мастер-пароль"
+
+msgid "Forgot the master password?"
+msgstr "Забыли мастер-пароль?"
+
+msgid "Forgot the master password…"
+msgstr "Забыли мастер-пароль…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -977,6 +1004,9 @@ msgstr "Импорт паролей…"
 
 msgid "Incorrect PIN"
 msgstr "Неверный PIN-код"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Неверный PIN. Ничего не изменено."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1221,6 +1251,9 @@ msgstr "Новая папка…"
 msgid "New master password"
 msgstr "Новый мастер-пароль"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Новый мастер-пароль задан. Запишите его в надёжном месте."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1445,6 +1478,9 @@ msgstr "Другие форматы"
 
 msgid "PIN"
 msgstr "PIN-код"
+
+msgid "PIN of this computer"
+msgstr "PIN этого компьютера"
 
 msgid "PIN on this computer"
 msgstr "PIN на этом компьютере"
@@ -1829,6 +1865,12 @@ msgstr "Задать PIN"
 msgid "Set Passphrase"
 msgstr "Задать парольную фразу"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Задать новый с помощью PIN этого компьютера"
+
+msgid "Set new master password"
+msgstr "Задать новый мастер-пароль"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Настройка, выгрузка и загрузка облачных копий"
 
@@ -2125,11 +2167,17 @@ msgstr[1] "{} пароля в ней останутся в хранилище и
 msgstr[2] ""
 "{} паролей в ней останутся в хранилище и переместятся в «Без папки»."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "На этом компьютере нет PIN. Ничего не изменено."
+
 msgid "There is nothing new to import."
 msgstr "Нет ничего нового для импорта."
 
 msgid "These options cannot produce a password."
 msgstr "С этими параметрами невозможно создать пароль."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Этот PIN больше не подходит к хранилищу. Ничего не изменено."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2295,6 +2343,15 @@ msgstr ""
 
 msgid "Unlock with PIN"
 msgstr "Разблокировать по PIN-коду"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Разблокируйте с помощью PIN этого компьютера, затем откройте Настройки → "
+"Защита → Забыли мастер-пароль, чтобы задать новый. PIN будет запрошен ещё "
+"раз."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Разблокируйте мастер-паролем копии."

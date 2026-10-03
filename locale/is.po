@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -165,6 +165,15 @@ msgstr "Beiti staðbundnum eyðingum"
 
 msgid "Ashy Pass backups"
 msgstr "Öryggisafrit Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass getur ekki endurheimt aðallykilorðið og ekkert PIN-númer er á "
+"þessari tölvu. Ef þú átt öryggisafrit og manst lykilorð þess geturðu "
+"endurheimt það undir Öryggisafrit eftir að hafa búið til nýja hvelfingu."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -412,6 +421,15 @@ msgstr "Staðfesta nýtt aðallykilorð"
 
 msgid "Confirm password"
 msgstr "Staðfesta lykilorð"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Staðfestu PIN-númer þessarar tölvu og veldu nýtt aðallykilorð. Öll "
+"hvelfingin er dulrituð upp á nýtt og PIN-númerið virkar áfram. Eldri "
+"öryggisafrit þurfa enn aðallykilorðið frá þeim tíma."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Staðfestu aðallykilorðið til að búa til öryggisafrit."
@@ -872,6 +890,15 @@ msgstr ""
 "Fyrir Nextcloud lítur grunnslóðin svona út: https://cloud.example.com/"
 "remote.php/dav/files/NOTANDANAFN"
 
+msgid "Forgot the master password"
+msgstr "Gleymt aðallykilorð"
+
+msgid "Forgot the master password?"
+msgstr "Gleymdirðu aðallykilorðinu?"
+
+msgid "Forgot the master password…"
+msgstr "Gleymt aðallykilorð…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -967,6 +994,9 @@ msgstr "Flytja inn lykilorð…"
 
 msgid "Incorrect PIN"
 msgstr "Rangt PIN-númer"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Rangt PIN-númer. Engu var breytt."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1209,6 +1239,9 @@ msgstr "Ný mappa…"
 msgid "New master password"
 msgstr "Nýtt aðallykilorð"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Nýtt aðallykilorð stillt. Skrifaðu það niður á öruggan stað."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1434,6 +1467,9 @@ msgstr "Önnur snið"
 
 msgid "PIN"
 msgstr "PIN-númer"
+
+msgid "PIN of this computer"
+msgstr "PIN-númer þessarar tölvu"
 
 msgid "PIN on this computer"
 msgstr "PIN-númer á þessari tölvu"
@@ -1819,6 +1855,12 @@ msgstr "Setja PIN-númer"
 msgid "Set Passphrase"
 msgstr "Setja aðgangsorð"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Stilla nýtt með PIN-númeri þessarar tölvu"
+
+msgid "Set new master password"
+msgstr "Stilla nýtt aðallykilorð"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Setja upp, senda eða sækja afrit í skýinu"
 
@@ -2114,11 +2156,17 @@ msgstr[0] ""
 msgstr[1] ""
 "{} lykilorð í henni verða áfram í hvelfingunni og færast í „Engin mappa“."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Ekkert PIN-númer er á þessari tölvu. Engu var breytt."
+
 msgid "There is nothing new to import."
 msgstr "Það er ekkert nýtt til að flytja inn."
 
 msgid "These options cannot produce a password."
 msgstr "Þessir valkostir geta ekki búið til lykilorð."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Þetta PIN-númer passar ekki lengur við hvelfinguna. Engu var breytt."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2281,6 +2329,15 @@ msgstr "Aflæstu hvelfingunni til að vista nýja lykilorðið. Það glatast ek
 
 msgid "Unlock with PIN"
 msgstr "Opna með PIN-númeri"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Taktu úr lás með PIN-númeri þessarar tölvu og opnaðu svo Stillingar → Vörn → "
+"Gleymt aðallykilorð til að stilla nýtt. Þú verður beðin(n) um PIN-númerið "
+"aftur."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Aflæstu með aðallykilorði afritsins."

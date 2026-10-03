@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:47\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -171,6 +171,15 @@ msgstr "Yerel silme işlemleri uygulanıyor"
 
 msgid "Ashy Pass backups"
 msgstr "Ashy Pass yedekleri"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass ana parolayı kurtaramaz ve bu bilgisayarda PIN yok. Bir yedeğiniz "
+"varsa ve parolalarını hatırlıyorsanız, yeni bir kasa oluşturduktan sonra "
+"Yedekler bölümünden geri yükleyebilirsiniz."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -418,6 +427,15 @@ msgstr "Yeni ana parolayı onaylayın"
 
 msgid "Confirm password"
 msgstr "Parolayı onayla"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Bu bilgisayarın PIN'ini onaylayın ve yeni bir ana parola seçin. Kasanın "
+"tamamı yeniden şifrelenir ve PIN çalışmaya devam eder. Daha önceki yedekler "
+"hâlâ o zamanki ana parolayı gerektirir."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Yedek oluşturmak için ana parolanızı onaylayın."
@@ -879,6 +897,15 @@ msgstr ""
 "Nextcloud için temel URL şuna benzer: https://cloud.example.com/remote.php/"
 "dav/files/KULLANICIADI"
 
+msgid "Forgot the master password"
+msgstr "Ana parolamı unuttum"
+
+msgid "Forgot the master password?"
+msgstr "Ana parolanızı mı unuttunuz?"
+
+msgid "Forgot the master password…"
+msgstr "Ana parolamı unuttum…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -976,6 +1003,9 @@ msgstr "Parolaları içe aktar…"
 
 msgid "Incorrect PIN"
 msgstr "Yanlış PIN"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Yanlış PIN. Hiçbir şey değişmedi."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1217,6 +1247,9 @@ msgstr "Yeni klasör…"
 msgid "New master password"
 msgstr "Yeni ana parola"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Yeni ana parola ayarlandı. Güvenli bir yere not edin."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1440,6 +1473,9 @@ msgstr "Diğer biçimler"
 
 msgid "PIN"
 msgstr "PIN"
+
+msgid "PIN of this computer"
+msgstr "Bu bilgisayarın PIN'i"
 
 msgid "PIN on this computer"
 msgstr "Bu bilgisayardaki PIN"
@@ -1824,6 +1860,12 @@ msgstr "PIN ayarla"
 msgid "Set Passphrase"
 msgstr "Parola Belirle"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Bu bilgisayarın PIN'iyle yenisini ayarlayın"
+
+msgid "Set new master password"
+msgstr "Yeni ana parolayı ayarla"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Bulut kopyalarını ayarla, yükle veya indir"
 
@@ -2111,11 +2153,17 @@ msgid_plural ""
 msgstr[0] "İçindeki {} parola kasada kalır ve “Klasör yok” bölümüne taşınır."
 msgstr[1] "İçindeki {} parola kasada kalır ve “Klasör yok” bölümüne taşınır."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Bu bilgisayarda PIN yok. Hiçbir şey değişmedi."
+
 msgid "There is nothing new to import."
 msgstr "İçe aktarılacak yeni bir şey yok."
 
 msgid "These options cannot produce a password."
 msgstr "Bu seçeneklerle parola oluşturulamaz."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Bu PIN artık kasayla eşleşmiyor. Hiçbir şey değişmedi."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2279,6 +2327,14 @@ msgstr ""
 
 msgid "Unlock with PIN"
 msgstr "PIN ile Aç"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Bu bilgisayarın PIN'iyle kilidi açın, ardından yenisini ayarlamak için "
+"Ayarlar → Koruma → Ana parolamı unuttum bölümünü açın. PIN tekrar sorulacak."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Kopyanın ana parolasıyla kilidi açın."

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:40\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -169,6 +169,15 @@ msgstr "Stosowanie lokalnych usunięć"
 
 msgid "Ashy Pass backups"
 msgstr "Kopie zapasowe Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass nie może odzyskać hasła głównego, a na tym komputerze nie ma kodu "
+"PIN. Jeśli masz kopię zapasową i pamiętasz jej hasła, możesz ją przywrócić w "
+"sekcji „Kopie zapasowe” po utworzeniu nowego sejfu."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -416,6 +425,15 @@ msgstr "Potwierdź nowe hasło główne"
 
 msgid "Confirm password"
 msgstr "Potwierdź hasło"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Potwierdź kod PIN tego komputera i wybierz nowe hasło główne. Cały sejf "
+"zostanie ponownie zaszyfrowany, a PIN nadal będzie działał. Starsze kopie "
+"zapasowe nadal wymagają ówczesnego hasła głównego."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Potwierdź hasło główne, aby utworzyć kopię zapasową."
@@ -880,6 +898,15 @@ msgstr ""
 "Dla Nextcloud, podstawowy adres URL wygląda jak https://cloud.example.com/"
 "remote.php/dav/files/NAZWA_UŻYTKOWNIKA"
 
+msgid "Forgot the master password"
+msgstr "Nie pamiętam hasła głównego"
+
+msgid "Forgot the master password?"
+msgstr "Nie pamiętasz hasła głównego?"
+
+msgid "Forgot the master password…"
+msgstr "Nie pamiętam hasła głównego…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -977,6 +1004,9 @@ msgstr "Importuj hasła…"
 
 msgid "Incorrect PIN"
 msgstr "Nieprawidłowy PIN"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Nieprawidłowy PIN. Nic nie zmieniono."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1221,6 +1251,9 @@ msgstr "Nowy folder…"
 msgid "New master password"
 msgstr "Nowe hasło główne"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Ustawiono nowe hasło główne. Zapisz je w bezpiecznym miejscu."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1445,6 +1478,9 @@ msgstr "Inne formaty"
 
 msgid "PIN"
 msgstr "PIN"
+
+msgid "PIN of this computer"
+msgstr "PIN tego komputera"
 
 msgid "PIN on this computer"
 msgstr "PIN na tym komputerze"
@@ -1828,6 +1864,12 @@ msgstr "Ustaw PIN"
 msgid "Set Passphrase"
 msgstr "Ustaw hasło"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Ustaw nowe za pomocą PIN-u tego komputera"
+
+msgid "Set new master password"
+msgstr "Ustaw nowe hasło główne"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Konfiguruj, wysyłaj lub pobieraj kopie w chmurze"
 
@@ -2130,11 +2172,17 @@ msgstr[1] ""
 msgstr[2] ""
 "{} haseł z tego folderu pozostanie w sejfie i trafi do „Bez folderu”."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Na tym komputerze nie ma kodu PIN. Nic nie zmieniono."
+
 msgid "There is nothing new to import."
 msgstr "Nie ma nic nowego do zaimportowania."
 
 msgid "These options cannot produce a password."
 msgstr "Z tymi opcjami nie można utworzyć hasła."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Ten PIN nie pasuje już do sejfu. Nic nie zmieniono."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2299,6 +2347,15 @@ msgstr "Odblokuj sejf, aby zapisać nowe hasło. Nie zostanie utracone."
 
 msgid "Unlock with PIN"
 msgstr "Odblokuj PIN-em"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Odblokuj za pomocą PIN-u tego komputera, a następnie otwórz Ustawienia → "
+"Ochrona → Nie pamiętam hasła głównego, aby ustawić nowe. PIN zostanie "
+"zażądany ponownie."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Odblokuj hasłem głównym kopii."

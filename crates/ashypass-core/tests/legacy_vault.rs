@@ -245,3 +245,51 @@ fn merging_a_backup_skips_what_is_already_there() {
     let bank = by_title(&fresh, "Banco");
     assert_eq!(bank.password.as_deref(), Some("s3nh@-banco"));
 }
+
+#[test]
+fn forgotten_master_password_can_be_replaced_with_the_pin() {
+    let (_dir, db) = copy_of_fixture();
+    let prefs = legacy_prefs();
+    let mut vault = Vault::open(&db).unwrap();
+    // Locked: nothing to reset.
+    assert!(vault
+        .reset_master_password_with_pin(PIN, &prefs, "new master after forgetting")
+        .is_err());
+    vault
+        .quick_unlock_persistent_upgrading(PIN, &prefs)
+        .unwrap();
+    assert!(matches!(
+        vault.reset_master_password_with_pin("000000", &prefs, "new master after forgetting"),
+        Err(ashypass_core::Error::InvalidMasterPassword)
+    ));
+    assert!(vault
+        .reset_master_password_with_pin(PIN, &prefs, "short")
+        .is_err());
+    vault
+        .reset_master_password_with_pin(PIN, &prefs, "new master after forgetting")
+        .unwrap();
+    drop(vault);
+
+    let mut vault = Vault::open(&db).unwrap();
+    assert!(vault.unlock(MASTER).is_err());
+    vault.unlock("new master after forgetting").unwrap();
+    assert_all_data(&vault);
+}
+
+#[test]
+fn a_pin_from_another_vault_cannot_reset_this_one() {
+    let (dir, db) = copy_of_fixture();
+    let mut other = Vault::open(dir.path().join("other.db")).unwrap();
+    other.set_master_password("another vault entirely").unwrap();
+    let other_prefs = other.enable_persistent_quick_unlock("654321").unwrap();
+
+    let mut vault = Vault::open(&db).unwrap();
+    vault.unlock(MASTER).unwrap();
+    assert!(matches!(
+        vault.reset_master_password_with_pin("654321", &other_prefs, "new master password"),
+        Err(ashypass_core::Error::KeyMismatch)
+    ));
+    drop(vault);
+    let mut vault = Vault::open(&db).unwrap();
+    vault.unlock(MASTER).unwrap();
+}

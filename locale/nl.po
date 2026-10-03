@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:38\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -170,6 +170,15 @@ msgstr "Lokale verwijderingen toepassen"
 
 msgid "Ashy Pass backups"
 msgstr "Ashy Pass-back-ups"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass kan het hoofdwachtwoord niet herstellen en er is geen pincode op "
+"deze computer. Als u een back-up hebt en de wachtwoorden ervan weet, kunt u "
+"die na het maken van een nieuwe kluis herstellen via Back-ups."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -417,6 +426,15 @@ msgstr "Nieuw hoofdwachtwoord bevestigen"
 
 msgid "Confirm password"
 msgstr "Wachtwoord bevestigen"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Bevestig de pincode van deze computer en kies een nieuw hoofdwachtwoord. "
+"Alles in de kluis wordt opnieuw versleuteld en de pincode blijft werken. "
+"Eerdere back-ups hebben nog steeds het hoofdwachtwoord van toen nodig."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Bevestig uw hoofdwachtwoord om een back-up te maken."
@@ -883,6 +901,15 @@ msgstr ""
 "Voor Nextcloud ziet de basis-URL eruit als https://cloud.example.com/"
 "remote.php/dav/files/GEBRUIKERSNAAM"
 
+msgid "Forgot the master password"
+msgstr "Hoofdwachtwoord vergeten"
+
+msgid "Forgot the master password?"
+msgstr "Hoofdwachtwoord vergeten?"
+
+msgid "Forgot the master password…"
+msgstr "Hoofdwachtwoord vergeten…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -980,6 +1007,9 @@ msgstr "Wachtwoorden importeren…"
 
 msgid "Incorrect PIN"
 msgstr "Onjuiste pincode"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Onjuiste pincode. Er is niets gewijzigd."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1225,6 +1255,9 @@ msgstr "Nieuwe map…"
 msgid "New master password"
 msgstr "Nieuw hoofdwachtwoord"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Nieuw hoofdwachtwoord ingesteld. Noteer het op een veilige plek."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1453,6 +1486,9 @@ msgstr "Andere formaten"
 
 msgid "PIN"
 msgstr "Pincode"
+
+msgid "PIN of this computer"
+msgstr "Pincode van deze computer"
 
 msgid "PIN on this computer"
 msgstr "Pincode op deze computer"
@@ -1842,6 +1878,12 @@ msgstr "Pincode instellen"
 msgid "Set Passphrase"
 msgstr "Wachtzin instellen"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Stel een nieuw in met de pincode van deze computer"
+
+msgid "Set new master password"
+msgstr "Nieuw hoofdwachtwoord instellen"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Cloudkopieën instellen, uploaden of downloaden"
 
@@ -2147,11 +2189,17 @@ msgstr[0] "Het {} wachtwoord erin blijft in de kluis en gaat naar “Geen map”
 msgstr[1] ""
 "De {} wachtwoorden erin blijven in de kluis en gaan naar “Geen map”."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Er is geen pincode op deze computer. Er is niets gewijzigd."
+
 msgid "There is nothing new to import."
 msgstr "Er is niets nieuws om te importeren."
 
 msgid "These options cannot produce a password."
 msgstr "Met deze opties kan geen wachtwoord worden gemaakt."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Deze pincode past niet meer bij de kluis. Er is niets gewijzigd."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2319,6 +2367,15 @@ msgstr ""
 
 msgid "Unlock with PIN"
 msgstr "Ontgrendelen met pincode"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Ontgrendel met de pincode van deze computer en open daarna Instellingen → "
+"Beveiliging → Hoofdwachtwoord vergeten om een nieuw in te stellen. De "
+"pincode wordt opnieuw gevraagd."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Ontgrendel met het hoofdwachtwoord van de kopie."

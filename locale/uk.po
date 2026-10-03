@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:48\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -166,6 +166,15 @@ msgstr "Застосування локальних видалень"
 
 msgid "Ashy Pass backups"
 msgstr "Резервні копії Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass не може відновити головний пароль, а PIN на цьому комп’ютері не "
+"налаштовано. Якщо у вас є резервна копія і ви пам’ятаєте її паролі, "
+"відновіть її в розділі «Резервні копії» після створення нового сховища."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -413,6 +422,15 @@ msgstr "Підтвердьте новий головний пароль"
 
 msgid "Confirm password"
 msgstr "Підтвердити пароль"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Підтвердьте PIN цього комп’ютера і задайте новий головний пароль. Усе "
+"сховище буде зашифровано заново, PIN і далі працюватиме. Для старих "
+"резервних копій і надалі потрібен головний пароль того часу."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Підтвердьте головний пароль, щоб створити резервну копію."
@@ -876,6 +894,15 @@ msgstr ""
 "Для Nextcloud базовий URL виглядає як https://cloud.example.com/remote.php/"
 "dav/files/ІМ’Я_КОРИСТУВАЧА"
 
+msgid "Forgot the master password"
+msgstr "Забули головний пароль"
+
+msgid "Forgot the master password?"
+msgstr "Забули головний пароль?"
+
+msgid "Forgot the master password…"
+msgstr "Забули головний пароль…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -973,6 +1000,9 @@ msgstr "Імпортувати паролі…"
 
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Неправильний PIN. Нічого не змінено."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1219,6 +1249,9 @@ msgstr "Нова тека…"
 msgid "New master password"
 msgstr "Новий головний пароль"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Новий головний пароль задано. Запишіть його в надійному місці."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1443,6 +1476,9 @@ msgstr "Інші формати"
 
 msgid "PIN"
 msgstr "PIN-код"
+
+msgid "PIN of this computer"
+msgstr "PIN цього комп’ютера"
 
 msgid "PIN on this computer"
 msgstr "PIN на цьому комп’ютері"
@@ -1827,6 +1863,12 @@ msgstr "Встановити PIN"
 msgid "Set Passphrase"
 msgstr "Встановити парольну фразу"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Задати новий за допомогою PIN цього комп’ютера"
+
+msgid "Set new master password"
+msgstr "Задати новий головний пароль"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Налаштування, вивантаження та завантаження копій у хмарі"
 
@@ -2125,11 +2167,17 @@ msgstr[0] "{} пароль із неї залишиться у сховищі й
 msgstr[1] "{} паролі з неї залишаться у сховищі й перейдуть до «Без теки»."
 msgstr[2] "{} паролів із неї залишаться у сховищі й перейдуть до «Без теки»."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "На цьому комп’ютері немає PIN. Нічого не змінено."
+
 msgid "There is nothing new to import."
 msgstr "Немає нічого нового для імпорту."
 
 msgid "These options cannot produce a password."
 msgstr "З цими параметрами неможливо згенерувати пароль."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Цей PIN більше не відповідає сховищу. Нічого не змінено."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2294,6 +2342,15 @@ msgstr "Розблокуйте сховище, щоб зберегти нови�
 
 msgid "Unlock with PIN"
 msgstr "Розблокувати за PIN-кодом"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Розблокуйте за допомогою PIN цього комп’ютера, потім відкрийте Налаштування "
+"→ Захист → Забули головний пароль, щоб задати новий. PIN буде запитано ще "
+"раз."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Розблокуйте головним паролем копії."

@@ -235,6 +235,7 @@ pub(super) fn render_audit_report(
         let row = adw::ActionRow::builder()
             .title(&f.title)
             .subtitle(&subtitle)
+            .use_markup(false)
             .build();
         let chip = gtk::Label::new(Some(crate::ui::i18n::localized_strength_label(
             f.strength_label,

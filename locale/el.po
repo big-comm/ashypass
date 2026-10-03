@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:23\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -173,6 +173,16 @@ msgstr "Εφαρμογή τοπικών διαγραφών"
 
 msgid "Ashy Pass backups"
 msgstr "Αντίγραφα ασφαλείας Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Το Ashy Pass δεν μπορεί να ανακτήσει τον κύριο κωδικό πρόσβασης και δεν "
+"υπάρχει PIN σε αυτόν τον υπολογιστή. Αν έχετε αντίγραφο ασφαλείας και "
+"θυμάστε τους κωδικούς του, μπορείτε να το επαναφέρετε από «Αντίγραφα "
+"ασφαλείας» αφού δημιουργήσετε νέο θησαυροφυλάκιο."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -422,6 +432,16 @@ msgstr "Επιβεβαίωση νέου κύριου κωδικού πρόσβα
 
 msgid "Confirm password"
 msgstr "Επιβεβαίωση κωδικού πρόσβασης"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Επιβεβαιώστε το PIN αυτού του υπολογιστή και επιλέξτε νέο κύριο κωδικό "
+"πρόσβασης. Όλο το θησαυροφυλάκιο κρυπτογραφείται ξανά και το PIN συνεχίζει "
+"να λειτουργεί. Τα παλαιότερα αντίγραφα ασφαλείας χρειάζονται ακόμα τον τότε "
+"κύριο κωδικό."
 
 msgid "Confirm your master password to create a backup."
 msgstr ""
@@ -896,6 +916,15 @@ msgstr ""
 "Για το Nextcloud, η βασική URL μοιάζει με https://cloud.example.com/"
 "remote.php/dav/files/USERNAME"
 
+msgid "Forgot the master password"
+msgstr "Ξέχασα τον κύριο κωδικό πρόσβασης"
+
+msgid "Forgot the master password?"
+msgstr "Ξεχάσατε τον κύριο κωδικό πρόσβασης;"
+
+msgid "Forgot the master password…"
+msgstr "Ξέχασα τον κύριο κωδικό πρόσβασης…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -995,6 +1024,9 @@ msgstr "Εισαγωγή κωδικών πρόσβασης…"
 
 msgid "Incorrect PIN"
 msgstr "Λάθος PIN"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Λάθος PIN. Δεν άλλαξε τίποτα."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1247,6 +1279,10 @@ msgstr "Νέος φάκελος…"
 msgid "New master password"
 msgstr "Νέος κύριος κωδικός πρόσβασης"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr ""
+"Ορίστηκε νέος κύριος κωδικός πρόσβασης. Σημειώστε τον σε ασφαλές μέρος."
+
 msgid "Nextcloud Passwords"
 msgstr "Κωδικοί πρόσβασης Nextcloud"
 
@@ -1484,6 +1520,9 @@ msgstr "Άλλες μορφές"
 
 msgid "PIN"
 msgstr "PIN"
+
+msgid "PIN of this computer"
+msgstr "PIN αυτού του υπολογιστή"
 
 msgid "PIN on this computer"
 msgstr "PIN σε αυτόν τον υπολογιστή"
@@ -1878,6 +1917,12 @@ msgstr "Ορισμός PIN"
 msgid "Set Passphrase"
 msgstr "Ορισμός Φράσης Πρόσβασης"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Ορίστε νέο με το PIN αυτού του υπολογιστή"
+
+msgid "Set new master password"
+msgstr "Ορισμός νέου κύριου κωδικού"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Ρύθμιση, αποστολή ή λήψη αντιγράφων στο cloud"
 
@@ -2187,11 +2232,17 @@ msgstr[1] ""
 "Οι {} κωδικοί που περιέχει παραμένουν στο θησαυροφυλάκιο και μετακινούνται "
 "στο «Χωρίς φάκελο»."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Δεν υπάρχει PIN σε αυτόν τον υπολογιστή. Δεν άλλαξε τίποτα."
+
 msgid "There is nothing new to import."
 msgstr "Δεν υπάρχει τίποτα νέο για εισαγωγή."
 
 msgid "These options cannot produce a password."
 msgstr "Με αυτές τις επιλογές δεν μπορεί να δημιουργηθεί κωδικός."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Αυτό το PIN δεν ταιριάζει πια με το θησαυροφυλάκιο. Δεν άλλαξε τίποτα."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2363,6 +2414,15 @@ msgstr ""
 
 msgid "Unlock with PIN"
 msgstr "Ξεκλείδωμα με PIN"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Ξεκλειδώστε με το PIN αυτού του υπολογιστή και ανοίξτε Ρυθμίσεις → Προστασία "
+"→ Ξέχασα τον κύριο κωδικό πρόσβασης για να ορίσετε νέο. Θα σας ζητηθεί ξανά "
+"το PIN."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Ξεκλειδώστε με τον κύριο κωδικό πρόσβασης του αντιγράφου."

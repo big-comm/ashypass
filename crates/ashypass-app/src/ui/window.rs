@@ -32,7 +32,7 @@ use zeroize::Zeroizing;
 
 type WindowAction = Box<dyn Fn(&Rc<MainWindowInner>)>;
 
-const DEFAULT_WIDTH: i32 = 1040;
+const DEFAULT_WIDTH: i32 = 960;
 const DEFAULT_HEIGHT: i32 = 720;
 const MIN_WIDTH: i32 = 360;
 const MIN_HEIGHT: i32 = 480;
@@ -82,7 +82,6 @@ struct MainWindowInner {
     /// A password created on the generator page while the vault was locked,
     /// waiting for the unlock to open the entry form.
     pending_password: RefCell<Option<Zeroizing<String>>>,
-    updating_nav: Cell<bool>,
     banner_timer: RefCell<Option<glib::SourceId>>,
     unlock_view: Rc<UnlockView>,
     vault_view: Rc<VaultView>,
@@ -269,7 +268,7 @@ impl MainWindow {
         // ---- Adaptive breakpoints -------------------------------------
         let medium = adw::Breakpoint::new(adw::BreakpointCondition::new_length(
             adw::BreakpointConditionLengthType::MaxWidth,
-            900.0,
+            1400.0,
             adw::LengthUnit::Sp,
         ));
         medium.add_setter(&vault_view.root, "collapsed", Some(&true.to_value()));
@@ -301,7 +300,6 @@ impl MainWindow {
             current: Cell::new("vault"),
             pending_page: Cell::new(None),
             pending_password: RefCell::new(None),
-            updating_nav: Cell::new(false),
             banner_timer: RefCell::new(None),
             unlock_view: unlock_view.clone(),
             vault_view: vault_view.clone(),
@@ -362,20 +360,8 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
             }
         });
     }
-    {
-        let weak = Rc::downgrade(inner);
-        inner.nav_list.connect_row_selected(move |_, row| {
-            let Some(inner) = weak.upgrade() else { return };
-            if inner.updating_nav.get() {
-                return;
-            }
-            let Some(row) = row else { return };
-            let name = row.widget_name();
-            if let Some(page) = NAV.iter().map(|(n, _)| *n).find(|n| *n == name.as_str()) {
-                inner.on_nav(page);
-            }
-        });
-    }
+    // Only activation navigates: a click both selects and activates a row,
+    // and reacting to both opened Settings twice.
     {
         let weak = Rc::downgrade(inner);
         inner.lock_button.connect_clicked(move |_| {
@@ -587,7 +573,6 @@ impl MainWindowInner {
     }
 
     fn highlight_nav(&self, page: &str) {
-        self.updating_nav.set(true);
         let mut index = 0;
         let mut found = None;
         while let Some(row) = self.nav_list.row_at_index(index) {
@@ -598,7 +583,6 @@ impl MainWindowInner {
             index += 1;
         }
         self.nav_list.select_row(found.as_ref());
-        self.updating_nav.set(false);
     }
 
     fn show_page(self: &Rc<Self>, page: &'static str) {

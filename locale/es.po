@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:25\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -169,6 +169,15 @@ msgstr "Aplicando eliminaciones locales"
 
 msgid "Ashy Pass backups"
 msgstr "Copias de Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass no puede recuperar la contraseña maestra y no hay PIN en este "
+"equipo. Si tiene una copia de seguridad y recuerda sus contraseñas, puede "
+"restaurarla en Copias de seguridad después de crear una bóveda nueva."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -416,6 +425,16 @@ msgstr "Confirmar la nueva contraseña maestra"
 
 msgid "Confirm password"
 msgstr "Confirmar contraseña"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Confirme el PIN que usa en este equipo y elija una contraseña maestra nueva. "
+"Todo lo de la bóveda se vuelve a cifrar y el PIN sigue funcionando. Las "
+"copias de seguridad anteriores siguen necesitando la contraseña maestra de "
+"entonces."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Confirma tu contraseña maestra para crear una copia de seguridad."
@@ -880,6 +899,15 @@ msgstr ""
 "Para Nextcloud, la URL base se ve así: https://cloud.example.com/remote.php/"
 "dav/files/USERNAME"
 
+msgid "Forgot the master password"
+msgstr "He olvidado la contraseña maestra"
+
+msgid "Forgot the master password?"
+msgstr "¿Ha olvidado la contraseña maestra?"
+
+msgid "Forgot the master password…"
+msgstr "He olvidado la contraseña maestra…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -977,6 +1005,9 @@ msgstr "Importar contraseñas…"
 
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "PIN incorrecto. No se ha cambiado nada."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1222,6 +1253,9 @@ msgstr "Carpeta nueva…"
 msgid "New master password"
 msgstr "Contraseña maestra nueva"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Contraseña maestra nueva establecida. Anótela en un lugar seguro."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1449,6 +1483,9 @@ msgstr "Otros formatos"
 
 msgid "PIN"
 msgstr "PIN"
+
+msgid "PIN of this computer"
+msgstr "PIN de este equipo"
 
 msgid "PIN on this computer"
 msgstr "PIN en este equipo"
@@ -1832,6 +1869,12 @@ msgstr "Establecer PIN"
 msgid "Set Passphrase"
 msgstr "Establecer frase de contraseña"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Establezca una nueva con el PIN de este equipo"
+
+msgid "Set new master password"
+msgstr "Establecer contraseña maestra nueva"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Configura, sube o descarga copias en la nube"
 
@@ -2132,11 +2175,17 @@ msgstr[1] ""
 "Las {} contraseñas que contiene se quedan en la bóveda y pasan a «Sin "
 "carpeta»."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "No hay PIN en este equipo. No se ha cambiado nada."
+
 msgid "There is nothing new to import."
 msgstr "No hay nada nuevo que importar."
 
 msgid "These options cannot produce a password."
 msgstr "Estas opciones no pueden generar una contraseña."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Este PIN ya no coincide con la bóveda. No se ha cambiado nada."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2303,6 +2352,15 @@ msgstr "Desbloquea la bóveda para guardar la nueva contraseña. No se perderá.
 
 msgid "Unlock with PIN"
 msgstr "Desbloquear con PIN"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Desbloquee con el PIN de este equipo y luego abra Ajustes → Protección → He "
+"olvidado la contraseña maestra para establecer una nueva. Se le volverá a "
+"pedir el PIN."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Desbloquea con la contraseña maestra de la copia."

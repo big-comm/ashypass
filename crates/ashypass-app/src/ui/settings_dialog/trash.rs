@@ -73,9 +73,7 @@ pub(super) fn populate_trash(
                 return;
             }
             for t in entries {
-                let when = chrono::DateTime::<chrono::Utc>::from_timestamp(t.deleted_at, 0)
-                    .map(|dt| dt.format("%Y-%m-%d %H:%M UTC").to_string())
-                    .unwrap_or_default();
+                let when = crate::ui::vault_view::format_timestamp(t.deleted_at);
                 let row = adw::ActionRow::builder()
                     .title(&t.title)
                     .subtitle(format!(
@@ -83,6 +81,7 @@ pub(super) fn populate_trash(
                         t.username.as_deref().unwrap_or(""),
                         when
                     ))
+                    .use_markup(false)
                     .build();
 
                 let restore_btn = gtk::Button::builder()

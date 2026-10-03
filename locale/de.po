@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:22\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: German <de@li.org>\n"
@@ -169,6 +169,16 @@ msgstr "Lokale Löschungen werden angewendet"
 
 msgid "Ashy Pass backups"
 msgstr "Ashy-Pass-Backups"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass kann das Master-Passwort nicht wiederherstellen, und auf diesem "
+"Computer ist keine PIN eingerichtet. Wenn Sie ein Backup haben und dessen "
+"Passwörter kennen, können Sie es nach dem Anlegen eines neuen Tresors unter "
+"Backups wiederherstellen."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -417,6 +427,15 @@ msgstr "Neues Master-Passwort bestätigen"
 
 msgid "Confirm password"
 msgstr "Passwort bestätigen"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Bestätigen Sie die PIN dieses Computers und wählen Sie ein neues Master-"
+"Passwort. Der ganze Tresor wird neu verschlüsselt, die PIN funktioniert "
+"weiter. Ältere Backups benötigen weiterhin das damalige Master-Passwort."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Bestätigen Sie Ihr Master-Passwort, um ein Backup zu erstellen."
@@ -888,6 +907,15 @@ msgstr ""
 "Für Nextcloud sieht die Basis-URL wie folgt aus: https://cloud.example.com/"
 "remote.php/dav/files/BENUTZERNAME"
 
+msgid "Forgot the master password"
+msgstr "Master-Passwort vergessen"
+
+msgid "Forgot the master password?"
+msgstr "Master-Passwort vergessen?"
+
+msgid "Forgot the master password…"
+msgstr "Master-Passwort vergessen…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -985,6 +1013,9 @@ msgstr "Passwörter importieren …"
 
 msgid "Incorrect PIN"
 msgstr "Falsche PIN"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Falsche PIN. Es wurde nichts geändert."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1232,6 +1263,10 @@ msgstr "Neuer Ordner …"
 msgid "New master password"
 msgstr "Neues Master-Passwort"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr ""
+"Neues Master-Passwort festgelegt. Notieren Sie es an einem sicheren Ort."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwörter"
 
@@ -1467,6 +1502,9 @@ msgstr "Andere Formate"
 
 msgid "PIN"
 msgstr "PIN"
+
+msgid "PIN of this computer"
+msgstr "PIN dieses Computers"
 
 msgid "PIN on this computer"
 msgstr "PIN auf diesem Computer"
@@ -1862,6 +1900,12 @@ msgstr "PIN festlegen"
 msgid "Set Passphrase"
 msgstr "Passphrase festlegen"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Mit der PIN dieses Computers ein neues festlegen"
+
+msgid "Set new master password"
+msgstr "Neues Master-Passwort festlegen"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Cloud-Kopien einrichten, hochladen oder herunterladen"
 
@@ -2174,11 +2218,18 @@ msgstr[1] ""
 "Die {} Passwörter darin bleiben im Tresor und werden nach „Kein Ordner“ "
 "verschoben."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr ""
+"Auf diesem Computer ist keine PIN eingerichtet. Es wurde nichts geändert."
+
 msgid "There is nothing new to import."
 msgstr "Es gibt nichts Neues zu importieren."
 
 msgid "These options cannot produce a password."
 msgstr "Mit diesen Optionen lässt sich kein Passwort erzeugen."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Diese PIN passt nicht mehr zum Tresor. Es wurde nichts geändert."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2349,6 +2400,15 @@ msgstr ""
 
 msgid "Unlock with PIN"
 msgstr "Mit PIN entsperren"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Entsperren Sie mit der PIN dieses Computers und öffnen Sie dann "
+"Einstellungen → Schutz → Master-Passwort vergessen, um ein neues "
+"festzulegen. Die PIN wird erneut abgefragt."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Mit dem Master-Passwort der Kopie entsperren."

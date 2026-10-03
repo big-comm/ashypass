@@ -305,9 +305,11 @@ impl VaultView {
         let split = adw::NavigationSplitView::builder()
             .sidebar(&list_page)
             .content(&details_page)
-            .min_sidebar_width(340.0)
-            .max_sidebar_width(620.0)
-            .sidebar_width_fraction(0.56)
+            // A fixed list width: a long value in the details (a URL, a
+            // note) must not push the split around while browsing.
+            .min_sidebar_width(560.0)
+            .max_sidebar_width(560.0)
+            .sidebar_width_fraction(0.5)
             .build();
 
         let inner = Rc::new(Inner {
@@ -1917,8 +1919,11 @@ fn build_details(inner: &Rc<Inner>, entry: &PasswordEntry) -> gtk::Widget {
         .maximum_size(720)
         .child(&content)
         .build();
+    // Automatic, not Never: with Never the longest unbreakable value would
+    // become the pane's minimum width and resize the split per entry.
     let scrolled = gtk::ScrolledWindow::builder()
-        .hscrollbar_policy(gtk::PolicyType::Never)
+        .hscrollbar_policy(gtk::PolicyType::Automatic)
+        .propagate_natural_width(false)
         .vexpand(true)
         .child(&clamp)
         .build();

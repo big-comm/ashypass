@@ -109,6 +109,23 @@ pub(super) fn populate_protection(
         });
     }
     master_group.add(&change_row);
+    // Recovery that really exists: the PIN of this computer already opens
+    // the vault, so it can authorise a new master password.
+    if unlocked && pin_record(&state).is_some() {
+        let reset_row = adw::ActionRow::builder()
+            .title(tr!("Forgot the master password…"))
+            .subtitle(tr!("Set a new one using the PIN of this computer"))
+            .activatable(true)
+            .build();
+        reset_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+        let state = state.clone();
+        let toast = toast.clone();
+        let dialog = dialog.clone();
+        reset_row.connect_activated(move |_| {
+            dialog.push_subpage(&reset_master_page(&state, &toast, &dialog));
+        });
+        master_group.add(&reset_row);
+    }
     page.add(&master_group);
 
     // --- Auto-lock -------------------------------------------------------
@@ -187,6 +204,165 @@ pub(super) fn populate_protection(
 }
 
 /// Dedicated page for changing the master password.
+/// The persisted PIN record of this computer, if any.
+fn pin_record(state: &SharedState) -> Option<ashypass_core::settings::QuickUnlockPrefs> {
+    ashypass_core::keyring::load_quick_unlock()
+        .ok()
+        .flatten()
+        .filter(|p| p.is_configured())
+        .or_else(|| {
+            state
+                .settings()
+                .quick_unlock
+                .clone()
+                .filter(|p| p.is_configured())
+        })
+}
+
+/// Replace a forgotten master password, authorised by the PIN.
+fn reset_master_page(
+    state: &SharedState,
+    toast: &Toaster,
+    dialog: &adw::PreferencesDialog,
+) -> adw::NavigationPage {
+    let page = adw::PreferencesPage::new();
+    let group = adw::PreferencesGroup::builder()
+        .description(tr!(
+            "Confirm the PIN you use on this computer and choose a new master password. Everything in the vault is encrypted again, and the PIN keeps working. Backups made earlier still need the master password they were made with."
+        ))
+        .build();
+    let pin_row = adw::PasswordEntryRow::builder()
+        .title(tr!("PIN of this computer"))
+        .build();
+    let new_row = adw::PasswordEntryRow::builder()
+        .title(tr!("New master password"))
+        .build();
+    let confirm_row = adw::PasswordEntryRow::builder()
+        .title(tr!("Confirm new master password"))
+        .build();
+    group.add(&pin_row);
+    group.add(&new_row);
+    group.add(&confirm_row);
+    page.add(&group);
+
+    let status = gtk::Label::builder()
+        .xalign(0.0)
+        .wrap(true)
+        .visible(false)
+        .build();
+    status.set_accessible_role(gtk::AccessibleRole::Alert);
+    status.add_css_class("error");
+    let button = gtk::Button::builder()
+        .label(tr!("Set new master password"))
+        .halign(gtk::Align::End)
+        .build();
+    button.add_css_class("suggested-action");
+    button.add_css_class("pill");
+    let actions = adw::PreferencesGroup::new();
+    let action_box = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(12)
+        .build();
+    action_box.append(&status);
+    action_box.append(&button);
+    actions.add(&action_box);
+    page.add(&actions);
+
+    {
+        let state = state.clone();
+        let toast = toast.clone();
+        let dialog = dialog.clone();
+        button.connect_clicked(move |button| {
+            let show = |message: &str| {
+                status.set_label(message);
+                status.set_visible(true);
+            };
+            let pin = Zeroizing::new(pin_row.text().to_string());
+            let new = Zeroizing::new(new_row.text().to_string());
+            if pin.is_empty() || new.is_empty() {
+                show(tr!("Fill in all three fields."));
+                return;
+            }
+            if new.chars().count() < MIN_MASTER_PASSWORD_LENGTH {
+                show(&format!(
+                    "{} {MIN_MASTER_PASSWORD_LENGTH}",
+                    tr!("The new password is too short. Minimum length:")
+                ));
+                return;
+            }
+            if new.as_str() != confirm_row.text().as_str() {
+                show(tr!("The new passwords do not match."));
+                return;
+            }
+            let Some(prefs) = pin_record(&state) else {
+                show(tr!(
+                    "There is no PIN on this computer. Nothing was changed."
+                ));
+                return;
+            };
+            button.set_sensitive(false);
+            let result = state
+                .vault
+                .borrow_mut()
+                .reset_master_password_with_pin(&pin, &prefs, &new);
+            button.set_sensitive(true);
+            match result {
+                Ok(()) => {
+                    // The vault key changed: wrap the new key with the same
+                    // PIN so unlocking by PIN keeps working.
+                    let rewrapped = state
+                        .vault
+                        .borrow_mut()
+                        .enable_persistent_quick_unlock(&pin);
+                    match rewrapped.and_then(|p| ashypass_core::keyring::store_quick_unlock(&p)) {
+                        Ok(()) => {
+                            if let Err(e) = state.update_settings(|s| s.quick_unlock = None) {
+                                log::warn!("could not clear legacy quick-unlock state: {e}");
+                            }
+                        }
+                        Err(e) => {
+                            log::warn!("could not re-create the PIN: {e}");
+                            let _ = ashypass_core::keyring::delete_quick_unlock();
+                        }
+                    }
+                    if ashypass_core::keyring::is_stored() {
+                        if let Err(e) = ashypass_core::keyring::store_master(&new) {
+                            log::warn!("could not update the keyring copy: {e}");
+                            let _ = ashypass_core::keyring::delete_master();
+                        }
+                    }
+                    toast.add_toast(
+                        adw::Toast::builder()
+                            .title(tr!(
+                                "New master password set. Write it down somewhere safe."
+                            ))
+                            .timeout(6)
+                            .build(),
+                    );
+                    dialog.pop_subpage();
+                }
+                Err(ashypass_core::Error::InvalidMasterPassword) => {
+                    show(tr!("Incorrect PIN. Nothing was changed."));
+                }
+                Err(ashypass_core::Error::KeyMismatch) => {
+                    show(tr!(
+                        "This PIN no longer matches the vault. Nothing was changed."
+                    ));
+                }
+                Err(e) => show(&format!("{} ({e})", tr!("The password was not changed"))),
+            }
+        });
+    }
+
+    let toolbar = adw::ToolbarView::new();
+    toolbar.add_top_bar(&adw::HeaderBar::new());
+    toolbar.set_content(Some(&page));
+    adw::NavigationPage::builder()
+        .title(tr!("Forgot the master password"))
+        .child(&toolbar)
+        .build()
+}
+
 fn change_master_page(
     state: &SharedState,
     toast: &Toaster,
@@ -683,9 +859,9 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState) 
     page.add(&group);
     let how = adw::PreferencesGroup::builder()
         .title(tr!("Connecting the extension"))
-        .description(tr!(
+        .description(glib::markup_escape_text(tr!(
             "Install the extension in Chrome or Firefox, then register this computer with:  ashypass-native-host --install <extension-id>"
-        ))
+        )).as_str())
         .build();
     page.add(&how);
 }

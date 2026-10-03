@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:26\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -128,7 +128,7 @@ msgstr ""
 "jäädavalt."
 
 msgid "Allow TRIM through encrypted mapping"
-msgstr "Luba TRIM krüpteeritud kaardistuse kaudu<br>"
+msgstr "Luba TRIM krüpteeritud kaardistuse kaudu"
 
 msgid "Allow the browser extension"
 msgstr "Luba brauserilaiendus"
@@ -166,6 +166,15 @@ msgstr "Kohalike kustutamiste rakendamine"
 
 msgid "Ashy Pass backups"
 msgstr "Ashy Passi varukoopiad"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass ei saa põhiparooli taastada ja selles arvutis pole PIN-koodi. Kui "
+"sul on varukoopia ja mäletad selle paroole, saad selle pärast uue hoidla "
+"loomist taastada jaotises Varukoopiad."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -412,6 +421,15 @@ msgstr "Kinnita uus põhiparool"
 
 msgid "Confirm password"
 msgstr "Kinnita parool"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Kinnita selle arvuti PIN-kood ja vali uus põhiparool. Kogu hoidla "
+"krüpteeritakse uuesti ja PIN-kood töötab edasi. Vanemad varukoopiad vajavad "
+"endiselt tolleaegset põhiparooli."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Varukoopia loomiseks kinnita oma põhiparool."
@@ -668,7 +686,7 @@ msgid "Empty trash"
 msgstr "Tühjenda prügikast"
 
 msgid "Encrypt"
-msgstr "Krüpti<br>"
+msgstr "Krüpti"
 
 msgid "Encrypt Drive"
 msgstr "Krüpteeri ketas"
@@ -696,7 +714,7 @@ msgstr ""
 "Krüptitud varahoid laeti üles muutmata kujul. Kaust: \"AshyPass Backups\"."
 
 msgid "Encrypted zero (recommended — slow but secure)"
-msgstr "Krüpteeritud null (soovitatav – aeglane, kuid turvaline)<br>"
+msgstr "Krüpteeritud null (soovitatav – aeglane, kuid turvaline)"
 
 msgid ""
 "Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
@@ -705,7 +723,7 @@ msgstr ""
 "ketastega."
 
 msgid "Encrypting…"
-msgstr "Krüpteerimine…<br>"
+msgstr "Krüpteerimine…"
 
 msgid "Encrypt…"
 msgstr "Krüpti…"
@@ -820,7 +838,7 @@ msgid "Files are encrypted and stored inside the vault."
 msgstr "Failid krüptitakse ja salvestatakse hoidlasse."
 
 msgid "Filesystem"
-msgstr "Failisüsteem<br>"
+msgstr "Failisüsteem"
 
 msgid "Fill in all three fields."
 msgstr "Täida kõik kolm välja."
@@ -872,6 +890,15 @@ msgstr ""
 "Nextcloudi puhul näeb baas-URL välja selline: https://cloud.example.com/"
 "remote.php/dav/files/KASUTAJANIMI"
 
+msgid "Forgot the master password"
+msgstr "Unustasin põhiparooli"
+
+msgid "Forgot the master password?"
+msgstr "Unustasid põhiparooli?"
+
+msgid "Forgot the master password…"
+msgstr "Unustasin põhiparooli…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -912,7 +939,7 @@ msgstr "Google Drive ja WebDAV"
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr ""
 "Aitab SSD kulumise tasakaalustamisel, kuid lekib vaba ruumi mustreid "
-"seadmele.<br>"
+"seadmele."
 
 msgid "Hide password"
 msgstr "Peida parool"
@@ -968,6 +995,9 @@ msgstr "Impordi paroolid…"
 
 msgid "Incorrect PIN"
 msgstr "Vale PIN-kood"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Vale PIN-kood. Midagi ei muudetud."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1081,7 +1111,7 @@ msgid "Keyring error"
 msgstr "Võtmehoidja viga"
 
 msgid "Label"
-msgstr "Silt<br>"
+msgstr "Silt"
 
 msgid "Label too long for this filesystem. Maximum length in bytes"
 msgstr ""
@@ -1208,6 +1238,9 @@ msgstr "Uus kaust…"
 msgid "New master password"
 msgstr "Uus põhiparool"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Uus põhiparool on määratud. Kirjuta see kindlasse kohta üles."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1266,7 +1299,7 @@ msgid "No verification codes yet"
 msgstr "Kinnituskoode pole veel"
 
 msgid "None — quick, leaves prior data recoverable"
-msgstr "Mitte midagi – kiire, jätab varasemad andmed taastatavaks<br>"
+msgstr "Mitte midagi – kiire, jätab varasemad andmed taastatavaks"
 
 msgid "Not available for the vault yet. External drives can use them."
 msgstr "Hoidla jaoks pole veel saadaval. Välised kettad saavad neid kasutada."
@@ -1430,6 +1463,9 @@ msgstr "Muud vormingud"
 msgid "PIN"
 msgstr "PIN-kood"
 
+msgid "PIN of this computer"
+msgstr "Selle arvuti PIN-kood"
+
 msgid "PIN on this computer"
 msgstr "PIN selles arvutis"
 
@@ -1527,13 +1563,13 @@ msgid "Plug in your authenticator and click Register"
 msgstr "Ühendage oma autentija ja klõpsake nuppu Registreeri"
 
 msgid "Pre-format wipe"
-msgstr "Eelvorminduse puhastus<br>"
+msgstr "Eelvorminduse puhastus"
 
 msgid "Preparing synchronization"
 msgstr "Sünkroonimise ettevalmistamine"
 
 msgid "Preparing…"
-msgstr "Ettevalmistus…<br>"
+msgstr "Ettevalmistus…"
 
 msgid "Previous passwords kept by Ashy Pass when this one was changed."
 msgstr "Varasemad paroolid, mille Ashy Pass selle muutmisel säilitas."
@@ -1551,7 +1587,7 @@ msgid "Quit"
 msgstr "Välju"
 
 msgid "Random pass (slowest)"
-msgstr "Juhuslik parool (kõige aeglasem)<br>"
+msgstr "Juhuslik ülekirjutus (kõige aeglasem)"
 
 msgid "Random password"
 msgstr "Juhuslik parool"
@@ -1682,7 +1718,7 @@ msgid "Running audit..."
 msgstr "Audit käivitub..."
 
 msgid "Safety check"
-msgstr "Ohutuskontroll<br>"
+msgstr "Ohutuskontroll"
 
 msgid "Safety check error"
 msgstr "Ohutuskontrolli viga"
@@ -1757,7 +1793,7 @@ msgid "Sections"
 msgstr "Jaotised"
 
 msgid "Secure discard (SSD/NVMe only, near-instant)"
-msgstr "Turvaline kustutamine (ainult SSD/NVMe, peaaegu hetkeline)<br>"
+msgstr "Turvaline kustutamine (ainult SSD/NVMe, peaaegu hetkeline)"
 
 msgid "Security Keys"
 msgstr "Turvavõtmed"
@@ -1808,6 +1844,12 @@ msgstr "Määra PIN"
 
 msgid "Set Passphrase"
 msgstr "Määra paroolifraas"
+
+msgid "Set a new one using the PIN of this computer"
+msgstr "Määra uus selle arvuti PIN-koodiga"
+
+msgid "Set new master password"
+msgstr "Määra uus põhiparool"
 
 msgid "Set up, upload or download cloud copies"
 msgstr "Seadista, laadi üles või alla pilvekoopiaid"
@@ -2097,11 +2139,17 @@ msgstr[0] "Selles olev {} parool jääb hoidlasse ja liigub jaotisse „Kaustata
 msgstr[1] ""
 "Selles olevad {} parooli jäävad hoidlasse ja liiguvad jaotisse „Kaustata“."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Selles arvutis pole PIN-koodi. Midagi ei muudetud."
+
 msgid "There is nothing new to import."
 msgstr "Uut importimiseks pole."
 
 msgid "These options cannot produce a password."
 msgstr "Nende valikutega ei saa parooli luua."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "See PIN-kood ei sobi enam hoidlaga. Midagi ei muudetud."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2265,6 +2313,14 @@ msgstr "Uue parooli salvestamiseks ava hoidla. See ei lähe kaotsi."
 
 msgid "Unlock with PIN"
 msgstr "Ava PIN-koodiga"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Ava lukk selle arvuti PIN-koodiga ja ava seejärel Seaded → Kaitse → "
+"Unustasin põhiparooli, et määrata uus. PIN-koodi küsitakse uuesti."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Ava koopia põhiparooliga."
@@ -2742,7 +2798,7 @@ msgstr[0] "{} sõna"
 msgstr[1] "{} sõna"
 
 msgid "…"
-msgstr "…<br>"
+msgstr "…"
 
 #, rust-format
 msgid "… and {} more"

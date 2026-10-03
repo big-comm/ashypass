@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -159,6 +159,14 @@ msgstr "מחיקות מקומיות מיושמות"
 
 msgid "Ashy Pass backups"
 msgstr "גיבויים של Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass אינו יכול לשחזר את סיסמת האב, ואין PIN במחשב הזה. אם יש לך גיבוי "
+"ואת סיסמאותיו, אפשר לשחזר אותו ב„גיבויים” אחרי יצירת כספת חדשה."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -404,6 +412,14 @@ msgstr "אישור סיסמת האב החדשה"
 
 msgid "Confirm password"
 msgstr "אישור סיסמה"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"יש לאשר את ה־PIN של המחשב הזה ולבחור סיסמת אב חדשה. כל הכספת מוצפנת מחדש "
+"וה־PIN ממשיך לעבוד. גיבויים קודמים עדיין דורשים את סיסמת האב של אותה עת."
 
 msgid "Confirm your master password to create a backup."
 msgstr "יש לאשר את סיסמת האב כדי ליצור גיבוי."
@@ -856,6 +872,15 @@ msgstr ""
 "עבור Nextcloud, כתובת הבסיס נראית כך: https://cloud.example.com/remote.php/"
 "dav/files/שם_משתמש"
 
+msgid "Forgot the master password"
+msgstr "שכחתי את סיסמת האב"
+
+msgid "Forgot the master password?"
+msgstr "שכחת את סיסמת האב?"
+
+msgid "Forgot the master password…"
+msgstr "שכחתי את סיסמת האב…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -948,6 +973,9 @@ msgstr "ייבוא סיסמאות…"
 
 msgid "Incorrect PIN"
 msgstr "PIN שגוי"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "PIN שגוי. דבר לא שונה."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1185,6 +1213,9 @@ msgstr "תיקייה חדשה…"
 msgid "New master password"
 msgstr "סיסמת אב חדשה"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "סיסמת אב חדשה הוגדרה. יש לרשום אותה במקום בטוח."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1400,6 +1431,9 @@ msgstr "תבניות אחרות"
 
 msgid "PIN"
 msgstr "קוד PIN"
+
+msgid "PIN of this computer"
+msgstr "ה־PIN של המחשב הזה"
 
 msgid "PIN on this computer"
 msgstr "PIN במחשב זה"
@@ -1778,6 +1812,12 @@ msgstr "הגדרת PIN"
 msgid "Set Passphrase"
 msgstr "הגדר משפט סיסמה"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "הגדרת סיסמה חדשה עם ה־PIN של המחשב הזה"
+
+msgid "Set new master password"
+msgstr "הגדרת סיסמת אב חדשה"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "הגדרה, העלאה או הורדה של עותקים בענן"
 
@@ -2059,11 +2099,17 @@ msgid_plural ""
 msgstr[0] "הסיסמה {} שבה נשארת בכספת ועוברת אל “ללא תיקייה”."
 msgstr[1] "{} הסיסמאות שבה נשארות בכספת ועוברות אל “ללא תיקייה”."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "אין PIN במחשב הזה. דבר לא שונה."
+
 msgid "There is nothing new to import."
 msgstr "אין שום דבר חדש לייבא."
 
 msgid "These options cannot produce a password."
 msgstr "אפשרויות אלה אינן יכולות ליצור סיסמה."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "ה־PIN הזה כבר אינו תואם את הכספת. דבר לא שונה."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2221,6 +2267,14 @@ msgstr "יש לבטל את נעילת הכספת כדי לשמור את הסיס
 
 msgid "Unlock with PIN"
 msgstr "פתיחה באמצעות PIN"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"יש לבטל את הנעילה עם ה־PIN של המחשב הזה ואז לפתוח הגדרות ← הגנה ← שכחתי את "
+"סיסמת האב כדי להגדיר סיסמה חדשה. ה־PIN יתבקש שוב."
 
 msgid "Unlock with the master password of the copy."
 msgstr "יש לבטל את הנעילה עם סיסמת האב של העותק."

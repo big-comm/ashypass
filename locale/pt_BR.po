@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:41\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Portuguese (Brazil) <pt-BR@li.org>\n"
@@ -169,6 +169,15 @@ msgstr "Aplicando exclusões locais"
 
 msgid "Ashy Pass backups"
 msgstr "Cópias do Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"O Ashy Pass não consegue recuperar a senha principal, e não há PIN neste "
+"computador. Se você tiver uma cópia de segurança e lembrar as senhas dela, "
+"pode restaurá-la em Cópias de segurança depois de criar um novo cofre."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -416,6 +425,16 @@ msgstr "Confirmar a nova senha principal"
 
 msgid "Confirm password"
 msgstr "Confirmar senha"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Confirme o PIN que você usa neste computador e escolha uma nova senha "
+"principal. Tudo no cofre é criptografado de novo, e o PIN continua "
+"funcionando. Cópias de segurança feitas antes ainda precisam da senha "
+"principal da época."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Confirme sua senha principal para criar uma cópia de segurança."
@@ -878,6 +897,15 @@ msgstr ""
 "Para Nextcloud, a URL base se parece com https://cloud.exemplo.com/"
 "remote.php/dav/files/USUARIO"
 
+msgid "Forgot the master password"
+msgstr "Esqueci a senha principal"
+
+msgid "Forgot the master password?"
+msgstr "Esqueceu a senha principal?"
+
+msgid "Forgot the master password…"
+msgstr "Esqueci a senha principal…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -975,6 +1003,9 @@ msgstr "Importar senhas…"
 
 msgid "Incorrect PIN"
 msgstr "PIN incorreto"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "PIN incorreto. Nada foi alterado."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1217,6 +1248,9 @@ msgstr "Nova pasta…"
 msgid "New master password"
 msgstr "Nova senha principal"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Nova senha principal definida. Anote-a em um lugar seguro."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1444,6 +1478,9 @@ msgstr "Outros formatos"
 msgid "PIN"
 msgstr "PIN"
 
+msgid "PIN of this computer"
+msgstr "PIN deste computador"
+
 msgid "PIN on this computer"
 msgstr "PIN neste computador"
 
@@ -1567,7 +1604,7 @@ msgid "Quit"
 msgstr "Sair do Ashy Pass"
 
 msgid "Random pass (slowest)"
-msgstr "Senha aleatória (mais lento)"
+msgstr "Passagem aleatória (mais lenta)"
 
 msgid "Random password"
 msgstr "Senha aleatória"
@@ -1823,6 +1860,12 @@ msgstr "Definir PIN"
 
 msgid "Set Passphrase"
 msgstr "Definir Frase-senha"
+
+msgid "Set a new one using the PIN of this computer"
+msgstr "Defina uma nova usando o PIN deste computador"
+
+msgid "Set new master password"
+msgstr "Definir nova senha principal"
 
 msgid "Set up, upload or download cloud copies"
 msgstr "Configure, envie ou baixe cópias na nuvem"
@@ -2115,11 +2158,17 @@ msgid_plural ""
 msgstr[0] "A {} senha dela continua no cofre e vai para “Sem pasta”."
 msgstr[1] "As {} senhas dela continuam no cofre e vão para “Sem pasta”."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Não há PIN neste computador. Nada foi alterado."
+
 msgid "There is nothing new to import."
 msgstr "Não há nada novo para importar."
 
 msgid "These options cannot produce a password."
 msgstr "Essas opções não conseguem gerar uma senha."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Este PIN não corresponde mais ao cofre. Nada foi alterado."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2283,6 +2332,15 @@ msgstr "Desbloqueie o cofre para salvar a nova senha. Ela não será perdida."
 
 msgid "Unlock with PIN"
 msgstr "Desbloquear com PIN"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Desbloqueie com o PIN deste computador e depois abra Configurações → "
+"Proteção → Esqueci a senha principal para definir uma nova. O PIN será "
+"pedido de novo."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Desbloqueie com a senha principal da cópia."
@@ -2625,7 +2683,7 @@ msgid "rotational (HDD)"
 msgstr "rotacional (HDD)"
 
 msgid "seen"
-msgstr "visualizada"
+msgstr "em vazamentos"
 
 msgid "solid-state"
 msgstr "estado sólido"

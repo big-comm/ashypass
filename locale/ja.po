@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -168,6 +168,15 @@ msgstr "ローカルの削除を適用中"
 
 msgid "Ashy Pass backups"
 msgstr "Ashy Pass のバックアップ"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass はマスターパスワードを復元できません。また、このコンピューターには "
+"PIN が設定されていません。バックアップがあり、そのパスワードを覚えている場合"
+"は、新しいボールトを作成した後に「バックアップ」から復元できます。"
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -414,6 +423,15 @@ msgstr "新しいマスターパスワードの確認"
 
 msgid "Confirm password"
 msgstr "パスワードを確認"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"このコンピューターの PIN を確認し、新しいマスターパスワードを選んでください。"
+"ボールト全体が再暗号化され、PIN は引き続き使えます。以前のバックアップには当"
+"時のマスターパスワードが必要です。"
 
 msgid "Confirm your master password to create a backup."
 msgstr "バックアップを作成するにはマスターパスワードを確認してください。"
@@ -878,6 +896,15 @@ msgstr ""
 "Nextcloudの場合、ベースURLは https://cloud.example.com/remote.php/dav/files/"
 "USERNAME のようになります"
 
+msgid "Forgot the master password"
+msgstr "マスターパスワードを忘れた"
+
+msgid "Forgot the master password?"
+msgstr "マスターパスワードを忘れましたか?"
+
+msgid "Forgot the master password…"
+msgstr "マスターパスワードを忘れた…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -974,6 +1001,9 @@ msgstr "パスワードをインポート…"
 
 msgid "Incorrect PIN"
 msgstr "PINが正しくありません"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "PIN が正しくありません。何も変更されていません。"
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1214,6 +1244,10 @@ msgstr "新しいフォルダ…"
 msgid "New master password"
 msgstr "新しいマスターパスワード"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr ""
+"新しいマスターパスワードを設定しました。安全な場所に書き留めてください。"
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1435,6 +1469,9 @@ msgstr "その他の形式"
 
 msgid "PIN"
 msgstr "PIN"
+
+msgid "PIN of this computer"
+msgstr "このコンピューターの PIN"
 
 msgid "PIN on this computer"
 msgstr "このコンピューターの PIN"
@@ -1819,6 +1856,12 @@ msgstr "PIN を設定"
 msgid "Set Passphrase"
 msgstr "パスフレーズを設定"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "このコンピューターの PIN で新しく設定します"
+
+msgid "Set new master password"
+msgstr "新しいマスターパスワードを設定"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "クラウドのコピーを設定、アップロード、ダウンロード"
 
@@ -2114,11 +2157,17 @@ msgid_plural ""
 msgstr[0] ""
 "中にある {} 件のパスワードはボールトに残り、「フォルダなし」に移動します。"
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "このコンピューターには PIN がありません。何も変更されていません。"
+
 msgid "There is nothing new to import."
 msgstr "新しくインポートするものはありません。"
 
 msgid "These options cannot produce a password."
 msgstr "この設定ではパスワードを生成できません。"
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "この PIN はもうボールトと一致しません。何も変更されていません。"
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2282,6 +2331,14 @@ msgstr ""
 
 msgid "Unlock with PIN"
 msgstr "PINでロック解除"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"このコンピューターの PIN でロックを解除し、設定 → 保護 → マスターパスワードを"
+"忘れた を開いて新しく設定してください。PIN をもう一度入力する必要があります。"
 
 msgid "Unlock with the master password of the copy."
 msgstr "コピーのマスターパスワードでロックを解除してください。"

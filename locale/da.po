@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:21\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Danish <da@li.org>\n"
@@ -167,6 +167,15 @@ msgstr "Anvender lokale sletninger"
 
 msgid "Ashy Pass backups"
 msgstr "Sikkerhedskopier fra Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass kan ikke gendanne hovedadgangskoden, og der er ingen PIN-kode på "
+"denne computer. Har du en sikkerhedskopi og husker dens adgangskoder, kan du "
+"gendanne den under Sikkerhedskopier efter at have oprettet en ny boks."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -414,6 +423,15 @@ msgstr "Bekræft ny hovedadgangskode"
 
 msgid "Confirm password"
 msgstr "Bekræft adgangskode"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Bekræft computerens PIN-kode, og vælg en ny hovedadgangskode. Hele boksen "
+"krypteres igen, og PIN-koden virker stadig. Ældre sikkerhedskopier kræver "
+"stadig den daværende hovedadgangskode."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Bekræft din hovedadgangskode for at oprette en sikkerhedskopi."
@@ -876,6 +894,15 @@ msgstr ""
 "For Nextcloud ser basis-URL’en sådan ud: https://cloud.example.com/"
 "remote.php/dav/files/BRUGERNAVN"
 
+msgid "Forgot the master password"
+msgstr "Glemt hovedadgangskoden"
+
+msgid "Forgot the master password?"
+msgstr "Glemt hovedadgangskoden?"
+
+msgid "Forgot the master password…"
+msgstr "Glemt hovedadgangskoden…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -972,6 +999,9 @@ msgstr "Importér adgangskoder…"
 
 msgid "Incorrect PIN"
 msgstr "Forkert PIN"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Forkert PIN-kode. Intet blev ændret."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1215,6 +1245,9 @@ msgstr "Ny mappe…"
 msgid "New master password"
 msgstr "Ny hovedadgangskode"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Ny hovedadgangskode angivet. Skriv den ned et sikkert sted."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1440,6 +1473,9 @@ msgstr "Andre formater"
 
 msgid "PIN"
 msgstr "PIN-kode"
+
+msgid "PIN of this computer"
+msgstr "Computerens PIN-kode"
 
 msgid "PIN on this computer"
 msgstr "PIN-kode på denne computer"
@@ -1823,6 +1859,12 @@ msgstr "Angiv PIN-kode"
 msgid "Set Passphrase"
 msgstr "Angiv adgangssætning"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Angiv en ny med computerens PIN-kode"
+
+msgid "Set new master password"
+msgstr "Angiv ny hovedadgangskode"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Opsæt, upload eller hent kopier i skyen"
 
@@ -2116,11 +2158,17 @@ msgstr[0] ""
 msgstr[1] ""
 "De {} adgangskoder i den bliver i boksen og flyttes til “Ingen mappe”."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Der er ingen PIN-kode på denne computer. Intet blev ændret."
+
 msgid "There is nothing new to import."
 msgstr "Der er intet nyt at importere."
 
 msgid "These options cannot produce a password."
 msgstr "Disse indstillinger kan ikke danne en adgangskode."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Denne PIN-kode passer ikke længere til boksen. Intet blev ændret."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2282,6 +2330,15 @@ msgstr "Lås boksen op for at gemme den nye adgangskode. Den går ikke tabt."
 
 msgid "Unlock with PIN"
 msgstr "Lås op med PIN"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Lås op med computerens PIN-kode, og åbn derefter Indstillinger → Beskyttelse "
+"→ Glemt hovedadgangskoden for at angive en ny. Du bliver bedt om PIN-koden "
+"igen."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Lås op med kopiens hovedadgangskode."

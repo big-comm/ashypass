@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -170,6 +170,15 @@ msgstr "Helyi törlések alkalmazása"
 
 msgid "Ashy Pass backups"
 msgstr "Ashy Pass mentések"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Az Ashy Pass nem tudja visszaállítani a fő jelszót, és ezen a számítógépen "
+"nincs PIN. Ha van biztonsági mentése, és emlékszik a jelszavaira, egy új tár "
+"létrehozása után visszaállíthatja a(z) Biztonsági mentések részben."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -418,6 +427,15 @@ msgstr "Új fő jelszó megerősítése"
 
 msgid "Confirm password"
 msgstr "Jelszó megerősítése"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Erősítse meg a számítógép PIN-kódját, és válasszon új fő jelszót. A teljes "
+"tár újra titkosításra kerül, a PIN továbbra is működik. A korábbi "
+"mentésekhez továbbra is az akkori fő jelszó kell."
 
 msgid "Confirm your master password to create a backup."
 msgstr "A biztonsági mentés létrehozásához erősítse meg a fő jelszavát."
@@ -884,6 +902,15 @@ msgstr ""
 "Nextcloud esetén az alap URL így néz ki: https://cloud.example.com/"
 "remote.php/dav/files/FELHASZNÁLÓNÉV"
 
+msgid "Forgot the master password"
+msgstr "Elfelejtett fő jelszó"
+
+msgid "Forgot the master password?"
+msgstr "Elfelejtette a fő jelszót?"
+
+msgid "Forgot the master password…"
+msgstr "Elfelejtett fő jelszó…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -982,6 +1009,9 @@ msgstr "Jelszavak importálása…"
 
 msgid "Incorrect PIN"
 msgstr "Helytelen PIN-kód"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Hibás PIN. Semmi sem változott."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1224,6 +1254,9 @@ msgstr "Új mappa…"
 msgid "New master password"
 msgstr "Új fő jelszó"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Az új fő jelszó beállítva. Jegyezze fel biztonságos helyre."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1455,6 +1488,9 @@ msgstr "Egyéb formátumok"
 
 msgid "PIN"
 msgstr "PIN-kód"
+
+msgid "PIN of this computer"
+msgstr "A számítógép PIN-kódja"
 
 msgid "PIN on this computer"
 msgstr "PIN ezen a számítógépen"
@@ -1843,6 +1879,12 @@ msgstr "PIN beállítása"
 msgid "Set Passphrase"
 msgstr "Jelszó beállítása"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Új beállítása a számítógép PIN-kódjával"
+
+msgid "Set new master password"
+msgstr "Új fő jelszó beállítása"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Felhőmásolatok beállítása, feltöltése vagy letöltése"
 
@@ -2139,11 +2181,17 @@ msgstr[0] ""
 msgstr[1] ""
 "A benne lévő {} jelszó a tárban marad, és a „Nincs mappa” alá kerül."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Ezen a számítógépen nincs PIN. Semmi sem változott."
+
 msgid "There is nothing new to import."
 msgstr "Nincs új importálnivaló."
 
 msgid "These options cannot produce a password."
 msgstr "Ezekkel a beállításokkal nem hozható létre jelszó."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Ez a PIN már nem illik a tárhoz. Semmi sem változott."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2306,6 +2354,14 @@ msgstr "Az új jelszó mentéséhez oldja fel a tárat. Nem fog elveszni."
 
 msgid "Unlock with PIN"
 msgstr "Feloldás PIN-kóddal"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Oldja fel a számítógép PIN-kódjával, majd nyissa meg: Beállítások → Védelem "
+"→ Elfelejtett fő jelszó, és állítson be újat. A PIN-t ismét meg kell adnia."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Oldja fel a másolat fő jelszavával."

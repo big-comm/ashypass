@@ -52,6 +52,7 @@ struct Inner {
     primary_button: gtk::Button,
     spinner: gtk::Spinner,
     switch_method_button: gtk::Button,
+    forgot_button: gtk::Button,
     setup_help: gtk::Box,
 
     /// Keyring-backed unlock is a startup convenience only. Once it has been
@@ -165,6 +166,14 @@ impl UnlockView {
         switch_method_button.add_css_class("flat");
         content.append(&switch_method_button);
 
+        let forgot_button = gtk::Button::builder()
+            .label(tr!("Forgot the master password?"))
+            .halign(gtk::Align::Center)
+            .visible(false)
+            .build();
+        forgot_button.add_css_class("flat");
+        content.append(&forgot_button);
+
         // First run only: the honest answer to "what if I forget it?" and a
         // pointer for people who already keep passwords somewhere else.
         let setup_help = gtk::Box::builder()
@@ -221,6 +230,7 @@ impl UnlockView {
             primary_button,
             spinner,
             switch_method_button,
+            forgot_button,
             setup_help,
             keyring_unlock_allowed: Cell::new(true),
             prefer_password: Cell::new(false),
@@ -316,6 +326,12 @@ fn wire(inner: &Rc<Inner>, import_help: &gtk::Button) {
             let to_password = inner.mode.get() == UnlockMode::Pin;
             inner.prefer_password.set(to_password);
             inner.refresh();
+        }
+    });
+    let weak = Rc::downgrade(inner);
+    inner.forgot_button.connect_clicked(move |button| {
+        if let Some(inner) = weak.upgrade() {
+            inner.explain_forgotten_password(button);
         }
     });
     let weak = Rc::downgrade(inner);
@@ -426,6 +442,50 @@ impl Inner {
             }
         }
         self.icon.set_icon_name(Some("ashypass"));
+        self.forgot_button.set_visible(mode != UnlockMode::Setup);
+    }
+
+    /// Say honestly what is possible: with a PIN on this computer a new
+    /// master password can be set; without it, only a backup whose password
+    /// is known can bring the entries back.
+    fn explain_forgotten_password(self: &Rc<Self>, anchor: &gtk::Button) {
+        let (body, use_pin) = if self.pin_configured() {
+            (
+                tr!(
+                    "Unlock with the PIN of this computer, then open Settings → Protection → Forgot the master password to set a new one. You will be asked for the PIN again."
+                ),
+                self.mode.get() != UnlockMode::Pin,
+            )
+        } else {
+            (
+                tr!(
+                    "Ashy Pass cannot recover the master password, and there is no PIN on this computer. If you have a backup and remember its passwords, you can restore it in Backups after creating a new vault."
+                ),
+                false,
+            )
+        };
+        let dialog = adw::AlertDialog::builder()
+            .heading(tr!("Forgot the master password"))
+            .body(body)
+            .close_response("ok")
+            .build();
+        dialog.add_response("ok", tr!("Understood"));
+        if use_pin {
+            dialog.add_response("pin", tr!("Use PIN"));
+            dialog.set_response_appearance("pin", adw::ResponseAppearance::Suggested);
+        }
+        let weak = Rc::downgrade(self);
+        dialog.connect_response(None, move |_, response| {
+            if response != "pin" {
+                return;
+            }
+            if let Some(inner) = weak.upgrade() {
+                inner.prefer_password.set(false);
+                inner.refresh();
+                inner.focus();
+            }
+        });
+        dialog.present(Some(anchor));
     }
 
     fn focus(&self) {

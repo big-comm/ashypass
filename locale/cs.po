@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:20\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -166,6 +166,15 @@ msgstr "Použití místních odstranění"
 
 msgid "Ashy Pass backups"
 msgstr "Zálohy Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass nemůže obnovit hlavní heslo a na tomto počítači není PIN. Pokud "
+"máte zálohu a pamatujete si její hesla, můžete ji po vytvoření nového "
+"trezoru obnovit v části Zálohy."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -412,6 +421,15 @@ msgstr "Potvrdit nové hlavní heslo"
 
 msgid "Confirm password"
 msgstr "Potvrdit heslo"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Potvrďte PIN tohoto počítače a zvolte nové hlavní heslo. Celý trezor se "
+"znovu zašifruje a PIN bude dál fungovat. Starší zálohy stále vyžadují "
+"tehdejší hlavní heslo."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Pro vytvoření zálohy potvrďte hlavní heslo."
@@ -873,6 +891,15 @@ msgstr ""
 "Pro Nextcloud vypadá základní URL jako https://cloud.example.com/remote.php/"
 "dav/files/UŽIVATELSKÉ_JMÉNO"
 
+msgid "Forgot the master password"
+msgstr "Zapomenuté hlavní heslo"
+
+msgid "Forgot the master password?"
+msgstr "Zapomněli jste hlavní heslo?"
+
+msgid "Forgot the master password…"
+msgstr "Zapomenuté hlavní heslo…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -968,6 +995,9 @@ msgstr "Importovat hesla…"
 
 msgid "Incorrect PIN"
 msgstr "Nesprávný PIN"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "Nesprávný PIN. Nic nebylo změněno."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1211,6 +1241,10 @@ msgstr "Nová složka…"
 msgid "New master password"
 msgstr "Nové hlavní heslo"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr ""
+"Nové hlavní heslo bylo nastaveno. Poznamenejte si ho na bezpečné místo."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1432,6 +1466,9 @@ msgstr "Jiné formáty"
 
 msgid "PIN"
 msgstr "PIN"
+
+msgid "PIN of this computer"
+msgstr "PIN tohoto počítače"
 
 msgid "PIN on this computer"
 msgstr "PIN na tomto počítači"
@@ -1813,6 +1850,12 @@ msgstr "Nastavit PIN"
 msgid "Set Passphrase"
 msgstr "Nastavit heslo"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Nastavit nové pomocí PIN tohoto počítače"
+
+msgid "Set new master password"
+msgstr "Nastavit nové hlavní heslo"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Nastavení, nahrávání a stahování kopií v cloudu"
 
@@ -2104,11 +2147,17 @@ msgstr[0] "{} heslo v ní zůstane v trezoru a přesune se do „Bez složky“.
 msgstr[1] "{} hesla v ní zůstanou v trezoru a přesunou se do „Bez složky“."
 msgstr[2] "{} hesel v ní zůstane v trezoru a přesune se do „Bez složky“."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Na tomto počítači není PIN. Nic nebylo změněno."
+
 msgid "There is nothing new to import."
 msgstr "Není nic nového k importu."
 
 msgid "These options cannot produce a password."
 msgstr "S těmito volbami nelze vytvořit heslo."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Tento PIN už k trezoru nepatří. Nic nebylo změněno."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2272,6 +2321,14 @@ msgstr "Odemkněte trezor, aby se nové heslo uložilo. Neztratí se."
 
 msgid "Unlock with PIN"
 msgstr "Odemknout PINem"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Odemkněte pomocí PIN tohoto počítače a potom otevřete Nastavení → Ochrana → "
+"Zapomenuté hlavní heslo a nastavte nové. PIN budete muset zadat znovu."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Odemkněte hlavním heslem kopie."

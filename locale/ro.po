@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:43\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -171,6 +171,15 @@ msgstr "Se aplică ștergerile locale"
 
 msgid "Ashy Pass backups"
 msgstr "Copii de rezervă Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass nu poate recupera parola principală și pe acest calculator nu "
+"există PIN. Dacă aveți o copie de rezervă și îi știți parolele, o puteți "
+"restaura din Copii de rezervă după ce creați un seif nou."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -418,6 +427,16 @@ msgstr "Confirmați noua parolă principală"
 
 msgid "Confirm password"
 msgstr "Confirmare parolă"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Confirmați PIN-ul folosit pe acest calculator și alegeți o parolă principală "
+"nouă. Tot seiful este criptat din nou, iar PIN-ul continuă să funcționeze. "
+"Copiile de rezervă mai vechi au nevoie în continuare de parola principală de "
+"atunci."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Confirmați parola principală pentru a crea o copie de rezervă."
@@ -881,6 +900,15 @@ msgstr ""
 "Pentru Nextcloud, URL-ul de bază arată ca https://cloud.example.com/"
 "remote.php/dav/files/NUME_UTILIZATOR"
 
+msgid "Forgot the master password"
+msgstr "Am uitat parola principală"
+
+msgid "Forgot the master password?"
+msgstr "Ați uitat parola principală?"
+
+msgid "Forgot the master password…"
+msgstr "Am uitat parola principală…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -978,6 +1006,9 @@ msgstr "Importă parole…"
 
 msgid "Incorrect PIN"
 msgstr "PIN incorect"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "PIN incorect. Nu s-a modificat nimic."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1225,6 +1256,9 @@ msgstr "Dosar nou…"
 msgid "New master password"
 msgstr "Parolă principală nouă"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Parola principală nouă a fost setată. Notați-o într-un loc sigur."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1450,6 +1484,9 @@ msgstr "Alte formate"
 
 msgid "PIN"
 msgstr "Cod PIN"
+
+msgid "PIN of this computer"
+msgstr "PIN-ul acestui calculator"
 
 msgid "PIN on this computer"
 msgstr "PIN pe acest calculator"
@@ -1835,6 +1872,12 @@ msgstr "Setează PIN"
 msgid "Set Passphrase"
 msgstr "Setează fraza de acces"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Setați una nouă folosind PIN-ul acestui calculator"
+
+msgid "Set new master password"
+msgstr "Setează parola principală nouă"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Configurați, încărcați sau descărcați copii în cloud"
 
@@ -2137,11 +2180,17 @@ msgstr[1] "Cele {} parole din el rămân în seif și sunt mutate în „Fără 
 msgstr[2] ""
 "Cele {} de parole din el rămân în seif și sunt mutate în „Fără dosar”."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Pe acest calculator nu există PIN. Nu s-a modificat nimic."
+
 msgid "There is nothing new to import."
 msgstr "Nu există nimic nou de importat."
 
 msgid "These options cannot produce a password."
 msgstr "Aceste opțiuni nu pot genera o parolă."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Acest PIN nu mai corespunde seifului. Nu s-a modificat nimic."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2305,6 +2354,15 @@ msgstr "Deblocați seiful pentru a salva noua parolă. Nu se va pierde."
 
 msgid "Unlock with PIN"
 msgstr "Deblochează cu PIN"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Deblocați cu PIN-ul acestui calculator, apoi deschideți Setări → Protecție → "
+"Am uitat parola principală pentru a seta una nouă. Vi se va cere din nou PIN-"
+"ul."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Deblocați cu parola principală a copiei."

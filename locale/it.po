@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 14:00-0300\n"
+"POT-Creation-Date: 2026-10-03 14:36-0300\n"
 "PO-Revision-Date: 2026-05-12 19:35\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -170,6 +170,15 @@ msgstr "Applicazione eliminazioni locali"
 
 msgid "Ashy Pass backups"
 msgstr "Backup di Ashy Pass"
+
+msgid ""
+"Ashy Pass cannot recover the master password, and there is no PIN on this "
+"computer. If you have a backup and remember its passwords, you can restore "
+"it in Backups after creating a new vault."
+msgstr ""
+"Ashy Pass non può recuperare la password principale e su questo computer non "
+"c’è un PIN. Se hai un backup e ricordi le sue password, puoi ripristinarlo "
+"in Backup dopo aver creato un nuovo vault."
 
 msgid ""
 "Ashy Pass cannot recover this password. Without it, nobody — including you — "
@@ -417,6 +426,16 @@ msgstr "Conferma la nuova password principale"
 
 msgid "Confirm password"
 msgstr "Conferma password"
+
+msgid ""
+"Confirm the PIN you use on this computer and choose a new master password. "
+"Everything in the vault is encrypted again, and the PIN keeps working. "
+"Backups made earlier still need the master password they were made with."
+msgstr ""
+"Conferma il PIN che usi su questo computer e scegli una nuova password "
+"principale. Tutto il vault viene cifrato di nuovo e il PIN continua a "
+"funzionare. I backup precedenti richiedono ancora la password principale di "
+"allora."
 
 msgid "Confirm your master password to create a backup."
 msgstr "Conferma la password principale per creare un backup."
@@ -882,6 +901,15 @@ msgstr ""
 "Per Nextcloud, l'URL di base è simile a https://cloud.example.com/remote.php/"
 "dav/files/NOMEUTENTE"
 
+msgid "Forgot the master password"
+msgstr "Password principale dimenticata"
+
+msgid "Forgot the master password?"
+msgstr "Hai dimenticato la password principale?"
+
+msgid "Forgot the master password…"
+msgstr "Password principale dimenticata…"
+
 msgid ""
 "From another app: create your vault first, then open Backups → Import "
 "passwords.\n"
@@ -978,6 +1006,9 @@ msgstr "Importa password…"
 
 msgid "Incorrect PIN"
 msgstr "PIN errato"
+
+msgid "Incorrect PIN. Nothing was changed."
+msgstr "PIN errato. Non è stato modificato nulla."
 
 #, rust-format
 msgid "Incorrect PIN. {} attempt left."
@@ -1220,6 +1251,9 @@ msgstr "Nuova cartella…"
 msgid "New master password"
 msgstr "Nuova password principale"
 
+msgid "New master password set. Write it down somewhere safe."
+msgstr "Nuova password principale impostata. Annotala in un luogo sicuro."
+
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
@@ -1447,6 +1481,9 @@ msgstr "Altri formati"
 
 msgid "PIN"
 msgstr "PIN"
+
+msgid "PIN of this computer"
+msgstr "PIN di questo computer"
 
 msgid "PIN on this computer"
 msgstr "PIN su questo computer"
@@ -1832,6 +1869,12 @@ msgstr "Imposta PIN"
 msgid "Set Passphrase"
 msgstr "Imposta passphrase"
 
+msgid "Set a new one using the PIN of this computer"
+msgstr "Impostane una nuova con il PIN di questo computer"
+
+msgid "Set new master password"
+msgstr "Imposta nuova password principale"
+
 msgid "Set up, upload or download cloud copies"
 msgstr "Configura, carica o scarica copie nel cloud"
 
@@ -2136,11 +2179,17 @@ msgstr[0] ""
 msgstr[1] ""
 "Le {} password contenute restano nel vault e passano in «Nessuna cartella»."
 
+msgid "There is no PIN on this computer. Nothing was changed."
+msgstr "Su questo computer non c’è un PIN. Non è stato modificato nulla."
+
 msgid "There is nothing new to import."
 msgstr "Non c'è nulla di nuovo da importare."
 
 msgid "These options cannot produce a password."
 msgstr "Con queste opzioni non è possibile generare una password."
+
+msgid "This PIN no longer matches the vault. Nothing was changed."
+msgstr "Questo PIN non corrisponde più al vault. Non è stato modificato nulla."
 
 msgid ""
 "This QR code is not a verification-code setup. Use the one shown by the "
@@ -2304,6 +2353,15 @@ msgstr "Sblocca il vault per salvare la nuova password. Non andrà persa."
 
 msgid "Unlock with PIN"
 msgstr "Sblocca con PIN"
+
+msgid ""
+"Unlock with the PIN of this computer, then open Settings → Protection → "
+"Forgot the master password to set a new one. You will be asked for the PIN "
+"again."
+msgstr ""
+"Sblocca con il PIN di questo computer, poi apri Impostazioni → Protezione → "
+"Password principale dimenticata per impostarne una nuova. Ti verrà chiesto "
+"di nuovo il PIN."
 
 msgid "Unlock with the master password of the copy."
 msgstr "Sblocca con la password principale della copia."
