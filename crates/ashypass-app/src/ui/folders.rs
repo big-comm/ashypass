@@ -6,7 +6,10 @@
 use crate::state::SharedState;
 use crate::tr;
 use adw::prelude::*;
+use std::cell::RefCell;
 use std::rc::Rc;
+
+type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
 
 pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA<gtk::Widget>) {
     let dialog = adw::Dialog::builder()
@@ -34,8 +37,8 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
     toolbar.set_content(Some(&page));
     dialog.set_child(Some(&toolbar));
 
-    let rows: Rc<std::cell::RefCell<Vec<gtk::Widget>>> = Rc::default();
-    let render: Rc<std::cell::RefCell<Option<Rc<dyn Fn()>>>> = Rc::default();
+    let rows: Rc<RefCell<Vec<gtk::Widget>>> = Rc::default();
+    let render: RenderSlot = Rc::default();
     let render_fn: Rc<dyn Fn()> = Rc::new({
         let state = state.clone();
         let toast = toast.clone();

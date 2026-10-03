@@ -356,7 +356,15 @@ fn dev_seed(state: &SharedState) {
     if !vault.is_unlocked() || vault.list(None).map(|l| !l.is_empty()).unwrap_or(true) {
         return;
     }
-    let samples: &[(&str, &str, &str, Option<&str>, Option<&str>, bool)] = &[
+    type Sample<'a> = (
+        &'a str,
+        &'a str,
+        &'a str,
+        Option<&'a str>,
+        Option<&'a str>,
+        bool,
+    );
+    let samples: &[Sample] = &[
         (
             "GitHub",
             "dev@example.com",

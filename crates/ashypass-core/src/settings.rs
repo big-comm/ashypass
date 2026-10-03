@@ -75,6 +75,10 @@ pub struct Settings {
     pub nextcloud_auto_sync_interval_minutes: u32,
     /// Trigger one sync when the vault is unlocked.
     pub nextcloud_sync_on_unlock: bool,
+    /// Lock the vault when the screen locks or the computer suspends.
+    pub lock_on_screen_lock: bool,
+    /// "system", "light" or "dark". Anything else follows the system.
+    pub color_scheme: String,
 }
 
 /// Wrapping-KDF generation for `QuickUnlockPrefs::encrypted_key`.
@@ -142,6 +146,8 @@ impl Default for Settings {
             nextcloud_auto_sync: true,
             nextcloud_auto_sync_interval_minutes: 5,
             nextcloud_sync_on_unlock: true,
+            lock_on_screen_lock: true,
+            color_scheme: "system".to_string(),
         }
     }
 }
@@ -276,6 +282,28 @@ fn with_suffix(path: &Path, suffix: &str) -> PathBuf {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn files_from_before_the_redesign_keep_their_choices() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("settings.json");
+        fs::write(
+            &path,
+            r#"{"lock_timeout": 45, "clipboard_clear": 20, "show_favicons": false}"#,
+        )
+        .unwrap();
+        let settings = Settings::load_from(&path);
+        // Non-round values chosen in the old seconds-based UI stay as they were.
+        assert_eq!(settings.lock_timeout, 45);
+        assert_eq!(settings.clipboard_clear, 20);
+        assert!(!settings.show_favicons);
+        assert!(settings.lock_on_screen_lock);
+        assert_eq!(settings.color_scheme, "system");
+        settings.save_to(&path).unwrap();
+        let again = Settings::load_from(&path);
+        assert_eq!(again.lock_timeout, 45);
+        assert_eq!(again.clipboard_clear, 20);
+    }
 
     #[test]
     fn missing_and_unknown_fields_load_with_defaults() {

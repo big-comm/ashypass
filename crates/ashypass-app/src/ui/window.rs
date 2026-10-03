@@ -29,6 +29,8 @@ use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use zeroize::Zeroizing;
 
+type WindowAction = Box<dyn Fn(&Rc<MainWindowInner>)>;
+
 const DEFAULT_WIDTH: i32 = 1040;
 const DEFAULT_HEIGHT: i32 = 720;
 const MIN_WIDTH: i32 = 360;
@@ -485,7 +487,7 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
 
     // ---- Actions and shortcuts ------------------------------------------
     let window = &inner.window;
-    let add_action = |name: &str, accels: &[&str], run: Box<dyn Fn(&Rc<MainWindowInner>)>| {
+    let add_action = |name: &str, accels: &[&str], run: WindowAction| {
         let action = gio::SimpleAction::new(name, None);
         let weak = Rc::downgrade(inner);
         action.connect_activate(move |_, _| {

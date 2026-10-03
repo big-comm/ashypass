@@ -19,6 +19,7 @@ use ashypass_core::config::MIN_MASTER_PASSWORD_LENGTH;
 use gtk::{gdk, glib};
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
+use zeroize::Zeroizing;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum UnlockMode {
@@ -521,119 +522,134 @@ impl Inner {
     }
 
     fn unlock_with_password(self: &Rc<Self>) {
-        let password = self.secret_entry.text().to_string();
+        let password = Zeroizing::new(self.secret_entry.text().to_string());
         if password.is_empty() {
             self.show_error(tr!("Enter your master password"));
             return;
         }
         self.set_busy(true);
-        let weak = Rc::downgrade(self);
-        // Let the spinner paint before the key derivation blocks the loop.
-        glib::idle_add_local_once(move || {
-            let Some(inner) = weak.upgrade() else { return };
-            let result = inner.state.vault.borrow_mut().unlock(&password);
-            inner.set_busy(false);
-            match result {
-                Ok(()) => inner.finish_unlock(),
-                Err(ashypass_core::Error::InvalidMasterPassword) => {
-                    inner.secret_entry.set_text("");
-                    inner.show_error(tr!("Incorrect master password"));
-                    inner.focus();
+        let inputs = self.state.vault.borrow().unlock_inputs();
+        let Ok(Some(inputs)) = inputs else {
+            // No fast path (first unlock of a legacy vault that must migrate):
+            // let the spinner paint, then unlock on this thread.
+            let weak = Rc::downgrade(self);
+            glib::idle_add_local_once(move || {
+                if let Some(inner) = weak.upgrade() {
+                    let result = inner.state.vault.borrow_mut().unlock(&password);
+                    inner.finish_password_attempt(result);
                 }
-                Err(e) => inner.show_error(&format!("{}: {e}", tr!("Could not unlock the vault"))),
+            });
+            return;
+        };
+        // The key derivation is the slow part; run it off the main loop so
+        // the window keeps responding.
+        let worker_password = password.clone();
+        let worker_inputs = inputs.clone();
+        let weak = Rc::downgrade(self);
+        crate::ui::settings_dialog::run_background_task(
+            move || ashypass_core::db::derive_unlock_key(&worker_password, &worker_inputs),
+            move |derived| {
+                let Some(inner) = weak.upgrade() else { return };
+                let result = match derived {
+                    Ok(key) => {
+                        let installed =
+                            inner.state.vault.borrow_mut().unlock_with_key(&inputs, key);
+                        match installed {
+                            // The vault changed underneath or its verifier is
+                            // damaged: the full unlock also repairs it.
+                            Err(ashypass_core::Error::KeyMismatch) => {
+                                inner.state.vault.borrow_mut().unlock(&password)
+                            }
+                            other => other,
+                        }
+                    }
+                    Err(e) => Err(e),
+                };
+                inner.finish_password_attempt(result);
+            },
+        );
+    }
+
+    fn finish_password_attempt(self: &Rc<Self>, result: ashypass_core::Result<()>) {
+        self.set_busy(false);
+        match result {
+            Ok(()) => self.finish_unlock(),
+            Err(ashypass_core::Error::InvalidMasterPassword) => {
+                self.secret_entry.set_text("");
+                self.show_error(tr!("Incorrect master password"));
+                self.focus();
             }
-        });
+            Err(e) => self.show_error(&format!("{}: {e}", tr!("Could not unlock the vault"))),
+        }
     }
 
     fn unlock_with_pin(self: &Rc<Self>) {
-        let pin = self.secret_entry.text().to_string();
+        let pin = Zeroizing::new(self.secret_entry.text().to_string());
         if pin.is_empty() {
             self.show_error(tr!("Enter your PIN"));
             return;
         }
         self.set_busy(true);
-        let weak = Rc::downgrade(self);
-        glib::idle_add_local_once(move || {
-            if let Some(inner) = weak.upgrade() {
-                inner.set_busy(false);
-                inner.pin_attempt(&pin);
-            }
-        });
-    }
 
-    fn pin_attempt(self: &Rc<Self>, pin: &str) {
-        let mut loaded_settings = (*self.state.settings()).clone();
-        let legacy_quick_unlock = loaded_settings.quick_unlock.clone();
-        let keyring_quick_unlock = ashypass_core::keyring::load_quick_unlock()
-            .map_err(|error| log::warn!("quick-unlock keyring read failed: {error}"))
-            .ok()
-            .flatten();
-        let persistent_quick_unlock = keyring_quick_unlock
-            .as_ref()
-            .or(legacy_quick_unlock.as_ref());
-        let result = {
-            let mut vault = self.state.vault.borrow_mut();
-            if vault.is_quick_unlock_available() {
-                match vault.quick_unlock(pin) {
-                    Ok(()) => Ok(()),
-                    Err(ashypass_core::Error::InvalidMasterPassword) => {
-                        Err(ashypass_core::Error::InvalidMasterPassword)
-                    }
-                    Err(e) => match persistent_quick_unlock {
-                        Some(prefs) => vault.quick_unlock_persistent(pin, prefs),
-                        None => Err(e),
-                    },
-                }
-            } else if let Some(prefs) = persistent_quick_unlock {
-                vault.quick_unlock_persistent(pin, prefs)
-            } else {
-                vault.quick_unlock(pin)
+        // PIN cached for this session (set when quick unlock was enabled or
+        // used since the app started): cheap, stays on this thread.
+        if self.state.vault.borrow().is_quick_unlock_available() {
+            let result = self.state.vault.borrow_mut().quick_unlock(&pin);
+            if result.is_ok() {
+                self.set_busy(false);
+                self.finish_unlock();
+                return;
             }
+            if matches!(result, Err(ashypass_core::Error::InvalidMasterPassword))
+                && self.persistent_record().is_none()
+            {
+                self.set_busy(false);
+                self.secret_entry.set_text("");
+                self.show_error(tr!("Incorrect PIN"));
+                self.focus();
+                return;
+            }
+        }
+
+        let Some((prefs, from_keyring)) = self.persistent_record() else {
+            self.set_busy(false);
+            self.pin_unusable();
+            return;
         };
-        match result {
-            Ok(()) => {
-                // A correct PIN clears the failure budget.
-                if let Some(prefs) = persistent_quick_unlock.filter(|p| p.failed_attempts > 0) {
-                    let mut reset = prefs.clone();
-                    reset.failed_attempts = 0;
-                    if let Err(error) = ashypass_core::keyring::store_quick_unlock(&reset) {
-                        log::warn!("could not reset PIN attempt counter: {error}");
-                    }
-                }
-                if keyring_quick_unlock.is_none() {
-                    if let Some(prefs) = legacy_quick_unlock.as_ref() {
-                        match ashypass_core::keyring::store_quick_unlock(prefs) {
-                            Ok(()) => {
-                                loaded_settings.quick_unlock = None;
-                                if let Err(error) = loaded_settings.save() {
-                                    log::warn!(
-                                        "could not clear migrated quick-unlock settings: {error}"
-                                    );
-                                }
+        let worker_pin = pin.clone();
+        let worker_prefs = prefs.clone();
+        let weak = Rc::downgrade(self);
+        crate::ui::settings_dialog::run_background_task(
+            move || ashypass_core::db::derive_quick_unlock_key(&worker_pin, &worker_prefs),
+            move |derived| {
+                let Some(inner) = weak.upgrade() else { return };
+                inner.set_busy(false);
+                match derived {
+                    Ok((key, upgraded)) => {
+                        let installed =
+                            inner.state.vault.borrow_mut().install_quick_unlock_key(key);
+                        match installed {
+                            Ok(()) => inner.after_pin_success(&prefs, from_keyring, upgraded),
+                            Err(ashypass_core::Error::KeyMismatch) => inner.pin_stale(),
+                            Err(e) => {
+                                log::warn!("quick unlock failed: {e}");
+                                inner.pin_unusable();
                             }
-                            Err(error) => log::warn!(
-                                "could not migrate quick-unlock state to keyring: {error}"
-                            ),
                         }
                     }
-                }
-                self.finish_unlock();
-            }
-            Err(ashypass_core::Error::InvalidMasterPassword) => {
-                self.secret_entry.set_text("");
-                // Persisted PIN state has no rate limit of its own, so count
-                // wrong attempts and destroy it once the budget is spent.
-                match persistent_quick_unlock.cloned() {
-                    Some(prefs) => {
-                        let remaining = self.record_failed_pin_attempt(prefs);
+                    Err(ashypass_core::Error::InvalidMasterPassword) => {
+                        inner.secret_entry.set_text("");
+                        // Persisted PIN state has no rate limit of its own, so
+                        // count wrong attempts and destroy it at the limit.
+                        let remaining = inner.record_failed_pin_attempt(prefs);
                         if remaining == 0 {
-                            self.prefer_password.set(true);
-                            self.refresh();
-                            self.show_error(tr!(
+                            inner.prefer_password.set(true);
+                            inner.refresh();
+                            inner.show_error(tr!(
                                 "Too many incorrect PINs. Quick unlock was turned off — use your master password."
                             ));
                         } else {
-                            self.show_error(
+                            inner.show_error(
                                 &crate::trn!(
                                     "Incorrect PIN. {} attempt left.",
                                     "Incorrect PIN. {} attempts left.",
@@ -642,20 +658,105 @@ impl Inner {
                                 .replace("{}", &remaining.to_string()),
                             );
                         }
+                        inner.focus();
                     }
-                    None => self.show_error(tr!("Incorrect PIN")),
+                    Err(e) => {
+                        log::warn!("quick unlock failed: {e}");
+                        inner.pin_unusable();
+                    }
                 }
-                self.focus();
+            },
+        );
+    }
+
+    /// The persisted PIN record and whether it came from the keyring (as
+    /// opposed to the legacy settings file).
+    fn persistent_record(&self) -> Option<(ashypass_core::settings::QuickUnlockPrefs, bool)> {
+        let keyring = ashypass_core::keyring::load_quick_unlock()
+            .map_err(|error| log::warn!("quick-unlock keyring read failed: {error}"))
+            .ok()
+            .flatten()
+            .filter(|p| p.is_configured());
+        if let Some(prefs) = keyring {
+            return Some((prefs, true));
+        }
+        self.state
+            .settings()
+            .quick_unlock
+            .clone()
+            .filter(|p| p.is_configured())
+            .map(|p| (p, false))
+    }
+
+    fn after_pin_success(
+        &self,
+        used: &ashypass_core::settings::QuickUnlockPrefs,
+        from_keyring: bool,
+        upgraded: Option<ashypass_core::settings::QuickUnlockPrefs>,
+    ) {
+        // Save the record in its current format (without the old PIN hash)
+        // and in the keyring, and reset the failure counter.
+        let to_store = match upgraded {
+            Some(new) => Some(new),
+            None if used.failed_attempts > 0 || !from_keyring => {
+                let mut reset = used.clone();
+                reset.failed_attempts = 0;
+                Some(reset)
             }
-            Err(e) => {
-                log::warn!("quick unlock failed: {e}");
-                self.state.vault.borrow_mut().disable_quick_unlock();
-                self.prefer_password.set(true);
-                self.refresh();
-                self.show_error(tr!(
-                    "The PIN could not be used on this computer. Use your master password."
-                ));
+            None => None,
+        };
+        if let Some(record) = to_store {
+            match ashypass_core::keyring::store_quick_unlock(&record) {
+                Ok(()) => {
+                    if !from_keyring {
+                        if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
+                            log::warn!("could not clear migrated quick-unlock settings: {error}");
+                        }
+                    }
+                }
+                Err(error) => {
+                    log::warn!("could not store quick-unlock state in the keyring: {error}");
+                    if !from_keyring {
+                        if let Err(error) = self
+                            .state
+                            .update_settings(|s| s.quick_unlock = Some(record))
+                        {
+                            log::warn!("could not update quick-unlock settings: {error}");
+                        }
+                    }
+                }
             }
+        }
+        self.finish_unlock();
+    }
+
+    /// The saved PIN opens a key that no longer matches this vault (master
+    /// password changed elsewhere, vault restored). Forget it.
+    fn pin_stale(&self) {
+        self.forget_pin();
+        self.prefer_password.set(true);
+        self.refresh();
+        self.show_error(tr!(
+            "The PIN saved on this computer no longer matches the vault, so it was turned off. Use your master password and set the PIN up again in Settings."
+        ));
+    }
+
+    fn pin_unusable(&self) {
+        self.state.vault.borrow_mut().disable_quick_unlock();
+        self.prefer_password.set(true);
+        self.refresh();
+        self.show_error(tr!(
+            "The PIN could not be used on this computer. Use your master password."
+        ));
+    }
+
+    fn forget_pin(&self) {
+        self.state.vault.borrow_mut().disable_quick_unlock();
+        if let Err(error) = ashypass_core::keyring::delete_quick_unlock() {
+            log::warn!("could not clear quick-unlock keyring item: {error}");
+        }
+        if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
+            log::warn!("could not clear quick-unlock settings: {error}");
         }
     }
 

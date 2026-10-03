@@ -125,6 +125,7 @@ impl PasswordListCache {
 }
 
 type Callback = Box<dyn Fn()>;
+type RowAction = Box<dyn Fn(&Rc<Inner>, Rc<PasswordEntry>)>;
 
 pub struct VaultView {
     pub root: adw::NavigationSplitView,
@@ -513,7 +514,7 @@ fn setup_factory(inner: &Rc<Inner>, factory: &gtk::SignalListItemFactory) {
         // recycled, so nothing about the entry may be captured here.
         let group = gio::SimpleActionGroup::new();
         let item_weak = item.downgrade();
-        let add = |name: &str, run: Box<dyn Fn(&Rc<Inner>, Rc<PasswordEntry>)>| {
+        let add = |name: &str, run: RowAction| {
             let action = gio::SimpleAction::new(name, None);
             let weak = weak.clone();
             let item_weak = item_weak.clone();
