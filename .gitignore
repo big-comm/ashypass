@@ -43,6 +43,8 @@ htmlcov/
 
 # Application Data
 *.db
+# Test fixtures are versioned on purpose (a vault written by an older release).
+!crates/ashypass-core/tests/fixtures/**/*.db
 *.sqlite
 *.sqlite3
 *.log
