@@ -537,7 +537,7 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
     group.add(&status_row);
 
     let pin_row = adw::PasswordEntryRow::builder()
-        .title(tr!("New PIN (at least 6 characters)"))
+        .title(tr!("New PIN (at least 4 characters)"))
         .sensitive(unlocked)
         .build();
     group.add(&pin_row);
@@ -592,7 +592,7 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
                 }
                 Err(ashypass_core::Error::Locked) => notify(tr!("Unlock the vault first")),
                 Err(ashypass_core::Error::InvalidInput(_)) => {
-                    notify(tr!("The PIN must have at least 6 characters"))
+                    notify(tr!("The PIN must have at least 4 characters"))
                 }
                 Err(e) => notify(&format!("{}: {e}", tr!("The PIN was not set"))),
             }

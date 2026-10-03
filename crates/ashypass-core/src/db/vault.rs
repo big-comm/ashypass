@@ -24,6 +24,10 @@ use std::rc::Rc;
 use std::time::Duration;
 use zeroize::Zeroize;
 
+/// Shortest PIN accepted for quick unlock. The PIN only gates a key kept in
+/// the system keyring and is wiped after a few wrong attempts.
+pub const MIN_QUICK_UNLOCK_PIN_LENGTH: usize = 4;
+
 #[path = "vault_folders.rs"]
 mod folders;
 
@@ -752,13 +756,13 @@ impl Vault {
     }
 
     /// Configure quick-unlock for the current session. Requires an unlocked
-    /// vault. New PINs must contain at least 6 characters. The derived key is cached
+    /// vault. New PINs must contain at least `MIN_QUICK_UNLOCK_PIN_LENGTH` characters. The derived key is cached
     /// in memory; on session lock it can be restored with `quick_unlock(pin)`.
     pub fn enable_quick_unlock(&mut self, pin: &str) -> Result<()> {
-        if pin.chars().count() < 6 {
-            return Err(Error::InvalidInput(
-                "PIN must contain at least 6 characters".into(),
-            ));
+        if pin.chars().count() < MIN_QUICK_UNLOCK_PIN_LENGTH {
+            return Err(Error::InvalidInput(format!(
+                "PIN must contain at least {MIN_QUICK_UNLOCK_PIN_LENGTH} characters"
+            )));
         }
         let key = self.key.clone().ok_or(Error::Locked)?;
         self.quick_pin_hash = Some(argon2_kdf::hash_session_secret(pin)?);
@@ -2172,6 +2176,21 @@ mod tests {
         let mut vault = Vault::open(path).unwrap();
         vault.set_master_password("master password here").unwrap();
         vault
+    }
+
+    #[test]
+    fn pins_need_at_least_four_characters() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        assert!(matches!(
+            vault.enable_persistent_quick_unlock("123"),
+            Err(Error::InvalidInput(_))
+        ));
+        let prefs = vault.enable_persistent_quick_unlock("1234").unwrap();
+        vault.lock();
+        vault
+            .quick_unlock_persistent_upgrading("1234", &prefs)
+            .unwrap();
     }
 
     #[test]
