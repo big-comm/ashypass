@@ -2998,3 +2998,34 @@ mod tests {
         assert_eq!(vault.list(None).unwrap()[0].last_accessed, touched);
     }
 }
+
+// -----------------------------------------------------------------
+// Import / sync helpers
+// -----------------------------------------------------------------
+
+#[allow(clippy::items_after_test_module)]
+impl Vault {
+    /// Record `password` as a previous password of `entry_id` without
+    /// changing the current one. Used by importers (password history from
+    /// other managers) and by sync before a conflict overwrites a password.
+    /// Empty passwords are ignored.
+    pub fn append_password_history(
+        &self,
+        entry_id: i64,
+        password: &str,
+        changed_at: Option<i64>,
+    ) -> Result<()> {
+        if password.is_empty() {
+            return Ok(());
+        }
+        let blob = self.encrypt(password)?;
+        let changed_at = changed_at.unwrap_or_else(|| chrono::Utc::now().timestamp());
+        self.conn.execute(
+            "INSERT INTO passwords_history (entry_id, password_encrypted, changed_at)
+             VALUES (?, ?, ?)",
+            params![entry_id, blob, changed_at],
+        )?;
+        self.notify_change();
+        Ok(())
+    }
+}

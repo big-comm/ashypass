@@ -35,12 +35,45 @@
 //!   the hundreds of entries; for thousands you'd want a `since` cursor —
 //!   v2.0 of the API supports that.
 
-use crate::db::vault::{NewEntry, NextcloudFolderMapping, NextcloudMapping, UpdateEntry, Vault};
+use crate::db::vault::{
+    NewEntry, NextcloudFolderMapping, NextcloudMapping, PasswordEntry, UpdateEntry, Vault,
+};
 use crate::sync::nextcloud_passwords::{
     NcCreateOrUpdate, NcFolder, NcFolderCreate, NcPassword, NextcloudPasswordsClient,
 };
 use crate::Result;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+use std::sync::atomic::{AtomicBool, Ordering};
+
+/// UUID of the Nextcloud Passwords base (root) folder.
+const BASE_FOLDER_UUID: &str = "00000000-0000-0000-0000-000000000000";
+
+/// Process-wide flag: two reconciles running at once (auto-sync plus a manual
+/// "Sync now") would both push the same local-only entries and duplicate
+/// them remotely, or race on the mapping table.
+static SYNC_RUNNING: AtomicBool = AtomicBool::new(false);
+
+struct SyncGuard;
+
+impl SyncGuard {
+    fn acquire() -> Result<Self> {
+        SYNC_RUNNING
+            .compare_exchange(false, true, Ordering::AcqRel, Ordering::Acquire)
+            .map(|_| SyncGuard)
+            .map_err(|_| crate::Error::Other("sync already running".into()))
+    }
+}
+
+impl Drop for SyncGuard {
+    fn drop(&mut self) {
+        SYNC_RUNNING.store(false, Ordering::Release);
+    }
+}
+
+/// True while a Nextcloud reconcile is in progress in this process.
+pub fn is_sync_running() -> bool {
+    SYNC_RUNNING.load(Ordering::Acquire)
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum ConflictResolution {
@@ -122,6 +155,7 @@ pub fn sync_with_progress<F>(
 where
     F: FnMut(NextcloudSyncProgress),
 {
+    let _guard = SyncGuard::acquire()?;
     let mut report = SyncReport::default();
     progress(NextcloudSyncProgress::new(
         NextcloudSyncPhase::Preparing,
@@ -139,20 +173,20 @@ where
         0,
         tombstones.len(),
     ));
+    // Deletes that failed this round: their tombstone stays, and the remote
+    // copy must not be pulled back in as a "new" remote item in step 4.
+    let mut pending_deletes: HashSet<String> = HashSet::new();
     for (idx, uuid) in tombstones.iter().enumerate() {
-        match client.delete(uuid) {
-            Ok(()) => {
+        match client.delete_if_exists(uuid) {
+            Ok(true) => {
                 report.stats.deleted_remotely += 1;
                 vault.nc_clear_tombstone(uuid)?;
             }
+            // HTTP 404 — the resource is already gone.
+            Ok(false) => vault.nc_clear_tombstone(uuid)?,
             Err(e) => {
-                // 404 is fine — the resource is already gone.
-                let msg = e.to_string();
-                if msg.contains("404") {
-                    vault.nc_clear_tombstone(uuid)?;
-                } else {
-                    report.stats.errors.push(format!("delete {uuid}: {msg}"));
-                }
+                report.stats.errors.push(format!("delete {uuid}: {e}"));
+                pending_deletes.insert(uuid.clone());
             }
         }
         progress(NextcloudSyncProgress::new(
@@ -192,6 +226,8 @@ where
             mapped_uuids.len()
         )));
     }
+
+    drop_pending_deletes(&mut remote_by_uuid, &pending_deletes);
 
     // Mirror local empty folders too. Entry sync below also calls this for
     // every categorized password, but that would miss folders with no entries.
@@ -331,21 +367,18 @@ where
                     }
                 };
                 let local_changed = local_full.updated_at > map.local_updated_at_snapshot;
-                let remote_changed = remote.edited > map.remote_edited_snapshot
-                    || remote.revision != map.remote_revision_snapshot;
-                let remote_category = folders.local_category_for_remote_uuid(&remote.folder)?;
+                let remote_changed = remote_changed(&map, &remote);
+                let remote_category = resolve_category(
+                    local_full.category.as_deref(),
+                    &folders.local_category_for_remote_uuid(&remote.folder)?,
+                );
                 let category_changed =
                     !same_category(local_full.category.as_deref(), remote_category.as_deref());
 
                 match (local_changed, remote_changed) {
                     (false, false) => {
                         if category_changed
-                            && apply_remote_to_local(
-                                vault,
-                                local_full.id,
-                                &remote,
-                                remote_category,
-                            )?
+                            && apply_remote_to_local(vault, &local_full, &remote, remote_category)?
                         {
                             update_mapping_after_pull(vault, local_full.id, &remote, &map)?;
                             report.stats.updated_locally += 1;
@@ -387,7 +420,7 @@ where
                         }
                     }
                     (false, true) => {
-                        if apply_remote_to_local(vault, local_full.id, &remote, remote_category)? {
+                        if apply_remote_to_local(vault, &local_full, &remote, remote_category)? {
                             update_mapping_after_pull(vault, local_full.id, &remote, &map)?;
                             report.stats.updated_locally += 1;
                         }
@@ -416,6 +449,15 @@ where
                                     )?,
                                 );
                                 payload.id = Some(map.nc_uuid.clone());
+                                // The remote password is about to be
+                                // overwritten: keep it in the local history.
+                                if remote.password != local_full.password.as_deref().unwrap_or("") {
+                                    vault.append_password_history(
+                                        local_full.id,
+                                        &remote.password,
+                                        Some(remote.edited).filter(|t| *t > 0),
+                                    )?;
+                                }
                                 match client.update(&payload) {
                                     Ok(updated) => {
                                         let new_map = NextcloudMapping {
@@ -436,9 +478,11 @@ where
                                 }
                             }
                             _ => {
+                                // `Vault::update` moves the losing local
+                                // password into the password history.
                                 if apply_remote_to_local(
                                     vault,
-                                    local_full.id,
+                                    &local_full,
                                     &remote,
                                     remote_category,
                                 )? {
@@ -469,7 +513,10 @@ where
         remote_remaining,
     ));
     for (idx, (uuid, remote)) in remote_by_uuid.into_iter().enumerate() {
-        let category = folders.local_category_for_remote_uuid(&remote.folder)?;
+        let category = resolve_category(
+            None,
+            &folders.local_category_for_remote_uuid(&remote.folder)?,
+        );
         let new_entry = NewEntry {
             title: remote.label.clone(),
             username: empty_to_none(&remote.username),
@@ -603,18 +650,20 @@ impl<'a> FolderResolver<'a> {
         Ok(folder.id)
     }
 
-    fn local_category_for_remote_uuid(&mut self, uuid: &str) -> Result<Option<String>> {
-        if uuid.trim().is_empty() {
-            return Ok(None);
+    fn local_category_for_remote_uuid(&mut self, uuid: &str) -> Result<RemoteFolder> {
+        let uuid = uuid.trim();
+        if uuid.is_empty() || uuid == BASE_FOLDER_UUID {
+            return Ok(RemoteFolder::Root);
         }
         if let Some(mapping) = self.vault.nc_folder_mapping_for_uuid(uuid)? {
-            return Ok(Some(mapping.local_name));
+            return Ok(RemoteFolder::Known(mapping.local_name));
         }
         let Some(folder) = self.remote_by_uuid.get(uuid).cloned() else {
-            return Ok(None);
+            // Trashed, hidden, or otherwise unknown remote folder.
+            return Ok(RemoteFolder::Unresolvable);
         };
         self.upsert_local_mapping(&folder.label, &folder)?;
-        Ok(Some(folder.label))
+        Ok(RemoteFolder::Known(folder.label))
     }
 
     fn upsert_local_mapping(&self, local_name: &str, folder: &NcFolder) -> Result<()> {
@@ -630,27 +679,71 @@ impl<'a> FolderResolver<'a> {
     }
 }
 
+/// Where a remote password's folder maps locally.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum RemoteFolder {
+    /// No folder / the base folder.
+    Root,
+    Known(String),
+    /// A folder we cannot see (trashed, hidden, deleted).
+    Unresolvable,
+}
+
+/// Category to apply locally. An unresolvable remote folder keeps the local
+/// category instead of clearing it.
+fn resolve_category(local: Option<&str>, remote: &RemoteFolder) -> Option<String> {
+    match remote {
+        RemoteFolder::Root => None,
+        RemoteFolder::Known(name) => Some(name.clone()),
+        RemoteFolder::Unresolvable => local.map(ToOwned::to_owned),
+    }
+}
+
+/// Whether the remote item changed since the last sync. The revision UUID
+/// changes on every server-side edit, so it is authoritative when known;
+/// `edited` is only a fallback (shallow create/update responses report
+/// `edited = 0`, which would otherwise look like a change on the next sync).
+fn remote_changed(map: &NextcloudMapping, remote: &NcPassword) -> bool {
+    if !map.remote_revision_snapshot.is_empty() && !remote.revision.is_empty() {
+        remote.revision != map.remote_revision_snapshot
+    } else {
+        remote.edited > map.remote_edited_snapshot
+    }
+}
+
+fn drop_pending_deletes<V>(remote: &mut HashMap<String, V>, pending: &HashSet<String>) {
+    remote.retain(|uuid, _| !pending.contains(uuid));
+}
+
+/// Build the local update for a remote item. The password is only touched
+/// when the remote has a different, non-empty one: an empty remote password
+/// never wipes the local secret, and an unchanged one does not add a
+/// duplicate history row.
+fn remote_update(local: &PasswordEntry, r: &NcPassword, category: Option<String>) -> UpdateEntry {
+    let local_password = local.password.as_deref().unwrap_or_default();
+    UpdateEntry {
+        title: Some(r.label.clone()),
+        username: Some(empty_to_none(&r.username).unwrap_or_default()),
+        password: (!r.password.is_empty() && r.password != local_password)
+            .then(|| r.password.clone()),
+        url: Some(empty_to_none(&r.url)),
+        notes: Some(empty_to_none(&r.notes)),
+        category: Some(category),
+        ..Default::default()
+    }
+}
+
+/// Apply a remote item to the local entry. Returns true when the mapping
+/// should be advanced to the remote state (also for empty-password remote
+/// items, which would otherwise be re-applied on every sync).
 fn apply_remote_to_local(
     vault: &Vault,
-    entry_id: i64,
+    local: &PasswordEntry,
     r: &NcPassword,
     category: Option<String>,
 ) -> Result<bool> {
-    // Only carry text fields. Passwords without a non-empty password value
-    // would violate the not-null constraint, so guard against that.
-    if r.password.is_empty() {
-        return Ok(false);
-    }
-    let change = UpdateEntry {
-        title: Some(r.label.clone()),
-        username: Some(empty_to_none(&r.username).unwrap_or_default()),
-        password: Some(r.password.clone()),
-        url: Some(empty_to_none(&r.url).map(|s| s.to_string())),
-        notes: Some(empty_to_none(&r.notes).map(|s| s.to_string())),
-        category: Some(category),
-        ..Default::default()
-    };
-    vault.update(entry_id, change)
+    vault.update(local.id, remote_update(local, r, category))?;
+    Ok(true)
 }
 
 fn update_mapping_after_pull(
@@ -764,6 +857,132 @@ mod tests {
         remote.insert("b".into(), ());
         assert!(!all_mappings_vanished(&mapped, &remote));
         assert!(!all_mappings_vanished(&[], &HashMap::<String, ()>::new()));
+    }
+
+    fn mapping(revision: &str, edited: i64) -> NextcloudMapping {
+        NextcloudMapping {
+            entry_id: 1,
+            nc_uuid: "u".into(),
+            last_synced_at: 0,
+            local_updated_at_snapshot: 0,
+            remote_edited_snapshot: edited,
+            remote_revision_snapshot: revision.into(),
+        }
+    }
+
+    fn remote(revision: &str, edited: i64, password: &str) -> NcPassword {
+        NcPassword {
+            id: "u".into(),
+            label: "Remote".into(),
+            password: password.into(),
+            revision: revision.into(),
+            edited,
+            ..Default::default()
+        }
+    }
+
+    fn local_entry(password: &str, category: Option<&str>) -> PasswordEntry {
+        PasswordEntry {
+            id: 1,
+            title: "Local".into(),
+            username: None,
+            url: None,
+            password: Some(password.into()),
+            notes: None,
+            totp_secret: None,
+            totp_algorithm: "SHA1".into(),
+            totp_digits: 6,
+            totp_period: 30,
+            has_totp: false,
+            category: category.map(Into::into),
+            favorite: false,
+            created_at: 0,
+            updated_at: 0,
+            last_accessed: None,
+        }
+    }
+
+    #[test]
+    fn shallow_snapshot_with_zero_edited_is_not_a_phantom_change() {
+        // After a shallow create response we stored revision r1, edited 0.
+        let map = mapping("r1", 0);
+        assert!(!remote_changed(&map, &remote("r1", 1_700_000_000, "p")));
+        assert!(remote_changed(&map, &remote("r2", 1_700_000_000, "p")));
+        // Without a revision, fall back to the timestamp.
+        let legacy = mapping("", 100);
+        assert!(!remote_changed(&legacy, &remote("", 100, "p")));
+        assert!(remote_changed(&legacy, &remote("", 101, "p")));
+    }
+
+    #[test]
+    fn unresolvable_remote_folder_keeps_local_category() {
+        assert_eq!(
+            resolve_category(Some("Work"), &RemoteFolder::Unresolvable),
+            Some("Work".into())
+        );
+        assert_eq!(resolve_category(Some("Work"), &RemoteFolder::Root), None);
+        assert_eq!(
+            resolve_category(None, &RemoteFolder::Known("Home".into())),
+            Some("Home".into())
+        );
+        assert_eq!(resolve_category(None, &RemoteFolder::Unresolvable), None);
+    }
+
+    #[test]
+    fn failed_remote_deletes_are_not_pulled_back() {
+        let mut remote_items: HashMap<String, ()> =
+            [("gone".to_string(), ()), ("keep".to_string(), ())].into();
+        let pending: HashSet<String> = ["gone".to_string()].into();
+        drop_pending_deletes(&mut remote_items, &pending);
+        assert!(!remote_items.contains_key("gone"));
+        assert!(remote_items.contains_key("keep"));
+    }
+
+    #[test]
+    fn remote_update_never_wipes_or_duplicates_passwords() {
+        let local = local_entry("secret", Some("Work"));
+        let empty = remote_update(&local, &remote("r", 1, ""), Some("Work".into()));
+        assert_eq!(empty.password, None);
+        assert_eq!(empty.title.as_deref(), Some("Remote"));
+        let same = remote_update(&local, &remote("r", 1, "secret"), None);
+        assert_eq!(same.password, None);
+        let changed = remote_update(&local, &remote("r", 1, "new"), None);
+        assert_eq!(changed.password.as_deref(), Some("new"));
+    }
+
+    #[test]
+    fn empty_remote_password_advances_mapping_and_keeps_local_secret() {
+        let (_directory, vault) = crate::importers::report::tests::test_vault();
+        let id = vault
+            .add(NewEntry {
+                title: "Local".into(),
+                password: "secret".into(),
+                ..NewEntry::default()
+            })
+            .unwrap();
+        let local = vault.get_without_touch(id).unwrap().unwrap();
+        assert!(apply_remote_to_local(&vault, &local, &remote("r", 1, ""), None).unwrap());
+        let after = vault.get_without_touch(id).unwrap().unwrap();
+        assert_eq!(after.password.as_deref(), Some("secret"));
+        assert_eq!(after.title, "Remote");
+        assert!(vault.password_history(id).unwrap().is_empty());
+
+        // A winning remote password moves the local one into history.
+        apply_remote_to_local(&vault, &after, &remote("r2", 2, "remote-pw"), None).unwrap();
+        let history = vault.password_history(id).unwrap();
+        assert_eq!(history.len(), 1);
+        assert_eq!(history[0].password, "secret");
+    }
+
+    #[test]
+    fn only_one_sync_runs_at_a_time() {
+        let first = SyncGuard::acquire().unwrap();
+        assert!(is_sync_running());
+        let error = SyncGuard::acquire().err().unwrap();
+        assert!(error.to_string().contains("sync already running"));
+        drop(first);
+        assert!(!is_sync_running());
+        drop(SyncGuard::acquire().unwrap());
     }
 
     #[test]

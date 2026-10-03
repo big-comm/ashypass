@@ -6,6 +6,13 @@
 //!  3. Open the auth URL in the default browser.
 //!  4. Block on the listener until Google redirects back with `?code=...`.
 //!  5. Exchange the code for an access + refresh token at the token endpoint.
+//!
+//! The refresh token and the OAuth client secret are kept in the system
+//! keyring (Secret Service) when one is available; the JSON files then only
+//! hold non-secret metadata. Without a keyring the 0600 JSON files keep the
+//! secrets as before, so a sign-in is never lost. Files written by older
+//! versions are migrated on load: the secrets are copied to the keyring,
+//! read back, and only then removed from the JSON.
 
 use crate::config::{atomic_write_private, config_dir, ensure_private_file, token_file};
 use crate::{Error, Result};
@@ -15,7 +22,8 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::fs;
 use std::io::{BufRead, BufReader, Write};
-use std::net::TcpListener;
+use std::net::{TcpListener, TcpStream};
+use std::path::Path;
 use std::time::{Duration, Instant};
 
 pub const GOOGLE_AUTH_URL: &str = "https://accounts.google.com/o/oauth2/v2/auth";
@@ -39,28 +47,196 @@ impl Token {
     }
 
     pub fn load() -> Option<Self> {
-        let path = token_file();
-        let _ = ensure_private_file(&path);
-        let text = fs::read_to_string(&path).ok()?;
-        let mut token: Self = serde_json::from_str(&text).ok()?;
-        token.token_uri = GOOGLE_TOKEN_URL.to_string();
-        Some(token)
+        load_token(&token_file(), &SystemKeyring)
     }
 
     pub fn save(&self) -> Result<()> {
-        let path = token_file();
-        let json = serde_json::to_string_pretty(self)?;
-        atomic_write_private(&path, json.as_bytes())?;
-        Ok(())
+        save_token(&token_file(), self, &SystemKeyring)
     }
 
     pub fn delete() -> Result<()> {
-        let path = token_file();
-        if path.exists() {
-            fs::remove_file(&path)?;
-        }
-        Ok(())
+        delete_token(&token_file(), &SystemKeyring)
     }
+}
+
+const TOKEN_SECRET_KIND: &str = "google-oauth-token";
+const TOKEN_SECRET_LABEL: &str = "Ashy Pass — Google Drive sign-in";
+const CLIENT_SECRET_KIND: &str = "google-oauth-client-secret";
+const CLIENT_SECRET_LABEL: &str = "Ashy Pass — Google OAuth client secret";
+
+/// Minimal secret storage interface so the migration logic can be tested
+/// without touching the user's real keyring.
+pub(crate) trait SecretStore {
+    fn load(&self, kind: &'static str) -> Result<Option<String>>;
+    fn store(&self, kind: &'static str, label: &str, secret: &str) -> Result<()>;
+    fn delete(&self, kind: &'static str) -> Result<()>;
+}
+
+struct SystemKeyring;
+
+impl SecretStore for SystemKeyring {
+    fn load(&self, kind: &'static str) -> Result<Option<String>> {
+        crate::keyring::load_named_secret(kind)
+    }
+    fn store(&self, kind: &'static str, label: &str, secret: &str) -> Result<()> {
+        crate::keyring::store_named_secret(kind, label, secret)
+    }
+    fn delete(&self, kind: &'static str) -> Result<()> {
+        crate::keyring::delete_named_secret(kind)
+    }
+}
+
+/// Write `secret` to the store unless it is already there, then read it back:
+/// callers only drop the plaintext copy after this succeeds.
+fn persist_secret(
+    store: &dyn SecretStore,
+    kind: &'static str,
+    label: &str,
+    secret: &str,
+) -> Result<()> {
+    if store.load(kind).ok().flatten().as_deref() == Some(secret) {
+        return Ok(());
+    }
+    store.store(kind, label, secret)?;
+    match store.load(kind)? {
+        Some(stored) if stored == secret => Ok(()),
+        _ => Err(Error::Other("keyring did not keep the secret".into())),
+    }
+}
+
+/// On-disk token layout. Secrets are `None` when `secrets_in_keyring`.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct StoredToken {
+    access_token: String,
+    #[serde(default)]
+    refresh_token: Option<String>,
+    #[serde(default)]
+    token_uri: String,
+    client_id: String,
+    #[serde(default)]
+    client_secret: Option<String>,
+    #[serde(default)]
+    scopes: Vec<String>,
+    expires_at: i64,
+    #[serde(default)]
+    secrets_in_keyring: bool,
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+struct TokenSecrets {
+    refresh_token: Option<String>,
+    client_secret: Option<String>,
+}
+
+impl TokenSecrets {
+    fn is_empty(&self) -> bool {
+        self.refresh_token.is_none() && self.client_secret.is_none()
+    }
+}
+
+fn write_stored_token(path: &Path, stored: &StoredToken) -> Result<()> {
+    let json = serde_json::to_string_pretty(stored)?;
+    atomic_write_private(path, json.as_bytes())?;
+    Ok(())
+}
+
+pub(crate) fn load_token(path: &Path, store: &dyn SecretStore) -> Option<Token> {
+    let _ = ensure_private_file(path);
+    let text = fs::read_to_string(path).ok()?;
+    let stored: StoredToken = serde_json::from_str(&text).ok()?;
+    let mut token = Token {
+        access_token: stored.access_token.clone(),
+        refresh_token: stored.refresh_token.clone(),
+        token_uri: GOOGLE_TOKEN_URL.to_string(),
+        client_id: stored.client_id.clone(),
+        client_secret: stored.client_secret.clone(),
+        scopes: stored.scopes.clone(),
+        expires_at: stored.expires_at,
+    };
+    if stored.secrets_in_keyring {
+        match store.load(TOKEN_SECRET_KIND) {
+            Ok(Some(json)) => match serde_json::from_str::<TokenSecrets>(&json) {
+                Ok(secrets) => {
+                    token.refresh_token = token.refresh_token.or(secrets.refresh_token);
+                    token.client_secret = token.client_secret.or(secrets.client_secret);
+                }
+                Err(error) => log::warn!("google sign-in secrets in keyring are invalid: {error}"),
+            },
+            Ok(None) => log::warn!("google sign-in secrets are missing from the keyring"),
+            Err(error) => log::warn!("google sign-in secrets unavailable from keyring: {error}"),
+        }
+        return Some(token);
+    }
+
+    // Legacy plaintext file: move the secrets to the keyring, verify, and
+    // only then rewrite the file without them. Any failure keeps the file
+    // untouched so the sign-in keeps working.
+    let secrets = TokenSecrets {
+        refresh_token: stored.refresh_token.clone(),
+        client_secret: stored.client_secret.clone(),
+    };
+    if !secrets.is_empty() {
+        let migrated = serde_json::to_string(&secrets)
+            .map_err(Error::from)
+            .and_then(|json| persist_secret(store, TOKEN_SECRET_KIND, TOKEN_SECRET_LABEL, &json));
+        match migrated {
+            Ok(()) => {
+                let stripped = StoredToken {
+                    refresh_token: None,
+                    client_secret: None,
+                    secrets_in_keyring: true,
+                    ..stored
+                };
+                if let Err(error) = write_stored_token(path, &stripped) {
+                    log::warn!("could not remove google secrets from {path:?}: {error}");
+                }
+            }
+            Err(error) => log::warn!("keeping google sign-in in the 0600 file: {error}"),
+        }
+    }
+    Some(token)
+}
+
+pub(crate) fn save_token(path: &Path, token: &Token, store: &dyn SecretStore) -> Result<()> {
+    let secrets = TokenSecrets {
+        refresh_token: token.refresh_token.clone(),
+        client_secret: token.client_secret.clone(),
+    };
+    let in_keyring = !secrets.is_empty()
+        && serde_json::to_string(&secrets)
+            .map_err(Error::from)
+            .and_then(|json| persist_secret(store, TOKEN_SECRET_KIND, TOKEN_SECRET_LABEL, &json))
+            .map_err(|error| {
+                log::warn!("google keyring save failed; keeping chmod 0600 fallback: {error}")
+            })
+            .is_ok();
+    let stored = StoredToken {
+        access_token: token.access_token.clone(),
+        refresh_token: if in_keyring {
+            None
+        } else {
+            token.refresh_token.clone()
+        },
+        token_uri: GOOGLE_TOKEN_URL.to_string(),
+        client_id: token.client_id.clone(),
+        client_secret: if in_keyring {
+            None
+        } else {
+            token.client_secret.clone()
+        },
+        scopes: token.scopes.clone(),
+        expires_at: token.expires_at,
+        secrets_in_keyring: in_keyring,
+    };
+    write_stored_token(path, &stored)
+}
+
+pub(crate) fn delete_token(path: &Path, store: &dyn SecretStore) -> Result<()> {
+    if path.exists() {
+        fs::remove_file(path)?;
+    }
+    let _ = store.delete(TOKEN_SECRET_KIND);
+    Ok(())
 }
 
 /// Per-installation OAuth client identity. For a desktop loopback client,
@@ -95,23 +271,91 @@ impl ClientCredentials {
     }
 
     pub fn save(&self) -> Result<()> {
-        let path = credentials_file();
-        let json = serde_json::to_string_pretty(self)?;
-        atomic_write_private(&path, json.as_bytes())?;
-        Ok(())
+        save_credentials(&credentials_file(), self, &SystemKeyring)
     }
 
     fn from_file() -> Option<Self> {
-        let path = credentials_file();
-        let _ = ensure_private_file(&path);
-        let text = fs::read_to_string(path).ok()?;
-        let creds: Self = serde_json::from_str(&text).ok()?;
-        if creds.client_id.trim().is_empty() {
-            None
-        } else {
-            Some(creds)
+        load_credentials(&credentials_file(), &SystemKeyring)
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct StoredCredentials {
+    client_id: String,
+    #[serde(default)]
+    client_secret: Option<String>,
+    #[serde(default)]
+    secret_in_keyring: bool,
+}
+
+fn write_stored_credentials(path: &Path, stored: &StoredCredentials) -> Result<()> {
+    let json = serde_json::to_string_pretty(stored)?;
+    atomic_write_private(path, json.as_bytes())?;
+    Ok(())
+}
+
+pub(crate) fn load_credentials(path: &Path, store: &dyn SecretStore) -> Option<ClientCredentials> {
+    let _ = ensure_private_file(path);
+    let text = fs::read_to_string(path).ok()?;
+    let stored: StoredCredentials = serde_json::from_str(&text).ok()?;
+    if stored.client_id.trim().is_empty() {
+        return None;
+    }
+    let mut creds = ClientCredentials {
+        client_id: stored.client_id.clone(),
+        client_secret: stored.client_secret.clone(),
+    };
+    if stored.secret_in_keyring {
+        if creds.client_secret.is_none() {
+            match store.load(CLIENT_SECRET_KIND) {
+                Ok(secret) => creds.client_secret = secret,
+                Err(error) => log::warn!("google client secret unavailable from keyring: {error}"),
+            }
+        }
+    } else if let Some(secret) = stored.client_secret.as_deref() {
+        match persist_secret(store, CLIENT_SECRET_KIND, CLIENT_SECRET_LABEL, secret) {
+            Ok(()) => {
+                let stripped = StoredCredentials {
+                    client_secret: None,
+                    secret_in_keyring: true,
+                    ..stored
+                };
+                if let Err(error) = write_stored_credentials(path, &stripped) {
+                    log::warn!("could not remove google client secret from {path:?}: {error}");
+                }
+            }
+            Err(error) => log::warn!("keeping google client secret in the 0600 file: {error}"),
         }
     }
+    Some(creds)
+}
+
+pub(crate) fn save_credentials(
+    path: &Path,
+    creds: &ClientCredentials,
+    store: &dyn SecretStore,
+) -> Result<()> {
+    let in_keyring = match creds.client_secret.as_deref().filter(|s| !s.is_empty()) {
+        Some(secret) => persist_secret(store, CLIENT_SECRET_KIND, CLIENT_SECRET_LABEL, secret)
+            .map_err(|error| {
+                log::warn!("google keyring save failed; keeping chmod 0600 fallback: {error}")
+            })
+            .is_ok(),
+        None => {
+            let _ = store.delete(CLIENT_SECRET_KIND);
+            false
+        }
+    };
+    let stored = StoredCredentials {
+        client_id: creds.client_id.clone(),
+        client_secret: if in_keyring {
+            None
+        } else {
+            creds.client_secret.clone()
+        },
+        secret_in_keyring: in_keyring,
+    };
+    write_stored_credentials(path, &stored)
 }
 
 fn credentials_file() -> std::path::PathBuf {
@@ -268,11 +512,31 @@ pub fn refresh(token: &mut Token) -> Result<()> {
     Ok(())
 }
 
+/// Wait for the browser redirect. Stray connections (favicon requests,
+/// port scanners, a request with a wrong `state`) are answered and ignored;
+/// only a request carrying the expected `state` ends the wait.
 fn wait_for_code(listener: &TcpListener, expected_state: &str) -> Result<String> {
-    let deadline = Instant::now() + Duration::from_secs(120);
-    let (mut stream, _) = loop {
+    wait_for_code_until(
+        listener,
+        expected_state,
+        Instant::now() + Duration::from_secs(120),
+    )
+}
+
+fn wait_for_code_until(
+    listener: &TcpListener,
+    expected_state: &str,
+    deadline: Instant,
+) -> Result<String> {
+    loop {
         match listener.accept() {
-            Ok(connection) => break connection,
+            Ok((stream, _)) => match handle_callback(stream, expected_state) {
+                Callback::Code(code) => return Ok(code),
+                Callback::Denied(error) => {
+                    return Err(Error::Other(format!("oauth callback: {error}")))
+                }
+                Callback::Ignored => {}
+            },
             Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
                 if Instant::now() >= deadline {
                     return Err(Error::Other("oauth callback timed out".into()));
@@ -281,64 +545,87 @@ fn wait_for_code(listener: &TcpListener, expected_state: &str) -> Result<String>
             }
             Err(error) => return Err(Error::Other(format!("accept: {error}"))),
         }
-    };
-    stream.set_read_timeout(Some(Duration::from_secs(5))).ok();
-
-    let mut reader = BufReader::new(
-        stream
-            .try_clone()
-            .map_err(|e| Error::Other(format!("clone: {e}")))?,
-    );
-    let first_line = read_bounded_line(&mut reader, 8_192)?;
-
-    // Drain headers
-    loop {
-        let line = read_bounded_line(&mut reader, 8_192)?;
-        if line.is_empty() || line == "\r\n" || line == "\n" {
-            break;
-        }
     }
+}
 
-    let body = b"HTTP/1.1 200 OK\r\n\
-        Content-Type: text/html; charset=utf-8\r\n\
-        Connection: close\r\n\r\n\
-        <!doctype html><html><body style='font-family:sans-serif;text-align:center;padding:3em'>\
-        <h2>Ashy Pass</h2><p>You can close this window and return to the app.</p>\
-        </body></html>";
-    let _ = stream.write_all(body);
-    let _ = stream.flush();
+#[derive(Debug, PartialEq, Eq)]
+enum Callback {
+    Code(String),
+    Denied(String),
+    Ignored,
+}
 
-    // first_line: "GET /?code=...&state=... HTTP/1.1"
-    let path = first_line
-        .split_whitespace()
-        .nth(1)
-        .ok_or_else(|| Error::Other("oauth callback: malformed request".into()))?;
-    let query = path.split_once('?').map(|(_, q)| q).unwrap_or("");
-
-    let mut code = None;
-    let mut err = None;
-    let mut returned_state = None;
-    for pair in query.split('&') {
-        if let Some((k, v)) = pair.split_once('=') {
-            let decoded = url::form_urlencoded::parse(format!("x={v}").as_bytes())
-                .next()
-                .map(|(_, v)| v.to_string())
-                .unwrap_or_default();
-            match k {
-                "code" => code = Some(decoded),
-                "error" => err = Some(decoded),
-                "state" => returned_state = Some(decoded),
-                _ => {}
+fn handle_callback(mut stream: TcpStream, expected_state: &str) -> Callback {
+    let _ = stream.set_nonblocking(false);
+    let _ = stream.set_read_timeout(Some(Duration::from_secs(5)));
+    let outcome = (|| {
+        let mut reader = BufReader::new(stream.try_clone().ok()?);
+        let first_line = read_bounded_line(&mut reader, 8_192).ok()?;
+        // Drain headers
+        loop {
+            let line = read_bounded_line(&mut reader, 8_192).ok()?;
+            if line.is_empty() || line == "\r\n" || line == "\n" {
+                break;
             }
         }
+        Some(parse_callback_line(&first_line, expected_state))
+    })()
+    .unwrap_or(Callback::Ignored);
+
+    let response: &[u8] = match outcome {
+        Callback::Code(_) => {
+            b"HTTP/1.1 200 OK\r\n\
+            Content-Type: text/html; charset=utf-8\r\n\
+            Connection: close\r\n\r\n\
+            <!doctype html><html><body style='font-family:sans-serif;text-align:center;padding:3em'>\
+            <h2>Ashy Pass</h2><p>You can close this window and return to the app.</p>\
+            </body></html>"
+        }
+        Callback::Denied(_) => {
+            b"HTTP/1.1 200 OK\r\n\
+            Content-Type: text/html; charset=utf-8\r\n\
+            Connection: close\r\n\r\n\
+            <!doctype html><html><body style='font-family:sans-serif;text-align:center;padding:3em'>\
+            <h2>Ashy Pass</h2><p>Sign-in was cancelled. You can close this window.</p>\
+            </body></html>"
+        }
+        Callback::Ignored => {
+            b"HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        }
+    };
+    let _ = stream.write_all(response);
+    let _ = stream.flush();
+    outcome
+}
+
+/// Interpret `GET /?code=...&state=... HTTP/1.1`. Anything without the
+/// expected state is ignored, including error responses.
+fn parse_callback_line(first_line: &str, expected_state: &str) -> Callback {
+    let Some(path) = first_line.split_whitespace().nth(1) else {
+        return Callback::Ignored;
+    };
+    let query = path.split_once('?').map(|(_, q)| q).unwrap_or("");
+    let mut code = None;
+    let mut error = None;
+    let mut state = None;
+    for (key, value) in url::form_urlencoded::parse(query.as_bytes()) {
+        match key.as_ref() {
+            "code" => code = Some(value.into_owned()),
+            "error" => error = Some(value.into_owned()),
+            "state" => state = Some(value.into_owned()),
+            _ => {}
+        }
     }
-    if let Some(e) = err {
-        return Err(Error::Other(format!("oauth callback: {e}")));
+    if state.as_deref() != Some(expected_state) {
+        return Callback::Ignored;
     }
-    if returned_state.as_deref() != Some(expected_state) {
-        return Err(Error::InvalidInput("oauth callback state mismatch".into()));
+    if let Some(error) = error {
+        return Callback::Denied(error);
     }
-    code.ok_or_else(|| Error::Other("oauth callback: no code".into()))
+    match code.filter(|c| !c.is_empty()) {
+        Some(code) => Callback::Code(code),
+        None => Callback::Ignored,
+    }
 }
 
 fn read_bounded_line(reader: &mut impl BufRead, maximum: usize) -> Result<String> {
@@ -388,6 +675,203 @@ mod tests {
             .0
             .bytes()
             .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'_')));
+    }
+
+    #[derive(Default)]
+    struct FakeStore {
+        items: std::cell::RefCell<std::collections::HashMap<&'static str, String>>,
+        unavailable: bool,
+    }
+
+    impl SecretStore for FakeStore {
+        fn load(&self, kind: &'static str) -> Result<Option<String>> {
+            if self.unavailable {
+                return Err(Error::Other("no keyring".into()));
+            }
+            Ok(self.items.borrow().get(kind).cloned())
+        }
+        fn store(&self, kind: &'static str, _label: &str, secret: &str) -> Result<()> {
+            if self.unavailable {
+                return Err(Error::Other("no keyring".into()));
+            }
+            self.items.borrow_mut().insert(kind, secret.to_string());
+            Ok(())
+        }
+        fn delete(&self, kind: &'static str) -> Result<()> {
+            self.items.borrow_mut().remove(kind);
+            Ok(())
+        }
+    }
+
+    const LEGACY_TOKEN: &str = r#"{
+      "access_token": "access",
+      "refresh_token": "refresh-secret",
+      "token_uri": "https://oauth2.googleapis.com/token",
+      "client_id": "client-id",
+      "client_secret": "client-secret",
+      "scopes": ["https://www.googleapis.com/auth/drive.file"],
+      "expires_at": 1700000000
+    }"#;
+
+    #[test]
+    fn legacy_token_migrates_to_keyring() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("token.json");
+        fs::write(&path, LEGACY_TOKEN).unwrap();
+        let store = FakeStore::default();
+
+        let token = load_token(&path, &store).unwrap();
+        assert_eq!(token.refresh_token.as_deref(), Some("refresh-secret"));
+        assert_eq!(token.client_secret.as_deref(), Some("client-secret"));
+        let on_disk = fs::read_to_string(&path).unwrap();
+        assert!(!on_disk.contains("refresh-secret"));
+        assert!(!on_disk.contains("client-secret"));
+        assert!(on_disk.contains("\"secrets_in_keyring\": true"));
+
+        // Reloading reads the secrets back from the keyring.
+        let again = load_token(&path, &store).unwrap();
+        assert_eq!(again.refresh_token.as_deref(), Some("refresh-secret"));
+        assert_eq!(again.client_secret.as_deref(), Some("client-secret"));
+        assert_eq!(again.access_token, "access");
+
+        delete_token(&path, &store).unwrap();
+        assert!(!path.exists());
+        assert!(store.items.borrow().is_empty());
+    }
+
+    #[test]
+    fn legacy_token_without_keyring_keeps_working() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("token.json");
+        fs::write(&path, LEGACY_TOKEN).unwrap();
+        let store = FakeStore {
+            unavailable: true,
+            ..FakeStore::default()
+        };
+        let token = load_token(&path, &store).unwrap();
+        assert_eq!(token.refresh_token.as_deref(), Some("refresh-secret"));
+        // The file is left untouched so the sign-in survives.
+        assert_eq!(fs::read_to_string(&path).unwrap(), LEGACY_TOKEN);
+
+        // Saving without a keyring falls back to the 0600 file.
+        save_token(&path, &token, &store).unwrap();
+        let reloaded = load_token(&path, &store).unwrap();
+        assert_eq!(reloaded.refresh_token.as_deref(), Some("refresh-secret"));
+    }
+
+    #[test]
+    fn save_token_strips_secrets_when_keyring_works() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("token.json");
+        let store = FakeStore::default();
+        let token = Token {
+            access_token: "a".into(),
+            refresh_token: Some("r".into()),
+            token_uri: GOOGLE_TOKEN_URL.into(),
+            client_id: "id".into(),
+            client_secret: None,
+            scopes: vec![],
+            expires_at: 1,
+        };
+        save_token(&path, &token, &store).unwrap();
+        assert!(!fs::read_to_string(&path).unwrap().contains("\"r\""));
+        assert_eq!(
+            load_token(&path, &store).unwrap().refresh_token.as_deref(),
+            Some("r")
+        );
+    }
+
+    #[test]
+    fn client_secret_migrates_and_falls_back() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("google_oauth.json");
+        fs::write(&path, r#"{"client_id": "id", "client_secret": "shh"}"#).unwrap();
+        let broken = FakeStore {
+            unavailable: true,
+            ..FakeStore::default()
+        };
+        let creds = load_credentials(&path, &broken).unwrap();
+        assert_eq!(creds.client_secret.as_deref(), Some("shh"));
+        assert!(fs::read_to_string(&path).unwrap().contains("shh"));
+
+        let store = FakeStore::default();
+        let creds = load_credentials(&path, &store).unwrap();
+        assert_eq!(creds.client_secret.as_deref(), Some("shh"));
+        assert!(!fs::read_to_string(&path).unwrap().contains("shh"));
+        let creds = load_credentials(&path, &store).unwrap();
+        assert_eq!(creds.client_secret.as_deref(), Some("shh"));
+
+        save_credentials(&path, &creds, &broken).unwrap();
+        assert!(fs::read_to_string(&path).unwrap().contains("shh"));
+    }
+
+    #[test]
+    fn callback_requires_matching_state() {
+        assert_eq!(
+            parse_callback_line("GET /?code=abc&state=s1 HTTP/1.1\r\n", "s1"),
+            Callback::Code("abc".into())
+        );
+        assert_eq!(
+            parse_callback_line("GET /?code=abc&state=other HTTP/1.1\r\n", "s1"),
+            Callback::Ignored
+        );
+        assert_eq!(
+            parse_callback_line("GET /favicon.ico HTTP/1.1\r\n", "s1"),
+            Callback::Ignored
+        );
+        assert_eq!(
+            parse_callback_line("GET /?error=access_denied&state=s1 HTTP/1.1\r\n", "s1"),
+            Callback::Denied("access_denied".into())
+        );
+        assert_eq!(
+            parse_callback_line("GET /?error=access_denied HTTP/1.1\r\n", "s1"),
+            Callback::Ignored
+        );
+        assert_eq!(
+            parse_callback_line("GET /?code=a%2Fb&state=s%201 HTTP/1.1\r\n", "s 1"),
+            Callback::Code("a/b".into())
+        );
+    }
+
+    #[test]
+    fn listener_survives_stray_connections() {
+        use std::io::Read;
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        listener.set_nonblocking(true).unwrap();
+        let address = listener.local_addr().unwrap();
+        let client = std::thread::spawn(move || {
+            let send = |request: &str| {
+                let mut stream = TcpStream::connect(address).unwrap();
+                stream.write_all(request.as_bytes()).unwrap();
+                let mut response = String::new();
+                let _ = stream.read_to_string(&mut response);
+                response
+            };
+            // A connection that sends nothing and closes.
+            drop(TcpStream::connect(address).unwrap());
+            let stray = send("GET /favicon.ico HTTP/1.1\r\nHost: x\r\n\r\n");
+            let forged = send("GET /?code=evil&state=wrong HTTP/1.1\r\n\r\n");
+            let real = send("GET /?code=good&state=expected HTTP/1.1\r\n\r\n");
+            (stray, forged, real)
+        });
+        let code = wait_for_code_until(
+            &listener,
+            "expected",
+            Instant::now() + Duration::from_secs(20),
+        )
+        .unwrap();
+        assert_eq!(code, "good");
+        let (stray, forged, real) = client.join().unwrap();
+        assert!(stray.starts_with("HTTP/1.1 400"));
+        assert!(forged.starts_with("HTTP/1.1 400"));
+        assert!(real.starts_with("HTTP/1.1 200"));
+    }
+
+    #[test]
+    fn listener_times_out() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        listener.set_nonblocking(true).unwrap();
+        assert!(wait_for_code_until(&listener, "s", Instant::now()).is_err());
     }
 
     #[test]

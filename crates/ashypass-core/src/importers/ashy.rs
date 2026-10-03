@@ -4,7 +4,11 @@
 //! compatibility and embeds a consistent SQLite snapshot so folders, tags,
 //! history, trash, attachments, and sync metadata can be restored losslessly.
 
+use crate::backup::files::{
+    publish_new, unique_temporary_path, write_private_new, write_private_replacing,
+};
 use crate::db::vault::{NewEntry, PasswordEntry, Vault};
+use crate::importers::report::{self, ImportCandidate, ImportPreview, ImportReport, ParsedImport};
 use crate::{Error, Result};
 use aes_gcm::{
     aead::{Aead, KeyInit},
@@ -15,10 +19,8 @@ use base64::{engine::general_purpose::STANDARD, Engine as _};
 use rand::RngCore;
 use rusqlite::{Connection, OpenFlags};
 use serde::{Deserialize, Serialize};
-use std::fs::{self, OpenOptions};
-use std::io::Write;
-use std::os::unix::fs::OpenOptionsExt;
-use std::path::{Path, PathBuf};
+use std::fs;
+use std::path::Path;
 
 const MAGIC: &[u8; 7] = b"ASHYP\x00\x01";
 const SALT_LEN: usize = 16;
@@ -29,7 +31,9 @@ const ARGON2_P: u32 = 4;
 const MAX_ARGON2_T: u32 = 12;
 const MAX_ARGON2_M_KIB: u32 = 1_048_576;
 const MAX_ARGON2_P: u32 = 16;
-const MAX_EXPORT_BYTES: u64 = 4 * 1024 * 1024 * 1024;
+/// Largest `.ashy` file accepted. The whole file is decrypted in memory
+/// (plus a base64 snapshot), so this bounds peak memory use.
+const MAX_EXPORT_BYTES: u64 = 1024 * 1024 * 1024;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExportEntry {
@@ -68,12 +72,14 @@ fn derive_key(
     memory_kib: u32,
     parallelism: u32,
 ) -> Result<[u8; 32]> {
-    if time_cost == 0
+    // Bound `parallelism` before using it in `8 * parallelism`, so a hostile
+    // header cannot overflow the multiplication.
+    if parallelism == 0
+        || parallelism > MAX_ARGON2_P
+        || time_cost == 0
         || time_cost > MAX_ARGON2_T
         || memory_kib < 8 * parallelism
         || memory_kib > MAX_ARGON2_M_KIB
-        || parallelism == 0
-        || parallelism > MAX_ARGON2_P
     {
         return Err(Error::InvalidInput("unsafe .ashy Argon2 parameters".into()));
     }
@@ -151,7 +157,8 @@ pub fn export_vault(vault: &Vault, path: impl AsRef<Path>, export_password: &str
     output.extend_from_slice(&ARGON2_P.to_le_bytes());
     output.extend_from_slice(&nonce_bytes);
     output.extend_from_slice(&ciphertext);
-    write_new_private(path.as_ref(), &output)?;
+    // Replacing an existing file is intended: the save dialog already asked.
+    write_private_replacing(path.as_ref(), &output)?;
     Ok(entry_count)
 }
 
@@ -196,38 +203,71 @@ pub fn read_export(path: impl AsRef<Path>, export_password: &str) -> Result<Expo
     Ok(document)
 }
 
-/// Merge importable entries, folders, favourites, and tags atomically.
-/// For a lossless whole-vault recovery use [`restore_database`].
+/// Decrypt a `.ashy` file into an importable document (entries, folders,
+/// favourites and tags).
+pub fn parse_file(path: impl AsRef<Path>, export_password: &str) -> Result<ParsedImport> {
+    Ok(document_to_import(read_export(path, export_password)?))
+}
+
+fn document_to_import(document: ExportDocument) -> ParsedImport {
+    let mut out = ParsedImport {
+        folders: document.folders,
+        ..ParsedImport::default()
+    };
+    for entry in document.entries {
+        out.push(ImportCandidate {
+            entry: NewEntry {
+                title: entry.title,
+                username: entry.username,
+                url: entry.url,
+                password: entry.password,
+                notes: entry.notes,
+                totp_secret: entry.totp_secret,
+                totp_algorithm: Some(entry.totp_algorithm),
+                totp_digits: Some(entry.totp_digits),
+                totp_period: Some(entry.totp_period),
+                category: entry.category,
+            },
+            favorite: entry.favorite,
+            tags: entry.tags,
+            history: Vec::new(),
+            attachments: Vec::new(),
+        });
+    }
+    out
+}
+
+pub fn preview_file(
+    vault: &Vault,
+    path: impl AsRef<Path>,
+    export_password: &str,
+) -> Result<ImportPreview> {
+    report::preview(vault, &parse_file(path, export_password)?)
+}
+
+/// Merge importable entries, folders, favourites, and tags atomically,
+/// skipping exact duplicates. For a lossless whole-vault recovery use
+/// [`restore_database`] or [`crate::backup::restore::restore_db_snapshot`].
 pub fn import_into_vault(
     vault: &Vault,
     path: impl AsRef<Path>,
     export_password: &str,
-) -> Result<usize> {
+) -> Result<ImportReport> {
+    report::apply(vault, parse_file(path, export_password)?)
+}
+
+/// Decrypt a `.ashy` file and return its embedded SQLite snapshot.
+pub(crate) fn read_snapshot(path: impl AsRef<Path>, export_password: &str) -> Result<Vec<u8>> {
     let document = read_export(path, export_password)?;
-    vault.transaction(|| {
-        for folder in &document.folders {
-            vault.create_folder(folder)?;
-        }
-        let mut imported = 0;
-        for entry in &document.entries {
-            let id = vault.add(NewEntry {
-                title: entry.title.clone(),
-                username: entry.username.clone(),
-                url: entry.url.clone(),
-                password: entry.password.clone(),
-                notes: entry.notes.clone(),
-                totp_secret: entry.totp_secret.clone(),
-                totp_algorithm: Some(entry.totp_algorithm.clone()),
-                totp_digits: Some(entry.totp_digits),
-                totp_period: Some(entry.totp_period),
-                category: entry.category.clone(),
-            })?;
-            vault.set_favorite(id, entry.favorite)?;
-            vault.set_tags(id, &entry.tags)?;
-            imported += 1;
-        }
-        Ok(imported)
-    })
+    let encoded = document.database_snapshot.ok_or_else(|| {
+        Error::InvalidInput("this legacy .ashy file has no complete database snapshot".into())
+    })?;
+    Ok(STANDARD.decode(encoded)?)
+}
+
+/// True when `bytes` start with the `.ashy` magic.
+pub(crate) fn has_magic(bytes: &[u8]) -> bool {
+    bytes.starts_with(MAGIC)
 }
 
 /// Restore the complete SQLite snapshot to a new path. The destination must
@@ -237,14 +277,10 @@ pub fn restore_database(
     export_password: &str,
     destination: impl AsRef<Path>,
 ) -> Result<()> {
-    let document = read_export(export_path, export_password)?;
-    let encoded = document.database_snapshot.ok_or_else(|| {
-        Error::InvalidInput("this legacy .ashy file has no complete database snapshot".into())
-    })?;
-    let snapshot = STANDARD.decode(encoded)?;
+    let snapshot = read_snapshot(export_path, export_password)?;
     let destination = destination.as_ref();
     let temporary = unique_temporary_path(destination, "restore");
-    write_new_private(&temporary, &snapshot)?;
+    write_private_new(&temporary, &snapshot)?;
 
     let validation = (|| {
         let connection = Connection::open_with_flags(&temporary, OpenFlags::SQLITE_OPEN_READ_ONLY)?;
@@ -274,52 +310,11 @@ pub fn restore_database(
         return Err(error);
     }
 
-    match fs::hard_link(&temporary, destination) {
-        Ok(()) => {
-            fs::remove_file(&temporary)?;
-            Ok(())
-        }
-        Err(error) => {
-            let _ = fs::remove_file(&temporary);
-            Err(Error::Io(error))
-        }
-    }
+    publish_new(&temporary, destination).map_err(Error::from)
 }
 
 fn read_u32(bytes: &[u8]) -> u32 {
     u32::from_le_bytes(bytes.try_into().expect("four-byte slice"))
-}
-
-fn unique_temporary_path(path: &Path, purpose: &str) -> PathBuf {
-    let parent = path.parent().unwrap_or_else(|| Path::new("."));
-    let mut random = [0u8; 8];
-    rand::thread_rng().fill_bytes(&mut random);
-    parent.join(format!(
-        ".ashypass-{purpose}-{:016x}.tmp",
-        u64::from_ne_bytes(random)
-    ))
-}
-
-fn write_new_private(path: &Path, bytes: &[u8]) -> Result<()> {
-    let parent = path.parent().unwrap_or_else(|| Path::new("."));
-    fs::create_dir_all(parent)?;
-    let temporary = unique_temporary_path(path, "write");
-    let result: std::io::Result<()> = (|| {
-        let mut file = OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .mode(0o600)
-            .open(&temporary)?;
-        file.write_all(bytes)?;
-        file.sync_all()?;
-        fs::hard_link(&temporary, path)?;
-        fs::remove_file(&temporary)?;
-        Ok(())
-    })();
-    if result.is_err() {
-        let _ = fs::remove_file(&temporary);
-    }
-    result.map_err(Error::from)
 }
 
 #[cfg(test)]
@@ -367,7 +362,11 @@ mod tests {
             export_vault(&source, &export_path, "export password").unwrap(),
             1
         );
-        assert!(export_vault(&source, &export_path, "export password").is_err());
+        // A second export replaces the file (the save dialog confirmed it).
+        assert_eq!(
+            export_vault(&source, &export_path, "export password").unwrap(),
+            1
+        );
         restore_database(&export_path, "export password", &restored_path).unwrap();
 
         let mut restored = Vault::open(&restored_path).unwrap();
@@ -384,9 +383,13 @@ mod tests {
             .set_master_password("import master password")
             .unwrap();
         assert_eq!(
-            import_into_vault(&imported, &export_path, "export password").unwrap(),
+            import_into_vault(&imported, &export_path, "export password")
+                .unwrap()
+                .imported,
             1
         );
+        let again = import_into_vault(&imported, &export_path, "export password").unwrap();
+        assert_eq!((again.imported, again.duplicates), (0, 1));
         let imported_entry = imported.list(None).unwrap().remove(0);
         assert!(imported_entry.favorite);
         assert_eq!(
@@ -406,10 +409,43 @@ mod tests {
         bytes[params..params + 4].copy_from_slice(&(MAX_ARGON2_T + 1).to_le_bytes());
         bytes[params + 4..params + 8].copy_from_slice(&ARGON2_M_KIB.to_le_bytes());
         bytes[params + 8..params + 12].copy_from_slice(&ARGON2_P.to_le_bytes());
-        write_new_private(&path, &bytes).unwrap();
+        write_private_new(&path, &bytes).unwrap();
         assert!(matches!(
             read_export(&path, "password"),
             Err(Error::InvalidInput(_))
         ));
+    }
+
+    #[test]
+    fn huge_parallelism_is_rejected_without_overflow() {
+        assert!(matches!(
+            derive_key("password", &[0u8; SALT_LEN], 3, ARGON2_M_KIB, u32::MAX),
+            Err(Error::InvalidInput(_))
+        ));
+        assert!(matches!(
+            derive_key("password", &[0u8; SALT_LEN], 3, ARGON2_M_KIB, 0),
+            Err(Error::InvalidInput(_))
+        ));
+    }
+
+    #[test]
+    fn export_to_existing_path_replaces_and_leaves_no_temporaries() {
+        let directory = tempfile::tempdir().unwrap();
+        let mut vault = Vault::open(directory.path().join("v.db")).unwrap();
+        vault.set_master_password("source master password").unwrap();
+        vault
+            .add(NewEntry {
+                title: "E".into(),
+                password: "p".into(),
+                ..NewEntry::default()
+            })
+            .unwrap();
+        let out_dir = tempfile::tempdir().unwrap();
+        let out = out_dir.path().join("x.ashy");
+        fs::write(&out, b"previous").unwrap();
+        export_vault(&vault, &out, "pw").unwrap();
+        assert!(read_export(&out, "pw").is_ok());
+        assert_eq!(fs::read_dir(out_dir.path()).unwrap().count(), 1);
+        assert!(read_snapshot(&out, "wrong").is_err());
     }
 }

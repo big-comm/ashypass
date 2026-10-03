@@ -194,10 +194,20 @@ impl NextcloudPasswordsClient {
     }
 
     pub fn delete(&self, id: &str) -> Result<()> {
+        self.delete_if_exists(id).map(|_| ())
+    }
+
+    /// Delete a password. `Ok(false)` means the server answered HTTP 404:
+    /// the item is already gone. Every other failure is an error.
+    pub fn delete_if_exists(&self, id: &str) -> Result<bool> {
         let cfg = self.require()?;
         let body = serde_json::json!({ "id": id }).to_string();
         let r = self.request_with_cfg(cfg, "DELETE", "/password/delete", Some(body))?;
-        ensure_2xx(&r)
+        if r.status == 404 {
+            return Ok(false);
+        }
+        ensure_2xx(&r)?;
+        Ok(true)
     }
 
     pub fn list_folders(&self) -> Result<Vec<NcFolder>> {
