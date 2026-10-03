@@ -1,0 +1,36 @@
+//! Build a vault with the PREVIOUS release's code, for compatibility checks.
+use ashypass_core::db::vault::{NewEntry, UpdateEntry, Vault};
+use std::path::PathBuf;
+
+fn main() {
+    let dir = PathBuf::from(std::env::args().nth(1).expect("output dir"));
+    std::fs::create_dir_all(&dir).unwrap();
+    let db = dir.join("passwords.db");
+    let mut v = Vault::open(&db).unwrap();
+    v.set_master_password("old master password 123").unwrap();
+    let mk = |title: &str, user: &str, pw: &str, url: &str, notes: Option<&str>, totp: Option<&str>, cat: Option<&str>| NewEntry {
+        title: title.into(), username: Some(user.into()), password: pw.into(), url: Some(url.into()),
+        notes: notes.map(Into::into), totp_secret: totp.map(Into::into), totp_algorithm: Some("SHA1".into()),
+        totp_digits: Some(6), totp_period: Some(30), category: cat.map(Into::into),
+    };
+    let a = v.add(mk("Banco", "ana", "s3nh@-banco", "https://banco.example", Some("agência 0001\nconta 12345"), None, Some("Pessoal"))).unwrap();
+    let b = v.add(mk("GitHub", "octo", "gh-pass-1", "https://github.com", None, Some("JBSWY3DPEHPK3PXP"), Some("Trabalho"))).unwrap();
+    let c = v.add(mk("Servidor", "root", "r00t!", "192.168.0.10", Some("ssh"), None, None)).unwrap();
+    let d = v.add(mk("Apagar", "x", "trash-me", "https://x.example", None, None, None)).unwrap();
+    v.add(NewEntry { title: "Só TOTP".into(), username: None, password: String::new(), url: None, notes: None,
+        totp_secret: Some("GEZDGNBVGY3TQOJQ".into()), totp_algorithm: Some("SHA256".into()), totp_digits: Some(8),
+        totp_period: Some(60), category: Some("2FA".into()) }).unwrap();
+    // history: change GitHub password twice
+    for pw in ["gh-pass-2", "gh-pass-3"] {
+        v.update(b, UpdateEntry { title: None, username: None, password: Some(pw.into()), notes: None, url: None,
+            totp_secret: None, totp_algorithm: None, totp_digits: None, totp_period: None, category: None }).unwrap();
+    }
+    v.set_tags(a, &["banco".into(), "importante".into()]).unwrap();
+    v.set_favorite(a, true).unwrap();
+    v.create_folder("Vazia").unwrap();
+    v.add_attachment(c, "chave.txt", Some("text/plain"), b"segredo do anexo").unwrap();
+    v.delete(d).unwrap();
+    let prefs = v.enable_persistent_quick_unlock("123456").unwrap();
+    std::fs::write(dir.join("quick_unlock.json"), serde_json::to_string_pretty(&prefs).unwrap()).unwrap();
+    println!("fixture written to {}", dir.display());
+}
