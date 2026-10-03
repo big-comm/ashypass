@@ -8,13 +8,13 @@
 //! remains chmod 0600 and is used as a legacy fallback on sessions without a
 //! desktop keyring.
 
+use crate::backup::files::{check_content_length, write_stream_new, MAX_DOWNLOAD_BYTES};
 use crate::{Error, Result};
 use reqwest::blocking::Client;
 use reqwest::Method;
 use serde::{Deserialize, Serialize};
-use std::fs::{self, OpenOptions};
-use std::io::{Read, Write};
-use std::os::unix::fs::OpenOptionsExt;
+use std::fs;
+use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 use std::time::Duration;
@@ -102,26 +102,36 @@ impl WebdavService {
 
     fn folder_url(&self) -> Result<String> {
         let cfg = self.require()?;
-        Ok(format!("{}/{}", cfg.base_url, url_escape_path(&cfg.folder)))
+        Ok(format!(
+            "{}/{}",
+            cfg.base_url,
+            url_escape_path(&normalize_folder(&cfg.folder))
+        ))
     }
 
-    /// Create the configured sub-folder if it doesn't already exist.
-    /// Servers return 405 if it already exists, which we ignore.
+    /// Create the configured sub-folder (and any missing parents, for
+    /// nested names like `Backups/AshyPass`) if it doesn't already exist.
+    /// Servers return 405 for an existing collection, which we ignore; a
+    /// 409 means a parent is missing, so parents are created first.
     pub fn ensure_folder(&self) -> Result<()> {
         let cfg = self.require()?;
-        let url = self.folder_url()?;
         let client = http_client()?;
-        let resp = client
-            .request(Method::from_bytes(b"MKCOL").unwrap(), &url)
-            .basic_auth(&cfg.username, Some(&cfg.password))
-            .send()
-            .map_err(|e| Error::Other(format!("webdav mkcol: {e}")))?;
-        let status = resp.status().as_u16();
-        // 201 created, 405 already exists — both fine.
-        if status == 201 || status == 405 {
-            return Ok(());
+        for prefix in folder_prefixes(&cfg.folder) {
+            let url = format!("{}/{}", cfg.base_url, url_escape_path(&prefix));
+            let resp = client
+                .request(Method::from_bytes(b"MKCOL").expect("valid method"), &url)
+                .basic_auth(&cfg.username, Some(&cfg.password))
+                .send()
+                .map_err(|e| Error::Other(format!("webdav mkcol: {e}")))?;
+            let status = resp.status().as_u16();
+            // 201 created, 405 already exists — both fine.
+            if status != 201 && status != 405 {
+                return Err(Error::Other(format!(
+                    "webdav mkcol {prefix}: HTTP {status}"
+                )));
+            }
         }
-        Err(Error::Other(format!("webdav mkcol: HTTP {status}")))
+        Ok(())
     }
 
     pub fn upload(&self, local: impl AsRef<Path>, remote_name: &str) -> Result<()> {
@@ -180,6 +190,8 @@ impl WebdavService {
         Ok(parse_propfind(&body))
     }
 
+    /// Download `href` to a new file at `dest` (never replacing an existing
+    /// file). Files above [`MAX_DOWNLOAD_BYTES`] are refused.
     pub fn download(&self, href: &str, dest: impl AsRef<Path>) -> Result<()> {
         let cfg = self.require()?;
         let url = href_to_url(&cfg.base_url, href)?;
@@ -193,7 +205,8 @@ impl WebdavService {
         if !(200..300).contains(&status) {
             return Err(Error::Other(format!("webdav get: HTTP {status}")));
         }
-        write_response_new(&mut resp, dest.as_ref())
+        check_content_length(resp.content_length(), MAX_DOWNLOAD_BYTES)?;
+        write_stream_new(&mut resp, dest.as_ref(), MAX_DOWNLOAD_BYTES)
     }
 
     pub fn delete(&self, href: &str) -> Result<()> {
@@ -365,30 +378,30 @@ fn href_to_url(base: &str, href: &str) -> Result<String> {
     Ok(resolved.to_string())
 }
 
-fn write_response_new(response: &mut impl std::io::Read, destination: &Path) -> Result<()> {
-    let parent = destination.parent().unwrap_or_else(|| Path::new("."));
-    fs::create_dir_all(parent)?;
-    let temporary = parent.join(format!(
-        ".ashypass-download-{}-{}.tmp",
-        std::process::id(),
-        rand::random::<u64>()
-    ));
-    let result: std::io::Result<()> = (|| {
-        let mut file = OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .mode(0o600)
-            .open(&temporary)?;
-        std::io::copy(response, &mut file)?;
-        file.flush()?;
-        file.sync_all()?;
-        fs::hard_link(&temporary, destination)?;
-        fs::remove_file(&temporary)
-    })();
-    if result.is_err() {
-        let _ = fs::remove_file(&temporary);
+/// Collapse empty segments: " /a//b/ " becomes "a/b".
+fn normalize_folder(folder: &str) -> String {
+    folder
+        .split('/')
+        .map(str::trim)
+        .filter(|segment| !segment.is_empty())
+        .collect::<Vec<_>>()
+        .join("/")
+}
+
+/// Every ancestor of `folder` plus itself, shortest first: "a/b" gives
+/// ["a", "a/b"].
+fn folder_prefixes(folder: &str) -> Vec<String> {
+    let normalized = normalize_folder(folder);
+    let mut out = Vec::new();
+    let mut current = String::new();
+    for segment in normalized.split('/').filter(|s| !s.is_empty()) {
+        if !current.is_empty() {
+            current.push('/');
+        }
+        current.push_str(segment);
+        out.push(current.clone());
     }
-    result.map_err(Error::from)
+    out
 }
 
 /// Minimal PROPFIND XML parser. We pull `<d:href>`, `<d:displayname>`,
@@ -568,9 +581,19 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let destination = directory.path().join("backup.db");
         let mut first = std::io::Cursor::new(b"first".to_vec());
-        write_response_new(&mut first, &destination).unwrap();
+        write_stream_new(&mut first, &destination, MAX_DOWNLOAD_BYTES).unwrap();
         let mut second = std::io::Cursor::new(b"second".to_vec());
-        assert!(write_response_new(&mut second, &destination).is_err());
+        assert!(write_stream_new(&mut second, &destination, MAX_DOWNLOAD_BYTES).is_err());
         assert_eq!(fs::read(destination).unwrap(), b"first");
+    }
+
+    #[test]
+    fn nested_folders_create_parents_first() {
+        assert_eq!(
+            folder_prefixes("Backups/Ashy Pass/2024"),
+            vec!["Backups", "Backups/Ashy Pass", "Backups/Ashy Pass/2024"]
+        );
+        assert_eq!(folder_prefixes(" /a//b/ "), vec!["a", "a/b"]);
+        assert!(folder_prefixes("").is_empty());
     }
 }

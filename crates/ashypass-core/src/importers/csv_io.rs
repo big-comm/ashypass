@@ -71,11 +71,43 @@ pub fn import_csv(path: impl AsRef<Path>) -> Result<Vec<CsvEntry>> {
             password: get(&row, i_pw),
             notes: get(&row, i_notes),
         };
-        if !entry.password.is_empty() || entry.title != "Untitled" {
+        // Only fully blank rows are dropped; a row with just a URL or a
+        // username is still user data.
+        let has_data = entry.title != "Untitled"
+            || !entry.password.is_empty()
+            || !entry.url.is_empty()
+            || !entry.username.is_empty()
+            || !entry.notes.is_empty();
+        if has_data {
             out.push(entry);
         }
     }
     Ok(out)
+}
+
+/// Parse a CSV export into an importable document.
+pub fn parse_file(path: impl AsRef<Path>) -> Result<crate::importers::ParsedImport> {
+    let metadata = std::fs::metadata(path.as_ref())?;
+    if metadata.len() > crate::importers::MAX_IMPORT_TEXT_BYTES {
+        return Err(Error::InvalidInput("CSV file is too large".into()));
+    }
+    Ok(crate::importers::vault_import::csv_entries_to_import(
+        import_csv(path)?,
+    ))
+}
+
+pub fn preview_file(
+    vault: &crate::db::vault::Vault,
+    path: impl AsRef<Path>,
+) -> Result<crate::importers::ImportPreview> {
+    crate::importers::preview(vault, &parse_file(path)?)
+}
+
+pub fn import_into_vault(
+    vault: &crate::db::vault::Vault,
+    path: impl AsRef<Path>,
+) -> Result<crate::importers::ImportReport> {
+    crate::importers::apply(vault, parse_file(path)?)
 }
 
 pub fn export_csv(path: impl AsRef<Path>, entries: &[CsvEntry]) -> Result<()> {

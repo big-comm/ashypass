@@ -4,12 +4,11 @@
 //! the user explicitly opens. Folder lookup/create + multipart upload +
 //! list/download/delete is enough for vault snapshots.
 
+use crate::backup::files::{check_content_length, write_stream_new, MAX_DOWNLOAD_BYTES};
 use crate::backup::oauth::{self, ClientCredentials, Token};
 use crate::{Error, Result};
 use serde::{Deserialize, Serialize};
-use std::fs::{self, OpenOptions};
-use std::io::Write;
-use std::os::unix::fs::OpenOptionsExt;
+use std::fs;
 use std::path::Path;
 use std::sync::OnceLock;
 use std::time::Duration;
@@ -242,7 +241,8 @@ impl BackupService {
         Ok(files)
     }
 
-    /// Download `file_id` to `dest`.
+    /// Download `file_id` to a new file at `dest` (never replacing an
+    /// existing file). Files above [`MAX_DOWNLOAD_BYTES`] are refused.
     pub fn download(&mut self, file_id: &str, dest: impl AsRef<Path>) -> Result<()> {
         let access = self.refreshed_access_token()?;
         let client = self.client()?;
@@ -258,7 +258,8 @@ impl BackupService {
                 resp.text().unwrap_or_default()
             )));
         }
-        write_response_new(&mut resp, dest.as_ref())
+        check_content_length(resp.content_length(), MAX_DOWNLOAD_BYTES)?;
+        write_stream_new(&mut resp, dest.as_ref(), MAX_DOWNLOAD_BYTES)
     }
 
     pub fn delete(&mut self, file_id: &str) -> Result<()> {
@@ -290,32 +291,6 @@ fn escape_q(s: &str) -> String {
     s.replace('\\', "\\\\").replace('\'', "\\'")
 }
 
-fn write_response_new(response: &mut impl std::io::Read, destination: &Path) -> Result<()> {
-    let parent = destination.parent().unwrap_or_else(|| Path::new("."));
-    fs::create_dir_all(parent)?;
-    let temporary = parent.join(format!(
-        ".ashypass-drive-download-{}-{}.tmp",
-        std::process::id(),
-        rand::random::<u64>()
-    ));
-    let result: std::io::Result<()> = (|| {
-        let mut file = OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .mode(0o600)
-            .open(&temporary)?;
-        std::io::copy(response, &mut file)?;
-        file.flush()?;
-        file.sync_all()?;
-        fs::hard_link(&temporary, destination)?;
-        fs::remove_file(&temporary)
-    })();
-    if result.is_err() {
-        let _ = fs::remove_file(&temporary);
-    }
-    result.map_err(Error::from)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -325,9 +300,9 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let destination = directory.path().join("backup.db");
         let mut first = std::io::Cursor::new(b"first".to_vec());
-        write_response_new(&mut first, &destination).unwrap();
+        write_stream_new(&mut first, &destination, MAX_DOWNLOAD_BYTES).unwrap();
         let mut second = std::io::Cursor::new(b"second".to_vec());
-        assert!(write_response_new(&mut second, &destination).is_err());
+        assert!(write_stream_new(&mut second, &destination, MAX_DOWNLOAD_BYTES).is_err());
         assert_eq!(fs::read(destination).unwrap(), b"first");
     }
 }

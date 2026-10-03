@@ -269,34 +269,24 @@ pub(super) fn run_import(
         let toast_done = toast.clone();
         run_background(
             move || {
-                let outcome: ashypass_core::Result<usize> = (|| {
+                let outcome: ashypass_core::Result<ImportReport> = (|| {
                     let vault = ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
-                    match kind {
-                        ImportKind::Csv => {
-                            let entries = ashypass_core::importers::import_csv(&path)?;
-                            ashypass_core::importers::import_csv_entries(&vault, entries)
-                        }
-                        ImportKind::Aegis => {
-                            let entries = ashypass_core::importers::aegis::import_plain(&path)?;
-                            ashypass_core::importers::import_aegis_entries(&vault, entries)
-                        }
-                        ImportKind::Andotp => {
-                            let entries = ashypass_core::importers::andotp::import_plain(&path)?;
-                            ashypass_core::importers::import_andotp_entries(&vault, entries)
-                        }
-                        ImportKind::Bitwarden => {
-                            ashypass_core::importers::bitwarden::import_into_vault(&vault, &path)
-                        }
+                    let source = match kind {
+                        ImportKind::Csv => ashypass_core::importers::ImportSource::Csv,
+                        ImportKind::Aegis => ashypass_core::importers::ImportSource::Aegis,
+                        ImportKind::Andotp => ashypass_core::importers::ImportSource::Andotp,
+                        ImportKind::Bitwarden => ashypass_core::importers::ImportSource::Bitwarden,
                         ImportKind::Onepassword => {
-                            ashypass_core::importers::onepassword::import_into_vault(&vault, &path)
+                            ashypass_core::importers::ImportSource::OnePassword
                         }
-                    }
+                    };
+                    ashypass_core::importers::import_source(&vault, &source, &path)
                 })();
                 outcome
             },
             move |outcome| match outcome {
-                Ok(n) => {
-                    show_toast(&toast_done, &format!("{} ({n})", tr!("Import complete")));
+                Ok(report) => {
+                    show_import_report(&toast_done, &report);
                     state_done
                         .events
                         .emit(crate::events::AppEvent::VaultChanged);
@@ -401,8 +391,8 @@ pub(super) fn run_import_ashy(state: SharedState, toast: adw::ToastOverlay, anch
                         ashypass_core::importers::ashy::import_into_vault(&vault, &path, &password)
                     },
                     move |outcome| match outcome {
-                        Ok(n) => {
-                            show_toast(&toast_done, &format!("{} ({n})", tr!("Import complete")));
+                        Ok(report) => {
+                            show_import_report(&toast_done, &report);
                             state_done
                                 .events
                                 .emit(crate::events::AppEvent::VaultChanged);
@@ -522,8 +512,8 @@ pub(super) fn run_import_kdbx(state: SharedState, toast: adw::ToastOverlay, anch
                         )
                     },
                     move |outcome| match outcome {
-                        Ok(n) => {
-                            show_toast(&toast_done, &format!("{} ({n})", tr!("Import complete")));
+                        Ok(report) => {
+                            show_import_report(&toast_done, &report);
                             state_done
                                 .events
                                 .emit(crate::events::AppEvent::VaultChanged);
@@ -536,6 +526,37 @@ pub(super) fn run_import_kdbx(state: SharedState, toast: adw::ToastOverlay, anch
             },
         );
     });
+}
+
+type ImportReport = ashypass_core::importers::ImportReport;
+
+/// Toast the import summary; when items were skipped, failed or adjusted,
+/// also list them so nothing is dropped silently.
+fn show_import_report(toast: &adw::ToastOverlay, report: &ImportReport) {
+    show_toast(
+        toast,
+        &format!("{}: {}", tr!("Import complete"), report.summary()),
+    );
+    if report.is_complete() {
+        return;
+    }
+    const MAX_LINES: usize = 20;
+    let lines = report.issue_lines();
+    let mut body = lines
+        .iter()
+        .take(MAX_LINES)
+        .cloned()
+        .collect::<Vec<_>>()
+        .join("\n");
+    if lines.len() > MAX_LINES {
+        body.push_str(&format!("\n… (+{})", lines.len() - MAX_LINES));
+    }
+    let dialog = adw::AlertDialog::builder()
+        .heading(report.summary())
+        .body(body)
+        .build();
+    dialog.add_response("ok", tr!("OK"));
+    dialog.present(Some(toast));
 }
 
 pub(super) fn prompt_password<F>(
