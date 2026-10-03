@@ -163,6 +163,9 @@ pub(crate) fn analyse(
             Ok((parsed, preview))
         },
         move |outcome| match outcome {
+            // Locked while reading: the preview would list entries over a
+            // locked vault. Drop it; nothing was written.
+            Ok(_) if !state.vault.borrow().is_unlocked() => {}
             Ok((parsed, preview)) => show_preview(state, toast, anchor, parsed, preview),
             Err(e) => {
                 let dialog = adw::AlertDialog::builder()

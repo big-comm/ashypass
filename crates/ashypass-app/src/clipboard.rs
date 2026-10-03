@@ -32,7 +32,19 @@ pub fn copy(text: &str, seconds: u64) {
         return;
     };
     let clipboard = display.clipboard();
-    clipboard.set_text(text);
+    // Offer the text plus KDE's password-manager hint, which Klipper and
+    // other history managers honour by not recording the entry. Managers
+    // that ignore it may still keep a copy; the settings text says so.
+    let provider = gdk::ContentProvider::new_union(&[
+        gdk::ContentProvider::for_value(&text.to_value()),
+        gdk::ContentProvider::for_bytes(
+            "x-kde-passwordManagerHint",
+            &glib::Bytes::from_static(b"secret"),
+        ),
+    ]);
+    if clipboard.set_content(Some(&provider)).is_err() {
+        clipboard.set_text(text);
+    }
 
     if seconds == 0 {
         PENDING.with(|p| *p.borrow_mut() = None);

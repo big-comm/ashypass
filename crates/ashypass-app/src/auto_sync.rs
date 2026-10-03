@@ -22,7 +22,7 @@
 //! `VaultChanged` event the sync itself emits).
 
 use crate::events::AppEvent;
-use crate::state::SharedState;
+use crate::state::{SharedState, SyncStatus};
 use crate::tr;
 use ashypass_core::settings::Settings;
 use ashypass_core::sync::{nextcloud_engine, ConflictResolution, SyncReport};
@@ -128,6 +128,9 @@ impl Inner {
         if !self.settings.borrow().nextcloud_auto_sync {
             return;
         }
+        if self.state.nextcloud.borrow().is_logged_in() && !self.in_flight.get() {
+            self.state.set_sync_status(SyncStatus::Pending);
+        }
         self.cancel_debounce();
         let inner = self.clone();
         let id = glib::timeout_add_seconds_local(DEBOUNCE_SECONDS, move || {
@@ -159,6 +162,7 @@ impl Inner {
             return;
         }
         self.in_flight.set(true);
+        self.state.set_sync_status(SyncStatus::Running);
 
         // Clone what the worker thread needs. The Nextcloud client owns its
         // HTTP transport and is Send + Sync. The vault is borrowed through
@@ -190,6 +194,14 @@ impl Inner {
             match rx.try_recv() {
                 Ok(Ok(report)) => {
                     inner.in_flight.set(false);
+                    let now = chrono::Utc::now().timestamp();
+                    inner
+                        .state
+                        .set_sync_status(if report.stats.errors.is_empty() {
+                            SyncStatus::Synced { at: now }
+                        } else {
+                            SyncStatus::Failed { at: now }
+                        });
                     if !report.stats.errors.is_empty() {
                         show_toast(
                             &inner.toast,
@@ -214,6 +226,9 @@ impl Inner {
                 }
                 Ok(Err(msg)) => {
                     inner.in_flight.set(false);
+                    inner.state.set_sync_status(SyncStatus::Failed {
+                        at: chrono::Utc::now().timestamp(),
+                    });
                     show_toast(&inner.toast, &format!("{}: {msg}", tr!("Sync failed")));
                     inner.maybe_rerun();
                     glib::ControlFlow::Break
@@ -221,6 +236,9 @@ impl Inner {
                 Err(mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
                 Err(mpsc::TryRecvError::Disconnected) => {
                     inner.in_flight.set(false);
+                    inner.state.set_sync_status(SyncStatus::Failed {
+                        at: chrono::Utc::now().timestamp(),
+                    });
                     inner.maybe_rerun();
                     glib::ControlFlow::Break
                 }

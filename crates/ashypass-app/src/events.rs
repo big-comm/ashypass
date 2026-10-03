@@ -42,6 +42,8 @@ pub enum AppEvent {
     SyncCompleted { filename: String },
     /// A WebDAV sync push failed; the payload is a human-readable reason.
     SyncFailed(String),
+    /// The Nextcloud Passwords sync state changed (see `AppState::sync_status`).
+    SyncStatusChanged,
     /// A remote conflict was detected during a sync attempt.
     SyncConflict {
         local_generation: u64,

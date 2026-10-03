@@ -14,7 +14,7 @@
 //! the search box no longer rebuilds thousands of buttons.
 
 use crate::session::SessionManager;
-use crate::state::SharedState;
+use crate::state::{SharedState, SyncStatus};
 use crate::tr;
 use crate::trn;
 use crate::ui::entry_form::{self, EntryFormOptions};
@@ -678,6 +678,12 @@ fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) 
                 inner.invalidate_caches();
                 inner.schedule_reload();
             }
+            crate::events::AppEvent::SyncStatusChanged if inner.can_show_vault_data() => {
+                if let Some(cache) = inner.cache.borrow().clone() {
+                    let badges = inner.state.settings().show_sync_badges;
+                    inner.update_sync_state(&cache, badges);
+                }
+            }
             _ => {}
         }
     });
@@ -857,7 +863,39 @@ impl Inner {
         let all_synced = total > 0 && synced == total;
         self.show_badges
             .set(badges_enabled && synced > 0 && !all_synced);
-        if all_synced {
+        // The observed sync state first: it tells the user whether the
+        // latest changes reached the server, not just that a link exists.
+        let time = |at: i64| {
+            glib::DateTime::from_unix_local(at)
+                .ok()
+                .and_then(|dt| dt.format("%H:%M").ok())
+                .map(|s| s.to_string())
+                .unwrap_or_default()
+        };
+        let logged_in = self.state.nextcloud.borrow().is_logged_in();
+        let status_text = match self.state.sync_status.get() {
+            _ if !logged_in => None,
+            SyncStatus::Pending => {
+                Some(tr!("Saved on this computer. Waiting to synchronize.").to_string())
+            }
+            SyncStatus::Running => Some(tr!("Synchronizing with Nextcloud Passwords…").to_string()),
+            SyncStatus::Synced { at } => Some(format!(
+                "{} {}.",
+                tr!("Synchronized with Nextcloud Passwords at"),
+                time(at)
+            )),
+            SyncStatus::Failed { at } => Some(format!(
+                "{} {}. {}",
+                tr!("Could not synchronize at"),
+                time(at),
+                tr!("Your entries are still available on this computer.")
+            )),
+            SyncStatus::Unknown => None,
+        };
+        if let Some(text) = status_text {
+            self.sync_label.set_label(&text);
+            self.sync_label.set_visible(true);
+        } else if all_synced {
             self.sync_label.set_label(tr!(
                 "All entries are synchronized with Nextcloud Passwords."
             ));

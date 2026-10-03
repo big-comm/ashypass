@@ -967,6 +967,57 @@ impl DevHandle {
             "close-dialogs" => {
                 inner.state.close_sensitive_dialogs();
             }
+            "export" => {
+                // export:<path>|<file password>
+                if let Some((path, password)) = arg.split_once('|') {
+                    let vault = inner.state.vault.borrow();
+                    match ashypass_core::importers::ashy::export_vault(&vault, path, password) {
+                        Ok(n) => eprintln!("dev: exported {n} entries to {path}"),
+                        Err(e) => eprintln!("dev: export failed: {e}"),
+                    }
+                }
+            }
+            "replace" => {
+                // replace:<path>|<master>|<file password>
+                let parts: Vec<&str> = arg.splitn(3, '|').collect();
+                if let [path, master, file] = parts[..] {
+                    inner.replace_vault(
+                        path.into(),
+                        Zeroizing::new(master.to_string()),
+                        Some(Zeroizing::new(file.to_string())),
+                    );
+                }
+            }
+            "import-csv" => crate::ui::import_flow::analyse(
+                inner.state.clone(),
+                inner.toast_overlay.clone(),
+                inner.window.clone().upcast(),
+                ashypass_core::importers::ImportSource::Csv,
+                arg.into(),
+            ),
+            "clip-test" => {
+                crate::clipboard::copy("clip-secret-123", 0);
+                if let Some(display) = gtk::gdk::Display::default() {
+                    let clipboard = display.clipboard();
+                    eprintln!("dev: clipboard formats: {}", clipboard.formats().to_str());
+                    clipboard.read_text_async(None::<&gio::Cancellable>, |res| {
+                        eprintln!(
+                            "dev: clipboard text = {:?}",
+                            res.ok().flatten().map(|s| s.to_string())
+                        );
+                    });
+                }
+            }
+            "count" => {
+                let n = inner
+                    .state
+                    .vault
+                    .borrow()
+                    .list(None)
+                    .map(|l| l.len())
+                    .unwrap_or(0);
+                eprintln!("dev: entries={n} unlocked={}", inner.unlocked());
+            }
             "size" => {
                 if let Some((w, h)) = arg.split_once('x') {
                     let w = w.parse().unwrap_or(DEFAULT_WIDTH);

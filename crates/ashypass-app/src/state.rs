@@ -41,6 +41,7 @@ pub struct AppState {
     /// a dialog left open over a locked vault would keep showing secrets, and
     /// acting on it would fail with a raw crypto error.
     sensitive_dialogs: RefCell<Vec<adw::Dialog>>,
+    pub sync_status: std::cell::Cell<SyncStatus>,
 }
 
 struct CachedSettings {
@@ -66,6 +67,24 @@ impl FileStamp {
 }
 
 pub type SharedState = Rc<AppState>;
+
+/// What the user should know about Nextcloud Passwords sync. Only states
+/// that were actually observed: nothing claims "synchronized" until a sync
+/// finished without errors.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
+pub enum SyncStatus {
+    #[default]
+    Unknown,
+    /// A local change is saved and waiting for the next sync.
+    Pending,
+    Running,
+    Synced {
+        at: i64,
+    },
+    Failed {
+        at: i64,
+    },
+}
 
 /// Bridge the core's vault-listener callback (Send + Sync, so it must be
 /// reachable from a background thread) into a glib-main-loop dispatch onto
@@ -101,6 +120,7 @@ impl AppState {
                 stamp: FileStamp::current(),
             }),
             sensitive_dialogs: RefCell::new(Vec::new()),
+            sync_status: std::cell::Cell::new(SyncStatus::Unknown),
         })
     }
 
@@ -109,6 +129,12 @@ impl AppState {
     pub fn install_vault(&self, vault: Vault) -> Vault {
         bridge_vault_events(&vault, &self.events);
         std::mem::replace(&mut *self.vault.borrow_mut(), vault)
+    }
+
+    pub fn set_sync_status(&self, status: SyncStatus) {
+        if self.sync_status.replace(status) != status {
+            self.events.emit(crate::events::AppEvent::SyncStatusChanged);
+        }
     }
 
     /// Register a dialog to be closed when the vault locks. It unregisters
