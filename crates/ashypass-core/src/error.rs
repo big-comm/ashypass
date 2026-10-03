@@ -8,6 +8,12 @@ pub enum Error {
     #[error("invalid master password")]
     InvalidMasterPassword,
 
+    /// The key (from quick unlock or a cached session) does not open this
+    /// vault — e.g. the database was restored or its master password was
+    /// changed elsewhere. The caller should ask for the master password.
+    #[error("the saved unlock key does not match this vault; enter the master password")]
+    KeyMismatch,
+
     #[error("master password already set")]
     MasterAlreadySet,
 

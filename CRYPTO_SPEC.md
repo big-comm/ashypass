@@ -18,7 +18,7 @@ The `master.crypto_version` column tags the format used by the current vault:
 | 1     | PBKDF2-HMAC-SHA256 (100k)  | Fernet (AES-128-CBC + HMAC-SHA256) | Read-only — migrate on unlock |
 | 2     | Argon2id (t=3, m=64 MiB, p=4) | AES-256-GCM        | **Current** |
 
-A v1 vault is upgraded to v2 by re-encrypting every BLOB column inside a single transaction; if any row fails, the transaction rolls back and the vault stays v1.
+A v1 vault is upgraded to v2 by re-encrypting every BLOB column (active, trash, history and attachment tables, where present) inside a single transaction; if any row fails, the transaction rolls back and the vault stays v1. Before the transaction, once the master password has been verified, a consistent snapshot is written to `<db>.db.v1.bak` (mode 0600) with the SQLite online-backup API, so pages still in the WAL are included. The snapshot is never overwritten or deleted automatically; `Vault::remove_legacy_backup` overwrites it with zeros and unlinks it when the user asks.
 
 ## Key Derivation
 
@@ -37,6 +37,20 @@ The master password is verified using **Argon2id** (`argon2` crate, RustCrypto):
 | Salt         | 16 random bytes, encoded into the PHC string |
 
 The Argon2 hash (PHC format, e.g. `$argon2id$v=19$m=65536,t=3,p=4$…`) is stored in `master.password_hash`.
+
+New hashes may use the auto-tuned costs from `settings.argon2`; verification
+always reads the costs back from the PHC string. Because that string can arrive
+through a synced database or the keyring, its parameters are bounds-checked
+before any work is done and out-of-range hashes are rejected as an error:
+
+| Parameter | Accepted range |
+|-----------|----------------|
+| t (time)  | 1 – 12 |
+| m (KiB)   | 8·p – 1 048 576 (1 GiB) |
+| p (lanes) | 1 – 16 |
+
+Tuned settings outside this range are ignored (defaults are used) when hashing,
+so a hash the client writes is always one it can verify.
 
 ### Encryption key derivation (v2)
 
@@ -107,6 +121,58 @@ Only used for reading entries during the v1 → v2 migration.
 | `password_encrypted`     | UTF-8 string |
 | `notes_encrypted`        | UTF-8 string (nullable) |
 | `totp_secret_encrypted`  | UTF-8 string — Base32 TOTP secret (nullable) |
+
+## Key Verifier (`key_check`)
+
+An additive single-row table lets a client tell whether a candidate key (from
+the master password, a quick-unlock PIN, or a cached session) opens the vault:
+
+```sql
+CREATE TABLE IF NOT EXISTS key_check (
+    id    INTEGER PRIMARY KEY CHECK (id = 1),
+    blob  BLOB    NOT NULL,   -- v2 AES-256-GCM blob of "ashypass-key-check-v1"
+    salt  TEXT    NOT NULL    -- master.salt the key was derived from
+);
+```
+
+- A key is **verified** when it decrypts `blob` to the constant. The row is
+  only considered when `key_check.salt = master.salt`; otherwise it is stale
+  (e.g. a build that predates this table changed the master password) and is
+  ignored.
+- Without a current row, the first encrypted column found (active, trash,
+  history, attachment) is test-decrypted instead. A vault with no verifier and
+  no ciphertext cannot be checked and any key is accepted.
+- Master-password unlock: derive the key; if it opens the verifier, the
+  password is correct and the PHC hash is not computed. Otherwise the PHC hash
+  is authoritative: on success the verifier is (re)written, on failure the
+  password is wrong. A damaged verifier therefore never locks the user out.
+- Quick-unlock / session keys that fail the check are rejected
+  (`Error::KeyMismatch`) and the user must enter the master password.
+- Written by `set_master_password`, the v1 → v2 migration and
+  `change_master_password` (same transaction as the new salt), and lazily on
+  the first master-password unlock of a vault that lacks it. Older builds ignore
+  the table; the per-column ciphertext format is unchanged.
+
+## Quick Unlock (PIN)
+
+The vault key can be wrapped under a PIN and stored device-locally (Secret
+Service item `kind=quick-unlock`, or the legacy `settings.json` field):
+
+```
+salt          = 32 random bytes
+wrapping_key  = Argon2id(pin, salt, t=6, m=131072 KiB, p=4, len=32)   # kdf_version 1
+encrypted_key = AES-256-GCM v2 blob of the 32-byte vault key
+record        = { salt, encrypted_key, kdf_version: 1, failed_attempts, pin_hash: "" }
+```
+
+- The GCM tag authenticates the PIN; a wrong PIN is a decryption failure.
+- Records written before this revision also carry `pin_hash`, an Argon2id PHC
+  hash of the PIN with the (cheaper) master parameters, and records with
+  `kdf_version 0` were wrapped with the master KDF parameters. Both still
+  unlock; on the first successful PIN unlock the client re-wraps the key with a
+  fresh salt in the current format (no `pin_hash`) and replaces the record.
+- After unwrapping, the vault key must pass the key verifier above.
+- `failed_attempts` is enforced by the client; at 5 the record is destroyed.
 
 ## Salt Generation
 
@@ -248,8 +314,12 @@ digits          = 6
 period          = 30
 timestamp       = 1234567890
 counter         = 1234567890 / 30 = 41152263
-→ expected OTP  = "005924"
+→ expected OTP  = "742275"
 ```
+
+(Earlier revisions listed `005924`, which is the tail of the RFC 6238 SHA-1
+8-digit vector `89005924` for the 20-byte ASCII secret `12345678901234567890`
+— a different secret. Both are covered by the `totp` unit tests.)
 
 ## Security Properties
 

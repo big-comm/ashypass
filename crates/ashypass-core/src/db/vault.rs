@@ -8,17 +8,21 @@
 
 use crate::config::{ensure_private_file, MIN_MASTER_PASSWORD_LENGTH};
 use crate::crypto::{aes_gcm_v2, argon2_kdf, DerivedKey};
+use crate::db::key_check::{self, KeyStatus};
 use crate::settings::QuickUnlockPrefs;
 use crate::{db::migration, db::schema, Error, Result};
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use rand::RngCore;
-use rusqlite::{params, params_from_iter, types::Value, Connection, OptionalExtension, Row};
+use rusqlite::{
+    params, params_from_iter, types::Value, Connection, OptionalExtension, Row, TransactionBehavior,
+};
 use std::cell::RefCell;
 use std::fs::OpenOptions;
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::time::Duration;
+use zeroize::Zeroize;
 
 #[path = "vault_folders.rs"]
 mod folders;
@@ -180,15 +184,7 @@ impl Vault {
              PRAGMA journal_mode = WAL;
              PRAGMA synchronous = NORMAL;",
         )?;
-        schema::initialize(&conn)?;
-        migration::add_missing_columns(&conn)?;
-        let violation_count: i64 =
-            conn.query_row("SELECT COUNT(*) FROM pragma_foreign_key_check", [], |row| {
-                row.get(0)
-            })?;
-        if violation_count > 0 {
-            log::warn!("vault contains {violation_count} foreign-key violation(s)");
-        }
+        prepare_schema(&conn)?;
         Ok(Self {
             db_path,
             conn,
@@ -232,6 +228,18 @@ impl Vault {
             let _ = std::fs::remove_file(path);
         }
         result
+    }
+
+    /// Path of the snapshot taken before the v1 → v2 migration, if it is
+    /// still on disk. It holds the whole vault under the legacy crypto.
+    pub fn legacy_backup_path(&self) -> Option<PathBuf> {
+        migration::v1_backup(&self.db_path)
+    }
+
+    /// Overwrite and delete the pre-migration snapshot. `Ok(false)` when
+    /// there was none. Never called automatically: offer it to the user.
+    pub fn remove_legacy_backup(&self) -> Result<bool> {
+        migration::remove_v1_backup(&self.db_path)
     }
 
     pub fn validate_database(path: impl AsRef<Path>) -> Result<()> {
@@ -607,11 +615,14 @@ impl Vault {
         let key = argon2_kdf::derive_key_v2(password, salt_text.as_bytes())?;
         let ts = chrono::Utc::now().timestamp();
 
-        self.conn.execute(
+        let tx = self.conn.unchecked_transaction()?;
+        tx.execute(
             "INSERT INTO master (id, password_hash, salt, crypto_version, created_at)
              VALUES (1, ?, ?, 2, ?)",
             params![hash, salt_text, ts],
         )?;
+        key_check::write(&tx, &key, &salt_text)?;
+        tx.commit()?;
 
         self.key = Some(key);
         Ok(())
@@ -629,24 +640,115 @@ impl Vault {
         argon2_kdf::verify_master(password, &hash)
     }
 
+    /// Unlock with the master password. Migrates a v1 vault first (after a
+    /// consistent backup), and seals the key verifier if it is missing.
     pub fn unlock(&mut self, password: &str) -> Result<()> {
         let crypto_version = migration::detect_crypto_version(&self.conn)?.unwrap_or(2);
         if crypto_version == 1 {
-            // Pre-migration: ensure on-disk backup, then migrate atomically.
-            migration::backup_db_file(&self.db_path)?;
+            // Check the password before touching the disk, then take a
+            // consistent backup and migrate atomically.
+            let (hash, _) = migration::read_master_v1(&self.conn)?;
+            if !argon2_kdf::verify_master(password, &hash)? {
+                return Err(Error::InvalidMasterPassword);
+            }
+            migration::backup_db_from(&self.conn, &self.db_path)?;
             migration::migrate_v1_to_v2(&mut self.conn, password)?;
         }
 
-        let (hash, salt_text) = self.conn.query_row(
+        let inputs = self.read_unlock_inputs()?;
+        let key = derive_unlock_key(password, &inputs)?;
+        // `derive_unlock_key` proved the password (via the verifier or the
+        // PHC hash), so this key is authoritative for the current master
+        // row: repair a missing, stale or damaged verifier.
+        match key_check::check(&self.conn, &key, &inputs.salt)? {
+            KeyStatus::Verified => {}
+            status => {
+                if status == KeyStatus::Mismatch {
+                    log::warn!("vault key verifier did not match the master password; resealing");
+                }
+                self.store_key_check(&key, &inputs.salt);
+            }
+        }
+        self.key = Some(key);
+        Ok(())
+    }
+
+    /// Inputs for `derive_unlock_key`, so the expensive KDF can run off the
+    /// thread that owns the vault. `Ok(None)` when that is not possible (no
+    /// master password yet, or a v1 vault that must migrate first): use the
+    /// synchronous `unlock()` instead.
+    pub fn unlock_inputs(&self) -> Result<Option<UnlockInputs>> {
+        match migration::detect_crypto_version(&self.conn)? {
+            None | Some(1) => Ok(None),
+            Some(_) => self.read_unlock_inputs().map(Some),
+        }
+    }
+
+    /// Install a key produced by `derive_unlock_key(password, inputs)`.
+    ///
+    /// Fails with `Error::KeyMismatch` when the master row changed since
+    /// `inputs` was read or the key does not open the vault; the caller should
+    /// then retry with the synchronous `unlock()`, which also repairs a
+    /// damaged verifier.
+    pub fn unlock_with_key(&mut self, inputs: &UnlockInputs, key: DerivedKey) -> Result<()> {
+        let current = self.read_unlock_inputs()?;
+        if current.password_hash != inputs.password_hash || current.salt != inputs.salt {
+            return Err(Error::KeyMismatch);
+        }
+        match key_check::check(&self.conn, &key, &current.salt)? {
+            KeyStatus::Verified => {}
+            KeyStatus::Mismatch => return Err(Error::KeyMismatch),
+            KeyStatus::VerifiedByEntry | KeyStatus::Unverifiable => {
+                self.store_key_check(&key, &current.salt)
+            }
+        }
+        self.key = Some(key);
+        Ok(())
+    }
+
+    /// Check that the active key (e.g. one handed to `open_with_session_key`)
+    /// still opens this vault. `Error::KeyMismatch` if it does not.
+    pub fn verify_session_key(&self) -> Result<()> {
+        self.ensure_key_matches(self.key()?)
+    }
+
+    fn read_unlock_inputs(&self) -> Result<UnlockInputs> {
+        let (password_hash, salt) = self.conn.query_row(
             "SELECT password_hash, salt FROM master WHERE id = 1",
             [],
             |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)),
         )?;
-        if !argon2_kdf::verify_master(password, &hash)? {
-            return Err(Error::InvalidMasterPassword);
+        let key_check = key_check::read_for_salt(&self.conn, &salt)?;
+        Ok(UnlockInputs {
+            password_hash,
+            salt,
+            key_check,
+        })
+    }
+
+    fn master_salt(&self) -> Result<String> {
+        Ok(self
+            .conn
+            .query_row("SELECT salt FROM master WHERE id = 1", [], |r| r.get(0))?)
+    }
+
+    /// Reject `key` when it provably does not open this vault. A vault with
+    /// no verifier and no encrypted data cannot be checked and is accepted.
+    fn ensure_key_matches(&self, key: &DerivedKey) -> Result<()> {
+        let salt = self.master_salt()?;
+        if key_check::check(&self.conn, key, &salt)? == KeyStatus::Mismatch {
+            return Err(Error::KeyMismatch);
         }
-        self.key = Some(argon2_kdf::derive_key_v2(password, salt_text.as_bytes())?);
         Ok(())
+    }
+
+    /// Seal the verifier. Best effort: a read-only or busy database must not
+    /// turn a successful unlock into a failure; the write is retried on the
+    /// next unlock.
+    fn store_key_check(&self, key: &DerivedKey, salt: &str) {
+        if let Err(error) = key_check::write(&self.conn, key, salt) {
+            log::warn!("could not store vault key verifier: {error}");
+        }
     }
 
     /// Configure quick-unlock for the current session. Requires an unlocked
@@ -659,39 +761,28 @@ impl Vault {
             ));
         }
         let key = self.key.clone().ok_or(Error::Locked)?;
-        self.quick_pin_hash = Some(argon2_kdf::hash_master(pin)?);
+        self.quick_pin_hash = Some(argon2_kdf::hash_session_secret(pin)?);
         self.cached_key = Some(key);
         Ok(())
     }
 
     /// Configure quick-unlock and return the encrypted, device-local state that
     /// lets the app restore it after restart.
+    ///
+    /// The record holds no PIN hash: the AES-GCM tag of `encrypted_key`
+    /// already authenticates the PIN, and a cheaper hash next to it would
+    /// only give an attacker a faster brute-force target.
     pub fn enable_persistent_quick_unlock(&mut self, pin: &str) -> Result<QuickUnlockPrefs> {
         self.enable_quick_unlock(pin)?;
         let key = self.cached_key.as_ref().ok_or(Error::Locked)?;
-        let pin_hash = self
-            .quick_pin_hash
-            .clone()
-            .ok_or_else(|| Error::Other("quick-unlock hash missing".into()))?;
-
-        let mut salt = [0u8; 32];
-        rand::thread_rng().fill_bytes(&mut salt);
-        let wrapping_key = argon2_kdf::derive_key_pin(pin, &salt)?;
-        let encrypted_key = aes_gcm_v2::encrypt(&wrapping_key, key.as_bytes())?;
-
-        Ok(QuickUnlockPrefs {
-            pin_hash,
-            salt: URL_SAFE_NO_PAD.encode(salt),
-            encrypted_key: URL_SAFE_NO_PAD.encode(encrypted_key),
-            failed_attempts: 0,
-            kdf_version: crate::settings::QUICK_UNLOCK_KDF_PIN_HARDENED,
-        })
+        wrap_quick_unlock_key(pin, key)
     }
 
     /// Re-acquire the encryption key using a previously-set quick-unlock PIN.
     /// Fails if quick-unlock was never configured this session, or if the PIN
     /// is wrong. Wrong PIN does not clear the cache — caller decides whether
-    /// to escalate to a full unlock after N failures.
+    /// to escalate to a full unlock after N failures. A cached key that no
+    /// longer opens the vault yields `Error::KeyMismatch`.
     pub fn quick_unlock(&mut self, pin: &str) -> Result<()> {
         let hash = self
             .quick_pin_hash
@@ -704,44 +795,47 @@ impl Vault {
             .cached_key
             .clone()
             .ok_or(Error::Other("quick-unlock cache missing".into()))?;
+        self.ensure_key_matches(&key)?;
         self.key = Some(key);
         Ok(())
     }
 
     /// Re-acquire the encryption key from persisted quick-unlock state.
     pub fn quick_unlock_persistent(&mut self, pin: &str, prefs: &QuickUnlockPrefs) -> Result<()> {
-        if !prefs.is_configured() {
-            return Err(Error::Other("quick-unlock not configured".into()));
-        }
-        if prefs.attempts_exhausted() {
-            return Err(Error::Other(
-                "quick-unlock disabled after too many wrong PINs".into(),
-            ));
-        }
-        if !argon2_kdf::verify_master(pin, &prefs.pin_hash)? {
-            return Err(Error::InvalidMasterPassword);
-        }
+        self.quick_unlock_persistent_upgrading(pin, prefs)
+            .map(|_| ())
+    }
 
-        let salt = URL_SAFE_NO_PAD.decode(&prefs.salt)?;
-        let encrypted_key = URL_SAFE_NO_PAD.decode(&prefs.encrypted_key)?;
-        // Blobs written before PIN hardening were wrapped with the standard
-        // vault KDF; honour whichever generation produced this one.
-        let wrapping_key = if prefs.kdf_version >= crate::settings::QUICK_UNLOCK_KDF_PIN_HARDENED {
-            argon2_kdf::derive_key_pin(pin, &salt)?
-        } else {
-            argon2_kdf::derive_key_v2(pin, &salt)?
+    /// Like `quick_unlock_persistent`, but also returns a replacement record
+    /// when `prefs` is in an older format (it carries a PIN hash, or uses the
+    /// pre-hardening wrapping KDF). The caller should persist the returned
+    /// record in place of `prefs`; it has `failed_attempts = 0`.
+    pub fn quick_unlock_persistent_upgrading(
+        &mut self,
+        pin: &str,
+        prefs: &QuickUnlockPrefs,
+    ) -> Result<Option<QuickUnlockPrefs>> {
+        let (key, upgraded) = derive_quick_unlock_key(pin, prefs)?;
+        let session_hash = match prefs.pin_hash.as_str() {
+            "" => argon2_kdf::hash_session_secret(pin)?,
+            legacy => legacy.to_string(),
         };
-        let key_bytes = aes_gcm_v2::decrypt(&wrapping_key, &encrypted_key)?;
-        if key_bytes.len() != 32 {
-            return Err(Error::Crypto("quick-unlock key has invalid length".into()));
-        }
+        self.install_quick_unlock_key(key)?;
+        self.quick_pin_hash = Some(session_hash);
+        Ok(upgraded)
+    }
 
-        let mut raw = [0u8; 32];
-        raw.copy_from_slice(&key_bytes);
-        let key = DerivedKey::new(raw);
+    /// Install a vault key recovered by `derive_quick_unlock_key`, after
+    /// checking it still opens this vault (`Error::KeyMismatch` otherwise —
+    /// fall back to the master password).
+    ///
+    /// The key is cached for the session, but no session PIN verifier is set,
+    /// so `is_quick_unlock_available()` stays false and later PIN unlocks go
+    /// through the persisted record again.
+    pub fn install_quick_unlock_key(&mut self, key: DerivedKey) -> Result<()> {
+        self.ensure_key_matches(&key)?;
         self.key = Some(key.clone());
         self.cached_key = Some(key);
-        self.quick_pin_hash = Some(prefs.pin_hash.clone());
         Ok(())
     }
 
@@ -844,7 +938,7 @@ impl Vault {
         category: Option<&str>,
     ) -> Result<Vec<PasswordEntry>> {
         let base = "SELECT id, title, username, url,
-                           totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
+                           totp_secret_encrypted IS NOT NULL, totp_algorithm, totp_digits, totp_period,
                            category, favorite, created_at, updated_at, last_accessed
                     FROM passwords";
 
@@ -877,7 +971,7 @@ impl Vault {
             format!("{base} WHERE {} ORDER BY title", clauses.join(" AND "))
         };
 
-        let mut stmt = self.conn.prepare(&sql)?;
+        let mut stmt = self.conn.prepare_cached(&sql)?;
         let rows = stmt
             .query_map(params_from_iter(params_vec), password_summary_from_row)?
             .collect::<rusqlite::Result<Vec<_>>>()?;
@@ -890,7 +984,7 @@ impl Vault {
         category: Option<&str>,
     ) -> Result<Vec<PasswordEntry>> {
         let base = "SELECT p.id, p.title, p.username, p.url,
-                           p.totp_secret_encrypted, p.totp_algorithm, p.totp_digits, p.totp_period,
+                           p.totp_secret_encrypted IS NOT NULL, p.totp_algorithm, p.totp_digits, p.totp_period,
                            p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed
                     FROM passwords_fts
                     JOIN passwords p ON p.id = passwords_fts.rowid
@@ -902,7 +996,7 @@ impl Vault {
         } else {
             format!("{base} ORDER BY p.title")
         };
-        let mut stmt = self.conn.prepare(&sql)?;
+        let mut stmt = self.conn.prepare_cached(&sql)?;
         let rows = stmt
             .query_map(params_from_iter(params_vec), password_summary_from_row)?
             .collect::<rusqlite::Result<Vec<_>>>()?;
@@ -933,7 +1027,7 @@ impl Vault {
     }
 
     fn get_inner(&self, id: i64, touch: bool) -> Result<Option<PasswordEntry>> {
-        let mut stmt = self.conn.prepare(
+        let mut stmt = self.conn.prepare_cached(
             "SELECT id, title, username, password_encrypted, notes_encrypted, url,
                     totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
                     category, favorite, created_at, updated_at, last_accessed
@@ -1431,50 +1525,82 @@ impl Vault {
         normalized.sort_by_key(|a| a.to_lowercase());
         normalized.dedup_by(|a, b| a.to_lowercase() == b.to_lowercase());
 
-        let mut tag_ids: Vec<i64> = Vec::with_capacity(normalized.len());
-        for name in &normalized {
-            self.conn.execute(
-                "INSERT OR IGNORE INTO tags (name) VALUES (?)",
-                params![name],
-            )?;
-            let id: i64 = self.conn.query_row(
-                "SELECT id FROM tags WHERE name = ? COLLATE NOCASE",
-                params![name],
-                |r| r.get(0),
-            )?;
-            tag_ids.push(id);
-        }
-        tag_ids.sort_unstable();
+        // A savepoint (not BEGIN) so this also works inside `transaction()`.
+        let changed = self.with_savepoint("set_tags", || {
+            let mut tag_ids: Vec<i64> = Vec::with_capacity(normalized.len());
+            for name in &normalized {
+                self.conn.execute(
+                    "INSERT OR IGNORE INTO tags (name) VALUES (?)",
+                    params![name],
+                )?;
+                let id: i64 = self.conn.query_row(
+                    "SELECT id FROM tags WHERE name = ? COLLATE NOCASE",
+                    params![name],
+                    |r| r.get(0),
+                )?;
+                tag_ids.push(id);
+            }
+            tag_ids.sort_unstable();
 
-        let mut current_stmt = self.conn.prepare(
-            "SELECT tag_id FROM entry_tags
-             WHERE entry_id = ?
-             ORDER BY tag_id",
-        )?;
-        let current_ids = current_stmt
-            .query_map(params![entry_id], |r| r.get::<_, i64>(0))?
-            .collect::<rusqlite::Result<Vec<_>>>()?;
-        drop(current_stmt);
-        if current_ids == tag_ids {
-            return Ok(());
-        }
-
-        self.conn.execute(
-            "DELETE FROM entry_tags WHERE entry_id = ?",
-            params![entry_id],
-        )?;
-        for tid in &tag_ids {
-            self.conn.execute(
-                "INSERT OR IGNORE INTO entry_tags (entry_id, tag_id) VALUES (?, ?)",
-                params![entry_id, tid],
+            let mut current_stmt = self.conn.prepare_cached(
+                "SELECT tag_id FROM entry_tags
+                 WHERE entry_id = ?
+                 ORDER BY tag_id",
             )?;
+            let current_ids = current_stmt
+                .query_map(params![entry_id], |r| r.get::<_, i64>(0))?
+                .collect::<rusqlite::Result<Vec<_>>>()?;
+            drop(current_stmt);
+            if current_ids == tag_ids {
+                return Ok(false);
+            }
+
+            self.conn.execute(
+                "DELETE FROM entry_tags WHERE entry_id = ?",
+                params![entry_id],
+            )?;
+            for tid in &tag_ids {
+                self.conn.execute(
+                    "INSERT OR IGNORE INTO entry_tags (entry_id, tag_id) VALUES (?, ?)",
+                    params![entry_id, tid],
+                )?;
+            }
+            Ok(true)
+        })?;
+        if changed {
+            self.notify_change();
         }
-        self.notify_change();
         Ok(())
     }
 
+    /// Run `operation` inside a named SQLite savepoint: released on success,
+    /// rolled back on error. Unlike BEGIN, savepoints nest, so this is safe
+    /// both standalone and within `transaction()`.
+    fn with_savepoint<T, F>(&self, name: &str, operation: F) -> Result<T>
+    where
+        F: FnOnce() -> Result<T>,
+    {
+        self.conn.execute_batch(&format!("SAVEPOINT {name}"))?;
+        match operation() {
+            Ok(value) => {
+                if let Err(error) = self.conn.execute_batch(&format!("RELEASE {name}")) {
+                    let _ = self
+                        .conn
+                        .execute_batch(&format!("ROLLBACK TO {name}; RELEASE {name}"));
+                    return Err(error.into());
+                }
+                Ok(value)
+            }
+            Err(error) => {
+                self.conn
+                    .execute_batch(&format!("ROLLBACK TO {name}; RELEASE {name}"))?;
+                Err(error)
+            }
+        }
+    }
+
     pub fn tags_of(&self, entry_id: i64) -> Result<Vec<String>> {
-        let mut stmt = self.conn.prepare(
+        let mut stmt = self.conn.prepare_cached(
             "SELECT t.name FROM tags t
              JOIN entry_tags et ON et.tag_id = t.id
              WHERE et.entry_id = ?
@@ -1488,7 +1614,7 @@ impl Vault {
 
     /// Every tag in the catalog with the number of entries using it.
     pub fn all_tags(&self) -> Result<Vec<(String, i64)>> {
-        let mut stmt = self.conn.prepare(
+        let mut stmt = self.conn.prepare_cached(
             "SELECT t.name, COUNT(et.entry_id) AS cnt
              FROM tags t
              LEFT JOIN entry_tags et ON et.tag_id = t.id
@@ -1524,9 +1650,9 @@ impl Vault {
             )
             .ok();
         let Some(id) = id else { return Ok(Vec::new()) };
-        let mut stmt = self.conn.prepare(
+        let mut stmt = self.conn.prepare_cached(
             "SELECT p.id, p.title, p.username, p.url,
-                    p.totp_secret_encrypted, p.totp_algorithm, p.totp_digits, p.totp_period,
+                    p.totp_secret_encrypted IS NOT NULL, p.totp_algorithm, p.totp_digits, p.totp_period,
                     p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed
              FROM passwords p
              JOIN entry_tags et ON et.entry_id = p.id
@@ -1534,29 +1660,7 @@ impl Vault {
              ORDER BY p.title",
         )?;
         let rows = stmt
-            .query_map(params![id], |r| {
-                let totp_blob: Option<Vec<u8>> = r.get(4)?;
-                Ok(PasswordEntry {
-                    id: r.get(0)?,
-                    title: r.get(1)?,
-                    username: r.get(2)?,
-                    url: r.get(3)?,
-                    password: None,
-                    notes: None,
-                    totp_secret: None,
-                    has_totp: totp_blob.is_some(),
-                    totp_algorithm: r
-                        .get::<_, Option<String>>(5)?
-                        .unwrap_or_else(|| "SHA1".into()),
-                    totp_digits: r.get::<_, Option<i64>>(6)?.unwrap_or(6) as u8,
-                    totp_period: r.get::<_, Option<i64>>(7)?.unwrap_or(30) as u32,
-                    category: r.get(8)?,
-                    favorite: r.get::<_, Option<i64>>(9)?.unwrap_or(0) != 0,
-                    created_at: r.get(10)?,
-                    updated_at: r.get(11)?,
-                    last_accessed: r.get(12)?,
-                })
-            })?
+            .query_map(params![id], password_summary_from_row)?
             .collect::<rusqlite::Result<Vec<_>>>()?;
         Ok(rows)
     }
@@ -1693,25 +1797,30 @@ impl Vault {
         let new_hash = argon2_kdf::hash_master(new)?;
         let old_key = self.key()?.clone();
 
-        let entries = collect_encrypted_entries(&self.conn, "passwords")?;
-        let trash_entries = collect_encrypted_entries(&self.conn, "passwords_trash")?;
+        // Take the write lock *before* reading the rows: another connection
+        // (the auto-sync worker) must not be able to commit rows encrypted
+        // with the old key between the read and the re-encryption.
+        let tx = self
+            .conn
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        let entries = collect_encrypted_entries(&tx, "passwords")?;
+        let trash_entries = collect_encrypted_entries(&tx, "passwords_trash")?;
         let history =
-            collect_encrypted_blobs(&self.conn, "passwords_history", "id", "password_encrypted")?;
+            collect_encrypted_blobs(&tx, "passwords_history", "id", "password_encrypted")?;
         let trash_history = collect_encrypted_blobs(
-            &self.conn,
+            &tx,
             "passwords_history_trash",
             "original_history_id",
             "password_encrypted",
         )?;
-        let attachments = collect_encrypted_blobs(&self.conn, "attachments", "id", "ciphertext")?;
+        let attachments = collect_encrypted_blobs(&tx, "attachments", "id", "ciphertext")?;
         let trash_attachments = collect_encrypted_blobs(
-            &self.conn,
+            &tx,
             "attachments_trash",
             "original_attachment_id",
             "ciphertext",
         )?;
 
-        let tx = self.conn.transaction()?;
         for (table, rows) in [("passwords", entries), ("passwords_trash", trash_entries)] {
             let sql = format!(
                 "UPDATE {table} SET password_encrypted = ?, notes_encrypted = ?, \
@@ -1750,6 +1859,7 @@ impl Vault {
             "UPDATE master SET password_hash = ?, salt = ? WHERE id = 1",
             params![new_hash, new_salt_text],
         )?;
+        key_check::write(&tx, &new_key, &new_salt_text)?;
         tx.commit()?;
 
         self.key = Some(new_key);
@@ -1758,6 +1868,147 @@ impl Vault {
         self.notify_change();
         Ok(())
     }
+}
+
+/// Snapshot of what `derive_unlock_key` needs, taken by `Vault::unlock_inputs`.
+/// Plain data (`Send`), so the KDF can run on a worker thread.
+#[derive(Clone)]
+pub struct UnlockInputs {
+    password_hash: String,
+    salt: String,
+    /// The verifier sealed for `salt`, if any.
+    key_check: Option<Vec<u8>>,
+}
+
+impl std::fmt::Debug for UnlockInputs {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("UnlockInputs")
+            .field("has_key_check", &self.key_check.is_some())
+            .finish_non_exhaustive()
+    }
+}
+
+/// Derive the vault key from the master password. Thread-agnostic: does not
+/// touch the database. Returns `Error::InvalidMasterPassword` on a wrong
+/// password.
+///
+/// When the vault has a current key verifier, one Argon2 run suffices (the
+/// derived key either opens the verifier or the password is checked against
+/// the PHC hash as a fallback); otherwise the PHC hash is verified as before.
+pub fn derive_unlock_key(password: &str, inputs: &UnlockInputs) -> Result<DerivedKey> {
+    let key = argon2_kdf::derive_key_v2(password, inputs.salt.as_bytes())?;
+    if inputs
+        .key_check
+        .as_deref()
+        .is_some_and(|blob| key_check::opens(&key, blob))
+    {
+        return Ok(key);
+    }
+    if !argon2_kdf::verify_master(password, &inputs.password_hash)? {
+        return Err(Error::InvalidMasterPassword);
+    }
+    Ok(key)
+}
+
+/// Recover the vault key from a persisted quick-unlock record. Thread-agnostic:
+/// does not touch the database; install the result with
+/// `Vault::install_quick_unlock_key`.
+///
+/// Returns `Error::InvalidMasterPassword` for a wrong PIN (the AES-GCM tag of
+/// the wrapped key authenticates it). The second value is a replacement
+/// record when `prefs` is in an older format; persist it instead of `prefs`.
+pub fn derive_quick_unlock_key(
+    pin: &str,
+    prefs: &QuickUnlockPrefs,
+) -> Result<(DerivedKey, Option<QuickUnlockPrefs>)> {
+    if !prefs.is_configured() {
+        return Err(Error::Other("quick-unlock not configured".into()));
+    }
+    if prefs.attempts_exhausted() {
+        return Err(Error::Other(
+            "quick-unlock disabled after too many wrong PINs".into(),
+        ));
+    }
+
+    let salt = URL_SAFE_NO_PAD.decode(&prefs.salt)?;
+    let encrypted_key = URL_SAFE_NO_PAD.decode(&prefs.encrypted_key)?;
+    // Blobs written before PIN hardening were wrapped with the standard
+    // vault KDF; honour whichever generation produced this one.
+    let wrapping_key = if prefs.kdf_version >= crate::settings::QUICK_UNLOCK_KDF_PIN_HARDENED {
+        argon2_kdf::derive_key_pin(pin, &salt)?
+    } else {
+        argon2_kdf::derive_key_v2(pin, &salt)?
+    };
+    let mut key_bytes = aes_gcm_v2::decrypt(&wrapping_key, &encrypted_key)
+        .map_err(|_| Error::InvalidMasterPassword)?;
+    if key_bytes.len() != 32 {
+        key_bytes.zeroize();
+        return Err(Error::Crypto("quick-unlock key has invalid length".into()));
+    }
+    let mut raw = [0u8; 32];
+    raw.copy_from_slice(&key_bytes);
+    key_bytes.zeroize();
+    let key = DerivedKey::new(raw);
+    raw.zeroize();
+
+    let upgraded = if prefs.needs_upgrade() {
+        Some(wrap_quick_unlock_key(pin, &key)?)
+    } else {
+        None
+    };
+    Ok((key, upgraded))
+}
+
+/// Wrap `key` under a PIN-derived key in the current record format.
+fn wrap_quick_unlock_key(pin: &str, key: &DerivedKey) -> Result<QuickUnlockPrefs> {
+    let mut salt = [0u8; 32];
+    rand::thread_rng().fill_bytes(&mut salt);
+    let wrapping_key = argon2_kdf::derive_key_pin(pin, &salt)?;
+    let encrypted_key = aes_gcm_v2::encrypt(&wrapping_key, key.as_bytes())?;
+    Ok(QuickUnlockPrefs {
+        pin_hash: String::new(),
+        salt: URL_SAFE_NO_PAD.encode(salt),
+        encrypted_key: URL_SAFE_NO_PAD.encode(encrypted_key),
+        failed_attempts: 0,
+        kdf_version: crate::settings::QUICK_UNLOCK_KDF_PIN_HARDENED,
+    })
+}
+
+/// Bring the schema up to date on open.
+///
+/// Full setup (idempotent DDL, legacy columns, data fix-ups, FTS index, the
+/// foreign-key audit) runs whenever `PRAGMA user_version` differs from
+/// `schema::setup_version()`: fresh files, files last opened by an older or
+/// newer build, and files whose FTS setup previously failed. Afterwards the
+/// version is recorded so later opens skip straight to the cheap checks.
+fn prepare_schema(conn: &Connection) -> Result<()> {
+    let expected = schema::setup_version();
+    let current: i32 = conn.query_row("PRAGMA user_version", [], |r| r.get(0))?;
+    if current == expected && schema::required_tables_present(conn)? {
+        // Orphans can only come from builds without foreign keys; the probe
+        // is read-only so the common case takes no write lock.
+        if schema::has_orphaned_trash_children(conn)? {
+            schema::migrate_orphaned_trash_children(conn)?;
+        }
+        return Ok(());
+    }
+
+    let search_ready = schema::initialize_reporting_search(conn)?;
+    migration::add_missing_columns(conn)?;
+    let violation_count: i64 =
+        conn.query_row("SELECT COUNT(*) FROM pragma_foreign_key_check", [], |row| {
+            row.get(0)
+        })?;
+    if violation_count > 0 {
+        log::warn!("vault contains {violation_count} foreign-key violation(s)");
+    }
+    if search_ready {
+        // Best effort: failing to record it only means setup runs again.
+        if let Err(error) = conn.execute_batch(&format!("PRAGMA user_version = {expected}")) {
+            log::warn!("could not record schema version: {error}");
+        }
+    }
+    Ok(())
 }
 
 fn validate_new_master_password(password: &str) -> Result<()> {
@@ -1825,8 +2076,10 @@ fn normalize_folder_name(name: &str) -> Result<String> {
     Ok(name.to_string())
 }
 
+/// Map a summary row. Column 4 is `totp_secret_encrypted IS NOT NULL`, so the
+/// TOTP ciphertext is never pulled just to compute `has_totp`.
 fn password_summary_from_row(r: &Row<'_>) -> rusqlite::Result<PasswordEntry> {
-    let totp_blob: Option<Vec<u8>> = r.get(4)?;
+    let has_totp: bool = r.get(4)?;
     Ok(PasswordEntry {
         id: r.get(0)?,
         title: r.get(1)?,
@@ -1835,7 +2088,7 @@ fn password_summary_from_row(r: &Row<'_>) -> rusqlite::Result<PasswordEntry> {
         password: None,
         notes: None,
         totp_secret: None,
-        has_totp: totp_blob.is_some(),
+        has_totp,
         totp_algorithm: r
             .get::<_, Option<String>>(5)?
             .unwrap_or_else(|| "SHA1".into()),
@@ -1901,6 +2154,507 @@ mod tests {
 
         vault.quick_unlock_persistent("123456", &prefs).unwrap();
         assert_eq!(vault.key.clone().unwrap().as_bytes(), &key_before);
+    }
+
+    fn add_sample(vault: &Vault) -> i64 {
+        vault
+            .add(NewEntry {
+                title: "Sample".into(),
+                password: "sample-secret".into(),
+                ..NewEntry::default()
+            })
+            .unwrap()
+    }
+
+    #[test]
+    fn new_quick_unlock_records_carry_no_pin_hash() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        add_sample(&vault);
+        let prefs = vault.enable_persistent_quick_unlock("123456").unwrap();
+        assert!(prefs.pin_hash.is_empty());
+        assert!(prefs.is_configured());
+        assert!(!prefs.needs_upgrade());
+        let json = serde_json::to_string(&prefs).unwrap();
+        assert!(!json.contains("$argon2"));
+
+        vault.full_lock();
+        assert!(matches!(
+            vault.quick_unlock_persistent_upgrading("654321", &prefs),
+            Err(Error::InvalidMasterPassword)
+        ));
+        assert!(!vault.is_unlocked());
+        assert!(vault
+            .quick_unlock_persistent_upgrading("123456", &prefs)
+            .unwrap()
+            .is_none());
+        assert_eq!(vault.list(None).unwrap().len(), 1);
+        // The session PIN path keeps working after a persistent unlock.
+        vault.lock();
+        assert!(vault.is_quick_unlock_available());
+        assert!(matches!(
+            vault.quick_unlock("000000"),
+            Err(Error::InvalidMasterPassword)
+        ));
+        vault.quick_unlock("123456").unwrap();
+    }
+
+    /// Exactly what the previous release wrote: PIN hash + hardened wrap.
+    fn previous_release_prefs(pin: &str, key: &DerivedKey) -> QuickUnlockPrefs {
+        let mut salt = [0u8; 32];
+        rand::thread_rng().fill_bytes(&mut salt);
+        let wrapping = argon2_kdf::derive_key_pin(pin, &salt).unwrap();
+        QuickUnlockPrefs {
+            pin_hash: argon2_kdf::hash_master(pin).unwrap(),
+            salt: URL_SAFE_NO_PAD.encode(salt),
+            encrypted_key: URL_SAFE_NO_PAD
+                .encode(aes_gcm_v2::encrypt(&wrapping, key.as_bytes()).unwrap()),
+            failed_attempts: 2,
+            kdf_version: crate::settings::QUICK_UNLOCK_KDF_PIN_HARDENED,
+        }
+    }
+
+    #[test]
+    fn previous_release_quick_unlock_record_unlocks_and_upgrades() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        add_sample(&vault);
+        let old = previous_release_prefs("123456", &vault.key.clone().unwrap());
+        assert!(old.needs_upgrade());
+        vault.full_lock();
+
+        assert!(matches!(
+            vault.quick_unlock_persistent_upgrading("999999", &old),
+            Err(Error::InvalidMasterPassword)
+        ));
+        let upgraded = vault
+            .quick_unlock_persistent_upgrading("123456", &old)
+            .unwrap()
+            .expect("old record must be upgraded");
+        assert!(upgraded.pin_hash.is_empty());
+        assert_eq!(upgraded.failed_attempts, 0);
+        assert_eq!(
+            upgraded.kdf_version,
+            crate::settings::QUICK_UNLOCK_KDF_PIN_HARDENED
+        );
+        assert!(!upgraded.needs_upgrade());
+
+        // Both the old and the upgraded record open the vault.
+        for prefs in [&old, &upgraded] {
+            vault.full_lock();
+            vault.quick_unlock_persistent("123456", prefs).unwrap();
+            assert_eq!(vault.list(None).unwrap().len(), 1);
+            vault.full_lock();
+            assert!(matches!(
+                vault.quick_unlock_persistent("123457", prefs),
+                Err(Error::InvalidMasterPassword)
+            ));
+        }
+    }
+
+    #[test]
+    fn quick_unlock_with_a_stale_key_is_rejected() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("vault.db");
+        let mut vault = unlocked_vault(&path);
+        add_sample(&vault);
+        let prefs = vault.enable_persistent_quick_unlock("123456").unwrap();
+        vault.lock();
+
+        // The master password changes from another process / device.
+        let mut other = Vault::open(&path).unwrap();
+        other.unlock("master password here").unwrap();
+        other
+            .change_master_password("master password here", "a brand new master")
+            .unwrap();
+        drop(other);
+
+        // Correct PIN, but the key it unwraps no longer opens the vault.
+        assert!(matches!(
+            vault.quick_unlock("123456"),
+            Err(Error::KeyMismatch)
+        ));
+        assert!(matches!(
+            vault.quick_unlock_persistent("123456", &prefs),
+            Err(Error::KeyMismatch)
+        ));
+        // A wrong PIN is still reported as a wrong PIN (counts an attempt).
+        assert!(matches!(
+            vault.quick_unlock_persistent("654321", &prefs),
+            Err(Error::InvalidMasterPassword)
+        ));
+        assert!(!vault.is_unlocked());
+        vault.unlock("a brand new master").unwrap();
+        assert_eq!(vault.list(None).unwrap().len(), 1);
+    }
+
+    #[test]
+    fn quick_unlock_key_from_another_vault_is_rejected() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut a = unlocked_vault(&dir.path().join("a.db"));
+        let prefs = a.enable_persistent_quick_unlock("123456").unwrap();
+        let mut b = Vault::open(dir.path().join("b.db")).unwrap();
+        b.set_master_password("another master pw").unwrap();
+        b.full_lock();
+        // Even an empty vault with a verifier detects the foreign key.
+        assert!(matches!(
+            b.quick_unlock_persistent("123456", &prefs),
+            Err(Error::KeyMismatch)
+        ));
+        let (key, upgraded) = derive_quick_unlock_key("123456", &prefs).unwrap();
+        assert!(upgraded.is_none());
+        assert!(matches!(
+            b.install_quick_unlock_key(key.clone()),
+            Err(Error::KeyMismatch)
+        ));
+        a.full_lock();
+        a.install_quick_unlock_key(key).unwrap();
+        assert!(a.is_unlocked());
+        assert!(!a.is_quick_unlock_available());
+    }
+
+    fn key_check_row(vault: &Vault) -> Option<(Vec<u8>, String)> {
+        vault
+            .conn
+            .query_row("SELECT blob, salt FROM key_check WHERE id = 1", [], |r| {
+                Ok((r.get(0)?, r.get(1)?))
+            })
+            .optional()
+            .unwrap()
+    }
+
+    #[test]
+    fn vault_without_key_check_unlocks_and_gains_one() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let id = add_sample(&vault);
+        let prefs = vault.enable_persistent_quick_unlock("123456").unwrap();
+        // What a vault written by an older build looks like.
+        vault.conn.execute_batch("DROP TABLE key_check").unwrap();
+        drop(vault);
+
+        let mut vault = Vault::open(tmp.path()).unwrap();
+        assert!(key_check_row(&vault).is_none(), "table recreated empty");
+        // Quick unlock without a verifier falls back to the entries.
+        vault.quick_unlock_persistent("123456", &prefs).unwrap();
+        assert!(
+            key_check_row(&vault).is_none(),
+            "only master unlock seals it"
+        );
+        vault.full_lock();
+        assert!(matches!(
+            vault.unlock("wrong master pw"),
+            Err(Error::InvalidMasterPassword)
+        ));
+        vault.unlock("master password here").unwrap();
+        assert!(key_check_row(&vault).is_some());
+        assert_eq!(
+            vault
+                .get_without_touch(id)
+                .unwrap()
+                .unwrap()
+                .password
+                .as_deref(),
+            Some("sample-secret")
+        );
+        vault.full_lock();
+        vault.unlock("master password here").unwrap();
+    }
+
+    #[test]
+    fn damaged_or_stale_key_check_never_locks_out_the_master_password() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        add_sample(&vault);
+        let salt = vault.master_salt().unwrap();
+        // Damaged verifier for the current salt.
+        let bogus = key_check::seal(&DerivedKey::new([9u8; 32])).unwrap();
+        vault
+            .conn
+            .execute("UPDATE key_check SET blob = ?", [&bogus])
+            .unwrap();
+        vault.full_lock();
+        assert!(matches!(
+            vault.unlock("wrong master pw"),
+            Err(Error::InvalidMasterPassword)
+        ));
+        vault.unlock("master password here").unwrap();
+        let (blob, row_salt) = key_check_row(&vault).unwrap();
+        assert_ne!(blob, bogus, "resealed");
+        assert_eq!(row_salt, salt);
+
+        // Stale verifier (an older build changed the master password).
+        vault
+            .conn
+            .execute("UPDATE key_check SET salt = 'old-salt'", [])
+            .unwrap();
+        vault.full_lock();
+        vault.unlock("master password here").unwrap();
+        assert_eq!(key_check_row(&vault).unwrap().1, salt);
+    }
+
+    #[test]
+    fn split_unlock_path() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("vault.db");
+        let mut vault = unlocked_vault(&path);
+        let id = add_sample(&vault);
+        vault.full_lock();
+
+        let inputs = vault.unlock_inputs().unwrap().unwrap();
+        fn assert_send<T: Send>(_: &T) {}
+        assert_send(&inputs);
+        let worker_inputs = inputs.clone();
+        let key = std::thread::spawn(move || {
+            assert!(matches!(
+                derive_unlock_key("wrong master pw", &worker_inputs),
+                Err(Error::InvalidMasterPassword)
+            ));
+            derive_unlock_key("master password here", &worker_inputs).unwrap()
+        })
+        .join()
+        .unwrap();
+        assert!(matches!(
+            vault.unlock_with_key(&inputs, DerivedKey::new([1u8; 32])),
+            Err(Error::KeyMismatch)
+        ));
+        assert!(!vault.is_unlocked());
+        vault.unlock_with_key(&inputs, key.clone()).unwrap();
+        assert_eq!(
+            vault
+                .get_without_touch(id)
+                .unwrap()
+                .unwrap()
+                .password
+                .as_deref(),
+            Some("sample-secret")
+        );
+        vault.verify_session_key().unwrap();
+
+        // The master row changes between reading the inputs and installing.
+        vault.full_lock();
+        let stale_inputs = vault.unlock_inputs().unwrap().unwrap();
+        let mut other = Vault::open(&path).unwrap();
+        other.unlock("master password here").unwrap();
+        other
+            .change_master_password("master password here", "a brand new master")
+            .unwrap();
+        drop(other);
+        assert!(matches!(
+            vault.unlock_with_key(&stale_inputs, key.clone()),
+            Err(Error::KeyMismatch)
+        ));
+        let session = Vault::open_with_session_key(&path, key).unwrap();
+        assert!(matches!(
+            session.verify_session_key(),
+            Err(Error::KeyMismatch)
+        ));
+
+        // Vaults without a verifier still go through the PHC hash.
+        vault.conn.execute("DELETE FROM key_check", []).unwrap();
+        let inputs = vault.unlock_inputs().unwrap().unwrap();
+        assert!(matches!(
+            derive_unlock_key("master password here", &inputs),
+            Err(Error::InvalidMasterPassword)
+        ));
+        let key = derive_unlock_key("a brand new master", &inputs).unwrap();
+        vault.unlock_with_key(&inputs, key).unwrap();
+        assert!(key_check_row(&vault).is_some());
+
+        // A v1 vault must migrate through the synchronous path.
+        vault
+            .conn
+            .execute("UPDATE master SET crypto_version = 1", [])
+            .unwrap();
+        assert!(vault.unlock_inputs().unwrap().is_none());
+        let empty = Vault::open(dir.path().join("empty.db")).unwrap();
+        assert!(empty.unlock_inputs().unwrap().is_none());
+    }
+
+    #[test]
+    fn split_quick_unlock_path_upgrades_old_records() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        add_sample(&vault);
+        let old = previous_release_prefs("123456", &vault.key.clone().unwrap());
+        vault.full_lock();
+        let worker_prefs = old.clone();
+        let (key, upgraded) = std::thread::spawn(move || {
+            assert!(matches!(
+                derive_quick_unlock_key("111111", &worker_prefs),
+                Err(Error::InvalidMasterPassword)
+            ));
+            derive_quick_unlock_key("123456", &worker_prefs).unwrap()
+        })
+        .join()
+        .unwrap();
+        let upgraded = upgraded.unwrap();
+        vault.install_quick_unlock_key(key).unwrap();
+        assert_eq!(vault.list(None).unwrap().len(), 1);
+        let (_, again) = derive_quick_unlock_key("123456", &upgraded).unwrap();
+        assert!(again.is_none());
+        let mut exhausted = upgraded;
+        exhausted.failed_attempts = crate::settings::QUICK_UNLOCK_MAX_ATTEMPTS;
+        assert!(matches!(
+            derive_quick_unlock_key("123456", &exhausted),
+            Err(Error::Other(_))
+        ));
+    }
+
+    #[test]
+    fn set_tags_is_atomic_and_nests_inside_transactions() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let vault = unlocked_vault(tmp.path());
+        let id = add_sample(&vault);
+        let updated_at = vault.entry_updated_at(id).unwrap();
+        vault
+            .set_tags(id, &["work".into(), "Work".into(), " home ".into()])
+            .unwrap();
+        assert_eq!(vault.tags_of(id).unwrap(), vec!["home", "work"]);
+        assert_eq!(vault.entry_updated_at(id).unwrap(), updated_at);
+
+        // Inside an outer transaction that commits.
+        vault
+            .transaction(|| vault.set_tags(id, &["bank".into()]))
+            .unwrap();
+        assert_eq!(vault.tags_of(id).unwrap(), vec!["bank"]);
+
+        // Inside an outer transaction that fails: everything rolls back.
+        let result: Result<()> = vault.transaction(|| {
+            vault.set_tags(id, &["travel".into()])?;
+            Err(Error::Other("abort".into()))
+        });
+        assert!(result.is_err());
+        assert_eq!(vault.tags_of(id).unwrap(), vec!["bank"]);
+
+        // A failure inside set_tags itself leaves nothing half-applied.
+        vault
+            .conn
+            .execute_batch(
+                "CREATE TRIGGER no_travel BEFORE INSERT ON tags
+                 WHEN new.name = 'travel' BEGIN SELECT RAISE(ABORT, 'nope'); END;",
+            )
+            .unwrap();
+        assert!(vault
+            .set_tags(id, &["alpha".into(), "travel".into()])
+            .is_err());
+        assert_eq!(vault.tags_of(id).unwrap(), vec!["bank"]);
+        assert!(!vault.all_tags().unwrap().iter().any(|(n, _)| n == "alpha"));
+    }
+
+    #[test]
+    fn summaries_report_totp_without_decrypting() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let vault = unlocked_vault(tmp.path());
+        let with = vault
+            .add(NewEntry {
+                title: "With".into(),
+                password: "p".into(),
+                totp_secret: Some("JBSWY3DPEHPK3PXP".into()),
+                ..NewEntry::default()
+            })
+            .unwrap();
+        add_sample(&vault);
+        vault.set_tags(with, &["t".into()]).unwrap();
+        let list = vault.list(None).unwrap();
+        let by_title = |t: &str| list.iter().find(|e| e.title == t).unwrap().has_totp;
+        assert!(by_title("With"));
+        assert!(!by_title("Sample"));
+        assert!(vault.list(Some("Wit")).unwrap()[0].has_totp);
+        assert!(vault.entries_with_tag("t").unwrap()[0].has_totp);
+    }
+
+    fn user_version(vault: &Vault) -> i32 {
+        vault
+            .conn
+            .query_row("PRAGMA user_version", [], |r| r.get(0))
+            .unwrap()
+    }
+
+    #[test]
+    fn open_records_setup_version_and_repairs_older_files() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("vault.db");
+        let vault = unlocked_vault(&path);
+        let id = add_sample(&vault);
+        vault.set_tags(id, &["keep".into()]).unwrap();
+        assert_eq!(user_version(&vault), schema::setup_version());
+        drop(vault);
+
+        // A file last touched by an older build: unmarked, missing tables.
+        let raw = Connection::open(&path).unwrap();
+        raw.execute_batch(
+            "PRAGMA user_version = 0;
+             DROP TABLE key_check;
+             DROP TABLE nextcloud_folder_mapping;",
+        )
+        .unwrap();
+        drop(raw);
+        let mut vault = Vault::open(&path).unwrap();
+        assert_eq!(user_version(&vault), schema::setup_version());
+        vault.unlock("master password here").unwrap();
+        assert!(key_check_row(&vault).is_some());
+        assert_eq!(vault.tags_of(id).unwrap(), vec!["keep"]);
+        drop(vault);
+
+        // Marked as current but a table is gone: setup runs anyway.
+        let raw = Connection::open(&path).unwrap();
+        raw.execute_batch("DROP TABLE folders;").unwrap();
+        drop(raw);
+        let mut vault = Vault::open(&path).unwrap();
+        vault.create_folder("Work").unwrap();
+        vault.unlock("master password here").unwrap();
+        vault
+            .update(
+                id,
+                UpdateEntry {
+                    password: Some("newer-secret".into()),
+                    ..UpdateEntry::default()
+                },
+            )
+            .unwrap();
+        vault.add_attachment(id, "a.bin", None, b"blob").unwrap();
+        drop(vault);
+
+        // Orphans written by a build without foreign keys are still moved
+        // into the trash on the fast path.
+        let raw = Connection::open(&path).unwrap();
+        raw.execute_batch(
+            "PRAGMA foreign_keys = OFF;
+             INSERT INTO passwords_trash (original_id, title, password_encrypted, deleted_at)
+                 SELECT id, title, password_encrypted, 1 FROM passwords;
+             DELETE FROM passwords;",
+        )
+        .unwrap();
+        drop(raw);
+        let mut vault = Vault::open(&path).unwrap();
+        assert_eq!(user_version(&vault), schema::setup_version());
+        let moved: (i64, i64) = vault
+            .conn
+            .query_row(
+                "SELECT (SELECT COUNT(*) FROM passwords_history_trash),
+                        (SELECT COUNT(*) FROM attachments_trash)",
+                [],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .unwrap();
+        assert_eq!(moved, (1, 1));
+        vault.unlock("master password here").unwrap();
+        let trash = vault.list_trash().unwrap();
+        assert_eq!(trash.len(), 1);
+        let restored = vault
+            .restore_from_trash(trash[0].trash_id)
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            vault.password_history(restored).unwrap()[0].password,
+            "sample-secret"
+        );
+        let attachment = vault.list_attachments(restored).unwrap()[0].id;
+        assert_eq!(
+            vault.get_attachment(attachment).unwrap().unwrap().1,
+            b"blob"
+        );
     }
 
     #[test]
@@ -2046,6 +2800,7 @@ mod tests {
             .unwrap();
         tx.commit().unwrap();
 
+        let old_key = vault.key().unwrap().clone();
         vault
             .change_master_password("old master password", "new master password")
             .unwrap();
@@ -2055,6 +2810,32 @@ mod tests {
             Err(Error::InvalidMasterPassword)
         ));
         vault.unlock("new master password").unwrap();
+        assert_eq!(
+            key_check::check(
+                &vault.conn,
+                vault.key().unwrap(),
+                &vault.master_salt().unwrap()
+            )
+            .unwrap(),
+            KeyStatus::Verified,
+            "verifier resealed inside the same transaction"
+        );
+        // No ciphertext anywhere still opens with the old key.
+        for (table, column) in [
+            ("passwords", "password_encrypted"),
+            ("passwords_trash", "password_encrypted"),
+            ("passwords_history", "password_encrypted"),
+            ("passwords_history_trash", "password_encrypted"),
+            ("attachments", "ciphertext"),
+            ("attachments_trash", "ciphertext"),
+        ] {
+            let blobs = collect_encrypted_blobs(&vault.conn, table, "rowid", column).unwrap();
+            assert!(!blobs.is_empty(), "{table} has rows in this fixture");
+            for (_, blob) in blobs {
+                assert!(aes_gcm_v2::decrypt(&old_key, &blob).is_err(), "{table}");
+                assert!(aes_gcm_v2::decrypt(vault.key().unwrap(), &blob).is_ok());
+            }
+        }
 
         let active = vault.get_without_touch(active_id).unwrap().unwrap();
         assert_eq!(active.password.as_deref(), Some("active-current"));
