@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 use std::time::Instant;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(default)]
 pub struct TunedParams {
     pub t_cost: u32,
     pub m_cost_kib: u32,

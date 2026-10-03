@@ -77,13 +77,17 @@ fn now_secs() -> i64 {
     chrono::Utc::now().timestamp()
 }
 
-fn fetch_range(prefix: &str) -> Result<String> {
-    let url = format!("{HIBP_RANGE_URL}{prefix}");
-    let resp = reqwest::blocking::Client::builder()
+fn http_client() -> Result<reqwest::blocking::Client> {
+    reqwest::blocking::Client::builder()
         .timeout(Duration::from_secs(15))
         .user_agent("AshyPass/3.0")
         .build()
-        .map_err(|e| Error::Other(format!("hibp client: {e}")))?
+        .map_err(|e| Error::Other(format!("hibp client: {e}")))
+}
+
+fn fetch_range(client: &reqwest::blocking::Client, prefix: &str) -> Result<String> {
+    let url = format!("{HIBP_RANGE_URL}{prefix}");
+    let resp = client
         .get(&url)
         .header("Add-Padding", "true")
         .send()
@@ -119,66 +123,129 @@ fn parse_body(body: &str, suffix: &str) -> BreachStatus {
 /// because parse() only matches the suffix — padding suffixes are random so
 /// the match is statistically negligible).
 pub fn check(password: &str) -> Result<BreachStatus> {
-    if password.is_empty() {
-        return Ok(BreachStatus::NotFound);
-    }
-    let hex = sha1_hex_upper(password);
-    let (prefix, suffix) = hex.split_at(5);
-    let mut cache = load_cache();
-    let now = now_secs();
-    let body = match cache.prefixes.get(prefix) {
-        Some(entry) if now - entry.fetched_at < CACHE_TTL_SECS => entry.body.clone(),
-        _ => {
-            let body = fetch_range(prefix)?;
-            cache.prefixes.insert(
-                prefix.to_string(),
-                CacheEntry {
-                    fetched_at: now,
-                    body: body.clone(),
-                },
-            );
-            let _ = save_cache(&cache);
-            body
-        }
-    };
-    Ok(parse_body(&body, suffix))
+    into_result(check_many_report(&[password]))?
+        .pop()
+        .ok_or_else(|| Error::Other("hibp: no result".into()))
 }
 
 /// Batch check using the same in-memory cache snapshot for the run.
-/// Returns the status for each input in input order.
+/// Returns the status for each input in input order, or the first network
+/// error if any password could not be checked. Use `check_many_report` to
+/// keep the partial results instead.
 pub fn check_many(passwords: &[&str]) -> Result<Vec<BreachStatus>> {
+    into_result(check_many_report(passwords))
+}
+
+/// Result of `check_many_report`.
+#[derive(Debug, Default)]
+pub struct BatchReport {
+    /// One entry per input, in input order. `None` when the password's range
+    /// could not be fetched and nothing (not even a stale copy) was cached.
+    pub statuses: Vec<Option<BreachStatus>>,
+    /// Distinct network errors encountered. Never includes hash prefixes.
+    pub errors: Vec<String>,
+}
+
+/// Batch check that keeps going after a network error. Each distinct hash
+/// prefix is fetched at most once over a single HTTP client; a failed fetch
+/// falls back to a stale cache entry when there is one. Whatever was fetched
+/// is written to the cache even if other prefixes failed.
+pub fn check_many_report(passwords: &[&str]) -> BatchReport {
     let mut cache = load_cache();
-    let now = now_secs();
-    let mut out = Vec::with_capacity(passwords.len());
+    let mut client: Option<std::result::Result<reqwest::blocking::Client, String>> = None;
+    let (report, dirty) = check_with(passwords, &mut cache, now_secs(), |prefix| {
+        let client = client
+            .get_or_insert_with(|| http_client().map_err(|e| e.to_string()))
+            .as_ref()
+            .map_err(|e| Error::Other(e.clone()))?;
+        fetch_range(client, prefix)
+    });
+    if dirty {
+        if let Err(error) = save_cache(&cache) {
+            log::warn!("could not save HIBP cache: {error}");
+        }
+    }
+    report
+}
+
+fn into_result(report: BatchReport) -> Result<Vec<BreachStatus>> {
+    let statuses: Option<Vec<BreachStatus>> = report.statuses.into_iter().collect();
+    statuses.ok_or_else(|| {
+        Error::Other(
+            report
+                .errors
+                .into_iter()
+                .next()
+                .unwrap_or_else(|| "hibp: check failed".into()),
+        )
+    })
+}
+
+/// Core of the batch check with the network injected. Returns the report
+/// and whether `cache` gained entries.
+fn check_with<F>(
+    passwords: &[&str],
+    cache: &mut Cache,
+    now: i64,
+    mut fetch: F,
+) -> (BatchReport, bool)
+where
+    F: FnMut(&str) -> Result<String>,
+{
+    let hashes: Vec<Option<String>> = passwords
+        .iter()
+        .map(|pw| (!pw.is_empty()).then(|| sha1_hex_upper(pw)))
+        .collect();
+
+    let mut errors: Vec<String> = Vec::new();
     let mut dirty = false;
-    for pw in passwords {
-        if pw.is_empty() {
-            out.push(BreachStatus::NotFound);
+    let mut seen: std::collections::HashSet<&str> = std::collections::HashSet::new();
+    for hex in hashes.iter().flatten() {
+        let prefix = &hex[..5];
+        if !seen.insert(prefix) {
             continue;
         }
-        let hex = sha1_hex_upper(pw);
-        let (prefix, suffix) = hex.split_at(5);
-        let body = match cache.prefixes.get(prefix) {
-            Some(entry) if now - entry.fetched_at < CACHE_TTL_SECS => entry.body.clone(),
-            _ => {
-                let body = fetch_range(prefix)?;
+        let fresh = cache
+            .prefixes
+            .get(prefix)
+            .is_some_and(|entry| now - entry.fetched_at < CACHE_TTL_SECS);
+        if fresh {
+            continue;
+        }
+        match fetch(prefix) {
+            Ok(body) => {
                 cache.prefixes.insert(
                     prefix.to_string(),
                     CacheEntry {
                         fetched_at: now,
-                        body: body.clone(),
+                        body,
                     },
                 );
                 dirty = true;
-                body
             }
-        };
-        out.push(parse_body(&body, suffix));
+            Err(error) => {
+                let message = error.to_string();
+                if !errors.contains(&message) {
+                    errors.push(message);
+                }
+            }
+        }
     }
-    if dirty {
-        let _ = save_cache(&cache);
-    }
-    Ok(out)
+
+    let statuses = hashes
+        .iter()
+        .map(|hex| match hex {
+            None => Some(BreachStatus::NotFound),
+            Some(hex) => {
+                let (prefix, suffix) = hex.split_at(5);
+                cache
+                    .prefixes
+                    .get(prefix)
+                    .map(|entry| parse_body(&entry.body, suffix))
+            }
+        })
+        .collect();
+    (BatchReport { statuses, errors }, dirty)
 }
 
 #[cfg(test)]
@@ -200,6 +267,73 @@ mod tests {
             "ABCDE0123456789ABCDEF0123456789ABCDEF:42\n0000000000000000000000000000000000A:7\n";
         let r = parse_body(body, "ABCDE0123456789ABCDEF0123456789ABCDEF");
         assert!(matches!(r, BreachStatus::Found { count: 42 }));
+    }
+
+    #[test]
+    fn batch_dedupes_prefixes_continues_on_error_and_caches() {
+        // "password" and "password" share a prefix; "hunter2" has another.
+        let pw_hex = sha1_hex_upper("password");
+        let hunter_hex = sha1_hex_upper("hunter2");
+        let mut cache = Cache::default();
+        let mut calls: Vec<String> = Vec::new();
+        let (report, dirty) = check_with(
+            &["password", "", "hunter2", "password"],
+            &mut cache,
+            1_000,
+            |prefix| {
+                calls.push(prefix.to_string());
+                if prefix == &pw_hex[..5] {
+                    Ok(format!("{}:3\n", &pw_hex[5..]))
+                } else {
+                    Err(Error::Other("hibp http: offline".into()))
+                }
+            },
+        );
+        assert_eq!(calls.len(), 2, "each prefix fetched once");
+        assert!(dirty);
+        assert!(matches!(
+            report.statuses[0],
+            Some(BreachStatus::Found { count: 3 })
+        ));
+        assert!(matches!(report.statuses[1], Some(BreachStatus::NotFound)));
+        assert!(report.statuses[2].is_none());
+        assert!(matches!(
+            report.statuses[3],
+            Some(BreachStatus::Found { count: 3 })
+        ));
+        assert_eq!(report.errors, vec!["hibp http: offline".to_string()]);
+        assert!(!report.errors[0].contains(&hunter_hex[..5]));
+        assert!(cache.prefixes.contains_key(&pw_hex[..5]));
+        assert!(into_result(report).is_err());
+
+        // Second run: fresh cache hit, no fetch at all.
+        let (report, dirty) = check_with(&["password"], &mut cache, 2_000, |_| {
+            panic!("must not fetch a fresh prefix")
+        });
+        assert!(!dirty);
+        assert!(into_result(report).is_ok());
+    }
+
+    #[test]
+    fn stale_cache_is_used_when_refresh_fails() {
+        let hex = sha1_hex_upper("password");
+        let mut cache = Cache::default();
+        cache.prefixes.insert(
+            hex[..5].to_string(),
+            CacheEntry {
+                fetched_at: 0,
+                body: format!("{}:9\n", &hex[5..]),
+            },
+        );
+        let (report, dirty) = check_with(&["password"], &mut cache, CACHE_TTL_SECS + 1, |_| {
+            Err(Error::Other("offline".into()))
+        });
+        assert!(!dirty);
+        assert_eq!(report.errors.len(), 1);
+        assert!(matches!(
+            report.statuses[0],
+            Some(BreachStatus::Found { count: 9 })
+        ));
     }
 
     #[test]

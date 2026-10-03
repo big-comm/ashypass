@@ -259,43 +259,180 @@ CREATE TABLE IF NOT EXISTS nextcloud_tombstones (
 )
 "#;
 
+/// Vault key verifier. See `db::key_check`. Additive: builds that predate it
+/// simply ignore the table.
+pub const CREATE_KEY_CHECK: &str = r#"
+CREATE TABLE IF NOT EXISTS key_check (
+    id    INTEGER PRIMARY KEY CHECK (id = 1),
+    blob  BLOB    NOT NULL,
+    salt  TEXT    NOT NULL
+)
+"#;
+
+/// Columns introduced after the initial Python release. Each statement fails
+/// harmlessly ("duplicate column") on databases that already have it.
+pub const LEGACY_COLUMN_ALTERS: &[&str] = &[
+    "ALTER TABLE master ADD COLUMN crypto_version INTEGER NOT NULL DEFAULT 1",
+    "ALTER TABLE passwords ADD COLUMN totp_secret_encrypted BLOB",
+    "ALTER TABLE passwords ADD COLUMN totp_algorithm TEXT DEFAULT 'SHA1'",
+    "ALTER TABLE passwords ADD COLUMN totp_digits INTEGER DEFAULT 6",
+    "ALTER TABLE passwords ADD COLUMN totp_period INTEGER DEFAULT 30",
+    "ALTER TABLE passwords ADD COLUMN category TEXT",
+    "ALTER TABLE passwords ADD COLUMN favorite INTEGER DEFAULT 0",
+];
+
+const SEED_SYNC_META: &str =
+    "INSERT OR IGNORE INTO sync_meta (id, generation, last_synced_generation, last_remote_generation)
+     VALUES (1, 0, 0, 0)";
+
+/// Every idempotent setup statement run after the core tables exist and the
+/// legacy columns were added, in order. Adding a statement here automatically
+/// changes `setup_version()`, so existing databases re-run setup once.
+const SETUP_STATEMENTS: &[&str] = &[
+    CREATE_PASSWORDS_HISTORY,
+    CREATE_HISTORY_INDEX,
+    CREATE_PASSWORDS_TRASH,
+    CREATE_TRASH_INDEX,
+    CREATE_PASSWORDS_HISTORY_TRASH,
+    CREATE_ATTACHMENTS_TRASH,
+    CREATE_TAGS,
+    CREATE_ENTRY_TAGS,
+    CREATE_ENTRY_TAGS_INDEX,
+    CREATE_FOLDERS,
+    CREATE_ATTACHMENTS,
+    CREATE_ATTACHMENTS_INDEX,
+    CREATE_SYNC_META,
+    SEED_SYNC_META,
+    CREATE_NEXTCLOUD_MAPPING,
+    CREATE_NEXTCLOUD_FOLDER_MAPPING,
+    CREATE_NEXTCLOUD_TOMBSTONES,
+    CREATE_KEY_CHECK,
+    CREATE_SEARCH_META,
+];
+
+/// Bump when setup gains a *data* step that is not visible in the DDL text
+/// above (the DDL itself is fingerprinted automatically).
+const SETUP_DATA_REVISION: u32 = 1;
+
+/// Value stored in `PRAGMA user_version` once full setup has completed on a
+/// database. Derived from the text of every setup statement, so any schema
+/// change made by a later build forces setup to run again. Always positive
+/// and non-zero (0 is SQLite's default for a never-marked file).
+pub fn setup_version() -> i32 {
+    let mut hash: u32 = 0x811c_9dc5;
+    let mut feed = |bytes: &[u8]| {
+        for byte in bytes {
+            hash ^= u32::from(*byte);
+            hash = hash.wrapping_mul(0x0100_0193);
+        }
+        hash ^= 0xff;
+        hash = hash.wrapping_mul(0x0100_0193);
+    };
+    feed(CREATE_MASTER.as_bytes());
+    feed(CREATE_PASSWORDS.as_bytes());
+    for statement in LEGACY_COLUMN_ALTERS
+        .iter()
+        .chain(SETUP_STATEMENTS)
+        .chain(CREATE_INDEXES)
+    {
+        feed(statement.as_bytes());
+    }
+    feed(CREATE_PASSWORDS_FTS.as_bytes());
+    feed(FTS_READY_KEY.as_bytes());
+    feed(&SETUP_DATA_REVISION.to_le_bytes());
+    ((hash & 0x7fff_ffff) | 1) as i32
+}
+
+/// Tables full setup guarantees. Checked on the fast open path as a guard
+/// against a file whose `user_version` claims more than it holds.
+const REQUIRED_TABLES: &[&str] = &[
+    "master",
+    "passwords",
+    "passwords_history",
+    "passwords_trash",
+    "passwords_history_trash",
+    "attachments_trash",
+    "tags",
+    "entry_tags",
+    "folders",
+    "attachments",
+    "sync_meta",
+    "nextcloud_mapping",
+    "nextcloud_folder_mapping",
+    "nextcloud_tombstones",
+    "key_check",
+    "search_meta",
+    "passwords_fts",
+];
+
+pub fn required_tables_present(conn: &rusqlite::Connection) -> rusqlite::Result<bool> {
+    let mut stmt = conn
+        .prepare_cached("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = ?")?;
+    for table in REQUIRED_TABLES {
+        let count: i64 = stmt.query_row([table], |r| r.get(0))?;
+        if count != 1 {
+            return Ok(false);
+        }
+    }
+    Ok(true)
+}
+
+/// Add the columns from `LEGACY_COLUMN_ALTERS` that are missing.
+pub fn add_legacy_columns(conn: &rusqlite::Connection) {
+    for sql in LEGACY_COLUMN_ALTERS {
+        // Ignore "duplicate column" — the cheapest way is to attempt and swallow.
+        let _ = conn.execute(sql, []);
+    }
+}
+
 pub fn initialize(conn: &rusqlite::Connection) -> rusqlite::Result<()> {
+    initialize_reporting_search(conn).map(|_| ())
+}
+
+/// Full idempotent setup. Returns whether the full-text search index is
+/// available; when it is not (SQLite built without FTS5), setup should be
+/// retried on the next open, as it always was.
+pub fn initialize_reporting_search(conn: &rusqlite::Connection) -> rusqlite::Result<bool> {
     conn.execute(CREATE_MASTER, [])?;
     conn.execute(CREATE_PASSWORDS, [])?;
-    conn.execute(CREATE_PASSWORDS_HISTORY, [])?;
-    conn.execute(CREATE_HISTORY_INDEX, [])?;
-    conn.execute(CREATE_PASSWORDS_TRASH, [])?;
-    conn.execute(CREATE_TRASH_INDEX, [])?;
-    conn.execute(CREATE_PASSWORDS_HISTORY_TRASH, [])?;
-    conn.execute(CREATE_ATTACHMENTS_TRASH, [])?;
-    conn.execute(CREATE_TAGS, [])?;
-    conn.execute(CREATE_ENTRY_TAGS, [])?;
-    conn.execute(CREATE_ENTRY_TAGS_INDEX, [])?;
-    conn.execute(CREATE_FOLDERS, [])?;
-    conn.execute(CREATE_ATTACHMENTS, [])?;
-    conn.execute(CREATE_ATTACHMENTS_INDEX, [])?;
-    conn.execute(CREATE_SYNC_META, [])?;
-    conn.execute(
-        "INSERT OR IGNORE INTO sync_meta (id, generation, last_synced_generation, last_remote_generation)
-         VALUES (1, 0, 0, 0)",
-        [],
-    )?;
-    conn.execute(CREATE_NEXTCLOUD_MAPPING, [])?;
-    conn.execute(CREATE_NEXTCLOUD_FOLDER_MAPPING, [])?;
-    conn.execute(CREATE_NEXTCLOUD_TOMBSTONES, [])?;
-    for s in CREATE_INDEXES {
-        conn.execute(s, [])?;
+    // Python-era databases may lack columns the indexes below refer to.
+    add_legacy_columns(conn);
+    for statement in SETUP_STATEMENTS.iter().chain(CREATE_INDEXES) {
+        conn.execute(statement, [])?;
     }
-    conn.execute(CREATE_SEARCH_META, [])?;
     migrate_orphaned_trash_children(conn)?;
-    let _ = initialize_password_search(conn);
-    Ok(())
+    Ok(initialize_password_search(conn).is_ok())
+}
+
+/// True when trash-related history or attachment rows exist whose entry is
+/// gone. Read-only, so it is cheap to run on every open.
+pub fn has_orphaned_trash_children(conn: &rusqlite::Connection) -> rusqlite::Result<bool> {
+    conn.query_row(
+        "SELECT EXISTS (
+             SELECT 1 FROM passwords_history h
+               JOIN passwords_trash t ON t.original_id = h.entry_id
+               LEFT JOIN passwords p ON p.id = h.entry_id
+              WHERE p.id IS NULL)
+         OR EXISTS (
+             SELECT 1 FROM attachments a
+               JOIN passwords_trash t ON t.original_id = a.entry_id
+               LEFT JOIN passwords p ON p.id = a.entry_id
+              WHERE p.id IS NULL)
+         OR EXISTS (
+             SELECT 1 FROM passwords_history
+              WHERE id IN (SELECT original_history_id FROM passwords_history_trash))
+         OR EXISTS (
+             SELECT 1 FROM attachments
+              WHERE id IN (SELECT original_attachment_id FROM attachments_trash))",
+        [],
+        |r| r.get(0),
+    )
 }
 
 /// Older builds left history and attachments orphaned when foreign keys were
 /// disabled. Move those rows under the matching trash record before enabling
 /// strict enforcement. The migration is additive and transactional.
-fn migrate_orphaned_trash_children(conn: &rusqlite::Connection) -> rusqlite::Result<()> {
+pub fn migrate_orphaned_trash_children(conn: &rusqlite::Connection) -> rusqlite::Result<()> {
     let tx = conn.unchecked_transaction()?;
     tx.execute_batch(
         r#"
