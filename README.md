@@ -36,12 +36,25 @@ The project ships as a **multi-crate workspace**:
 
 ## Features
 
+### Interface
+- Organised around tasks: **My passwords**, **Verification codes**, **Create password**, then **Backups** and **Settings**. Locking is a button; external drives live under *Tools* in the main menu.
+- *My passwords*: one list with folder and favourite filters, a visible *Copy password* button and a *More* menu per row; clicking a row opens its details. Wide windows show list and details side by side, narrow ones navigate between them (libadwaita breakpoints). The list is a virtualised `GtkListView`.
+- One unlock screen whose text always matches the method (master password or PIN), with a Caps Lock warning; key derivation runs off the main thread.
+- *Create password* gives a ready 20-character password with its real length and an *estimated* strength; *Save to vault…* keeps the value through an unlock.
+- *Backups* shows the last copy, what it contains and which password restores it. Imports start from the source app, show a preview and report skipped items; plain CSV exports require the master password and a warning.
+- Follows the system light/dark preference by default.
+
+### Data safety
+- Restoring a backup validates it completely, keeps the replaced vault as `passwords.db.before-restore-<timestamp>` and never changes anything on a wrong password.
+- Vaults, PIN records and settings written by 3.0.1 open unchanged and are upgraded in place (covered by `crates/ashypass-core/tests/legacy_vault.rs`); 3.0.1 can still read a vault used by this version.
+- Signing out of Nextcloud Passwords forgets the sync mappings, and a sync refuses to run when none of the mapped entries exist on the server.
+
 ### Security
 - **AES-256-GCM** authenticated encryption per field (password, notes, TOTP secret).
 - **Argon2id** master verification *and* per-entry key derivation (`t=3, m=64 MiB, p=4` by default, auto-tuned at first run).
 - **Quick Unlock** with PIN-wrapped vault-key state stored in Secret Service (GNOME Keyring / KWallet), never in plaintext settings.
-- **Automatic session lock** with configurable idle timeout and pre-lock warning toast.
-- **Clipboard auto-clear** after a configurable interval; only clears if the contents are still the secret you copied.
+- **Automatic session lock** with configurable idle timeout, a pre-lock warning banner, and locking when the screen locks or the computer sleeps.
+- **Clipboard auto-clear** after a configurable interval; only clears if the contents are still the secret you copied, and marks copies with `x-kde-passwordManagerHint` so history managers that honour it skip them.
 - **HIBP audit** with k-anonymity (only the first 5 hex digits of the SHA-1 hash are sent).
 - **Soft-delete trash** with configurable retention; entries are recoverable until purge.
 - Vault FIDO2 configuration is preserved but disabled until CTAP2 registration and assertion are fully implemented. LUKS FIDO2 enrollment remains available for external drives.
