@@ -8,7 +8,26 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Instant;
 
-const WARNING_SECONDS: u64 = 10;
+/// Warn this long before locking. WCAG's timing guidance asks for at least
+/// 20 seconds to react; shorter timeouts warn for half their length.
+const WARNING_SECONDS: u64 = 20;
+
+/// An open form holds auto-lock off, but not forever: an unattended machine
+/// with an entry dialog open must still lock. The cap is generous for real
+/// editing and scales with the user's own timeout.
+const MIN_INHIBIT_CAP_SECONDS: u64 = 10 * 60;
+const INHIBIT_CAP_MULTIPLIER: u64 = 3;
+
+pub fn inhibit_cap_seconds(timeout_seconds: u64) -> u64 {
+    timeout_seconds
+        .saturating_mul(INHIBIT_CAP_MULTIPLIER)
+        .max(MIN_INHIBIT_CAP_SECONDS)
+}
+
+pub fn warning_delay_seconds(timeout_seconds: u64) -> u64 {
+    let warning = WARNING_SECONDS.min(timeout_seconds / 2);
+    timeout_seconds.saturating_sub(warning).max(1)
+}
 
 pub struct SessionManager {
     pub timeout_seconds: u64,
@@ -21,6 +40,8 @@ pub struct SessionManager {
     /// Outstanding `inhibit` calls. While non-zero the lock timer re-arms
     /// instead of locking. See `SessionManager::inhibit`.
     inhibitors: usize,
+    /// When the first outstanding inhibitor was taken.
+    inhibited_since: Option<Instant>,
 }
 
 impl Default for SessionManager {
@@ -34,6 +55,7 @@ impl Default for SessionManager {
             lock_callback: None,
             warning_callback: None,
             inhibitors: 0,
+            inhibited_since: None,
         }
     }
 }
@@ -66,13 +88,20 @@ impl SessionManager {
     /// inhibitor is released and the remaining idle time elapses. Every
     /// `inhibit` must be paired with exactly one `release`.
     pub fn inhibit(this: &Rc<RefCell<Self>>) {
-        this.borrow_mut().inhibitors += 1;
+        let mut s = this.borrow_mut();
+        if s.inhibitors == 0 {
+            s.inhibited_since = Some(Instant::now());
+        }
+        s.inhibitors += 1;
     }
 
     pub fn release(this: &Rc<RefCell<Self>>) {
         {
             let mut s = this.borrow_mut();
             s.inhibitors = s.inhibitors.saturating_sub(1);
+            if s.inhibitors == 0 {
+                s.inhibited_since = None;
+            }
             if s.inhibitors > 0 || !s.authenticated {
                 return;
             }
@@ -111,6 +140,15 @@ impl SessionManager {
         s.cancel_timers();
     }
 
+    /// An inhibitor is active and has not yet exceeded its cap.
+    fn is_held_off(&self) -> bool {
+        let cap = inhibit_cap_seconds(self.timeout_seconds);
+        self.inhibitors > 0
+            && self
+                .inhibited_since
+                .is_some_and(|since| since.elapsed().as_secs() + WARNING_SECONDS < cap)
+    }
+
     fn cancel_timers(&mut self) {
         if let Some(id) = self.timeout_id.take() {
             id.remove();
@@ -136,15 +174,16 @@ impl SessionManager {
         }
 
         let timeout_secs = this.borrow().timeout_seconds;
-        let warn_delay = timeout_secs.saturating_sub(WARNING_SECONDS).max(1);
+        let warn_delay = warning_delay_seconds(timeout_secs);
 
         let this_warn = this.clone();
         let warn_id = glib::timeout_add_seconds_local(warn_delay as u32, move || {
             let cb = {
                 let mut s = this_warn.borrow_mut();
                 s.warning_id = None;
-                // No point warning about a lock that is being held off.
-                if s.inhibitors > 0 {
+                // No point warning about a lock that is being held off —
+                // unless the hold is about to run out.
+                if s.is_held_off() {
                     None
                 } else {
                     s.warning_callback.clone()
@@ -164,7 +203,7 @@ impl SessionManager {
             let inhibited = {
                 let mut s = this_lock.borrow_mut();
                 s.timeout_id = None;
-                s.inhibitors > 0
+                s.is_held_off()
             };
             if inhibited {
                 SessionManager::reset_timeout(&this_lock);
@@ -177,5 +216,24 @@ impl SessionManager {
         let mut s = this.borrow_mut();
         s.warning_id = Some(warn_id);
         s.timeout_id = Some(lock_id);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn inhibition_is_capped_but_generous() {
+        assert_eq!(inhibit_cap_seconds(30), MIN_INHIBIT_CAP_SECONDS);
+        assert_eq!(inhibit_cap_seconds(3600), 3 * 3600);
+    }
+
+    #[test]
+    fn warning_leaves_time_to_react_without_firing_at_once() {
+        assert_eq!(warning_delay_seconds(300), 280);
+        assert_eq!(warning_delay_seconds(30), 15);
+        assert_eq!(warning_delay_seconds(15), 8);
+        assert!(warning_delay_seconds(1) >= 1);
     }
 }

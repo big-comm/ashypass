@@ -21,6 +21,7 @@ mod audit;
 mod cloud;
 mod import_export;
 mod nextcloud;
+mod public_api;
 mod security;
 mod trash;
 mod two_factor;
@@ -32,6 +33,7 @@ use import_export::*;
 use nextcloud::*;
 // Re-exported for the dev-only preview harness in `ui::preview`.
 pub(crate) use nextcloud::{present_sync_failure_dialog, present_sync_success_dialog};
+pub use public_api::*;
 use security::*;
 use trash::*;
 use two_factor::*;
@@ -468,7 +470,7 @@ fn restore_destination() -> std::path::PathBuf {
     ashypass_core::config::data_dir().join(format!("passwords-restored-{stamp}-{:08x}.db", nonce))
 }
 
-fn run_background<T, F, C>(task: F, complete: C)
+pub(crate) fn run_background<T, F, C>(task: F, complete: C)
 where
     T: Send + 'static,
     F: FnOnce() -> T + Send + 'static,

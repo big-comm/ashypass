@@ -20,6 +20,9 @@ use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::time::Duration;
 
+#[path = "vault_folders.rs"]
+mod folders;
+
 type ChangeListener = Rc<dyn Fn() + 'static>;
 type EncryptedEntryRow = (i64, Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>);
 type EncryptedPayload = (Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>);

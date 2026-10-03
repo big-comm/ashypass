@@ -11,6 +11,8 @@ use std::fs;
 use std::rc::Rc;
 use std::time::SystemTime;
 
+use adw::prelude::*;
+
 use crate::events::EventBus;
 use crate::session::SessionManager;
 
@@ -35,6 +37,10 @@ pub struct AppState {
     /// `update_settings` (the settings dialog keeps its own copy, and the CLI
     /// may run concurrently) are still picked up.
     settings: RefCell<CachedSettings>,
+    /// Dialogs that show or edit vault data. Locking closes every one of them:
+    /// a dialog left open over a locked vault would keep showing secrets, and
+    /// acting on it would fail with a raw crypto error.
+    sensitive_dialogs: RefCell<Vec<adw::Dialog>>,
 }
 
 struct CachedSettings {
@@ -89,7 +95,31 @@ impl AppState {
                 value: Rc::new(Settings::load()),
                 stamp: FileStamp::current(),
             }),
+            sensitive_dialogs: RefCell::new(Vec::new()),
         })
+    }
+
+    /// Register a dialog to be closed when the vault locks. It unregisters
+    /// itself when closed by any other route.
+    pub fn track_sensitive_dialog(self: &Rc<Self>, dialog: &impl IsA<adw::Dialog>) {
+        let dialog = dialog.upcast_ref::<adw::Dialog>().clone();
+        let weak = Rc::downgrade(self);
+        dialog.connect_closed(move |closed| {
+            if let Some(state) = weak.upgrade() {
+                state.sensitive_dialogs.borrow_mut().retain(|d| d != closed);
+            }
+        });
+        self.sensitive_dialogs.borrow_mut().push(dialog);
+    }
+
+    /// Close every tracked dialog. Returns how many were open.
+    pub fn close_sensitive_dialogs(&self) -> usize {
+        // Take the list first: `close()` re-enters the `closed` handler above.
+        let open: Vec<adw::Dialog> = std::mem::take(&mut *self.sensitive_dialogs.borrow_mut());
+        for dialog in &open {
+            dialog.force_close();
+        }
+        open.len()
     }
 
     /// Current settings, re-parsed only when `settings.json` changed on disk.

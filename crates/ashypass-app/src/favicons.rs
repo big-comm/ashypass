@@ -8,7 +8,7 @@ use ashypass_core::favicons;
 use gtk::glib;
 use gtk::prelude::*;
 use std::cell::RefCell;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::{mpsc, Arc, LazyLock, Mutex};
 
@@ -44,16 +44,28 @@ static FETCHER: LazyLock<mpsc::Sender<FetchRequest>> = LazyLock::new(|| {
 
 thread_local! {
     static CACHE: RefCell<HashMap<String, Option<PathBuf>>> = RefCell::new(HashMap::new());
-    static PENDING: RefCell<HashSet<String>> = RefCell::new(HashSet::new());
+    /// Images waiting for a host's icon. Every image that asks while a fetch
+    /// is in flight is served when it lands, not just the first one.
+    static WAITERS: RefCell<HashMap<String, Vec<glib::WeakRef<gtk::Image>>>> =
+        RefCell::new(HashMap::new());
+}
+
+/// Tag stored on the image so a late fetch result is only applied if the
+/// image still shows the same host. List rows are recycled: by the time an
+/// icon arrives the image may belong to a different entry.
+fn tag_for(host: &str) -> String {
+    format!("favicon:{host}")
 }
 
 pub fn apply(image: &gtk::Image, url: Option<&str>, pixel: i32) {
     image.set_pixel_size(pixel);
 
     let Some(host) = url.and_then(favicons::host_of) else {
+        image.set_widget_name("");
         image.set_icon_name(Some(FALLBACK_ICON));
         return;
     };
+    image.set_widget_name(&tag_for(&host));
 
     if let Some(cached) = CACHE.with(|cache| cache.borrow().get(&host).cloned()) {
         match cached {
@@ -72,12 +84,16 @@ pub fn apply(image: &gtk::Image, url: Option<&str>, pixel: i32) {
     }
 
     image.set_icon_name(Some(FALLBACK_ICON));
-    let already_pending = PENDING.with(|pending| !pending.borrow_mut().insert(host.clone()));
-    if already_pending {
+    let first_waiter = WAITERS.with(|waiters| {
+        let mut waiters = waiters.borrow_mut();
+        let list = waiters.entry(host.clone()).or_default();
+        list.push(image.downgrade());
+        list.len() == 1
+    });
+    if !first_waiter {
         return;
     }
 
-    let image_weak = image.downgrade();
     let (reply, rx) = mpsc::channel();
     if FETCHER
         .send(FetchRequest {
@@ -86,8 +102,8 @@ pub fn apply(image: &gtk::Image, url: Option<&str>, pixel: i32) {
         })
         .is_err()
     {
-        PENDING.with(|pending| {
-            pending.borrow_mut().remove(&host);
+        WAITERS.with(|waiters| {
+            waiters.borrow_mut().remove(&host);
         });
         return;
     }
@@ -101,12 +117,15 @@ pub fn apply(image: &gtk::Image, url: Option<&str>, pixel: i32) {
         CACHE.with(|cache| {
             cache.borrow_mut().insert(host.clone(), path_opt.clone());
         });
-        PENDING.with(|pending| {
-            pending.borrow_mut().remove(&host);
-        });
+        let waiting = WAITERS.with(|waiters| waiters.borrow_mut().remove(&host));
         if let Some(path) = path_opt {
-            if let Some(img) = image_weak.upgrade() {
-                img.set_from_file(Some(&path));
+            let tag = tag_for(&host);
+            for image in waiting.into_iter().flatten() {
+                if let Some(image) = image.upgrade() {
+                    if image.widget_name() == tag {
+                        image.set_from_file(Some(&path));
+                    }
+                }
             }
         }
         glib::ControlFlow::Break

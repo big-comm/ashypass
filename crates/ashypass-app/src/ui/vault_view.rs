@@ -1,662 +1,739 @@
-//! Vault view — CRUD, search, favorites, categories, auth.
+//! "My passwords": find an access, copy its password, open its details.
 //!
-//! Ported from the original `ui/vault_view.py`. Two pages in a `Gtk.Stack`:
-//! an auth/setup screen when locked, and the password list when unlocked.
+//! Layout: an `adw::NavigationSplitView` with the list on the left and the
+//! details of the open access on the right. Narrow windows collapse it, so
+//! opening an access replaces the list and *Back* returns to it (the window
+//! drives `collapsed` with a breakpoint).
+//!
+//! Each row shows the name, the account and the domain, a visible *Copy
+//! password* button and a *More* menu. Clicking the row opens the details; it
+//! never copies silently. Folders and favourites are filters over the same
+//! collection, and the search only searches this page.
+//!
+//! The list is a `gtk::ListView`: only visible rows get widgets, so typing in
+//! the search box no longer rebuilds thousands of buttons.
 
 use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
-use adw::prelude::*;
-use ashypass_core::config::MIN_MASTER_PASSWORD_LENGTH;
-use ashypass_core::db::vault::{NewEntry, PasswordEntry, UpdateEntry};
-use ashypass_core::generator::{
-    generate_passphrase, generate_password, generate_pin, PasswordConfig,
+use crate::ui::entry_form::{self, EntryFormOptions};
+use crate::ui::widgets::{
+    account_line, copy_secret, display_domain, openable_url, Chrome, EmptyState,
 };
-use ashypass_core::settings::Settings;
-use gtk::glib;
+use adw::prelude::*;
+use ashypass_core::db::vault::PasswordEntry;
+use ashypass_core::totp::{generate_totp, Algorithm};
+use gtk::{gio, glib};
 use std::cell::{Cell, RefCell};
 use std::collections::HashSet;
 use std::rc::Rc;
+use zeroize::Zeroizing;
 
-type AuthChangedCb = Box<dyn Fn()>;
-type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
+const SEARCH_DEBOUNCE_MS: u64 = 80;
 
-const PASSWORD_RENDER_BATCH_SIZE: usize = 64;
-const PASSWORD_SEARCH_DEBOUNCE_MS: u64 = 60;
-
-#[derive(Clone, Copy, PartialEq, Eq)]
-enum ViewMode {
+/// Which part of the collection the list shows.
+#[derive(Clone, PartialEq, Eq, Debug, Default)]
+pub enum FolderFilter {
+    #[default]
     All,
-    Favorites,
-    Groups,
+    NoFolder,
+    Named(String),
 }
 
-struct PasswordListCache {
-    entries: Vec<PasswordEntry>,
+impl FolderFilter {
+    fn target(&self) -> String {
+        match self {
+            Self::All => "all".into(),
+            Self::NoFolder => "none".into(),
+            Self::Named(name) => format!("f:{name}"),
+        }
+    }
+
+    fn from_target(target: &str) -> Self {
+        match target {
+            "none" => Self::NoFolder,
+            t => match t.strip_prefix("f:") {
+                Some(name) => Self::Named(name.to_string()),
+                None => Self::All,
+            },
+        }
+    }
+
+    fn matches(&self, category: Option<&str>) -> bool {
+        let category = category.map(str::trim).filter(|c| !c.is_empty());
+        match self {
+            Self::All => true,
+            Self::NoFolder => category.is_none(),
+            Self::Named(name) => category == Some(name.as_str()),
+        }
+    }
+
+    fn label(&self) -> String {
+        match self {
+            Self::All => tr!("All folders").to_string(),
+            Self::NoFolder => tr!("No folder").to_string(),
+            Self::Named(name) => name.clone(),
+        }
+    }
+}
+
+/// Metadata of every entry, with a lowercase search index. Rebuilt only when
+/// the vault changes, never per keystroke.
+pub struct PasswordListCache {
+    entries: Vec<Rc<PasswordEntry>>,
     search_index: Vec<String>,
     categories: Vec<String>,
 }
 
 impl PasswordListCache {
-    fn new(entries: Vec<PasswordEntry>, categories: Vec<String>) -> Self {
+    pub fn new(entries: Vec<PasswordEntry>, categories: Vec<String>) -> Self {
         let search_index = entries.iter().map(password_search_text).collect();
         Self {
-            entries,
+            entries: entries.into_iter().map(Rc::new).collect(),
             search_index,
             categories,
         }
     }
 
-    fn filtered_indices(&self, search: Option<&str>, category: Option<&str>) -> Vec<usize> {
+    pub fn filtered(
+        &self,
+        search: Option<&str>,
+        folder: &FolderFilter,
+        favorites_only: bool,
+    ) -> Vec<Rc<PasswordEntry>> {
         let needle = search
             .map(str::trim)
             .filter(|s| !s.is_empty())
             .map(str::to_lowercase);
-
         self.entries
             .iter()
             .enumerate()
-            .filter(|(_, entry)| {
-                category.is_none_or(|category| {
-                    entry.category.as_deref().filter(|s| !s.is_empty()) == Some(category)
-                })
-            })
+            .filter(|(_, entry)| folder.matches(entry.category.as_deref()))
+            .filter(|(_, entry)| !favorites_only || entry.favorite)
             .filter(|(idx, _)| {
                 needle
                     .as_ref()
                     .is_none_or(|needle| self.search_index[*idx].contains(needle))
             })
-            .map(|(idx, _)| idx)
+            .map(|(_, entry)| entry.clone())
             .collect()
+    }
+
+    pub fn len(&self) -> usize {
+        self.entries.len()
     }
 }
 
+type Callback = Box<dyn Fn()>;
+
 pub struct VaultView {
-    pub root: gtk::Box,
-    pub search_bar: gtk::SearchBar,
-    pub search_entry: gtk::SearchEntry,
+    pub root: adw::NavigationSplitView,
     inner: Rc<Inner>,
 }
 
 struct Inner {
     state: SharedState,
     toast: adw::ToastOverlay,
+    split: adw::NavigationSplitView,
 
-    main_stack: gtk::Stack,
-
-    // Auth page
-    master_entry: adw::PasswordEntryRow,
-    confirm_entry: adw::PasswordEntryRow,
-    pin_entry: adw::PasswordEntryRow,
-    pin_button: gtk::Button,
-    use_master_button: gtk::Button,
-    unlock_button: gtk::Button,
-    auth_error: gtk::Label,
-    strength_box: gtk::Box,
-    strength_bar: gtk::LevelBar,
-    strength_label: gtk::Label,
-
-    // Vault page
-    timeout_banner: adw::Banner,
     search_entry: gtk::SearchEntry,
+    folder_button: gtk::MenuButton,
+    folder_menu: gio::Menu,
+    folder_filter: RefCell<FolderFilter>,
+    favorites_toggle: gtk::ToggleButton,
+    count_label: gtk::Label,
+    sync_label: gtk::Label,
+
+    store: gio::ListStore,
+    content_stack: gtk::Stack,
+    empty: EmptyState,
+
+    cache: RefCell<Option<Rc<PasswordListCache>>>,
+    synced_ids: RefCell<Option<Rc<HashSet<i64>>>>,
+    show_badges: Cell<bool>,
+    show_favicons: Cell<bool>,
     search_reload_id: RefCell<Option<glib::SourceId>>,
     event_reload_id: RefCell<Option<glib::SourceId>>,
-    render_source_id: RefCell<Option<glib::SourceId>>,
-    category_bar: gtk::Box,
-    category_dropdown: gtk::DropDown,
-    category_model: RefCell<gtk::StringList>,
-    category_names: RefCell<Vec<String>>,
-    updating_categories: Cell<bool>,
-    list_box: RefCell<gtk::ListBox>,
-    list_scrolled: gtk::ScrolledWindow,
-    empty_status: adw::StatusPage,
-    content_stack: gtk::Stack,
-    /// The add/edit dialog while it is presented. Kept so locking the vault
-    /// can tear it down: leaving it up would show a decrypted password over a
-    /// locked vault, and saving from it would fail with a raw crypto error.
-    password_dialog: RefCell<Option<adw::AlertDialog>>,
-    password_cache: RefCell<Option<Rc<PasswordListCache>>>,
-    nextcloud_synced_ids_cache: RefCell<Option<HashSet<i64>>>,
 
-    view_mode: Cell<ViewMode>,
-    expanded_folders: RefCell<HashSet<String>>,
+    details_page: adw::NavigationPage,
+    details_toolbar: adw::ToolbarView,
+    details_placeholder: gtk::Widget,
+    open_id: Cell<Option<i64>>,
+    details_timer: RefCell<Option<glib::SourceId>>,
 
-    on_auth_changed: RefCell<Option<AuthChangedCb>>,
-    /// Keyring-backed unlock is a startup convenience only. Once it has been
-    /// tried, or the user has locked the vault, it must not run again: every
-    /// lock goes through `update_view`, which would otherwise reopen the vault
-    /// on the spot with the stored master password.
-    keyring_unlock_allowed: Cell<bool>,
+    on_import: RefCell<Option<Callback>>,
+    on_trash: RefCell<Option<Callback>>,
 }
 
 impl VaultView {
-    pub fn new(state: SharedState, toast: adw::ToastOverlay) -> Rc<Self> {
-        let root = gtk::Box::new(gtk::Orientation::Vertical, 0);
-        root.set_vexpand(true);
-        root.set_hexpand(true);
+    pub fn new(state: SharedState, toast: adw::ToastOverlay, chrome: &Chrome) -> Rc<Self> {
+        // ---- List page ------------------------------------------------
+        let search_entry = gtk::SearchEntry::builder()
+            .placeholder_text(tr!("Search by name, account or site"))
+            .hexpand(true)
+            .build();
+        search_entry.update_property(&[gtk::accessible::Property::Label(tr!("Search passwords"))]);
+        let search_clamp = adw::Clamp::builder()
+            .maximum_size(420)
+            .child(&search_entry)
+            .build();
+        let list_header = chrome.header(Some(search_clamp.upcast_ref()));
+        let add_button = gtk::Button::builder()
+            .icon_name("list-add-symbolic")
+            .tooltip_text(tr!("Add password"))
+            .build();
+        add_button.add_css_class("suggested-action");
+        add_button.update_property(&[gtk::accessible::Property::Label(tr!("Add password"))]);
+        list_header.pack_end(&add_button);
 
-        let main_stack = gtk::Stack::builder()
-            .transition_type(gtk::StackTransitionType::Crossfade)
-            .transition_duration(300)
+        let page_menu = gio::Menu::new();
+        page_menu.append(Some(tr!("Import passwords…")), Some("vault.import"));
+        page_menu.append(
+            Some(tr!("Organize folders…")),
+            Some("vault.organize-folders"),
+        );
+        page_menu.append(Some(tr!("Deleted items…")), Some("vault.trash"));
+        let page_menu_button = gtk::MenuButton::builder()
+            .icon_name("view-more-symbolic")
+            .menu_model(&page_menu)
+            .tooltip_text(tr!("More options"))
+            .build();
+        page_menu_button.update_property(&[gtk::accessible::Property::Label(tr!("More options"))]);
+        list_header.pack_end(&page_menu_button);
+
+        let filter_bar = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .spacing(8)
+            .margin_top(6)
+            .margin_bottom(6)
+            .margin_start(12)
+            .margin_end(12)
+            .build();
+        let folder_menu = gio::Menu::new();
+        let folder_button = gtk::MenuButton::builder()
+            .label(tr!("All folders"))
+            .menu_model(&folder_menu)
+            .tooltip_text(tr!("Show a folder"))
+            .build();
+        folder_button.add_css_class("flat");
+        folder_button.set_always_show_arrow(true);
+        let favorites_toggle = gtk::ToggleButton::builder()
+            .tooltip_text(tr!("Show only favorites"))
+            .build();
+        let fav_box = gtk::Box::new(gtk::Orientation::Horizontal, 6);
+        fav_box.append(&gtk::Image::from_icon_name("starred-symbolic"));
+        fav_box.append(&gtk::Label::new(Some(tr!("Favorites"))));
+        favorites_toggle.set_child(Some(&fav_box));
+        favorites_toggle.add_css_class("flat");
+        let count_label = gtk::Label::builder().hexpand(true).xalign(1.0).build();
+        count_label.add_css_class("dim-label");
+        count_label.add_css_class("caption");
+        filter_bar.append(&folder_button);
+        filter_bar.append(&favorites_toggle);
+        filter_bar.append(&count_label);
+
+        let store = gio::ListStore::new::<glib::BoxedAnyObject>();
+        let selection = gtk::NoSelection::new(Some(store.clone()));
+        let factory = gtk::SignalListItemFactory::new();
+        let list_view = gtk::ListView::builder()
+            .model(&selection)
+            .factory(&factory)
+            .single_click_activate(true)
+            .build();
+        list_view.add_css_class("ashy-entry-list");
+        list_view.update_property(&[gtk::accessible::Property::Label(tr!("Passwords"))]);
+        let list_scrolled = gtk::ScrolledWindow::builder()
+            .hscrollbar_policy(gtk::PolicyType::Never)
+            .vexpand(true)
+            .child(&list_view)
             .build();
 
-        // ---- Auth page ----
-        let (
-            auth_page,
-            master_entry,
-            confirm_entry,
-            pin_entry,
-            unlock_button,
-            pin_button,
-            use_master_button,
-            auth_error,
-            strength_box,
-            strength_bar,
-            strength_label,
-        ) = build_auth_page();
-        main_stack.add_named(&auth_page, Some("auth"));
+        let empty = EmptyState::new();
+        let content_stack = gtk::Stack::builder()
+            .transition_type(gtk::StackTransitionType::Crossfade)
+            .vexpand(true)
+            .build();
+        content_stack.add_named(&list_scrolled, Some("list"));
+        content_stack.add_named(&empty.root, Some("empty"));
 
-        // ---- Vault page ----
-        let (
-            vault_page,
-            timeout_banner,
-            search_bar,
-            search_entry,
-            category_bar,
-            category_dropdown,
-            category_model,
-            list_box,
-            list_scrolled,
-            empty_status,
-            content_stack,
-        ) = build_vault_page();
-        main_stack.add_named(&vault_page, Some("vault"));
+        let sync_label = gtk::Label::builder()
+            .wrap(true)
+            .visible(false)
+            .margin_top(6)
+            .margin_bottom(8)
+            .margin_start(12)
+            .margin_end(12)
+            .build();
+        sync_label.add_css_class("caption");
+        sync_label.add_css_class("dim-label");
 
-        root.append(&main_stack);
+        let list_body = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        list_body.append(&filter_bar);
+        list_body.append(&content_stack);
+        list_body.append(&sync_label);
+
+        let list_toolbar = adw::ToolbarView::new();
+        list_toolbar.add_top_bar(&list_header);
+        list_toolbar.set_content(Some(&list_body));
+        let list_page = adw::NavigationPage::builder()
+            .title(tr!("My passwords"))
+            .tag("list")
+            .child(&list_toolbar)
+            .build();
+
+        // ---- Details page --------------------------------------------
+        let details_toolbar = adw::ToolbarView::new();
+        let placeholder = EmptyState::new();
+        placeholder.set(
+            "dialog-password-symbolic",
+            tr!("Select an access"),
+            tr!("Its user, password and other details appear here."),
+        );
+        let placeholder_widget: gtk::Widget = placeholder.root.clone().upcast();
+        // The access name is already the page heading below.
+        details_toolbar.add_top_bar(&adw::HeaderBar::builder().show_title(false).build());
+        details_toolbar.set_content(Some(&placeholder_widget));
+        let details_page = adw::NavigationPage::builder()
+            .title(tr!("Details"))
+            .tag("details")
+            .child(&details_toolbar)
+            .build();
+
+        let split = adw::NavigationSplitView::builder()
+            .sidebar(&list_page)
+            .content(&details_page)
+            .min_sidebar_width(340.0)
+            .max_sidebar_width(620.0)
+            .sidebar_width_fraction(0.56)
+            .build();
 
         let inner = Rc::new(Inner {
             state,
             toast,
-            main_stack,
-            master_entry,
-            confirm_entry,
-            pin_entry,
-            pin_button,
-            use_master_button,
-            unlock_button,
-            auth_error,
-            strength_box,
-            strength_bar,
-            strength_label,
-            timeout_banner,
-            search_entry: search_entry.clone(),
+            split: split.clone(),
+            search_entry,
+            folder_button,
+            folder_menu,
+            folder_filter: RefCell::new(FolderFilter::All),
+            favorites_toggle,
+            count_label,
+            sync_label,
+            store,
+            content_stack,
+            empty,
+            cache: RefCell::new(None),
+            synced_ids: RefCell::new(None),
+            show_badges: Cell::new(false),
+            show_favicons: Cell::new(true),
             search_reload_id: RefCell::new(None),
             event_reload_id: RefCell::new(None),
-            render_source_id: RefCell::new(None),
-            category_bar,
-            category_dropdown,
-            category_model: RefCell::new(category_model),
-            category_names: RefCell::new(Vec::new()),
-            updating_categories: Cell::new(false),
-            list_box: RefCell::new(list_box),
-            list_scrolled,
-            empty_status,
-            content_stack,
-            password_dialog: RefCell::new(None),
-            password_cache: RefCell::new(None),
-            nextcloud_synced_ids_cache: RefCell::new(None),
-            view_mode: Cell::new(ViewMode::All),
-            expanded_folders: RefCell::new(HashSet::new()),
-            on_auth_changed: RefCell::new(None),
-            keyring_unlock_allowed: Cell::new(true),
+            details_page,
+            details_toolbar,
+            details_placeholder: placeholder_widget,
+            open_id: Cell::new(None),
+            details_timer: RefCell::new(None),
+            on_import: RefCell::new(None),
+            on_trash: RefCell::new(None),
         });
 
-        wire_auth(&inner);
-        wire_vault(&inner);
-        wire_events(&inner);
-        wire_session_warning(&inner);
+        setup_factory(&inner, &factory);
+        wire(&inner, &list_view, &add_button);
+        install_actions(&inner, list_body.upcast_ref());
+        install_actions(&inner, inner.details_toolbar.upcast_ref());
 
-        inner.update_view();
+        Rc::new(Self { root: split, inner })
+    }
 
-        Self {
-            root,
-            search_bar,
-            search_entry,
-            inner,
+    pub fn set_on_import(&self, cb: Callback) {
+        *self.inner.on_import.borrow_mut() = Some(cb);
+    }
+
+    pub fn set_on_trash(&self, cb: Callback) {
+        *self.inner.on_trash.borrow_mut() = Some(cb);
+    }
+
+    /// The vault was unlocked: load the collection.
+    pub fn on_unlocked(&self) {
+        self.inner.invalidate_caches();
+        self.inner.reload();
+    }
+
+    /// The vault was locked: drop every row, the open details and the
+    /// search text. Hidden is not gone.
+    pub fn on_locked(&self) {
+        let inner = &self.inner;
+        inner.search_entry.set_text("");
+        inner.cancel_pending();
+        inner.store.remove_all();
+        inner.invalidate_caches();
+        *inner.folder_filter.borrow_mut() = FolderFilter::All;
+        inner.folder_button.set_label(tr!("All folders"));
+        inner.favorites_toggle.set_active(false);
+        inner.folder_menu.remove_all();
+        inner.close_details();
+    }
+
+    pub fn focus_search(&self) {
+        self.inner.split.set_show_content(false);
+        self.inner.search_entry.grab_focus();
+    }
+
+    /// Open the entry form. `prefill` carries a password created on the
+    /// generator page so it is never lost on the way in.
+    pub fn show_add_dialog(&self, prefill: Option<Zeroizing<String>>) {
+        self.inner.show_add_dialog(prefill);
+    }
+
+    /// Type-to-search: characters typed anywhere on the list go to the
+    /// search box.
+    pub fn set_key_capture(&self, widget: &impl IsA<gtk::Widget>) {
+        self.inner.search_entry.set_key_capture_widget(Some(widget));
+    }
+
+    #[cfg(debug_assertions)]
+    pub fn dev_open_first(&self) {
+        if let Some(obj) = self.inner.store.item(0) {
+            if let Ok(boxed) = obj.downcast::<glib::BoxedAnyObject>() {
+                let id = boxed.borrow::<Rc<PasswordEntry>>().id;
+                self.inner.open_details(id);
+            }
         }
-        .into_rc()
     }
 
-    fn into_rc(self) -> Rc<Self> {
-        Rc::new(self)
+    #[cfg(debug_assertions)]
+    pub fn dev_search(&self, text: &str) {
+        self.inner.search_entry.set_text(text);
     }
+}
 
-    pub fn set_on_auth_changed(&self, cb: AuthChangedCb) {
-        *self.inner.on_auth_changed.borrow_mut() = Some(cb);
-    }
+// ============================================================================
+// Rows
+// ============================================================================
 
-    pub fn focus_auth_field(&self) {
-        self.inner.focus_auth_field();
-    }
+fn item_entry(item: &gtk::ListItem) -> Option<Rc<PasswordEntry>> {
+    let boxed = item.item()?.downcast::<glib::BoxedAnyObject>().ok()?;
+    let entry = boxed.borrow::<Rc<PasswordEntry>>().clone();
+    Some(entry)
+}
 
-    pub fn show_add_dialog(&self) {
-        if !self.inner.state.vault.borrow().is_unlocked() {
+fn setup_factory(inner: &Rc<Inner>, factory: &gtk::SignalListItemFactory) {
+    let weak = Rc::downgrade(inner);
+    factory.connect_setup(move |_, obj| {
+        let Some(item) = obj.downcast_ref::<gtk::ListItem>() else {
             return;
-        }
-        show_password_dialog(&self.inner, None);
-    }
+        };
+        let root = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .spacing(12)
+            .build();
+        root.add_css_class("ashy-entry-row");
 
-    /// Lock the vault triggered by user click or external (session timeout).
-    pub fn lock_vault(&self) {
-        self.inner.keyring_unlock_allowed.set(false);
-        self.inner.cancel_pending_search_reload();
-        self.inner.cancel_pending_event_reload();
-        self.inner.cancel_pending_render();
-        // A password copied moments before the lock must not survive it.
-        crate::clipboard::clear_now();
-        // Drop the borrow before closing: `close()` re-enters our `closed`
-        // handler, which borrows the same cell.
-        let open_dialog = self.inner.password_dialog.borrow_mut().take();
-        if let Some(dialog) = open_dialog {
-            dialog.close();
-            self.inner
-                .show_toast(tr!("Vault locked — the open entry was not saved"));
-        }
-        self.inner.state.vault.borrow_mut().lock();
-        // Keep the session in step with the vault: on the auto-lock path
-        // `logout` already did this, on the explicit-lock path nobody had.
-        SessionManager::mark_locked(&self.inner.state.session);
-        self.inner.timeout_banner.set_revealed(false);
-        self.inner.update_view();
-        self.inner.notify_auth_changed();
-    }
+        let icon = gtk::Image::builder().pixel_size(32).build();
+        icon.add_css_class("ashy-entry-icon");
+        icon.set_accessible_role(gtk::AccessibleRole::Presentation);
+        root.append(&icon);
 
-    pub fn show_groups_view(&self) {
-        self.inner.view_mode.set(ViewMode::Groups);
-        self.inner.load_passwords(None);
-    }
+        let text = gtk::Box::builder()
+            .orientation(gtk::Orientation::Vertical)
+            .spacing(2)
+            .hexpand(true)
+            .valign(gtk::Align::Center)
+            .build();
+        let title = gtk::Label::builder()
+            .xalign(0.0)
+            .ellipsize(gtk::pango::EllipsizeMode::End)
+            .build();
+        title.add_css_class("heading");
+        // Two lines before cutting: the account is what tells two entries
+        // for the same service apart, it must not vanish into an ellipsis.
+        let subtitle = gtk::Label::builder()
+            .xalign(0.0)
+            .wrap(true)
+            .wrap_mode(gtk::pango::WrapMode::WordChar)
+            .lines(2)
+            .ellipsize(gtk::pango::EllipsizeMode::End)
+            .build();
+        subtitle.add_css_class("dim-label");
+        subtitle.add_css_class("caption");
+        text.append(&title);
+        text.append(&subtitle);
+        root.append(&text);
 
-    pub fn show_favorites_view(&self) {
-        self.inner.view_mode.set(ViewMode::Favorites);
-        self.inner.load_passwords(None);
-    }
+        let badge = gtk::Label::builder()
+            .label("Nextcloud")
+            .tooltip_text(tr!("Synchronized with Nextcloud Passwords"))
+            .valign(gtk::Align::Center)
+            .visible(false)
+            .build();
+        badge.add_css_class("caption");
+        badge.add_css_class("ashy-badge");
+        root.append(&badge);
 
-    pub fn show_all_view(&self) {
-        self.inner.view_mode.set(ViewMode::All);
-        self.inner.load_passwords(None);
-    }
-}
+        let star = gtk::Image::builder()
+            .icon_name("starred-symbolic")
+            .valign(gtk::Align::Center)
+            .tooltip_text(tr!("Favorite"))
+            .visible(false)
+            .build();
+        star.add_css_class("ashy-favorite");
+        root.append(&star);
 
-// ============================================================================
-// UI construction
-// ============================================================================
+        let copy = gtk::Button::builder()
+            .label(tr!("Copy password"))
+            .valign(gtk::Align::Center)
+            .build();
+        copy.add_css_class("ashy-row-action");
+        root.append(&copy);
 
-#[allow(clippy::type_complexity)]
-fn build_auth_page() -> (
-    adw::Clamp,
-    adw::PasswordEntryRow,
-    adw::PasswordEntryRow,
-    adw::PasswordEntryRow,
-    gtk::Button,
-    gtk::Button,
-    gtk::Button,
-    gtk::Label,
-    gtk::Box,
-    gtk::LevelBar,
-    gtk::Label,
-) {
-    let clamp = adw::Clamp::builder()
-        .maximum_size(400)
-        .margin_top(48)
-        .margin_bottom(48)
-        .margin_start(12)
-        .margin_end(12)
-        .build();
+        let menu = gio::Menu::new();
+        let open_section = gio::Menu::new();
+        open_section.append(Some(tr!("Open details")), Some("row.open"));
+        open_section.append(Some(tr!("Copy user")), Some("row.copy-user"));
+        open_section.append(Some(tr!("Edit…")), Some("row.edit"));
+        menu.append_section(None, &open_section);
+        let fav_section = gio::Menu::new();
+        fav_section.append(Some(tr!("Add to favorites")), Some("row.favorite"));
+        menu.append_section(None, &fav_section);
+        let danger_section = gio::Menu::new();
+        danger_section.append(Some(tr!("Password history…")), Some("row.history"));
+        danger_section.append(Some(tr!("Delete…")), Some("row.delete"));
+        menu.append_section(None, &danger_section);
+        let more = gtk::MenuButton::builder()
+            .icon_name("view-more-symbolic")
+            .menu_model(&menu)
+            .valign(gtk::Align::Center)
+            .tooltip_text(tr!("More actions"))
+            .build();
+        more.add_css_class("flat");
+        more.update_property(&[gtk::accessible::Property::Label(tr!("More actions"))]);
+        root.append(&more);
+        item.set_child(Some(&root));
 
-    let content = gtk::Box::builder()
-        .orientation(gtk::Orientation::Vertical)
-        .spacing(24)
-        .build();
-
-    let icon = gtk::Image::from_icon_name("dialog-password-symbolic");
-    icon.set_pixel_size(64);
-    icon.add_css_class("dim-label");
-    content.append(&icon);
-
-    let title = gtk::Label::new(None);
-    title.set_markup(&format!(
-        "<span size='xx-large' weight='bold'>{}</span>",
-        tr!("Ashy Pass")
-    ));
-    content.append(&title);
-
-    let subtitle = gtk::Label::new(Some(tr!("Enter your master password to unlock")));
-    subtitle.add_css_class("dim-label");
-    content.append(&subtitle);
-
-    let group = adw::PreferencesGroup::new();
-
-    let master_entry = adw::PasswordEntryRow::builder()
-        .title(tr!("Master Password"))
-        .build();
-    group.add(&master_entry);
-
-    // Strength indicator (visible only during first-time setup)
-    let strength_box = gtk::Box::builder()
-        .orientation(gtk::Orientation::Vertical)
-        .spacing(4)
-        .margin_start(12)
-        .margin_end(12)
-        .visible(false)
-        .build();
-    let strength_bar = gtk::LevelBar::builder()
-        .mode(gtk::LevelBarMode::Continuous)
-        .min_value(0.0)
-        .max_value(100.0)
-        .build();
-    strength_box.append(&strength_bar);
-    let strength_label = gtk::Label::new(None);
-    strength_label.add_css_class("dim-label");
-    strength_label.add_css_class("caption");
-    strength_label.set_xalign(0.0);
-    strength_box.append(&strength_label);
-    group.add(&strength_box);
-
-    let confirm_entry = adw::PasswordEntryRow::builder()
-        .title(tr!("Confirm Password"))
-        .visible(false)
-        .build();
-    group.add(&confirm_entry);
-
-    let pin_entry = adw::PasswordEntryRow::builder()
-        .title(tr!("Quick-unlock PIN"))
-        .visible(false)
-        .build();
-    group.add(&pin_entry);
-
-    content.append(&group);
-
-    let auth_error = gtk::Label::new(None);
-    auth_error.add_css_class("error");
-    auth_error.set_visible(false);
-    content.append(&auth_error);
-
-    let unlock_button = gtk::Button::with_label(tr!("Unlock Vault"));
-    unlock_button.add_css_class("pill");
-    unlock_button.add_css_class("suggested-action");
-    unlock_button.set_halign(gtk::Align::Center);
-    content.append(&unlock_button);
-
-    let pin_button = gtk::Button::with_label(tr!("Unlock with PIN"));
-    pin_button.add_css_class("pill");
-    pin_button.add_css_class("suggested-action");
-    pin_button.set_halign(gtk::Align::Center);
-    pin_button.set_visible(false);
-    content.append(&pin_button);
-
-    let use_master_button = gtk::Button::with_label(tr!("Use master password instead"));
-    use_master_button.add_css_class("flat");
-    use_master_button.set_halign(gtk::Align::Center);
-    use_master_button.set_visible(false);
-    content.append(&use_master_button);
-
-    clamp.set_child(Some(&content));
-
-    (
-        clamp,
-        master_entry,
-        confirm_entry,
-        pin_entry,
-        unlock_button,
-        pin_button,
-        use_master_button,
-        auth_error,
-        strength_box,
-        strength_bar,
-        strength_label,
-    )
-}
-
-#[allow(clippy::type_complexity)]
-fn build_vault_page() -> (
-    gtk::Box,
-    adw::Banner,
-    gtk::SearchBar,
-    gtk::SearchEntry,
-    gtk::Box,
-    gtk::DropDown,
-    gtk::StringList,
-    gtk::ListBox,
-    gtk::ScrolledWindow,
-    adw::StatusPage,
-    gtk::Stack,
-) {
-    let main_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
-
-    let timeout_banner = adw::Banner::builder()
-        .title(tr!("Vault will lock soon due to inactivity"))
-        .button_label(tr!("Stay Unlocked"))
-        .revealed(false)
-        .build();
-    main_box.append(&timeout_banner);
-
-    let search_entry = gtk::SearchEntry::new();
-    search_entry.set_placeholder_text(Some(tr!("Search passwords…")));
-    let search_bar = gtk::SearchBar::builder()
-        .search_mode_enabled(false)
-        .child(&search_entry)
-        .build();
-    search_bar.connect_entry(&search_entry);
-    main_box.append(&search_bar);
-
-    let category_bar = gtk::Box::builder()
-        .orientation(gtk::Orientation::Horizontal)
-        .spacing(6)
-        .margin_start(12)
-        .margin_end(12)
-        .margin_top(4)
-        .margin_bottom(4)
-        .visible(false)
-        .build();
-    let cat_icon = gtk::Image::from_icon_name("folder-symbolic");
-    cat_icon.add_css_class("folder-heading-icon");
-    category_bar.append(&cat_icon);
-    let category_model = gtk::StringList::new(&[tr!("All")]);
-    let category_dropdown = gtk::DropDown::builder()
-        .hexpand(true)
-        .model(&category_model)
-        .build();
-    category_bar.append(&category_dropdown);
-    main_box.append(&category_bar);
-
-    let scrolled = gtk::ScrolledWindow::builder().vexpand(true).build();
-    let list_box = new_password_list_box();
-    scrolled.set_child(Some(&list_box));
-
-    let empty_status = adw::StatusPage::builder()
-        .icon_name("dialog-password-symbolic")
-        .title(tr!("No Passwords Stored"))
-        .description(tr!("Add your first password using the + button"))
-        .build();
-
-    let content_stack = gtk::Stack::builder()
-        .transition_type(gtk::StackTransitionType::Crossfade)
-        .transition_duration(200)
-        .build();
-    content_stack.add_named(&scrolled, Some("list"));
-    content_stack.add_named(&empty_status, Some("empty"));
-    main_box.append(&content_stack);
-
-    (
-        main_box,
-        timeout_banner,
-        search_bar,
-        search_entry,
-        category_bar,
-        category_dropdown,
-        category_model,
-        list_box,
-        scrolled,
-        empty_status,
-        content_stack,
-    )
-}
-
-fn new_password_list_box() -> gtk::ListBox {
-    let list_box = gtk::ListBox::builder()
-        .selection_mode(gtk::SelectionMode::None)
-        .margin_top(12)
-        .margin_bottom(12)
-        .margin_start(12)
-        .margin_end(12)
-        .build();
-    list_box.add_css_class("boxed-list");
-    list_box
-}
-
-// ============================================================================
-// Wiring
-// ============================================================================
-
-fn wire_auth(inner: &Rc<Inner>) {
-    let inner_cl = inner.clone();
-    inner
-        .unlock_button
-        .connect_clicked(move |_| inner_cl.on_unlock_clicked());
-
-    let inner_cl = inner.clone();
-    inner
-        .master_entry
-        .connect_entry_activated(move |_| inner_cl.on_unlock_clicked());
-
-    let inner_cl = inner.clone();
-    inner
-        .confirm_entry
-        .connect_entry_activated(move |_| inner_cl.on_unlock_clicked());
-
-    let inner_cl = inner.clone();
-    inner
-        .pin_button
-        .connect_clicked(move |_| inner_cl.on_pin_unlock_clicked());
-
-    let inner_cl = inner.clone();
-    inner
-        .pin_entry
-        .connect_entry_activated(move |_| inner_cl.on_pin_unlock_clicked());
-
-    let inner_cl = inner.clone();
-    inner.use_master_button.connect_clicked(move |_| {
-        inner_cl.show_master_unlock();
-    });
-
-    let inner_cl = inner.clone();
-    inner.master_entry.connect_changed(move |entry| {
-        if !inner_cl.strength_box.is_visible() {
-            return;
-        }
-        let pwd = entry.text();
-        let s = pwd.as_str();
-        if s.is_empty() {
-            inner_cl.strength_bar.set_value(0.0);
-            inner_cl.strength_label.set_text("");
-        } else {
-            let (score, level) = ashypass_core::strength::legacy_score(s);
-            inner_cl.strength_bar.set_value(score as f64);
-            inner_cl
-                .strength_label
-                .set_text(crate::ui::i18n::localized_strength_label(level));
-        }
-    });
-}
-
-fn wire_vault(inner: &Rc<Inner>) {
-    let inner_cl = inner.clone();
-    inner.search_entry.connect_search_changed(move |_| {
-        inner_cl.cancel_pending_event_reload();
-        if let Some(id) = inner_cl.search_reload_id.borrow_mut().take() {
-            id.remove();
-        }
-        let inner_weak = Rc::downgrade(&inner_cl);
-        let id = glib::timeout_add_local(
-            std::time::Duration::from_millis(PASSWORD_SEARCH_DEBOUNCE_MS),
-            move || {
-                let Some(inner) = inner_weak.upgrade() else {
-                    return glib::ControlFlow::Break;
+        // Actions read the row's *current* item at click time: rows are
+        // recycled, so nothing about the entry may be captured here.
+        let group = gio::SimpleActionGroup::new();
+        let item_weak = item.downgrade();
+        let add = |name: &str, run: Box<dyn Fn(&Rc<Inner>, Rc<PasswordEntry>)>| {
+            let action = gio::SimpleAction::new(name, None);
+            let weak = weak.clone();
+            let item_weak = item_weak.clone();
+            action.connect_activate(move |_, _| {
+                let (Some(inner), Some(item)) = (weak.upgrade(), item_weak.upgrade()) else {
+                    return;
                 };
-                *inner.search_reload_id.borrow_mut() = None;
-                let text = inner.search_entry.text().trim().to_string();
-                let search = if text.is_empty() { None } else { Some(text) };
-                inner.load_passwords(search.as_deref());
-                SessionManager::on_activity(&inner.state.session);
+                if let Some(entry) = item_entry(&item) {
+                    run(&inner, entry);
+                }
+            });
+            group.add_action(&action);
+        };
+        add("open", Box::new(|inner, e| inner.open_details(e.id)));
+        add(
+            "copy-user",
+            Box::new(|inner, e| inner.copy_username(e.username.as_deref())),
+        );
+        add("edit", Box::new(|inner, e| inner.show_edit_dialog(e.id)));
+        add("favorite", Box::new(|inner, e| inner.toggle_favorite(e.id)));
+        add(
+            "history",
+            Box::new(|inner, e| inner.show_history_dialog(e.id)),
+        );
+        add("delete", Box::new(|inner, e| inner.confirm_delete(e.id)));
+        root.insert_action_group("row", Some(&group));
+
+        {
+            let weak = weak.clone();
+            let item_weak = item_weak.clone();
+            copy.connect_clicked(move |_| {
+                let (Some(inner), Some(item)) = (weak.upgrade(), item_weak.upgrade()) else {
+                    return;
+                };
+                if let Some(entry) = item_entry(&item) {
+                    inner.copy_password(entry.id);
+                }
+            });
+        }
+
+        let weak = weak.clone();
+        item.connect_item_notify(move |item| {
+            let Some(inner) = weak.upgrade() else { return };
+            let Some(entry) = item_entry(item) else {
+                return;
+            };
+            title.set_label(&entry.title);
+            let line = account_line(
+                &entry.title,
+                entry.username.as_deref(),
+                entry.url.as_deref(),
+            );
+            subtitle.set_label(&line);
+            subtitle.set_visible(!line.is_empty());
+            star.set_visible(entry.favorite);
+            if inner.open_id.get() == Some(entry.id) {
+                root.add_css_class("ashy-open");
+            } else {
+                root.remove_css_class("ashy-open");
+            }
+            if inner.show_favicons.get() {
+                crate::favicons::apply(&icon, entry.url.as_deref(), 32);
+            } else {
+                icon.set_widget_name("");
+                icon.set_icon_name(Some("dialog-password-symbolic"));
+            }
+            let synced = inner.show_badges.get()
+                && inner
+                    .synced_ids
+                    .borrow()
+                    .as_ref()
+                    .is_some_and(|ids| ids.contains(&entry.id));
+            badge.set_visible(synced);
+            fav_section.remove_all();
+            fav_section.append(
+                Some(if entry.favorite {
+                    tr!("Remove from favorites")
+                } else {
+                    tr!("Add to favorites")
+                }),
+                Some("row.favorite"),
+            );
+            copy.update_property(&[gtk::accessible::Property::Label(&format!(
+                "{} — {}",
+                tr!("Copy password"),
+                entry.title
+            ))]);
+            more.update_property(&[gtk::accessible::Property::Label(&format!(
+                "{} — {}",
+                tr!("More actions"),
+                entry.title
+            ))]);
+        });
+    });
+}
+
+fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) {
+    let weak = Rc::downgrade(inner);
+    list_view.connect_activate(move |_, position| {
+        let Some(inner) = weak.upgrade() else { return };
+        if let Some(obj) = inner.store.item(position) {
+            if let Ok(boxed) = obj.downcast::<glib::BoxedAnyObject>() {
+                let id = boxed.borrow::<Rc<PasswordEntry>>().id;
+                inner.open_details(id);
+            }
+        }
+    });
+
+    let weak = Rc::downgrade(inner);
+    add_button.connect_clicked(move |_| {
+        if let Some(inner) = weak.upgrade() {
+            inner.show_add_dialog(None);
+        }
+    });
+
+    let weak = Rc::downgrade(inner);
+    inner.search_entry.connect_search_changed(move |_| {
+        let Some(inner) = weak.upgrade() else { return };
+        inner.cancel_search_reload();
+        let weak = Rc::downgrade(&inner);
+        let id = glib::timeout_add_local(
+            std::time::Duration::from_millis(SEARCH_DEBOUNCE_MS),
+            move || {
+                if let Some(inner) = weak.upgrade() {
+                    *inner.search_reload_id.borrow_mut() = None;
+                    inner.apply_filter();
+                    SessionManager::on_activity(&inner.state.session);
+                }
                 glib::ControlFlow::Break
             },
         );
-        *inner_cl.search_reload_id.borrow_mut() = Some(id);
+        *inner.search_reload_id.borrow_mut() = Some(id);
     });
-
-    let inner_cl = inner.clone();
-    inner.category_dropdown.connect_selected_notify(move |_| {
-        if inner_cl.updating_categories.get() {
-            return;
+    // Escape in the search box clears it rather than leaving a hidden filter.
+    let weak = Rc::downgrade(inner);
+    inner.search_entry.connect_stop_search(move |entry| {
+        entry.set_text("");
+        if let Some(inner) = weak.upgrade() {
+            inner.apply_filter();
         }
-        inner_cl.cancel_pending_event_reload();
-        if let Some(id) = inner_cl.search_reload_id.borrow_mut().take() {
-            id.remove();
+    });
+
+    let weak = Rc::downgrade(inner);
+    inner.favorites_toggle.connect_toggled(move |_| {
+        if let Some(inner) = weak.upgrade() {
+            inner.apply_filter();
         }
-        let text = inner_cl.search_entry.text().trim().to_string();
-        let search = if text.is_empty() { None } else { Some(text) };
-        inner_cl.load_passwords(search.as_deref());
-        SessionManager::on_activity(&inner_cl.state.session);
     });
 
-    let inner_cl = inner.clone();
-    inner.timeout_banner.connect_button_clicked(move |b| {
-        b.set_revealed(false);
-        SessionManager::on_activity(&inner_cl.state.session);
-    });
-}
-
-fn wire_session_warning(inner: &Rc<Inner>) {
-    let inner_weak = Rc::downgrade(inner);
-    let cb: Rc<dyn Fn(u64)> = Rc::new(move |remaining| {
-        let Some(inner) = inner_weak.upgrade() else {
-            return;
-        };
-        inner.timeout_banner.set_title(&format!(
-            "{} ({}s)",
-            tr!("Vault will lock soon due to inactivity"),
-            remaining
-        ));
-        inner.timeout_banner.set_revealed(true);
-    });
-    inner.state.session.borrow_mut().set_warning_callback(cb);
-}
-
-fn wire_events(inner: &Rc<Inner>) {
-    let inner_weak = Rc::downgrade(inner);
+    let weak = Rc::downgrade(inner);
     let _permanent = inner.state.events.subscribe(move |event| {
-        let Some(inner) = inner_weak.upgrade() else {
-            return;
-        };
+        let Some(inner) = weak.upgrade() else { return };
         match event {
             crate::events::AppEvent::VaultChanged
             | crate::events::AppEvent::SyncCompleted { .. }
                 if inner.can_show_vault_data() =>
             {
-                inner.invalidate_list_caches();
-                inner.schedule_reload_current_filter();
-            }
-            crate::events::AppEvent::SessionLocked => {
-                inner.invalidate_list_caches();
-                inner.update_view();
+                inner.invalidate_caches();
+                inner.schedule_reload();
             }
             _ => {}
         }
     });
 }
 
+fn install_actions(inner: &Rc<Inner>, widget: &gtk::Widget) {
+    let group = gio::SimpleActionGroup::new();
+
+    let folder = gio::SimpleAction::new_stateful(
+        "folder",
+        Some(glib::VariantTy::STRING),
+        &"all".to_variant(),
+    );
+    {
+        let weak = Rc::downgrade(inner);
+        folder.connect_activate(move |action, target| {
+            let Some(target) = target.and_then(|t| t.str()) else {
+                return;
+            };
+            action.set_state(&target.to_variant());
+            if let Some(inner) = weak.upgrade() {
+                inner.set_folder_filter(FolderFilter::from_target(target));
+            }
+        });
+    }
+    group.add_action(&folder);
+
+    let simple = |name: &str, run: fn(&Rc<Inner>)| {
+        let action = gio::SimpleAction::new(name, None);
+        let weak = Rc::downgrade(inner);
+        action.connect_activate(move |_, _| {
+            if let Some(inner) = weak.upgrade() {
+                run(&inner);
+            }
+        });
+        group.add_action(&action);
+    };
+    simple("new-folder", |inner| inner.show_new_folder_dialog());
+    simple("organize-folders", |inner| {
+        inner.show_organize_folders_dialog()
+    });
+    simple("import", |inner| {
+        if let Some(cb) = inner.on_import.borrow().as_ref() {
+            cb();
+        }
+    });
+    simple("trash", |inner| {
+        if let Some(cb) = inner.on_trash.borrow().as_ref() {
+            cb();
+        }
+    });
+    simple("search-all", |inner| {
+        inner.favorites_toggle.set_active(false);
+        inner.set_folder_filter(FolderFilter::All);
+    });
+    widget.insert_action_group("vault", Some(&group));
+}
+
 // ============================================================================
-// Inner — view model logic
+// Inner
 // ============================================================================
 
 impl Inner {
@@ -664,696 +741,101 @@ impl Inner {
         self.state.session.borrow().is_authenticated() && self.state.vault.borrow().is_unlocked()
     }
 
-    fn notify_auth_changed(&self) {
-        if let Some(cb) = self.on_auth_changed.borrow().as_ref() {
-            cb();
+    fn toast(&self, message: &str) {
+        self.toast
+            .add_toast(adw::Toast::builder().title(message).timeout(3).build());
+    }
+
+    fn cancel_search_reload(&self) {
+        if let Some(id) = self.search_reload_id.borrow_mut().take() {
+            id.remove();
         }
     }
 
-    fn show_toast(&self, message: &str) {
-        let toast = adw::Toast::builder().title(message).timeout(3).build();
-        self.toast.add_toast(toast);
+    fn cancel_pending(&self) {
+        self.cancel_search_reload();
+        if let Some(id) = self.event_reload_id.borrow_mut().take() {
+            id.remove();
+        }
+        self.stop_details_timer();
     }
 
-    /// If the user has opted in to keyring-backed unlock, fetch the stored
-    /// master password and try to unlock with it. Silent on failure — we just
-    /// fall through to the normal prompt. Returns true when the vault was
-    /// successfully unlocked through this path.
-    fn try_keyring_unlock(self: &Rc<Self>) -> bool {
-        if self.state.vault.borrow().is_unlocked() {
-            return true;
-        }
-        if !self.keyring_unlock_allowed.replace(false) {
-            return false;
-        }
-        if !self
-            .state
-            .vault
-            .borrow()
-            .has_master_password()
-            .unwrap_or(false)
-        {
-            return false;
-        }
-        let Ok(Some(pw)) = ashypass_core::keyring::load_master() else {
-            return false;
-        };
-        let result = self.state.vault.borrow_mut().unlock(&pw);
-        match result {
-            Ok(()) => {
-                SessionManager::login(&self.state.session);
-                self.notify_auth_changed();
-                true
-            }
-            Err(ashypass_core::Error::InvalidMasterPassword) => {
-                // Stored secret no longer matches the vault — purge it so we
-                // don't keep trying on every restart.
-                let _ = ashypass_core::keyring::delete_master();
-                false
-            }
-            Err(e) => {
-                // A transient failure (busy database, I/O) says nothing about
-                // the stored secret, so keep it for the next start.
-                log::warn!("keyring unlock failed: {e}");
-                false
-            }
-        }
+    fn invalidate_caches(&self) {
+        self.cache.borrow_mut().take();
+        self.synced_ids.borrow_mut().take();
     }
 
-    fn update_view(self: &Rc<Self>) {
-        let mut authed = self.state.session.borrow().is_authenticated()
-            && self.state.vault.borrow().is_unlocked();
-        if !authed {
-            authed = self.try_keyring_unlock();
+    fn cache(&self) -> ashypass_core::Result<Rc<PasswordListCache>> {
+        if let Some(cache) = self.cache.borrow().as_ref() {
+            return Ok(cache.clone());
         }
-        if authed {
-            self.main_stack.set_visible_child_name("vault");
-            self.load_passwords(None);
-        } else {
-            // Hidden is not gone: drop the rendered rows (titles, usernames,
-            // URLs) and the search text so nothing outlives the lock. Clear
-            // the text first — it schedules a reload the cancels below drop.
-            self.search_entry.set_text("");
-            self.reset_password_list_box();
-            self.invalidate_list_caches();
-            self.cancel_pending_search_reload();
-            self.cancel_pending_event_reload();
-            self.cancel_pending_render();
-            let has_master = self
-                .state
-                .vault
-                .borrow()
-                .has_master_password()
-                .unwrap_or(false);
-            let quick = has_master
-                && (self.state.vault.borrow().is_quick_unlock_available()
-                    || ashypass_core::keyring::is_quick_unlock_stored()
-                    || self
-                        .state
-                        .settings()
-                        .quick_unlock
-                        .as_ref()
-                        .is_some_and(|p| p.is_configured()));
-            if has_master {
-                self.unlock_button.set_label(tr!("Unlock Vault"));
-                self.confirm_entry.set_visible(false);
-                self.strength_box.set_visible(false);
-            } else {
-                self.unlock_button.set_label(tr!("Create Master Password"));
-                self.confirm_entry.set_visible(true);
-                self.strength_box.set_visible(true);
-            }
-            // Decide whether to show PIN UI or master UI.
-            self.pin_entry.set_visible(quick);
-            self.pin_button.set_visible(quick);
-            self.use_master_button.set_visible(quick);
-            self.master_entry.set_visible(!quick);
-            self.unlock_button.set_visible(!quick);
-
-            self.main_stack.set_visible_child_name("auth");
-            self.master_entry.set_text("");
-            self.confirm_entry.set_text("");
-            self.pin_entry.set_text("");
-            self.auth_error.set_visible(false);
-            self.strength_bar.set_value(0.0);
-            self.strength_label.set_text("");
-            self.focus_auth_field();
-        }
+        let vault = self.state.vault.borrow();
+        let entries = vault.list(None)?;
+        let categories = vault.categories().unwrap_or_default();
+        let cache = Rc::new(PasswordListCache::new(entries, categories));
+        *self.cache.borrow_mut() = Some(cache.clone());
+        Ok(cache)
     }
 
-    fn focus_auth_field(&self) {
-        let target = if self.pin_entry.is_visible() {
-            self.pin_entry.clone().upcast::<gtk::Widget>()
-        } else {
-            self.master_entry.clone().upcast::<gtk::Widget>()
-        };
-        glib::idle_add_local_once(move || {
-            target.grab_focus();
-        });
-    }
-
-    /// Switch the auth page from PIN-only to master-password mode. Triggered
-    /// when the user clicks "Use master password instead" or after too many
-    /// failed PIN attempts.
-    fn show_master_unlock(self: &Rc<Self>) {
-        self.pin_entry.set_visible(false);
-        self.pin_button.set_visible(false);
-        self.use_master_button.set_visible(false);
-        self.master_entry.set_visible(true);
-        self.unlock_button.set_visible(true);
-        self.focus_auth_field();
-    }
-
-    fn on_pin_unlock_clicked(self: &Rc<Self>) {
-        let pin = self.pin_entry.text().to_string();
-        if pin.is_empty() {
-            self.show_auth_error(tr!("Please enter your PIN"));
-            return;
+    fn schedule_reload(self: &Rc<Self>) {
+        if let Some(id) = self.event_reload_id.borrow_mut().take() {
+            id.remove();
         }
-        let mut loaded_settings = (*self.state.settings()).clone();
-        let legacy_quick_unlock = loaded_settings.quick_unlock.clone();
-        let keyring_quick_unlock = ashypass_core::keyring::load_quick_unlock()
-            .map_err(|error| log::warn!("quick-unlock keyring read failed: {error}"))
-            .ok()
-            .flatten();
-        let persistent_quick_unlock = keyring_quick_unlock
-            .as_ref()
-            .or(legacy_quick_unlock.as_ref());
-        let r = {
-            let mut vault = self.state.vault.borrow_mut();
-            if vault.is_quick_unlock_available() {
-                match vault.quick_unlock(&pin) {
-                    Ok(()) => Ok(()),
-                    Err(ashypass_core::Error::InvalidMasterPassword) => {
-                        Err(ashypass_core::Error::InvalidMasterPassword)
-                    }
-                    Err(e) => {
-                        if let Some(prefs) = persistent_quick_unlock.as_ref() {
-                            vault.quick_unlock_persistent(&pin, prefs)
-                        } else {
-                            Err(e)
-                        }
-                    }
-                }
-            } else if let Some(prefs) = persistent_quick_unlock.as_ref() {
-                vault.quick_unlock_persistent(&pin, prefs)
-            } else {
-                vault.quick_unlock(&pin)
+        let weak = Rc::downgrade(self);
+        let id = glib::timeout_add_local(std::time::Duration::from_millis(60), move || {
+            if let Some(inner) = weak.upgrade() {
+                *inner.event_reload_id.borrow_mut() = None;
+                inner.reload();
             }
-        };
-        match r {
-            Ok(()) => {
-                // Correct PIN clears the failure budget.
-                if let Some(prefs) = persistent_quick_unlock.filter(|p| p.failed_attempts > 0) {
-                    let mut reset = prefs.clone();
-                    reset.failed_attempts = 0;
-                    if let Err(error) = ashypass_core::keyring::store_quick_unlock(&reset) {
-                        log::warn!("could not reset PIN attempt counter: {error}");
-                    }
-                }
-                if keyring_quick_unlock.is_none() && legacy_quick_unlock.is_some() {
-                    if let Some(prefs) = legacy_quick_unlock.as_ref() {
-                        match ashypass_core::keyring::store_quick_unlock(prefs) {
-                            Ok(()) => {
-                                loaded_settings.quick_unlock = None;
-                                if let Err(error) = loaded_settings.save() {
-                                    log::warn!(
-                                        "could not clear migrated quick-unlock settings: {error}"
-                                    );
-                                }
-                            }
-                            Err(error) => log::warn!(
-                                "could not migrate quick-unlock state to keyring: {error}"
-                            ),
-                        }
-                    }
-                }
-                SessionManager::login(&self.state.session);
-                self.update_view();
-                self.notify_auth_changed();
-            }
-            Err(ashypass_core::Error::InvalidMasterPassword) => {
-                self.pin_entry.set_text("");
-                // Persisted PIN state has no rate limit of its own, so count
-                // wrong attempts and destroy it once the budget is spent.
-                match persistent_quick_unlock.cloned() {
-                    Some(prefs) => {
-                        let remaining = self.record_failed_pin_attempt(prefs);
-                        if remaining == 0 {
-                            self.show_auth_error(tr!(
-                                "Too many incorrect PINs — quick unlock disabled, use your master password"
-                            ));
-                            self.show_master_unlock();
-                        } else {
-                            self.show_auth_error(&format!(
-                                "{} ({} {})",
-                                tr!("Incorrect PIN"),
-                                remaining,
-                                tr!("attempts left")
-                            ));
-                        }
-                    }
-                    None => self.show_auth_error(tr!("Incorrect PIN")),
-                }
-            }
-            Err(e) => {
-                self.show_auth_error(&format!("{}: {e}", tr!("Quick-unlock failed")));
-                self.state.vault.borrow_mut().disable_quick_unlock();
-                self.show_master_unlock();
-            }
-        }
-    }
-
-    /// Persist one more failed PIN attempt and return how many remain. At zero
-    /// the persisted quick-unlock state is wiped from both the keyring and the
-    /// legacy settings file, so the master password is the only way back in.
-    fn record_failed_pin_attempt(
-        self: &Rc<Self>,
-        mut prefs: ashypass_core::settings::QuickUnlockPrefs,
-    ) -> u32 {
-        use ashypass_core::settings::QUICK_UNLOCK_MAX_ATTEMPTS;
-
-        prefs.failed_attempts = prefs.failed_attempts.saturating_add(1);
-        let remaining = QUICK_UNLOCK_MAX_ATTEMPTS.saturating_sub(prefs.failed_attempts);
-
-        if remaining == 0 {
-            self.state.vault.borrow_mut().disable_quick_unlock();
-            if let Err(error) = ashypass_core::keyring::delete_quick_unlock() {
-                log::warn!("could not clear quick-unlock keyring item: {error}");
-            }
-            if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
-                log::warn!("could not clear quick-unlock settings: {error}");
-            }
-            return 0;
-        }
-
-        // Best effort: if the counter cannot be persisted we still refuse this
-        // attempt, we just cannot enforce the budget across restarts.
-        if let Err(error) = ashypass_core::keyring::store_quick_unlock(&prefs) {
-            log::warn!("could not record failed PIN attempt: {error}");
-            let stored = prefs.clone();
-            if let Err(error) = self
-                .state
-                .update_settings(|s| s.quick_unlock = Some(stored))
-            {
-                log::warn!("could not record failed PIN attempt in settings: {error}");
-            }
-        }
-        remaining
-    }
-
-    fn show_auth_error(&self, msg: &str) {
-        self.auth_error.set_text(msg);
-        self.auth_error.set_visible(true);
-    }
-
-    fn on_unlock_clicked(self: &Rc<Self>) {
-        let password = self.master_entry.text().to_string();
-        if password.is_empty() {
-            self.show_auth_error(tr!("Please enter a password"));
-            return;
-        }
-
-        let has_master = self
-            .state
-            .vault
-            .borrow()
-            .has_master_password()
-            .unwrap_or(false);
-
-        if has_master {
-            let r = self.state.vault.borrow_mut().unlock(&password);
-            match r {
-                Ok(()) => {
-                    SessionManager::login(&self.state.session);
-                    self.update_view();
-                    self.notify_auth_changed();
-                }
-                Err(ashypass_core::Error::InvalidMasterPassword) => {
-                    self.show_auth_error(tr!("Incorrect master password"));
-                }
-                Err(e) => {
-                    self.show_auth_error(&format!("{}: {e}", tr!("Failed to unlock vault")));
-                }
-            }
-        } else {
-            let confirm = self.confirm_entry.text().to_string();
-            if password.chars().count() < MIN_MASTER_PASSWORD_LENGTH {
-                self.show_auth_error(&format!(
-                    "{} {} {}",
-                    tr!("Password must be at least"),
-                    MIN_MASTER_PASSWORD_LENGTH,
-                    tr!("characters")
-                ));
-                return;
-            }
-            if password != confirm {
-                self.show_auth_error(tr!("Passwords do not match"));
-                return;
-            }
-            // Bind the result first: a `borrow_mut()` in the match scrutinee
-            // would stay alive through `update_view()`, which borrows the vault.
-            let result = self.state.vault.borrow_mut().set_master_password(&password);
-            match result {
-                Ok(()) => {
-                    if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
-                        log::warn!("could not save settings: {error}");
-                    }
-                    SessionManager::login(&self.state.session);
-                    self.update_view();
-                    self.notify_auth_changed();
-                }
-                Err(e) => {
-                    self.show_auth_error(&format!(
-                        "{}: {e}",
-                        tr!("Failed to setup master password")
-                    ));
-                }
-            }
-        }
-    }
-
-    fn load_passwords(self: &Rc<Self>, search: Option<&str>) {
-        if !self.can_show_vault_data() {
-            return;
-        }
-        self.main_stack.set_visible_child_name("vault");
-        self.cancel_pending_event_reload();
-        self.cancel_pending_render();
-        self.reset_password_list_box();
-        let ui_settings = self.state.settings();
-        self.apply_vault_list_density(ui_settings.compact_vault_list);
-
-        let mode = self.view_mode.get();
-        let selected_category = if mode == ViewMode::All {
-            self.get_selected_category()
-        } else {
-            None
-        };
-        let cache = match self.password_cache() {
-            Ok(cache) => cache,
-            Err(e) => {
-                log::error!("vault.list failed: {e}");
-                return;
-            }
-        };
-
-        if mode == ViewMode::All && (search.is_none() || self.category_names.borrow().is_empty()) {
-            self.update_category_filter(selected_category.as_deref(), &cache.categories);
-        } else if mode == ViewMode::All {
-            self.category_bar
-                .set_visible(!self.category_names.borrow().is_empty());
-        } else {
-            self.category_bar.set_visible(false);
-        }
-
-        let mut entries = cache.filtered_indices(search, selected_category.as_deref());
-
-        if mode == ViewMode::Favorites {
-            entries.retain(|idx| cache.entries[*idx].favorite);
-        } else if mode == ViewMode::Groups {
-            self.load_grouped(cache, entries, search.is_some(), &ui_settings);
-            return;
-        }
-
-        if entries.is_empty() {
-            let (icon, title, desc) = match mode {
-                ViewMode::Favorites => (
-                    "emblem-favorite-symbolic",
-                    tr!("No Favorites"),
-                    tr!("Mark passwords as favorite with the star icon"),
-                ),
-                _ if search.is_some() => (
-                    "edit-find-symbolic",
-                    tr!("No Results"),
-                    tr!("No passwords match your search"),
-                ),
-                _ => (
-                    "dialog-password-symbolic",
-                    tr!("No Passwords Stored"),
-                    tr!("Add your first password using the + button"),
-                ),
-            };
-            self.empty_status.set_icon_name(Some(icon));
-            self.empty_status.set_title(title);
-            self.empty_status.set_description(Some(desc));
-            self.content_stack.set_visible_child_name("empty");
-            return;
-        }
-
-        self.content_stack.set_visible_child_name("list");
-        let nextcloud_synced_ids = self.nextcloud_synced_ids(ui_settings.show_sync_badges);
-        self.render_password_rows(
-            cache,
-            entries,
-            nextcloud_synced_ids,
-            ui_settings.show_sync_badges,
-            ui_settings.show_favicons,
-        );
-    }
-
-    fn load_grouped(
-        self: &Rc<Self>,
-        cache: Rc<PasswordListCache>,
-        entries: Vec<usize>,
-        filtering: bool,
-        ui_settings: &Settings,
-    ) {
-        use std::collections::BTreeMap;
-        let mut groups: BTreeMap<String, Vec<usize>> = BTreeMap::new();
-        let mut uncategorized: Vec<usize> = Vec::new();
-        if !filtering {
-            for folder in &cache.categories {
-                groups.entry(folder.clone()).or_default();
-            }
-        }
-        for idx in entries {
-            let entry = &cache.entries[idx];
-            match entry.category.as_deref().filter(|s| !s.is_empty()) {
-                Some(cat) => groups.entry(cat.to_string()).or_default().push(idx),
-                None => uncategorized.push(idx),
-            }
-        }
-
-        if groups.is_empty() && uncategorized.is_empty() {
-            if filtering {
-                self.empty_status.set_icon_name(Some("edit-find-symbolic"));
-                self.empty_status.set_title(tr!("No Results"));
-                self.empty_status
-                    .set_description(Some(tr!("No passwords match your search")));
-                self.content_stack.set_visible_child_name("empty");
-            } else {
-                self.content_stack.set_visible_child_name("list");
-                self.add_create_folder_row();
-            }
-            return;
-        }
-
-        self.content_stack.set_visible_child_name("list");
-        let nextcloud_synced_ids = self.nextcloud_synced_ids(ui_settings.show_sync_badges);
-        self.add_create_folder_row();
-
-        for (cat, items) in groups {
-            let expanded = self.expanded_folders.borrow().contains(&cat);
-            let items_empty = items.is_empty();
-            let row = adw::ActionRow::builder()
-                .title(&cat)
-                .subtitle(format!("{}", items.len()))
-                .activatable(true)
-                .build();
-            let folder_icon = gtk::Image::from_icon_name("folder-symbolic");
-            folder_icon.add_css_class("folder-heading-icon");
-            row.add_prefix(&folder_icon);
-            row.add_suffix(&gtk::Image::from_icon_name(if expanded {
-                "pan-down-symbolic"
-            } else {
-                "pan-end-symbolic"
-            }));
-            {
-                let inner_cl = self.clone();
-                let cat = cat.clone();
-                row.connect_activated(move |_| {
-                    inner_cl.toggle_group_folder(&cat);
-                });
-            }
-            self.list_box.borrow().append(&row);
-
-            if expanded {
-                for idx in items {
-                    let entry = &cache.entries[idx];
-                    let row = self.create_password_row(
-                        entry,
-                        ui_settings.show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
-                        ui_settings.show_favicons,
-                    );
-                    self.list_box.borrow().append(&row);
-                }
-                if items_empty {
-                    let empty = adw::ActionRow::builder()
-                        .title(tr!("No Passwords Stored"))
-                        .sensitive(false)
-                        .build();
-                    self.list_box.borrow().append(&empty);
-                }
-            }
-        }
-
-        if !uncategorized.is_empty() {
-            let key = String::new();
-            let expanded = self.expanded_folders.borrow().contains(&key);
-            let row = adw::ActionRow::builder()
-                .title(tr!("Uncategorized"))
-                .subtitle(format!("{}", uncategorized.len()))
-                .activatable(true)
-                .build();
-            let folder_icon = gtk::Image::from_icon_name("folder-symbolic");
-            folder_icon.add_css_class("folder-heading-icon");
-            row.add_prefix(&folder_icon);
-            row.add_suffix(&gtk::Image::from_icon_name(if expanded {
-                "pan-down-symbolic"
-            } else {
-                "pan-end-symbolic"
-            }));
-            {
-                let inner_cl = self.clone();
-                row.connect_activated(move |_| {
-                    inner_cl.toggle_group_folder("");
-                });
-            }
-            self.list_box.borrow().append(&row);
-
-            if expanded {
-                for idx in uncategorized {
-                    let entry = &cache.entries[idx];
-                    let row = self.create_password_row(
-                        entry,
-                        ui_settings.show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
-                        ui_settings.show_favicons,
-                    );
-                    self.list_box.borrow().append(&row);
-                }
-            }
-        }
-    }
-
-    fn add_create_folder_row(self: &Rc<Self>) {
-        let row = adw::ActionRow::builder()
-            .title(tr!("Folder"))
-            .subtitle(tr!(
-                "Set a category on entries to organize them into groups"
-            ))
-            .activatable(true)
-            .build();
-        let icon = gtk::Image::from_icon_name("folder-new-symbolic");
-        icon.add_css_class("folder-heading-icon");
-        row.add_prefix(&icon);
-        row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
-        {
-            let inner_cl = self.clone();
-            row.connect_activated(move |_| {
-                inner_cl.show_add_folder_dialog();
-            });
-        }
-        self.list_box.borrow().append(&row);
-    }
-
-    fn current_search(&self) -> Option<String> {
-        let text = self.search_entry.text().trim().to_string();
-        if text.is_empty() {
-            None
-        } else {
-            Some(text)
-        }
-    }
-
-    fn reload_current_filter(self: &Rc<Self>) {
-        let scroll_y = self.list_scrolled.vadjustment().value();
-        let search = self.current_search();
-        self.load_passwords(search.as_deref());
-        self.restore_scroll(scroll_y);
-    }
-
-    fn schedule_reload_current_filter(self: &Rc<Self>) {
-        self.cancel_pending_search_reload();
-        self.cancel_pending_event_reload();
-        let inner = self.clone();
-        let id = glib::timeout_add_local(std::time::Duration::from_millis(50), move || {
-            *inner.event_reload_id.borrow_mut() = None;
-            inner.reload_current_filter();
             glib::ControlFlow::Break
         });
         *self.event_reload_id.borrow_mut() = Some(id);
     }
 
-    fn invalidate_list_caches(&self) {
-        self.password_cache.borrow_mut().take();
-        self.nextcloud_synced_ids_cache.borrow_mut().take();
-        self.category_names.borrow_mut().clear();
-    }
-
-    fn password_cache(&self) -> ashypass_core::Result<Rc<PasswordListCache>> {
-        if let Some(cache) = self.password_cache.borrow().as_ref() {
-            return Ok(cache.clone());
+    /// Re-read settings and sync state, rebuild the folder menu and refilter.
+    fn reload(self: &Rc<Self>) {
+        if !self.can_show_vault_data() {
+            return;
         }
-
-        let vault = self.state.vault.borrow();
-        let entries = vault.list(None)?;
-        let categories = vault.categories().unwrap_or_default();
-        let cache = Rc::new(PasswordListCache::new(entries, categories));
-        *self.password_cache.borrow_mut() = Some(cache.clone());
-        Ok(cache)
-    }
-
-    fn restore_scroll(&self, value: f64) {
-        let adjustment = self.list_scrolled.vadjustment();
-        glib::idle_add_local_once(move || {
-            let lower = adjustment.lower();
-            let max = (adjustment.upper() - adjustment.page_size()).max(lower);
-            adjustment.set_value(value.clamp(lower, max));
-        });
-    }
-
-    fn toggle_group_folder(self: &Rc<Self>, folder: &str) {
-        {
-            let mut expanded = self.expanded_folders.borrow_mut();
-            if !expanded.insert(folder.to_string()) {
-                expanded.remove(folder);
-            }
-        }
-        self.reload_current_filter();
-        SessionManager::on_activity(&self.state.session);
-    }
-
-    fn show_add_folder_dialog(self: &Rc<Self>) {
-        let dialog = adw::AlertDialog::builder()
-            .heading(tr!("Folder"))
-            .default_response("save")
-            .close_response("cancel")
-            .build();
-        dialog.add_response("cancel", tr!("Cancel"));
-        dialog.add_response("save", tr!("Save"));
-        dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
-
-        let folder_entry = adw::EntryRow::builder().title(tr!("Folder")).build();
-        let list = gtk::ListBox::builder()
-            .selection_mode(gtk::SelectionMode::None)
-            .build();
-        list.add_css_class("boxed-list");
-        list.append(&folder_entry);
-        dialog.set_extra_child(Some(&list));
-
-        let inner_cl = self.clone();
-        dialog.connect_response(None, move |dlg, response| {
-            if response != "save" {
-                dlg.close();
+        let settings = self.state.settings();
+        self.show_favicons.set(settings.show_favicons);
+        let cache = match self.cache() {
+            Ok(cache) => cache,
+            Err(e) => {
+                log::error!("vault.list failed: {e}");
+                self.empty.set(
+                    "dialog-error-symbolic",
+                    tr!("Could not read the vault"),
+                    &e.to_string(),
+                );
+                self.content_stack.set_visible_child_name("empty");
                 return;
             }
-            let name = folder_entry.text().trim().to_string();
-            if name.is_empty() {
-                folder_entry.add_css_class("error");
-                return;
+        };
+        self.update_sync_state(&cache, settings.show_sync_badges);
+        self.rebuild_folder_menu(&cache.categories);
+        // A folder that no longer exists cannot stay selected.
+        let stale = matches!(&*self.folder_filter.borrow(), FolderFilter::Named(name) if !cache.categories.contains(name));
+        if stale {
+            *self.folder_filter.borrow_mut() = FolderFilter::All;
+            self.folder_button.set_label(tr!("All folders"));
+        }
+        self.apply_filter();
+        // Keep the open details in step with the data (edited, deleted…).
+        if let Some(id) = self.open_id.get() {
+            let still_there = cache.entries.iter().any(|e| e.id == id);
+            if still_there {
+                self.render_details(id);
+            } else {
+                self.close_details();
             }
-            match inner_cl.state.vault.borrow().create_folder(&name) {
-                Ok(_) => {
-                    inner_cl.show_toast(&format!("{}: {name}", tr!("Folder")));
-                    SessionManager::on_activity(&inner_cl.state.session);
-                    dlg.close();
-                }
-                Err(e) => {
-                    inner_cl.show_toast(&format!("{}: {e}", tr!("Error saving password")));
-                }
-            }
-        });
-        dialog.present(Some(self.toast.upcast_ref::<gtk::Widget>()));
+        }
     }
 
-    fn nextcloud_synced_ids(&self, enabled: bool) -> HashSet<i64> {
-        if !enabled {
-            return HashSet::new();
-        }
-        if let Some(ids) = self.nextcloud_synced_ids_cache.borrow().as_ref() {
-            return ids.clone();
-        }
+    /// When every entry comes from Nextcloud Passwords a badge on each row
+    /// says nothing; one line under the list says it once. Badges remain
+    /// for mixed collections, where they tell entries apart.
+    fn update_sync_state(&self, cache: &PasswordListCache, badges_enabled: bool) {
         let ids: HashSet<i64> = self
             .state
             .vault
@@ -1361,251 +843,239 @@ impl Inner {
             .nc_all_mappings()
             .map(|items| items.into_iter().map(|m| m.entry_id).collect())
             .unwrap_or_default();
-        *self.nextcloud_synced_ids_cache.borrow_mut() = Some(ids.clone());
-        ids
+        let total = cache.len();
+        let synced = cache.entries.iter().filter(|e| ids.contains(&e.id)).count();
+        let all_synced = total > 0 && synced == total;
+        self.show_badges
+            .set(badges_enabled && synced > 0 && !all_synced);
+        if all_synced {
+            self.sync_label.set_label(tr!(
+                "All entries are synchronized with Nextcloud Passwords."
+            ));
+            self.sync_label.set_visible(true);
+        } else if synced > 0 && !badges_enabled {
+            self.sync_label.set_label(
+                &crate::trn!(
+                    "{} of these entries is synchronized with Nextcloud Passwords.",
+                    "{} of these entries are synchronized with Nextcloud Passwords.",
+                    synced
+                )
+                .replace("{}", &synced.to_string()),
+            );
+            self.sync_label.set_visible(true);
+        } else {
+            self.sync_label.set_visible(false);
+        }
+        *self.synced_ids.borrow_mut() = Some(Rc::new(ids));
     }
 
-    fn render_password_rows(
-        self: &Rc<Self>,
-        cache: Rc<PasswordListCache>,
-        entries: Vec<usize>,
-        nextcloud_synced_ids: HashSet<i64>,
-        show_sync_badges: bool,
-        show_favicons: bool,
-    ) {
-        self.cancel_pending_render();
-        let first_end = PASSWORD_RENDER_BATCH_SIZE.min(entries.len());
-        for idx in &entries[..first_end] {
-            let entry = &cache.entries[*idx];
-            let row = self.create_password_row(
-                entry,
-                show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
-                show_favicons,
+    fn rebuild_folder_menu(&self, categories: &[String]) {
+        self.folder_menu.remove_all();
+        let filters = gio::Menu::new();
+        let item = |label: &str, filter: FolderFilter| {
+            let item = gio::MenuItem::new(Some(label), None);
+            item.set_action_and_target_value(
+                Some("vault.folder"),
+                Some(&filter.target().to_variant()),
             );
-            self.list_box.borrow().append(&row);
+            item
+        };
+        filters.append_item(&item(tr!("All folders"), FolderFilter::All));
+        filters.append_item(&item(tr!("No folder"), FolderFilter::NoFolder));
+        self.folder_menu.append_section(None, &filters);
+        if !categories.is_empty() {
+            let named = gio::Menu::new();
+            for category in categories {
+                named.append_item(&item(category, FolderFilter::Named(category.clone())));
+            }
+            self.folder_menu
+                .append_section(Some(tr!("Folders")), &named);
         }
+        let manage = gio::Menu::new();
+        manage.append(Some(tr!("Create folder…")), Some("vault.new-folder"));
+        manage.append(
+            Some(tr!("Organize folders…")),
+            Some("vault.organize-folders"),
+        );
+        self.folder_menu.append_section(None, &manage);
+    }
 
-        if first_end >= entries.len() {
+    fn set_folder_filter(&self, filter: FolderFilter) {
+        self.folder_button.set_label(&filter.label());
+        *self.folder_filter.borrow_mut() = filter;
+        self.apply_filter();
+        SessionManager::on_activity(&self.state.session);
+    }
+
+    fn current_search(&self) -> Option<String> {
+        let text = self.search_entry.text().trim().to_string();
+        (!text.is_empty()).then_some(text)
+    }
+
+    fn apply_filter(&self) {
+        if !self.can_show_vault_data() {
             return;
         }
-
-        let inner = self.clone();
-        let cache = cache.clone();
-        let mut index = first_end;
-        let id = glib::idle_add_local(move || {
-            let end = (index + PASSWORD_RENDER_BATCH_SIZE).min(entries.len());
-            for idx in &entries[index..end] {
-                let entry = &cache.entries[*idx];
-                let row = inner.create_password_row(
-                    entry,
-                    show_sync_badges && nextcloud_synced_ids.contains(&entry.id),
-                    show_favicons,
-                );
-                inner.list_box.borrow().append(&row);
-            }
-            index = end;
-            if index >= entries.len() {
-                *inner.render_source_id.borrow_mut() = None;
-                glib::ControlFlow::Break
-            } else {
-                glib::ControlFlow::Continue
-            }
-        });
-        *self.render_source_id.borrow_mut() = Some(id);
-    }
-
-    fn reset_password_list_box(&self) {
-        let list_box = new_password_list_box();
-        self.list_scrolled.set_child(Some(&list_box));
-        *self.list_box.borrow_mut() = list_box;
-    }
-
-    fn apply_vault_list_density(&self, compact: bool) {
-        let margin = if compact { 6 } else { 12 };
-        let list_box = self.list_box.borrow();
-        list_box.set_margin_top(margin);
-        list_box.set_margin_bottom(margin);
-        list_box.set_margin_start(margin);
-        list_box.set_margin_end(margin);
-    }
-
-    fn create_password_row(
-        self: &Rc<Self>,
-        entry: &PasswordEntry,
-        nextcloud_synced: bool,
-        show_favicons: bool,
-    ) -> adw::ActionRow {
-        let row = adw::ActionRow::builder().title(&entry.title).build();
-
-        let mut parts: Vec<String> = Vec::new();
-        if let Some(u) = entry.username.as_deref().filter(|s| !s.is_empty()) {
-            parts.push(u.to_string());
-        }
-        if let Some(u) = entry.url.as_deref().filter(|s| !s.is_empty()) {
-            parts.push(u.to_string());
-        }
-        if let Some(c) = entry.category.as_deref().filter(|s| !s.is_empty()) {
-            parts.push(format!("{}: {c}", tr!("Folder")));
-        }
-        if !parts.is_empty() {
-            let escaped = glib::markup_escape_text(&parts.join(" • "));
-            row.set_subtitle(&escaped);
-        }
-
-        let icon = gtk::Image::new();
-        if show_favicons {
-            crate::favicons::apply(&icon, entry.url.as_deref(), 32);
-        } else {
-            icon.set_pixel_size(32);
-            icon.set_icon_name(Some("dialog-password-symbolic"));
-        }
-        row.add_prefix(&icon);
-
-        if nextcloud_synced {
-            let badge = gtk::Label::builder()
-                .label("Nextcloud")
-                .tooltip_text(tr!("Nextcloud Passwords"))
-                .valign(gtk::Align::Center)
-                .build();
-            badge.add_css_class("caption");
-            badge.add_css_class("sync-provider-badge");
-            row.add_suffix(&badge);
-        }
-
-        // Favorite toggle
-        let fav_btn = gtk::Button::builder()
-            .valign(gtk::Align::Center)
-            .tooltip_text(tr!("Favorite"))
-            .build();
-        fav_btn.add_css_class("flat");
-        set_favorite_button_state(&fav_btn, entry.favorite);
-        {
-            let inner_cl = self.clone();
-            let id = entry.id;
-            fav_btn.connect_clicked(move |btn| inner_cl.toggle_favorite(id, btn));
-        }
-        row.add_suffix(&fav_btn);
-
-        // Copy button
-        let copy_btn = gtk::Button::builder()
-            .icon_name("edit-copy-symbolic")
-            .valign(gtk::Align::Center)
-            .tooltip_text(tr!("Copy Password"))
-            .build();
-        copy_btn.add_css_class("flat");
-        {
-            let inner_cl = self.clone();
-            let id = entry.id;
-            copy_btn.connect_clicked(move |_| inner_cl.copy_password(id));
-        }
-        row.add_suffix(&copy_btn);
-
-        // Edit button
-        let edit_btn = gtk::Button::builder()
-            .icon_name("document-edit-symbolic")
-            .valign(gtk::Align::Center)
-            .tooltip_text(tr!("Edit"))
-            .build();
-        edit_btn.add_css_class("flat");
-        {
-            let inner_cl = self.clone();
-            let id = entry.id;
-            edit_btn.connect_clicked(move |_| inner_cl.show_edit_dialog(id));
-        }
-        row.add_suffix(&edit_btn);
-
-        // History button
-        let history_btn = gtk::Button::builder()
-            .icon_name("document-open-recent-symbolic")
-            .valign(gtk::Align::Center)
-            .tooltip_text(tr!("Password history"))
-            .build();
-        history_btn.add_css_class("flat");
-        {
-            let inner_cl = self.clone();
-            let id = entry.id;
-            history_btn.connect_clicked(move |_| inner_cl.show_history_dialog(id));
-        }
-        row.add_suffix(&history_btn);
-
-        // Delete button
-        let del_btn = gtk::Button::builder()
-            .icon_name("user-trash-symbolic")
-            .valign(gtk::Align::Center)
-            .tooltip_text(tr!("Delete"))
-            .build();
-        del_btn.add_css_class("flat");
-        {
-            let inner_cl = self.clone();
-            let id = entry.id;
-            del_btn.connect_clicked(move |_| inner_cl.confirm_delete(id));
-        }
-        row.add_suffix(&del_btn);
-
-        row
-    }
-
-    fn get_selected_category(&self) -> Option<String> {
-        let idx = self.category_dropdown.selected();
-        if idx == 0 {
-            return None;
-        }
-        let model = self.category_model.borrow();
-        let s = model.string(idx)?;
-        let s = s.to_string();
-        if s.is_empty() {
-            None
-        } else {
-            Some(s)
-        }
-    }
-
-    fn update_category_filter(&self, selected: Option<&str>, cats: &[String]) {
-        self.updating_categories.set(true);
-
-        if self.category_names.borrow().as_slice() != cats {
-            let mut items: Vec<&str> = Vec::with_capacity(1 + cats.len());
-            items.push(tr!("All"));
-            for c in cats {
-                items.push(c.as_str());
-            }
-            let model = gtk::StringList::new(&items);
-            self.category_dropdown.set_model(Some(&model));
-            *self.category_model.borrow_mut() = model;
-            *self.category_names.borrow_mut() = cats.to_vec();
-        }
-
-        let selected_idx = selected
-            .and_then(|name| cats.iter().position(|cat| cat == name))
-            .map(|idx| (idx + 1) as u32)
-            .unwrap_or(0);
-        if self.category_dropdown.selected() != selected_idx {
-            self.category_dropdown.set_selected(selected_idx);
-        }
-        self.category_bar.set_visible(!cats.is_empty());
-        self.updating_categories.set(false);
-    }
-
-    fn copy_password(self: &Rc<Self>, id: i64) {
-        let pw = {
-            let v = self.state.vault.borrow();
-            match v.get(id) {
-                Ok(Some(e)) => e.password,
-                _ => None,
-            }
+        let Some(cache) = self.cache.borrow().clone() else {
+            return;
         };
-        if let Some(pw) = pw {
-            copy_to_clipboard(&pw);
-            self.show_toast(tr!("Password copied to clipboard"));
-            SessionManager::on_activity(&self.state.session);
+        let search = self.current_search();
+        let folder = self.folder_filter.borrow().clone();
+        let favorites_only = self.favorites_toggle.is_active();
+        let entries = cache.filtered(search.as_deref(), &folder, favorites_only);
+
+        let items: Vec<glib::Object> = entries
+            .iter()
+            .map(|e| glib::BoxedAnyObject::new(e.clone()).upcast())
+            .collect();
+        self.store.splice(0, self.store.n_items(), &items);
+
+        let shown = entries.len();
+        self.count_label.set_label(
+            &crate::trn!("{} password", "{} passwords", shown).replace("{}", &shown.to_string()),
+        );
+
+        if shown > 0 {
+            self.content_stack.set_visible_child_name("list");
+            return;
         }
+        self.show_empty_state(&cache, search.as_deref(), &folder, favorites_only);
     }
 
-    fn toggle_favorite(self: &Rc<Self>, id: i64, btn: &gtk::Button) {
-        if let Ok(new_state) = self.state.vault.borrow().toggle_favorite(id) {
-            set_favorite_button_state(btn, new_state);
+    fn show_empty_state(
+        &self,
+        cache: &PasswordListCache,
+        search: Option<&str>,
+        folder: &FolderFilter,
+        favorites_only: bool,
+    ) {
+        let filtered = folder != &FolderFilter::All || favorites_only;
+        if cache.len() == 0 {
+            self.empty.set(
+                "dialog-password-symbolic",
+                tr!("Your vault is ready"),
+                tr!("Save an access or bring your passwords from another app."),
+            );
+            let add = self.empty.add_action(tr!("Add password"), true);
+            add.set_action_name(Some("win.new-entry"));
+            let import = self.empty.add_action(tr!("Import passwords"), false);
+            import.set_action_name(Some("vault.import"));
+        } else if let Some(search) = search {
+            let title = format!("{} “{search}”", tr!("No passwords found for"));
+            let scope = if favorites_only {
+                tr!("The search is limited to favorites.").to_string()
+            } else {
+                match folder {
+                    FolderFilter::All => {
+                        tr!("Names, accounts and sites were searched.").to_string()
+                    }
+                    FolderFilter::NoFolder => {
+                        tr!("The search is limited to passwords without a folder.").to_string()
+                    }
+                    FolderFilter::Named(name) => {
+                        format!("{} {name}.", tr!("The search is limited to the folder"))
+                    }
+                }
+            };
+            self.empty.set("edit-find-symbolic", &title, &scope);
+            if filtered {
+                let all = self.empty.add_action(tr!("Search all folders"), true);
+                all.set_action_name(Some("vault.search-all"));
+            }
+        } else if favorites_only {
+            self.empty.set(
+                "starred-symbolic",
+                tr!("Your most used accesses can be here"),
+                tr!("Open a password and mark the star to find it faster."),
+            );
+            let all = self.empty.add_action(tr!("See my passwords"), true);
+            all.set_action_name(Some("vault.search-all"));
+        } else {
+            self.empty.set(
+                "folder-symbolic",
+                tr!("This folder is empty"),
+                tr!("Choose this folder when adding or editing a password."),
+            );
+            let all = self.empty.add_action(tr!("See all folders"), true);
+            all.set_action_name(Some("vault.search-all"));
+        }
+        self.content_stack.set_visible_child_name("empty");
+    }
+
+    // ---- Actions ------------------------------------------------------
+
+    fn copy_password(&self, id: i64) {
+        if !self.can_show_vault_data() {
+            return;
+        }
+        let password = self
+            .state
+            .vault
+            .borrow()
+            .get(id)
+            .ok()
+            .flatten()
+            .and_then(|e| e.password)
+            .map(Zeroizing::new);
+        match password {
+            Some(pw) if !pw.is_empty() => {
+                copy_secret(&self.state, &pw);
+                self.toast(tr!("Password copied"));
+            }
+            _ => self.toast(tr!("This access has no saved password")),
         }
         SessionManager::on_activity(&self.state.session);
+    }
+
+    fn copy_username(&self, username: Option<&str>) {
+        match username.filter(|u| !u.trim().is_empty()) {
+            Some(user) => {
+                copy_secret(&self.state, user);
+                self.toast(tr!("User copied"));
+            }
+            None => self.toast(tr!("This access has no user")),
+        }
+    }
+
+    fn toggle_favorite(&self, id: i64) {
+        let result = self.state.vault.borrow().toggle_favorite(id);
+        match result {
+            Ok(true) => self.toast(tr!("Added to favorites")),
+            Ok(false) => self.toast(tr!("Removed from favorites")),
+            Err(e) => self.toast(&format!("{}: {e}", tr!("Could not change the favorite"))),
+        }
+        // Favorites do not change `updated_at`, so the change listener may
+        // not fire; refresh explicitly.
+        self.invalidate_caches();
+        SessionManager::on_activity(&self.state.session);
+    }
+
+    fn show_add_dialog(self: &Rc<Self>, prefill: Option<Zeroizing<String>>) {
+        if !self.can_show_vault_data() {
+            return;
+        }
+        let folder = match &*self.folder_filter.borrow() {
+            FolderFilter::Named(name) => Some(name.clone()),
+            _ => None,
+        };
+        let weak = Rc::downgrade(self);
+        entry_form::present(
+            &self.state,
+            &self.toast,
+            &self.split,
+            EntryFormOptions {
+                entry: None,
+                prefill_password: prefill,
+                prefill_folder: folder,
+                on_saved: Some(Box::new(move |id| {
+                    if let Some(inner) = weak.upgrade() {
+                        inner.invalidate_caches();
+                        inner.reload();
+                        inner.open_details(id);
+                    }
+                })),
+            },
+        );
     }
 
     fn show_edit_dialog(self: &Rc<Self>, id: i64) {
@@ -1613,16 +1083,33 @@ impl Inner {
             Ok(Some(e)) => e,
             _ => return,
         };
-        show_password_dialog(self, Some(entry));
+        let weak = Rc::downgrade(self);
+        entry_form::present(
+            &self.state,
+            &self.toast,
+            &self.split,
+            EntryFormOptions {
+                entry: Some(entry),
+                prefill_password: None,
+                prefill_folder: None,
+                on_saved: Some(Box::new(move |id| {
+                    if let Some(inner) = weak.upgrade() {
+                        inner.invalidate_caches();
+                        inner.reload();
+                        inner.render_details(id);
+                    }
+                })),
+            },
+        );
         SessionManager::on_activity(&self.state.session);
     }
 
     fn show_history_dialog(self: &Rc<Self>, id: i64) {
-        let entry_title = self
+        let title = self
             .state
             .vault
             .borrow()
-            .get(id)
+            .get_without_touch(id)
             .ok()
             .flatten()
             .map(|e| e.title)
@@ -1630,26 +1117,27 @@ impl Inner {
         let history = match self.state.vault.borrow().password_history(id) {
             Ok(h) => h,
             Err(e) => {
-                self.show_toast(&format!("{}: {e}", tr!("Failed to read history")));
+                self.toast(&format!("{}: {e}", tr!("Could not read the history")));
                 return;
             }
         };
-
         let dialog = adw::Dialog::builder()
-            .title(tr!("Password History"))
+            .title(tr!("Password history"))
             .content_width(520)
-            .content_height(420)
+            .content_height(440)
             .build();
-
         let toolbar = adw::ToolbarView::new();
         toolbar.add_top_bar(&adw::HeaderBar::new());
-
         let page = adw::PreferencesPage::new();
-        let group = adw::PreferencesGroup::builder().title(&entry_title).build();
-
+        let group = adw::PreferencesGroup::builder()
+            .title(glib::markup_escape_text(&title).as_str())
+            .description(tr!(
+                "Previous passwords kept by Ashy Pass when this one was changed."
+            ))
+            .build();
         if history.is_empty() {
             let row = adw::ActionRow::builder()
-                .title(tr!("No previous passwords recorded."))
+                .title(tr!("No previous passwords"))
                 .subtitle(tr!(
                     "Older versions appear here after the password is changed."
                 ))
@@ -1657,85 +1145,106 @@ impl Inner {
             group.add(&row);
         } else {
             for h in &history {
-                let when = chrono::DateTime::<chrono::Utc>::from_timestamp(h.changed_at, 0)
-                    .map(|dt| dt.format("%Y-%m-%d %H:%M UTC").to_string())
-                    .unwrap_or_else(|| format!("ts={}", h.changed_at));
                 let row = adw::ActionRow::builder()
                     .title(mask_password(&h.password))
-                    .subtitle(&when)
+                    .subtitle(format_timestamp(h.changed_at))
+                    .use_markup(false)
                     .build();
-                let copy_btn = gtk::Button::builder()
+                let copy = gtk::Button::builder()
                     .icon_name("edit-copy-symbolic")
                     .tooltip_text(tr!("Copy"))
                     .valign(gtk::Align::Center)
                     .build();
-                copy_btn.add_css_class("flat");
+                copy.add_css_class("flat");
+                copy.update_property(&[gtk::accessible::Property::Label(tr!(
+                    "Copy this old password"
+                ))]);
                 {
-                    let pw = h.password.clone();
-                    let self_cl = self.clone();
-                    copy_btn.connect_clicked(move |_| {
-                        copy_to_clipboard(&pw);
-                        self_cl.show_toast(tr!("Password copied to clipboard"));
+                    // Read the value at click time instead of keeping a copy
+                    // of every old password alive in the closure.
+                    let inner = self.clone();
+                    let changed_at = h.changed_at;
+                    copy.connect_clicked(move |_| {
+                        if !inner.can_show_vault_data() {
+                            return;
+                        }
+                        let value = inner
+                            .state
+                            .vault
+                            .borrow()
+                            .password_history(id)
+                            .ok()
+                            .and_then(|items| {
+                                items
+                                    .into_iter()
+                                    .find(|item| item.changed_at == changed_at)
+                                    .map(|item| Zeroizing::new(item.password))
+                            });
+                        if let Some(value) = value {
+                            copy_secret(&inner.state, &value);
+                            inner.toast(tr!("Password copied"));
+                        }
                     });
                 }
-                row.add_suffix(&copy_btn);
+                row.add_suffix(&copy);
                 group.add(&row);
             }
         }
-
         page.add(&group);
-
         if !history.is_empty() {
-            let actions_group = adw::PreferencesGroup::new();
-            let clear_btn = gtk::Button::with_label(tr!("Clear history"));
-            clear_btn.add_css_class("destructive-action");
-            clear_btn.set_halign(gtk::Align::End);
-            clear_btn.set_margin_top(8);
+            let actions = adw::PreferencesGroup::new();
+            let clear = gtk::Button::with_label(tr!("Clear history"));
+            clear.add_css_class("destructive-action");
+            clear.set_halign(gtk::Align::End);
             {
-                let inner_cl = self.clone();
-                let dialog_cl = dialog.clone();
-                clear_btn.connect_clicked(move |_| {
-                    if let Err(e) = inner_cl.state.vault.borrow().clear_password_history(id) {
-                        inner_cl.show_toast(&format!("{e}"));
-                    } else {
-                        inner_cl.show_toast(tr!("History cleared"));
-                        dialog_cl.close();
+                let inner = self.clone();
+                let dialog = dialog.clone();
+                clear.connect_clicked(move |_| {
+                    match inner.state.vault.borrow().clear_password_history(id) {
+                        Ok(_) => {
+                            inner.toast(tr!("History cleared"));
+                            dialog.close();
+                        }
+                        Err(e) => {
+                            inner.toast(&format!("{}: {e}", tr!("Could not clear the history")))
+                        }
                     }
                 });
             }
-            actions_group.add(&clear_btn);
-            page.add(&actions_group);
+            actions.add(&clear);
+            page.add(&actions);
         }
-
         toolbar.set_content(Some(&page));
         dialog.set_child(Some(&toolbar));
-        dialog.present(Some(&self.toast));
-        SessionManager::on_activity(&self.state.session);
+        self.state.track_sensitive_dialog(&dialog);
+        dialog.present(Some(&self.split));
     }
 
     fn confirm_delete(self: &Rc<Self>, id: i64) {
-        let entry = match self.state.vault.borrow().get(id) {
+        let entry = match self.state.vault.borrow().get_without_touch(id) {
             Ok(Some(e)) => e,
             _ => return,
         };
-        let trash_enabled = self.state.settings().trash_retention_days > 0;
-        let body = if trash_enabled {
+        let retention = self.state.settings().trash_retention_days;
+        let who = entry
+            .username
+            .as_deref()
+            .filter(|u| !u.trim().is_empty())
+            .map(|u| format!(" ({u})"))
+            .unwrap_or_default();
+        let heading = format!("{} “{}”{who}?", tr!("Delete"), entry.title);
+        let body = if retention > 0 {
             format!(
-                "{} '{}'?",
-                tr!("Are you sure you want to delete"),
-                entry.title
+                "{} {}",
+                tr!("The access moves to Deleted items, where it can be restored for"),
+                crate::trn!("{} day.", "{} days.", retention as usize)
+                    .replace("{}", &retention.to_string())
             )
         } else {
-            format!(
-                "{} '{}'? {}",
-                tr!("Are you sure you want to delete"),
-                entry.title,
-                tr!("This action cannot be undone.")
-            )
+            tr!("Deleted items are not kept (see Settings). This cannot be undone.").to_string()
         };
-
         let dialog = adw::AlertDialog::builder()
-            .heading(tr!("Delete Password?"))
+            .heading(&heading)
             .body(&body)
             .default_response("cancel")
             .close_response("cancel")
@@ -1743,730 +1252,702 @@ impl Inner {
         dialog.add_response("cancel", tr!("Cancel"));
         dialog.add_response("delete", tr!("Delete"));
         dialog.set_response_appearance("delete", adw::ResponseAppearance::Destructive);
-
-        let inner_cl = self.clone();
-        dialog.connect_response(None, move |dlg, response| {
-            if response == "delete" {
-                let deleted = if trash_enabled {
-                    inner_cl.state.vault.borrow().delete(id)
-                } else {
-                    inner_cl.state.vault.borrow().delete_permanent(id)
-                };
-                if let Ok(true) = deleted {
-                    inner_cl.show_toast(if trash_enabled {
-                        tr!("Password deleted")
-                    } else {
-                        tr!("Permanently deleted")
-                    });
-                    SessionManager::on_activity(&inner_cl.state.session);
-                }
+        let inner = self.clone();
+        dialog.connect_response(None, move |_, response| {
+            if response != "delete" || !inner.can_show_vault_data() {
+                return;
             }
-            dlg.close();
+            let deleted = if retention > 0 {
+                inner.state.vault.borrow().delete(id)
+            } else {
+                inner.state.vault.borrow().delete_permanent(id)
+            };
+            match deleted {
+                Ok(true) => {
+                    if inner.open_id.get() == Some(id) {
+                        inner.close_details();
+                    }
+                    if retention > 0 {
+                        inner.offer_undo(id);
+                    } else {
+                        inner.toast(tr!("Permanently deleted"));
+                    }
+                }
+                Ok(false) => inner.toast(tr!("This access no longer exists")),
+                Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not delete"))),
+            }
+            SessionManager::on_activity(&inner.state.session);
         });
-        dialog.present(Some(self.toast.upcast_ref::<gtk::Widget>()));
+        self.state.track_sensitive_dialog(&dialog);
+        dialog.present(Some(&self.split));
     }
 
-    fn cancel_pending_search_reload(&self) {
-        if let Some(id) = self.search_reload_id.borrow_mut().take() {
+    /// "Undo" is offered only because the trash really holds the entry.
+    fn offer_undo(self: &Rc<Self>, original_id: i64) {
+        let toast = adw::Toast::builder()
+            .title(tr!("Moved to Deleted items"))
+            .button_label(tr!("Undo"))
+            .timeout(6)
+            .build();
+        let inner = self.clone();
+        toast.connect_button_clicked(move |_| {
+            if !inner.can_show_vault_data() {
+                return;
+            }
+            let trash_id = inner
+                .state
+                .vault
+                .borrow()
+                .list_trash()
+                .ok()
+                .and_then(|items| {
+                    items
+                        .into_iter()
+                        .filter(|t| t.original_id == original_id)
+                        .max_by_key(|t| t.deleted_at)
+                        .map(|t| t.trash_id)
+                });
+            let restored = trash_id.map(|tid| inner.state.vault.borrow().restore_from_trash(tid));
+            match restored {
+                Some(Ok(Some(_))) => inner.toast(tr!("Restored")),
+                _ => inner.toast(tr!("Could not restore. Look in Deleted items.")),
+            }
+        });
+        self.toast.add_toast(toast);
+    }
+
+    fn show_new_folder_dialog(self: &Rc<Self>) {
+        let dialog = adw::AlertDialog::builder()
+            .heading(tr!("Create folder"))
+            .body(tr!(
+                "Folders organize your passwords. You can choose them when adding or editing."
+            ))
+            .default_response("create")
+            .close_response("cancel")
+            .build();
+        dialog.add_response("cancel", tr!("Cancel"));
+        dialog.add_response("create", tr!("Create"));
+        dialog.set_response_appearance("create", adw::ResponseAppearance::Suggested);
+        let name_row = adw::EntryRow::builder().title(tr!("Folder name")).build();
+        let list = gtk::ListBox::builder()
+            .selection_mode(gtk::SelectionMode::None)
+            .build();
+        list.add_css_class("boxed-list");
+        list.append(&name_row);
+        dialog.set_extra_child(Some(&list));
+        let inner = self.clone();
+        dialog.connect_response(None, move |_, response| {
+            if response != "create" {
+                return;
+            }
+            let name = name_row.text().trim().to_string();
+            if name.is_empty() {
+                return;
+            }
+            match inner.state.vault.borrow().create_folder(&name) {
+                Ok(true) => inner.toast(tr!("Folder created")),
+                Ok(false) => inner.toast(tr!("This folder already exists")),
+                Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not create the folder"))),
+            }
+            inner.invalidate_caches();
+            inner.reload();
+            inner.set_folder_filter(FolderFilter::Named(name));
+        });
+        self.state.track_sensitive_dialog(&dialog);
+        dialog.present(Some(&self.split));
+    }
+
+    fn show_organize_folders_dialog(self: &Rc<Self>) {
+        crate::ui::folders::present(&self.state, &self.toast, &self.split);
+    }
+
+    // ---- Details ------------------------------------------------------
+
+    fn stop_details_timer(&self) {
+        if let Some(id) = self.details_timer.borrow_mut().take() {
             id.remove();
         }
     }
 
-    fn cancel_pending_event_reload(&self) {
-        if let Some(id) = self.event_reload_id.borrow_mut().take() {
-            id.remove();
+    fn close_details(&self) {
+        self.stop_details_timer();
+        if let Some(previous) = self.open_id.take() {
+            self.refresh_rows(&[previous]);
+        }
+        // Dropping the old content drops every decrypted value it showed.
+        self.details_toolbar
+            .set_content(Some(&self.details_placeholder));
+        self.details_page.set_title(tr!("Details"));
+        self.split.set_show_content(false);
+    }
+
+    fn open_details(self: &Rc<Self>, id: i64) {
+        self.render_details(id);
+        self.split.set_show_content(true);
+        SessionManager::on_activity(&self.state.session);
+    }
+
+    /// Re-bind the rows of `ids` so their "open" highlight follows.
+    fn refresh_rows(&self, ids: &[i64]) {
+        for position in 0..self.store.n_items() {
+            let Some(obj) = self.store.item(position) else {
+                continue;
+            };
+            let Ok(boxed) = obj.downcast::<glib::BoxedAnyObject>() else {
+                continue;
+            };
+            let id = boxed.borrow::<Rc<PasswordEntry>>().id;
+            if ids.contains(&id) {
+                // A fresh object makes the row re-bind; signalling a change
+                // with the same object would not update it.
+                let entry = boxed.borrow::<Rc<PasswordEntry>>().clone();
+                let fresh: glib::Object = glib::BoxedAnyObject::new(entry).upcast();
+                self.store.splice(position, 1, &[fresh]);
+            }
         }
     }
 
-    fn cancel_pending_render(&self) {
-        if let Some(id) = self.render_source_id.borrow_mut().take() {
-            id.remove();
+    fn render_details(self: &Rc<Self>, id: i64) {
+        self.stop_details_timer();
+        if !self.can_show_vault_data() {
+            return;
         }
+        let entry = match self.state.vault.borrow().get(id) {
+            Ok(Some(e)) => e,
+            Ok(None) => {
+                self.close_details();
+                return;
+            }
+            Err(e) => {
+                self.toast(&format!("{}: {e}", tr!("Could not open this access")));
+                return;
+            }
+        };
+        let previous = self.open_id.replace(Some(id));
+        if previous != Some(id) {
+            let mut ids = vec![id];
+            ids.extend(previous);
+            self.refresh_rows(&ids);
+        }
+        self.details_page.set_title(&entry.title);
+        let content = build_details(self, &entry);
+        self.details_toolbar.set_content(Some(&content));
     }
 }
 
 // ============================================================================
-// Add/Edit dialog
+// Details content
 // ============================================================================
 
-fn show_password_dialog(inner: &Rc<Inner>, entry: Option<PasswordEntry>) {
-    let is_edit = entry.is_some();
-    let dialog = adw::AlertDialog::builder()
-        .heading(if is_edit {
-            tr!("Edit Password")
-        } else {
-            tr!("Add Password")
-        })
-        .default_response("save")
-        .close_response("cancel")
-        .build();
-    dialog.add_response("cancel", tr!("Cancel"));
-    dialog.add_response("save", tr!("Save"));
-    dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
-
-    let form = adw::PreferencesGroup::new();
-
-    let title_entry = adw::EntryRow::builder().title(tr!("Title")).build();
-    if let Some(e) = entry.as_ref() {
-        title_entry.set_text(&e.title);
-    }
-    form.add(&title_entry);
-
-    let username_entry = adw::EntryRow::builder().title(tr!("Username")).build();
-    if let Some(u) = entry.as_ref().and_then(|e| e.username.clone()) {
-        username_entry.set_text(&u);
-    }
-    form.add(&username_entry);
-
-    let password_entry = adw::PasswordEntryRow::builder()
-        .title(tr!("Password"))
-        .build();
-    if let Some(p) = entry.as_ref().and_then(|e| e.password.clone()) {
-        password_entry.set_text(&p);
-    }
-
-    // Generator MenuButton suffix
-    let gen_btn = gtk::MenuButton::builder()
-        .icon_name("document-new-symbolic")
-        .tooltip_text(tr!("Generate Password"))
+fn copy_button(tooltip: &str) -> gtk::Button {
+    let button = gtk::Button::builder()
+        .icon_name("edit-copy-symbolic")
+        .tooltip_text(tooltip)
         .valign(gtk::Align::Center)
         .build();
-    gen_btn.add_css_class("flat");
-    let menu = gio::Menu::new();
-    menu.append(Some(tr!("Strong Password")), Some("pwd.gen-strong"));
-    menu.append(Some(tr!("Passphrase")), Some("pwd.gen-passphrase"));
-    menu.append(Some(tr!("PIN Code")), Some("pwd.gen-pin"));
-    gen_btn.set_menu_model(Some(&menu));
+    button.add_css_class("flat");
+    button.update_property(&[gtk::accessible::Property::Label(tooltip)]);
+    button
+}
 
-    let action_group = gio::SimpleActionGroup::new();
-    let act_strong = gio::SimpleAction::new("gen-strong", None);
+const HIDDEN_PASSWORD: &str = "••••••••••••";
+
+fn build_details(inner: &Rc<Inner>, entry: &PasswordEntry) -> gtk::Widget {
+    let id = entry.id;
+    let outer = gtk::Box::new(gtk::Orientation::Vertical, 0);
+
+    // Header actions for this entry live in the content so they follow the
+    // open access: favorite, edit and a menu with history and delete.
+    let actions = gtk::Box::builder()
+        .orientation(gtk::Orientation::Horizontal)
+        .spacing(6)
+        .halign(gtk::Align::End)
+        .build();
+    let star = gtk::ToggleButton::builder()
+        .icon_name(if entry.favorite {
+            "starred-symbolic"
+        } else {
+            "non-starred-symbolic"
+        })
+        .active(entry.favorite)
+        .tooltip_text(if entry.favorite {
+            tr!("Remove from favorites")
+        } else {
+            tr!("Add to favorites")
+        })
+        .valign(gtk::Align::Center)
+        .build();
+    star.add_css_class("flat");
+    if entry.favorite {
+        star.add_css_class("ashy-favorite");
+    }
+    star.update_property(&[gtk::accessible::Property::Label(tr!("Favorite"))]);
     {
-        let pe = password_entry.clone();
-        let inner_cl = inner.clone();
-        act_strong.connect_activate(move |_, _| {
-            if let Ok(pw) = generate_password(&PasswordConfig::default()) {
-                pe.set_text(&pw);
-                inner_cl.show_toast(tr!("Password generated"));
+        let weak = Rc::downgrade(inner);
+        star.connect_clicked(move |_| {
+            if let Some(inner) = weak.upgrade() {
+                inner.toggle_favorite(id);
+                inner.reload();
             }
         });
     }
-    action_group.add_action(&act_strong);
-
-    let act_pass = gio::SimpleAction::new("gen-passphrase", None);
+    let edit = gtk::Button::with_label(tr!("Edit"));
+    edit.set_valign(gtk::Align::Center);
     {
-        let pe = password_entry.clone();
-        let inner_cl = inner.clone();
-        act_pass.connect_activate(move |_, _| {
-            let pw = generate_passphrase(6, "-", true, true);
-            pe.set_text(&pw);
-            inner_cl.show_toast(tr!("Password generated"));
+        let weak = Rc::downgrade(inner);
+        edit.connect_clicked(move |_| {
+            if let Some(inner) = weak.upgrade() {
+                inner.show_edit_dialog(id);
+            }
         });
     }
-    action_group.add_action(&act_pass);
-
-    let act_pin = gio::SimpleAction::new("gen-pin", None);
-    {
-        let pe = password_entry.clone();
-        let inner_cl = inner.clone();
-        act_pin.connect_activate(move |_, _| {
-            let pw = generate_pin(6);
-            pe.set_text(&pw);
-            inner_cl.show_toast(tr!("Password generated"));
+    let menu = gio::Menu::new();
+    menu.append(Some(tr!("Password history…")), Some("details.history"));
+    menu.append(Some(tr!("Delete…")), Some("details.delete"));
+    let more = gtk::MenuButton::builder()
+        .icon_name("view-more-symbolic")
+        .menu_model(&menu)
+        .tooltip_text(tr!("More actions"))
+        .valign(gtk::Align::Center)
+        .build();
+    more.add_css_class("flat");
+    more.update_property(&[gtk::accessible::Property::Label(tr!("More actions"))]);
+    let group = gio::SimpleActionGroup::new();
+    for (name, run) in [
+        ("history", Inner::show_history_dialog as fn(&Rc<Inner>, i64)),
+        ("delete", Inner::confirm_delete as fn(&Rc<Inner>, i64)),
+    ] {
+        let action = gio::SimpleAction::new(name, None);
+        let weak = Rc::downgrade(inner);
+        action.connect_activate(move |_, _| {
+            if let Some(inner) = weak.upgrade() {
+                run(&inner, id);
+            }
         });
+        group.add_action(&action);
     }
-    action_group.add_action(&act_pin);
-
-    gen_btn.insert_action_group("pwd", Some(&action_group));
-    password_entry.add_suffix(&gen_btn);
-    form.add(&password_entry);
-
-    let url_entry = adw::EntryRow::builder().title(tr!("URL")).build();
-    if let Some(u) = entry.as_ref().and_then(|e| e.url.clone()) {
-        url_entry.set_text(&u);
-    }
-    form.add(&url_entry);
-
-    let notes_entry = adw::EntryRow::builder().title(tr!("Notes")).build();
-    if let Some(n) = entry.as_ref().and_then(|e| e.notes.clone()) {
-        notes_entry.set_text(&n);
-    }
-    form.add(&notes_entry);
-
-    // Category: free text, but the categories already in the vault are one
-    // click away. Typing a new name still creates it.
-    let category_entry = adw::EntryRow::builder().title(tr!("Category")).build();
-    if let Some(c) = entry.as_ref().and_then(|e| e.category.clone()) {
-        category_entry.set_text(&c);
-    }
-    let existing_categories = inner.state.vault.borrow().categories().unwrap_or_default();
-    if let Some(picker) =
-        build_value_picker(&existing_categories, tr!("Choose an existing category"), {
-            let target = category_entry.clone();
-            move |value| target.set_text(value)
-        })
-    {
-        category_entry.add_suffix(&picker);
-    }
-    form.add(&category_entry);
-
-    let tags_entry = adw::EntryRow::builder().title(tr!("Tags")).build();
-    tags_entry.set_tooltip_text(Some(tr!(
-        "Separate tags with commas, for example: work, email, banking"
-    )));
-    if let Some(eid) = entry.as_ref().map(|e| e.id) {
-        let current = inner.state.vault.borrow().tags_of(eid).unwrap_or_default();
-        tags_entry.set_text(&current.join(", "));
-    }
-    let existing_tags: Vec<String> = inner
-        .state
-        .vault
-        .borrow()
-        .all_tags()
-        .unwrap_or_default()
-        .into_iter()
-        .map(|(name, _count)| name)
-        .collect();
-    if let Some(picker) = build_value_picker(&existing_tags, tr!("Add an existing tag"), {
-        let target = tags_entry.clone();
-        move |value| append_tag(&target, value)
-    }) {
-        tags_entry.add_suffix(&picker);
-    }
-    form.add(&tags_entry);
-
-    // Spell out the comma convention: a bare entry row gives the user no clue,
-    // and the example doubles as a hint that several tags are allowed.
-    let tags_hint = gtk::Label::builder()
-        .label(if existing_tags.is_empty() {
-            tr!("Comma-separated, e.g. work, email, banking").to_string()
-        } else {
-            format!(
-                "{} — {} {}",
-                tr!("Comma-separated, e.g. work, email, banking"),
-                tr!("in use:"),
-                existing_tags
-                    .iter()
-                    .take(6)
-                    .cloned()
-                    .collect::<Vec<_>>()
-                    .join(", ")
-            )
-        })
-        .wrap(true)
-        .xalign(0.0)
-        .margin_top(4)
-        .margin_start(12)
-        .margin_end(12)
-        .build();
-    tags_hint.add_css_class("dim-label");
-    tags_hint.add_css_class("caption");
-
-    // TOTP group
-    let totp_group = adw::PreferencesGroup::builder()
-        .title(tr!("Two-Factor Authentication"))
-        .build();
-
-    let totp_entry = adw::PasswordEntryRow::builder()
-        .title(tr!("TOTP Secret (Base32)"))
-        .build();
-    if let Some(s) = entry.as_ref().and_then(|e| e.totp_secret.clone()) {
-        totp_entry.set_text(&s);
-    }
-    totp_group.add(&totp_entry);
-
-    let algo_model = gtk::StringList::new(&["SHA1", "SHA256", "SHA512"]);
-    let totp_algo_row = adw::ComboRow::builder()
-        .title(tr!("Algorithm"))
-        .model(&algo_model)
-        .build();
-    if let Some(e) = entry.as_ref() {
-        let idx = match e.totp_algorithm.as_str() {
-            "SHA256" => 1,
-            "SHA512" => 2,
-            _ => 0,
-        };
-        totp_algo_row.set_selected(idx);
-    }
-    totp_group.add(&totp_algo_row);
-
-    let digits_adj = gtk::Adjustment::new(
-        entry.as_ref().map(|e| e.totp_digits as f64).unwrap_or(6.0),
-        6.0,
-        8.0,
-        2.0,
-        2.0,
-        0.0,
-    );
-    let totp_digits_row = adw::SpinRow::builder()
-        .title(tr!("Digits"))
-        .adjustment(&digits_adj)
-        .build();
-    totp_group.add(&totp_digits_row);
-
-    let period_adj = gtk::Adjustment::new(
-        entry.as_ref().map(|e| e.totp_period as f64).unwrap_or(30.0),
-        15.0,
-        60.0,
-        15.0,
-        15.0,
-        0.0,
-    );
-    let totp_period_row = adw::SpinRow::builder()
-        .title(tr!("Period (seconds)"))
-        .adjustment(&period_adj)
-        .build();
-    totp_group.add(&totp_period_row);
+    outer.insert_action_group("details", Some(&group));
+    actions.append(&star);
+    actions.append(&edit);
+    actions.append(&more);
 
     let content = gtk::Box::builder()
         .orientation(gtk::Orientation::Vertical)
-        .spacing(12)
+        .spacing(18)
+        .margin_top(12)
+        .margin_bottom(24)
+        .margin_start(18)
+        .margin_end(18)
         .build();
-    content.set_size_request(500, -1);
-    content.append(&form);
-    content.append(&tags_hint);
-    content.append(&totp_group);
 
-    // Attachments: only available for entries that already exist on disk.
-    // For new entries the user is asked to save first.
-    if let Some(eid) = entry.as_ref().map(|e| e.id) {
-        let attach_group = adw::PreferencesGroup::builder()
-            .title(tr!("Attachments"))
-            .description(tr!(
-                "Encrypted with your master key. Stored inside the vault."
-            ))
+    let title_row = gtk::Box::builder()
+        .orientation(gtk::Orientation::Horizontal)
+        .spacing(14)
+        .build();
+    let icon = gtk::Image::new();
+    if inner.show_favicons.get() {
+        crate::favicons::apply(&icon, entry.url.as_deref(), 48);
+    } else {
+        icon.set_pixel_size(48);
+        icon.set_icon_name(Some("dialog-password-symbolic"));
+    }
+    icon.add_css_class("ashy-entry-icon");
+    icon.set_accessible_role(gtk::AccessibleRole::Presentation);
+    title_row.append(&icon);
+    let title_box = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(2)
+        .hexpand(true)
+        .valign(gtk::Align::Center)
+        .build();
+    let title = gtk::Label::builder()
+        .label(&entry.title)
+        .xalign(0.0)
+        .wrap(true)
+        .wrap_mode(gtk::pango::WrapMode::WordChar)
+        .selectable(true)
+        .build();
+    title.add_css_class("title-2");
+    title.set_accessible_role(gtk::AccessibleRole::Heading);
+    title_box.append(&title);
+    if let Some(domain) = entry
+        .url
+        .as_deref()
+        .map(display_domain)
+        .filter(|d| !d.is_empty())
+    {
+        let sub = gtk::Label::builder().label(&domain).xalign(0.0).build();
+        sub.add_css_class("dim-label");
+        title_box.append(&sub);
+    }
+    title_row.append(&title_box);
+    title_row.append(&actions);
+    content.append(&title_row);
+
+    let fields = adw::PreferencesGroup::new();
+
+    if let Some(user) = entry.username.as_deref().filter(|u| !u.trim().is_empty()) {
+        let row = adw::ActionRow::builder()
+            .title(tr!("User"))
+            .subtitle(user)
+            .use_markup(false)
+            .subtitle_selectable(true)
             .build();
-
-        let add_btn = gtk::Button::builder()
-            .icon_name("list-add-symbolic")
-            .tooltip_text(tr!("Add file"))
-            .valign(gtk::Align::Center)
-            .build();
-        add_btn.add_css_class("flat");
-        attach_group.set_header_suffix(Some(&add_btn));
-
-        let render: RenderSlot = Rc::new(RefCell::new(None));
-        let attachment_rows: Rc<RefCell<Vec<gtk::Widget>>> = Rc::new(RefCell::new(Vec::new()));
-        let attach_group_cl = attach_group.clone();
-        let inner_for_render = inner.clone();
-        let render_fn: Rc<dyn Fn()> = Rc::new({
-            let render_slot = render.clone();
-            let attachment_rows = attachment_rows.clone();
-            move || {
-                // Clear existing rows; we re-add them from a fresh listing.
-                for child in attachment_rows.borrow_mut().drain(..) {
-                    attach_group_cl.remove(&child);
-                }
-                let entries = inner_for_render
-                    .state
-                    .vault
-                    .borrow()
-                    .list_attachments(eid)
-                    .unwrap_or_default();
-                if entries.is_empty() {
-                    let row = adw::ActionRow::builder()
-                        .title(tr!("No attachments"))
-                        .subtitle(tr!("Click the + button to add a file."))
-                        .sensitive(false)
-                        .build();
-                    attach_group_cl.add(&row);
-                    attachment_rows
-                        .borrow_mut()
-                        .push(row.upcast::<gtk::Widget>());
-                    return;
-                }
-                for att in entries {
-                    let row = adw::ActionRow::builder()
-                        .title(&att.filename)
-                        .subtitle(format!(
-                            "{} · {}",
-                            human_size(att.size_bytes),
-                            att.mime_type
-                                .as_deref()
-                                .unwrap_or("application/octet-stream")
-                        ))
-                        .build();
-
-                    let save_btn = gtk::Button::builder()
-                        .icon_name("document-save-symbolic")
-                        .tooltip_text(tr!("Save as…"))
-                        .valign(gtk::Align::Center)
-                        .build();
-                    save_btn.add_css_class("flat");
-                    {
-                        let inner_cl = inner_for_render.clone();
-                        let att_id = att.id;
-                        let filename = att.filename.clone();
-                        save_btn.connect_clicked(move |btn| {
-                            let parent = btn.root().and_then(|r| r.downcast::<gtk::Window>().ok());
-                            let dialog = gtk::FileDialog::builder()
-                                .title(tr!("Save attachment"))
-                                .initial_name(&filename)
-                                .modal(true)
-                                .build();
-                            let inner_cl = inner_cl.clone();
-                            dialog.save(
-                                parent.as_ref(),
-                                None::<&gio::Cancellable>,
-                                move |result| {
-                                    let Ok(file) = result else { return };
-                                    let Some(path) = file.path() else { return };
-                                    match inner_cl.state.vault.borrow().get_attachment(att_id) {
-                                        Ok(Some((_info, data))) => {
-                                            match std::fs::write(&path, &data) {
-                                                Ok(_) => {
-                                                    inner_cl.show_toast(tr!("Attachment saved"))
-                                                }
-                                                Err(e) => inner_cl.show_toast(&format!(
-                                                    "{}: {e}",
-                                                    tr!("Save failed")
-                                                )),
-                                            }
-                                        }
-                                        Ok(None) => {
-                                            inner_cl.show_toast(tr!("Attachment not found"))
-                                        }
-                                        Err(e) => inner_cl
-                                            .show_toast(&format!("{}: {e}", tr!("Decrypt failed"))),
-                                    }
-                                },
-                            );
-                        });
-                    }
-                    row.add_suffix(&save_btn);
-
-                    let del_btn = gtk::Button::builder()
-                        .icon_name("user-trash-symbolic")
-                        .tooltip_text(tr!("Delete attachment"))
-                        .valign(gtk::Align::Center)
-                        .build();
-                    del_btn.add_css_class("flat");
-                    del_btn.add_css_class("destructive-action");
-                    {
-                        let inner_cl = inner_for_render.clone();
-                        let att_id = att.id;
-                        let render_slot = render_slot.clone();
-                        del_btn.connect_clicked(move |_| {
-                            let _ = inner_cl.state.vault.borrow().delete_attachment(att_id);
-                            inner_cl.show_toast(tr!("Attachment deleted"));
-                            if let Some(r) = render_slot.borrow().as_ref() {
-                                r();
-                            }
-                        });
-                    }
-                    row.add_suffix(&del_btn);
-
-                    attach_group_cl.add(&row);
-                    attachment_rows
-                        .borrow_mut()
-                        .push(row.upcast::<gtk::Widget>());
-                }
-            }
-        });
-        *render.borrow_mut() = Some(render_fn.clone());
-        render_fn();
-
+        row.add_css_class("property");
+        let copy = copy_button(tr!("Copy user"));
         {
-            let inner_cl = inner.clone();
-            let render_slot = render.clone();
-            add_btn.connect_clicked(move |btn| {
-                let parent = btn.root().and_then(|r| r.downcast::<gtk::Window>().ok());
-                let dialog = gtk::FileDialog::builder()
-                    .title(tr!("Add attachment"))
-                    .modal(true)
-                    .build();
-                let inner_cl = inner_cl.clone();
-                let render_slot = render_slot.clone();
-                dialog.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
-                    let Ok(file) = result else { return };
-                    let Some(path) = file.path() else { return };
-                    let data = match std::fs::read(&path) {
-                        Ok(d) => d,
-                        Err(e) => {
-                            inner_cl.show_toast(&format!("{}: {e}", tr!("Read failed")));
-                            return;
-                        }
-                    };
-                    let filename = path
-                        .file_name()
-                        .and_then(|s| s.to_str())
-                        .unwrap_or("attachment")
-                        .to_string();
-                    let mime = mime_guess_from_ext(&filename);
-                    match inner_cl.state.vault.borrow().add_attachment(
-                        eid,
-                        &filename,
-                        mime.as_deref(),
-                        &data,
-                    ) {
-                        Ok(_) => {
-                            inner_cl.show_toast(tr!("Attachment added"));
-                            if let Some(r) = render_slot.borrow().as_ref() {
-                                r();
-                            }
-                        }
-                        Err(e) => {
-                            inner_cl.show_toast(&format!("{}: {e}", tr!("Save failed")));
-                        }
-                    }
-                });
+            let weak = Rc::downgrade(inner);
+            let user = user.to_string();
+            copy.connect_clicked(move |_| {
+                if let Some(inner) = weak.upgrade() {
+                    inner.copy_username(Some(&user));
+                }
             });
         }
-
-        content.append(&attach_group);
+        row.add_suffix(&copy);
+        fields.add(&row);
     }
 
-    dialog.set_extra_child(Some(&content));
-
-    let entry_id = entry.as_ref().map(|e| e.id);
-    let inner_cl = inner.clone();
-    let title_entry_cl = title_entry.clone();
-    let password_entry_cl = password_entry.clone();
-    dialog.connect_response(None, move |dlg, response| {
-        if response != "save" {
-            dlg.close();
-            return;
-        }
-
-        // Defensive: the vault can only be locked here if something locked it
-        // without going through `lock_vault` (which closes this dialog). Report
-        // it plainly instead of surfacing a "vault is locked" crypto error.
-        if !inner_cl.state.vault.borrow().is_unlocked() {
-            inner_cl.show_toast(tr!("Vault is locked — unlock it and try again"));
-            return;
-        }
-
-        let title = title_entry_cl.text().trim().to_string();
-        let password = password_entry_cl.text().to_string();
-        let mut has_error = false;
-        if title.is_empty() {
-            title_entry_cl.add_css_class("error");
-            has_error = true;
-        } else {
-            title_entry_cl.remove_css_class("error");
-        }
-        if password.is_empty() {
-            password_entry_cl.add_css_class("error");
-            has_error = true;
-        } else {
-            password_entry_cl.remove_css_class("error");
-        }
-        if has_error {
-            return;
-        }
-
-        let username = trim_to_opt(&username_entry.text());
-        let url = trim_to_opt(&url_entry.text());
-        let notes = trim_to_opt(&notes_entry.text());
-        let category = trim_to_opt(&category_entry.text());
-        let totp_secret = trim_to_opt(&totp_entry.text());
-
-        let algo = match totp_algo_row.selected() {
-            1 => "SHA256",
-            2 => "SHA512",
-            _ => "SHA1",
-        }
-        .to_string();
-        let digits = totp_digits_row.value() as u8;
-        let period = totp_period_row.value() as u32;
-
-        let tag_list: Vec<String> = tags_entry
-            .text()
-            .split(',')
-            .map(|s| s.trim().to_string())
-            .filter(|s| !s.is_empty())
-            .collect();
-
-        let result = if let Some(id) = entry_id {
-            inner_cl
-                .state
-                .vault
-                .borrow()
-                .update(
-                    id,
-                    UpdateEntry {
-                        title: Some(title),
-                        username: Some(username.unwrap_or_default()),
-                        password: Some(password),
-                        notes: Some(notes),
-                        url: Some(url),
-                        totp_secret: Some(totp_secret),
-                        totp_algorithm: Some(algo),
-                        totp_digits: Some(digits),
-                        totp_period: Some(period),
-                        category: Some(category),
-                    },
-                )
-                .map(|_| Some(id))
-        } else {
-            inner_cl
-                .state
-                .vault
-                .borrow()
-                .add(NewEntry {
-                    title,
-                    username,
-                    password,
-                    url,
-                    notes,
-                    totp_secret,
-                    totp_algorithm: Some(algo),
-                    totp_digits: Some(digits),
-                    totp_period: Some(period),
-                    category,
-                })
-                .map(Some)
-        };
-
-        match result {
-            Ok(maybe_id) => {
-                if let Some(id) = maybe_id {
-                    let _ = inner_cl.state.vault.borrow().set_tags(id, &tag_list);
-                }
-                inner_cl.show_toast(if entry_id.is_some() {
-                    tr!("Password updated")
+    let has_password = entry.password.as_deref().is_some_and(|p| !p.is_empty());
+    if has_password {
+        let estimate = entry
+            .password
+            .as_deref()
+            .map(|p| ashypass_core::strength::estimate(p, &[]))
+            .map(|s| crate::ui::generator_view::strength_word(s.score))
+            .unwrap_or_default();
+        let hidden_subtitle = format!(
+            "{HIDDEN_PASSWORD}\n{}: {estimate}",
+            tr!("Estimated strength")
+        );
+        let row = adw::ActionRow::builder()
+            .title(tr!("Password"))
+            .subtitle(&hidden_subtitle)
+            .use_markup(false)
+            .build();
+        row.add_css_class("property");
+        let reveal = gtk::ToggleButton::builder()
+            .icon_name("view-reveal-symbolic")
+            .tooltip_text(tr!("Show password"))
+            .valign(gtk::Align::Center)
+            .build();
+        reveal.add_css_class("flat");
+        reveal.update_property(&[gtk::accessible::Property::Label(tr!("Show password"))]);
+        {
+            let row = row.clone();
+            let weak = Rc::downgrade(inner);
+            let hidden_subtitle = hidden_subtitle.clone();
+            reveal.connect_toggled(move |button| {
+                let Some(inner) = weak.upgrade() else { return };
+                if button.is_active() && inner.can_show_vault_data() {
+                    // Fetch on demand: the details keep only the mask.
+                    let value = inner
+                        .state
+                        .vault
+                        .borrow()
+                        .get_without_touch(id)
+                        .ok()
+                        .flatten()
+                        .and_then(|e| e.password)
+                        .map(Zeroizing::new);
+                    if let Some(value) = value {
+                        row.set_subtitle(&value);
+                        row.add_css_class("ashy-revealed");
+                    }
+                    button.set_icon_name("view-conceal-symbolic");
+                    button.set_tooltip_text(Some(tr!("Hide password")));
                 } else {
-                    tr!("Password added")
-                });
-                SessionManager::on_activity(&inner_cl.state.session);
-                dlg.close();
-            }
-            Err(e) => {
-                inner_cl.show_toast(&format!("{}: {e}", tr!("Error saving password")));
-            }
+                    row.set_subtitle(&hidden_subtitle);
+                    row.remove_css_class("ashy-revealed");
+                    button.set_icon_name("view-reveal-symbolic");
+                    button.set_tooltip_text(Some(tr!("Show password")));
+                }
+            });
         }
-    });
-
-    // Hold off auto-lock for as long as this form is open. A half-typed entry
-    // is work in progress: locking under the user would throw it away, and no
-    // amount of warning toast makes that acceptable. The countdown resumes when
-    // the dialog closes, by Save or Cancel.
-    SessionManager::inhibit(&inner.state.session);
-
-    // Track the live dialog so an explicit lock can dismiss it, and release the
-    // inhibitor once it goes away by any route.
-    {
-        let inner_cl = inner.clone();
-        dialog.connect_closed(move |_| {
-            inner_cl.password_dialog.borrow_mut().take();
-            SessionManager::release(&inner_cl.state.session);
-        });
+        let copy = copy_button(tr!("Copy password"));
+        {
+            let weak = Rc::downgrade(inner);
+            copy.connect_clicked(move |_| {
+                if let Some(inner) = weak.upgrade() {
+                    inner.copy_password(id);
+                }
+            });
+        }
+        row.add_suffix(&reveal);
+        row.add_suffix(&copy);
+        fields.add(&row);
     }
-    *inner.password_dialog.borrow_mut() = Some(dialog.clone());
 
-    dialog.present(Some(inner.toast.upcast_ref::<gtk::Widget>()));
+    if let (Some(secret), true) = (entry.totp_secret.clone(), entry.has_totp) {
+        let row = adw::ActionRow::builder()
+            .title(tr!("Verification code"))
+            .use_markup(false)
+            .build();
+        row.add_css_class("property");
+        let algo = Algorithm::parse(&entry.totp_algorithm).unwrap_or(Algorithm::Sha1);
+        let digits = entry.totp_digits;
+        let period = entry.totp_period.max(1);
+        let secret = Zeroizing::new(secret);
+        let update = {
+            let row = row.clone();
+            let secret = secret.clone();
+            move || {
+                let now = chrono::Utc::now().timestamp().max(0) as u64;
+                let remaining = period as u64 - (now % period as u64);
+                match generate_totp(&secret, algo, digits, period, now) {
+                    Ok(code) => row.set_subtitle(&format!(
+                        "{}   ·   {}",
+                        crate::ui::widgets::group_code(&code),
+                        crate::trn!(
+                            "new code in {} second",
+                            "new code in {} seconds",
+                            remaining as usize
+                        )
+                        .replace("{}", &remaining.to_string())
+                    )),
+                    Err(_) => row.set_subtitle(tr!("The saved key is not valid")),
+                }
+            }
+        };
+        update();
+        let copy = copy_button(tr!("Copy code"));
+        {
+            let weak = Rc::downgrade(inner);
+            let secret = secret.clone();
+            copy.connect_clicked(move |_| {
+                let Some(inner) = weak.upgrade() else { return };
+                // Computed at the moment of the click, never refreshed in the
+                // clipboard afterwards.
+                let now = chrono::Utc::now().timestamp().max(0) as u64;
+                if let Ok(code) = generate_totp(&secret, algo, digits, period, now) {
+                    copy_secret(&inner.state, &code);
+                    inner.toast(tr!("Code copied"));
+                }
+            });
+        }
+        row.add_suffix(&copy);
+        fields.add(&row);
+        let timer = glib::timeout_add_seconds_local(1, move || {
+            update();
+            glib::ControlFlow::Continue
+        });
+        *inner.details_timer.borrow_mut() = Some(timer);
+    }
+
+    if let Some(url) = entry.url.as_deref().filter(|u| !u.trim().is_empty()) {
+        let row = adw::ActionRow::builder()
+            .title(tr!("Website"))
+            .subtitle(url)
+            .use_markup(false)
+            .subtitle_selectable(true)
+            .build();
+        row.add_css_class("property");
+        if let Some(target) = openable_url(url) {
+            let open = gtk::Button::builder()
+                .icon_name("adw-external-link-symbolic")
+                .tooltip_text(tr!("Open website"))
+                .valign(gtk::Align::Center)
+                .build();
+            open.add_css_class("flat");
+            open.update_property(&[gtk::accessible::Property::Label(tr!("Open website"))]);
+            open.connect_clicked(move |button| {
+                let launcher = gtk::UriLauncher::new(&target);
+                let parent = button.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+                launcher.launch(parent.as_ref(), None::<&gio::Cancellable>, |_| {});
+            });
+            row.add_suffix(&open);
+        }
+        let copy = copy_button(tr!("Copy address"));
+        {
+            let weak = Rc::downgrade(inner);
+            let url = url.to_string();
+            copy.connect_clicked(move |_| {
+                if let Some(inner) = weak.upgrade() {
+                    crate::clipboard::copy(&url, 0);
+                    inner.toast(tr!("Address copied"));
+                }
+            });
+        }
+        row.add_suffix(&copy);
+        fields.add(&row);
+    }
+
+    let folder = entry
+        .category
+        .as_deref()
+        .filter(|c| !c.trim().is_empty())
+        .unwrap_or(tr!("No folder"));
+    let folder_row = adw::ActionRow::builder()
+        .title(tr!("Folder"))
+        .subtitle(folder)
+        .use_markup(false)
+        .build();
+    folder_row.add_css_class("property");
+    fields.add(&folder_row);
+
+    let tags = inner.state.vault.borrow().tags_of(id).unwrap_or_default();
+    if !tags.is_empty() {
+        let row = adw::ActionRow::builder()
+            .title(tr!("Tags"))
+            .subtitle(tags.join(", "))
+            .use_markup(false)
+            .build();
+        row.add_css_class("property");
+        fields.add(&row);
+    }
+    content.append(&fields);
+
+    if let Some(notes) = entry.notes.as_deref().filter(|n| !n.trim().is_empty()) {
+        let group = adw::PreferencesGroup::builder().title(tr!("Notes")).build();
+        let label = gtk::Label::builder()
+            .label(notes)
+            .wrap(true)
+            .wrap_mode(gtk::pango::WrapMode::WordChar)
+            .xalign(0.0)
+            .selectable(true)
+            .margin_top(12)
+            .margin_bottom(12)
+            .margin_start(12)
+            .margin_end(12)
+            .build();
+        let frame = gtk::Frame::builder().child(&label).build();
+        frame.add_css_class("view");
+        frame.add_css_class("ashy-notes");
+        group.add(&frame);
+        content.append(&group);
+    }
+
+    let attachments = inner
+        .state
+        .vault
+        .borrow()
+        .list_attachments(id)
+        .unwrap_or_default();
+    if !attachments.is_empty() {
+        let group = adw::PreferencesGroup::builder()
+            .title(tr!("Attachments"))
+            .build();
+        for att in attachments {
+            let row = adw::ActionRow::builder()
+                .title(&att.filename)
+                .subtitle(human_size(att.size_bytes))
+                .use_markup(false)
+                .build();
+            let save = gtk::Button::builder()
+                .icon_name("document-save-symbolic")
+                .tooltip_text(tr!("Save a copy…"))
+                .valign(gtk::Align::Center)
+                .build();
+            save.add_css_class("flat");
+            save.update_property(&[gtk::accessible::Property::Label(tr!("Save a copy…"))]);
+            {
+                let state = inner.state.clone();
+                let toast = inner.toast.clone();
+                let filename = att.filename.clone();
+                let att_id = att.id;
+                save.connect_clicked(move |button| {
+                    save_attachment_copy(&state, &toast, button, att_id, &filename);
+                });
+            }
+            row.add_suffix(&save);
+            group.add(&row);
+        }
+        content.append(&group);
+    }
+
+    let changed = gtk::Label::builder()
+        .label(format!(
+            "{} {}",
+            tr!("Last changed:"),
+            format_timestamp(entry.updated_at)
+        ))
+        .xalign(0.0)
+        .build();
+    changed.add_css_class("caption");
+    changed.add_css_class("dim-label");
+    content.append(&changed);
+
+    let clamp = adw::Clamp::builder()
+        .maximum_size(720)
+        .child(&content)
+        .build();
+    let scrolled = gtk::ScrolledWindow::builder()
+        .hscrollbar_policy(gtk::PolicyType::Never)
+        .vexpand(true)
+        .child(&clamp)
+        .build();
+    outer.append(&scrolled);
+    outer.upcast()
 }
 
 // ============================================================================
 // Helpers
 // ============================================================================
 
-fn set_favorite_button_state(btn: &gtk::Button, favorite: bool) {
-    btn.set_icon_name(if favorite {
-        "starred-symbolic"
-    } else {
-        "non-starred-symbolic"
-    });
-    btn.remove_css_class(if favorite {
-        "favorite-inactive"
-    } else {
-        "favorite-active"
-    });
-    btn.add_css_class(if favorite {
-        "favorite-active"
-    } else {
-        "favorite-inactive"
-    });
+/// Local date and time in the user's locale.
+pub fn format_timestamp(ts: i64) -> String {
+    glib::DateTime::from_unix_local(ts)
+        .ok()
+        .and_then(|dt| dt.format("%x %X").ok())
+        .map(|s| s.to_string())
+        .unwrap_or_default()
 }
 
-/// Build a suffix menu button listing `values`, calling `pick` with whichever
-/// the user chooses. Returns `None` when there is nothing to offer yet, so a
-/// fresh vault does not grow a dead button.
-///
-/// The values are passed as action *targets* rather than baked into detailed
-/// action strings, so names containing quotes or parentheses cannot break the
-/// menu model.
-fn build_value_picker<F>(values: &[String], tooltip: &str, pick: F) -> Option<gtk::MenuButton>
-where
-    F: Fn(&str) + 'static,
-{
-    let values: Vec<String> = values
-        .iter()
-        .map(|v| v.trim().to_string())
-        .filter(|v| !v.is_empty())
-        .collect();
-    if values.is_empty() {
-        return None;
-    }
-
-    let button = gtk::MenuButton::builder()
-        .icon_name("view-list-symbolic")
-        .tooltip_text(tooltip)
-        .valign(gtk::Align::Center)
+pub(crate) fn save_attachment_copy(
+    state: &SharedState,
+    toast: &adw::ToastOverlay,
+    anchor: &impl IsA<gtk::Widget>,
+    att_id: i64,
+    filename: &str,
+) {
+    let parent = anchor.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+    let dialog = gtk::FileDialog::builder()
+        .title(tr!("Save attachment"))
+        .initial_name(filename)
+        .modal(true)
         .build();
-    button.add_css_class("flat");
-
-    let action = gio::SimpleAction::new("pick", Some(glib::VariantTy::STRING));
-    action.connect_activate(move |_, target| {
-        if let Some(value) = target.and_then(|t| t.str()) {
-            pick(value);
-        }
+    let state = state.clone();
+    let toast = toast.clone();
+    dialog.save(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+        let Ok(file) = result else { return };
+        let Some(path) = file.path() else { return };
+        let message = match state.vault.borrow().get_attachment(att_id) {
+            Ok(Some((_info, data))) => match write_private(&path, &data) {
+                Ok(()) => tr!("Attachment saved").to_string(),
+                Err(e) => format!("{}: {e}", tr!("Could not save the file")),
+            },
+            Ok(None) => tr!("Attachment not found").to_string(),
+            Err(e) => format!("{}: {e}", tr!("Could not decrypt the attachment")),
+        };
+        toast.add_toast(adw::Toast::builder().title(message).timeout(4).build());
     });
-    let group = gio::SimpleActionGroup::new();
-    group.add_action(&action);
-
-    let menu = gio::Menu::new();
-    for value in &values {
-        let item = gio::MenuItem::new(Some(value), None);
-        item.set_action_and_target_value(Some("picker.pick"), Some(&value.to_variant()));
-        menu.append_item(&item);
-    }
-
-    button.insert_action_group("picker", Some(&group));
-    button.set_menu_model(Some(&menu));
-    Some(button)
 }
 
-/// Append `tag` to a comma-separated tag entry, skipping duplicates and
-/// normalising the separator so the field stays parseable.
-fn append_tag(entry: &adw::EntryRow, tag: &str) {
-    let mut tags: Vec<String> = entry
-        .text()
-        .split(',')
-        .map(|s| s.trim().to_string())
-        .filter(|s| !s.is_empty())
-        .collect();
-    if tags
-        .iter()
-        .any(|existing| existing.eq_ignore_ascii_case(tag))
-    {
-        return;
-    }
-    tags.push(tag.to_string());
-    entry.set_text(&tags.join(", "));
-    entry.set_position(-1);
+/// Attachments are secrets too: write them owner-only.
+fn write_private(path: &std::path::Path, data: &[u8]) -> std::io::Result<()> {
+    use std::io::Write;
+    use std::os::unix::fs::OpenOptionsExt;
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .mode(0o600)
+        .open(path)?;
+    file.write_all(data)?;
+    file.sync_all()
 }
 
 fn password_search_text(entry: &PasswordEntry) -> String {
-    let mut text = String::new();
-    text.push_str(&entry.title.to_lowercase());
-    if let Some(username) = entry.username.as_deref().filter(|s| !s.is_empty()) {
+    let mut text = entry.title.to_lowercase();
+    for part in [entry.username.as_deref(), entry.url.as_deref()]
+        .into_iter()
+        .flatten()
+        .filter(|s| !s.is_empty())
+    {
         text.push('\n');
-        text.push_str(&username.to_lowercase());
-    }
-    if let Some(url) = entry.url.as_deref().filter(|s| !s.is_empty()) {
-        text.push('\n');
-        text.push_str(&url.to_lowercase());
+        text.push_str(&part.to_lowercase());
     }
     text
-}
-
-fn trim_to_opt(s: &glib::GString) -> Option<String> {
-    let t = s.trim();
-    if t.is_empty() {
-        None
-    } else {
-        Some(t.to_string())
-    }
 }
 
 fn mask_password(s: &str) -> String {
@@ -2480,12 +1961,7 @@ fn mask_password(s: &str) -> String {
     format!("{masked}{tail}")
 }
 
-fn copy_to_clipboard(text: &str) {
-    let seconds = ashypass_core::settings::Settings::load().clipboard_clear;
-    crate::clipboard::copy(text, seconds);
-}
-
-fn human_size(bytes: u64) -> String {
+pub(crate) fn human_size(bytes: u64) -> String {
     const KB: u64 = 1024;
     const MB: u64 = 1024 * KB;
     const GB: u64 = 1024 * MB;
@@ -2500,7 +1976,7 @@ fn human_size(bytes: u64) -> String {
     }
 }
 
-fn mime_guess_from_ext(filename: &str) -> Option<String> {
+pub(crate) fn mime_guess_from_ext(filename: &str) -> Option<String> {
     let ext = filename
         .rsplit_once('.')
         .map(|x| x.1.to_ascii_lowercase())?;
@@ -2525,13 +2001,11 @@ fn mime_guess_from_ext(filename: &str) -> Option<String> {
     )
 }
 
-use gtk::gio;
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    fn test_entry(
+    fn entry(
         id: i64,
         title: &str,
         username: Option<&str>,
@@ -2559,11 +2033,10 @@ mod tests {
         }
     }
 
-    #[test]
-    fn password_cache_filters_metadata_without_database_roundtrip() {
-        let cache = PasswordListCache::new(
+    fn sample() -> PasswordListCache {
+        PasswordListCache::new(
             vec![
-                test_entry(
+                entry(
                     1,
                     "GitHub",
                     Some("octo"),
@@ -2571,24 +2044,84 @@ mod tests {
                     Some("Work"),
                     true,
                 ),
-                test_entry(
+                entry(
                     2,
                     "Bank",
-                    Some("bruno"),
+                    Some("ana"),
                     Some("https://bank.example"),
                     Some("Personal"),
                     false,
                 ),
+                entry(3, "Router", None, Some("192.168.0.1"), None, false),
+                entry(4, "GitLab", Some("octo"), None, Some("Work"), false),
             ],
-            vec!["Personal".to_string(), "Work".to_string()],
-        );
+            vec!["Personal".into(), "Work".into()],
+        )
+    }
 
-        assert_eq!(cache.filtered_indices(Some("git"), None), vec![0]);
-        assert_eq!(cache.filtered_indices(Some("OCTO"), None), vec![0]);
-        assert_eq!(cache.filtered_indices(Some("bank.example"), None), vec![1]);
-        assert_eq!(cache.filtered_indices(None, Some("Work")), vec![0]);
-        assert!(cache
-            .filtered_indices(Some("github"), Some("Personal"))
-            .is_empty());
+    fn ids(list: Vec<Rc<PasswordEntry>>) -> Vec<i64> {
+        list.iter().map(|e| e.id).collect()
+    }
+
+    #[test]
+    fn search_covers_name_account_and_site() {
+        let cache = sample();
+        assert_eq!(
+            ids(cache.filtered(Some("git"), &FolderFilter::All, false)),
+            vec![1, 4]
+        );
+        assert_eq!(
+            ids(cache.filtered(Some("ANA"), &FolderFilter::All, false)),
+            vec![2]
+        );
+        assert_eq!(
+            ids(cache.filtered(Some("192.168"), &FolderFilter::All, false)),
+            vec![3]
+        );
+        assert_eq!(
+            ids(cache.filtered(Some("   "), &FolderFilter::All, false)).len(),
+            4
+        );
+    }
+
+    #[test]
+    fn folders_and_favorites_filter_the_same_collection() {
+        let cache = sample();
+        let work = FolderFilter::Named("Work".into());
+        assert_eq!(ids(cache.filtered(None, &work, false)), vec![1, 4]);
+        assert_eq!(ids(cache.filtered(None, &work, true)), vec![1]);
+        assert_eq!(
+            ids(cache.filtered(None, &FolderFilter::NoFolder, false)),
+            vec![3]
+        );
+        assert_eq!(
+            ids(cache.filtered(Some("bank"), &work, false)),
+            Vec::<i64>::new()
+        );
+    }
+
+    #[test]
+    fn folder_filter_targets_round_trip_names_with_symbols() {
+        for filter in [
+            FolderFilter::All,
+            FolderFilter::NoFolder,
+            FolderFilter::Named("Work: \"x\" (1)".into()),
+            FolderFilter::Named("f:odd".into()),
+        ] {
+            assert_eq!(FolderFilter::from_target(&filter.target()), filter);
+        }
+    }
+
+    #[test]
+    fn blank_category_counts_as_no_folder() {
+        assert!(FolderFilter::NoFolder.matches(Some("  ")));
+        assert!(!FolderFilter::NoFolder.matches(Some("Work")));
+    }
+
+    #[test]
+    fn history_mask_keeps_only_the_tail() {
+        assert_eq!(mask_password("abcdef"), "•••def");
+        assert_eq!(mask_password("ab"), "ab");
+        assert_eq!(mask_password(""), "");
     }
 }

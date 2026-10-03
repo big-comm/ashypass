@@ -1,41 +1,96 @@
-//! Main application window with OverlaySplitView (sidebar + content stack).
+//! Main window: navigation sidebar, the page stack and the shared unlock
+//! screen.
 //!
-//! Ported from the original `ui/window.py`. Aims for identical visual layout.
+//! The sidebar lists destinations only — *My passwords*, *Verification
+//! codes*, *Create password*, then *Backups* and *Settings*. Locking is a
+//! button, not a page; external drives live under *Tools* in the main menu.
+//!
+//! Pages that need the vault show the shared unlock screen while it is
+//! locked; *Create password* keeps working. A password created on that page
+//! survives the unlock: *Save to vault…* asks to unlock and then opens the
+//! entry form with the same value.
+//!
+//! Width breakpoints collapse the list/details split first and then the
+//! sidebar, so the window stays usable from phone-like widths up.
 
 use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
+use crate::ui::backups_view::BackupsView;
+use crate::ui::unlock_view::UnlockView;
+use crate::ui::widgets::Chrome;
 use crate::ui::{
     drives_view::DrivesView, generator_view::GeneratorView, settings_dialog, totp_view::TotpView,
     vault_view::VaultView,
 };
 use adw::prelude::*;
-use ashypass_core::config::{
-    WINDOW_DEFAULT_HEIGHT, WINDOW_DEFAULT_WIDTH, WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH,
-};
-use gtk::{gdk, gio};
-use std::cell::RefCell;
-use std::collections::HashMap;
+use gtk::{gio, glib};
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
+use zeroize::Zeroizing;
+
+const DEFAULT_WIDTH: i32 = 1040;
+const DEFAULT_HEIGHT: i32 = 720;
+const MIN_WIDTH: i32 = 360;
+const MIN_HEIGHT: i32 = 480;
+
+/// Destinations shown in the sidebar, in order.
+const NAV: &[(&str, &str)] = &[
+    ("vault", "dialog-password-symbolic"),
+    ("totp", "security-high-symbolic"),
+    ("generator", "list-add-symbolic"),
+    ("backups", "document-save-symbolic"),
+    ("settings", "emblem-system-symbolic"),
+];
+
+fn nav_label(name: &str) -> &'static str {
+    match name {
+        "vault" => tr!("My passwords"),
+        "totp" => tr!("Verification codes"),
+        "generator" => tr!("Create password"),
+        "backups" => tr!("Backups"),
+        "settings" => tr!("Settings"),
+        "drives" => tr!("External drives"),
+        _ => "",
+    }
+}
+
+fn requires_vault(page: &str) -> bool {
+    matches!(page, "vault" | "totp" | "backups")
+}
 
 pub struct MainWindow {
     pub window: adw::ApplicationWindow,
-    #[expect(dead_code, reason = "keeps view model alive for signal handlers")]
+    #[cfg_attr(
+        not(debug_assertions),
+        expect(dead_code, reason = "keeps view model alive for signal handlers")
+    )]
     inner: Rc<MainWindowInner>,
 }
 
 struct MainWindowInner {
     state: SharedState,
+    window: adw::ApplicationWindow,
     toast_overlay: adw::ToastOverlay,
-    content_stack: gtk::Stack,
-    content_title: gtk::Label,
-    search_button: gtk::ToggleButton,
-    add_button: gtk::Button,
+    split: adw::OverlaySplitView,
+    nav_list: gtk::ListBox,
     lock_button: gtk::Button,
-    nav_buttons: RefCell<HashMap<&'static str, gtk::Button>>,
-    auth_separator: gtk::Separator,
+    lock_banner: adw::Banner,
+    gate: gtk::Stack,
+    pages: gtk::Stack,
+    current: Cell<&'static str>,
+    pending_page: Cell<Option<&'static str>>,
+    /// A password created on the generator page while the vault was locked,
+    /// waiting for the unlock to open the entry form.
+    pending_password: RefCell<Option<Zeroizing<String>>>,
+    updating_nav: Cell<bool>,
+    banner_timer: RefCell<Option<glib::SourceId>>,
+    unlock_view: Rc<UnlockView>,
     vault_view: Rc<VaultView>,
     totp_view: Rc<TotpView>,
+    generator_view: GeneratorView,
+    backups_view: Rc<BackupsView>,
+    auto_sync: crate::auto_sync::Handle,
 }
 
 impl MainWindow {
@@ -43,459 +98,233 @@ impl MainWindow {
         let window = adw::ApplicationWindow::builder()
             .application(app)
             .title("Ashy Pass")
-            .default_width(WINDOW_DEFAULT_WIDTH)
-            .default_height(WINDOW_DEFAULT_HEIGHT)
-            .width_request(WINDOW_MIN_WIDTH)
-            .height_request(WINDOW_MIN_HEIGHT)
+            .default_width(DEFAULT_WIDTH)
+            .default_height(DEFAULT_HEIGHT)
+            .width_request(MIN_WIDTH)
+            .height_request(MIN_HEIGHT)
             .build();
 
         let toast_overlay = adw::ToastOverlay::new();
         let split = adw::OverlaySplitView::builder()
-            .min_sidebar_width(220.0)
-            .max_sidebar_width(280.0)
-            .sidebar_width_fraction(0.30)
-            .build();
-
-        // --- Build content area first so the sidebar callbacks can reference it ---
-        let content_stack = gtk::Stack::builder()
-            .transition_type(gtk::StackTransitionType::Crossfade)
-            .transition_duration(200)
-            .build();
-        let content_title = gtk::Label::builder().label(tr!("Generator")).build();
-        content_title.add_css_class("heading");
-
-        let search_button = gtk::ToggleButton::builder()
-            .icon_name("edit-find-symbolic")
-            .tooltip_text(tr!("Search"))
-            .visible(false)
-            .build();
-
-        let add_button = gtk::Button::builder()
-            .icon_name("list-add-symbolic")
-            .tooltip_text(tr!("Add Password"))
-            .visible(false)
-            .build();
-
-        let lock_button = gtk::Button::builder()
-            .icon_name("system-lock-screen-symbolic")
-            .tooltip_text(tr!("Lock Vault"))
-            .visible(false)
-            .build();
-
-        let vault_view = VaultView::new(state.clone(), toast_overlay.clone());
-        let totp_view = TotpView::new(state.clone(), toast_overlay.clone());
-        let generator_view = GeneratorView::new(toast_overlay.clone());
-        let drives_view = DrivesView::new(toast_overlay.clone());
-
-        content_stack.add_named(&vault_view.root, Some("vault"));
-        content_stack.add_named(&totp_view.root, Some("totp"));
-        content_stack.add_named(&generator_view.root, Some("generator"));
-        content_stack.add_named(&drives_view.root, Some("drives"));
-
-        // Build the content's ToolbarView (header + stack)
-        let content_toolbar = adw::ToolbarView::new();
-        let content_header = adw::HeaderBar::builder()
-            .show_start_title_buttons(false)
-            .title_widget(&content_title)
+            .min_sidebar_width(190.0)
+            .max_sidebar_width(250.0)
+            .sidebar_width_fraction(0.22)
             .build();
 
         let menu = gio::Menu::new();
-        let help_section = gio::Menu::new();
-        help_section.append(Some(tr!("Keyboard Shortcuts")), Some("win.shortcuts"));
-        menu.append_section(None, &help_section);
-        let app_section = gio::Menu::new();
-        app_section.append(Some(tr!("About")), Some("app.about"));
-        app_section.append(Some(tr!("Quit")), Some("app.quit"));
-        menu.append_section(None, &app_section);
-        let menu_button = gtk::MenuButton::builder()
-            .icon_name("open-menu-symbolic")
-            .menu_model(&menu)
+        let tools = gio::Menu::new();
+        tools.append(Some(tr!("External drives")), Some("win.drives"));
+        menu.append_section(Some(tr!("Tools")), &tools);
+        let help = gio::Menu::new();
+        help.append(Some(tr!("Keyboard shortcuts")), Some("win.shortcuts"));
+        help.append(Some(tr!("About Ashy Pass")), Some("app.about"));
+        menu.append_section(None, &help);
+        let quit = gio::Menu::new();
+        quit.append(Some(tr!("Quit")), Some("app.quit"));
+        menu.append_section(None, &quit);
+        let chrome = Chrome {
+            split: split.clone(),
+            menu,
+        };
+
+        // ---- Pages -----------------------------------------------------
+        let unlock_view = UnlockView::new(state.clone());
+        let vault_view = VaultView::new(state.clone(), toast_overlay.clone(), &chrome);
+        let totp_view = TotpView::new(state.clone(), toast_overlay.clone(), &chrome);
+        let generator_view = GeneratorView::new(state.clone(), toast_overlay.clone(), &chrome);
+        let backups_view = BackupsView::new(state.clone(), toast_overlay.clone(), &chrome);
+        let drives_view = DrivesView::new(toast_overlay.clone());
+        let drives_page = adw::ToolbarView::new();
+        let drives_title = gtk::Label::new(Some(tr!("External drives")));
+        drives_title.add_css_class("heading");
+        drives_page.add_top_bar(&chrome.header(Some(drives_title.upcast_ref())));
+        drives_page.set_content(Some(&drives_view.root));
+
+        let pages = gtk::Stack::builder()
+            .transition_type(gtk::StackTransitionType::Crossfade)
+            .transition_duration(150)
             .build();
+        pages.add_named(&vault_view.root, Some("vault"));
+        pages.add_named(&totp_view.root, Some("totp"));
+        pages.add_named(&generator_view.root, Some("generator"));
+        pages.add_named(&backups_view.root, Some("backups"));
+        pages.add_named(&drives_page, Some("drives"));
 
-        content_header.pack_end(&menu_button);
-        content_header.pack_end(&add_button);
-        content_header.pack_end(&lock_button);
-        content_header.pack_start(&search_button);
-        content_toolbar.add_top_bar(&content_header);
-        content_toolbar.set_content(Some(&content_stack));
+        let unlock_page = adw::ToolbarView::new();
+        unlock_page.add_top_bar(&chrome.header(None));
+        unlock_page.set_content(Some(&unlock_view.root));
 
-        split.set_content(Some(&content_toolbar));
+        let gate = gtk::Stack::builder()
+            .transition_type(gtk::StackTransitionType::Crossfade)
+            .transition_duration(150)
+            .vexpand(true)
+            .build();
+        gate.add_named(&unlock_page, Some("unlock"));
+        gate.add_named(&pages, Some("pages"));
 
-        // --- Sidebar ---
+        // Pre-lock warning: a banner, not a small toast, with time to react.
+        let lock_banner = adw::Banner::builder()
+            .button_label(tr!("Keep using"))
+            .revealed(false)
+            .build();
+        let content = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        content.append(&lock_banner);
+        content.append(&gate);
+        split.set_content(Some(&content));
+
+        // ---- Sidebar ---------------------------------------------------
         let sidebar_toolbar = adw::ToolbarView::new();
         let sidebar_header = adw::HeaderBar::builder()
             .show_end_title_buttons(false)
             .build();
-        let sidebar_title = gtk::Label::builder().label("Ashy Pass").build();
-        sidebar_title.add_css_class("heading");
-        sidebar_header.set_title_widget(Some(&sidebar_title));
+        let brand = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .spacing(8)
+            .build();
+        let brand_icon = gtk::Image::builder()
+            .icon_name("ashypass")
+            .pixel_size(24)
+            .build();
+        brand_icon.set_accessible_role(gtk::AccessibleRole::Presentation);
+        let brand_label = gtk::Label::new(Some("Ashy Pass"));
+        brand_label.add_css_class("heading");
+        brand.append(&brand_icon);
+        brand.append(&brand_label);
+        sidebar_header.set_title_widget(Some(&brand));
         sidebar_toolbar.add_top_bar(&sidebar_header);
 
-        let scroll = gtk::ScrolledWindow::builder()
+        let nav_list = gtk::ListBox::builder()
+            .selection_mode(gtk::SelectionMode::Single)
+            .build();
+        nav_list.add_css_class("navigation-sidebar");
+        nav_list.update_property(&[gtk::accessible::Property::Label(tr!("Sections"))]);
+        for (name, icon) in NAV {
+            let row = gtk::ListBoxRow::new();
+            row.set_widget_name(name);
+            let row_box = gtk::Box::builder()
+                .orientation(gtk::Orientation::Horizontal)
+                .spacing(12)
+                .margin_top(4)
+                .margin_bottom(4)
+                .margin_start(4)
+                .margin_end(4)
+                .build();
+            let image = gtk::Image::from_icon_name(icon);
+            image.set_accessible_role(gtk::AccessibleRole::Presentation);
+            row_box.append(&image);
+            row_box.append(
+                &gtk::Label::builder()
+                    .label(nav_label(name))
+                    .xalign(0.0)
+                    .hexpand(true)
+                    .ellipsize(gtk::pango::EllipsizeMode::End)
+                    .build(),
+            );
+            row.set_child(Some(&row_box));
+            if *name == "backups" {
+                // Separate the everyday destinations from the rest.
+                let separator = gtk::ListBoxRow::builder()
+                    .selectable(false)
+                    .activatable(false)
+                    .can_focus(false)
+                    .child(&gtk::Separator::new(gtk::Orientation::Horizontal))
+                    .build();
+                separator.add_css_class("ashy-nav-separator");
+                separator.set_accessible_role(gtk::AccessibleRole::Separator);
+                nav_list.append(&separator);
+            }
+            nav_list.append(&row);
+        }
+        let nav_scroll = gtk::ScrolledWindow::builder()
             .hscrollbar_policy(gtk::PolicyType::Never)
-            .vscrollbar_policy(gtk::PolicyType::Automatic)
             .vexpand(true)
+            .child(&nav_list)
             .build();
-        let nav_box = gtk::Box::builder()
-            .orientation(gtk::Orientation::Vertical)
-            .spacing(2)
-            .margin_start(8)
-            .margin_end(8)
-            .margin_top(6)
+
+        let lock_button = gtk::Button::builder()
+            .margin_start(12)
+            .margin_end(12)
             .margin_bottom(12)
-            .build();
-
-        let nav_buttons: RefCell<HashMap<&'static str, gtk::Button>> = RefCell::new(HashMap::new());
-        add_nav_item(
-            &nav_box,
-            &nav_buttons,
-            "generator",
-            "view-reveal-symbolic",
-            tr!("Generator"),
-        );
-        add_nav_item(
-            &nav_box,
-            &nav_buttons,
-            "vault",
-            "dialog-password-symbolic",
-            tr!("Vault"),
-        );
-        add_nav_item(
-            &nav_box,
-            &nav_buttons,
-            "totp",
-            "auth-sim-symbolic",
-            tr!("2FA"),
-        );
-        add_nav_item(
-            &nav_box,
-            &nav_buttons,
-            "drives",
-            "drive-removable-media-symbolic",
-            tr!("Drives"),
-        );
-
-        let auth_separator = gtk::Separator::builder()
-            .orientation(gtk::Orientation::Horizontal)
             .margin_top(6)
-            .margin_bottom(6)
             .visible(false)
+            .tooltip_text(tr!("Lock the vault now (Ctrl+L)"))
             .build();
-        nav_box.append(&auth_separator);
-
-        add_nav_item(
-            &nav_box,
-            &nav_buttons,
-            "groups",
-            "folder-symbolic",
-            tr!("Groups"),
-        );
-        nav_buttons
-            .borrow()
-            .get("groups")
-            .unwrap()
-            .set_visible(false);
-
-        add_nav_item(
-            &nav_box,
-            &nav_buttons,
-            "favorites",
-            "emblem-favorite-symbolic",
-            tr!("Favorites"),
-        );
-        nav_buttons
-            .borrow()
-            .get("favorites")
-            .unwrap()
-            .set_visible(false);
-
-        add_nav_item(
-            &nav_box,
-            &nav_buttons,
-            "lock",
-            "system-lock-screen-symbolic",
-            tr!("Lock"),
-        );
-        nav_buttons.borrow().get("lock").unwrap().set_visible(false);
-
-        let bottom_sep = gtk::Separator::builder()
+        let lock_box = gtk::Box::builder()
             .orientation(gtk::Orientation::Horizontal)
-            .margin_top(6)
-            .margin_bottom(6)
+            .spacing(10)
             .build();
-        nav_box.append(&bottom_sep);
-        add_nav_item(
-            &nav_box,
-            &nav_buttons,
-            "settings",
-            "emblem-system-symbolic",
-            tr!("Settings"),
-        );
+        lock_box.append(&gtk::Image::from_icon_name("system-lock-screen-symbolic"));
+        lock_box.append(&gtk::Label::new(Some(tr!("Lock"))));
+        lock_button.set_child(Some(&lock_box));
+        lock_button.add_css_class("ashy-lock-button");
 
-        scroll.set_child(Some(&nav_box));
-        sidebar_toolbar.set_content(Some(&scroll));
+        let sidebar_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        sidebar_box.append(&nav_scroll);
+        sidebar_box.append(&lock_button);
+        sidebar_toolbar.set_content(Some(&sidebar_box));
         split.set_sidebar(Some(&sidebar_toolbar));
 
         toast_overlay.set_child(Some(&split));
         window.set_content(Some(&toast_overlay));
 
+        // ---- Adaptive breakpoints -------------------------------------
+        let medium = adw::Breakpoint::new(adw::BreakpointCondition::new_length(
+            adw::BreakpointConditionLengthType::MaxWidth,
+            900.0,
+            adw::LengthUnit::Sp,
+        ));
+        medium.add_setter(&vault_view.root, "collapsed", Some(&true.to_value()));
+        let narrow = adw::Breakpoint::new(adw::BreakpointCondition::new_length(
+            adw::BreakpointConditionLengthType::MaxWidth,
+            620.0,
+            adw::LengthUnit::Sp,
+        ));
+        narrow.add_setter(&vault_view.root, "collapsed", Some(&true.to_value()));
+        narrow.add_setter(&split, "collapsed", Some(&true.to_value()));
+        window.add_breakpoint(medium);
+        window.add_breakpoint(narrow);
+
+        // Typing anywhere on the list goes to its search box.
+        vault_view.set_key_capture(&vault_view.root);
+
+        let auto_sync = crate::auto_sync::install(state.clone(), toast_overlay.clone());
+
         let inner = Rc::new(MainWindowInner {
             state: state.clone(),
+            window: window.clone(),
             toast_overlay: toast_overlay.clone(),
-            content_stack,
-            content_title,
-            search_button: search_button.clone(),
-            add_button: add_button.clone(),
+            split,
+            nav_list,
             lock_button: lock_button.clone(),
-            nav_buttons,
-            auth_separator,
+            lock_banner,
+            gate,
+            pages,
+            current: Cell::new("vault"),
+            pending_page: Cell::new(None),
+            pending_password: RefCell::new(None),
+            updating_nav: Cell::new(false),
+            banner_timer: RefCell::new(None),
+            unlock_view: unlock_view.clone(),
             vault_view: vault_view.clone(),
             totp_view: totp_view.clone(),
+            generator_view,
+            backups_view,
+            auto_sync,
         });
 
-        // --- Wire up sidebar nav clicks ---
-        for (name, btn) in inner.nav_buttons.borrow().iter() {
-            let name = *name;
-            let inner_cl = inner.clone();
-            let window_cl = window.clone();
-            btn.connect_clicked(move |_| {
-                on_nav_clicked(&inner_cl, &window_cl, name);
-            });
-        }
+        wire(&inner, app);
 
-        // Header buttons
+        // Apply the persisted auto-lock delay.
         {
-            let inner_cl = inner.clone();
-            add_button.connect_clicked(move |_| inner_cl.on_add_clicked());
-        }
-        {
-            let inner_cl = inner.clone();
-            lock_button.connect_clicked(move |_| inner_cl.lock_now());
-        }
-        {
-            let inner_cl = inner.clone();
-            search_button.connect_toggled(move |b| inner_cl.on_search_toggled(b.is_active()));
-        }
-
-        // Apply persisted auto-lock timeout from settings
-        {
-            let s = ashypass_core::settings::Settings::load();
+            let s = state.settings();
             state.session.borrow_mut().timeout_seconds = s.lock_timeout.max(15);
         }
 
-        // Install Nextcloud Passwords auto-sync. The scheduler subscribes to
-        // VaultChanged for debounced push, runs a periodic pull on its own
-        // timer, and surfaces errors through the same toast overlay we use
-        // for everything else.
-        let auto_sync_handle = crate::auto_sync::install(state.clone(), toast_overlay.clone());
-        // Kick off one sync after vault is unlocked elsewhere (see the
-        // on_auth_changed wiring below).
-        let auto_sync_handle_for_unlock = auto_sync_handle.clone();
-
-        // Wire session lock callback to refresh the UI when timer expires.
-        // Also publishes a `SessionLocked` event on the app bus so other views
-        // can react without needing direct callback wiring.
-        {
-            let inner_cl = inner.clone();
-            let toast_cl = toast_overlay.clone();
-            let cb: Rc<dyn Fn()> = Rc::new(move || {
-                inner_cl.lock_now();
-                let toast = adw::Toast::builder()
-                    .title(tr!("Vault locked due to inactivity"))
-                    .timeout(4)
-                    .build();
-                toast_cl.add_toast(toast);
-            });
-            state.session.borrow_mut().set_lock_callback(cb);
+        // Startup: one try at the opt-in keyring unlock, then the vault.
+        if !inner.unlock_view.try_keyring_unlock() {
+            inner.show_page("vault");
+            inner.unlock_view.focus();
         }
-
-        // Warning toast a few seconds before auto-lock, mirrored on the bus.
-        {
-            let toast_cl = toast_overlay.clone();
-            let events = state.events.clone();
-            let sess = state.session.clone();
-            let cb: Rc<dyn Fn(u64)> = Rc::new(move |remaining| {
-                // The toast carries a one-click reprieve so a user who is
-                // mid-form (and therefore not generating input events) can keep
-                // the session alive instead of losing their work to the lock.
-                let toast = adw::Toast::builder()
-                    .title(format!("{} ({}s)", tr!("Vault will lock soon"), remaining))
-                    .button_label(tr!("Keep Unlocked"))
-                    .timeout(remaining.min(u32::MAX as u64) as u32)
-                    .build();
-                {
-                    let sess = sess.clone();
-                    toast.connect_button_clicked(move |_| {
-                        SessionManager::on_activity(&sess);
-                    });
-                }
-                toast_cl.add_toast(toast);
-                events.emit(crate::events::AppEvent::SessionWarning {
-                    seconds_left: remaining,
-                });
-            });
-            state.session.borrow_mut().set_warning_callback(cb);
-        }
-
-        // Wire vault-view auth-changed callback to refresh sidebar.
-        // Also pings the Nextcloud auto-sync scheduler on unlock so the
-        // first view is fresh from the server (honours sync_on_unlock).
-        {
-            let inner_cl = inner.clone();
-            let state_cl = state.clone();
-            let auto_sync = auto_sync_handle_for_unlock.clone();
-            vault_view.set_on_auth_changed(Box::new(move || {
-                inner_cl.update_auth_nav();
-                if state_cl.vault.borrow().is_unlocked() {
-                    auto_sync.on_vault_unlocked();
-                }
-            }));
-        }
-        {
-            let inner_cl = inner.clone();
-            totp_view.set_on_auth_changed(Box::new(move || {
-                inner_cl.update_auth_nav();
-            }));
-        }
-        {
-            let inner_weak = Rc::downgrade(&inner);
-            let _permanent = state.events.subscribe(move |event| {
-                if matches!(
-                    event,
-                    crate::events::AppEvent::VaultChanged
-                        | crate::events::AppEvent::SyncCompleted { .. }
-                        | crate::events::AppEvent::SessionLocked
-                ) {
-                    if let Some(inner) = inner_weak.upgrade() {
-                        inner.update_auth_nav();
-                    }
-                }
-            });
-        }
-
-        // Window-wide activity tracker (key + click) — resets the auto-lock
-        // timer whenever the user is doing something. Both controllers run in
-        // the capture phase: entries and text views consume key presses before
-        // they bubble back to the window, so a bubble-phase controller would
-        // never see the user typing into a form and the vault would lock while
-        // they were still filling one in.
-        {
-            let key_ctl = gtk::EventControllerKey::new();
-            key_ctl.set_propagation_phase(gtk::PropagationPhase::Capture);
-            let sess = state.session.clone();
-            let inner_cl = inner.clone();
-            let window_cl = window.clone();
-            key_ctl.connect_key_pressed(move |_, keyval, _, modifiers| {
-                SessionManager::on_activity(&sess);
-                if inner_cl.handle_type_to_search(&window_cl, keyval, modifiers) {
-                    glib::Propagation::Stop
-                } else {
-                    glib::Propagation::Proceed
-                }
-            });
-            window.add_controller(key_ctl);
-        }
-        {
-            let click_ctl = gtk::GestureClick::new();
-            click_ctl.set_propagation_phase(gtk::PropagationPhase::Capture);
-            let sess = state.session.clone();
-            click_ctl.connect_pressed(move |_, _, _, _| {
-                SessionManager::on_activity(&sess);
-            });
-            window.add_controller(click_ctl);
-        }
-
-        // Show generator by default (no auth required)
-        inner.select_nav("generator");
-
-        // Ctrl+F shortcut wires to focusing vault search entry
-        let search_action = gio::SimpleAction::new("search", None);
-        {
-            let inner_cl = inner.clone();
-            search_action.connect_activate(move |_, _| inner_cl.focus_search());
-        }
-        window.add_action(&search_action);
-        app.set_accels_for_action("win.search", &["<Primary>f"]);
-
-        let settings_action = gio::SimpleAction::new("settings", None);
-        {
-            let window_cl = window.clone();
-            let state_cl = state.clone();
-            let toast_cl = toast_overlay.clone();
-            settings_action.connect_activate(move |_, _| {
-                settings_dialog::present(&window_cl, state_cl.clone(), toast_cl.clone());
-            });
-        }
-        window.add_action(&settings_action);
-        app.set_accels_for_action("win.settings", &["<Primary>comma"]);
-
-        let new_action = gio::SimpleAction::new("new-entry", None);
-        {
-            let inner_cl = inner.clone();
-            new_action.connect_activate(move |_, _| {
-                if inner_cl.state.session.borrow().is_authenticated() {
-                    let current = inner_cl
-                        .content_stack
-                        .visible_child_name()
-                        .map(|s| s.to_string())
-                        .unwrap_or_default();
-                    if current == "totp" {
-                        inner_cl.totp_view.show_add_dialog();
-                    } else {
-                        inner_cl.select_nav("vault");
-                        inner_cl.vault_view.show_add_dialog();
-                    }
-                }
-            });
-        }
-        window.add_action(&new_action);
-        app.set_accels_for_action("win.new-entry", &["<Primary>n"]);
-
-        let lock_action = gio::SimpleAction::new("lock", None);
-        {
-            let inner_cl = inner.clone();
-            lock_action.connect_activate(move |_, _| {
-                if inner_cl.state.session.borrow().is_authenticated() {
-                    inner_cl.lock_now();
-                }
-            });
-        }
-        window.add_action(&lock_action);
-        app.set_accels_for_action("win.lock", &["<Primary>l"]);
-
-        let nav_vault_action = gio::SimpleAction::new("nav-vault", None);
-        {
-            let inner_cl = inner.clone();
-            nav_vault_action.connect_activate(move |_, _| inner_cl.select_nav("vault"));
-        }
-        window.add_action(&nav_vault_action);
-        app.set_accels_for_action("win.nav-vault", &["<Primary>1"]);
-
-        let nav_totp_action = gio::SimpleAction::new("nav-totp", None);
-        {
-            let inner_cl = inner.clone();
-            nav_totp_action.connect_activate(move |_, _| inner_cl.select_nav("totp"));
-        }
-        window.add_action(&nav_totp_action);
-        app.set_accels_for_action("win.nav-totp", &["<Primary>2"]);
-
-        let nav_gen_action = gio::SimpleAction::new("nav-generator", None);
-        {
-            let inner_cl = inner.clone();
-            nav_gen_action.connect_activate(move |_, _| inner_cl.select_nav("generator"));
-        }
-        window.add_action(&nav_gen_action);
-        app.set_accels_for_action("win.nav-generator", &["<Primary>3"]);
-
-        let shortcuts_action = gio::SimpleAction::new("shortcuts", None);
-        {
-            let window_cl = window.clone();
-            shortcuts_action.connect_activate(move |_, _| {
-                show_shortcuts_window(&window_cl);
-            });
-        }
-        window.add_action(&shortcuts_action);
-        app.set_accels_for_action("win.shortcuts", &["<Primary>question", "F1"]);
 
         Self { window, inner }
     }
@@ -503,337 +332,462 @@ impl MainWindow {
     pub fn present(&self) {
         self.window.present();
     }
-}
 
-fn add_nav_item(
-    parent: &gtk::Box,
-    map: &RefCell<HashMap<&'static str, gtk::Button>>,
-    name: &'static str,
-    icon: &str,
-    label: &str,
-) {
-    let btn = gtk::Button::new();
-    btn.add_css_class("flat");
-
-    let bx = gtk::Box::builder()
-        .orientation(gtk::Orientation::Horizontal)
-        .spacing(10)
-        .margin_start(8)
-        .margin_end(8)
-        .margin_top(6)
-        .margin_bottom(6)
-        .build();
-
-    let img = gtk::Image::from_icon_name(icon);
-    img.set_pixel_size(18);
-    bx.append(&img);
-
-    let lbl = gtk::Label::builder()
-        .label(label)
-        .xalign(0.0)
-        .hexpand(true)
-        .build();
-    bx.append(&lbl);
-
-    btn.set_child(Some(&bx));
-    parent.append(&btn);
-    map.borrow_mut().insert(name, btn);
-}
-
-fn on_nav_clicked(
-    inner: &Rc<MainWindowInner>,
-    window: &adw::ApplicationWindow,
-    name: &'static str,
-) {
-    match name {
-        "settings" => {
-            settings_dialog::present(window, inner.state.clone(), inner.toast_overlay.clone());
+    #[cfg(debug_assertions)]
+    pub fn dev(&self) -> DevHandle {
+        DevHandle {
+            inner: self.inner.clone(),
         }
-        "lock" => inner.lock_now(),
-        "groups" => {
-            inner.highlight_nav("groups");
-            inner.content_stack.set_visible_child_name("vault");
-            inner.content_title.set_label(tr!("Groups"));
-            inner.vault_view.show_groups_view();
-            inner.add_button.set_visible(false);
-            inner.lock_button.set_visible(false);
-        }
-        "favorites" => {
-            inner.highlight_nav("favorites");
-            inner.content_stack.set_visible_child_name("vault");
-            inner.content_title.set_label(tr!("Favorites"));
-            inner.vault_view.show_favorites_view();
-            inner.add_button.set_visible(false);
-            inner.lock_button.set_visible(false);
-        }
-        n => inner.select_nav(n),
     }
+}
+
+fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
+    // Sidebar selection.
+    {
+        let weak = Rc::downgrade(inner);
+        inner.nav_list.connect_row_activated(move |_, row| {
+            let Some(inner) = weak.upgrade() else { return };
+            let name = row.widget_name();
+            if let Some(page) = NAV.iter().map(|(n, _)| *n).find(|n| *n == name.as_str()) {
+                inner.on_nav(page);
+            }
+        });
+    }
+    {
+        let weak = Rc::downgrade(inner);
+        inner.nav_list.connect_row_selected(move |_, row| {
+            let Some(inner) = weak.upgrade() else { return };
+            if inner.updating_nav.get() {
+                return;
+            }
+            let Some(row) = row else { return };
+            let name = row.widget_name();
+            if let Some(page) = NAV.iter().map(|(n, _)| *n).find(|n| *n == name.as_str()) {
+                inner.on_nav(page);
+            }
+        });
+    }
+    {
+        let weak = Rc::downgrade(inner);
+        inner.lock_button.connect_clicked(move |_| {
+            if let Some(inner) = weak.upgrade() {
+                inner.lock_now(false);
+            }
+        });
+    }
+
+    // Unlock screen → back to where the user was going.
+    {
+        let weak = Rc::downgrade(inner);
+        inner.unlock_view.set_on_unlocked(Box::new(move || {
+            if let Some(inner) = weak.upgrade() {
+                inner.on_unlocked();
+            }
+        }));
+    }
+    {
+        let weak = Rc::downgrade(inner);
+        inner.unlock_view.set_on_import_help(Box::new(move || {
+            if let Some(inner) = weak.upgrade() {
+                inner.show_import_help();
+            }
+        }));
+    }
+    {
+        let weak = Rc::downgrade(inner);
+        inner
+            .generator_view
+            .panel
+            .set_on_primary(Box::new(move |value| {
+                if let Some(inner) = weak.upgrade() {
+                    inner.save_generated(Zeroizing::new(value));
+                }
+            }));
+    }
+    {
+        let weak = Rc::downgrade(inner);
+        inner.vault_view.set_on_import(Box::new(move || {
+            if let Some(inner) = weak.upgrade() {
+                inner.show_page("backups");
+                inner.backups_view.show_import();
+            }
+        }));
+    }
+    {
+        let weak = Rc::downgrade(inner);
+        inner.vault_view.set_on_trash(Box::new(move || {
+            if let Some(inner) = weak.upgrade() {
+                settings_dialog::present_trash(&inner.window, inner.state.clone());
+            }
+        }));
+    }
+
+    // Idle lock and its warning.
+    {
+        let weak = Rc::downgrade(inner);
+        let cb: Rc<dyn Fn()> = Rc::new(move || {
+            if let Some(inner) = weak.upgrade() {
+                inner.lock_now(true);
+            }
+        });
+        inner.state.session.borrow_mut().set_lock_callback(cb);
+    }
+    {
+        let weak = Rc::downgrade(inner);
+        let cb: Rc<dyn Fn(u64)> = Rc::new(move |remaining| {
+            if let Some(inner) = weak.upgrade() {
+                inner.show_lock_warning(remaining);
+                inner
+                    .state
+                    .events
+                    .emit(crate::events::AppEvent::SessionWarning {
+                        seconds_left: remaining,
+                    });
+            }
+        });
+        inner.state.session.borrow_mut().set_warning_callback(cb);
+    }
+    {
+        let weak = Rc::downgrade(inner);
+        inner.lock_banner.connect_button_clicked(move |_| {
+            if let Some(inner) = weak.upgrade() {
+                SessionManager::on_activity(&inner.state.session);
+                inner.hide_lock_warning();
+            }
+        });
+    }
+
+    // Window-wide activity tracker (key + click). Capture phase: entries
+    // consume key presses before they bubble back to the window.
+    {
+        let key = gtk::EventControllerKey::new();
+        key.set_propagation_phase(gtk::PropagationPhase::Capture);
+        let weak = Rc::downgrade(inner);
+        key.connect_key_pressed(move |_, _, _, _| {
+            if let Some(inner) = weak.upgrade() {
+                inner.on_user_activity();
+            }
+            glib::Propagation::Proceed
+        });
+        inner.window.add_controller(key);
+    }
+    {
+        let click = gtk::GestureClick::new();
+        click.set_propagation_phase(gtk::PropagationPhase::Capture);
+        let weak = Rc::downgrade(inner);
+        click.connect_pressed(move |_, _, _, _| {
+            if let Some(inner) = weak.upgrade() {
+                inner.on_user_activity();
+            }
+        });
+        inner.window.add_controller(click);
+    }
+
+    // ---- Actions and shortcuts ------------------------------------------
+    let window = &inner.window;
+    let add_action = |name: &str, accels: &[&str], run: Box<dyn Fn(&Rc<MainWindowInner>)>| {
+        let action = gio::SimpleAction::new(name, None);
+        let weak = Rc::downgrade(inner);
+        action.connect_activate(move |_, _| {
+            if let Some(inner) = weak.upgrade() {
+                run(&inner);
+            }
+        });
+        window.add_action(&action);
+        if !accels.is_empty() {
+            app.set_accels_for_action(&format!("win.{name}"), accels);
+        }
+    };
+    add_action("search", &["<Primary>f"], Box::new(|i| i.focus_search()));
+    add_action(
+        "settings",
+        &["<Primary>comma"],
+        Box::new(|i| i.open_settings()),
+    );
+    add_action("new-entry", &["<Primary>n"], Box::new(|i| i.new_entry()));
+    add_action(
+        "lock",
+        &["<Primary>l"],
+        Box::new(|i| {
+            if i.state.vault.borrow().is_unlocked() {
+                i.lock_now(false);
+            }
+        }),
+    );
+    add_action(
+        "nav-vault",
+        &["<Primary>1"],
+        Box::new(|i| i.show_page("vault")),
+    );
+    add_action(
+        "nav-totp",
+        &["<Primary>2"],
+        Box::new(|i| i.show_page("totp")),
+    );
+    add_action(
+        "nav-generator",
+        &["<Primary>3"],
+        Box::new(|i| i.show_page("generator")),
+    );
+    add_action(
+        "nav-backups",
+        &["<Primary>4"],
+        Box::new(|i| i.show_page("backups")),
+    );
+    add_action("drives", &[], Box::new(|i| i.show_page("drives")));
+    add_action(
+        "shortcuts",
+        &["<Primary>question", "F1"],
+        Box::new(|i| show_shortcuts_window(&i.window)),
+    );
 }
 
 impl MainWindowInner {
-    fn highlight_nav(&self, name: &str) {
-        for (btn_name, btn) in self.nav_buttons.borrow().iter() {
-            if *btn_name == name {
-                btn.remove_css_class("flat");
-                btn.add_css_class("suggested-action");
-            } else {
-                btn.remove_css_class("suggested-action");
-                btn.add_css_class("flat");
+    fn unlocked(&self) -> bool {
+        self.state.session.borrow().is_authenticated() && self.state.vault.borrow().is_unlocked()
+    }
+
+    fn toast(&self, message: &str, timeout: u32) {
+        self.toast_overlay.add_toast(
+            adw::Toast::builder()
+                .title(message)
+                .timeout(timeout)
+                .build(),
+        );
+    }
+
+    fn on_nav(self: &Rc<Self>, page: &'static str) {
+        if page == "settings" {
+            self.open_settings();
+            // Settings is a dialog, not a place: keep the current page
+            // highlighted.
+            self.highlight_nav(self.current.get());
+            return;
+        }
+        self.show_page(page);
+    }
+
+    fn highlight_nav(&self, page: &str) {
+        self.updating_nav.set(true);
+        let mut index = 0;
+        let mut found = None;
+        while let Some(row) = self.nav_list.row_at_index(index) {
+            if row.widget_name() == page {
+                found = Some(row);
+                break;
             }
+            index += 1;
+        }
+        self.nav_list.select_row(found.as_ref());
+        self.updating_nav.set(false);
+    }
+
+    fn show_page(self: &Rc<Self>, page: &'static str) {
+        self.current.set(page);
+        self.highlight_nav(page);
+        self.pages.set_visible_child_name(page);
+        if requires_vault(page) && !self.unlocked() {
+            self.pending_page.set(Some(page));
+            self.unlock_view.refresh();
+            self.gate.set_visible_child_name("unlock");
+            self.unlock_view.focus();
+        } else {
+            self.gate.set_visible_child_name("pages");
+        }
+        self.window
+            .set_title(Some(&format!("{} — Ashy Pass", nav_label(page))));
+        if self.split.is_collapsed() {
+            self.split.set_show_sidebar(false);
+        }
+        self.lock_button.set_visible(self.unlocked());
+    }
+
+    fn on_unlocked(self: &Rc<Self>) {
+        self.lock_button.set_visible(true);
+        self.vault_view.on_unlocked();
+        self.totp_view.on_unlocked();
+        self.backups_view.on_unlocked();
+        self.auto_sync.on_vault_unlocked();
+        let target = self.pending_page.take().unwrap_or(self.current.get());
+        self.show_page(target);
+        if let Some(password) = self.pending_password.borrow_mut().take() {
+            self.show_page("vault");
+            self.vault_view.show_add_dialog(Some(password));
         }
     }
 
-    fn select_nav(&self, name: &'static str) {
-        self.highlight_nav(name);
-        self.content_stack.set_visible_child_name(name);
-        self.search_button.set_active(false);
-
-        let title = match name {
-            "vault" => tr!("Vault"),
-            "totp" => tr!("2FA"),
-            "generator" => tr!("Generator"),
-            "drives" => tr!("Drives"),
-            other => other,
-        };
-        self.content_title.set_label(title);
-
-        let is_vault = name == "vault";
-        let is_totp = name == "totp";
-        let authed = self.state.session.borrow().is_authenticated();
-        self.add_button.set_visible((is_vault || is_totp) && authed);
-        self.lock_button.set_visible(is_vault && authed);
-
-        self.update_auth_nav();
-
-        if name == "totp" {
-            self.totp_view.refresh();
-            if !authed {
-                self.totp_view.focus_auth_field();
-            }
-        } else if name == "vault" {
-            self.vault_view.show_all_view();
-            if !authed {
-                self.vault_view.focus_auth_field();
-            }
-        }
-    }
-
-    /// The single lock path for every trigger: toolbar button, sidebar item,
-    /// Ctrl+L and the idle timer. Every view must drop its secrets, and the
-    /// bus must hear about it, whichever way the lock was requested.
-    fn lock_now(&self) {
-        // `lock_vault` also marks the session locked, cancelling the idle
-        // timers, so the lock callback cannot fire a second time.
-        self.vault_view.lock_vault();
+    /// The single lock path for every trigger: sidebar button, Ctrl+L and
+    /// the idle timer. Every view drops its secrets and open dialogs close.
+    fn lock_now(self: &Rc<Self>, idle: bool) {
+        self.hide_lock_warning();
+        crate::clipboard::clear_now();
+        let closed = self.state.close_sensitive_dialogs();
+        self.state.vault.borrow_mut().lock();
+        SessionManager::mark_locked(&self.state.session);
+        self.vault_view.on_locked();
         self.totp_view.on_locked();
-        self.update_auth_nav();
+        self.backups_view.on_locked();
+        self.unlock_view.on_locked();
+        self.lock_button.set_visible(false);
+        if requires_vault(self.current.get()) {
+            self.pending_page.set(Some(self.current.get()));
+            self.gate.set_visible_child_name("unlock");
+            self.unlock_view.focus();
+        }
         self.state
             .events
             .emit(crate::events::AppEvent::SessionLocked);
-    }
-
-    fn update_auth_nav(&self) {
-        let authed = self.state.session.borrow().is_authenticated();
-        let current = self
-            .content_stack
-            .visible_child_name()
-            .map(|s| s.to_string())
-            .unwrap_or_default();
-        let is_vault = current == "vault";
-        let is_totp = current == "totp";
-        let is_searchable = current == "vault" || current == "totp";
-
-        self.add_button.set_visible((is_vault || is_totp) && authed);
-        self.add_button.set_tooltip_text(Some(if is_totp {
-            tr!("Add 2FA Code")
-        } else {
-            tr!("Add Password")
-        }));
-        self.lock_button.set_visible(is_vault && authed);
-        self.search_button.set_visible(is_searchable && authed);
-
-        self.auth_separator.set_visible(authed);
-        let map = self.nav_buttons.borrow();
-        if let Some(b) = map.get("groups") {
-            b.set_visible(authed);
-        }
-        if let Some(b) = map.get("favorites") {
-            b.set_visible(authed);
-        }
-        if let Some(b) = map.get("lock") {
-            b.set_visible(authed);
+        if closed > 0 {
+            self.toast(
+                tr!("Vault locked. The open form was closed without saving."),
+                6,
+            );
+        } else if idle {
+            self.toast(tr!("Vault locked after a period of inactivity"), 4);
         }
     }
 
-    fn on_search_toggled(&self, active: bool) {
-        let current = self
-            .content_stack
-            .visible_child_name()
-            .map(|s| s.to_string())
-            .unwrap_or_default();
-        match current.as_str() {
-            "vault" => {
-                self.vault_view.search_bar.set_search_mode(active);
-                if active {
-                    self.vault_view.search_entry.grab_focus();
-                }
+    fn on_user_activity(&self) {
+        SessionManager::on_activity(&self.state.session);
+        if self.lock_banner.is_revealed() {
+            self.hide_lock_warning();
+        }
+    }
+
+    fn show_lock_warning(self: &Rc<Self>, remaining: u64) {
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(remaining);
+        let update = {
+            let banner = self.lock_banner.clone();
+            move || {
+                let left = deadline
+                    .saturating_duration_since(std::time::Instant::now())
+                    .as_secs();
+                banner.set_title(
+                    &crate::trn!(
+                        "The vault will lock in {} second because of inactivity.",
+                        "The vault will lock in {} seconds because of inactivity.",
+                        left as usize
+                    )
+                    .replace("{}", &left.to_string()),
+                );
+                left
             }
-            "totp" => {
-                self.totp_view.search_bar.set_search_mode(active);
-                if active {
-                    self.totp_view.search_entry.grab_focus();
-                }
-            }
-            _ => {}
-        }
-    }
-
-    fn on_add_clicked(&self) {
-        if !self.state.session.borrow().is_authenticated() {
-            return;
-        }
-        let current = self
-            .content_stack
-            .visible_child_name()
-            .map(|s| s.to_string())
-            .unwrap_or_default();
-        match current.as_str() {
-            "vault" => self.vault_view.show_add_dialog(),
-            "totp" => self.totp_view.show_add_dialog(),
-            _ => {}
-        }
-    }
-
-    fn focus_search(&self) {
-        let current = self
-            .content_stack
-            .visible_child_name()
-            .map(|s| s.to_string())
-            .unwrap_or_default();
-        if !self.state.session.borrow().is_authenticated() {
-            return;
-        }
-        match current.as_str() {
-            "vault" => {
-                self.search_button.set_active(true);
-                self.vault_view.search_entry.grab_focus();
-            }
-            "totp" => {
-                self.search_button.set_active(true);
-                self.totp_view.search_entry.grab_focus();
-            }
-            _ => {}
-        }
-    }
-
-    fn handle_type_to_search(
-        &self,
-        window: &adw::ApplicationWindow,
-        keyval: gdk::Key,
-        modifiers: gdk::ModifierType,
-    ) -> bool {
-        if self.search_button.is_active()
-            || !self.search_button.is_visible()
-            || !self.state.session.borrow().is_authenticated()
-            // A presented dialog owns the keyboard; typing there must never
-            // leak into the search entry behind it.
-            || window.visible_dialog().is_some()
-            || focus_is_text_input(gtk::prelude::GtkWindowExt::focus(window).as_ref())
-            || modifiers.intersects(
-                gdk::ModifierType::CONTROL_MASK
-                    | gdk::ModifierType::ALT_MASK
-                    | gdk::ModifierType::SUPER_MASK
-                    | gdk::ModifierType::META_MASK,
-            )
-        {
-            return false;
-        }
-
-        let Some(ch) = keyval.to_unicode() else {
-            return false;
         };
-        if ch.is_control() || ch.is_whitespace() {
-            return false;
+        update();
+        self.lock_banner.set_revealed(true);
+        if let Some(id) = self.banner_timer.borrow_mut().take() {
+            id.remove();
         }
+        let weak = Rc::downgrade(self);
+        let id = glib::timeout_add_seconds_local(1, move || {
+            let left = update();
+            if left == 0 {
+                if let Some(inner) = weak.upgrade() {
+                    *inner.banner_timer.borrow_mut() = None;
+                }
+                return glib::ControlFlow::Break;
+            }
+            glib::ControlFlow::Continue
+        });
+        *self.banner_timer.borrow_mut() = Some(id);
+    }
 
-        let current = self
-            .content_stack
-            .visible_child_name()
-            .map(|s| s.to_string())
-            .unwrap_or_default();
-        match current.as_str() {
-            "vault" => {
-                self.search_button.set_active(true);
-                self.vault_view.search_entry.set_text(&ch.to_string());
-                self.vault_view.search_entry.set_position(-1);
-                self.vault_view.search_entry.grab_focus();
-                true
-            }
-            "totp" => {
-                self.search_button.set_active(true);
-                self.totp_view.search_entry.set_text(&ch.to_string());
-                self.totp_view.search_entry.set_position(-1);
-                self.totp_view.search_entry.grab_focus();
-                true
-            }
-            _ => false,
+    fn hide_lock_warning(&self) {
+        if let Some(id) = self.banner_timer.borrow_mut().take() {
+            id.remove();
+        }
+        self.lock_banner.set_revealed(false);
+    }
+
+    fn save_generated(self: &Rc<Self>, value: Zeroizing<String>) {
+        if self.unlocked() {
+            self.show_page("vault");
+            self.vault_view.show_add_dialog(Some(value));
+            return;
+        }
+        *self.pending_password.borrow_mut() = Some(value);
+        self.show_page("vault");
+        self.toast(
+            tr!("Unlock the vault to save the new password. It will not be lost."),
+            6,
+        );
+    }
+
+    fn new_entry(self: &Rc<Self>) {
+        if !self.unlocked() {
+            return;
+        }
+        if self.current.get() == "totp" {
+            self.totp_view.show_add_dialog();
+        } else {
+            self.show_page("vault");
+            self.vault_view.show_add_dialog(None);
         }
     }
-}
 
-fn focus_is_text_input(focus: Option<&gtk::Widget>) -> bool {
-    let mut current = focus.cloned();
-    while let Some(widget) = current {
-        if widget.is::<gtk::Editable>()
-            || widget.is::<gtk::TextView>()
-            || widget.is::<gtk::SpinButton>()
-            || widget.is::<adw::EntryRow>()
-            || widget.is::<adw::PasswordEntryRow>()
-        {
-            return true;
+    fn focus_search(self: &Rc<Self>) {
+        if !self.unlocked() {
+            return;
         }
-        current = widget.parent();
+        match self.current.get() {
+            "totp" => self.totp_view.focus_search(),
+            _ => {
+                self.show_page("vault");
+                self.vault_view.focus_search();
+            }
+        }
     }
-    false
+
+    fn open_settings(self: &Rc<Self>) {
+        settings_dialog::present(&self.window, self.state.clone(), self.toast_overlay.clone());
+    }
+
+    fn show_import_help(self: &Rc<Self>) {
+        let dialog = adw::AlertDialog::builder()
+            .heading(tr!("Bring your passwords"))
+            .body(tr!(
+                "Create your vault first. Then open Backups and choose Import passwords to bring them from another app, or Restore a backup to use a copy made by Ashy Pass."
+            ))
+            .build();
+        dialog.add_response("ok", tr!("Understood"));
+        dialog.set_default_response(Some("ok"));
+        dialog.present(Some(&self.window));
+    }
 }
 
 fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
     let dialog = adw::Dialog::builder()
-        .title(tr!("Keyboard Shortcuts"))
+        .title(tr!("Keyboard shortcuts"))
         .content_width(520)
         .content_height(560)
         .build();
-
     let toolbar = adw::ToolbarView::new();
-    let header = adw::HeaderBar::new();
-    toolbar.add_top_bar(&header);
-
+    toolbar.add_top_bar(&adw::HeaderBar::new());
     let page = adw::PreferencesPage::new();
-
     let groups: &[(&str, &[(&str, &str)])] = &[
         (
             tr!("Navigation"),
             &[
-                ("Ctrl+1", tr!("Show Vault")),
-                ("Ctrl+2", tr!("Show 2FA")),
-                ("Ctrl+3", tr!("Show Generator")),
-                ("Ctrl+F", tr!("Focus Search")),
+                ("Ctrl+1", tr!("My passwords")),
+                ("Ctrl+2", tr!("Verification codes")),
+                ("Ctrl+3", tr!("Create password")),
+                ("Ctrl+4", tr!("Backups")),
+                ("Ctrl+F", tr!("Go to search")),
             ],
         ),
         (
             tr!("Vault"),
-            &[("Ctrl+N", tr!("New Entry")), ("Ctrl+L", tr!("Lock Vault"))],
+            &[("Ctrl+N", tr!("Add password")), ("Ctrl+L", tr!("Lock"))],
         ),
         (
             tr!("Application"),
             &[
-                ("Ctrl+,", tr!("Open Settings")),
-                ("F1 / Ctrl+?", tr!("Keyboard Shortcuts")),
+                ("Ctrl+,", tr!("Settings")),
+                ("F1 / Ctrl+?", tr!("Keyboard shortcuts")),
                 ("Ctrl+Q", tr!("Quit")),
             ],
         ),
     ];
-
     for (group_title, shortcuts) in groups {
         let group = adw::PreferencesGroup::builder().title(*group_title).build();
         for (accel, label) in *shortcuts {
@@ -847,8 +801,71 @@ fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
         }
         page.add(&group);
     }
-
     toolbar.set_content(Some(&page));
     dialog.set_child(Some(&toolbar));
     dialog.present(Some(parent));
+}
+
+// ============================================================================
+// Development harness (debug builds only)
+// ============================================================================
+
+/// Drives the window from a script for visual checks. Never compiled into
+/// release builds, and refuses to run against anything but a throwaway
+/// data directory.
+#[cfg(debug_assertions)]
+pub struct DevHandle {
+    inner: Rc<MainWindowInner>,
+}
+
+#[cfg(debug_assertions)]
+impl DevHandle {
+    pub fn run_step(&self, step: &str) {
+        let inner = &self.inner;
+        let (cmd, arg) = step.split_once(':').unwrap_or((step, ""));
+        match cmd {
+            "unlock" => inner.unlock_view.dev_submit(arg),
+            "page" => {
+                if let Some((name, _)) = NAV.iter().find(|(n, _)| *n == arg) {
+                    inner.show_page(name);
+                } else if arg == "drives" {
+                    inner.show_page("drives");
+                }
+            }
+            "open-first" => inner.vault_view.dev_open_first(),
+            "search" => inner.vault_view.dev_search(arg),
+            "add" => inner.vault_view.show_add_dialog(None),
+            "add-code" => inner.totp_view.show_add_dialog(),
+            "settings" => inner.open_settings(),
+            "lock" => inner.lock_now(false),
+            "warn" => inner.show_lock_warning(arg.parse().unwrap_or(20)),
+            "gen-kind" => inner.generator_view.panel.dev_set_kind(arg),
+            "gen-expand" => inner.generator_view.panel.dev_expand(arg != "0"),
+            "save-generated" => {
+                inner.save_generated(Zeroizing::new("Dev-Generated-Pass-123".into()))
+            }
+            "close-dialogs" => {
+                inner.state.close_sensitive_dialogs();
+            }
+            "size" => {
+                if let Some((w, h)) = arg.split_once('x') {
+                    let w = w.parse().unwrap_or(DEFAULT_WIDTH);
+                    let h = h.parse().unwrap_or(DEFAULT_HEIGHT);
+                    inner.window.set_default_size(w, h);
+                }
+            }
+            "dark" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceDark),
+            "light" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceLight),
+            "sidebar" => inner.split.set_show_sidebar(arg != "0"),
+            other => log::warn!("unknown dev step: {other}"),
+        }
+    }
+
+    pub fn window(&self) -> adw::ApplicationWindow {
+        self.inner.window.clone()
+    }
+
+    pub fn state(&self) -> SharedState {
+        self.inner.state.clone()
+    }
 }

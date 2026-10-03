@@ -1,497 +1,715 @@
-//! Password generator view — task #8.
+//! "Create password": a good password ready at once, adjustments tucked away.
 //!
-//! Top: generated password display + strength bar + Copy/Regenerate buttons.
-//! Middle: type selector (Password / Passphrase / PIN) toggling an options Stack.
-//! Bottom: per-type options (length, character classes, words, separator, etc.).
+//! The same `GeneratorPanel` serves two places:
+//! - the standalone page, where the main actions are *Copy password* and
+//!   *Save to vault…* (which opens the entry form with the value filled in);
+//! - the entry form, where the main action is *Use this password* and the
+//!   value goes straight into the field, never through the clipboard.
+//!
+//! The panel never claims that a password is "secure": it shows the real
+//! character count and a labelled *estimate*, and reminds the user that
+//! creating a password here does not change it on any site.
 
+use crate::state::SharedState;
 use crate::tr;
+use crate::ui::widgets::{copy_secret, page_heading, Chrome};
 use adw::prelude::*;
 use ashypass_core::config::{
-    DEFAULT_PASSPHRASE_WORDS, DEFAULT_PASSWORD_LENGTH, DEFAULT_PIN_LENGTH, MAX_PASSPHRASE_WORDS,
-    MAX_PASSWORD_LENGTH, MAX_PIN_LENGTH, MIN_PASSPHRASE_WORDS, MIN_PASSWORD_LENGTH, MIN_PIN_LENGTH,
+    DEFAULT_PASSPHRASE_WORDS, DEFAULT_PIN_LENGTH, MAX_PASSPHRASE_WORDS, MAX_PASSWORD_LENGTH,
+    MAX_PIN_LENGTH, MIN_PASSPHRASE_WORDS, MIN_PASSWORD_LENGTH, MIN_PIN_LENGTH,
 };
 use ashypass_core::generator::{
     generate_passphrase, generate_password, generate_pin, PasswordConfig,
 };
-use ashypass_core::strength::legacy_score as check_password_strength;
-use gtk::glib;
-use std::cell::RefCell;
+use gtk::{gio, glib};
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
+use zeroize::Zeroizing;
 
-pub struct GeneratorView {
+/// Starting length for random passwords in the UI. The core default stays
+/// at 16 for its other callers (CLI, browser host); 20 random characters
+/// remain accepted almost everywhere and need no adjusting.
+pub const UI_DEFAULT_PASSWORD_LENGTH: f64 = 20.0;
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum GeneratorKind {
+    Random,
+    Words,
+    Pin,
+}
+
+impl GeneratorKind {
+    fn id(self) -> &'static str {
+        match self {
+            Self::Random => "random",
+            Self::Words => "words",
+            Self::Pin => "pin",
+        }
+    }
+
+    fn from_id(id: &str) -> Self {
+        match id {
+            "words" => Self::Words,
+            "pin" => Self::Pin,
+            _ => Self::Random,
+        }
+    }
+
+    fn label(self) -> &'static str {
+        match self {
+            Self::Random => tr!("Random password"),
+            Self::Words => tr!("Random words"),
+            Self::Pin => tr!("Numeric PIN"),
+        }
+    }
+
+    fn hint(self) -> &'static str {
+        match self {
+            Self::Random => tr!("Recommended for accounts you keep in the vault."),
+            Self::Words => tr!("Easier to type and remember."),
+            Self::Pin => tr!("Use when the service asks for a numeric code."),
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum PanelMode {
+    Standalone,
+    Embedded,
+}
+
+type ValueCallback = Box<dyn Fn(String)>;
+
+pub struct GeneratorPanel {
     pub root: gtk::Box,
-    #[expect(dead_code, reason = "keeps view model alive for signal handlers")]
-    inner: Rc<Inner>,
+    inner: Rc<PanelInner>,
 }
 
-struct Inner {
+struct PanelInner {
+    state: SharedState,
     toast: adw::ToastOverlay,
-    current_password: RefCell<String>,
+    mode: PanelMode,
+    kind: Cell<GeneratorKind>,
+    current: RefCell<Zeroizing<String>>,
 
+    kind_button: gtk::MenuButton,
+    kind_hint: gtk::Label,
     password_label: gtk::Label,
-    strength_label: gtk::Label,
-    strength_bar: gtk::LevelBar,
+    summary_label: gtk::Label,
+    expander: adw::ExpanderRow,
 
-    options_stack: gtk::Stack,
+    length_row: adw::SpinRow,
+    uppercase_row: adw::SwitchRow,
+    lowercase_row: adw::SwitchRow,
+    digits_row: adw::SwitchRow,
+    symbols_row: adw::SwitchRow,
+    ambiguous_row: adw::SwitchRow,
 
-    // password options
-    length_spin: adw::SpinRow,
-    uppercase_switch: adw::SwitchRow,
-    lowercase_switch: adw::SwitchRow,
-    digits_switch: adw::SwitchRow,
-    symbols_switch: adw::SwitchRow,
-    ambiguous_switch: adw::SwitchRow,
+    words_row: adw::SpinRow,
+    separator_row: adw::EntryRow,
+    capitalize_row: adw::SwitchRow,
+    add_number_row: adw::SwitchRow,
 
-    // passphrase options
-    words_spin: adw::SpinRow,
-    separator_entry: adw::EntryRow,
-    capitalize_switch: adw::SwitchRow,
-    add_number_switch: adw::SwitchRow,
+    pin_length_row: adw::SpinRow,
 
-    // pin options
-    pin_length_spin: adw::SpinRow,
+    on_primary: RefCell<Option<ValueCallback>>,
 }
 
-impl GeneratorView {
-    pub fn new(toast: adw::ToastOverlay) -> Self {
-        let root = gtk::Box::new(gtk::Orientation::Vertical, 0);
-        root.set_vexpand(true);
-        root.set_hexpand(true);
-
-        let scrolled = gtk::ScrolledWindow::builder()
-            .hscrollbar_policy(gtk::PolicyType::Never)
-            .vscrollbar_policy(gtk::PolicyType::Automatic)
-            .vexpand(true)
-            .hexpand(true)
-            .build();
-        let content = gtk::Box::builder()
+impl GeneratorPanel {
+    pub fn new(state: SharedState, toast: adw::ToastOverlay, mode: PanelMode) -> Self {
+        let root = gtk::Box::builder()
             .orientation(gtk::Orientation::Vertical)
-            .spacing(24)
-            .margin_top(12)
-            .margin_bottom(12)
-            .margin_start(12)
-            .margin_end(12)
+            .spacing(16)
             .build();
 
-        // ---- Generated password group ----
-        let pwd_group = adw::PreferencesGroup::builder()
-            .title(tr!("Generated Password"))
+        // ---- Type selector: the two everyday choices first, PIN under
+        // "Other formats" with its own explanation.
+        let kind_menu = gio::Menu::new();
+        let main_section = gio::Menu::new();
+        for kind in [GeneratorKind::Random, GeneratorKind::Words] {
+            let item = gio::MenuItem::new(Some(kind.label()), None);
+            item.set_action_and_target_value(Some("gen.kind"), Some(&kind.id().to_variant()));
+            main_section.append_item(&item);
+        }
+        kind_menu.append_section(None, &main_section);
+        let other_section = gio::Menu::new();
+        let pin_item = gio::MenuItem::new(Some(GeneratorKind::Pin.label()), None);
+        pin_item.set_action_and_target_value(
+            Some("gen.kind"),
+            Some(&GeneratorKind::Pin.id().to_variant()),
+        );
+        other_section.append_item(&pin_item);
+        kind_menu.append_section(Some(tr!("Other formats")), &other_section);
+
+        let kind_button = gtk::MenuButton::builder()
+            .label(GeneratorKind::Random.label())
+            .menu_model(&kind_menu)
+            .halign(gtk::Align::Start)
+            .tooltip_text(tr!("Type of password"))
             .build();
-
-        let password_row = adw::ActionRow::builder().title(tr!("Password")).build();
-        let password_scroll = gtk::ScrolledWindow::builder()
-            .hscrollbar_policy(gtk::PolicyType::Automatic)
-            .vscrollbar_policy(gtk::PolicyType::Never)
-            .max_content_width(400)
-            .propagate_natural_width(true)
+        let kind_hint = gtk::Label::builder()
+            .label(GeneratorKind::Random.hint())
+            .xalign(0.0)
+            .wrap(true)
             .build();
-        let password_label = gtk::Label::new(None);
-        password_label.set_selectable(true);
-        password_label.add_css_class("monospace");
-        password_label.add_css_class("title-3");
-        password_label.set_xalign(0.0);
-        password_scroll.set_child(Some(&password_label));
-        password_row.add_suffix(&password_scroll);
-        pwd_group.add(&password_row);
-
-        let strength_row = adw::ActionRow::builder().title(tr!("Strength")).build();
-        let strength_label = gtk::Label::new(None);
-        strength_label.add_css_class("title-4");
-        strength_row.add_suffix(&strength_label);
-        pwd_group.add(&strength_row);
-
-        content.append(&pwd_group);
-
-        let strength_bar = gtk::LevelBar::builder()
-            .mode(gtk::LevelBarMode::Continuous)
-            .min_value(0.0)
-            .max_value(100.0)
-            .margin_top(6)
-            .margin_bottom(6)
-            .margin_start(12)
-            .margin_end(12)
-            .build();
-        content.append(&strength_bar);
-
-        let btn_box = gtk::Box::builder()
+        kind_hint.add_css_class("dim-label");
+        kind_hint.add_css_class("caption");
+        let kind_box = gtk::Box::builder()
             .orientation(gtk::Orientation::Horizontal)
             .spacing(12)
-            .halign(gtk::Align::Center)
-            .margin_top(6)
             .build();
-        let copy_btn = gtk::Button::with_label(tr!("Copy to Clipboard"));
-        copy_btn.add_css_class("pill");
-        copy_btn.add_css_class("suggested-action");
-        btn_box.append(&copy_btn);
-        let regen_btn = gtk::Button::with_label(tr!("Generate New"));
-        regen_btn.add_css_class("pill");
-        btn_box.append(&regen_btn);
-        content.append(&btn_box);
+        kind_box.append(&kind_button);
+        kind_box.append(&kind_hint);
+        root.append(&kind_box);
 
-        // ---- Type selector ----
-        let type_group = adw::PreferencesGroup::builder()
-            .title(tr!("Generation Type"))
-            .build();
-        let type_box = gtk::Box::builder()
+        // ---- Result card: the value, its real length and an estimate.
+        let card = gtk::Box::builder()
             .orientation(gtk::Orientation::Horizontal)
-            .halign(gtk::Align::Center)
+            .spacing(8)
             .build();
-        type_box.add_css_class("linked");
+        card.add_css_class("card");
+        card.add_css_class("ashy-result-card");
+        let value_box = gtk::Box::builder()
+            .orientation(gtk::Orientation::Vertical)
+            .spacing(6)
+            .hexpand(true)
+            .build();
+        let password_label = gtk::Label::builder()
+            .xalign(0.0)
+            .selectable(true)
+            .wrap(true)
+            .wrap_mode(gtk::pango::WrapMode::Char)
+            .build();
+        password_label.add_css_class("ashy-secret-large");
+        password_label.add_css_class("monospace");
+        password_label
+            .update_property(&[gtk::accessible::Property::Label(tr!("Generated password"))]);
+        value_box.append(&password_label);
+        let summary_label = gtk::Label::builder().xalign(0.0).wrap(true).build();
+        summary_label.add_css_class("dim-label");
+        summary_label.add_css_class("caption");
+        value_box.append(&summary_label);
+        card.append(&value_box);
 
-        let pwd_tg = gtk::ToggleButton::with_label(tr!("Password"));
-        pwd_tg.set_active(true);
-        type_box.append(&pwd_tg);
-        let pass_tg = gtk::ToggleButton::with_label(tr!("Passphrase"));
-        pass_tg.set_group(Some(&pwd_tg));
-        type_box.append(&pass_tg);
-        let pin_tg = gtk::ToggleButton::with_label(tr!("PIN"));
-        pin_tg.set_group(Some(&pwd_tg));
-        type_box.append(&pin_tg);
-        type_group.add(&type_box);
-        content.append(&type_group);
+        let copy_icon = gtk::Button::builder()
+            .icon_name("edit-copy-symbolic")
+            .tooltip_text(tr!("Copy password"))
+            .valign(gtk::Align::Center)
+            .build();
+        copy_icon.add_css_class("flat");
+        copy_icon.update_property(&[gtk::accessible::Property::Label(tr!("Copy password"))]);
+        let regenerate = gtk::Button::builder()
+            .icon_name("view-refresh-symbolic")
+            .tooltip_text(tr!("Generate another"))
+            .valign(gtk::Align::Center)
+            .build();
+        regenerate.add_css_class("flat");
+        regenerate.update_property(&[gtk::accessible::Property::Label(tr!("Generate another"))]);
+        card.append(&copy_icon);
+        card.append(&regenerate);
+        root.append(&card);
 
-        // ---- Options stack ----
-        let options_stack = gtk::Stack::builder()
-            .transition_type(gtk::StackTransitionType::SlideLeftRight)
+        // ---- Actions: one primary per context.
+        let actions = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .spacing(12)
+            .homogeneous(true)
+            .build();
+        let (primary, secondary) = match mode {
+            PanelMode::Standalone => (
+                gtk::Button::with_label(tr!("Copy password")),
+                Some(gtk::Button::with_label(tr!("Save to vault…"))),
+            ),
+            PanelMode::Embedded => (gtk::Button::with_label(tr!("Use this password")), None),
+        };
+        primary.add_css_class("pill");
+        primary.add_css_class("suggested-action");
+        actions.append(&primary);
+        if let Some(secondary) = secondary.as_ref() {
+            secondary.add_css_class("pill");
+            actions.append(secondary);
+        }
+        root.append(&actions);
+
+        // ---- Adjustments, collapsed by default.
+        let options_group = adw::PreferencesGroup::new();
+        let expander = adw::ExpanderRow::builder()
+            .title(tr!("Adjust length and characters"))
+            .subtitle(tr!("Only needed when a site has specific rules"))
+            .build();
+        options_group.add(&expander);
+
+        let length_row = adw::SpinRow::builder()
+            .title(tr!("Length"))
+            .adjustment(&gtk::Adjustment::new(
+                UI_DEFAULT_PASSWORD_LENGTH,
+                MIN_PASSWORD_LENGTH as f64,
+                MAX_PASSWORD_LENGTH as f64,
+                1.0,
+                4.0,
+                0.0,
+            ))
+            .build();
+        let uppercase_row = switch_row(tr!("Uppercase letters (A–Z)"), true);
+        let lowercase_row = switch_row(tr!("Lowercase letters (a–z)"), true);
+        let digits_row = switch_row(tr!("Numbers (0–9)"), true);
+        let symbols_row = switch_row(tr!("Symbols (!@#$…)"), true);
+        let ambiguous_row = switch_row(tr!("Avoid look-alike characters (l, 1, O, 0)"), true);
+
+        let words_row = adw::SpinRow::builder()
+            .title(tr!("Number of words"))
+            .adjustment(&gtk::Adjustment::new(
+                DEFAULT_PASSPHRASE_WORDS as f64,
+                MIN_PASSPHRASE_WORDS as f64,
+                MAX_PASSPHRASE_WORDS as f64,
+                1.0,
+                1.0,
+                0.0,
+            ))
+            .build();
+        let separator_row = adw::EntryRow::builder()
+            .title(tr!("Separator"))
+            .text("-")
+            .build();
+        let capitalize_row = switch_row(tr!("Capitalize words"), true);
+        let add_number_row = switch_row(tr!("Add a number"), true);
+
+        let pin_length_row = adw::SpinRow::builder()
+            .title(tr!("Number of digits"))
+            .adjustment(&gtk::Adjustment::new(
+                DEFAULT_PIN_LENGTH as f64,
+                MIN_PIN_LENGTH as f64,
+                MAX_PIN_LENGTH as f64,
+                1.0,
+                1.0,
+                0.0,
+            ))
             .build();
 
-        let (
-            pwd_options,
-            length_spin,
-            uppercase_switch,
-            lowercase_switch,
-            digits_switch,
-            symbols_switch,
-            ambiguous_switch,
-        ) = build_password_options();
-        options_stack.add_named(&pwd_options, Some("password"));
+        // Rows for every kind live in the expander; only the current kind's
+        // rows are visible.
+        for row in [
+            length_row.upcast_ref::<gtk::Widget>(),
+            uppercase_row.upcast_ref(),
+            lowercase_row.upcast_ref(),
+            digits_row.upcast_ref(),
+            symbols_row.upcast_ref(),
+            ambiguous_row.upcast_ref(),
+            words_row.upcast_ref(),
+            separator_row.upcast_ref(),
+            capitalize_row.upcast_ref(),
+            add_number_row.upcast_ref(),
+            pin_length_row.upcast_ref(),
+        ] {
+            expander.add_row(row);
+        }
+        root.append(&options_group);
 
-        let (pass_options, words_spin, separator_entry, capitalize_switch, add_number_switch) =
-            build_passphrase_options();
-        options_stack.add_named(&pass_options, Some("passphrase"));
+        let note = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .spacing(8)
+            .build();
+        note.add_css_class("ashy-note");
+        let note_icon = gtk::Image::from_icon_name("dialog-information-symbolic");
+        note_icon.set_accessible_role(gtk::AccessibleRole::Presentation);
+        note.append(&note_icon);
+        let note_label = gtk::Label::builder()
+            .label(match mode {
+                PanelMode::Standalone => {
+                    tr!("Creating a password here does not change your password on any site.")
+                }
+                PanelMode::Embedded => tr!(
+                    "The password goes into the form. Saving the form does not change it on the site."
+                ),
+            })
+            .wrap(true)
+            .xalign(0.0)
+            .build();
+        note_label.add_css_class("caption");
+        note.append(&note_label);
+        root.append(&note);
 
-        let (pin_options, pin_length_spin) = build_pin_options();
-        options_stack.add_named(&pin_options, Some("pin"));
-
-        content.append(&options_stack);
-
-        scrolled.set_child(Some(&content));
-        root.append(&scrolled);
-
-        let inner = Rc::new(Inner {
+        let inner = Rc::new(PanelInner {
+            state,
             toast,
-            current_password: RefCell::new(String::new()),
+            mode,
+            kind: Cell::new(GeneratorKind::Random),
+            current: RefCell::new(Zeroizing::new(String::new())),
+            kind_button,
+            kind_hint,
             password_label,
-            strength_label,
-            strength_bar,
-            options_stack: options_stack.clone(),
-            length_spin,
-            uppercase_switch,
-            lowercase_switch,
-            digits_switch,
-            symbols_switch,
-            ambiguous_switch,
-            words_spin,
-            separator_entry,
-            capitalize_switch,
-            add_number_switch,
-            pin_length_spin,
+            summary_label,
+            expander,
+            length_row,
+            uppercase_row,
+            lowercase_row,
+            digits_row,
+            symbols_row,
+            ambiguous_row,
+            words_row,
+            separator_row,
+            capitalize_row,
+            add_number_row,
+            pin_length_row,
+            on_primary: RefCell::new(None),
         });
 
-        // Wire up callbacks
+        // Kind action, scoped to this panel.
+        let group = gio::SimpleActionGroup::new();
+        let kind_action = gio::SimpleAction::new_stateful(
+            "kind",
+            Some(glib::VariantTy::STRING),
+            &GeneratorKind::Random.id().to_variant(),
+        );
         {
-            let inner_cl = inner.clone();
-            copy_btn.connect_clicked(move |_| inner_cl.copy_clicked());
-        }
-        {
-            let inner_cl = inner.clone();
-            regen_btn.connect_clicked(move |_| inner_cl.generate());
-        }
-        {
-            let inner_cl = inner.clone();
-            pwd_tg.connect_toggled(move |b| {
-                if b.is_active() {
-                    inner_cl.options_stack.set_visible_child_name("password");
-                    inner_cl.generate();
+            let weak = Rc::downgrade(&inner);
+            kind_action.connect_activate(move |action, target| {
+                let Some(id) = target.and_then(|t| t.str()) else {
+                    return;
+                };
+                action.set_state(&id.to_variant());
+                if let Some(inner) = weak.upgrade() {
+                    inner.set_kind(GeneratorKind::from_id(id));
                 }
             });
         }
-        {
-            let inner_cl = inner.clone();
-            pass_tg.connect_toggled(move |b| {
-                if b.is_active() {
-                    inner_cl.options_stack.set_visible_child_name("passphrase");
-                    inner_cl.generate();
-                }
-            });
-        }
-        {
-            let inner_cl = inner.clone();
-            pin_tg.connect_toggled(move |b| {
-                if b.is_active() {
-                    inner_cl.options_stack.set_visible_child_name("pin");
-                    inner_cl.generate();
-                }
-            });
-        }
+        group.add_action(&kind_action);
+        root.insert_action_group("gen", Some(&group));
 
+        {
+            let weak = Rc::downgrade(&inner);
+            copy_icon.connect_clicked(move |_| {
+                if let Some(inner) = weak.upgrade() {
+                    inner.copy();
+                }
+            });
+        }
+        {
+            let weak = Rc::downgrade(&inner);
+            regenerate.connect_clicked(move |_| {
+                if let Some(inner) = weak.upgrade() {
+                    inner.generate();
+                }
+            });
+        }
+        {
+            let weak = Rc::downgrade(&inner);
+            primary.connect_clicked(move |_| {
+                let Some(inner) = weak.upgrade() else { return };
+                match inner.mode {
+                    PanelMode::Standalone => inner.copy(),
+                    PanelMode::Embedded => inner.emit_primary(),
+                }
+            });
+        }
+        if let Some(secondary) = secondary {
+            let weak = Rc::downgrade(&inner);
+            secondary.connect_clicked(move |_| {
+                if let Some(inner) = weak.upgrade() {
+                    inner.emit_primary();
+                }
+            });
+        }
         wire_option_changes(&inner);
-
-        inner.generate();
+        inner.set_kind(GeneratorKind::Random);
 
         Self { root, inner }
     }
+
+    /// Standalone: called with the value by *Save to vault…*.
+    /// Embedded: called with the value by *Use this password*.
+    pub fn set_on_primary(&self, cb: ValueCallback) {
+        *self.inner.on_primary.borrow_mut() = Some(cb);
+    }
+
+    #[cfg(debug_assertions)]
+    pub fn dev_set_kind(&self, id: &str) {
+        self.inner.set_kind(GeneratorKind::from_id(id));
+    }
+
+    #[cfg(debug_assertions)]
+    pub fn dev_expand(&self, expanded: bool) {
+        self.inner.expander.set_expanded(expanded);
+    }
 }
 
-fn wire_option_changes(inner: &Rc<Inner>) {
-    let connect_spin = |s: &adw::SpinRow, inner: &Rc<Inner>| {
-        let inner_cl = inner.clone();
-        s.connect_changed(move |_| inner_cl.generate());
-    };
-    let connect_switch = |s: &adw::SwitchRow, inner: &Rc<Inner>| {
-        let inner_cl = inner.clone();
-        s.connect_active_notify(move |_| inner_cl.generate());
-    };
-    let connect_entry = |s: &adw::EntryRow, inner: &Rc<Inner>| {
-        let inner_cl = inner.clone();
-        s.connect_changed(move |_| inner_cl.generate());
-    };
-
-    connect_spin(&inner.length_spin, inner);
-    connect_switch(&inner.uppercase_switch, inner);
-    connect_switch(&inner.lowercase_switch, inner);
-    connect_switch(&inner.digits_switch, inner);
-    connect_switch(&inner.symbols_switch, inner);
-    connect_switch(&inner.ambiguous_switch, inner);
-
-    connect_spin(&inner.words_spin, inner);
-    connect_entry(&inner.separator_entry, inner);
-    connect_switch(&inner.capitalize_switch, inner);
-    connect_switch(&inner.add_number_switch, inner);
-
-    connect_spin(&inner.pin_length_spin, inner);
+fn switch_row(title: &str, active: bool) -> adw::SwitchRow {
+    adw::SwitchRow::builder()
+        .title(title)
+        .active(active)
+        .build()
 }
 
-impl Inner {
-    fn current_type(&self) -> String {
-        self.options_stack
-            .visible_child_name()
-            .map(|s| s.to_string())
-            .unwrap_or_else(|| "password".to_string())
+fn wire_option_changes(inner: &Rc<PanelInner>) {
+    let regen = {
+        let weak = Rc::downgrade(inner);
+        move || {
+            if let Some(inner) = weak.upgrade() {
+                inner.generate();
+            }
+        }
+    };
+    {
+        let regen = regen.clone();
+        inner.length_row.connect_value_notify(move |_| regen());
+    }
+    {
+        let regen = regen.clone();
+        inner.words_row.connect_value_notify(move |_| regen());
+    }
+    {
+        let regen = regen.clone();
+        inner.pin_length_row.connect_value_notify(move |_| regen());
+    }
+    {
+        let regen = regen.clone();
+        inner.separator_row.connect_changed(move |_| regen());
+    }
+    // A site's rules can forbid a class, but at least one must stay on or
+    // there is nothing to generate from.
+    let classes = [
+        inner.uppercase_row.clone(),
+        inner.lowercase_row.clone(),
+        inner.digits_row.clone(),
+        inner.symbols_row.clone(),
+    ];
+    for row in classes.iter() {
+        let regen = regen.clone();
+        let all = classes.clone();
+        row.connect_active_notify(move |changed| {
+            if !all.iter().any(|r| r.is_active()) {
+                changed.set_active(true);
+                return;
+            }
+            regen();
+        });
+    }
+    for row in [
+        inner.ambiguous_row.clone(),
+        inner.capitalize_row.clone(),
+        inner.add_number_row.clone(),
+    ] {
+        let regen = regen.clone();
+        row.connect_active_notify(move |_| regen());
+    }
+}
+
+impl PanelInner {
+    fn set_kind(&self, kind: GeneratorKind) {
+        self.kind.set(kind);
+        self.kind_button.set_label(kind.label());
+        self.kind_hint.set_label(kind.hint());
+        let random = kind == GeneratorKind::Random;
+        let words = kind == GeneratorKind::Words;
+        for row in [
+            self.length_row.upcast_ref::<gtk::Widget>(),
+            self.uppercase_row.upcast_ref(),
+            self.lowercase_row.upcast_ref(),
+            self.digits_row.upcast_ref(),
+            self.symbols_row.upcast_ref(),
+            self.ambiguous_row.upcast_ref(),
+        ] {
+            row.set_visible(random);
+        }
+        for row in [
+            self.words_row.upcast_ref::<gtk::Widget>(),
+            self.separator_row.upcast_ref(),
+            self.capitalize_row.upcast_ref(),
+            self.add_number_row.upcast_ref(),
+        ] {
+            row.set_visible(words);
+        }
+        self.pin_length_row.set_visible(kind == GeneratorKind::Pin);
+        self.expander.set_title(match kind {
+            GeneratorKind::Random => tr!("Adjust length and characters"),
+            GeneratorKind::Words => tr!("Adjust words and separator"),
+            GeneratorKind::Pin => tr!("Adjust number of digits"),
+        });
+        self.generate();
     }
 
     fn generate(&self) {
-        let pwd = match self.current_type().as_str() {
-            "password" => {
+        let value = match self.kind.get() {
+            GeneratorKind::Random => {
                 let cfg = PasswordConfig {
-                    length: self.length_spin.value() as usize,
-                    use_uppercase: self.uppercase_switch.is_active(),
-                    use_lowercase: self.lowercase_switch.is_active(),
-                    use_digits: self.digits_switch.is_active(),
-                    use_symbols: self.symbols_switch.is_active(),
-                    exclude_ambiguous: self.ambiguous_switch.is_active(),
+                    length: self.length_row.value() as usize,
+                    use_uppercase: self.uppercase_row.is_active(),
+                    use_lowercase: self.lowercase_row.is_active(),
+                    use_digits: self.digits_row.is_active(),
+                    use_symbols: self.symbols_row.is_active(),
+                    exclude_ambiguous: self.ambiguous_row.is_active(),
                     custom_symbols: String::new(),
                 };
                 match generate_password(&cfg) {
                     Ok(p) => p,
                     Err(e) => {
-                        self.password_label
-                            .set_text(&format!("{}: {e}", tr!("Error")));
+                        log::warn!("password generation failed: {e}");
+                        self.summary_label
+                            .set_label(tr!("These options cannot produce a password."));
                         return;
                     }
                 }
             }
-            "passphrase" => generate_passphrase(
-                self.words_spin.value() as usize,
-                self.separator_entry.text().as_str(),
-                self.capitalize_switch.is_active(),
-                self.add_number_switch.is_active(),
+            GeneratorKind::Words => generate_passphrase(
+                self.words_row.value() as usize,
+                self.separator_row.text().as_str(),
+                self.capitalize_row.is_active(),
+                self.add_number_row.is_active(),
             ),
-            "pin" => generate_pin(self.pin_length_spin.value() as usize),
-            _ => return,
+            GeneratorKind::Pin => generate_pin(self.pin_length_row.value() as usize),
         };
-
-        self.password_label.set_text(&pwd);
-        self.update_strength(&pwd);
-        *self.current_password.borrow_mut() = pwd;
+        self.password_label.set_label(&value);
+        self.summary_label.set_label(&summary_for(
+            self.kind.get(),
+            &value,
+            self.words_row.value() as usize,
+        ));
+        *self.current.borrow_mut() = Zeroizing::new(value);
     }
 
-    fn update_strength(&self, pwd: &str) {
-        let (score, level) = check_password_strength(pwd);
-        self.strength_label
-            .set_text(crate::ui::i18n::localized_strength_label(level));
-        self.strength_bar.set_value(score as f64);
-
-        self.strength_label.remove_css_class("success");
-        self.strength_label.remove_css_class("warning");
-        self.strength_label.remove_css_class("error");
-        if score >= 80 {
-            self.strength_label.add_css_class("success");
-        } else if score >= 40 {
-            self.strength_label.add_css_class("warning");
-        } else {
-            self.strength_label.add_css_class("error");
-        }
-    }
-
-    fn copy_clicked(&self) {
-        let pwd = self.current_password.borrow().clone();
-        if pwd.is_empty() {
+    fn copy(&self) {
+        let value = self.current.borrow().clone();
+        if value.is_empty() {
             return;
         }
-        let seconds = ashypass_core::settings::Settings::load().clipboard_clear;
-        crate::clipboard::copy(&pwd, seconds);
-        let toast = adw::Toast::builder()
-            .title(tr!("Password copied to clipboard"))
-            .timeout(3)
-            .build();
-        self.toast.add_toast(toast);
+        copy_secret(&self.state, &value);
+        // Only what happened: it was copied, not saved and not used anywhere.
+        self.toast.add_toast(
+            adw::Toast::builder()
+                .title(tr!("Password copied"))
+                .timeout(3)
+                .build(),
+        );
+        crate::session::SessionManager::on_activity(&self.state.session);
+    }
+
+    fn emit_primary(&self) {
+        let value = self.current.borrow().to_string();
+        if value.is_empty() {
+            return;
+        }
+        if let Some(cb) = self.on_primary.borrow().as_ref() {
+            cb(value);
+        }
     }
 }
 
-#[allow(clippy::type_complexity)]
-fn build_password_options() -> (
-    adw::PreferencesGroup,
-    adw::SpinRow,
-    adw::SwitchRow,
-    adw::SwitchRow,
-    adw::SwitchRow,
-    adw::SwitchRow,
-    adw::SwitchRow,
-) {
-    let group = adw::PreferencesGroup::builder()
-        .title(tr!("Password Options"))
-        .build();
-
-    let length_adj = gtk::Adjustment::new(
-        DEFAULT_PASSWORD_LENGTH as f64,
-        MIN_PASSWORD_LENGTH as f64,
-        MAX_PASSWORD_LENGTH as f64,
-        1.0,
-        1.0,
-        0.0,
-    );
-    let length_spin = adw::SpinRow::builder()
-        .title(tr!("Length"))
-        .adjustment(&length_adj)
-        .build();
-    group.add(&length_spin);
-
-    let uppercase_switch = adw::SwitchRow::builder()
-        .title(tr!("Uppercase Letters (A-Z)"))
-        .active(true)
-        .build();
-    group.add(&uppercase_switch);
-
-    let lowercase_switch = adw::SwitchRow::builder()
-        .title(tr!("Lowercase Letters (a-z)"))
-        .active(true)
-        .build();
-    group.add(&lowercase_switch);
-
-    let digits_switch = adw::SwitchRow::builder()
-        .title(tr!("Digits (0-9)"))
-        .active(true)
-        .build();
-    group.add(&digits_switch);
-
-    let symbols_switch = adw::SwitchRow::builder()
-        .title(tr!("Symbols (!@#$…)"))
-        .active(true)
-        .build();
-    group.add(&symbols_switch);
-
-    let ambiguous_switch = adw::SwitchRow::builder()
-        .title(tr!("Exclude Ambiguous Characters"))
-        .subtitle(tr!("Avoid characters like 0, O, 1, l, I"))
-        .active(true)
-        .build();
-    group.add(&ambiguous_switch);
-
-    (
-        group,
-        length_spin,
-        uppercase_switch,
-        lowercase_switch,
-        digits_switch,
-        symbols_switch,
-        ambiguous_switch,
+/// "20 characters · Estimated strength: high", always computed from the
+/// actual value so the label can never disagree with what is shown.
+fn summary_for(kind: GeneratorKind, value: &str, words: usize) -> String {
+    let chars = value.chars().count();
+    let count = match kind {
+        GeneratorKind::Words => format!(
+            "{} · {}",
+            crate::trn!("{} word", "{} words", words).replace("{}", &words.to_string()),
+            crate::trn!("{} character", "{} characters", chars).replace("{}", &chars.to_string())
+        ),
+        GeneratorKind::Pin => {
+            crate::trn!("{} digit", "{} digits", chars).replace("{}", &chars.to_string())
+        }
+        GeneratorKind::Random => {
+            crate::trn!("{} character", "{} characters", chars).replace("{}", &chars.to_string())
+        }
+    };
+    let strength = ashypass_core::strength::estimate(value, &[]);
+    format!(
+        "{count} · {}: {}",
+        tr!("Estimated strength"),
+        strength_word(strength.score)
     )
 }
 
-fn build_passphrase_options() -> (
-    adw::PreferencesGroup,
-    adw::SpinRow,
-    adw::EntryRow,
-    adw::SwitchRow,
-    adw::SwitchRow,
-) {
-    let group = adw::PreferencesGroup::builder()
-        .title(tr!("Passphrase Options"))
-        .build();
-
-    let words_adj = gtk::Adjustment::new(
-        DEFAULT_PASSPHRASE_WORDS as f64,
-        MIN_PASSPHRASE_WORDS as f64,
-        MAX_PASSPHRASE_WORDS as f64,
-        1.0,
-        1.0,
-        0.0,
-    );
-    let words_spin = adw::SpinRow::builder()
-        .title(tr!("Number of Words"))
-        .adjustment(&words_adj)
-        .build();
-    group.add(&words_spin);
-
-    let separator_entry = adw::EntryRow::builder()
-        .title(tr!("Separator"))
-        .text("-")
-        .build();
-    group.add(&separator_entry);
-
-    let capitalize_switch = adw::SwitchRow::builder()
-        .title(tr!("Capitalize Words"))
-        .active(true)
-        .build();
-    group.add(&capitalize_switch);
-
-    let add_number_switch = adw::SwitchRow::builder()
-        .title(tr!("Add Number at End"))
-        .active(true)
-        .build();
-    group.add(&add_number_switch);
-
-    (
-        group,
-        words_spin,
-        separator_entry,
-        capitalize_switch,
-        add_number_switch,
-    )
+pub fn strength_word(score: u8) -> &'static str {
+    match score {
+        0 => tr!("very low"),
+        1 => tr!("low"),
+        2 => tr!("medium"),
+        3 => tr!("high"),
+        _ => tr!("very high"),
+    }
 }
 
-fn build_pin_options() -> (adw::PreferencesGroup, adw::SpinRow) {
-    let group = adw::PreferencesGroup::builder()
-        .title(tr!("PIN Options"))
-        .build();
+// ============================================================================
+// Standalone page
+// ============================================================================
 
-    let pin_adj = gtk::Adjustment::new(
-        DEFAULT_PIN_LENGTH as f64,
-        MIN_PIN_LENGTH as f64,
-        MAX_PIN_LENGTH as f64,
-        1.0,
-        1.0,
-        0.0,
-    );
-    let pin_length_spin = adw::SpinRow::builder()
-        .title(tr!("Length"))
-        .adjustment(&pin_adj)
-        .build();
-    group.add(&pin_length_spin);
-
-    (group, pin_length_spin)
+pub struct GeneratorView {
+    pub root: adw::ToolbarView,
+    pub panel: GeneratorPanel,
 }
 
-#[allow(dead_code)]
-fn _unused(_: glib::ControlFlow) {}
+impl GeneratorView {
+    pub fn new(state: SharedState, toast: adw::ToastOverlay, chrome: &Chrome) -> Self {
+        let toolbar = adw::ToolbarView::new();
+        toolbar.add_top_bar(&chrome.header(None));
+
+        let panel = GeneratorPanel::new(state, toast, PanelMode::Standalone);
+        let content = gtk::Box::builder()
+            .orientation(gtk::Orientation::Vertical)
+            .spacing(20)
+            .build();
+        content.append(&page_heading(
+            tr!("Create password"),
+            Some(tr!("A new password to use on a website or app.")),
+        ));
+        content.append(&panel.root);
+
+        let clamp = adw::Clamp::builder()
+            .maximum_size(640)
+            .margin_top(12)
+            .margin_bottom(24)
+            .margin_start(18)
+            .margin_end(18)
+            .child(&content)
+            .build();
+        let scrolled = gtk::ScrolledWindow::builder()
+            .hscrollbar_policy(gtk::PolicyType::Never)
+            .vexpand(true)
+            .child(&clamp)
+            .build();
+        toolbar.set_content(Some(&scrolled));
+        Self {
+            root: toolbar,
+            panel,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn kind_ids_round_trip() {
+        for kind in [
+            GeneratorKind::Random,
+            GeneratorKind::Words,
+            GeneratorKind::Pin,
+        ] {
+            assert_eq!(GeneratorKind::from_id(kind.id()), kind);
+        }
+        assert_eq!(GeneratorKind::from_id("unknown"), GeneratorKind::Random);
+    }
+
+    #[test]
+    fn summary_counts_the_real_value() {
+        // The mockup labelled an 18-character sample as "20 characters";
+        // the summary must always come from the string itself.
+        let sample = "C9m#7kL2v@Qp4nZ8t!";
+        let summary = summary_for(GeneratorKind::Random, sample, 0);
+        assert!(summary.starts_with("18 "), "{summary}");
+        let pin = summary_for(GeneratorKind::Pin, "123456", 0);
+        assert!(pin.starts_with("6 "), "{pin}");
+    }
+
+    #[test]
+    fn default_ui_length_is_within_core_bounds() {
+        let len = UI_DEFAULT_PASSWORD_LENGTH as usize;
+        assert!((MIN_PASSWORD_LENGTH..=MAX_PASSWORD_LENGTH).contains(&len));
+        let cfg = PasswordConfig {
+            length: len,
+            ..PasswordConfig::default()
+        };
+        assert_eq!(generate_password(&cfg).unwrap().chars().count(), len);
+    }
+}
