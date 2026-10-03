@@ -12,6 +12,7 @@
 
 use crate::state::SharedState;
 use crate::tr;
+use crate::trn;
 use crate::ui::widgets::{copy_secret, page_heading, Chrome};
 use adw::prelude::*;
 use ashypass_core::config::{
@@ -601,14 +602,14 @@ fn summary_for(kind: GeneratorKind, value: &str, words: usize) -> String {
     let count = match kind {
         GeneratorKind::Words => format!(
             "{} · {}",
-            crate::trn!("{} word", "{} words", words).replace("{}", &words.to_string()),
-            crate::trn!("{} character", "{} characters", chars).replace("{}", &chars.to_string())
+            trn!("{} word", "{} words", words).replace("{}", &words.to_string()),
+            trn!("{} character", "{} characters", chars).replace("{}", &chars.to_string())
         ),
         GeneratorKind::Pin => {
-            crate::trn!("{} digit", "{} digits", chars).replace("{}", &chars.to_string())
+            trn!("{} digit", "{} digits", chars).replace("{}", &chars.to_string())
         }
         GeneratorKind::Random => {
-            crate::trn!("{} character", "{} characters", chars).replace("{}", &chars.to_string())
+            trn!("{} character", "{} characters", chars).replace("{}", &chars.to_string())
         }
     };
     let strength = ashypass_core::strength::estimate(value, &[]);

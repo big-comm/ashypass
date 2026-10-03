@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-09 21:42-0300\n"
+"POT-Creation-Date: 2026-10-03 13:28-0300\n"
 "PO-Revision-Date: 2026-05-12 19:40\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -14,72 +14,108 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-msgid "0 disables auto-clear"
-msgstr "0 wyłącza automatyczne czyszczenie"
+msgid "1PUX export file"
+msgstr ""
 
-msgid "2FA"
-msgstr "2FA"
-
-msgid "2FA Codes"
-msgstr "Kody 2FA"
-
-msgid "2FA code added"
-msgstr "Kod 2FA dodany"
+msgid ""
+"A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
+"or WebDAV."
+msgstr ""
 
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "12-wyrazowa fraza BIP-39 do odblokowania bez klucza bezpieczeństwa. "
 "Wyświetlana jednorazowo."
 
-msgid "About"
-msgstr "O programie"
+msgid "A new access"
+msgstr ""
 
-msgid "Add 2FA Code"
-msgstr "Dodaj kod 2FA"
+msgid "A new password to use on a website or app."
+msgstr ""
+
+msgid ""
+"A password is incorrect: the file password or the master password of the "
+"copy. Nothing was changed."
+msgstr ""
+
+msgid "A warning appears before it locks, with time to keep using it"
+msgstr ""
+
+msgid "About Ashy Pass"
+msgstr ""
+
+msgid "About the backup"
+msgstr ""
 
 msgid "Add FIDO2 token keyslot"
 msgstr "Dodaj slot klucza tokena FIDO2"
 
-msgid "Add Number at End"
-msgstr "Dodaj cyfrę na końcu"
-
-msgid "Add Password"
-msgstr "Dodaj hasło"
-
-msgid "Add a TOTP secret to an entry to see live codes here."
-msgstr "Dodaj sekret TOTP do wpisu, aby zobaczyć tutaj kody na żywo."
-
 msgid "Add a hardware token keyslot"
 msgstr "Dodaj gniazdo klucza sprzętowego tokena"
+
+msgid "Add a number"
+msgstr ""
+
+msgid "Add an existing tag"
+msgstr ""
 
 msgid "Add attachment"
 msgstr "Dodaj załącznik"
 
+msgid "Add code"
+msgstr ""
+
 msgid "Add file"
 msgstr "Dodaj plik"
 
-msgid "Add your first password using the + button"
-msgstr "Dodaj swoje pierwsze hasło za pomocą przycisku +"
+msgid "Add password"
+msgstr ""
+
+msgid "Add the copy's entries to the current vault"
+msgstr ""
+
+msgid "Add the entries of a .ashy backup to this vault"
+msgstr ""
+
+msgid "Add to favorites"
+msgstr ""
+
+msgid "Add verification code"
+msgstr ""
+
+msgid "Added to favorites"
+msgstr ""
 
 msgid ""
-"After auto-lock or restart, unlock with a short PIN instead of the master "
-"password on this device. The vault key is stored encrypted by the PIN."
+"Adding entries works with .ashy copies. For a .db copy, choose “Replace”."
 msgstr ""
-"Po automatycznym zablokowaniu lub ponownym uruchomieniu odblokuj urządzenie "
-"krótkim kodem PIN zamiast hasła głównego. Klucz magazynu jest przechowywany "
-"w formie zaszyfrowanej za pomocą kodu PIN."
+
+msgid "Address copied"
+msgstr ""
+
+msgid "Adjust length and characters"
+msgstr ""
+
+msgid "Adjust number of digits"
+msgstr ""
+
+msgid "Adjust words and separator"
+msgstr ""
 
 msgid "Algorithm"
 msgstr "Algorytm"
 
-msgid "All"
-msgstr "Wszystkie"
-
 msgid "All clear"
 msgstr "Wszystko w porządku"
 
+msgid "All entries are synchronized with Nextcloud Passwords."
+msgstr ""
+
 msgid "All fields are required."
 msgstr "Wszystkie pola są wymagane."
+
+msgid "All folders"
+msgstr ""
 
 msgid ""
 "All partitions, files, and filesystem signatures will be permanently "
@@ -91,12 +127,24 @@ msgstr ""
 msgid "Allow TRIM through encrypted mapping"
 msgstr "Zezwalaj na TRIM przez zaszyfrowane mapowanie"
 
+msgid "Allow the browser extension"
+msgstr ""
+
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
 "Uploading now would orphan the remote changes."
 msgstr ""
 "Inne urządzenie przesłało nowszą migawkę od czasu ostatniej synchronizacji "
 "tego urządzenia. Przesłanie teraz spowoduje osierocenie zmian zdalnych."
+
+msgid "Answer requests from the installed extension"
+msgstr ""
+
+msgid ""
+"Anyone who gets the file can see what it contains: names, users, websites, "
+"passwords and notes. Verification codes, folders and attachments are not "
+"included. Confirm your master password to continue."
+msgstr ""
 
 msgid "App password"
 msgstr "Hasło aplikacji"
@@ -110,30 +158,13 @@ msgstr "Aplikacja"
 msgid "Applying local deletions"
 msgstr "Stosowanie lokalnych usunięć"
 
-msgid "Are you sure you want to delete"
-msgstr "Czy na pewno chcesz usunąć"
-
-msgid "Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
+msgid "Ashy Pass backups"
 msgstr ""
-"Argon2id + AES-256-GCM, chroniony hasłem. Możliwy do ponownego "
-"zaimportowania przez Ashy Pass."
 
 msgid ""
-"Argon2id turns your master password into the vault encryption key; it is not "
-"a physical security key. Higher costs slow brute force but also slow unlock. "
-"Auto-tune picks values calibrated to ~500 ms on this machine. Existing "
-"master hashes keep their original costs; tuned values apply on the next "
-"master password change."
+"Ashy Pass cannot recover this password. Without it, nobody — including you — "
+"can open the vault. Write it down somewhere safe."
 msgstr ""
-"Argon2id przekształca hasło główne w klucz szyfrowania magazynu; nie jest to "
-"fizyczny klucz bezpieczeństwa. Wyższe koszty spowalniają atak brute force, "
-"ale także spowalniają odblokowanie. Automatyczne dostrajanie wybiera "
-"wartości skalibrowane do ~500 ms na tym urządzeniu. Istniejące skróty haseł "
-"głównych zachowują swoje oryginalne koszty; dostrojone wartości zostaną "
-"zastosowane przy następnej zmianie hasła głównego."
-
-msgid "Ashy Pass"
-msgstr "Ashy Pass"
 
 msgid ""
 "Ashy Pass could not reach Nextcloud. Check your connection, server address, "
@@ -152,11 +183,11 @@ msgstr ""
 msgid "Attachment added"
 msgstr "Załącznik dodany"
 
-msgid "Attachment deleted"
-msgstr "Załącznik usunięty"
-
 msgid "Attachment not found"
 msgstr "Nie znaleziono załącznika"
+
+msgid "Attachment removed"
+msgstr ""
 
 msgid "Attachment saved"
 msgstr "Załącznik zapisany"
@@ -164,20 +195,17 @@ msgstr "Załącznik zapisany"
 msgid "Attachments"
 msgstr "Załączniki"
 
-msgid "Audit Options"
-msgstr "Opcje audytu"
-
 msgid "Audit failed"
 msgstr "Audyt nie powiódł się"
-
-msgid "Auto-lock after (seconds)"
-msgstr "Automatyczne blokowanie po (sekundach)"
 
 msgid "Auto-tune"
 msgstr "Automatyczne dostrajanie"
 
-msgid "Avoid characters like 0, O, 1, l, I"
-msgstr "Unikaj znaków takich jak 0, O, 1, l, I"
+msgid "Automatic lock"
+msgstr ""
+
+msgid "Avoid look-alike characters (l, 1, O, 0)"
+msgstr ""
 
 msgid "Back"
 msgstr "Wstecz"
@@ -188,26 +216,44 @@ msgstr "Wykonaj kopię zapasową teraz"
 msgid "Backup Phrase"
 msgstr "Fraza kopii zapasowej"
 
+msgid "Backup created:"
+msgstr ""
+
 msgid "Backup failed"
 msgstr "Kopia zapasowa nie powiodła się"
+
+msgid "Backup file"
+msgstr ""
 
 msgid "Backup phrase"
 msgstr "Fraza kopii zapasowej"
 
+msgid "Backup restored"
+msgstr ""
+
 msgid "Backup uploaded"
 msgstr "Kopia zapasowa przesłana"
 
-msgid "Benchmark this machine (~5 s)"
-msgstr "Testuj wydajność tego komputera (~5 s)"
+msgid "Backups"
+msgstr ""
 
-msgid "Bitwarden, Chrome, 1Password compatible columns"
-msgstr "Kolumny zgodne z Bitwarden, Chrome, 1Password"
+msgid "Before importing"
+msgstr ""
+
+msgid "Bring passwords from another app or browser"
+msgstr ""
+
+msgid "Bring your passwords"
+msgstr ""
+
+msgid "Browser"
+msgstr ""
+
+msgid "Browser extension"
+msgstr ""
 
 msgid "Bus / media"
 msgstr "Magistrala / nośnik"
-
-msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
-msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
 
 msgid "Cancel"
 msgstr "Anuluj"
@@ -215,47 +261,85 @@ msgstr "Anuluj"
 msgid "Capacity"
 msgstr "Pojemność"
 
-msgid "Capitalize Words"
-msgstr "Rozpocznij słowa wielką literą"
+msgid "Capitalize words"
+msgstr ""
 
-msgid "Category"
-msgstr "Kategoria"
+msgid "Caps Lock is on"
+msgstr ""
 
-msgid "Change Master Password"
-msgstr "Zmień hasło główne"
+msgid "Change master password"
+msgstr ""
 
-msgid "Check Have I Been Pwned (online)"
-msgstr "Sprawdź Have I Been Pwned (online)"
+msgid "Change master password…"
+msgstr ""
 
-msgid "Choose a 1Password .1pux archive"
-msgstr "Wybierz archiwum .1pux z 1Password"
+msgid "Change only if the site shows different values"
+msgstr ""
 
-msgid "Choose a Bitwarden JSON export"
-msgstr "Wybierz eksport JSON z Bitwarden"
+msgid "Changes saved to the vault"
+msgstr ""
 
-msgid "Choose a CSV file"
-msgstr "Wybierz plik CSV"
+msgid "Check known data breaches (online)"
+msgstr ""
 
-msgid "Choose an Aegis JSON export"
-msgstr "Wybierz eksport JSON z Aegis"
+msgid "Check my passwords"
+msgstr ""
 
-msgid "Choose an andOTP JSON export"
-msgstr "Wybierz eksport JSON z andOTP"
+msgid "Check now"
+msgstr ""
 
-msgid "Clear clipboard after (seconds)"
-msgstr "Wyczyść schowek po (sekundach)"
+msgid "Choose a backup"
+msgstr ""
+
+msgid ""
+"Choose a master password. It protects everything you keep in Ashy Pass on "
+"this computer."
+msgstr ""
+
+msgid "Choose the 1Password export"
+msgstr ""
+
+msgid "Choose the Aegis export"
+msgstr ""
+
+msgid "Choose the Ashy Pass backup"
+msgstr ""
+
+msgid "Choose the Bitwarden export"
+msgstr ""
+
+msgid "Choose the CSV file"
+msgstr ""
+
+msgid "Choose the KeePass database"
+msgstr ""
+
+msgid "Choose the andOTP export"
+msgstr ""
+
+msgid "Choose this folder when adding or editing a password."
+msgstr ""
+
+msgid "Choose…"
+msgstr ""
+
+msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
+msgstr ""
+
+msgid "Clear copied passwords after"
+msgstr ""
 
 msgid "Clear history"
 msgstr "Wyczyść historię"
-
-msgid "Click the + button to add a file."
-msgstr "Kliknij przycisk +, aby dodać plik."
 
 msgid "Client ID"
 msgstr "ID klienta"
 
 msgid "Client Secret (optional)"
 msgstr "Sekret klienta (opcjonalnie)"
+
+msgid "Clipboard"
+msgstr ""
 
 msgid "Close"
 msgstr "Zamknij"
@@ -269,8 +353,14 @@ msgstr "Zamknij mapowanie"
 msgid "Closing mapping"
 msgstr "Zamykanie mapowania"
 
-msgid "Cloud"
-msgstr "Chmura"
+msgid "Code copied"
+msgstr ""
+
+msgid "Code settings"
+msgstr ""
+
+msgid "Columns such as name, url, username, password"
+msgstr ""
 
 msgid "Compact vault list"
 msgstr "Zwarta lista magazynu"
@@ -290,53 +380,170 @@ msgstr "Konfiguracja nie powiodła się"
 msgid "Configured"
 msgstr "Skonfigurowano"
 
+msgid "Confirm"
+msgstr ""
+
 msgid "Confirm Device"
 msgstr "Potwierdź urządzenie"
 
 msgid "Confirm Password"
 msgstr "Potwierdź hasło"
 
-msgid "Confirm new password"
-msgstr "Potwierdź nowe hasło"
+msgid "Confirm master password"
+msgstr ""
+
+msgid "Confirm new master password"
+msgstr ""
 
 msgid "Confirm password"
 msgstr "Potwierdź hasło"
 
+msgid "Confirm your master password to create a backup."
+msgstr ""
+
+msgid "Confirm your master password to export your data."
+msgstr ""
+
 msgid "Conflicts"
 msgstr "Konflikty"
+
+msgid "Connecting the extension"
+msgstr ""
 
 msgid "Continue"
 msgstr "Kontynuuj"
 
+msgid "Copies in the cloud"
+msgstr ""
+
 msgid "Copy"
 msgstr "Kopiuj"
 
-msgid "Copy Code"
-msgstr "Kopiuj kod"
+msgid "Copy address"
+msgstr ""
 
-msgid "Copy Password"
-msgstr "Kopiuj hasło"
+msgid "Copy code"
+msgstr ""
 
-msgid "Copy to Clipboard"
-msgstr "Kopiuj do schowka"
+msgid "Copy downloaded and checked"
+msgstr ""
 
-msgid "Could not disable quick-unlock"
-msgstr "Nie udało się wyłączyć szybkiego odblokowania"
+msgid "Copy of the vault from Ashy Pass 2"
+msgstr ""
+
+msgid "Copy password"
+msgstr ""
+
+msgid "Copy this old password"
+msgstr ""
+
+msgid "Copy user"
+msgstr ""
+
+msgid "Could not add the attachment"
+msgstr ""
+
+msgid "Could not change the favorite"
+msgstr ""
+
+msgid "Could not clear the history"
+msgstr ""
+
+msgid "Could not create the folder"
+msgstr ""
+
+msgid "Could not create the vault"
+msgstr ""
+
+msgid "Could not decrypt the attachment"
+msgstr ""
+
+msgid "Could not delete"
+msgstr ""
+
+msgid "Could not lock the drive"
+msgstr ""
+
+msgid "Could not open this access"
+msgstr ""
+
+msgid "Could not read the file"
+msgstr ""
+
+msgid "Could not read the history"
+msgstr ""
+
+msgid "Could not read the vault"
+msgstr ""
+
+msgid "Could not remove the attachment"
+msgstr ""
+
+msgid "Could not remove the code"
+msgstr ""
+
+msgid "Could not remove the folder"
+msgstr ""
+
+msgid "Could not remove the old copy"
+msgstr ""
+
+msgid "Could not rename the folder"
+msgstr ""
+
+msgid "Could not restore. Look in Deleted items."
+msgstr ""
+
+msgid "Could not save the file"
+msgstr ""
+
+msgid "Could not save. Nothing was changed in the vault"
+msgstr ""
 
 msgid "Could not sync"
 msgstr "Nie udało się zsynchronizować"
 
+msgid "Could not turn off the PIN"
+msgstr ""
+
+msgid "Could not unlock the vault"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
 msgid "Create Master Password"
 msgstr "Utwórz hasło główne"
 
+msgid "Create backup"
+msgstr ""
+
 msgid "Create filesystem"
 msgstr "Utwórz system plików"
+
+msgid "Create folder"
+msgstr ""
+
+msgid "Create folder…"
+msgstr ""
+
+msgid "Create my vault"
+msgstr ""
+
+msgid "Create password"
+msgstr ""
+
+msgid "Create your vault"
+msgstr ""
 
 msgid "Created locally"
 msgstr "Utworzone lokalnie"
 
 msgid "Created remotely"
 msgstr "Utworzone zdalnie"
+
+msgid "Creating a password here does not change your password on any site."
+msgstr ""
 
 msgid "Creating filesystem"
 msgstr "Tworzenie systemu plików"
@@ -350,29 +557,26 @@ msgstr "Bieżące parametry"
 msgid "Current passphrase"
 msgstr "Bieżąca fraza hasła"
 
-msgid "Current password"
-msgstr "Aktualne hasło"
+msgid "Current state"
+msgstr ""
 
-msgid "Data"
-msgstr "Dane"
-
-msgid "Decrypt failed"
-msgstr "Odszyfrowanie nie powiodło się"
+msgid "Dark"
+msgstr ""
 
 msgid "Delete"
 msgstr "Usuń"
 
-msgid "Delete 2FA Entry?"
-msgstr "Usunąć wpis 2FA?"
+msgid "Delete access"
+msgstr ""
 
-msgid "Delete Password?"
-msgstr "Usunąć hasło?"
-
-msgid "Delete attachment"
-msgstr "Usuń załącznik"
+msgid "Delete access…"
+msgstr ""
 
 msgid "Delete permanently"
 msgstr "Usuń trwale"
+
+msgid "Delete the export file if it was not protected by a password."
+msgstr ""
 
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
@@ -381,23 +585,32 @@ msgstr ""
 "Usunięte wpisy pozostają w koszu przez tę liczbę dni, a następnie są trwale "
 "usuwane przy następnym uruchomieniu aplikacji. Ustaw 0, aby pominąć kosz."
 
+msgid "Deleted items"
+msgstr ""
+
+msgid "Deleted items are not kept (see Settings). This cannot be undone."
+msgstr ""
+
+msgid "Deleted items…"
+msgstr ""
+
 msgid "Deleted remotely"
 msgstr "Usunięte zdalnie"
+
+msgid "Delete…"
+msgstr ""
+
+msgid "Details"
+msgstr ""
 
 msgid "Device"
 msgstr "Urządzenie"
 
+msgid "Device path"
+msgstr ""
+
 msgid "Digits"
 msgstr "Cyfry"
-
-msgid "Digits (0-9)"
-msgstr "Cyfry (0-9)"
-
-msgid "Disable"
-msgstr "Wyłącz"
-
-msgid "Disabled"
-msgstr "Wyłączone"
 
 msgid "Done"
 msgstr "Gotowe"
@@ -405,35 +618,35 @@ msgstr "Gotowe"
 msgid "Done."
 msgstr "Gotowe."
 
+msgid "Download the latest copy"
+msgstr ""
+
 msgid "Downloading remote changes"
 msgstr "Pobieranie zmian zdalnych"
 
-msgid "Drives"
-msgstr "Dyski"
+msgid "Drive locked"
+msgstr ""
+
+msgid "Easier to type and remember."
+msgstr ""
 
 msgid "Edit"
 msgstr "Edytuj"
 
-msgid "Edit 2FA Entry"
-msgstr "Edytuj wpis 2FA"
+msgid "Edit access…"
+msgstr ""
 
-msgid "Edit Password"
-msgstr "Edytuj hasło"
+msgid "Edit password"
+msgstr ""
+
+msgid "Edit…"
+msgstr ""
 
 msgid "Empty passphrase"
 msgstr "Pusta fraza hasła"
 
 msgid "Empty trash"
 msgstr "Opróżnij kosz"
-
-msgid "Enable / Update"
-msgstr "Włącz / Aktualizuj"
-
-msgid "Enabled for this session"
-msgstr "Włączone na tę sesję"
-
-msgid "Enabled on this device"
-msgstr "Włączone na tym urządzeniu"
 
 msgid "Encrypt"
 msgstr "Szyfruj"
@@ -444,17 +657,11 @@ msgstr "Szyfruj dysk"
 msgid "Encrypt KeePass export"
 msgstr "Szyfruj eksport KeePass"
 
-msgid "Encrypt export"
-msgstr "Szyfruj eksport"
-
 msgid "Encrypted as"
 msgstr "Zaszyfrowano jako"
 
 msgid "Encrypted device"
 msgstr "Zaszyfrowane urządzenie"
-
-msgid "Encrypted export complete"
-msgstr "Szyfrowanie eksportu zakończone"
 
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Przesyłanie zaszyfrowanego zrzutu z wykrywaniem konfliktów"
@@ -469,11 +676,12 @@ msgid "Encrypted vault uploaded as-is. Folder: \"AshyPass Backups\"."
 msgstr ""
 "Zaszyfrowany sejf przesłany w oryginalnej formie. Folder: „AshyPass Backups”."
 
-msgid "Encrypted with your master key. Stored inside the vault."
-msgstr "Zaszyfrowane Twoim kluczem głównym. Przechowywane w sejfie."
-
 msgid "Encrypted zero (recommended — slow but secure)"
 msgstr "Zaszyfrowane zerowanie (zalecane — wolne, ale bezpieczne)"
+
+msgid ""
+"Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
+msgstr ""
 
 msgid "Encrypting…"
 msgstr "Szyfrowanie…"
@@ -487,23 +695,26 @@ msgstr "Zarejestruj"
 msgid "Enrol FIDO2 Token"
 msgstr "Zarejestruj token FIDO2"
 
-msgid "Enter the master password for this .kdbx file."
-msgstr "Wprowadź hasło główne dla tego pliku .kdbx."
+msgid "Enter a label."
+msgstr ""
 
-msgid "Enter the password used when this file was exported."
-msgstr "Wprowadź hasło użyte podczas eksportu tego pliku."
+msgid "Enter the PIN set up on this computer."
+msgstr ""
 
-msgid "Enter your master password to unlock"
-msgstr "Wprowadź hasło główne, aby odblokować"
+msgid "Enter the password, or add a verification code below."
+msgstr ""
 
-msgid "Entry deleted"
-msgstr "Wpis usunięty"
+msgid "Enter your PIN"
+msgstr ""
+
+msgid "Enter your master password"
+msgstr ""
+
+msgid "Enter your master password to access your saved items."
+msgstr ""
 
 msgid "Entry restored"
 msgstr "Wpis przywrócony"
-
-msgid "Entry updated"
-msgstr "Wpis zaktualizowany"
 
 msgid "Error"
 msgstr "Błąd"
@@ -511,38 +722,46 @@ msgstr "Błąd"
 msgid "Error details"
 msgstr "Szczegóły błędów"
 
-msgid "Error saving password"
-msgstr "Błąd zapisywania hasła"
+msgid "Estimated strength"
+msgstr ""
+
+msgid ""
+"Everything in the vault is encrypted again with the new password. Backups "
+"made earlier still open with the password they were made with."
+msgstr ""
 
 msgid "Everything is in sync"
 msgstr "Wszystko zsynchronizowane"
 
+msgid ""
+"Everything returns to how it was when the copy was made, including "
+"attachments and password history. Entries created later disappear. The "
+"current vault is kept in a file next to it."
+msgstr ""
+
 msgid "Everything was already in sync"
 msgstr "Wszystko było już zsynchronizowane"
-
-msgid "Exclude Ambiguous Characters"
-msgstr "Wyklucz niejednoznaczne znaki"
-
-msgid "Export"
-msgstr "Eksport"
 
 msgid "Export complete"
 msgstr "Eksport zakończony"
 
-msgid "Export encrypted (.ashy)"
-msgstr "Eksport zaszyfrowany (.ashy)"
-
 msgid "Export failed"
 msgstr "Eksport nie powiódł się"
 
-msgid "Export to CSV (plaintext)"
-msgstr "Eksport do CSV (zwykły tekst)"
+msgid "Export to KeePass"
+msgstr ""
 
-msgid "Export to KeePass (.kdbx)"
-msgstr "Eksport do KeePass (.kdbx)"
+msgid "Export to KeePass or to a file anyone can read"
+msgstr ""
+
+msgid "Export unprotected file"
+msgstr ""
 
 msgid "Export vault to CSV"
 msgstr "Eksportuj sejf do CSV"
+
+msgid "External drives"
+msgstr ""
 
 msgid "FIDO2 keyslot added"
 msgstr "Dodano gniazdo klucza FIDO2"
@@ -553,14 +772,8 @@ msgstr "Ochrona sejfu FIDO2 jest niedostępna"
 msgid "Failed"
 msgstr "Niepowodzenie"
 
-msgid "Failed to read history"
-msgstr "Nie udało się odczytać historii"
-
 msgid "Failed to scan drives"
 msgstr "Nie udało się przeskanować dysków"
-
-msgid "Failed to setup master password"
-msgstr "Nie udało się skonfigurować hasła głównego"
 
 msgid "Failed to unlock vault"
 msgstr "Nie udało się odblokować sejfu"
@@ -577,8 +790,14 @@ msgstr "Pobieraj i wyświetlaj ikony stron obok wpisów w sejfie"
 msgid "Fetching remote passwords"
 msgstr "Pobieranie zdalnych haseł"
 
+msgid "Files are encrypted and stored inside the vault."
+msgstr ""
+
 msgid "Filesystem"
 msgstr "System plików"
+
+msgid "Fill in all three fields."
+msgstr ""
 
 msgid "Findings"
 msgstr "Wyniki"
@@ -586,11 +805,36 @@ msgstr "Wyniki"
 msgid "Finishing synchronization"
 msgstr "Finalizowanie synchronizacji"
 
-msgid "Focus Search"
-msgstr "Skup się na wyszukiwaniu"
+msgid ""
+"First export your passwords from the other app, then choose that file here. "
+"Before importing you will see what was recognized. Delete unprotected export "
+"files afterwards."
+msgstr ""
 
 msgid "Folder"
 msgstr "Folder"
+
+msgid "Folder created"
+msgstr ""
+
+msgid "Folder name"
+msgstr ""
+
+msgid "Folder removed. Its passwords were kept."
+msgstr ""
+
+msgid "Folder renamed"
+msgstr ""
+
+msgid "Folders"
+msgstr ""
+
+msgid ""
+"Folders organize your passwords. You can choose them when adding or editing."
+msgstr ""
+
+msgid "Follow the system"
+msgstr ""
 
 msgid ""
 "For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
@@ -599,79 +843,102 @@ msgstr ""
 "Dla Nextcloud, podstawowy adres URL wygląda jak https://cloud.example.com/"
 "remote.php/dav/files/NAZWA_UŻYTKOWNIKA"
 
+msgid ""
+"From another app: create your vault first, then open Backups → Import "
+"passwords.\n"
+"\n"
+"From a copy made by Ashy Pass: restore it now. The vault will open with the "
+"master password of the copy."
+msgstr ""
+
 msgid "Generate Backup Phrase"
 msgstr "Wygeneruj frazę kopii zapasowej"
 
-msgid "Generate New"
-msgstr "Generuj nowe"
+msgid "Generate another"
+msgstr ""
 
-msgid "Generate Password"
-msgstr "Generuj hasło"
+msgid "Generate password"
+msgstr ""
 
-msgid "Generated Password"
-msgstr "Wygenerowane hasło"
+msgid "Generated password"
+msgstr ""
 
-msgid "Generation Type"
-msgstr "Typ generowania"
+msgid "Give this access a name, for example the site or app."
+msgstr ""
 
-msgid "Generator"
-msgstr "Generator"
+msgid "Go to search"
+msgstr ""
 
 msgid "Google Drive"
 msgstr "Google Drive"
 
-msgid "Groups"
-msgstr "Grupy"
+msgid "Google Drive and WebDAV"
+msgstr ""
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr ""
 "Pomaga w wear-leveling dysku SSD, ale ujawnia wzorce wolnego miejsca "
 "urządzeniu."
 
+msgid "Hide password"
+msgstr ""
+
+msgid ""
+"Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
+"tune picks values for about half a second on this computer; they apply the "
+"next time the master password is set or changed."
+msgstr ""
+
 msgid "History cleared"
 msgstr "Historia wyczyszczona"
+
+msgid "How the master password becomes the encryption key"
+msgstr ""
+
+msgid "How to restore"
+msgstr ""
+
+msgid "I already keep passwords somewhere else"
+msgstr ""
 
 msgid "I understand — Continue"
 msgstr "Rozumiem — Kontynuuj"
 
+msgid ""
+"If this computer is lost or damaged, a backup is the only way to get your "
+"passwords back."
+msgstr ""
+
 msgid "Import"
 msgstr "Importuj"
-
-msgid "Import .ashy"
-msgstr "Importuj .ashy"
-
-msgid "Import 1Password (.1pux)"
-msgstr "Importuj 1Password (.1pux)"
-
-msgid "Import Aegis (TOTP)"
-msgstr "Importuj Aegis (TOTP)"
-
-msgid "Import Bitwarden (JSON)"
-msgstr "Importuj Bitwarden (JSON)"
-
-msgid "Import CSV"
-msgstr "Importuj CSV"
-
-msgid "Import KeePass (.kdbx)"
-msgstr "Import KeePass (.kdbx)"
-
-msgid "Import andOTP"
-msgstr "Importuj andOTP"
 
 msgid "Import complete"
 msgstr "Import zakończony"
 
-msgid "Import failed"
-msgstr "Import nie powiódł się"
+msgid "Import partly complete"
+msgstr ""
 
-msgid "Import from .ashy"
-msgstr "Import z .ashy"
+msgid "Import passwords"
+msgstr ""
+
+msgid "Import passwords…"
+msgstr ""
 
 msgid "Incorrect PIN"
 msgstr "Nieprawidłowy PIN"
 
+#, rust-format
+msgid "Incorrect PIN. {} attempt left."
+msgid_plural "Incorrect PIN. {} attempts left."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
 msgid "Incorrect master password"
 msgstr "Nieprawidłowe hasło główne"
+
+msgid "Incorrect master password. Nothing was exported."
+msgstr ""
 
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
@@ -682,26 +949,53 @@ msgstr ""
 "wyświetleniu monitu. Twoja bieżąca fraza hasła jest wymagana do autoryzacji "
 "nowego gniazda klucza."
 
+msgid ""
+"Install the extension in Chrome or Firefox, then register this computer "
+"with:  ashypass-native-host --install <extension-id>"
+msgstr ""
+
 msgid "Internal error: no passphrase set"
 msgstr "Błąd wewnętrzny: nie ustawiono hasła"
 
-msgid "Invalid TOTP secret"
-msgstr "Nieprawidłowy sekret TOTP"
+msgid "It can be restored from Deleted items."
+msgstr ""
 
-msgid "Invalid TOTP settings"
-msgstr "Nieprawidłowe ustawienia TOTP"
+msgid ""
+"It opens the vault on this computer. Nobody can recover it for you — not "
+"even Ashy Pass."
+msgstr ""
 
-msgid "KDBX3/KDBX4 password-protected database"
-msgstr "Baza danych KDBX3/KDBX4 chroniona hasłem"
+msgid "Its user, password and other details appear here."
+msgstr ""
 
-msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
-msgstr "KDBX4 z Argon2id + AES-256. Otwiera się w KeePassXC, KeeWeb itp."
+msgid "KeePass (.kdbx)…"
+msgstr ""
 
 msgid "KeePass export complete"
 msgstr "Eksport KeePass zakończony"
 
+msgid ""
+"KeePass keeps the file protected by a password. A CSV file can be read by "
+"anyone who gets hold of it."
+msgstr ""
+
+msgid ""
+"Keep a protected copy of your vault somewhere safe, and bring your passwords "
+"in or out."
+msgstr ""
+
 msgid "Keep deleted entries for (days)"
 msgstr "Przechowuj usunięte wpisy przez (dni)"
+
+msgid "Keep using"
+msgstr ""
+
+msgid ""
+"Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
+"the vault opens by itself when Ashy Pass starts. Anyone who can use your "
+"logged-in session can then open the vault. Locking still requires the master "
+"password or PIN to unlock again."
+msgstr ""
 
 msgid "Kept local version"
 msgstr "Zachowano wersję lokalną"
@@ -709,11 +1003,16 @@ msgstr "Zachowano wersję lokalną"
 msgid "Kept remote version"
 msgstr "Zachowano wersję zdalną"
 
+msgid ""
+"Kept when your vault was upgraded. It uses the older, weaker protection of "
+"version 2. Remove it once you are sure the upgraded vault works."
+msgstr ""
+
 msgid "Key"
 msgstr "Klucz"
 
-msgid "Key Derivation (Argon2id)"
-msgstr "Wyprowadzanie klucza (Argon2id)"
+msgid "Key derivation (Argon2id)"
+msgstr ""
 
 msgid "Key registered"
 msgstr "Klucz zarejestrowany"
@@ -721,8 +1020,8 @@ msgstr "Klucz zarejestrowany"
 msgid "Key removed"
 msgstr "Klucz usunięty"
 
-msgid "Keyboard Shortcuts"
-msgstr "Skróty klawiszowe"
+msgid "Keyboard shortcuts"
+msgstr ""
 
 msgid "Keyring error"
 msgstr "Błąd magazynu kluczy"
@@ -730,8 +1029,20 @@ msgstr "Błąd magazynu kluczy"
 msgid "Label"
 msgstr "Etykieta"
 
-msgid "Large 2FA codes"
-msgstr "Duże kody 2FA"
+msgid "Label too long for this filesystem. Maximum length in bytes"
+msgstr ""
+
+msgid "Large verification codes"
+msgstr ""
+
+msgid "Last 4 characters of the serial"
+msgstr ""
+
+msgid "Last backup made on this computer"
+msgstr ""
+
+msgid "Last changed:"
+msgstr ""
 
 msgid "Launch the encryption wizard"
 msgstr "Uruchom kreatora szyfrowania"
@@ -739,23 +1050,31 @@ msgstr "Uruchom kreatora szyfrowania"
 msgid "Length"
 msgstr "Długość"
 
+msgid "Light"
+msgstr ""
+
 msgid "Lock"
 msgstr "Zablokuj"
 
-msgid "Lock Vault"
-msgstr "Zablokuj sejf"
+msgid "Lock after inactivity"
+msgstr ""
 
-msgid "Lock vault when idle for this long"
-msgstr "Zablokuj sejf po tym czasie bezczynności"
+msgid "Lock the vault now (Ctrl+L)"
+msgstr ""
 
-msgid "Lowercase Letters (a-z)"
-msgstr "Małe litery (a-z)"
+msgid "Lock when the screen locks or the computer sleeps"
+msgstr ""
 
-msgid "Mark entries that are linked to Nextcloud Passwords"
-msgstr "Oznacz wpisy powiązane z Nextcloud Passwords"
+msgid ""
+"Looks for weak, repeated and old passwords, accounts without a verification "
+"code and, if you allow it, passwords that appeared in known data breaches."
+msgstr ""
 
-msgid "Mark passwords as favorite with the star icon"
-msgstr "Oznacz hasła jako ulubione za pomocą ikony gwiazdki"
+msgid "Lowercase letters (a–z)"
+msgstr ""
+
+msgid "Main menu"
+msgstr ""
 
 msgid "Master Password"
 msgstr "Hasło główne"
@@ -763,14 +1082,20 @@ msgstr "Hasło główne"
 msgid "Master password"
 msgstr "Hasło główne"
 
-msgid "Master password changed."
-msgstr "Hasło główne zostało zmienione."
+msgid "Master password changed. If you used a PIN, set it up again."
+msgstr ""
 
-msgid "Master password is in the keyring"
-msgstr "Hasło główne znajduje się w magazynce kluczy"
+msgid "Master password when the copy was made"
+msgstr ""
+
+msgid "Measures this computer (about 5 seconds)"
+msgstr ""
 
 msgid "Medium"
 msgstr "Średnia"
+
+msgid "Minimum length:"
+msgstr ""
 
 msgid "Model"
 msgstr "Model"
@@ -778,17 +1103,54 @@ msgstr "Model"
 msgid "Modern password generator and encrypted password vault"
 msgstr "Nowoczesny generator haseł i zaszyfrowany sejf na hasła"
 
+msgid "More actions"
+msgstr ""
+
+msgid "More options"
+msgstr ""
+
+msgid "Moved to Deleted items"
+msgstr ""
+
+msgid "My passwords"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Names, accounts and sites were searched."
+msgstr ""
+
+msgid "Names, accounts and sites with verification codes were searched."
+msgstr ""
+
 msgid "Navigation"
 msgstr "Nawigacja"
 
-msgid "New Entry"
-msgstr "Nowy wpis"
+msgid "Never"
+msgstr ""
 
-msgid "New PIN (6+ chars)"
-msgstr "Nowy PIN (co najmniej 6 znaków)"
+msgid "New PIN (at least 6 characters)"
+msgstr ""
 
-msgid "New password"
-msgstr "Nowe hasło"
+msgid "New code every (seconds)"
+msgstr ""
+
+#, rust-format
+msgid "New code in {} second"
+msgid_plural "New code in {} seconds"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "New folder name"
+msgstr ""
+
+msgid "New folder…"
+msgstr ""
+
+msgid "New master password"
+msgstr ""
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
@@ -803,26 +1165,26 @@ msgstr ""
 "Nextcloud Passwords wymaga wypełnionego pola hasła. Edytuj te wpisy w Ashy "
 "Pass, dodając hasło, aby mogły zostać wysłane."
 
-msgid "No 2FA Codes"
-msgstr "Brak kodów 2FA"
-
-msgid "No 2FA codes match your search"
-msgstr "Żadne kody 2FA nie pasują do wyszukiwania"
-
-msgid "No Favorites"
-msgstr "Brak ulubionych"
-
-msgid "No Passwords Stored"
-msgstr "Brak zapisanych haseł"
-
-msgid "No Results"
-msgstr "Brak wyników"
-
 msgid "No attachments"
 msgstr "Brak załączników"
 
+msgid "No backup made on this computer yet"
+msgstr ""
+
+msgid "No codes found for"
+msgstr ""
+
 msgid "No external drives detected"
 msgstr "Nie wykryto zewnętrznych dysków"
+
+msgid "No file chosen"
+msgstr ""
+
+msgid "No folder"
+msgstr ""
+
+msgid "No folders yet"
+msgstr ""
 
 msgid "No issues found."
 msgstr "Nie znaleziono problemów."
@@ -830,18 +1192,24 @@ msgstr "Nie znaleziono problemów."
 msgid "No keys registered"
 msgstr "Nie zarejestrowano żadnych kluczy"
 
-msgid "No passwords match your search"
-msgstr "Żadne hasła nie pasują do wyszukiwania"
+msgid "No passwords found for"
+msgstr ""
 
-msgid "No previous passwords recorded."
-msgstr "Nie zapisano żadnych poprzednich haseł."
+msgid "No previous passwords"
+msgstr ""
 
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr ""
 "W tej wersji nie można zmienić klucza bezpieczeństwa ani frazy odzyskiwania."
 
+msgid "No verification codes yet"
+msgstr ""
+
 msgid "None — quick, leaves prior data recoverable"
 msgstr "Brak — szybkie, pozostawia poprzednie dane do odzyskania"
+
+msgid "Not available for the vault yet. External drives can use them."
+msgstr ""
 
 msgid "Not configured"
 msgstr "Nieskonfigurowane"
@@ -855,17 +1223,43 @@ msgstr "Nie ustawiona"
 msgid "Not signed in"
 msgstr "Niezalogowany"
 
-msgid "Not stored"
-msgstr "Nie przechowywane"
-
 msgid "Notes"
 msgstr "Notatki"
+
+msgid "Notes (optional)"
+msgstr ""
 
 msgid "Nothing changed — Ashy Pass and Nextcloud were already aligned."
 msgstr "Nic się nie zmieniło — Ashy Pass i Nextcloud były już zgodne."
 
-msgid "Number of Words"
-msgstr "Liczba słów"
+msgid "Nothing is removed. Entries already in the vault are skipped."
+msgstr ""
+
+msgid "Nothing was changed."
+msgstr ""
+
+msgid "Nothing was imported"
+msgstr ""
+
+msgid ""
+"Nothing was imported. Check that you chose the right app and an unencrypted "
+"export."
+msgstr ""
+
+msgid "Nothing was restored"
+msgstr ""
+
+msgid "Number of digits"
+msgstr ""
+
+msgid "Number of words"
+msgstr ""
+
+msgid "Numbers (0–9)"
+msgstr ""
+
+msgid "Numeric PIN"
+msgstr ""
 
 msgid "OAuth client not configured at build time"
 msgstr "Klient OAuth nie został skonfigurowany podczas kompilacji"
@@ -873,23 +1267,56 @@ msgstr "Klient OAuth nie został skonfigurowany podczas kompilacji"
 msgid "OK"
 msgstr "OK"
 
+msgid "Off"
+msgstr ""
+
+msgid "Old copy removed"
+msgstr ""
+
 msgid "Older versions appear here after the password is changed."
 msgstr "Starsze wersje pojawią się tutaj po zmianie hasła."
 
-msgid "Open .ashy export"
-msgstr "Otwórz eksport .ashy"
+msgid "On"
+msgstr ""
 
-msgid "Open KeePass database"
-msgstr "Otwórz bazę danych KeePass"
+msgid ""
+"On the site you want to protect, open the two-step verification settings and "
+"choose an authenticator app. Copy the setup key (or the otpauth:// link) it "
+"shows and paste it below."
+msgstr ""
 
-msgid "Open Settings"
-msgstr "Otwórz ustawienia"
+msgid "On until Ashy Pass closes"
+msgstr ""
+
+msgid ""
+"Only clears the clipboard if it still holds what Ashy Pass copied, so text "
+"you copied afterwards in another app is kept. Clipboard history managers may "
+"keep copies that Ashy Pass cannot remove."
+msgstr ""
+
+msgid "Only needed when a site has specific rules"
+msgstr ""
+
+msgid "Only when some entries come from Nextcloud Passwords and others do not"
+msgstr ""
+
+msgid "Open a password and mark the star to find it faster."
+msgstr ""
+
+msgid "Open automatically at login"
+msgstr ""
+
+msgid "Open details"
+msgstr ""
 
 msgid "Open encrypted mapping"
 msgstr "Otwórz zaszyfrowane mapowanie"
 
-msgid "Open the encrypted partition"
-msgstr "Otwórz zaszyfrowaną partycję"
+msgid "Open the encrypted volume"
+msgstr ""
+
+msgid "Open website"
+msgstr ""
 
 msgid "Opening encrypted mapping"
 msgstr "Otwieranie zaszyfrowanego mapowania"
@@ -897,17 +1324,43 @@ msgstr "Otwieranie zaszyfrowanego mapowania"
 msgid "Opens the browser for OAuth consent"
 msgstr "Otwiera przeglądarkę w celu uzyskania zgody OAuth"
 
+msgid ""
+"Optional. Unlock this computer with a short PIN after an automatic lock or a "
+"restart. The vault key is kept in the system keyring, encrypted with the "
+"PIN. A PIN is easier to guess than the master password, so anyone with "
+"access to your session and keyring could try it; after 5 wrong attempts it "
+"is turned off and the master password is required again."
+msgstr ""
+
 msgid "Options"
 msgstr "Opcje"
+
+msgid "Organize folders"
+msgstr ""
+
+msgid "Organize folders…"
+msgstr ""
+
+msgid "Other CSV file"
+msgstr ""
+
+msgid "Other apps"
+msgstr ""
+
+msgid "Other formats"
+msgstr ""
 
 msgid "PIN"
 msgstr "PIN"
 
-msgid "PIN Code"
-msgstr "Kod PIN"
+msgid "PIN on this computer"
+msgstr ""
 
-msgid "PIN Options"
-msgstr "Opcje PIN"
+msgid "PIN set for this computer"
+msgstr ""
+
+msgid "PIN turned off. The master password is required to unlock."
+msgstr ""
 
 msgid "Partition table"
 msgstr "Tablica partycji"
@@ -915,59 +1368,60 @@ msgstr "Tablica partycji"
 msgid "Passphrase"
 msgstr "Fraza"
 
-msgid "Passphrase Options"
-msgstr "Opcje frazy hasła"
-
 msgid "Password"
 msgstr "Hasło"
 
 msgid "Password / app-password"
 msgstr "Hasło / hasło aplikacji"
 
-msgid "Password History"
-msgstr "Historia haseł"
+msgid "Password copied"
+msgstr ""
 
-msgid "Password Options"
-msgstr "Opcje hasła"
-
-msgid "Password added"
-msgstr "Hasło dodane"
-
-msgid "Password copied to clipboard"
-msgstr "Hasło skopiowane do schowka"
-
-msgid "Password deleted"
-msgstr "Hasło usunięte"
-
-msgid "Password generated"
-msgstr "Hasło wygenerowane"
+msgid "Password for this backup"
+msgstr ""
 
 msgid "Password history"
 msgstr "Historia haseł"
 
-msgid "Password must be at least"
-msgstr "Hasło musi mieć co najmniej"
+msgid "Password history…"
+msgstr ""
+
+msgid "Password list"
+msgstr ""
+
+msgid "Password of the KeePass database"
+msgstr ""
+
+msgid "Password of the backup"
+msgstr ""
+
+msgid "Password of the backup file"
+msgstr ""
 
 msgid "Password too short"
 msgstr "Hasło jest za krótkie"
 
-msgid "Password updated"
-msgstr "Hasło zaktualizowane"
+msgid "Password-protected .kdbx database"
+msgstr ""
+
+msgid "Passwords"
+msgstr ""
 
 msgid "Passwords do not match"
 msgstr "Hasła nie są zgodne"
 
-msgid "Passwords do not match."
-msgstr "Hasła nie są zgodne."
+msgid ""
+"Passwords, notes, verification codes, folders, favorites and tags. A full "
+"restore also brings back attachments and password history."
+msgstr ""
 
-msgid "Paste a Base32 secret or an otpauth:// URI"
-msgstr "Wklej sekret Base32 lub URI otpauth://"
+msgid ""
+"Paste the setup key or otpauth:// link from the site's two-step verification "
+"settings"
+msgstr ""
 
 msgid "Path"
 msgstr "Ścieżka"
-
-msgid "Period (seconds)"
-msgstr "Okres (sekundy)"
 
 msgid "Permanently deleted"
 msgstr "Trwale usunięty"
@@ -980,32 +1434,11 @@ msgid ""
 msgstr ""
 "Wybierz hasło dla pliku .kdbx. Będzie ono potrzebne do otwarcia bazy danych."
 
-msgid "Pick a password to protect this .ashy file. You will need it to import."
-msgstr ""
-"Wybierz hasło do ochrony tego pliku .ashy. Będzie ono potrzebne do importu."
-
-msgid "Plain JSON export from Aegis Authenticator"
-msgstr "Zwykły eksport JSON z aplikacji Aegis Authenticator"
-
-msgid "Plain JSON export from andOTP"
-msgstr "Eksport zwykłego JSON z andOTP"
-
-msgid "Please create your master password in the Vault tab first."
-msgstr "Najpierw utwórz hasło główne w zakładce Vault."
-
-msgid "Please enter a password"
-msgstr "Wprowadź hasło"
-
-msgid "Please enter your PIN"
-msgstr "Wprowadź swój PIN"
-
 msgid "Please wait while AshyPass talks to Nextcloud"
 msgstr "Proszę czekać, AshyPass komunikuje się z Nextcloud"
 
-msgid "Plug in a USB drive or external disk, then press Rescan."
+msgid "Plug in a USB drive or external disk, then search for drives."
 msgstr ""
-"Podłącz dysk USB lub zewnętrzny nośnik, a następnie naciśnij „Przeskanuj "
-"ponownie”."
 
 msgid "Plug in your authenticator and click Register"
 msgstr "Podłącz swój authenticator i kliknij Zarejestruj"
@@ -1013,39 +1446,20 @@ msgstr "Podłącz swój authenticator i kliknij Zarejestruj"
 msgid "Pre-format wipe"
 msgstr "Czyszczenie przed formatowaniem"
 
-msgid ""
-"Prefer the encrypted .ashy export. The CSV path stores credentials in "
-"plaintext."
-msgstr ""
-"Preferuj zaszyfrowany eksport .ashy. Eksport CSV przechowuje dane w postaci "
-"zwykłego tekstu."
-
 msgid "Preparing synchronization"
 msgstr "Przygotowywanie synchronizacji"
 
 msgid "Preparing…"
 msgstr "Przygotowywanie…"
 
-msgid ""
-"Preview — drive encryption backend not yet enabled. Listing is read-only."
+msgid "Previous passwords kept by Ashy Pass when this one was changed."
 msgstr ""
-"Podgląd — backend szyfrowania dysków nie jest jeszcze włączony. Lista jest "
-"tylko do odczytu."
 
-msgid "Quick Unlock"
-msgstr "Szybkie odblokowanie"
+msgid "Protected by a password you choose"
+msgstr ""
 
-msgid "Quick-unlock PIN"
-msgstr "PIN szybkiego odblokowania"
-
-msgid "Quick-unlock disabled"
-msgstr "Szybkie odblokowanie wyłączone"
-
-msgid "Quick-unlock enabled"
-msgstr "Szybkie odblokowanie włączone"
-
-msgid "Quick-unlock failed"
-msgstr "Szybkie odblokowanie nie powiodło się"
+msgid "Protection"
+msgstr ""
 
 msgid "Quit"
 msgstr "Zakończ"
@@ -1053,11 +1467,20 @@ msgstr "Zakończ"
 msgid "Random pass (slowest)"
 msgstr "Losowe hasło (najwolniejsze)"
 
-msgid "Read failed"
-msgstr "Odczyt nie powiódł się"
+msgid "Random password"
+msgstr ""
+
+msgid "Random words"
+msgstr ""
+
+msgid "Reading the file…"
+msgstr ""
 
 msgid "Received from Nextcloud"
 msgstr "Odebrane z Nextcloud"
+
+msgid "Recommended for accounts you keep in the vault."
+msgstr ""
 
 msgid "Reconciled items"
 msgstr "Pozycje uzgodnione"
@@ -1081,11 +1504,56 @@ msgstr "Generacja zdalna:"
 msgid "Remove"
 msgstr "Usuń"
 
-msgid "Removed from keyring"
-msgstr "Usunięte z magazynu kluczy"
+msgid "Remove attachment"
+msgstr ""
+
+msgid "Remove attachment?"
+msgstr ""
+
+msgid "Remove code"
+msgstr ""
+
+msgid "Remove folder"
+msgstr ""
+
+msgid "Remove from favorites"
+msgstr ""
+
+msgid "Remove the old copy?"
+msgstr ""
+
+msgid "Remove the verification code from"
+msgstr ""
+
+msgid "Remove verification code…"
+msgstr ""
+
+msgid "Removed from favorites"
+msgstr ""
+
+msgid "Removed from the keyring"
+msgstr ""
+
+msgid "Removing a folder keeps its passwords. They move to “No folder”."
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Rename folder"
+msgstr ""
 
 msgid "Repeat"
 msgstr "Powtórz"
+
+msgid "Replace the vault with this copy"
+msgstr ""
+
+msgid "Replace the vault with this copy?"
+msgstr ""
+
+msgid "Replace vault"
+msgstr ""
 
 msgid "Require PIN at unlock"
 msgstr "Wymagaj kodu PIN przy odblokowywaniu"
@@ -1096,35 +1564,29 @@ msgstr "Wymagaj obecności użytkownika (dotknij tokena)"
 msgid "Required to encrypt the snapshot before upload"
 msgstr "Wymagane do zaszyfrowania migawki przed przesłaniem"
 
-msgid "Rescan drives"
-msgstr "Przeskanuj ponownie dyski"
-
 msgid "Resolved automatically using the 'last edit wins' policy."
 msgstr "Rozwiązane automatycznie zgodnie z zasadą „ostatnia edycja wygrywa”."
 
 msgid "Restore"
 msgstr "Przywróć"
 
-msgid "Restore failed"
-msgstr "Przywracanie nie powiodło się"
+msgid "Restore a backup"
+msgstr ""
 
-msgid "Restore from an Ashy Pass encrypted export"
-msgstr "Przywróć z zaszyfrowanego eksportu Ashy Pass"
+msgid "Restore a backup…"
+msgstr ""
 
-msgid "Restore latest"
-msgstr "Przywróć najnowszą"
+msgid "Restored"
+msgstr ""
 
-msgid "Restored to"
-msgstr "Przywrócono do"
+msgid "Restoring the copy…"
+msgstr ""
 
 msgid "Retention"
 msgstr "Przechowywanie"
 
 msgid "Run"
 msgstr "Uruchom"
-
-msgid "Run Audit"
-msgstr "Uruchom audyt"
 
 msgid "Running audit..."
 msgstr "Uruchamianie audytu..."
@@ -1147,57 +1609,83 @@ msgstr "Zapisz"
 msgid "Save KeePass export"
 msgstr "Zapisz eksport KeePass"
 
-msgid "Save as…"
-msgstr "Zapisz jako…"
+msgid "Save a copy…"
+msgstr ""
+
+msgid "Save an access or bring your passwords from another app."
+msgstr ""
 
 msgid "Save attachment"
 msgstr "Zapisz załącznik"
 
-msgid "Save encrypted export"
-msgstr "Zapisz zaszyfrowany eksport"
-
-msgid "Save failed"
-msgstr "Zapisywanie nie powiodło się"
-
-msgid "Saves all entries as plaintext"
-msgstr "Zapisuje wszystkie wpisy jako zwykły tekst"
-
-msgid ""
-"Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
+msgid "Save backup"
 msgstr ""
-"Skanuj sejf w poszukiwaniu słabych, zduplikowanych, starych, wyciekłych "
-"haseł oraz wpisów bez 2FA."
+
+msgid "Save in"
+msgstr ""
+
+msgid "Save to vault"
+msgstr ""
+
+msgid "Save to vault…"
+msgstr ""
+
+msgid "Saved next to the vault and checked; your vault is not changed"
+msgstr ""
+
+msgid "Saved to the vault"
+msgstr ""
+
+msgid "Saved, but the tags could not be updated"
+msgstr ""
 
 msgid "Scanning vault..."
 msgstr "Skanowanie sejfu..."
 
-msgid "Search"
-msgstr "Szukaj"
+msgid "Search all folders"
+msgstr ""
 
-msgid "Search 2FA codes…"
-msgstr "Szukaj kodów 2FA…"
+msgid "Search by name, account or site"
+msgstr ""
 
-msgid "Search passwords…"
-msgstr "Szukaj haseł…"
+msgid "Search codes"
+msgstr ""
+
+msgid "Search for drives"
+msgstr ""
+
+msgid "Search passwords"
+msgstr ""
+
+msgid "Search verification codes"
+msgstr ""
+
+msgid "Sections"
+msgstr ""
 
 msgid "Secure discard (SSD/NVMe only, near-instant)"
 msgstr "Bezpieczne czyszczenie (tylko SSD/NVMe, prawie natychmiastowe)"
 
-msgid "Security"
-msgstr "Bezpieczeństwo"
-
 msgid "Security Keys"
 msgstr "Klucze zabezpieczeń"
+
+msgid "Security keys (FIDO2)"
+msgstr ""
+
+msgid "See all folders"
+msgstr ""
+
+msgid "See my passwords"
+msgstr ""
+
+msgid "Select an access"
+msgstr ""
 
 msgid "Sending local changes"
 msgstr "Wysyłanie lokalnych zmian"
 
-msgid ""
-"Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
-"locally for 7 days."
+msgid "Sends the site's address to Google when it serves no icon of its own"
 msgstr ""
-"Wysyła tylko pierwsze 5 znaków hex SHA-1(hasła) na wpis. Buforowane lokalnie "
-"przez 7 dni."
 
 msgid "Sent to Nextcloud"
 msgstr "Wysłano do Nextcloud"
@@ -1223,14 +1711,14 @@ msgstr "Adres URL serwera, nazwa użytkownika, hasło aplikacji"
 msgid "Server URL, username, app-password"
 msgstr "Adres URL serwera, nazwa użytkownika, hasło aplikacji"
 
-msgid "Session"
-msgstr "Sesja"
+msgid "Set PIN"
+msgstr ""
 
 msgid "Set Passphrase"
 msgstr "Ustaw hasło"
 
-msgid "Set a category on entries to organize them into groups"
-msgstr "Ustaw kategorię dla wpisów, aby zorganizować je w grupy"
+msgid "Set up, upload or download cloud copies"
+msgstr ""
 
 msgid "Set — generate a new one to replace it"
 msgstr "Ustawiona — wygeneruj nową, aby ją zastąpić"
@@ -1238,20 +1726,29 @@ msgstr "Ustawiona — wygeneruj nową, aby ją zastąpić"
 msgid "Settings"
 msgstr "Ustawienia"
 
-msgid "Show 2FA"
-msgstr "Pokaż 2FA"
+msgid "Setup key"
+msgstr ""
 
-msgid "Show Generator"
-msgstr "Pokaż generator"
+msgid "Setup key or otpauth:// link"
+msgstr ""
 
 msgid "Show Nextcloud badges"
 msgstr "Pokaż odznaki Nextcloud"
 
-msgid "Show Vault"
-msgstr "Pokaż Vault"
+msgid "Show a folder"
+msgstr ""
 
 msgid "Show favicons"
 msgstr "Pokaż favikony"
+
+msgid "Show only favorites"
+msgstr ""
+
+msgid "Show password"
+msgstr ""
+
+msgid "Show sidebar"
+msgstr ""
 
 msgid "Show technical details"
 msgstr "Zobacz szczegóły techniczne"
@@ -1292,34 +1789,14 @@ msgstr "Uruchamianie..."
 msgid "Status"
 msgstr "Status"
 
-msgid "Stay Unlocked"
-msgstr "Pozostań odblokowany"
-
-msgid "Store"
-msgstr "Przechowaj"
-
-msgid ""
-"Store the master password in the desktop's Secret Service (GNOME Keyring, "
-"KWallet, etc.) so Ashy Pass can unlock automatically on start. The keyring "
-"is locked with your login password — disable this if multiple users share "
-"the desktop session."
-msgstr ""
-"Przechowuj hasło główne w usłudze Secret Service pulpitu (GNOME Keyring, "
-"KWallet itp.), aby Ashy Pass mógł automatycznie odblokowywać się przy "
-"starcie. Magazynka kluczy jest zabezpieczona hasłem logowania — wyłącz tę "
-"opcję, jeśli wielu użytkowników współdzieli sesję pulpitu."
-
-msgid "Stored in system keyring"
-msgstr "Przechowywane w systemowej magazynie kluczy"
-
 msgid "Strength"
 msgstr "Siła"
 
 msgid "Strong"
 msgstr "Silna"
 
-msgid "Strong Password"
-msgstr "Silne hasło"
+msgid "Style"
+msgstr ""
 
 msgid "Summary"
 msgstr "Podsumowanie"
@@ -1348,6 +1825,18 @@ msgstr "Synchronizacja nie powiodła się"
 msgid "Sync now"
 msgstr "Synchronizuj teraz"
 
+msgid "Synchronization"
+msgstr ""
+
+msgid ""
+"Synchronization keeps the same entries on several devices. It is not a "
+"backup: a deletion is synchronized too. Encrypted copies to Google Drive or "
+"WebDAV are in Backups."
+msgstr ""
+
+msgid "Synchronized with Nextcloud Passwords"
+msgstr ""
+
 msgid "Synchronizing Nextcloud"
 msgstr "Synchronizowanie Nextcloud"
 
@@ -1357,48 +1846,215 @@ msgstr "Synchronizowanie..."
 msgid "Syncing folders"
 msgstr "Synchronizowanie folderów"
 
-msgid "System Keyring"
-msgstr "Systemowa magazynka kluczy"
+msgid "Tags"
+msgstr ""
 
-msgid "System keyring unavailable"
-msgstr "Systemowy magazyn kluczy jest niedostępny"
+msgid "Tags (separated by commas)"
+msgstr ""
 
-msgid "TOTP Secret"
-msgstr "Sekret TOTP"
-
-msgid "TOTP Secret (Base32)"
-msgstr "Sekret TOTP (Base32)"
-
-msgid "TOTP Settings"
-msgstr "Ustawienia TOTP"
-
-msgid "TOTP code copied"
-msgstr "Kod TOTP skopiowany"
-
-msgid "TOTP secret is required"
-msgstr "Sekret TOTP jest wymagany"
-
-msgid "Tags (comma-separated)"
-msgstr "Tagi (oddzielone przecinkami)"
+msgid "Take my data to another app"
+msgstr ""
 
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Komunikacja z tokenem… sprawdź urządzenie pod kątem monitu o dotknięcie."
 
+msgid "Technical details"
+msgstr ""
+
+msgid "The PIN could not be used on this computer. Use your master password."
+msgstr ""
+
+msgid "The PIN must have at least 6 characters"
+msgstr ""
+
+msgid ""
+"The PIN saved on this computer no longer matches the vault, so it was turned "
+"off. Use your master password and set the PIN up again in Settings."
+msgstr ""
+
+msgid "The PIN was not set"
+msgstr ""
+
+msgid "The access moves to Deleted items, where it can be restored for"
+msgstr ""
+
+msgid "The backup was not created"
+msgstr ""
+
+msgid "The copy could not be downloaded"
+msgstr ""
+
+#, rust-format
+msgid "The copy was checked and has {} entry."
+msgid_plural "The copy was checked and has {} entries."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "The current master password is incorrect. Nothing was changed."
+msgstr ""
+
+msgid ""
+"The file is overwritten and deleted. Your current vault is not affected."
+msgstr ""
+
+msgid "The folder is empty."
+msgstr ""
+
+msgid ""
+"The import stopped and every change was undone. Your vault is as it was."
+msgstr ""
+
+msgid ""
+"The label cannot start with \"-\" or contain \"/\" or control characters."
+msgstr ""
+
+msgid "The master password is too short. Minimum length:"
+msgstr ""
+
+msgid "The new password is too short. Minimum length:"
+msgstr ""
+
+msgid "The new passwords do not match."
+msgstr ""
+
+msgid ""
+"The password and other details stay. Before removing, make sure another app "
+"or a backup code can still sign you in, or turn off two-step verification on "
+"the site."
+msgstr ""
+
+msgid ""
+"The password goes into the form. Saving the form does not change it on the "
+"site."
+msgstr ""
+
+msgid "The password was not changed"
+msgstr ""
+
+msgid "The passwords do not match"
+msgstr ""
+
+msgid "The previous vault was kept at:"
+msgstr ""
+
+msgid "The saved key is not valid"
+msgstr ""
+
+msgid "The search is limited to favorites."
+msgstr ""
+
+msgid "The search is limited to passwords without a folder."
+msgstr ""
+
+msgid "The search is limited to the folder"
+msgstr ""
+
 msgid "The sync finished, but some items reported errors."
 msgstr "Synchronizacja zakończona, ale niektóre elementy zgłosiły błąd."
 
-msgid "This action cannot be undone."
-msgstr "Tej czynności nie można cofnąć."
+msgid "The system keyring is not available, so the PIN was not saved"
+msgstr ""
+
+msgid "The vault is locked. Nothing was saved — unlock it and try again."
+msgstr ""
+
+#, rust-format
+msgid "The vault will lock in {} second because of inactivity."
+msgid_plural "The vault will lock in {} seconds because of inactivity."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid ""
+"The vault will lock. The current vault is kept in a file next to it, and the "
+"restored vault opens with the master password of the copy."
+msgstr ""
+
+msgid "The vault will open automatically at login"
+msgstr ""
+
+#, rust-format
+msgid "The {} password in it stays in the vault and moves to “No folder”."
+msgid_plural ""
+"The {} passwords in it stay in the vault and move to “No folder”."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "There is nothing new to import."
+msgstr ""
+
+msgid "These options cannot produce a password."
+msgstr ""
+
+msgid "This access has no saved password"
+msgstr ""
+
+msgid "This access has no user"
+msgstr ""
+
+msgid "This access no longer exists"
+msgstr ""
+
+msgid "This cannot be undone."
+msgstr ""
+
+msgid "This copy cannot be restored. Nothing was changed"
+msgstr ""
+
+msgid "This deletes the whole access: verification code, password and notes."
+msgstr ""
 
 msgid "This device generation:"
 msgstr "Generacja tego urządzenia:"
 
+msgid "This file can be read without a password"
+msgstr ""
+
+msgid "This file could not be read"
+msgstr ""
+
+msgid "This folder already exists"
+msgstr ""
+
+msgid "This folder is empty"
+msgstr ""
+
+msgid ""
+"This looks like a temporary code. Paste the setup key (letters and numbers) "
+"or the otpauth:// link shown by the site instead."
+msgstr ""
+
+msgid ""
+"This only updates the copy kept in Ashy Pass. To change your password, "
+"change it on the site as well."
+msgstr ""
+
+msgid "This permanently removes the file"
+msgstr ""
+
+msgid ""
+"This setup key is not valid. Copy it again from the site's two-step "
+"verification settings."
+msgstr ""
+
 msgid "This will erase everything on the drive"
 msgstr "Spowoduje to usunięcie wszystkich danych z dysku"
 
-msgid "Title"
-msgstr "Tytuł"
+msgid ""
+"To replace the vault with it, open Backups → Restore a backup and choose "
+"this file."
+msgstr ""
+
+msgid ""
+"Too many incorrect PINs. Quick unlock was turned off — use your master "
+"password."
+msgstr ""
+
+msgid "Tools"
+msgstr ""
 
 msgid "Touch your key…"
 msgstr "Dotknij swojego klucza…"
@@ -1409,8 +2065,11 @@ msgstr "Kosz jest pusty."
 msgid "Trashed entries"
 msgstr "Wpisy w koszu"
 
-msgid "Two-Factor Authentication"
-msgstr "Uwierzytelnianie dwuskładnikowe"
+msgid "Turn off"
+msgstr ""
+
+msgid "Turn on"
+msgstr ""
 
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
@@ -1427,26 +2086,29 @@ msgstr ""
 "Dwukierunkowa synchronizacja z oficjalną aplikacją „Passwords” na serwerze "
 "Nextcloud. Użyj hasła aplikacji z Ustawienia → Bezpieczeństwo."
 
-msgid "Type the current master password first"
-msgstr "Najpierw wpisz bieżące hasło główne"
+msgid "Type of password"
+msgstr ""
 
-msgid "URL"
-msgstr "Adres URL"
+msgid "Type the device path shown above."
+msgstr ""
+
+msgid "Type the last 4 characters of the serial number shown above."
+msgstr ""
+
+msgid "Type the master password first"
+msgstr ""
 
 msgid "URL, username and password are required"
 msgstr "Adres URL, nazwa użytkownika i hasło są wymagane"
 
-msgid "Uncategorized"
-msgstr "Nieskategoryzowane"
-
 msgid "Understood"
 msgstr "Zrozumiano"
 
-msgid "Unencrypted 1Password 8 export archive"
-msgstr "Niezaszyfrowane archiwum eksportu 1Password 8"
+msgid "Undo"
+msgstr ""
 
-msgid "Unencrypted Bitwarden vault export"
-msgstr "Niezaszyfrowany eksport sejfu Bitwarden"
+msgid "Unencrypted JSON export"
+msgstr ""
 
 msgid "Unlock"
 msgstr "Odblokuj"
@@ -1460,20 +2122,40 @@ msgstr "Odblokuj sejf"
 msgid "Unlock the vault first"
 msgstr "Najpierw odblokuj sejf"
 
+msgid "Unlock the vault to save the new password. It will not be lost."
+msgstr ""
+
 msgid "Unlock with PIN"
 msgstr "Odblokuj PIN-em"
+
+msgid "Unlock with the master password of the copy."
+msgstr ""
+
+msgid "Unlock your vault"
+msgstr ""
 
 msgid "Unlocked at"
 msgstr "Odblokowano o"
 
+msgid "Unlocked by another application. Lock it from your file manager."
+msgstr ""
+
 msgid "Unlocking…"
 msgstr "Odblokowywanie…"
+
+msgid "Unprotected CSV…"
+msgstr ""
 
 msgid "Updated locally"
 msgstr "Zaktualizowano lokalnie"
 
 msgid "Updated remotely"
 msgstr "Zaktualizowane zdalnie"
+
+msgid ""
+"Upload an encrypted copy of the vault to Google Drive or a WebDAV server. "
+"This is a backup, not synchronization."
+msgstr ""
 
 msgid "Upload anyway"
 msgstr "Prześlij mimo to"
@@ -1484,25 +2166,58 @@ msgstr "Prześlij bieżący plik sejfu na Dysk"
 msgid "Upload the current vault file to WebDAV"
 msgstr "Prześlij bieżący plik sejfu do WebDAV"
 
-msgid "Uppercase Letters (A-Z)"
-msgstr "Duże litery (A-Z)"
+msgid "Uppercase letters (A–Z)"
+msgstr ""
+
+msgid "Use Google as favicon fallback"
+msgstr ""
+
+msgid "Use PIN"
+msgstr ""
 
 msgid "Use larger digits for easier reading"
 msgstr "Użyj większych cyfr dla łatwiejszego odczytu"
 
-msgid "Use master password instead"
-msgstr "Użyj hasła głównego zamiast tego"
+msgid "Use master password"
+msgstr ""
+
+msgid "Use the + button to create one."
+msgstr ""
+
+msgid "Use these codes when a site asks for two-step verification."
+msgstr ""
+
+msgid "Use this password"
+msgstr ""
 
 msgid "Use tighter spacing for long password lists"
 msgstr "Użyj ciaśniejszego odstępu dla długich list haseł"
 
-msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
+msgid "Use when the service asks for a numeric code."
 msgstr ""
-"Służy do odblokowania vaultu. Zmiana powoduje ponowne szyfrowanie wszystkich "
-"przechowywanych danych."
+
+msgid "User"
+msgstr ""
+
+msgid "User copied"
+msgstr ""
+
+msgid "User or e-mail (optional)"
+msgstr ""
 
 msgid "Username"
 msgstr "Nazwa użytkownika"
+
+msgid ""
+"Uses Have I Been Pwned. Only the first 5 characters of a hash of each "
+"password are sent, never the password. Results are kept on this computer for "
+"7 days."
+msgstr ""
+
+msgid ""
+"Usually the same master password you use today. After replacing, the vault "
+"opens with this password."
+msgstr ""
 
 msgid "Vault"
 msgstr "Sejf"
@@ -1514,26 +2229,38 @@ msgstr ""
 "Ochrona sejfu FIDO2 jest niedostępna do czasu pełnego wdrożenia rejestracji "
 "sprzętu i uwierzytelniania. Dotychczasowa konfiguracja zostaje zachowana."
 
-msgid "Vault List"
-msgstr "Lista sejfu"
-
 msgid "Vault already in sync"
 msgstr "Sejf jest już zsynchronizowany"
 
-msgid "Vault locked due to inactivity"
-msgstr "Vault zablokowany z powodu braku aktywności"
+msgid "Vault locked after a period of inactivity"
+msgstr ""
+
+msgid "Vault locked. The open form was closed without saving."
+msgstr ""
 
 msgid "Vault must be unlocked to configure"
 msgstr "Aby skonfigurować, sejf musi być odblokowany"
 
-msgid "Vault will lock soon"
-msgstr "Vault zostanie wkrótce zablokowany"
-
-msgid "Vault will lock soon due to inactivity"
-msgstr "Sejf wkrótce zostanie zablokowany z powodu braku aktywności"
-
 msgid "Vendor"
 msgstr "Producent"
+
+msgid "Verification code"
+msgstr ""
+
+msgid "Verification code (optional)"
+msgstr ""
+
+msgid "Verification code removed"
+msgstr ""
+
+msgid "Verification code saved to the vault"
+msgstr ""
+
+msgid "Verification codes"
+msgstr ""
+
+msgid "Verification codes (unencrypted JSON)"
+msgstr ""
 
 msgid "Very Strong"
 msgstr "Bardzo silna"
@@ -1552,6 +2279,40 @@ msgstr "WebDAV / Nextcloud"
 
 msgid "WebDAV configured"
 msgstr "WebDAV skonfigurowany"
+
+msgid "Website"
+msgstr ""
+
+msgid "Website (optional)"
+msgstr ""
+
+msgid "What it contains"
+msgstr ""
+
+msgid ""
+"When a site offers two-step verification, add its setup key here to get the "
+"codes."
+msgstr ""
+
+msgid ""
+"When on, the Ashy Pass browser extension can read vault entries by unlocking "
+"from the system keyring, even while this window is locked. The key is "
+"dropped again after the auto-lock delay."
+msgstr ""
+
+msgid "Where do you want to bring your passwords from?"
+msgstr ""
+
+msgid "Where it goes"
+msgstr ""
+
+msgid "Where should the code be saved?"
+msgstr ""
+
+msgid ""
+"Wherever you save the file. Keep it off this computer too — on a USB drive "
+"or in your own cloud storage."
+msgstr ""
 
 msgid "Whole device — no partition table"
 msgstr "Całe urządzenie — brak tablicy partycji"
@@ -1587,14 +2348,33 @@ msgstr "Zapisywanie nagłówka LUKS2"
 msgid "Wrong master password"
 msgstr "Nieprawidłowe hasło główne"
 
+msgid ""
+"You choose it when creating the copy. Without it the copy cannot be opened — "
+"Ashy Pass cannot recover it."
+msgstr ""
+
+msgid ""
+"You will need this password to restore the copy. You may reuse your master "
+"password; Ashy Pass cannot recover it."
+msgstr ""
+
+msgid "Your most used accesses can be here"
+msgstr ""
+
+msgid "Your vault is ready"
+msgstr ""
+
+msgid "Your vault was not changed."
+msgstr ""
+
+msgid "Your vault was not changed. The copy was saved at:"
+msgstr ""
+
 msgid "allocated"
 msgstr "przydzielone"
 
 msgid "breached"
 msgstr "wyciek"
-
-msgid "characters"
-msgstr "znaków"
 
 msgid "duplicate"
 msgstr "duplikat"
@@ -1620,8 +2400,24 @@ msgstr "wolne"
 msgid "free of"
 msgstr "wolne z"
 
+msgid "high"
+msgstr ""
+
+msgid "low"
+msgstr ""
+
+msgid "medium"
+msgstr ""
+
 msgid "more"
 msgstr "więcej"
+
+#, rust-format
+msgid "new code in {} second"
+msgid_plural "new code in {} seconds"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "no 2FA"
 msgstr "brak 2FA"
@@ -1659,8 +2455,158 @@ msgstr "wyświetlone"
 msgid "solid-state"
 msgstr "półprzewodnikowy"
 
+msgid "very high"
+msgstr ""
+
+msgid "very low"
+msgstr ""
+
 msgid "weak"
 msgstr "słabe"
 
+#, rust-format
+msgid "{} cannot be imported."
+msgid_plural "{} cannot be imported."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} character"
+msgid_plural "{} characters"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} day."
+msgid_plural "{} days."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} digit"
+msgid_plural "{} digits"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} entry"
+msgid_plural "{} entries"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} hour"
+msgid_plural "{} hours"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} is already in the vault and will be skipped."
+msgid_plural "{} are already in the vault and will be skipped."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} item imported."
+msgid_plural "{} items imported."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} item will be imported."
+msgid_plural "{} items will be imported."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid ""
+"{} looks like an existing entry but has different content; it will be added, "
+"nothing is overwritten."
+msgid_plural ""
+"{} look like existing entries but have different content; they will be "
+"added, nothing is overwritten."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} minute"
+msgid_plural "{} minutes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} of these entries is synchronized with Nextcloud Passwords."
+msgid_plural "{} of these entries are synchronized with Nextcloud Passwords."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} password"
+msgid_plural "{} passwords"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} second"
+msgid_plural "{} seconds"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} was already in the vault."
+msgid_plural "{} were already in the vault."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} was imported with an adjustment — see the details."
+msgid_plural "{} were imported with adjustments — see the details."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} was not imported — see the details."
+msgid_plural "{} were not imported — see the details."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} will be imported with an adjustment."
+msgid_plural "{} will be imported with adjustments."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, rust-format
+msgid "{} word"
+msgid_plural "{} words"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
 msgid "…"
 msgstr "…"
+
+#, rust-format
+msgid "… and {} more"
+msgid_plural "… and {} more"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""

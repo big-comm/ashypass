@@ -52,7 +52,7 @@ fn present_sync_success(parent: &impl IsA<gtk::Window>) {
     };
     super::settings_dialog::present_sync_success_dialog(
         Some(&parent.clone().upcast::<gtk::Window>()),
-        &fabricate_overlay(),
+        &super::settings_dialog::Toaster::from(fabricate_overlay()),
         &report,
     );
 }
@@ -64,7 +64,7 @@ fn present_sync_success_clean(parent: &impl IsA<gtk::Window>) {
     };
     super::settings_dialog::present_sync_success_dialog(
         Some(&parent.clone().upcast::<gtk::Window>()),
-        &fabricate_overlay(),
+        &super::settings_dialog::Toaster::from(fabricate_overlay()),
         &report,
     );
 }
@@ -86,7 +86,7 @@ fn present_sync_success_conflicts(parent: &impl IsA<gtk::Window>) {
     };
     super::settings_dialog::present_sync_success_dialog(
         Some(&parent.clone().upcast::<gtk::Window>()),
-        &fabricate_overlay(),
+        &super::settings_dialog::Toaster::from(fabricate_overlay()),
         &report,
     );
 }
@@ -103,7 +103,7 @@ fn present_sync_success_skipped(parent: &impl IsA<gtk::Window>) {
     };
     super::settings_dialog::present_sync_success_dialog(
         Some(&parent.clone().upcast::<gtk::Window>()),
-        &fabricate_overlay(),
+        &super::settings_dialog::Toaster::from(fabricate_overlay()),
         &report,
     );
 }
@@ -124,7 +124,7 @@ fn present_sync_success_errors(parent: &impl IsA<gtk::Window>) {
     };
     super::settings_dialog::present_sync_success_dialog(
         Some(&parent.clone().upcast::<gtk::Window>()),
-        &fabricate_overlay(),
+        &super::settings_dialog::Toaster::from(fabricate_overlay()),
         &report,
     );
 }

@@ -5,6 +5,7 @@
 
 use crate::state::SharedState;
 use crate::tr;
+use crate::trn;
 use adw::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -63,7 +64,7 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                 let row = adw::ActionRow::builder()
                     .title(&name)
                     .subtitle(
-                        crate::trn!("{} password", "{} passwords", count)
+                        trn!("{} password", "{} passwords", count)
                             .replace("{}", &count.to_string()),
                     )
                     .use_markup(false)
@@ -127,7 +128,7 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                         let body = if count == 0 {
                             tr!("The folder is empty.").to_string()
                         } else {
-                            crate::trn!(
+                            trn!(
                                 "The {} password in it stays in the vault and moves to “No folder”.",
                                 "The {} passwords in it stay in the vault and move to “No folder”.",
                                 count

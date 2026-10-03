@@ -16,6 +16,7 @@
 use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
+use crate::trn;
 use crate::ui::entry_form::{self, EntryFormOptions};
 use crate::ui::widgets::{
     account_line, copy_secret, display_domain, openable_url, Chrome, EmptyState,
@@ -146,6 +147,7 @@ struct Inner {
     sync_label: gtk::Label,
 
     store: gio::ListStore,
+    list_view: gtk::ListView,
     content_stack: gtk::Stack,
     empty: EmptyState,
 
@@ -320,6 +322,7 @@ impl VaultView {
             count_label,
             sync_label,
             store,
+            list_view: list_view.clone(),
             content_stack,
             empty,
             cache: RefCell::new(None),
@@ -800,6 +803,11 @@ impl Inner {
         }
         let settings = self.state.settings();
         self.show_favicons.set(settings.show_favicons);
+        if settings.compact_vault_list {
+            self.list_view.add_css_class("ashy-compact");
+        } else {
+            self.list_view.remove_css_class("ashy-compact");
+        }
         let cache = match self.cache() {
             Ok(cache) => cache,
             Err(e) => {
@@ -856,7 +864,7 @@ impl Inner {
             self.sync_label.set_visible(true);
         } else if synced > 0 && !badges_enabled {
             self.sync_label.set_label(
-                &crate::trn!(
+                &trn!(
                     "{} of these entries is synchronized with Nextcloud Passwords.",
                     "{} of these entries are synchronized with Nextcloud Passwords.",
                     synced
@@ -933,7 +941,7 @@ impl Inner {
 
         let shown = entries.len();
         self.count_label.set_label(
-            &crate::trn!("{} password", "{} passwords", shown).replace("{}", &shown.to_string()),
+            &trn!("{} password", "{} passwords", shown).replace("{}", &shown.to_string()),
         );
 
         if shown > 0 {
@@ -1238,7 +1246,7 @@ impl Inner {
             format!(
                 "{} {}",
                 tr!("The access moves to Deleted items, where it can be restored for"),
-                crate::trn!("{} day.", "{} days.", retention as usize)
+                trn!("{} day.", "{} days.", retention as usize)
                     .replace("{}", &retention.to_string())
             )
         } else {
@@ -1566,7 +1574,6 @@ fn build_details(inner: &Rc<Inner>, entry: &PasswordEntry) -> gtk::Widget {
         .xalign(0.0)
         .wrap(true)
         .wrap_mode(gtk::pango::WrapMode::WordChar)
-        .selectable(true)
         .build();
     title.add_css_class("title-2");
     title.set_accessible_role(gtk::AccessibleRole::Heading);
@@ -1699,7 +1706,7 @@ fn build_details(inner: &Rc<Inner>, entry: &PasswordEntry) -> gtk::Widget {
                     Ok(code) => row.set_subtitle(&format!(
                         "{}   ·   {}",
                         crate::ui::widgets::group_code(&code),
-                        crate::trn!(
+                        trn!(
                             "new code in {} second",
                             "new code in {} seconds",
                             remaining as usize

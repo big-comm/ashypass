@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-09 21:42-0300\n"
+"POT-Creation-Date: 2026-10-03 13:28-0300\n"
 "PO-Revision-Date: 2026-05-12 19:37\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -13,71 +13,108 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgid "0 disables auto-clear"
-msgstr "0으로 설정하면 자동 지우기가 비활성화됩니다"
+msgid "1PUX export file"
+msgstr ""
 
-msgid "2FA"
-msgstr "2FA"
-
-msgid "2FA Codes"
-msgstr "2FA 코드"
-
-msgid "2FA code added"
-msgstr "2FA 코드가 추가되었습니다"
+msgid ""
+"A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
+"or WebDAV."
+msgstr ""
 
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "보안 키 없이 잠금 해제할 수 있는 12단어 BIP-39 문구입니다. 한 번만 표시됩니"
 "다."
 
-msgid "About"
-msgstr "정보"
+msgid "A new access"
+msgstr ""
 
-msgid "Add 2FA Code"
-msgstr "2FA 코드 추가"
+msgid "A new password to use on a website or app."
+msgstr ""
+
+msgid ""
+"A password is incorrect: the file password or the master password of the "
+"copy. Nothing was changed."
+msgstr ""
+
+msgid "A warning appears before it locks, with time to keep using it"
+msgstr ""
+
+msgid "About Ashy Pass"
+msgstr ""
+
+msgid "About the backup"
+msgstr ""
 
 msgid "Add FIDO2 token keyslot"
 msgstr "FIDO2 토큰 키슬롯 추가"
 
-msgid "Add Number at End"
-msgstr "끝에 숫자 추가"
-
-msgid "Add Password"
-msgstr "비밀번호 추가"
-
-msgid "Add a TOTP secret to an entry to see live codes here."
-msgstr "항목에 TOTP 시크릿을 추가하면 여기에 실시간 코드가 표시됩니다."
-
 msgid "Add a hardware token keyslot"
 msgstr "하드웨어 토큰 키슬롯 추가"
+
+msgid "Add a number"
+msgstr ""
+
+msgid "Add an existing tag"
+msgstr ""
 
 msgid "Add attachment"
 msgstr "첨부 파일 추가"
 
+msgid "Add code"
+msgstr ""
+
 msgid "Add file"
 msgstr "파일 추가"
 
-msgid "Add your first password using the + button"
-msgstr "+ 버튼을 사용하여 첫 번째 비밀번호를 추가하세요"
+msgid "Add password"
+msgstr ""
+
+msgid "Add the copy's entries to the current vault"
+msgstr ""
+
+msgid "Add the entries of a .ashy backup to this vault"
+msgstr ""
+
+msgid "Add to favorites"
+msgstr ""
+
+msgid "Add verification code"
+msgstr ""
+
+msgid "Added to favorites"
+msgstr ""
 
 msgid ""
-"After auto-lock or restart, unlock with a short PIN instead of the master "
-"password on this device. The vault key is stored encrypted by the PIN."
+"Adding entries works with .ashy copies. For a .db copy, choose “Replace”."
 msgstr ""
-"자동 잠금 또는 재시작 후에는 이 기기에서 마스터 비밀번호 대신 짧은 PIN으로 잠"
-"금을 해제합니다. 볼트 키는 PIN으로 암호화되어 저장됩니다."
+
+msgid "Address copied"
+msgstr ""
+
+msgid "Adjust length and characters"
+msgstr ""
+
+msgid "Adjust number of digits"
+msgstr ""
+
+msgid "Adjust words and separator"
+msgstr ""
 
 msgid "Algorithm"
 msgstr "알고리즘"
 
-msgid "All"
-msgstr "전체"
-
 msgid "All clear"
 msgstr "모두 정상"
 
+msgid "All entries are synchronized with Nextcloud Passwords."
+msgstr ""
+
 msgid "All fields are required."
 msgstr "모든 필드는 필수 입력 항목입니다."
+
+msgid "All folders"
+msgstr ""
 
 msgid ""
 "All partitions, files, and filesystem signatures will be permanently "
@@ -87,12 +124,24 @@ msgstr "모든 파티션, 파일 및 파일 시스템 서명이 영구적으로 
 msgid "Allow TRIM through encrypted mapping"
 msgstr "암호화된 매핑을 통한 TRIM 허용"
 
+msgid "Allow the browser extension"
+msgstr ""
+
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
 "Uploading now would orphan the remote changes."
 msgstr ""
 "이 기기가 마지막으로 동기화된 이후 다른 기기에서 더 최신 스냅샷을 업로드했습"
 "니다. 지금 업로드하면 원격 변경 사항이 고립됩니다."
+
+msgid "Answer requests from the installed extension"
+msgstr ""
+
+msgid ""
+"Anyone who gets the file can see what it contains: names, users, websites, "
+"passwords and notes. Verification codes, folders and attachments are not "
+"included. Confirm your master password to continue."
+msgstr ""
 
 msgid "App password"
 msgstr "앱 비밀번호"
@@ -106,29 +155,13 @@ msgstr "애플리케이션"
 msgid "Applying local deletions"
 msgstr "로컬 삭제 적용 중"
 
-msgid "Are you sure you want to delete"
-msgstr "정말로 삭제하시겠습니까?"
-
-msgid "Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
+msgid "Ashy Pass backups"
 msgstr ""
-"Argon2id + AES-256-GCM, 비밀번호로 보호됨. Ashy Pass에서 다시 가져올 수 있습"
-"니다."
 
 msgid ""
-"Argon2id turns your master password into the vault encryption key; it is not "
-"a physical security key. Higher costs slow brute force but also slow unlock. "
-"Auto-tune picks values calibrated to ~500 ms on this machine. Existing "
-"master hashes keep their original costs; tuned values apply on the next "
-"master password change."
+"Ashy Pass cannot recover this password. Without it, nobody — including you — "
+"can open the vault. Write it down somewhere safe."
 msgstr ""
-"Argon2id는 마스터 비밀번호를 볼트 암호화 키로 변환합니다. 물리적 보안 키가 아"
-"닙니다. 비용이 높을수록 무차별 대입 공격이 느려지지만 잠금 해제도 느려집니"
-"다. 자동 조정은 이 기기에서 약 500ms에 맞춰 조정된 값을 선택합니다. 기존 마스"
-"터 해시는 원래 비용을 유지하며, 조정된 값은 다음 마스터 비밀번호 변경 시 적용"
-"됩니다."
-
-msgid "Ashy Pass"
-msgstr "Ashy Pass"
 
 msgid ""
 "Ashy Pass could not reach Nextcloud. Check your connection, server address, "
@@ -145,11 +178,11 @@ msgstr "최소 8자 이상. EFF 단어 목록의 4단어 암호는 강력한 기
 msgid "Attachment added"
 msgstr "첨부 파일이 추가되었습니다"
 
-msgid "Attachment deleted"
-msgstr "첨부 파일이 삭제되었습니다"
-
 msgid "Attachment not found"
 msgstr "첨부 파일을 찾을 수 없음"
+
+msgid "Attachment removed"
+msgstr ""
 
 msgid "Attachment saved"
 msgstr "첨부 파일이 저장되었습니다"
@@ -157,20 +190,17 @@ msgstr "첨부 파일이 저장되었습니다"
 msgid "Attachments"
 msgstr "첨부 파일"
 
-msgid "Audit Options"
-msgstr "감사 옵션"
-
 msgid "Audit failed"
 msgstr "감사 실패"
-
-msgid "Auto-lock after (seconds)"
-msgstr "자동 잠금 시간(초)"
 
 msgid "Auto-tune"
 msgstr "자동 조정"
 
-msgid "Avoid characters like 0, O, 1, l, I"
-msgstr "0, O, 1, l, I 같은 문자를 피합니다"
+msgid "Automatic lock"
+msgstr ""
+
+msgid "Avoid look-alike characters (l, 1, O, 0)"
+msgstr ""
 
 msgid "Back"
 msgstr "뒤로"
@@ -181,26 +211,44 @@ msgstr "지금 백업"
 msgid "Backup Phrase"
 msgstr "백업 문구"
 
+msgid "Backup created:"
+msgstr ""
+
 msgid "Backup failed"
 msgstr "백업 실패"
+
+msgid "Backup file"
+msgstr ""
 
 msgid "Backup phrase"
 msgstr "백업 문구"
 
+msgid "Backup restored"
+msgstr ""
+
 msgid "Backup uploaded"
 msgstr "백업 업로드 완료"
 
-msgid "Benchmark this machine (~5 s)"
-msgstr "이 기기 벤치마크 (~5초)"
+msgid "Backups"
+msgstr ""
 
-msgid "Bitwarden, Chrome, 1Password compatible columns"
-msgstr "Bitwarden, Chrome, 1Password 호환 열 형식"
+msgid "Before importing"
+msgstr ""
+
+msgid "Bring passwords from another app or browser"
+msgstr ""
+
+msgid "Bring your passwords"
+msgstr ""
+
+msgid "Browser"
+msgstr ""
+
+msgid "Browser extension"
+msgstr ""
 
 msgid "Bus / media"
 msgstr "버스 / 미디어"
-
-msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
-msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
 
 msgid "Cancel"
 msgstr "취소"
@@ -208,47 +256,85 @@ msgstr "취소"
 msgid "Capacity"
 msgstr "용량"
 
-msgid "Capitalize Words"
-msgstr "단어 첫 글자 대문자화"
+msgid "Capitalize words"
+msgstr ""
 
-msgid "Category"
-msgstr "카테고리"
+msgid "Caps Lock is on"
+msgstr ""
 
-msgid "Change Master Password"
-msgstr "마스터 비밀번호 변경"
+msgid "Change master password"
+msgstr ""
 
-msgid "Check Have I Been Pwned (online)"
-msgstr "Have I Been Pwned 확인(온라인)"
+msgid "Change master password…"
+msgstr ""
 
-msgid "Choose a 1Password .1pux archive"
-msgstr "1Password .1pux 아카이브 선택"
+msgid "Change only if the site shows different values"
+msgstr ""
 
-msgid "Choose a Bitwarden JSON export"
-msgstr "Bitwarden JSON 내보내기 선택"
+msgid "Changes saved to the vault"
+msgstr ""
 
-msgid "Choose a CSV file"
-msgstr "CSV 파일 선택"
+msgid "Check known data breaches (online)"
+msgstr ""
 
-msgid "Choose an Aegis JSON export"
-msgstr "Aegis JSON 내보내기 파일 선택"
+msgid "Check my passwords"
+msgstr ""
 
-msgid "Choose an andOTP JSON export"
-msgstr "andOTP JSON 내보내기 선택"
+msgid "Check now"
+msgstr ""
 
-msgid "Clear clipboard after (seconds)"
-msgstr "클립보드 자동 지우기(초 후)"
+msgid "Choose a backup"
+msgstr ""
+
+msgid ""
+"Choose a master password. It protects everything you keep in Ashy Pass on "
+"this computer."
+msgstr ""
+
+msgid "Choose the 1Password export"
+msgstr ""
+
+msgid "Choose the Aegis export"
+msgstr ""
+
+msgid "Choose the Ashy Pass backup"
+msgstr ""
+
+msgid "Choose the Bitwarden export"
+msgstr ""
+
+msgid "Choose the CSV file"
+msgstr ""
+
+msgid "Choose the KeePass database"
+msgstr ""
+
+msgid "Choose the andOTP export"
+msgstr ""
+
+msgid "Choose this folder when adding or editing a password."
+msgstr ""
+
+msgid "Choose…"
+msgstr ""
+
+msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
+msgstr ""
+
+msgid "Clear copied passwords after"
+msgstr ""
 
 msgid "Clear history"
 msgstr "기록 지우기"
-
-msgid "Click the + button to add a file."
-msgstr "+ 버튼을 클릭하여 파일을 추가하세요."
 
 msgid "Client ID"
 msgstr "클라이언트 ID"
 
 msgid "Client Secret (optional)"
 msgstr "클라이언트 시크릿(선택 사항)"
+
+msgid "Clipboard"
+msgstr ""
 
 msgid "Close"
 msgstr "닫기"
@@ -262,8 +348,14 @@ msgstr "매핑 닫기"
 msgid "Closing mapping"
 msgstr "매핑 닫는 중"
 
-msgid "Cloud"
-msgstr "클라우드"
+msgid "Code copied"
+msgstr ""
+
+msgid "Code settings"
+msgstr ""
+
+msgid "Columns such as name, url, username, password"
+msgstr ""
 
 msgid "Compact vault list"
 msgstr "간결한 볼트 목록"
@@ -283,53 +375,170 @@ msgstr "구성 실패"
 msgid "Configured"
 msgstr "구성됨"
 
+msgid "Confirm"
+msgstr ""
+
 msgid "Confirm Device"
 msgstr "장치 확인"
 
 msgid "Confirm Password"
 msgstr "비밀번호 확인"
 
-msgid "Confirm new password"
-msgstr "새 비밀번호 확인"
+msgid "Confirm master password"
+msgstr ""
+
+msgid "Confirm new master password"
+msgstr ""
 
 msgid "Confirm password"
 msgstr "비밀번호 확인"
 
+msgid "Confirm your master password to create a backup."
+msgstr ""
+
+msgid "Confirm your master password to export your data."
+msgstr ""
+
 msgid "Conflicts"
 msgstr "충돌"
+
+msgid "Connecting the extension"
+msgstr ""
 
 msgid "Continue"
 msgstr "계속"
 
+msgid "Copies in the cloud"
+msgstr ""
+
 msgid "Copy"
 msgstr "복사"
 
-msgid "Copy Code"
-msgstr "코드 복사"
+msgid "Copy address"
+msgstr ""
 
-msgid "Copy Password"
-msgstr "비밀번호 복사"
+msgid "Copy code"
+msgstr ""
 
-msgid "Copy to Clipboard"
-msgstr "클립보드에 복사"
+msgid "Copy downloaded and checked"
+msgstr ""
 
-msgid "Could not disable quick-unlock"
-msgstr "빠른 잠금 해제를 비활성화할 수 없습니다"
+msgid "Copy of the vault from Ashy Pass 2"
+msgstr ""
+
+msgid "Copy password"
+msgstr ""
+
+msgid "Copy this old password"
+msgstr ""
+
+msgid "Copy user"
+msgstr ""
+
+msgid "Could not add the attachment"
+msgstr ""
+
+msgid "Could not change the favorite"
+msgstr ""
+
+msgid "Could not clear the history"
+msgstr ""
+
+msgid "Could not create the folder"
+msgstr ""
+
+msgid "Could not create the vault"
+msgstr ""
+
+msgid "Could not decrypt the attachment"
+msgstr ""
+
+msgid "Could not delete"
+msgstr ""
+
+msgid "Could not lock the drive"
+msgstr ""
+
+msgid "Could not open this access"
+msgstr ""
+
+msgid "Could not read the file"
+msgstr ""
+
+msgid "Could not read the history"
+msgstr ""
+
+msgid "Could not read the vault"
+msgstr ""
+
+msgid "Could not remove the attachment"
+msgstr ""
+
+msgid "Could not remove the code"
+msgstr ""
+
+msgid "Could not remove the folder"
+msgstr ""
+
+msgid "Could not remove the old copy"
+msgstr ""
+
+msgid "Could not rename the folder"
+msgstr ""
+
+msgid "Could not restore. Look in Deleted items."
+msgstr ""
+
+msgid "Could not save the file"
+msgstr ""
+
+msgid "Could not save. Nothing was changed in the vault"
+msgstr ""
 
 msgid "Could not sync"
 msgstr "동기화할 수 없음"
 
+msgid "Could not turn off the PIN"
+msgstr ""
+
+msgid "Could not unlock the vault"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
 msgid "Create Master Password"
 msgstr "마스터 비밀번호 생성"
 
+msgid "Create backup"
+msgstr ""
+
 msgid "Create filesystem"
 msgstr "파일 시스템 생성"
+
+msgid "Create folder"
+msgstr ""
+
+msgid "Create folder…"
+msgstr ""
+
+msgid "Create my vault"
+msgstr ""
+
+msgid "Create password"
+msgstr ""
+
+msgid "Create your vault"
+msgstr ""
 
 msgid "Created locally"
 msgstr "로컬에서 생성됨"
 
 msgid "Created remotely"
 msgstr "원격에서 생성됨"
+
+msgid "Creating a password here does not change your password on any site."
+msgstr ""
 
 msgid "Creating filesystem"
 msgstr "파일 시스템 생성 중"
@@ -343,29 +552,26 @@ msgstr "현재 매개변수"
 msgid "Current passphrase"
 msgstr "현재 암호문구"
 
-msgid "Current password"
-msgstr "현재 비밀번호"
+msgid "Current state"
+msgstr ""
 
-msgid "Data"
-msgstr "데이터"
-
-msgid "Decrypt failed"
-msgstr "복호화 실패"
+msgid "Dark"
+msgstr ""
 
 msgid "Delete"
 msgstr "삭제"
 
-msgid "Delete 2FA Entry?"
-msgstr "2FA 항목을 삭제하시겠습니까?"
+msgid "Delete access"
+msgstr ""
 
-msgid "Delete Password?"
-msgstr "비밀번호를 삭제하시겠습니까?"
-
-msgid "Delete attachment"
-msgstr "첨부 파일 삭제"
+msgid "Delete access…"
+msgstr ""
 
 msgid "Delete permanently"
 msgstr "영구 삭제"
+
+msgid "Delete the export file if it was not protected by a password."
+msgstr ""
 
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
@@ -374,23 +580,32 @@ msgstr ""
 "삭제된 항목은 이 기간 동안 휴지통에 보관되며, 다음 앱 시작 시 영구 삭제됩니"
 "다. 휴지통을 사용하지 않으려면 0으로 설정하세요."
 
+msgid "Deleted items"
+msgstr ""
+
+msgid "Deleted items are not kept (see Settings). This cannot be undone."
+msgstr ""
+
+msgid "Deleted items…"
+msgstr ""
+
 msgid "Deleted remotely"
 msgstr "원격에서 제거됨"
+
+msgid "Delete…"
+msgstr ""
+
+msgid "Details"
+msgstr ""
 
 msgid "Device"
 msgstr "장치"
 
+msgid "Device path"
+msgstr ""
+
 msgid "Digits"
 msgstr "자릿수"
-
-msgid "Digits (0-9)"
-msgstr "숫자 (0-9)"
-
-msgid "Disable"
-msgstr "비활성화"
-
-msgid "Disabled"
-msgstr "비활성화됨"
 
 msgid "Done"
 msgstr "완료"
@@ -398,35 +613,35 @@ msgstr "완료"
 msgid "Done."
 msgstr "완료."
 
+msgid "Download the latest copy"
+msgstr ""
+
 msgid "Downloading remote changes"
 msgstr "원격 변경 사항 다운로드 중"
 
-msgid "Drives"
-msgstr "드라이브"
+msgid "Drive locked"
+msgstr ""
+
+msgid "Easier to type and remember."
+msgstr ""
 
 msgid "Edit"
 msgstr "편집"
 
-msgid "Edit 2FA Entry"
-msgstr "2FA 항목 편집"
+msgid "Edit access…"
+msgstr ""
 
-msgid "Edit Password"
-msgstr "비밀번호 편집"
+msgid "Edit password"
+msgstr ""
+
+msgid "Edit…"
+msgstr ""
 
 msgid "Empty passphrase"
 msgstr "빈 암호문구"
 
 msgid "Empty trash"
 msgstr "휴지통 비우기"
-
-msgid "Enable / Update"
-msgstr "활성화 / 업데이트"
-
-msgid "Enabled for this session"
-msgstr "이 세션에 대해 활성화됨"
-
-msgid "Enabled on this device"
-msgstr "이 기기에서 활성화됨"
 
 msgid "Encrypt"
 msgstr "암호화"
@@ -437,17 +652,11 @@ msgstr "드라이브 암호화"
 msgid "Encrypt KeePass export"
 msgstr "KeePass 내보내기 암호화"
 
-msgid "Encrypt export"
-msgstr "내보내기 암호화"
-
 msgid "Encrypted as"
 msgstr "암호화됨:"
 
 msgid "Encrypted device"
 msgstr "암호화된 장치"
-
-msgid "Encrypted export complete"
-msgstr "암호화된 내보내기 완료"
 
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "충돌 감지 기능이 있는 암호화된 스냅샷 업로드"
@@ -460,11 +669,12 @@ msgstr ""
 msgid "Encrypted vault uploaded as-is. Folder: \"AshyPass Backups\"."
 msgstr "암호화된 보관함이 그대로 업로드되었습니다. 폴더: \"AshyPass Backups\"."
 
-msgid "Encrypted with your master key. Stored inside the vault."
-msgstr "마스터 키로 암호화되어 보관함에 저장됩니다."
-
 msgid "Encrypted zero (recommended — slow but secure)"
 msgstr "암호화된 제로 쓰기 (권장 — 느리지만 안전함)"
+
+msgid ""
+"Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
+msgstr ""
 
 msgid "Encrypting…"
 msgstr "암호화 중…"
@@ -478,23 +688,26 @@ msgstr "등록"
 msgid "Enrol FIDO2 Token"
 msgstr "FIDO2 토큰 등록"
 
-msgid "Enter the master password for this .kdbx file."
-msgstr "이 .kdbx 파일의 마스터 비밀번호를 입력하세요."
+msgid "Enter a label."
+msgstr ""
 
-msgid "Enter the password used when this file was exported."
-msgstr "이 파일을 내보낼 때 사용한 비밀번호를 입력하세요."
+msgid "Enter the PIN set up on this computer."
+msgstr ""
 
-msgid "Enter your master password to unlock"
-msgstr "잠금 해제를 위해 마스터 비밀번호를 입력하세요"
+msgid "Enter the password, or add a verification code below."
+msgstr ""
 
-msgid "Entry deleted"
-msgstr "항목이 삭제되었습니다"
+msgid "Enter your PIN"
+msgstr ""
+
+msgid "Enter your master password"
+msgstr ""
+
+msgid "Enter your master password to access your saved items."
+msgstr ""
 
 msgid "Entry restored"
 msgstr "항목이 복원되었습니다"
-
-msgid "Entry updated"
-msgstr "항목이 업데이트되었습니다"
 
 msgid "Error"
 msgstr "오류"
@@ -502,38 +715,46 @@ msgstr "오류"
 msgid "Error details"
 msgstr "오류 세부정보"
 
-msgid "Error saving password"
-msgstr "비밀번호 저장 중 오류 발생"
+msgid "Estimated strength"
+msgstr ""
+
+msgid ""
+"Everything in the vault is encrypted again with the new password. Backups "
+"made earlier still open with the password they were made with."
+msgstr ""
 
 msgid "Everything is in sync"
 msgstr "모두 일치합니다"
 
+msgid ""
+"Everything returns to how it was when the copy was made, including "
+"attachments and password history. Entries created later disappear. The "
+"current vault is kept in a file next to it."
+msgstr ""
+
 msgid "Everything was already in sync"
 msgstr "모든 항목이 이미 동기화되었습니다"
-
-msgid "Exclude Ambiguous Characters"
-msgstr "혼동 문자 제외"
-
-msgid "Export"
-msgstr "내보내기"
 
 msgid "Export complete"
 msgstr "내보내기 완료"
 
-msgid "Export encrypted (.ashy)"
-msgstr "암호화된 파일로 내보내기 (.ashy)"
-
 msgid "Export failed"
 msgstr "내보내기 실패"
 
-msgid "Export to CSV (plaintext)"
-msgstr "CSV로 내보내기 (일반 텍스트)"
+msgid "Export to KeePass"
+msgstr ""
 
-msgid "Export to KeePass (.kdbx)"
-msgstr "KeePass로 내보내기 (.kdbx)"
+msgid "Export to KeePass or to a file anyone can read"
+msgstr ""
+
+msgid "Export unprotected file"
+msgstr ""
 
 msgid "Export vault to CSV"
 msgstr "보관함을 CSV로 내보내기"
+
+msgid "External drives"
+msgstr ""
 
 msgid "FIDO2 keyslot added"
 msgstr "FIDO2 키슬롯이 추가되었습니다"
@@ -544,14 +765,8 @@ msgstr "FIDO2 볼트 보호를 사용할 수 없음"
 msgid "Failed"
 msgstr "실패"
 
-msgid "Failed to read history"
-msgstr "기록을 읽는 데 실패했습니다"
-
 msgid "Failed to scan drives"
 msgstr "드라이브 검색 실패"
-
-msgid "Failed to setup master password"
-msgstr "마스터 비밀번호 설정에 실패했습니다"
 
 msgid "Failed to unlock vault"
 msgstr "볼트 잠금 해제 실패"
@@ -568,8 +783,14 @@ msgstr "보관함 항목 옆에 사이트 아이콘을 가져와서 표시합니
 msgid "Fetching remote passwords"
 msgstr "원격 비밀번호 가져오는 중"
 
+msgid "Files are encrypted and stored inside the vault."
+msgstr ""
+
 msgid "Filesystem"
 msgstr "파일 시스템"
+
+msgid "Fill in all three fields."
+msgstr ""
 
 msgid "Findings"
 msgstr "발견 사항"
@@ -577,11 +798,36 @@ msgstr "발견 사항"
 msgid "Finishing synchronization"
 msgstr "동기화 완료 중"
 
-msgid "Focus Search"
-msgstr "검색에 포커스"
+msgid ""
+"First export your passwords from the other app, then choose that file here. "
+"Before importing you will see what was recognized. Delete unprotected export "
+"files afterwards."
+msgstr ""
 
 msgid "Folder"
 msgstr "폴더"
+
+msgid "Folder created"
+msgstr ""
+
+msgid "Folder name"
+msgstr ""
+
+msgid "Folder removed. Its passwords were kept."
+msgstr ""
+
+msgid "Folder renamed"
+msgstr ""
+
+msgid "Folders"
+msgstr ""
+
+msgid ""
+"Folders organize your passwords. You can choose them when adding or editing."
+msgstr ""
+
+msgid "Follow the system"
+msgstr ""
 
 msgid ""
 "For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
@@ -590,77 +836,98 @@ msgstr ""
 "Nextcloud의 경우 기본 URL은 https://cloud.example.com/remote.php/dav/files/"
 "USERNAME 형식입니다"
 
+msgid ""
+"From another app: create your vault first, then open Backups → Import "
+"passwords.\n"
+"\n"
+"From a copy made by Ashy Pass: restore it now. The vault will open with the "
+"master password of the copy."
+msgstr ""
+
 msgid "Generate Backup Phrase"
 msgstr "백업 문구 생성"
 
-msgid "Generate New"
-msgstr "새로 생성"
+msgid "Generate another"
+msgstr ""
 
-msgid "Generate Password"
-msgstr "비밀번호 생성"
+msgid "Generate password"
+msgstr ""
 
-msgid "Generated Password"
-msgstr "생성된 비밀번호"
+msgid "Generated password"
+msgstr ""
 
-msgid "Generation Type"
-msgstr "생성 유형"
+msgid "Give this access a name, for example the site or app."
+msgstr ""
 
-msgid "Generator"
-msgstr "생성기"
+msgid "Go to search"
+msgstr ""
 
 msgid "Google Drive"
 msgstr "Google Drive"
 
-msgid "Groups"
-msgstr "그룹"
+msgid "Google Drive and WebDAV"
+msgstr ""
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr "SSD 웨어 레벨링에 도움이 되지만, 장치에 여유 공간 패턴이 노출됩니다."
 
+msgid "Hide password"
+msgstr ""
+
+msgid ""
+"Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
+"tune picks values for about half a second on this computer; they apply the "
+"next time the master password is set or changed."
+msgstr ""
+
 msgid "History cleared"
 msgstr "기록이 지워졌습니다"
+
+msgid "How the master password becomes the encryption key"
+msgstr ""
+
+msgid "How to restore"
+msgstr ""
+
+msgid "I already keep passwords somewhere else"
+msgstr ""
 
 msgid "I understand — Continue"
 msgstr "이해했습니다 — 계속"
 
+msgid ""
+"If this computer is lost or damaged, a backup is the only way to get your "
+"passwords back."
+msgstr ""
+
 msgid "Import"
 msgstr "가져오기"
-
-msgid "Import .ashy"
-msgstr ".ashy 가져오기"
-
-msgid "Import 1Password (.1pux)"
-msgstr "1Password (.1pux) 가져오기"
-
-msgid "Import Aegis (TOTP)"
-msgstr "Aegis (TOTP) 가져오기"
-
-msgid "Import Bitwarden (JSON)"
-msgstr "Bitwarden (JSON) 가져오기"
-
-msgid "Import CSV"
-msgstr "CSV 가져오기"
-
-msgid "Import KeePass (.kdbx)"
-msgstr "KeePass 가져오기 (.kdbx)"
-
-msgid "Import andOTP"
-msgstr "andOTP 가져오기"
 
 msgid "Import complete"
 msgstr "가져오기 완료"
 
-msgid "Import failed"
-msgstr "가져오기 실패"
+msgid "Import partly complete"
+msgstr ""
 
-msgid "Import from .ashy"
-msgstr ".ashy에서 가져오기"
+msgid "Import passwords"
+msgstr ""
+
+msgid "Import passwords…"
+msgstr ""
 
 msgid "Incorrect PIN"
 msgstr "잘못된 PIN"
 
+#, rust-format
+msgid "Incorrect PIN. {} attempt left."
+msgid_plural "Incorrect PIN. {} attempts left."
+msgstr[0] ""
+
 msgid "Incorrect master password"
 msgstr "마스터 비밀번호가 올바르지 않습니다"
+
+msgid "Incorrect master password. Nothing was exported."
+msgstr ""
 
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
@@ -670,27 +937,53 @@ msgstr ""
 "FIDO2 토큰(Yubikey, Nitrokey 등)을 삽입하고, 메시지가 표시되면 장치에서 인증"
 "하세요. 새 키슬롯을 승인하려면 현재 암호문구가 필요합니다."
 
+msgid ""
+"Install the extension in Chrome or Firefox, then register this computer "
+"with:  ashypass-native-host --install <extension-id>"
+msgstr ""
+
 msgid "Internal error: no passphrase set"
 msgstr "내부 오류: 암호가 설정되지 않음"
 
-msgid "Invalid TOTP secret"
-msgstr "잘못된 TOTP 시크릿"
-
-msgid "Invalid TOTP settings"
-msgstr "잘못된 TOTP 설정"
-
-msgid "KDBX3/KDBX4 password-protected database"
-msgstr "KDBX3/KDBX4 비밀번호로 보호된 데이터베이스"
-
-msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
+msgid "It can be restored from Deleted items."
 msgstr ""
-"Argon2id + AES-256이 적용된 KDBX4. KeePassXC, KeeWeb 등에서 열 수 있습니다."
+
+msgid ""
+"It opens the vault on this computer. Nobody can recover it for you — not "
+"even Ashy Pass."
+msgstr ""
+
+msgid "Its user, password and other details appear here."
+msgstr ""
+
+msgid "KeePass (.kdbx)…"
+msgstr ""
 
 msgid "KeePass export complete"
 msgstr "KeePass 내보내기 완료"
 
+msgid ""
+"KeePass keeps the file protected by a password. A CSV file can be read by "
+"anyone who gets hold of it."
+msgstr ""
+
+msgid ""
+"Keep a protected copy of your vault somewhere safe, and bring your passwords "
+"in or out."
+msgstr ""
+
 msgid "Keep deleted entries for (days)"
 msgstr "삭제된 항목 보관 기간 (일)"
+
+msgid "Keep using"
+msgstr ""
+
+msgid ""
+"Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
+"the vault opens by itself when Ashy Pass starts. Anyone who can use your "
+"logged-in session can then open the vault. Locking still requires the master "
+"password or PIN to unlock again."
+msgstr ""
 
 msgid "Kept local version"
 msgstr "로컬 버전 유지됨"
@@ -698,11 +991,16 @@ msgstr "로컬 버전 유지됨"
 msgid "Kept remote version"
 msgstr "원격 버전 유지됨"
 
+msgid ""
+"Kept when your vault was upgraded. It uses the older, weaker protection of "
+"version 2. Remove it once you are sure the upgraded vault works."
+msgstr ""
+
 msgid "Key"
 msgstr "키"
 
-msgid "Key Derivation (Argon2id)"
-msgstr "키 파생 (Argon2id)"
+msgid "Key derivation (Argon2id)"
+msgstr ""
 
 msgid "Key registered"
 msgstr "키가 등록되었습니다"
@@ -710,8 +1008,8 @@ msgstr "키가 등록되었습니다"
 msgid "Key removed"
 msgstr "키가 제거되었습니다"
 
-msgid "Keyboard Shortcuts"
-msgstr "키보드 단축키"
+msgid "Keyboard shortcuts"
+msgstr ""
 
 msgid "Keyring error"
 msgstr "키링 오류"
@@ -719,8 +1017,20 @@ msgstr "키링 오류"
 msgid "Label"
 msgstr "레이블"
 
-msgid "Large 2FA codes"
-msgstr "큰 2FA 코드"
+msgid "Label too long for this filesystem. Maximum length in bytes"
+msgstr ""
+
+msgid "Large verification codes"
+msgstr ""
+
+msgid "Last 4 characters of the serial"
+msgstr ""
+
+msgid "Last backup made on this computer"
+msgstr ""
+
+msgid "Last changed:"
+msgstr ""
 
 msgid "Launch the encryption wizard"
 msgstr "암호화 마법사 실행"
@@ -728,23 +1038,31 @@ msgstr "암호화 마법사 실행"
 msgid "Length"
 msgstr "길이"
 
+msgid "Light"
+msgstr ""
+
 msgid "Lock"
 msgstr "잠금"
 
-msgid "Lock Vault"
-msgstr "보관함 잠금"
+msgid "Lock after inactivity"
+msgstr ""
 
-msgid "Lock vault when idle for this long"
-msgstr "이 시간 동안 유휴 상태면 보관함 잠금"
+msgid "Lock the vault now (Ctrl+L)"
+msgstr ""
 
-msgid "Lowercase Letters (a-z)"
-msgstr "소문자 (a-z)"
+msgid "Lock when the screen locks or the computer sleeps"
+msgstr ""
 
-msgid "Mark entries that are linked to Nextcloud Passwords"
-msgstr "Nextcloud Passwords에 연결된 항목 표시"
+msgid ""
+"Looks for weak, repeated and old passwords, accounts without a verification "
+"code and, if you allow it, passwords that appeared in known data breaches."
+msgstr ""
 
-msgid "Mark passwords as favorite with the star icon"
-msgstr "별표 아이콘으로 비밀번호를 즐겨찾기에 추가하세요"
+msgid "Lowercase letters (a–z)"
+msgstr ""
+
+msgid "Main menu"
+msgstr ""
 
 msgid "Master Password"
 msgstr "마스터 비밀번호"
@@ -752,14 +1070,20 @@ msgstr "마스터 비밀번호"
 msgid "Master password"
 msgstr "마스터 비밀번호"
 
-msgid "Master password changed."
-msgstr "마스터 비밀번호가 변경되었습니다."
+msgid "Master password changed. If you used a PIN, set it up again."
+msgstr ""
 
-msgid "Master password is in the keyring"
-msgstr "마스터 비밀번호가 키링에 있음"
+msgid "Master password when the copy was made"
+msgstr ""
+
+msgid "Measures this computer (about 5 seconds)"
+msgstr ""
 
 msgid "Medium"
 msgstr "보통"
+
+msgid "Minimum length:"
+msgstr ""
 
 msgid "Model"
 msgstr "모델"
@@ -767,17 +1091,52 @@ msgstr "모델"
 msgid "Modern password generator and encrypted password vault"
 msgstr "현대적인 비밀번호 생성기 및 암호화된 비밀번호 볼트"
 
+msgid "More actions"
+msgstr ""
+
+msgid "More options"
+msgstr ""
+
+msgid "Moved to Deleted items"
+msgstr ""
+
+msgid "My passwords"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Names, accounts and sites were searched."
+msgstr ""
+
+msgid "Names, accounts and sites with verification codes were searched."
+msgstr ""
+
 msgid "Navigation"
 msgstr "탐색"
 
-msgid "New Entry"
-msgstr "새 항목"
+msgid "Never"
+msgstr ""
 
-msgid "New PIN (6+ chars)"
-msgstr "새 PIN (6자 이상)"
+msgid "New PIN (at least 6 characters)"
+msgstr ""
 
-msgid "New password"
-msgstr "새 비밀번호"
+msgid "New code every (seconds)"
+msgstr ""
+
+#, rust-format
+msgid "New code in {} second"
+msgid_plural "New code in {} seconds"
+msgstr[0] ""
+
+msgid "New folder name"
+msgstr ""
+
+msgid "New folder…"
+msgstr ""
+
+msgid "New master password"
+msgstr ""
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
@@ -792,26 +1151,26 @@ msgstr ""
 "Nextcloud Passwords는 비밀번호 필드가 채워져 있어야 합니다. Ashy Pass에서 해"
 "당 항목을 편집하여 비밀번호를 추가한 후 전송하세요."
 
-msgid "No 2FA Codes"
-msgstr "2FA 코드 없음"
-
-msgid "No 2FA codes match your search"
-msgstr "검색어와 일치하는 2FA 코드가 없습니다"
-
-msgid "No Favorites"
-msgstr "즐겨찾기 없음"
-
-msgid "No Passwords Stored"
-msgstr "저장된 비밀번호 없음"
-
-msgid "No Results"
-msgstr "검색 결과 없음"
-
 msgid "No attachments"
 msgstr "첨부 파일 없음"
 
+msgid "No backup made on this computer yet"
+msgstr ""
+
+msgid "No codes found for"
+msgstr ""
+
 msgid "No external drives detected"
 msgstr "외부 드라이브가 감지되지 않음"
+
+msgid "No file chosen"
+msgstr ""
+
+msgid "No folder"
+msgstr ""
+
+msgid "No folders yet"
+msgstr ""
 
 msgid "No issues found."
 msgstr "문제가 발견되지 않았습니다."
@@ -819,17 +1178,23 @@ msgstr "문제가 발견되지 않았습니다."
 msgid "No keys registered"
 msgstr "등록된 키가 없습니다"
 
-msgid "No passwords match your search"
-msgstr "검색어와 일치하는 비밀번호가 없습니다"
+msgid "No passwords found for"
+msgstr ""
 
-msgid "No previous passwords recorded."
-msgstr "기록된 이전 비밀번호가 없습니다."
+msgid "No previous passwords"
+msgstr ""
 
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr "이 버전에서는 보안 키 또는 복구 문구를 변경할 수 없습니다."
 
+msgid "No verification codes yet"
+msgstr ""
+
 msgid "None — quick, leaves prior data recoverable"
 msgstr "없음 — 빠르지만 이전 데이터 복구 가능"
+
+msgid "Not available for the vault yet. External drives can use them."
+msgstr ""
 
 msgid "Not configured"
 msgstr "구성되지 않음"
@@ -843,17 +1208,43 @@ msgstr "설정되지 않음"
 msgid "Not signed in"
 msgstr "로그인되지 않음"
 
-msgid "Not stored"
-msgstr "저장되지 않음"
-
 msgid "Notes"
 msgstr "메모"
+
+msgid "Notes (optional)"
+msgstr ""
 
 msgid "Nothing changed — Ashy Pass and Nextcloud were already aligned."
 msgstr "변경 사항이 없습니다 — Ashy Pass와 Nextcloud가 이미 일치합니다."
 
-msgid "Number of Words"
-msgstr "단어 수"
+msgid "Nothing is removed. Entries already in the vault are skipped."
+msgstr ""
+
+msgid "Nothing was changed."
+msgstr ""
+
+msgid "Nothing was imported"
+msgstr ""
+
+msgid ""
+"Nothing was imported. Check that you chose the right app and an unencrypted "
+"export."
+msgstr ""
+
+msgid "Nothing was restored"
+msgstr ""
+
+msgid "Number of digits"
+msgstr ""
+
+msgid "Number of words"
+msgstr ""
+
+msgid "Numbers (0–9)"
+msgstr ""
+
+msgid "Numeric PIN"
+msgstr ""
 
 msgid "OAuth client not configured at build time"
 msgstr "OAuth 클라이언트가 빌드 시 구성되지 않음"
@@ -861,23 +1252,56 @@ msgstr "OAuth 클라이언트가 빌드 시 구성되지 않음"
 msgid "OK"
 msgstr "확인"
 
+msgid "Off"
+msgstr ""
+
+msgid "Old copy removed"
+msgstr ""
+
 msgid "Older versions appear here after the password is changed."
 msgstr "비밀번호가 변경된 후 이전 버전이 여기에 표시됩니다."
 
-msgid "Open .ashy export"
-msgstr ".ashy 내보내기 열기"
+msgid "On"
+msgstr ""
 
-msgid "Open KeePass database"
-msgstr "KeePass 데이터베이스 열기"
+msgid ""
+"On the site you want to protect, open the two-step verification settings and "
+"choose an authenticator app. Copy the setup key (or the otpauth:// link) it "
+"shows and paste it below."
+msgstr ""
 
-msgid "Open Settings"
-msgstr "설정 열기"
+msgid "On until Ashy Pass closes"
+msgstr ""
+
+msgid ""
+"Only clears the clipboard if it still holds what Ashy Pass copied, so text "
+"you copied afterwards in another app is kept. Clipboard history managers may "
+"keep copies that Ashy Pass cannot remove."
+msgstr ""
+
+msgid "Only needed when a site has specific rules"
+msgstr ""
+
+msgid "Only when some entries come from Nextcloud Passwords and others do not"
+msgstr ""
+
+msgid "Open a password and mark the star to find it faster."
+msgstr ""
+
+msgid "Open automatically at login"
+msgstr ""
+
+msgid "Open details"
+msgstr ""
 
 msgid "Open encrypted mapping"
 msgstr "암호화된 매핑 열기"
 
-msgid "Open the encrypted partition"
-msgstr "암호화된 파티션 열기"
+msgid "Open the encrypted volume"
+msgstr ""
+
+msgid "Open website"
+msgstr ""
 
 msgid "Opening encrypted mapping"
 msgstr "암호화된 매핑 여는 중"
@@ -885,17 +1309,43 @@ msgstr "암호화된 매핑 여는 중"
 msgid "Opens the browser for OAuth consent"
 msgstr "OAuth 동의를 위해 브라우저를 엽니다"
 
+msgid ""
+"Optional. Unlock this computer with a short PIN after an automatic lock or a "
+"restart. The vault key is kept in the system keyring, encrypted with the "
+"PIN. A PIN is easier to guess than the master password, so anyone with "
+"access to your session and keyring could try it; after 5 wrong attempts it "
+"is turned off and the master password is required again."
+msgstr ""
+
 msgid "Options"
 msgstr "옵션"
+
+msgid "Organize folders"
+msgstr ""
+
+msgid "Organize folders…"
+msgstr ""
+
+msgid "Other CSV file"
+msgstr ""
+
+msgid "Other apps"
+msgstr ""
+
+msgid "Other formats"
+msgstr ""
 
 msgid "PIN"
 msgstr "PIN"
 
-msgid "PIN Code"
-msgstr "PIN 코드"
+msgid "PIN on this computer"
+msgstr ""
 
-msgid "PIN Options"
-msgstr "PIN 옵션"
+msgid "PIN set for this computer"
+msgstr ""
+
+msgid "PIN turned off. The master password is required to unlock."
+msgstr ""
 
 msgid "Partition table"
 msgstr "파티션 테이블"
@@ -903,59 +1353,60 @@ msgstr "파티션 테이블"
 msgid "Passphrase"
 msgstr "암호문구"
 
-msgid "Passphrase Options"
-msgstr "암호문구 옵션"
-
 msgid "Password"
 msgstr "비밀번호"
 
 msgid "Password / app-password"
 msgstr "비밀번호 / 앱 비밀번호"
 
-msgid "Password History"
-msgstr "비밀번호 기록"
+msgid "Password copied"
+msgstr ""
 
-msgid "Password Options"
-msgstr "비밀번호 옵션"
-
-msgid "Password added"
-msgstr "비밀번호가 추가되었습니다"
-
-msgid "Password copied to clipboard"
-msgstr "비밀번호가 클립보드에 복사되었습니다"
-
-msgid "Password deleted"
-msgstr "비밀번호가 삭제되었습니다"
-
-msgid "Password generated"
-msgstr "비밀번호가 생성되었습니다"
+msgid "Password for this backup"
+msgstr ""
 
 msgid "Password history"
 msgstr "비밀번호 기록"
 
-msgid "Password must be at least"
-msgstr "비밀번호는 최소"
+msgid "Password history…"
+msgstr ""
+
+msgid "Password list"
+msgstr ""
+
+msgid "Password of the KeePass database"
+msgstr ""
+
+msgid "Password of the backup"
+msgstr ""
+
+msgid "Password of the backup file"
+msgstr ""
 
 msgid "Password too short"
 msgstr "비밀번호가 너무 짧습니다"
 
-msgid "Password updated"
-msgstr "비밀번호가 업데이트되었습니다"
+msgid "Password-protected .kdbx database"
+msgstr ""
+
+msgid "Passwords"
+msgstr ""
 
 msgid "Passwords do not match"
 msgstr "비밀번호가 일치하지 않습니다"
 
-msgid "Passwords do not match."
-msgstr "비밀번호가 일치하지 않습니다."
+msgid ""
+"Passwords, notes, verification codes, folders, favorites and tags. A full "
+"restore also brings back attachments and password history."
+msgstr ""
 
-msgid "Paste a Base32 secret or an otpauth:// URI"
-msgstr "Base32 시크릿 또는 otpauth:// URI를 붙여넣으세요"
+msgid ""
+"Paste the setup key or otpauth:// link from the site's two-step verification "
+"settings"
+msgstr ""
 
 msgid "Path"
 msgstr "경로"
-
-msgid "Period (seconds)"
-msgstr "주기(초)"
 
 msgid "Permanently deleted"
 msgstr "영구 삭제됨"
@@ -967,29 +1418,11 @@ msgid ""
 "Pick a password for the .kdbx file. You will need it to open the database."
 msgstr ".kdbx 파일의 비밀번호를 선택하세요. 데이터베이스를 열 때 필요합니다."
 
-msgid "Pick a password to protect this .ashy file. You will need it to import."
-msgstr "이 .ashy 파일을 보호할 비밀번호를 선택하세요. 가져올 때 필요합니다."
-
-msgid "Plain JSON export from Aegis Authenticator"
-msgstr "Aegis Authenticator의 일반 JSON 내보내기 파일"
-
-msgid "Plain JSON export from andOTP"
-msgstr "andOTP에서 일반 JSON 내보내기"
-
-msgid "Please create your master password in the Vault tab first."
-msgstr "먼저 Vault 탭에서 마스터 비밀번호를 생성해주세요."
-
-msgid "Please enter a password"
-msgstr "비밀번호를 입력해주세요"
-
-msgid "Please enter your PIN"
-msgstr "PIN을 입력하세요"
-
 msgid "Please wait while AshyPass talks to Nextcloud"
 msgstr "AshyPass가 Nextcloud와 통신하는 동안 잠시 기다려 주세요"
 
-msgid "Plug in a USB drive or external disk, then press Rescan."
-msgstr "USB 드라이브 또는 외장 디스크를 연결한 후 다시 검색을 누르세요."
+msgid "Plug in a USB drive or external disk, then search for drives."
+msgstr ""
 
 msgid "Plug in your authenticator and click Register"
 msgstr "인증기를 연결하고 등록을 클릭하세요"
@@ -997,39 +1430,20 @@ msgstr "인증기를 연결하고 등록을 클릭하세요"
 msgid "Pre-format wipe"
 msgstr "포맷 전 초기화"
 
-msgid ""
-"Prefer the encrypted .ashy export. The CSV path stores credentials in "
-"plaintext."
-msgstr ""
-"암호화된 .ashy 내보내기를 권장합니다. CSV 경로는 자격 증명을 일반 텍스트로 저"
-"장합니다."
-
 msgid "Preparing synchronization"
 msgstr "동기화 준비 중"
 
 msgid "Preparing…"
 msgstr "준비 중…"
 
-msgid ""
-"Preview — drive encryption backend not yet enabled. Listing is read-only."
+msgid "Previous passwords kept by Ashy Pass when this one was changed."
 msgstr ""
-"미리보기 — 드라이브 암호화 백엔드가 아직 활성화되지 않았습니다. 목록은 읽기 "
-"전용입니다."
 
-msgid "Quick Unlock"
-msgstr "빠른 잠금 해제"
+msgid "Protected by a password you choose"
+msgstr ""
 
-msgid "Quick-unlock PIN"
-msgstr "빠른 잠금 해제 PIN"
-
-msgid "Quick-unlock disabled"
-msgstr "빠른 잠금 해제 비활성화됨"
-
-msgid "Quick-unlock enabled"
-msgstr "빠른 잠금 해제 활성화됨"
-
-msgid "Quick-unlock failed"
-msgstr "빠른 잠금 해제 실패"
+msgid "Protection"
+msgstr ""
 
 msgid "Quit"
 msgstr "종료"
@@ -1037,11 +1451,20 @@ msgstr "종료"
 msgid "Random pass (slowest)"
 msgstr "무작위 쓰기 (가장 느림)"
 
-msgid "Read failed"
-msgstr "읽기 실패"
+msgid "Random password"
+msgstr ""
+
+msgid "Random words"
+msgstr ""
+
+msgid "Reading the file…"
+msgstr ""
 
 msgid "Received from Nextcloud"
 msgstr "Nextcloud에서 수신됨"
+
+msgid "Recommended for accounts you keep in the vault."
+msgstr ""
 
 msgid "Reconciled items"
 msgstr "조정된 항목"
@@ -1064,11 +1487,56 @@ msgstr "원격 세대:"
 msgid "Remove"
 msgstr "제거"
 
-msgid "Removed from keyring"
-msgstr "키링에서 제거됨"
+msgid "Remove attachment"
+msgstr ""
+
+msgid "Remove attachment?"
+msgstr ""
+
+msgid "Remove code"
+msgstr ""
+
+msgid "Remove folder"
+msgstr ""
+
+msgid "Remove from favorites"
+msgstr ""
+
+msgid "Remove the old copy?"
+msgstr ""
+
+msgid "Remove the verification code from"
+msgstr ""
+
+msgid "Remove verification code…"
+msgstr ""
+
+msgid "Removed from favorites"
+msgstr ""
+
+msgid "Removed from the keyring"
+msgstr ""
+
+msgid "Removing a folder keeps its passwords. They move to “No folder”."
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Rename folder"
+msgstr ""
 
 msgid "Repeat"
 msgstr "확인"
+
+msgid "Replace the vault with this copy"
+msgstr ""
+
+msgid "Replace the vault with this copy?"
+msgstr ""
+
+msgid "Replace vault"
+msgstr ""
 
 msgid "Require PIN at unlock"
 msgstr "잠금 해제 시 PIN 필요"
@@ -1079,35 +1547,29 @@ msgstr "사용자 존재 확인 필요(토큰 터치)"
 msgid "Required to encrypt the snapshot before upload"
 msgstr "업로드 전 스냅샷 암호화에 필요함"
 
-msgid "Rescan drives"
-msgstr "드라이브 다시 검색"
-
 msgid "Resolved automatically using the 'last edit wins' policy."
 msgstr "'마지막 편집 우선' 정책에 따라 자동으로 해결됨."
 
 msgid "Restore"
 msgstr "복원"
 
-msgid "Restore failed"
-msgstr "복원 실패"
+msgid "Restore a backup"
+msgstr ""
 
-msgid "Restore from an Ashy Pass encrypted export"
-msgstr "Ashy Pass 암호화 내보내기 파일에서 복원"
+msgid "Restore a backup…"
+msgstr ""
 
-msgid "Restore latest"
-msgstr "최신 복원"
+msgid "Restored"
+msgstr ""
 
-msgid "Restored to"
-msgstr "복원 위치"
+msgid "Restoring the copy…"
+msgstr ""
 
 msgid "Retention"
 msgstr "보관 기간"
 
 msgid "Run"
 msgstr "실행"
-
-msgid "Run Audit"
-msgstr "감사 실행"
 
 msgid "Running audit..."
 msgstr "감사 실행 중..."
@@ -1130,57 +1592,83 @@ msgstr "저장"
 msgid "Save KeePass export"
 msgstr "KeePass 내보내기 저장"
 
-msgid "Save as…"
-msgstr "다른 이름으로 저장…"
+msgid "Save a copy…"
+msgstr ""
+
+msgid "Save an access or bring your passwords from another app."
+msgstr ""
 
 msgid "Save attachment"
 msgstr "첨부 파일 저장"
 
-msgid "Save encrypted export"
-msgstr "암호화된 내보내기 저장"
-
-msgid "Save failed"
-msgstr "저장 실패"
-
-msgid "Saves all entries as plaintext"
-msgstr "모든 항목을 일반 텍스트로 저장"
-
-msgid ""
-"Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
+msgid "Save backup"
 msgstr ""
-"보관함에서 취약하거나, 중복되거나, 오래되었거나, 유출되었거나 2FA가 없는 항목"
-"을 검사합니다."
+
+msgid "Save in"
+msgstr ""
+
+msgid "Save to vault"
+msgstr ""
+
+msgid "Save to vault…"
+msgstr ""
+
+msgid "Saved next to the vault and checked; your vault is not changed"
+msgstr ""
+
+msgid "Saved to the vault"
+msgstr ""
+
+msgid "Saved, but the tags could not be updated"
+msgstr ""
 
 msgid "Scanning vault..."
 msgstr "보관함 스캔 중..."
 
-msgid "Search"
-msgstr "검색"
+msgid "Search all folders"
+msgstr ""
 
-msgid "Search 2FA codes…"
-msgstr "2FA 코드 검색…"
+msgid "Search by name, account or site"
+msgstr ""
 
-msgid "Search passwords…"
-msgstr "비밀번호 검색…"
+msgid "Search codes"
+msgstr ""
+
+msgid "Search for drives"
+msgstr ""
+
+msgid "Search passwords"
+msgstr ""
+
+msgid "Search verification codes"
+msgstr ""
+
+msgid "Sections"
+msgstr ""
 
 msgid "Secure discard (SSD/NVMe only, near-instant)"
 msgstr "보안 삭제 (SSD/NVMe 전용, 거의 즉시 완료)"
 
-msgid "Security"
-msgstr "보안"
-
 msgid "Security Keys"
 msgstr "보안 키"
+
+msgid "Security keys (FIDO2)"
+msgstr ""
+
+msgid "See all folders"
+msgstr ""
+
+msgid "See my passwords"
+msgstr ""
+
+msgid "Select an access"
+msgstr ""
 
 msgid "Sending local changes"
 msgstr "로컬 변경사항 전송 중"
 
-msgid ""
-"Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
-"locally for 7 days."
+msgid "Sends the site's address to Google when it serves no icon of its own"
 msgstr ""
-"항목당 SHA-1(비밀번호)의 처음 5자리 16진수만 전송합니다. 7일 동안 로컬에 캐시"
-"됩니다."
 
 msgid "Sent to Nextcloud"
 msgstr "Nextcloud로 전송됨"
@@ -1204,14 +1692,14 @@ msgstr "서버 URL, 사용자 이름, 앱 비밀번호"
 msgid "Server URL, username, app-password"
 msgstr "서버 URL, 사용자 이름, 앱 비밀번호"
 
-msgid "Session"
-msgstr "세션"
+msgid "Set PIN"
+msgstr ""
 
 msgid "Set Passphrase"
 msgstr "암호 설정"
 
-msgid "Set a category on entries to organize them into groups"
-msgstr "항목에 카테고리를 설정하여 그룹으로 구성하세요"
+msgid "Set up, upload or download cloud copies"
+msgstr ""
 
 msgid "Set — generate a new one to replace it"
 msgstr "설정됨 — 새로 생성하여 교체하세요"
@@ -1219,20 +1707,29 @@ msgstr "설정됨 — 새로 생성하여 교체하세요"
 msgid "Settings"
 msgstr "설정"
 
-msgid "Show 2FA"
-msgstr "2FA 보기"
+msgid "Setup key"
+msgstr ""
 
-msgid "Show Generator"
-msgstr "생성기 보기"
+msgid "Setup key or otpauth:// link"
+msgstr ""
 
 msgid "Show Nextcloud badges"
 msgstr "Nextcloud 배지 표시"
 
-msgid "Show Vault"
-msgstr "볼트 보기"
+msgid "Show a folder"
+msgstr ""
 
 msgid "Show favicons"
 msgstr "파비콘 표시"
+
+msgid "Show only favorites"
+msgstr ""
+
+msgid "Show password"
+msgstr ""
+
+msgid "Show sidebar"
+msgstr ""
 
 msgid "Show technical details"
 msgstr "기술 세부 정보 보기"
@@ -1273,34 +1770,14 @@ msgstr "시작 중..."
 msgid "Status"
 msgstr "상태"
 
-msgid "Stay Unlocked"
-msgstr "잠금 해제 상태 유지"
-
-msgid "Store"
-msgstr "저장"
-
-msgid ""
-"Store the master password in the desktop's Secret Service (GNOME Keyring, "
-"KWallet, etc.) so Ashy Pass can unlock automatically on start. The keyring "
-"is locked with your login password — disable this if multiple users share "
-"the desktop session."
-msgstr ""
-"데스크톱의 Secret Service(GNOME Keyring, KWallet 등)에 마스터 비밀번호를 저장"
-"하여 Ashy Pass가 시작 시 자동으로 잠금 해제할 수 있도록 합니다. 키링은 로그"
-"인 비밀번호로 잠겨 있습니다. 여러 사용자가 데스크톱 세션을 공유하는 경우 이 "
-"기능을 비활성화하세요."
-
-msgid "Stored in system keyring"
-msgstr "시스템 키링에 저장됨"
-
 msgid "Strength"
 msgstr "보안 강도"
 
 msgid "Strong"
 msgstr "강함"
 
-msgid "Strong Password"
-msgstr "강력한 비밀번호"
+msgid "Style"
+msgstr ""
 
 msgid "Summary"
 msgstr "요약"
@@ -1329,6 +1806,18 @@ msgstr "동기화 실패"
 msgid "Sync now"
 msgstr "지금 동기화"
 
+msgid "Synchronization"
+msgstr ""
+
+msgid ""
+"Synchronization keeps the same entries on several devices. It is not a "
+"backup: a deletion is synchronized too. Encrypted copies to Google Drive or "
+"WebDAV are in Backups."
+msgstr ""
+
+msgid "Synchronized with Nextcloud Passwords"
+msgstr ""
+
 msgid "Synchronizing Nextcloud"
 msgstr "Nextcloud 동기화 중"
 
@@ -1338,47 +1827,208 @@ msgstr "동기화 중..."
 msgid "Syncing folders"
 msgstr "폴더 동기화 중"
 
-msgid "System Keyring"
-msgstr "시스템 키링"
+msgid "Tags"
+msgstr ""
 
-msgid "System keyring unavailable"
-msgstr "시스템 키링을 사용할 수 없음"
+msgid "Tags (separated by commas)"
+msgstr ""
 
-msgid "TOTP Secret"
-msgstr "TOTP 비밀키"
-
-msgid "TOTP Secret (Base32)"
-msgstr "TOTP 비밀키 (Base32)"
-
-msgid "TOTP Settings"
-msgstr "TOTP 설정"
-
-msgid "TOTP code copied"
-msgstr "TOTP 코드가 복사되었습니다"
-
-msgid "TOTP secret is required"
-msgstr "TOTP 비밀키가 필요합니다"
-
-msgid "Tags (comma-separated)"
-msgstr "태그 (쉼표로 구분)"
+msgid "Take my data to another app"
+msgstr ""
 
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "토큰과 통신 중입니다… 터치 프롬프트가 있는지 장치를 확인하세요."
 
+msgid "Technical details"
+msgstr ""
+
+msgid "The PIN could not be used on this computer. Use your master password."
+msgstr ""
+
+msgid "The PIN must have at least 6 characters"
+msgstr ""
+
+msgid ""
+"The PIN saved on this computer no longer matches the vault, so it was turned "
+"off. Use your master password and set the PIN up again in Settings."
+msgstr ""
+
+msgid "The PIN was not set"
+msgstr ""
+
+msgid "The access moves to Deleted items, where it can be restored for"
+msgstr ""
+
+msgid "The backup was not created"
+msgstr ""
+
+msgid "The copy could not be downloaded"
+msgstr ""
+
+#, rust-format
+msgid "The copy was checked and has {} entry."
+msgid_plural "The copy was checked and has {} entries."
+msgstr[0] ""
+
+msgid "The current master password is incorrect. Nothing was changed."
+msgstr ""
+
+msgid ""
+"The file is overwritten and deleted. Your current vault is not affected."
+msgstr ""
+
+msgid "The folder is empty."
+msgstr ""
+
+msgid ""
+"The import stopped and every change was undone. Your vault is as it was."
+msgstr ""
+
+msgid ""
+"The label cannot start with \"-\" or contain \"/\" or control characters."
+msgstr ""
+
+msgid "The master password is too short. Minimum length:"
+msgstr ""
+
+msgid "The new password is too short. Minimum length:"
+msgstr ""
+
+msgid "The new passwords do not match."
+msgstr ""
+
+msgid ""
+"The password and other details stay. Before removing, make sure another app "
+"or a backup code can still sign you in, or turn off two-step verification on "
+"the site."
+msgstr ""
+
+msgid ""
+"The password goes into the form. Saving the form does not change it on the "
+"site."
+msgstr ""
+
+msgid "The password was not changed"
+msgstr ""
+
+msgid "The passwords do not match"
+msgstr ""
+
+msgid "The previous vault was kept at:"
+msgstr ""
+
+msgid "The saved key is not valid"
+msgstr ""
+
+msgid "The search is limited to favorites."
+msgstr ""
+
+msgid "The search is limited to passwords without a folder."
+msgstr ""
+
+msgid "The search is limited to the folder"
+msgstr ""
+
 msgid "The sync finished, but some items reported errors."
 msgstr "동기화가 완료되었으나 일부 항목에서 오류가 발생했습니다."
 
-msgid "This action cannot be undone."
-msgstr "이 작업은 되돌릴 수 없습니다."
+msgid "The system keyring is not available, so the PIN was not saved"
+msgstr ""
+
+msgid "The vault is locked. Nothing was saved — unlock it and try again."
+msgstr ""
+
+#, rust-format
+msgid "The vault will lock in {} second because of inactivity."
+msgid_plural "The vault will lock in {} seconds because of inactivity."
+msgstr[0] ""
+
+msgid ""
+"The vault will lock. The current vault is kept in a file next to it, and the "
+"restored vault opens with the master password of the copy."
+msgstr ""
+
+msgid "The vault will open automatically at login"
+msgstr ""
+
+#, rust-format
+msgid "The {} password in it stays in the vault and moves to “No folder”."
+msgid_plural ""
+"The {} passwords in it stay in the vault and move to “No folder”."
+msgstr[0] ""
+
+msgid "There is nothing new to import."
+msgstr ""
+
+msgid "These options cannot produce a password."
+msgstr ""
+
+msgid "This access has no saved password"
+msgstr ""
+
+msgid "This access has no user"
+msgstr ""
+
+msgid "This access no longer exists"
+msgstr ""
+
+msgid "This cannot be undone."
+msgstr ""
+
+msgid "This copy cannot be restored. Nothing was changed"
+msgstr ""
+
+msgid "This deletes the whole access: verification code, password and notes."
+msgstr ""
 
 msgid "This device generation:"
 msgstr "이 기기 세대:"
 
+msgid "This file can be read without a password"
+msgstr ""
+
+msgid "This file could not be read"
+msgstr ""
+
+msgid "This folder already exists"
+msgstr ""
+
+msgid "This folder is empty"
+msgstr ""
+
+msgid ""
+"This looks like a temporary code. Paste the setup key (letters and numbers) "
+"or the otpauth:// link shown by the site instead."
+msgstr ""
+
+msgid ""
+"This only updates the copy kept in Ashy Pass. To change your password, "
+"change it on the site as well."
+msgstr ""
+
+msgid "This permanently removes the file"
+msgstr ""
+
+msgid ""
+"This setup key is not valid. Copy it again from the site's two-step "
+"verification settings."
+msgstr ""
+
 msgid "This will erase everything on the drive"
 msgstr "이 작업은 드라이브의 모든 데이터를 지웁니다"
 
-msgid "Title"
-msgstr "제목"
+msgid ""
+"To replace the vault with it, open Backups → Restore a backup and choose "
+"this file."
+msgstr ""
+
+msgid ""
+"Too many incorrect PINs. Quick unlock was turned off — use your master "
+"password."
+msgstr ""
+
+msgid "Tools"
+msgstr ""
 
 msgid "Touch your key…"
 msgstr "키를 터치하세요…"
@@ -1389,8 +2039,11 @@ msgstr "휴지통이 비어 있습니다."
 msgid "Trashed entries"
 msgstr "휴지통 항목"
 
-msgid "Two-Factor Authentication"
-msgstr "이중 인증"
+msgid "Turn off"
+msgstr ""
+
+msgid "Turn on"
+msgstr ""
 
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "양방향 조정: 원격 가져오기, 로컬 밀어넣기, 최신 항목 우선으로 해결"
@@ -1405,26 +2058,29 @@ msgstr ""
 "Nextcloud 서버의 공식 'Passwords' 앱과 양방향 동기화합니다. 설정 → 보안에서 "
 "앱 비밀번호를 사용하세요."
 
-msgid "Type the current master password first"
-msgstr "현재 마스터 비밀번호를 먼저 입력하세요"
+msgid "Type of password"
+msgstr ""
 
-msgid "URL"
-msgstr "URL"
+msgid "Type the device path shown above."
+msgstr ""
+
+msgid "Type the last 4 characters of the serial number shown above."
+msgstr ""
+
+msgid "Type the master password first"
+msgstr ""
 
 msgid "URL, username and password are required"
 msgstr "URL, 사용자 이름, 비밀번호는 필수입니다"
 
-msgid "Uncategorized"
-msgstr "미분류"
-
 msgid "Understood"
 msgstr "이해함"
 
-msgid "Unencrypted 1Password 8 export archive"
-msgstr "암호화되지 않은 1Password 8 내보내기 아카이브"
+msgid "Undo"
+msgstr ""
 
-msgid "Unencrypted Bitwarden vault export"
-msgstr "암호화되지 않은 Bitwarden 보관함 내보내기 파일"
+msgid "Unencrypted JSON export"
+msgstr ""
 
 msgid "Unlock"
 msgstr "잠금 해제"
@@ -1438,20 +2094,40 @@ msgstr "보관함 잠금 해제"
 msgid "Unlock the vault first"
 msgstr "먼저 보관함을 잠금 해제하세요"
 
+msgid "Unlock the vault to save the new password. It will not be lost."
+msgstr ""
+
 msgid "Unlock with PIN"
 msgstr "PIN으로 잠금 해제"
+
+msgid "Unlock with the master password of the copy."
+msgstr ""
+
+msgid "Unlock your vault"
+msgstr ""
 
 msgid "Unlocked at"
 msgstr "잠금 해제 시간"
 
+msgid "Unlocked by another application. Lock it from your file manager."
+msgstr ""
+
 msgid "Unlocking…"
 msgstr "잠금 해제 중…"
+
+msgid "Unprotected CSV…"
+msgstr ""
 
 msgid "Updated locally"
 msgstr "로컬에서 업데이트됨"
 
 msgid "Updated remotely"
 msgstr "원격에서 업데이트됨"
+
+msgid ""
+"Upload an encrypted copy of the vault to Google Drive or a WebDAV server. "
+"This is a backup, not synchronization."
+msgstr ""
 
 msgid "Upload anyway"
 msgstr "그래도 업로드"
@@ -1462,24 +2138,58 @@ msgstr "현재 볼트 파일을 Drive에 업로드합니다"
 msgid "Upload the current vault file to WebDAV"
 msgstr "현재 보관함 파일을 WebDAV에 업로드"
 
-msgid "Uppercase Letters (A-Z)"
-msgstr "대문자 (A-Z)"
+msgid "Uppercase letters (A–Z)"
+msgstr ""
+
+msgid "Use Google as favicon fallback"
+msgstr ""
+
+msgid "Use PIN"
+msgstr ""
 
 msgid "Use larger digits for easier reading"
 msgstr "더 읽기 쉬운 큰 숫자 사용"
 
-msgid "Use master password instead"
-msgstr "대신 마스터 비밀번호 사용"
+msgid "Use master password"
+msgstr ""
+
+msgid "Use the + button to create one."
+msgstr ""
+
+msgid "Use these codes when a site asks for two-step verification."
+msgstr ""
+
+msgid "Use this password"
+msgstr ""
 
 msgid "Use tighter spacing for long password lists"
 msgstr "긴 비밀번호 목록을 위해 간격 좁게 사용"
 
-msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
+msgid "Use when the service asks for a numeric code."
 msgstr ""
-"볼트 잠금 해제에 사용됩니다. 변경 시 저장된 모든 데이터가 다시 암호화됩니다."
+
+msgid "User"
+msgstr ""
+
+msgid "User copied"
+msgstr ""
+
+msgid "User or e-mail (optional)"
+msgstr ""
 
 msgid "Username"
 msgstr "사용자 이름"
+
+msgid ""
+"Uses Have I Been Pwned. Only the first 5 characters of a hash of each "
+"password are sent, never the password. Results are kept on this computer for "
+"7 days."
+msgstr ""
+
+msgid ""
+"Usually the same master password you use today. After replacing, the vault "
+"opens with this password."
+msgstr ""
 
 msgid "Vault"
 msgstr "보관함"
@@ -1491,26 +2201,38 @@ msgstr ""
 "하드웨어 등록 및 인증 기능이 완전히 구현될 때까지 FIDO2 볼트 보호를 사용할 "
 "수 없습니다. 기존 구성은 유지됩니다."
 
-msgid "Vault List"
-msgstr "보관함 목록"
-
 msgid "Vault already in sync"
 msgstr "보관함이 이미 동기화됨"
 
-msgid "Vault locked due to inactivity"
-msgstr "비활동으로 인해 볼트가 잠겼습니다"
+msgid "Vault locked after a period of inactivity"
+msgstr ""
+
+msgid "Vault locked. The open form was closed without saving."
+msgstr ""
 
 msgid "Vault must be unlocked to configure"
 msgstr "구성하려면 보관함을 잠금 해제해야 함"
 
-msgid "Vault will lock soon"
-msgstr "볼트가 곧 잠깁니다"
-
-msgid "Vault will lock soon due to inactivity"
-msgstr "비활성 상태로 인해 보관함이 곧 잠깁니다"
-
 msgid "Vendor"
 msgstr "제조사"
+
+msgid "Verification code"
+msgstr ""
+
+msgid "Verification code (optional)"
+msgstr ""
+
+msgid "Verification code removed"
+msgstr ""
+
+msgid "Verification code saved to the vault"
+msgstr ""
+
+msgid "Verification codes"
+msgstr ""
+
+msgid "Verification codes (unencrypted JSON)"
+msgstr ""
 
 msgid "Very Strong"
 msgstr "매우 강함"
@@ -1529,6 +2251,40 @@ msgstr "WebDAV / Nextcloud"
 
 msgid "WebDAV configured"
 msgstr "WebDAV 구성됨"
+
+msgid "Website"
+msgstr ""
+
+msgid "Website (optional)"
+msgstr ""
+
+msgid "What it contains"
+msgstr ""
+
+msgid ""
+"When a site offers two-step verification, add its setup key here to get the "
+"codes."
+msgstr ""
+
+msgid ""
+"When on, the Ashy Pass browser extension can read vault entries by unlocking "
+"from the system keyring, even while this window is locked. The key is "
+"dropped again after the auto-lock delay."
+msgstr ""
+
+msgid "Where do you want to bring your passwords from?"
+msgstr ""
+
+msgid "Where it goes"
+msgstr ""
+
+msgid "Where should the code be saved?"
+msgstr ""
+
+msgid ""
+"Wherever you save the file. Keep it off this computer too — on a USB drive "
+"or in your own cloud storage."
+msgstr ""
 
 msgid "Whole device — no partition table"
 msgstr "전체 장치 — 파티션 테이블 없음"
@@ -1563,14 +2319,33 @@ msgstr "LUKS2 헤더 쓰는 중"
 msgid "Wrong master password"
 msgstr "잘못된 마스터 비밀번호"
 
+msgid ""
+"You choose it when creating the copy. Without it the copy cannot be opened — "
+"Ashy Pass cannot recover it."
+msgstr ""
+
+msgid ""
+"You will need this password to restore the copy. You may reuse your master "
+"password; Ashy Pass cannot recover it."
+msgstr ""
+
+msgid "Your most used accesses can be here"
+msgstr ""
+
+msgid "Your vault is ready"
+msgstr ""
+
+msgid "Your vault was not changed."
+msgstr ""
+
+msgid "Your vault was not changed. The copy was saved at:"
+msgstr ""
+
 msgid "allocated"
 msgstr "할당됨"
 
 msgid "breached"
 msgstr "유출됨"
-
-msgid "characters"
-msgstr "자 이상이어야 합니다"
 
 msgid "duplicate"
 msgstr "중복"
@@ -1594,8 +2369,22 @@ msgstr "사용 가능"
 msgid "free of"
 msgstr "중 사용 가능"
 
+msgid "high"
+msgstr ""
+
+msgid "low"
+msgstr ""
+
+msgid "medium"
+msgstr ""
+
 msgid "more"
 msgstr "더 있음"
+
+#, rust-format
+msgid "new code in {} second"
+msgid_plural "new code in {} seconds"
+msgstr[0] ""
 
 msgid "no 2FA"
 msgstr "2FA 없음"
@@ -1629,8 +2418,118 @@ msgstr "확인됨"
 msgid "solid-state"
 msgstr "솔리드 스테이트"
 
+msgid "very high"
+msgstr ""
+
+msgid "very low"
+msgstr ""
+
 msgid "weak"
 msgstr "약함"
 
+#, rust-format
+msgid "{} cannot be imported."
+msgid_plural "{} cannot be imported."
+msgstr[0] ""
+
+#, rust-format
+msgid "{} character"
+msgid_plural "{} characters"
+msgstr[0] ""
+
+#, rust-format
+msgid "{} day."
+msgid_plural "{} days."
+msgstr[0] ""
+
+#, rust-format
+msgid "{} digit"
+msgid_plural "{} digits"
+msgstr[0] ""
+
+#, rust-format
+msgid "{} entry"
+msgid_plural "{} entries"
+msgstr[0] ""
+
+#, rust-format
+msgid "{} hour"
+msgid_plural "{} hours"
+msgstr[0] ""
+
+#, rust-format
+msgid "{} is already in the vault and will be skipped."
+msgid_plural "{} are already in the vault and will be skipped."
+msgstr[0] ""
+
+#, rust-format
+msgid "{} item imported."
+msgid_plural "{} items imported."
+msgstr[0] ""
+
+#, rust-format
+msgid "{} item will be imported."
+msgid_plural "{} items will be imported."
+msgstr[0] ""
+
+#, rust-format
+msgid ""
+"{} looks like an existing entry but has different content; it will be added, "
+"nothing is overwritten."
+msgid_plural ""
+"{} look like existing entries but have different content; they will be "
+"added, nothing is overwritten."
+msgstr[0] ""
+
+#, rust-format
+msgid "{} minute"
+msgid_plural "{} minutes"
+msgstr[0] ""
+
+#, rust-format
+msgid "{} of these entries is synchronized with Nextcloud Passwords."
+msgid_plural "{} of these entries are synchronized with Nextcloud Passwords."
+msgstr[0] ""
+
+#, rust-format
+msgid "{} password"
+msgid_plural "{} passwords"
+msgstr[0] ""
+
+#, rust-format
+msgid "{} second"
+msgid_plural "{} seconds"
+msgstr[0] ""
+
+#, rust-format
+msgid "{} was already in the vault."
+msgid_plural "{} were already in the vault."
+msgstr[0] ""
+
+#, rust-format
+msgid "{} was imported with an adjustment — see the details."
+msgid_plural "{} were imported with adjustments — see the details."
+msgstr[0] ""
+
+#, rust-format
+msgid "{} was not imported — see the details."
+msgid_plural "{} were not imported — see the details."
+msgstr[0] ""
+
+#, rust-format
+msgid "{} will be imported with an adjustment."
+msgid_plural "{} will be imported with adjustments."
+msgstr[0] ""
+
+#, rust-format
+msgid "{} word"
+msgid_plural "{} words"
+msgstr[0] ""
+
 msgid "…"
 msgstr "…"
+
+#, rust-format
+msgid "… and {} more"
+msgid_plural "… and {} more"
+msgstr[0] ""

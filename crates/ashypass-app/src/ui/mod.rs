@@ -5,6 +5,7 @@ pub mod entry_form;
 pub mod folders;
 pub mod generator_view;
 pub mod i18n;
+pub mod import_flow;
 pub mod preview;
 pub mod settings_dialog;
 pub mod totp_view;

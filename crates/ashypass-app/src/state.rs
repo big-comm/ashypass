@@ -67,6 +67,19 @@ impl FileStamp {
 
 pub type SharedState = Rc<AppState>;
 
+/// Bridge the core's vault-listener callback (Send + Sync, so it must be
+/// reachable from a background thread) into a glib-main-loop dispatch onto
+/// the bus, so subscribers never run off the main thread.
+fn bridge_vault_events(vault: &Vault, events: &Rc<EventBus>) {
+    let events = events.clone();
+    vault.add_change_listener(move || {
+        let events = events.clone();
+        glib::idle_add_local_once(move || {
+            events.emit(crate::events::AppEvent::VaultChanged);
+        });
+    });
+}
+
 impl AppState {
     pub fn new(vault: Vault) -> SharedState {
         let events = Rc::new(EventBus::new());
@@ -75,15 +88,7 @@ impl AppState {
         // dispatch onto the bus. Without `idle_add`, a future cross-thread
         // mutation could call subscribers off the main thread, which is
         // unsafe for GTK widgets.
-        {
-            let events = events.clone();
-            vault.add_change_listener(move || {
-                let events = events.clone();
-                glib::idle_add_local_once(move || {
-                    events.emit(crate::events::AppEvent::VaultChanged);
-                });
-            });
-        }
+        bridge_vault_events(&vault, &events);
         Rc::new(Self {
             vault: RefCell::new(vault),
             session: Rc::new(RefCell::new(SessionManager::default())),
@@ -97,6 +102,13 @@ impl AppState {
             }),
             sensitive_dialogs: RefCell::new(Vec::new()),
         })
+    }
+
+    /// Swap the open vault for `vault` (after a restore) and return the old
+    /// one. The new vault gets the same change notifications.
+    pub fn install_vault(&self, vault: Vault) -> Vault {
+        bridge_vault_events(&vault, &self.events);
+        std::mem::replace(&mut *self.vault.borrow_mut(), vault)
     }
 
     /// Register a dialog to be closed when the vault locks. It unregisters

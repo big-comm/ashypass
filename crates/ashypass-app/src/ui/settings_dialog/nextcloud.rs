@@ -10,7 +10,7 @@ use super::*;
 
 pub(super) fn build_nextcloud_passwords_group(
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     parent: gtk::Widget,
     dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) -> adw::PreferencesGroup {
@@ -133,7 +133,7 @@ pub(super) fn build_nextcloud_passwords_group(
 pub(super) fn show_nextcloud_dialog<F>(
     parent: Option<&gtk::Window>,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     unlock_parent: gtk::Widget,
     dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
     on_saved: F,
@@ -227,7 +227,7 @@ pub(super) fn show_nextcloud_dialog<F>(
 pub(super) fn show_nextcloud_initial_sync_dialog(
     parent: Option<&gtk::Window>,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     unlock_parent: gtk::Widget,
     dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) {
@@ -268,7 +268,7 @@ pub(super) fn show_nextcloud_initial_sync_dialog(
 pub(super) fn run_nextcloud_sync(
     parent: Option<&gtk::Window>,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     unlock_parent: Option<gtk::Widget>,
     dialog_slot: Option<Rc<RefCell<Option<adw::Dialog>>>>,
     active_row: Option<adw::ActionRow>,
@@ -389,7 +389,7 @@ pub(super) fn restore_nextcloud_sync_row(row: &adw::ActionRow) {
 pub(super) fn finish_nextcloud_sync(
     parent: Option<&gtk::Window>,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     result: NextcloudSyncResult,
 ) {
     match result {
@@ -417,7 +417,7 @@ pub(super) fn finish_nextcloud_sync(
 /// errors collapse behind an expander.
 pub(crate) fn present_sync_success_dialog(
     parent: Option<&gtk::Window>,
-    toast: &adw::ToastOverlay,
+    toast: &Toaster,
     report: &ashypass_core::sync::SyncReport,
 ) {
     let s = &report.stats;

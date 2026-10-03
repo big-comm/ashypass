@@ -97,16 +97,15 @@ pub fn run(vault: &Vault, opts: AuditOptions) -> Result<Report> {
             .iter()
             .map(|e| e.password.as_deref().unwrap_or(""))
             .collect();
-        match hibp::check_many(&passwords) {
-            Ok(statuses) => {
-                for (entry, status) in decrypted.iter().zip(statuses.iter()) {
-                    if let hibp::BreachStatus::Found { count } = status {
-                        breaches.insert(entry.id, *count);
-                    }
-                }
+        // Keep whatever could be checked: one unreachable range must not
+        // throw away the results for every other password.
+        let batch = hibp::check_many_report(&passwords);
+        for (entry, status) in decrypted.iter().zip(batch.statuses.iter()) {
+            if let Some(hibp::BreachStatus::Found { count }) = status {
+                breaches.insert(entry.id, *count);
             }
-            Err(e) => network_errors.push(format!("HIBP: {e}")),
         }
+        network_errors.extend(batch.errors.into_iter().map(|e| format!("HIBP: {e}")));
     }
 
     let mut findings: Vec<EntryFinding> = Vec::new();

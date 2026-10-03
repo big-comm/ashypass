@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-09 21:42-0300\n"
+"POT-Creation-Date: 2026-10-03 13:28-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -13,73 +13,108 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "0 disables auto-clear"
-msgstr "A 0 érték letiltja az automatikus törlést"
+msgid "1PUX export file"
+msgstr ""
 
-msgid "2FA"
-msgstr "2FA"
-
-msgid "2FA Codes"
-msgstr "2FA-kódok"
-
-msgid "2FA code added"
-msgstr "2FA-kód hozzáadva"
+msgid ""
+"A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
+"or WebDAV."
+msgstr ""
 
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "Egy 12 szavas BIP-39 kifejezés a feloldáshoz biztonsági kulcs nélkül. Csak "
 "egyszer jelenik meg."
 
-msgid "About"
-msgstr "Névjegy"
+msgid "A new access"
+msgstr ""
 
-msgid "Add 2FA Code"
-msgstr "2FA-kód hozzáadása"
+msgid "A new password to use on a website or app."
+msgstr ""
+
+msgid ""
+"A password is incorrect: the file password or the master password of the "
+"copy. Nothing was changed."
+msgstr ""
+
+msgid "A warning appears before it locks, with time to keep using it"
+msgstr ""
+
+msgid "About Ashy Pass"
+msgstr ""
+
+msgid "About the backup"
+msgstr ""
 
 msgid "Add FIDO2 token keyslot"
 msgstr "FIDO2 token kulcslyuk hozzáadása"
 
-msgid "Add Number at End"
-msgstr "Szám hozzáadása a végére"
-
-msgid "Add Password"
-msgstr "Jelszó hozzáadása"
-
-msgid "Add a TOTP secret to an entry to see live codes here."
-msgstr ""
-"Adj hozzá egy TOTP titkot egy bejegyzéshez, hogy itt lásd az élő kódokat."
-
 msgid "Add a hardware token keyslot"
 msgstr "Hardvertoken-kulcstartó hozzáadása"
+
+msgid "Add a number"
+msgstr ""
+
+msgid "Add an existing tag"
+msgstr ""
 
 msgid "Add attachment"
 msgstr "Melléklet hozzáadása"
 
+msgid "Add code"
+msgstr ""
+
 msgid "Add file"
 msgstr "Fájl hozzáadása"
 
-msgid "Add your first password using the + button"
-msgstr "Adja hozzá az első jelszavát a + gombbal"
+msgid "Add password"
+msgstr ""
+
+msgid "Add the copy's entries to the current vault"
+msgstr ""
+
+msgid "Add the entries of a .ashy backup to this vault"
+msgstr ""
+
+msgid "Add to favorites"
+msgstr ""
+
+msgid "Add verification code"
+msgstr ""
+
+msgid "Added to favorites"
+msgstr ""
 
 msgid ""
-"After auto-lock or restart, unlock with a short PIN instead of the master "
-"password on this device. The vault key is stored encrypted by the PIN."
+"Adding entries works with .ashy copies. For a .db copy, choose “Replace”."
 msgstr ""
-"Automatikus zárolás vagy újraindítás után ezen az eszközön egy rövid PIN-"
-"kóddal oldható fel a tárhely a főjelszó helyett. A tárolókulcs a PIN-kóddal "
-"titkosítva van tárolva."
+
+msgid "Address copied"
+msgstr ""
+
+msgid "Adjust length and characters"
+msgstr ""
+
+msgid "Adjust number of digits"
+msgstr ""
+
+msgid "Adjust words and separator"
+msgstr ""
 
 msgid "Algorithm"
 msgstr "Algoritmus"
 
-msgid "All"
-msgstr "Összes"
-
 msgid "All clear"
 msgstr "Minden rendben"
 
+msgid "All entries are synchronized with Nextcloud Passwords."
+msgstr ""
+
 msgid "All fields are required."
 msgstr "Minden mező kitöltése kötelező."
+
+msgid "All folders"
+msgstr ""
 
 msgid ""
 "All partitions, files, and filesystem signatures will be permanently "
@@ -90,6 +125,9 @@ msgstr ""
 msgid "Allow TRIM through encrypted mapping"
 msgstr "TRIM engedélyezése titkosított leképezésen keresztül"
 
+msgid "Allow the browser extension"
+msgstr ""
+
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
 "Uploading now would orphan the remote changes."
@@ -97,6 +135,15 @@ msgstr ""
 "Egy másik eszköz feltöltött egy újabb pillanatképet, mióta ez az eszköz "
 "utoljára szinkronizált. A mostani feltöltéssel a távoli módosítások "
 "elárvulnának."
+
+msgid "Answer requests from the installed extension"
+msgstr ""
+
+msgid ""
+"Anyone who gets the file can see what it contains: names, users, websites, "
+"passwords and notes. Verification codes, folders and attachments are not "
+"included. Confirm your master password to continue."
+msgstr ""
 
 msgid "App password"
 msgstr "Alkalmazásjelszó"
@@ -110,30 +157,13 @@ msgstr "Alkalmazás"
 msgid "Applying local deletions"
 msgstr "Helyi törlések alkalmazása"
 
-msgid "Are you sure you want to delete"
-msgstr "Biztosan törölni szeretné"
-
-msgid "Argon2id + AES-256-GCM, password-protected. Re-importable by Ashy Pass."
+msgid "Ashy Pass backups"
 msgstr ""
-"Argon2id + AES-256-GCM, jelszóval védett. Újraimportálható az Ashy Pass "
-"alkalmazásba."
 
 msgid ""
-"Argon2id turns your master password into the vault encryption key; it is not "
-"a physical security key. Higher costs slow brute force but also slow unlock. "
-"Auto-tune picks values calibrated to ~500 ms on this machine. Existing "
-"master hashes keep their original costs; tuned values apply on the next "
-"master password change."
+"Ashy Pass cannot recover this password. Without it, nobody — including you — "
+"can open the vault. Write it down somewhere safe."
 msgstr ""
-"Az Argon2id a főjelszót alakítja át a tároló titkosítási kulcsává; ez nem "
-"egy fizikai biztonsági kulcs. A magasabb költségek lassítják a brute force "
-"támadásokat, de a feloldást is. Az automatikus hangolás olyan értékeket "
-"választ, amelyek ezen a gépen körülbelül 500 ms-ra vannak kalibrálva. A "
-"meglévő fő jelszóhashek megtartják eredeti költségeiket; a hangolt értékek a "
-"következő főjelszó-változtatáskor lépnek életbe."
-
-msgid "Ashy Pass"
-msgstr "Ashy Pass"
 
 msgid ""
 "Ashy Pass could not reach Nextcloud. Check your connection, server address, "
@@ -152,11 +182,11 @@ msgstr ""
 msgid "Attachment added"
 msgstr "Melléklet hozzáadva"
 
-msgid "Attachment deleted"
-msgstr "Melléklet törölve"
-
 msgid "Attachment not found"
 msgstr "Melléklet nem található"
+
+msgid "Attachment removed"
+msgstr ""
 
 msgid "Attachment saved"
 msgstr "Melléklet elmentve"
@@ -164,20 +194,17 @@ msgstr "Melléklet elmentve"
 msgid "Attachments"
 msgstr "Mellékletek"
 
-msgid "Audit Options"
-msgstr "Ellenőrzési beállítások"
-
 msgid "Audit failed"
 msgstr "Ellenőrzés sikertelen"
-
-msgid "Auto-lock after (seconds)"
-msgstr "Automatikus zárolás (másodperc)"
 
 msgid "Auto-tune"
 msgstr "Automatikus hangolás"
 
-msgid "Avoid characters like 0, O, 1, l, I"
-msgstr "Kerülje a 0, O, 1, l, I karaktereket"
+msgid "Automatic lock"
+msgstr ""
+
+msgid "Avoid look-alike characters (l, 1, O, 0)"
+msgstr ""
 
 msgid "Back"
 msgstr "Vissza"
@@ -188,26 +215,44 @@ msgstr "Biztonsági mentés most"
 msgid "Backup Phrase"
 msgstr "Biztonsági mentési kifejezés"
 
+msgid "Backup created:"
+msgstr ""
+
 msgid "Backup failed"
 msgstr "Biztonsági mentés sikertelen"
+
+msgid "Backup file"
+msgstr ""
 
 msgid "Backup phrase"
 msgstr "Biztonsági mentési kifejezés"
 
+msgid "Backup restored"
+msgstr ""
+
 msgid "Backup uploaded"
 msgstr "Biztonsági mentés feltöltve"
 
-msgid "Benchmark this machine (~5 s)"
-msgstr "Gép teljesítményének mérése (~5 mp)"
+msgid "Backups"
+msgstr ""
 
-msgid "Bitwarden, Chrome, 1Password compatible columns"
-msgstr "Bitwarden, Chrome, 1Password kompatibilis oszlopok"
+msgid "Before importing"
+msgstr ""
+
+msgid "Bring passwords from another app or browser"
+msgstr ""
+
+msgid "Bring your passwords"
+msgstr ""
+
+msgid "Browser"
+msgstr ""
+
+msgid "Browser extension"
+msgstr ""
 
 msgid "Bus / media"
 msgstr "Busz / adathordozó"
-
-msgid "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
-msgstr "CSV, Bitwarden JSON, 1Password 1PUX, Aegis JSON, andOTP JSON"
 
 msgid "Cancel"
 msgstr "Mégse"
@@ -215,47 +260,85 @@ msgstr "Mégse"
 msgid "Capacity"
 msgstr "Kapacitás"
 
-msgid "Capitalize Words"
-msgstr "Szavak nagybetűsítése"
+msgid "Capitalize words"
+msgstr ""
 
-msgid "Category"
-msgstr "Kategória"
+msgid "Caps Lock is on"
+msgstr ""
 
-msgid "Change Master Password"
-msgstr "Főjelszó módosítása"
+msgid "Change master password"
+msgstr ""
 
-msgid "Check Have I Been Pwned (online)"
-msgstr "Have I Been Pwned ellenőrzése (online)"
+msgid "Change master password…"
+msgstr ""
 
-msgid "Choose a 1Password .1pux archive"
-msgstr "Válasszon egy 1Password .1pux archívumot"
+msgid "Change only if the site shows different values"
+msgstr ""
 
-msgid "Choose a Bitwarden JSON export"
-msgstr "Válasszon egy Bitwarden JSON exportot"
+msgid "Changes saved to the vault"
+msgstr ""
 
-msgid "Choose a CSV file"
-msgstr "Válasszon egy CSV fájlt"
+msgid "Check known data breaches (online)"
+msgstr ""
 
-msgid "Choose an Aegis JSON export"
-msgstr "Válasszon egy Aegis JSON exportot"
+msgid "Check my passwords"
+msgstr ""
 
-msgid "Choose an andOTP JSON export"
-msgstr "Válasszon egy andOTP JSON exportot"
+msgid "Check now"
+msgstr ""
 
-msgid "Clear clipboard after (seconds)"
-msgstr "Vágólap törlése (másodperc)"
+msgid "Choose a backup"
+msgstr ""
+
+msgid ""
+"Choose a master password. It protects everything you keep in Ashy Pass on "
+"this computer."
+msgstr ""
+
+msgid "Choose the 1Password export"
+msgstr ""
+
+msgid "Choose the Aegis export"
+msgstr ""
+
+msgid "Choose the Ashy Pass backup"
+msgstr ""
+
+msgid "Choose the Bitwarden export"
+msgstr ""
+
+msgid "Choose the CSV file"
+msgstr ""
+
+msgid "Choose the KeePass database"
+msgstr ""
+
+msgid "Choose the andOTP export"
+msgstr ""
+
+msgid "Choose this folder when adding or editing a password."
+msgstr ""
+
+msgid "Choose…"
+msgstr ""
+
+msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
+msgstr ""
+
+msgid "Clear copied passwords after"
+msgstr ""
 
 msgid "Clear history"
 msgstr "Előzmények törlése"
-
-msgid "Click the + button to add a file."
-msgstr "Kattints a + gombra egy fájl hozzáadásához."
 
 msgid "Client ID"
 msgstr "Ügyfélazonosító"
 
 msgid "Client Secret (optional)"
 msgstr "Ügyfél titkos kulcs (opcionális)"
+
+msgid "Clipboard"
+msgstr ""
 
 msgid "Close"
 msgstr "Bezárás"
@@ -269,8 +352,14 @@ msgstr "Leképezés bezárása"
 msgid "Closing mapping"
 msgstr "Leképezés bezárása"
 
-msgid "Cloud"
-msgstr "Felhő"
+msgid "Code copied"
+msgstr ""
+
+msgid "Code settings"
+msgstr ""
+
+msgid "Columns such as name, url, username, password"
+msgstr ""
 
 msgid "Compact vault list"
 msgstr "Tömör tárolólista"
@@ -290,53 +379,170 @@ msgstr "Konfigurálás sikertelen"
 msgid "Configured"
 msgstr "Konfigurálva"
 
+msgid "Confirm"
+msgstr ""
+
 msgid "Confirm Device"
 msgstr "Eszköz megerősítése"
 
 msgid "Confirm Password"
 msgstr "Jelszó megerősítése"
 
-msgid "Confirm new password"
-msgstr "Új jelszó megerősítése"
+msgid "Confirm master password"
+msgstr ""
+
+msgid "Confirm new master password"
+msgstr ""
 
 msgid "Confirm password"
 msgstr "Jelszó megerősítése"
 
+msgid "Confirm your master password to create a backup."
+msgstr ""
+
+msgid "Confirm your master password to export your data."
+msgstr ""
+
 msgid "Conflicts"
 msgstr "Ütközések"
+
+msgid "Connecting the extension"
+msgstr ""
 
 msgid "Continue"
 msgstr "Folytatás"
 
+msgid "Copies in the cloud"
+msgstr ""
+
 msgid "Copy"
 msgstr "Másolás"
 
-msgid "Copy Code"
-msgstr "Kód másolása"
+msgid "Copy address"
+msgstr ""
 
-msgid "Copy Password"
-msgstr "Jelszó másolása"
+msgid "Copy code"
+msgstr ""
 
-msgid "Copy to Clipboard"
-msgstr "Másolás vágólapra"
+msgid "Copy downloaded and checked"
+msgstr ""
 
-msgid "Could not disable quick-unlock"
-msgstr "Nem sikerült letiltani a gyors feloldást"
+msgid "Copy of the vault from Ashy Pass 2"
+msgstr ""
+
+msgid "Copy password"
+msgstr ""
+
+msgid "Copy this old password"
+msgstr ""
+
+msgid "Copy user"
+msgstr ""
+
+msgid "Could not add the attachment"
+msgstr ""
+
+msgid "Could not change the favorite"
+msgstr ""
+
+msgid "Could not clear the history"
+msgstr ""
+
+msgid "Could not create the folder"
+msgstr ""
+
+msgid "Could not create the vault"
+msgstr ""
+
+msgid "Could not decrypt the attachment"
+msgstr ""
+
+msgid "Could not delete"
+msgstr ""
+
+msgid "Could not lock the drive"
+msgstr ""
+
+msgid "Could not open this access"
+msgstr ""
+
+msgid "Could not read the file"
+msgstr ""
+
+msgid "Could not read the history"
+msgstr ""
+
+msgid "Could not read the vault"
+msgstr ""
+
+msgid "Could not remove the attachment"
+msgstr ""
+
+msgid "Could not remove the code"
+msgstr ""
+
+msgid "Could not remove the folder"
+msgstr ""
+
+msgid "Could not remove the old copy"
+msgstr ""
+
+msgid "Could not rename the folder"
+msgstr ""
+
+msgid "Could not restore. Look in Deleted items."
+msgstr ""
+
+msgid "Could not save the file"
+msgstr ""
+
+msgid "Could not save. Nothing was changed in the vault"
+msgstr ""
 
 msgid "Could not sync"
 msgstr "A szinkronizálás nem sikerült"
 
+msgid "Could not turn off the PIN"
+msgstr ""
+
+msgid "Could not unlock the vault"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
 msgid "Create Master Password"
 msgstr "Főjelszó létrehozása"
 
+msgid "Create backup"
+msgstr ""
+
 msgid "Create filesystem"
 msgstr "Fájlrendszer létrehozása"
+
+msgid "Create folder"
+msgstr ""
+
+msgid "Create folder…"
+msgstr ""
+
+msgid "Create my vault"
+msgstr ""
+
+msgid "Create password"
+msgstr ""
+
+msgid "Create your vault"
+msgstr ""
 
 msgid "Created locally"
 msgstr "Helyileg létrehozva"
 
 msgid "Created remotely"
 msgstr "Távolról létrehozva"
+
+msgid "Creating a password here does not change your password on any site."
+msgstr ""
 
 msgid "Creating filesystem"
 msgstr "Fájlrendszer létrehozása"
@@ -350,29 +556,26 @@ msgstr "Jelenlegi paraméterek"
 msgid "Current passphrase"
 msgstr "Jelenlegi jelszó"
 
-msgid "Current password"
-msgstr "Jelenlegi jelszó"
+msgid "Current state"
+msgstr ""
 
-msgid "Data"
-msgstr "Adatok"
-
-msgid "Decrypt failed"
-msgstr "Visszafejtés sikertelen"
+msgid "Dark"
+msgstr ""
 
 msgid "Delete"
 msgstr "Törlés"
 
-msgid "Delete 2FA Entry?"
-msgstr "Törli a 2FA bejegyzést?"
+msgid "Delete access"
+msgstr ""
 
-msgid "Delete Password?"
-msgstr "Jelszó törlése?"
-
-msgid "Delete attachment"
-msgstr "Melléklet törlése"
+msgid "Delete access…"
+msgstr ""
 
 msgid "Delete permanently"
 msgstr "Végleges törlés"
+
+msgid "Delete the export file if it was not protected by a password."
+msgstr ""
 
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
@@ -382,23 +585,32 @@ msgstr ""
 "következő indításakor véglegesen eltávolításra kerülnek. Állítsd 0-ra a kuka "
 "kihagyásához."
 
+msgid "Deleted items"
+msgstr ""
+
+msgid "Deleted items are not kept (see Settings). This cannot be undone."
+msgstr ""
+
+msgid "Deleted items…"
+msgstr ""
+
 msgid "Deleted remotely"
 msgstr "Távolról eltávolítva"
+
+msgid "Delete…"
+msgstr ""
+
+msgid "Details"
+msgstr ""
 
 msgid "Device"
 msgstr "Eszköz"
 
+msgid "Device path"
+msgstr ""
+
 msgid "Digits"
 msgstr "Számjegyek"
-
-msgid "Digits (0-9)"
-msgstr "Számjegyek (0-9)"
-
-msgid "Disable"
-msgstr "Letiltás"
-
-msgid "Disabled"
-msgstr "Letiltva"
 
 msgid "Done"
 msgstr "Kész"
@@ -406,35 +618,35 @@ msgstr "Kész"
 msgid "Done."
 msgstr "Kész."
 
+msgid "Download the latest copy"
+msgstr ""
+
 msgid "Downloading remote changes"
 msgstr "Távoli változtatások letöltése"
 
-msgid "Drives"
-msgstr "Meghajtók"
+msgid "Drive locked"
+msgstr ""
+
+msgid "Easier to type and remember."
+msgstr ""
 
 msgid "Edit"
 msgstr "Szerkesztés"
 
-msgid "Edit 2FA Entry"
-msgstr "2FA bejegyzés szerkesztése"
+msgid "Edit access…"
+msgstr ""
 
-msgid "Edit Password"
-msgstr "Jelszó szerkesztése"
+msgid "Edit password"
+msgstr ""
+
+msgid "Edit…"
+msgstr ""
 
 msgid "Empty passphrase"
 msgstr "Üres jelszó"
 
 msgid "Empty trash"
 msgstr "Kuka ürítése"
-
-msgid "Enable / Update"
-msgstr "Engedélyezés / Frissítés"
-
-msgid "Enabled for this session"
-msgstr "Engedélyezve erre a munkamenetre"
-
-msgid "Enabled on this device"
-msgstr "Engedélyezve ezen az eszközön"
 
 msgid "Encrypt"
 msgstr "Titkosítás"
@@ -445,17 +657,11 @@ msgstr "Meghajtó titkosítása"
 msgid "Encrypt KeePass export"
 msgstr "KeePass exportálás titkosítása"
 
-msgid "Encrypt export"
-msgstr "Exportálás titkosítása"
-
 msgid "Encrypted as"
 msgstr "Titkosítva mint"
 
 msgid "Encrypted device"
 msgstr "Titkosított eszköz"
-
-msgid "Encrypted export complete"
-msgstr "Titkosított exportálás kész"
 
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Titkosított pillanatkép feltöltése ütközésészleléssel"
@@ -471,11 +677,12 @@ msgstr ""
 "A titkosított tár eredeti formában lett feltöltve. Mappa: \"AshyPass "
 "Backups\"."
 
-msgid "Encrypted with your master key. Stored inside the vault."
-msgstr "Titkosítva a mesterkulcsoddal. A tárolóban tárolva."
-
 msgid "Encrypted zero (recommended — slow but secure)"
 msgstr "Titkosított nullázás (ajánlott – lassú, de biztonságos)"
+
+msgid ""
+"Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
+msgstr ""
 
 msgid "Encrypting…"
 msgstr "Titkosítás folyamatban…"
@@ -489,23 +696,26 @@ msgstr "Regisztrálás"
 msgid "Enrol FIDO2 Token"
 msgstr "FIDO2 token regisztrálása"
 
-msgid "Enter the master password for this .kdbx file."
-msgstr "Adja meg a .kdbx fájl fő jelszavát."
+msgid "Enter a label."
+msgstr ""
 
-msgid "Enter the password used when this file was exported."
-msgstr "Adja meg a fájl exportálásakor használt jelszót."
+msgid "Enter the PIN set up on this computer."
+msgstr ""
 
-msgid "Enter your master password to unlock"
-msgstr "Add meg a fő jelszavad a feloldáshoz"
+msgid "Enter the password, or add a verification code below."
+msgstr ""
 
-msgid "Entry deleted"
-msgstr "Bejegyzés törölve"
+msgid "Enter your PIN"
+msgstr ""
+
+msgid "Enter your master password"
+msgstr ""
+
+msgid "Enter your master password to access your saved items."
+msgstr ""
 
 msgid "Entry restored"
 msgstr "Bejegyzés visszaállítva"
-
-msgid "Entry updated"
-msgstr "Bejegyzés frissítve"
 
 msgid "Error"
 msgstr "Hiba"
@@ -513,38 +723,46 @@ msgstr "Hiba"
 msgid "Error details"
 msgstr "Hibák részletei"
 
-msgid "Error saving password"
-msgstr "Hiba a jelszó mentésekor"
+msgid "Estimated strength"
+msgstr ""
+
+msgid ""
+"Everything in the vault is encrypted again with the new password. Backups "
+"made earlier still open with the password they were made with."
+msgstr ""
 
 msgid "Everything is in sync"
 msgstr "Minden szinkronban van"
 
+msgid ""
+"Everything returns to how it was when the copy was made, including "
+"attachments and password history. Entries created later disappear. The "
+"current vault is kept in a file next to it."
+msgstr ""
+
 msgid "Everything was already in sync"
 msgstr "Minden már szinkronizálva volt"
-
-msgid "Exclude Ambiguous Characters"
-msgstr "Félreérthető karakterek kizárása"
-
-msgid "Export"
-msgstr "Exportálás"
 
 msgid "Export complete"
 msgstr "Exportálás kész"
 
-msgid "Export encrypted (.ashy)"
-msgstr "Titkosított exportálás (.ashy)"
-
 msgid "Export failed"
 msgstr "Exportálás sikertelen"
 
-msgid "Export to CSV (plaintext)"
-msgstr "Exportálás CSV-be (egyszerű szöveg)"
+msgid "Export to KeePass"
+msgstr ""
 
-msgid "Export to KeePass (.kdbx)"
-msgstr "Exportálás KeePass formátumba (.kdbx)"
+msgid "Export to KeePass or to a file anyone can read"
+msgstr ""
+
+msgid "Export unprotected file"
+msgstr ""
 
 msgid "Export vault to CSV"
 msgstr "Tár exportálása CSV-be"
+
+msgid "External drives"
+msgstr ""
 
 msgid "FIDO2 keyslot added"
 msgstr "FIDO2 kulcstartó hozzáadva"
@@ -555,14 +773,8 @@ msgstr "A tár FIDO2-védelme nem érhető el"
 msgid "Failed"
 msgstr "Sikertelen"
 
-msgid "Failed to read history"
-msgstr "Az előzmények beolvasása sikertelen"
-
 msgid "Failed to scan drives"
 msgstr "A meghajtók keresése sikertelen"
-
-msgid "Failed to setup master password"
-msgstr "A főjelszó beállítása sikertelen"
 
 msgid "Failed to unlock vault"
 msgstr "A tároló feloldása sikertelen"
@@ -579,8 +791,14 @@ msgstr "Webhelyikonok lekérése és megjelenítése a tárolóbejegyzések mell
 msgid "Fetching remote passwords"
 msgstr "Távoli jelszavak lekérése"
 
+msgid "Files are encrypted and stored inside the vault."
+msgstr ""
+
 msgid "Filesystem"
 msgstr "Fájlrendszer"
+
+msgid "Fill in all three fields."
+msgstr ""
 
 msgid "Findings"
 msgstr "Eredmények"
@@ -588,11 +806,36 @@ msgstr "Eredmények"
 msgid "Finishing synchronization"
 msgstr "Szinkronizálás befejezése"
 
-msgid "Focus Search"
-msgstr "Keresés fókuszálása"
+msgid ""
+"First export your passwords from the other app, then choose that file here. "
+"Before importing you will see what was recognized. Delete unprotected export "
+"files afterwards."
+msgstr ""
 
 msgid "Folder"
 msgstr "Mappa"
+
+msgid "Folder created"
+msgstr ""
+
+msgid "Folder name"
+msgstr ""
+
+msgid "Folder removed. Its passwords were kept."
+msgstr ""
+
+msgid "Folder renamed"
+msgstr ""
+
+msgid "Folders"
+msgstr ""
+
+msgid ""
+"Folders organize your passwords. You can choose them when adding or editing."
+msgstr ""
+
+msgid "Follow the system"
+msgstr ""
 
 msgid ""
 "For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
@@ -601,79 +844,101 @@ msgstr ""
 "Nextcloud esetén az alap URL így néz ki: https://cloud.example.com/"
 "remote.php/dav/files/FELHASZNÁLÓNÉV"
 
+msgid ""
+"From another app: create your vault first, then open Backups → Import "
+"passwords.\n"
+"\n"
+"From a copy made by Ashy Pass: restore it now. The vault will open with the "
+"master password of the copy."
+msgstr ""
+
 msgid "Generate Backup Phrase"
 msgstr "Biztonsági mentési kifejezés generálása"
 
-msgid "Generate New"
-msgstr "Új generálása"
+msgid "Generate another"
+msgstr ""
 
-msgid "Generate Password"
-msgstr "Jelszó generálása"
+msgid "Generate password"
+msgstr ""
 
-msgid "Generated Password"
-msgstr "Generált jelszó"
+msgid "Generated password"
+msgstr ""
 
-msgid "Generation Type"
-msgstr "Generálás típusa"
+msgid "Give this access a name, for example the site or app."
+msgstr ""
 
-msgid "Generator"
-msgstr "Generátor"
+msgid "Go to search"
+msgstr ""
 
 msgid "Google Drive"
 msgstr "Google Drive"
 
-msgid "Groups"
-msgstr "Csoportok"
+msgid "Google Drive and WebDAV"
+msgstr ""
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr ""
 "Segíti az SSD kopáskiegyenlítését, de a szabad terület mintázatait "
 "kiszivárogtatja az eszköz felé."
 
+msgid "Hide password"
+msgstr ""
+
+msgid ""
+"Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
+"tune picks values for about half a second on this computer; they apply the "
+"next time the master password is set or changed."
+msgstr ""
+
 msgid "History cleared"
 msgstr "Előzmények törölve"
+
+msgid "How the master password becomes the encryption key"
+msgstr ""
+
+msgid "How to restore"
+msgstr ""
+
+msgid "I already keep passwords somewhere else"
+msgstr ""
 
 msgid "I understand — Continue"
 msgstr "Értem – Folytatás"
 
+msgid ""
+"If this computer is lost or damaged, a backup is the only way to get your "
+"passwords back."
+msgstr ""
+
 msgid "Import"
 msgstr "Importálás"
-
-msgid "Import .ashy"
-msgstr ".ashy importálása"
-
-msgid "Import 1Password (.1pux)"
-msgstr "1Password (.1pux) importálása"
-
-msgid "Import Aegis (TOTP)"
-msgstr "Aegis (TOTP) importálása"
-
-msgid "Import Bitwarden (JSON)"
-msgstr "Bitwarden (JSON) importálása"
-
-msgid "Import CSV"
-msgstr "CSV importálása"
-
-msgid "Import KeePass (.kdbx)"
-msgstr "KeePass importálás (.kdbx)"
-
-msgid "Import andOTP"
-msgstr "andOTP importálása"
 
 msgid "Import complete"
 msgstr "Importálás kész"
 
-msgid "Import failed"
-msgstr "Importálás sikertelen"
+msgid "Import partly complete"
+msgstr ""
 
-msgid "Import from .ashy"
-msgstr "Importálás .ashy fájlból"
+msgid "Import passwords"
+msgstr ""
+
+msgid "Import passwords…"
+msgstr ""
 
 msgid "Incorrect PIN"
 msgstr "Helytelen PIN-kód"
 
+#, rust-format
+msgid "Incorrect PIN. {} attempt left."
+msgid_plural "Incorrect PIN. {} attempts left."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Incorrect master password"
 msgstr "Helytelen fő jelszó"
+
+msgid "Incorrect master password. Nothing was exported."
+msgstr ""
 
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
@@ -684,28 +949,53 @@ msgstr ""
 "műveletet az eszközön, amikor a rendszer kéri. Az új kulcstartó "
 "engedélyezéséhez meg kell adnia a jelenlegi jelszavát."
 
+msgid ""
+"Install the extension in Chrome or Firefox, then register this computer "
+"with:  ashypass-native-host --install <extension-id>"
+msgstr ""
+
 msgid "Internal error: no passphrase set"
 msgstr "Belső hiba: nincs beállítva jelszó"
 
-msgid "Invalid TOTP secret"
-msgstr "Érvénytelen TOTP titok"
-
-msgid "Invalid TOTP settings"
-msgstr "Érvénytelen TOTP beállítások"
-
-msgid "KDBX3/KDBX4 password-protected database"
-msgstr "KDBX3/KDBX4 jelszóval védett adatbázis"
-
-msgid "KDBX4 with Argon2id + AES-256. Opens in KeePassXC, KeeWeb, etc."
+msgid "It can be restored from Deleted items."
 msgstr ""
-"KDBX4 Argon2id + AES-256 védelemmel. Megnyitható KeePassXC, KeeWeb és más "
-"programokban."
+
+msgid ""
+"It opens the vault on this computer. Nobody can recover it for you — not "
+"even Ashy Pass."
+msgstr ""
+
+msgid "Its user, password and other details appear here."
+msgstr ""
+
+msgid "KeePass (.kdbx)…"
+msgstr ""
 
 msgid "KeePass export complete"
 msgstr "KeePass exportálás kész"
 
+msgid ""
+"KeePass keeps the file protected by a password. A CSV file can be read by "
+"anyone who gets hold of it."
+msgstr ""
+
+msgid ""
+"Keep a protected copy of your vault somewhere safe, and bring your passwords "
+"in or out."
+msgstr ""
+
 msgid "Keep deleted entries for (days)"
 msgstr "Törölt bejegyzések megőrzése (napokban)"
+
+msgid "Keep using"
+msgstr ""
+
+msgid ""
+"Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
+"the vault opens by itself when Ashy Pass starts. Anyone who can use your "
+"logged-in session can then open the vault. Locking still requires the master "
+"password or PIN to unlock again."
+msgstr ""
 
 msgid "Kept local version"
 msgstr "Helyi verzió megtartva"
@@ -713,11 +1003,16 @@ msgstr "Helyi verzió megtartva"
 msgid "Kept remote version"
 msgstr "Távoli verzió megtartva"
 
+msgid ""
+"Kept when your vault was upgraded. It uses the older, weaker protection of "
+"version 2. Remove it once you are sure the upgraded vault works."
+msgstr ""
+
 msgid "Key"
 msgstr "Kulcs"
 
-msgid "Key Derivation (Argon2id)"
-msgstr "Kulcslevezetés (Argon2id)"
+msgid "Key derivation (Argon2id)"
+msgstr ""
 
 msgid "Key registered"
 msgstr "Kulcs regisztrálva"
@@ -725,8 +1020,8 @@ msgstr "Kulcs regisztrálva"
 msgid "Key removed"
 msgstr "Kulcs eltávolítva"
 
-msgid "Keyboard Shortcuts"
-msgstr "Billentyűparancsok"
+msgid "Keyboard shortcuts"
+msgstr ""
 
 msgid "Keyring error"
 msgstr "Kulcstartó hiba"
@@ -734,8 +1029,20 @@ msgstr "Kulcstartó hiba"
 msgid "Label"
 msgstr "Címke"
 
-msgid "Large 2FA codes"
-msgstr "Nagy 2FA kódok"
+msgid "Label too long for this filesystem. Maximum length in bytes"
+msgstr ""
+
+msgid "Large verification codes"
+msgstr ""
+
+msgid "Last 4 characters of the serial"
+msgstr ""
+
+msgid "Last backup made on this computer"
+msgstr ""
+
+msgid "Last changed:"
+msgstr ""
 
 msgid "Launch the encryption wizard"
 msgstr "Titkosítási varázsló indítása"
@@ -743,24 +1050,31 @@ msgstr "Titkosítási varázsló indítása"
 msgid "Length"
 msgstr "Hosszúság"
 
+msgid "Light"
+msgstr ""
+
 msgid "Lock"
 msgstr "Zárolás"
 
-msgid "Lock Vault"
-msgstr "Tár zárolása"
-
-msgid "Lock vault when idle for this long"
-msgstr "Tár zárolása ennyi idejű tétlenség után"
-
-msgid "Lowercase Letters (a-z)"
-msgstr "Kisbetűk (a-z)"
-
-msgid "Mark entries that are linked to Nextcloud Passwords"
+msgid "Lock after inactivity"
 msgstr ""
-"A Nextcloud Passwords szolgáltatáshoz kapcsolódó bejegyzések megjelölése"
 
-msgid "Mark passwords as favorite with the star icon"
-msgstr "Jelöld meg a jelszavakat kedvencként a csillag ikonnal"
+msgid "Lock the vault now (Ctrl+L)"
+msgstr ""
+
+msgid "Lock when the screen locks or the computer sleeps"
+msgstr ""
+
+msgid ""
+"Looks for weak, repeated and old passwords, accounts without a verification "
+"code and, if you allow it, passwords that appeared in known data breaches."
+msgstr ""
+
+msgid "Lowercase letters (a–z)"
+msgstr ""
+
+msgid "Main menu"
+msgstr ""
 
 msgid "Master Password"
 msgstr "Fő jelszó"
@@ -768,14 +1082,20 @@ msgstr "Fő jelszó"
 msgid "Master password"
 msgstr "Fő jelszó"
 
-msgid "Master password changed."
-msgstr "Főjelszó módosítva."
+msgid "Master password changed. If you used a PIN, set it up again."
+msgstr ""
 
-msgid "Master password is in the keyring"
-msgstr "A fő jelszó a kulcstartóban van"
+msgid "Master password when the copy was made"
+msgstr ""
+
+msgid "Measures this computer (about 5 seconds)"
+msgstr ""
 
 msgid "Medium"
 msgstr "Közepes"
+
+msgid "Minimum length:"
+msgstr ""
 
 msgid "Model"
 msgstr "Modell"
@@ -783,17 +1103,53 @@ msgstr "Modell"
 msgid "Modern password generator and encrypted password vault"
 msgstr "Modern jelszógenerátor és titkosított jelszótároló"
 
+msgid "More actions"
+msgstr ""
+
+msgid "More options"
+msgstr ""
+
+msgid "Moved to Deleted items"
+msgstr ""
+
+msgid "My passwords"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Names, accounts and sites were searched."
+msgstr ""
+
+msgid "Names, accounts and sites with verification codes were searched."
+msgstr ""
+
 msgid "Navigation"
 msgstr "Navigáció"
 
-msgid "New Entry"
-msgstr "Új bejegyzés"
+msgid "Never"
+msgstr ""
 
-msgid "New PIN (6+ chars)"
-msgstr "Új PIN-kód (min. 6 karakter)"
+msgid "New PIN (at least 6 characters)"
+msgstr ""
 
-msgid "New password"
-msgstr "Új jelszó"
+msgid "New code every (seconds)"
+msgstr ""
+
+#, rust-format
+msgid "New code in {} second"
+msgid_plural "New code in {} seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "New folder name"
+msgstr ""
+
+msgid "New folder…"
+msgstr ""
+
+msgid "New master password"
+msgstr ""
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
@@ -809,26 +1165,26 @@ msgstr ""
 "a bejegyzéseket az Ashy Passban egy jelszó hozzáadásával, hogy elküldhetők "
 "legyenek."
 
-msgid "No 2FA Codes"
-msgstr "Nincsenek kétfaktoros kódok"
-
-msgid "No 2FA codes match your search"
-msgstr "Nincs a keresésednek megfelelő kétfaktoros kód"
-
-msgid "No Favorites"
-msgstr "Nincsenek kedvencek"
-
-msgid "No Passwords Stored"
-msgstr "Nincsenek tárolt jelszavak"
-
-msgid "No Results"
-msgstr "Nincs találat"
-
 msgid "No attachments"
 msgstr "Nincs melléklet"
 
+msgid "No backup made on this computer yet"
+msgstr ""
+
+msgid "No codes found for"
+msgstr ""
+
 msgid "No external drives detected"
 msgstr "Nincs észlelve külső meghajtó"
+
+msgid "No file chosen"
+msgstr ""
+
+msgid "No folder"
+msgstr ""
+
+msgid "No folders yet"
+msgstr ""
 
 msgid "No issues found."
 msgstr "Nincsenek problémák."
@@ -836,19 +1192,25 @@ msgstr "Nincsenek problémák."
 msgid "No keys registered"
 msgstr "Nincs regisztrált kulcs"
 
-msgid "No passwords match your search"
-msgstr "Nincs a keresésnek megfelelő jelszó"
+msgid "No passwords found for"
+msgstr ""
 
-msgid "No previous passwords recorded."
-msgstr "Nincsenek rögzített korábbi jelszavak."
+msgid "No previous passwords"
+msgstr ""
 
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr ""
 "Ebben a verzióban a biztonsági kulcsok és a biztonsági mentési kifejezések "
 "nem módosíthatók."
 
+msgid "No verification codes yet"
+msgstr ""
+
 msgid "None — quick, leaves prior data recoverable"
 msgstr "Nincs – gyors, de a korábbi adatok visszaállíthatók maradnak"
+
+msgid "Not available for the vault yet. External drives can use them."
+msgstr ""
 
 msgid "Not configured"
 msgstr "Nincs konfigurálva"
@@ -862,18 +1224,44 @@ msgstr "Nincs beállítva"
 msgid "Not signed in"
 msgstr "Nincs bejelentkezve"
 
-msgid "Not stored"
-msgstr "Nincs eltárolva"
-
 msgid "Notes"
 msgstr "Jegyzetek"
+
+msgid "Notes (optional)"
+msgstr ""
 
 msgid "Nothing changed — Ashy Pass and Nextcloud were already aligned."
 msgstr ""
 "Semmi sem változott – az Ashy Pass és a Nextcloud már összhangban volt."
 
-msgid "Number of Words"
-msgstr "Szavak száma"
+msgid "Nothing is removed. Entries already in the vault are skipped."
+msgstr ""
+
+msgid "Nothing was changed."
+msgstr ""
+
+msgid "Nothing was imported"
+msgstr ""
+
+msgid ""
+"Nothing was imported. Check that you chose the right app and an unencrypted "
+"export."
+msgstr ""
+
+msgid "Nothing was restored"
+msgstr ""
+
+msgid "Number of digits"
+msgstr ""
+
+msgid "Number of words"
+msgstr ""
+
+msgid "Numbers (0–9)"
+msgstr ""
+
+msgid "Numeric PIN"
+msgstr ""
 
 msgid "OAuth client not configured at build time"
 msgstr "OAuth kliens nincs konfigurálva a build során"
@@ -881,23 +1269,56 @@ msgstr "OAuth kliens nincs konfigurálva a build során"
 msgid "OK"
 msgstr "OK"
 
+msgid "Off"
+msgstr ""
+
+msgid "Old copy removed"
+msgstr ""
+
 msgid "Older versions appear here after the password is changed."
 msgstr "A régebbi verziók itt jelennek meg, miután a jelszó megváltozott."
 
-msgid "Open .ashy export"
-msgstr ".ashy exportálás megnyitása"
+msgid "On"
+msgstr ""
 
-msgid "Open KeePass database"
-msgstr "KeePass adatbázis megnyitása"
+msgid ""
+"On the site you want to protect, open the two-step verification settings and "
+"choose an authenticator app. Copy the setup key (or the otpauth:// link) it "
+"shows and paste it below."
+msgstr ""
 
-msgid "Open Settings"
-msgstr "Beállítások megnyitása"
+msgid "On until Ashy Pass closes"
+msgstr ""
+
+msgid ""
+"Only clears the clipboard if it still holds what Ashy Pass copied, so text "
+"you copied afterwards in another app is kept. Clipboard history managers may "
+"keep copies that Ashy Pass cannot remove."
+msgstr ""
+
+msgid "Only needed when a site has specific rules"
+msgstr ""
+
+msgid "Only when some entries come from Nextcloud Passwords and others do not"
+msgstr ""
+
+msgid "Open a password and mark the star to find it faster."
+msgstr ""
+
+msgid "Open automatically at login"
+msgstr ""
+
+msgid "Open details"
+msgstr ""
 
 msgid "Open encrypted mapping"
 msgstr "Titkosított leképezés megnyitása"
 
-msgid "Open the encrypted partition"
-msgstr "A titkosított partíció megnyitása"
+msgid "Open the encrypted volume"
+msgstr ""
+
+msgid "Open website"
+msgstr ""
 
 msgid "Opening encrypted mapping"
 msgstr "Titkosított leképezés megnyitása"
@@ -905,17 +1326,43 @@ msgstr "Titkosított leképezés megnyitása"
 msgid "Opens the browser for OAuth consent"
 msgstr "Megnyitja a böngészőt az OAuth hozzájáruláshoz"
 
+msgid ""
+"Optional. Unlock this computer with a short PIN after an automatic lock or a "
+"restart. The vault key is kept in the system keyring, encrypted with the "
+"PIN. A PIN is easier to guess than the master password, so anyone with "
+"access to your session and keyring could try it; after 5 wrong attempts it "
+"is turned off and the master password is required again."
+msgstr ""
+
 msgid "Options"
 msgstr "Opciók"
+
+msgid "Organize folders"
+msgstr ""
+
+msgid "Organize folders…"
+msgstr ""
+
+msgid "Other CSV file"
+msgstr ""
+
+msgid "Other apps"
+msgstr ""
+
+msgid "Other formats"
+msgstr ""
 
 msgid "PIN"
 msgstr "PIN-kód"
 
-msgid "PIN Code"
-msgstr "PIN-kód"
+msgid "PIN on this computer"
+msgstr ""
 
-msgid "PIN Options"
-msgstr "PIN beállítások"
+msgid "PIN set for this computer"
+msgstr ""
+
+msgid "PIN turned off. The master password is required to unlock."
+msgstr ""
 
 msgid "Partition table"
 msgstr "Partíciós tábla"
@@ -923,59 +1370,60 @@ msgstr "Partíciós tábla"
 msgid "Passphrase"
 msgstr "Jelszókifejezés"
 
-msgid "Passphrase Options"
-msgstr "Jelszó kifejezés beállítások"
-
 msgid "Password"
 msgstr "Jelszó"
 
 msgid "Password / app-password"
 msgstr "Jelszó / alkalmazás-jelszó"
 
-msgid "Password History"
-msgstr "Jelszó előzmények"
+msgid "Password copied"
+msgstr ""
 
-msgid "Password Options"
-msgstr "Jelszó beállítások"
-
-msgid "Password added"
-msgstr "Jelszó hozzáadva"
-
-msgid "Password copied to clipboard"
-msgstr "Jelszó a vágólapra másolva"
-
-msgid "Password deleted"
-msgstr "Jelszó törölve"
-
-msgid "Password generated"
-msgstr "Jelszó generálva"
+msgid "Password for this backup"
+msgstr ""
 
 msgid "Password history"
 msgstr "Jelszó előzmények"
 
-msgid "Password must be at least"
-msgstr "A jelszónak legalább"
+msgid "Password history…"
+msgstr ""
+
+msgid "Password list"
+msgstr ""
+
+msgid "Password of the KeePass database"
+msgstr ""
+
+msgid "Password of the backup"
+msgstr ""
+
+msgid "Password of the backup file"
+msgstr ""
 
 msgid "Password too short"
 msgstr "Túl rövid jelszó"
 
-msgid "Password updated"
-msgstr "Jelszó frissítve"
+msgid "Password-protected .kdbx database"
+msgstr ""
+
+msgid "Passwords"
+msgstr ""
 
 msgid "Passwords do not match"
 msgstr "A jelszavak nem egyeznek"
 
-msgid "Passwords do not match."
-msgstr "A jelszavak nem egyeznek."
+msgid ""
+"Passwords, notes, verification codes, folders, favorites and tags. A full "
+"restore also brings back attachments and password history."
+msgstr ""
 
-msgid "Paste a Base32 secret or an otpauth:// URI"
-msgstr "Illesszen be egy Base32 titkos kulcsot vagy egy otpauth:// URI-t"
+msgid ""
+"Paste the setup key or otpauth:// link from the site's two-step verification "
+"settings"
+msgstr ""
 
 msgid "Path"
 msgstr "Elérési út"
-
-msgid "Period (seconds)"
-msgstr "Periódus (másodperc)"
 
 msgid "Permanently deleted"
 msgstr "Véglegesen törölve"
@@ -989,33 +1437,11 @@ msgstr ""
 "Válasszon egy jelszót a .kdbx fájlhoz. Erre szüksége lesz az adatbázis "
 "megnyitásához."
 
-msgid "Pick a password to protect this .ashy file. You will need it to import."
-msgstr ""
-"Válasszon egy jelszót a .ashy fájl védelméhez. Erre szüksége lesz az "
-"importáláshoz."
-
-msgid "Plain JSON export from Aegis Authenticator"
-msgstr "Egyszerű JSON exportálás az Aegis Authenticator alkalmazásból"
-
-msgid "Plain JSON export from andOTP"
-msgstr "Egyszerű JSON exportálás az andOTP-ből"
-
-msgid "Please create your master password in the Vault tab first."
-msgstr "Kérlek, először a Tároló fülön hozd létre a fő jelszavad."
-
-msgid "Please enter a password"
-msgstr "Kérlek, adj meg egy jelszót"
-
-msgid "Please enter your PIN"
-msgstr "Kérjük, adja meg a PIN-kódját"
-
 msgid "Please wait while AshyPass talks to Nextcloud"
 msgstr "Kérjük, várjon, amíg az AshyPass kommunikál a Nextclouddal"
 
-msgid "Plug in a USB drive or external disk, then press Rescan."
+msgid "Plug in a USB drive or external disk, then search for drives."
 msgstr ""
-"Csatlakoztasson egy USB-meghajtót vagy külső lemezt, majd nyomja meg az "
-"Újrakeresés gombot."
 
 msgid "Plug in your authenticator and click Register"
 msgstr "Csatlakoztasd a hitelesítődet, majd kattints a Regisztráció gombra"
@@ -1023,39 +1449,20 @@ msgstr "Csatlakoztasd a hitelesítődet, majd kattints a Regisztráció gombra"
 msgid "Pre-format wipe"
 msgstr "Formázás előtti törlés"
 
-msgid ""
-"Prefer the encrypted .ashy export. The CSV path stores credentials in "
-"plaintext."
-msgstr ""
-"A titkosított .ashy exportálás ajánlott. A CSV formátum egyszerű szövegként "
-"tárolja a hitelesítő adatokat."
-
 msgid "Preparing synchronization"
 msgstr "Szinkronizálás előkészítése"
 
 msgid "Preparing…"
 msgstr "Előkészítés…"
 
-msgid ""
-"Preview — drive encryption backend not yet enabled. Listing is read-only."
+msgid "Previous passwords kept by Ashy Pass when this one was changed."
 msgstr ""
-"Előnézet — a meghajtó titkosítási háttérrendszer még nincs engedélyezve. A "
-"lista csak olvasható."
 
-msgid "Quick Unlock"
-msgstr "Gyors feloldás"
+msgid "Protected by a password you choose"
+msgstr ""
 
-msgid "Quick-unlock PIN"
-msgstr "Gyors feloldó PIN-kód"
-
-msgid "Quick-unlock disabled"
-msgstr "Gyorsfeloldás letiltva"
-
-msgid "Quick-unlock enabled"
-msgstr "Gyorsfeloldás engedélyezve"
-
-msgid "Quick-unlock failed"
-msgstr "A gyors feloldás sikertelen"
+msgid "Protection"
+msgstr ""
 
 msgid "Quit"
 msgstr "Kilépés"
@@ -1063,11 +1470,20 @@ msgstr "Kilépés"
 msgid "Random pass (slowest)"
 msgstr "Véletlenszerű írás (leglassabb)"
 
-msgid "Read failed"
-msgstr "Olvasás sikertelen"
+msgid "Random password"
+msgstr ""
+
+msgid "Random words"
+msgstr ""
+
+msgid "Reading the file…"
+msgstr ""
 
 msgid "Received from Nextcloud"
 msgstr "Nextcloudból fogadva"
+
+msgid "Recommended for accounts you keep in the vault."
+msgstr ""
 
 msgid "Reconciled items"
 msgstr "Egyeztetett elemek"
@@ -1091,11 +1507,56 @@ msgstr "Távoli generáció:"
 msgid "Remove"
 msgstr "Eltávolítás"
 
-msgid "Removed from keyring"
-msgstr "Eltávolítva a kulcstartóból"
+msgid "Remove attachment"
+msgstr ""
+
+msgid "Remove attachment?"
+msgstr ""
+
+msgid "Remove code"
+msgstr ""
+
+msgid "Remove folder"
+msgstr ""
+
+msgid "Remove from favorites"
+msgstr ""
+
+msgid "Remove the old copy?"
+msgstr ""
+
+msgid "Remove the verification code from"
+msgstr ""
+
+msgid "Remove verification code…"
+msgstr ""
+
+msgid "Removed from favorites"
+msgstr ""
+
+msgid "Removed from the keyring"
+msgstr ""
+
+msgid "Removing a folder keeps its passwords. They move to “No folder”."
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Rename folder"
+msgstr ""
 
 msgid "Repeat"
 msgstr "Ismétlés"
+
+msgid "Replace the vault with this copy"
+msgstr ""
+
+msgid "Replace the vault with this copy?"
+msgstr ""
+
+msgid "Replace vault"
+msgstr ""
 
 msgid "Require PIN at unlock"
 msgstr "PIN kérése a feloldáskor"
@@ -1106,35 +1567,29 @@ msgstr "Felhasználó jelenlétének kérése (érintse meg a tokent)"
 msgid "Required to encrypt the snapshot before upload"
 msgstr "A pillanatkép feltöltés előtti titkosításához szükséges"
 
-msgid "Rescan drives"
-msgstr "Meghajtók újrakeresése"
-
 msgid "Resolved automatically using the 'last edit wins' policy."
 msgstr "Automatikusan feloldva az „utolsó módosítás nyer” szabály alapján."
 
 msgid "Restore"
 msgstr "Visszaállítás"
 
-msgid "Restore failed"
-msgstr "Visszaállítás sikertelen"
+msgid "Restore a backup"
+msgstr ""
 
-msgid "Restore from an Ashy Pass encrypted export"
-msgstr "Visszaállítás Ashy Pass titkosított exportból"
+msgid "Restore a backup…"
+msgstr ""
 
-msgid "Restore latest"
-msgstr "Legutóbbi visszaállítása"
+msgid "Restored"
+msgstr ""
 
-msgid "Restored to"
-msgstr "Visszaállítva ide:"
+msgid "Restoring the copy…"
+msgstr ""
 
 msgid "Retention"
 msgstr "Megőrzés"
 
 msgid "Run"
 msgstr "Futtatás"
-
-msgid "Run Audit"
-msgstr "Ellenőrzés futtatása"
 
 msgid "Running audit..."
 msgstr "Audit futtatása..."
@@ -1157,57 +1612,83 @@ msgstr "Mentés"
 msgid "Save KeePass export"
 msgstr "KeePass exportálás mentése"
 
-msgid "Save as…"
-msgstr "Mentés másként…"
+msgid "Save a copy…"
+msgstr ""
+
+msgid "Save an access or bring your passwords from another app."
+msgstr ""
 
 msgid "Save attachment"
 msgstr "Melléklet mentése"
 
-msgid "Save encrypted export"
-msgstr "Titkosított exportálás mentése"
-
-msgid "Save failed"
-msgstr "Mentés sikertelen"
-
-msgid "Saves all entries as plaintext"
-msgstr "Minden bejegyzést egyszerű szövegként ment"
-
-msgid ""
-"Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
+msgid "Save backup"
 msgstr ""
-"Vizsgálja át a tárolót gyenge, duplikált, régi, feltört és 2FA nélküli "
-"bejegyzésekre."
+
+msgid "Save in"
+msgstr ""
+
+msgid "Save to vault"
+msgstr ""
+
+msgid "Save to vault…"
+msgstr ""
+
+msgid "Saved next to the vault and checked; your vault is not changed"
+msgstr ""
+
+msgid "Saved to the vault"
+msgstr ""
+
+msgid "Saved, but the tags could not be updated"
+msgstr ""
 
 msgid "Scanning vault..."
 msgstr "Pásztázás..."
 
-msgid "Search"
-msgstr "Keresés"
+msgid "Search all folders"
+msgstr ""
 
-msgid "Search 2FA codes…"
-msgstr "Kétfaktoros kódok keresése…"
+msgid "Search by name, account or site"
+msgstr ""
 
-msgid "Search passwords…"
-msgstr "Jelszavak keresése…"
+msgid "Search codes"
+msgstr ""
+
+msgid "Search for drives"
+msgstr ""
+
+msgid "Search passwords"
+msgstr ""
+
+msgid "Search verification codes"
+msgstr ""
+
+msgid "Sections"
+msgstr ""
 
 msgid "Secure discard (SSD/NVMe only, near-instant)"
 msgstr "Biztonságos eldobás (csak SSD/NVMe, közel azonnali)"
 
-msgid "Security"
-msgstr "Biztonság"
-
 msgid "Security Keys"
 msgstr "Biztonsági kulcsok"
+
+msgid "Security keys (FIDO2)"
+msgstr ""
+
+msgid "See all folders"
+msgstr ""
+
+msgid "See my passwords"
+msgstr ""
+
+msgid "Select an access"
+msgstr ""
 
 msgid "Sending local changes"
 msgstr "Helyi módosítások küldése"
 
-msgid ""
-"Sends only the first 5 hex chars of SHA-1(password) per entry. Cached "
-"locally for 7 days."
+msgid "Sends the site's address to Google when it serves no icon of its own"
 msgstr ""
-"Csak a SHA-1(jelszó) első 5 hexadecimális karakterét küldi el "
-"bejegyzésenként. Helyileg gyorsítótárazza 7 napig."
 
 msgid "Sent to Nextcloud"
 msgstr "Elküldve a Nextcloudba"
@@ -1233,15 +1714,14 @@ msgstr "Szerver URL, felhasználónév, alkalmazásjelszó"
 msgid "Server URL, username, app-password"
 msgstr "Szerver URL, felhasználónév, alkalmazás-jelszó"
 
-msgid "Session"
-msgstr "Munkamenet"
+msgid "Set PIN"
+msgstr ""
 
 msgid "Set Passphrase"
 msgstr "Jelszó beállítása"
 
-msgid "Set a category on entries to organize them into groups"
+msgid "Set up, upload or download cloud copies"
 msgstr ""
-"Állíts be kategóriát a bejegyzésekhez, hogy csoportokba rendezhesd őket"
 
 msgid "Set — generate a new one to replace it"
 msgstr "Beállítva — újat generálhatsz a lecseréléséhez"
@@ -1249,20 +1729,29 @@ msgstr "Beállítva — újat generálhatsz a lecseréléséhez"
 msgid "Settings"
 msgstr "Beállítások"
 
-msgid "Show 2FA"
-msgstr "Kétfaktoros hitelesítés megjelenítése"
+msgid "Setup key"
+msgstr ""
 
-msgid "Show Generator"
-msgstr "Generátor megjelenítése"
+msgid "Setup key or otpauth:// link"
+msgstr ""
 
 msgid "Show Nextcloud badges"
 msgstr "Nextcloud-jelvények megjelenítése"
 
-msgid "Show Vault"
-msgstr "Tár megjelenítése"
+msgid "Show a folder"
+msgstr ""
 
 msgid "Show favicons"
 msgstr "Kedvencek megjelenítése"
+
+msgid "Show only favorites"
+msgstr ""
+
+msgid "Show password"
+msgstr ""
+
+msgid "Show sidebar"
+msgstr ""
 
 msgid "Show technical details"
 msgstr "Részletek megtekintése"
@@ -1303,34 +1792,14 @@ msgstr "Indítás..."
 msgid "Status"
 msgstr "Állapot"
 
-msgid "Stay Unlocked"
-msgstr "Maradjon feloldva"
-
-msgid "Store"
-msgstr "Tárolás"
-
-msgid ""
-"Store the master password in the desktop's Secret Service (GNOME Keyring, "
-"KWallet, etc.) so Ashy Pass can unlock automatically on start. The keyring "
-"is locked with your login password — disable this if multiple users share "
-"the desktop session."
-msgstr ""
-"Tárolja a fő jelszót az asztali környezet Secret Service szolgáltatásában "
-"(GNOME Keyring, KWallet stb.), hogy az Ashy Pass automatikusan feloldhassa "
-"magát indításkor. A kulcstartó a bejelentkezési jelszavával van védve – "
-"tiltsa le ezt, ha több felhasználó osztozik az asztali munkameneten."
-
-msgid "Stored in system keyring"
-msgstr "Tárolva a rendszer kulcstartójában"
-
 msgid "Strength"
 msgstr "Erősség"
 
 msgid "Strong"
 msgstr "Erős"
 
-msgid "Strong Password"
-msgstr "Erős jelszó"
+msgid "Style"
+msgstr ""
 
 msgid "Summary"
 msgstr "Összegzés"
@@ -1359,6 +1828,18 @@ msgstr "Szinkronizálás sikertelen"
 msgid "Sync now"
 msgstr "Szinkronizálás most"
 
+msgid "Synchronization"
+msgstr ""
+
+msgid ""
+"Synchronization keeps the same entries on several devices. It is not a "
+"backup: a deletion is synchronized too. Encrypted copies to Google Drive or "
+"WebDAV are in Backups."
+msgstr ""
+
+msgid "Synchronized with Nextcloud Passwords"
+msgstr ""
+
 msgid "Synchronizing Nextcloud"
 msgstr "Nextcloud szinkronizálása"
 
@@ -1368,48 +1849,212 @@ msgstr "Szinkronizálás..."
 msgid "Syncing folders"
 msgstr "Mappák szinkronizálása"
 
-msgid "System Keyring"
-msgstr "Rendszer-kulcstartó"
+msgid "Tags"
+msgstr ""
 
-msgid "System keyring unavailable"
-msgstr "A rendszer kulcstartója nem érhető el"
+msgid "Tags (separated by commas)"
+msgstr ""
 
-msgid "TOTP Secret"
-msgstr "TOTP titkos kulcs"
-
-msgid "TOTP Secret (Base32)"
-msgstr "TOTP titok (Base32)"
-
-msgid "TOTP Settings"
-msgstr "TOTP beállítások"
-
-msgid "TOTP code copied"
-msgstr "TOTP kód másolva"
-
-msgid "TOTP secret is required"
-msgstr "TOTP titkos kulcs megadása kötelező"
-
-msgid "Tags (comma-separated)"
-msgstr "Címkék (vesszővel elválasztva)"
+msgid "Take my data to another app"
+msgstr ""
 
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Kapcsolatfelvétel a tokenjével… ellenőrizze az eszközt az érintés kéréséhez."
 
+msgid "Technical details"
+msgstr ""
+
+msgid "The PIN could not be used on this computer. Use your master password."
+msgstr ""
+
+msgid "The PIN must have at least 6 characters"
+msgstr ""
+
+msgid ""
+"The PIN saved on this computer no longer matches the vault, so it was turned "
+"off. Use your master password and set the PIN up again in Settings."
+msgstr ""
+
+msgid "The PIN was not set"
+msgstr ""
+
+msgid "The access moves to Deleted items, where it can be restored for"
+msgstr ""
+
+msgid "The backup was not created"
+msgstr ""
+
+msgid "The copy could not be downloaded"
+msgstr ""
+
+#, rust-format
+msgid "The copy was checked and has {} entry."
+msgid_plural "The copy was checked and has {} entries."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "The current master password is incorrect. Nothing was changed."
+msgstr ""
+
+msgid ""
+"The file is overwritten and deleted. Your current vault is not affected."
+msgstr ""
+
+msgid "The folder is empty."
+msgstr ""
+
+msgid ""
+"The import stopped and every change was undone. Your vault is as it was."
+msgstr ""
+
+msgid ""
+"The label cannot start with \"-\" or contain \"/\" or control characters."
+msgstr ""
+
+msgid "The master password is too short. Minimum length:"
+msgstr ""
+
+msgid "The new password is too short. Minimum length:"
+msgstr ""
+
+msgid "The new passwords do not match."
+msgstr ""
+
+msgid ""
+"The password and other details stay. Before removing, make sure another app "
+"or a backup code can still sign you in, or turn off two-step verification on "
+"the site."
+msgstr ""
+
+msgid ""
+"The password goes into the form. Saving the form does not change it on the "
+"site."
+msgstr ""
+
+msgid "The password was not changed"
+msgstr ""
+
+msgid "The passwords do not match"
+msgstr ""
+
+msgid "The previous vault was kept at:"
+msgstr ""
+
+msgid "The saved key is not valid"
+msgstr ""
+
+msgid "The search is limited to favorites."
+msgstr ""
+
+msgid "The search is limited to passwords without a folder."
+msgstr ""
+
+msgid "The search is limited to the folder"
+msgstr ""
+
 msgid "The sync finished, but some items reported errors."
 msgstr "A szinkronizálás befejeződött, de néhány elem hibát jelzett."
 
-msgid "This action cannot be undone."
-msgstr "Ez a művelet nem vonható vissza."
+msgid "The system keyring is not available, so the PIN was not saved"
+msgstr ""
+
+msgid "The vault is locked. Nothing was saved — unlock it and try again."
+msgstr ""
+
+#, rust-format
+msgid "The vault will lock in {} second because of inactivity."
+msgid_plural "The vault will lock in {} seconds because of inactivity."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid ""
+"The vault will lock. The current vault is kept in a file next to it, and the "
+"restored vault opens with the master password of the copy."
+msgstr ""
+
+msgid "The vault will open automatically at login"
+msgstr ""
+
+#, rust-format
+msgid "The {} password in it stays in the vault and moves to “No folder”."
+msgid_plural ""
+"The {} passwords in it stay in the vault and move to “No folder”."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "There is nothing new to import."
+msgstr ""
+
+msgid "These options cannot produce a password."
+msgstr ""
+
+msgid "This access has no saved password"
+msgstr ""
+
+msgid "This access has no user"
+msgstr ""
+
+msgid "This access no longer exists"
+msgstr ""
+
+msgid "This cannot be undone."
+msgstr ""
+
+msgid "This copy cannot be restored. Nothing was changed"
+msgstr ""
+
+msgid "This deletes the whole access: verification code, password and notes."
+msgstr ""
 
 msgid "This device generation:"
 msgstr "Eszköz generációja:"
 
+msgid "This file can be read without a password"
+msgstr ""
+
+msgid "This file could not be read"
+msgstr ""
+
+msgid "This folder already exists"
+msgstr ""
+
+msgid "This folder is empty"
+msgstr ""
+
+msgid ""
+"This looks like a temporary code. Paste the setup key (letters and numbers) "
+"or the otpauth:// link shown by the site instead."
+msgstr ""
+
+msgid ""
+"This only updates the copy kept in Ashy Pass. To change your password, "
+"change it on the site as well."
+msgstr ""
+
+msgid "This permanently removes the file"
+msgstr ""
+
+msgid ""
+"This setup key is not valid. Copy it again from the site's two-step "
+"verification settings."
+msgstr ""
+
 msgid "This will erase everything on the drive"
 msgstr "Ez mindent töröl a meghajtón"
 
-msgid "Title"
-msgstr "Cím"
+msgid ""
+"To replace the vault with it, open Backups → Restore a backup and choose "
+"this file."
+msgstr ""
+
+msgid ""
+"Too many incorrect PINs. Quick unlock was turned off — use your master "
+"password."
+msgstr ""
+
+msgid "Tools"
+msgstr ""
 
 msgid "Touch your key…"
 msgstr "Érintsd meg a kulcsod…"
@@ -1420,8 +2065,11 @@ msgstr "A kuka üres."
 msgid "Trashed entries"
 msgstr "Kukázott bejegyzések"
 
-msgid "Two-Factor Authentication"
-msgstr "Kétfaktoros hitelesítés"
+msgid "Turn off"
+msgstr ""
+
+msgid "Turn on"
+msgstr ""
 
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
@@ -1438,26 +2086,29 @@ msgstr ""
 "Kétirányú szinkronizálás a hivatalos 'Passwords' alkalmazással a Nextcloud "
 "szerveren. Használj alkalmazásjelszót a Beállítások → Biztonság menüpontból."
 
-msgid "Type the current master password first"
-msgstr "Először írja be az aktuális mesterjelszót"
+msgid "Type of password"
+msgstr ""
 
-msgid "URL"
-msgstr "URL"
+msgid "Type the device path shown above."
+msgstr ""
+
+msgid "Type the last 4 characters of the serial number shown above."
+msgstr ""
+
+msgid "Type the master password first"
+msgstr ""
 
 msgid "URL, username and password are required"
 msgstr "URL, felhasználónév és jelszó megadása kötelező"
 
-msgid "Uncategorized"
-msgstr "Kategorizálatlan"
-
 msgid "Understood"
 msgstr "Értem"
 
-msgid "Unencrypted 1Password 8 export archive"
-msgstr "Titkosítatlan 1Password 8 export archívum"
+msgid "Undo"
+msgstr ""
 
-msgid "Unencrypted Bitwarden vault export"
-msgstr "Titkosítatlan Bitwarden tároló exportálás"
+msgid "Unencrypted JSON export"
+msgstr ""
 
 msgid "Unlock"
 msgstr "Feloldás"
@@ -1471,20 +2122,40 @@ msgstr "Tár feloldása"
 msgid "Unlock the vault first"
 msgstr "Először oldja fel a tárolót"
 
+msgid "Unlock the vault to save the new password. It will not be lost."
+msgstr ""
+
 msgid "Unlock with PIN"
 msgstr "Feloldás PIN-kóddal"
+
+msgid "Unlock with the master password of the copy."
+msgstr ""
+
+msgid "Unlock your vault"
+msgstr ""
 
 msgid "Unlocked at"
 msgstr "Feloldva ekkor:"
 
+msgid "Unlocked by another application. Lock it from your file manager."
+msgstr ""
+
 msgid "Unlocking…"
 msgstr "Feloldás…"
+
+msgid "Unprotected CSV…"
+msgstr ""
 
 msgid "Updated locally"
 msgstr "Helyileg frissítve"
 
 msgid "Updated remotely"
 msgstr "Távolról frissítve"
+
+msgid ""
+"Upload an encrypted copy of the vault to Google Drive or a WebDAV server. "
+"This is a backup, not synchronization."
+msgstr ""
 
 msgid "Upload anyway"
 msgstr "Feltöltés mindenképp"
@@ -1495,25 +2166,58 @@ msgstr "Az aktuális tárolófájl feltöltése a Drive-ra"
 msgid "Upload the current vault file to WebDAV"
 msgstr "Az aktuális tároló fájl feltöltése WebDAV-ra"
 
-msgid "Uppercase Letters (A-Z)"
-msgstr "Nagybetűk (A-Z)"
+msgid "Uppercase letters (A–Z)"
+msgstr ""
+
+msgid "Use Google as favicon fallback"
+msgstr ""
+
+msgid "Use PIN"
+msgstr ""
 
 msgid "Use larger digits for easier reading"
 msgstr "Nagyobb számjegyek használata a könnyebb olvashatóságért"
 
-msgid "Use master password instead"
-msgstr "Használja inkább a főjelszót"
+msgid "Use master password"
+msgstr ""
+
+msgid "Use the + button to create one."
+msgstr ""
+
+msgid "Use these codes when a site asks for two-step verification."
+msgstr ""
+
+msgid "Use this password"
+msgstr ""
 
 msgid "Use tighter spacing for long password lists"
 msgstr "Szorosabb térköz használata hosszú jelszólistákhoz"
 
-msgid "Used to unlock the vault. Changing it re-encrypts all stored data."
+msgid "Use when the service asks for a numeric code."
 msgstr ""
-"A tár feloldására szolgál. Módosítása az összes tárolt adat újratitkosítását "
-"vonja maga után."
+
+msgid "User"
+msgstr ""
+
+msgid "User copied"
+msgstr ""
+
+msgid "User or e-mail (optional)"
+msgstr ""
 
 msgid "Username"
 msgstr "Felhasználónév"
+
+msgid ""
+"Uses Have I Been Pwned. Only the first 5 characters of a hash of each "
+"password are sent, never the password. Results are kept on this computer for "
+"7 days."
+msgstr ""
+
+msgid ""
+"Usually the same master password you use today. After replacing, the vault "
+"opens with this password."
+msgstr ""
 
 msgid "Vault"
 msgstr "Tár"
@@ -1526,26 +2230,38 @@ msgstr ""
 "hitelesítés teljes körű megvalósítása el nem készül. A meglévő konfiguráció "
 "megmarad."
 
-msgid "Vault List"
-msgstr "Tárolólista"
-
 msgid "Vault already in sync"
 msgstr "A tár már szinkronizálva van"
 
-msgid "Vault locked due to inactivity"
-msgstr "A tár inaktivitás miatt zárolva"
+msgid "Vault locked after a period of inactivity"
+msgstr ""
+
+msgid "Vault locked. The open form was closed without saving."
+msgstr ""
 
 msgid "Vault must be unlocked to configure"
 msgstr "A tárolót fel kell oldani a konfiguráláshoz"
 
-msgid "Vault will lock soon"
-msgstr "A tár hamarosan zárolódik"
-
-msgid "Vault will lock soon due to inactivity"
-msgstr "A tár hamarosan zárolódik az inaktivitás miatt"
-
 msgid "Vendor"
 msgstr "Gyártó"
+
+msgid "Verification code"
+msgstr ""
+
+msgid "Verification code (optional)"
+msgstr ""
+
+msgid "Verification code removed"
+msgstr ""
+
+msgid "Verification code saved to the vault"
+msgstr ""
+
+msgid "Verification codes"
+msgstr ""
+
+msgid "Verification codes (unencrypted JSON)"
+msgstr ""
 
 msgid "Very Strong"
 msgstr "Nagyon erős"
@@ -1564,6 +2280,40 @@ msgstr "WebDAV / Nextcloud"
 
 msgid "WebDAV configured"
 msgstr "WebDAV konfigurálva"
+
+msgid "Website"
+msgstr ""
+
+msgid "Website (optional)"
+msgstr ""
+
+msgid "What it contains"
+msgstr ""
+
+msgid ""
+"When a site offers two-step verification, add its setup key here to get the "
+"codes."
+msgstr ""
+
+msgid ""
+"When on, the Ashy Pass browser extension can read vault entries by unlocking "
+"from the system keyring, even while this window is locked. The key is "
+"dropped again after the auto-lock delay."
+msgstr ""
+
+msgid "Where do you want to bring your passwords from?"
+msgstr ""
+
+msgid "Where it goes"
+msgstr ""
+
+msgid "Where should the code be saved?"
+msgstr ""
+
+msgid ""
+"Wherever you save the file. Keep it off this computer too — on a USB drive "
+"or in your own cloud storage."
+msgstr ""
 
 msgid "Whole device — no partition table"
 msgstr "Teljes eszköz — nincs partíciós tábla"
@@ -1599,14 +2349,33 @@ msgstr "LUKS2 fejléc írása"
 msgid "Wrong master password"
 msgstr "Hibás mesterjelszó"
 
+msgid ""
+"You choose it when creating the copy. Without it the copy cannot be opened — "
+"Ashy Pass cannot recover it."
+msgstr ""
+
+msgid ""
+"You will need this password to restore the copy. You may reuse your master "
+"password; Ashy Pass cannot recover it."
+msgstr ""
+
+msgid "Your most used accesses can be here"
+msgstr ""
+
+msgid "Your vault is ready"
+msgstr ""
+
+msgid "Your vault was not changed."
+msgstr ""
+
+msgid "Your vault was not changed. The copy was saved at:"
+msgstr ""
+
 msgid "allocated"
 msgstr "lefoglalt"
 
 msgid "breached"
 msgstr "feltört"
-
-msgid "characters"
-msgstr "karakterből kell állnia"
 
 msgid "duplicate"
 msgstr "duplikált"
@@ -1631,8 +2400,23 @@ msgstr "szabad"
 msgid "free of"
 msgstr "szabad"
 
+msgid "high"
+msgstr ""
+
+msgid "low"
+msgstr ""
+
+msgid "medium"
+msgstr ""
+
 msgid "more"
 msgstr "további"
+
+#, rust-format
+msgid "new code in {} second"
+msgid_plural "new code in {} seconds"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "no 2FA"
 msgstr "nincs 2FA"
@@ -1668,8 +2452,138 @@ msgstr "látott"
 msgid "solid-state"
 msgstr "szilárdtest"
 
+msgid "very high"
+msgstr ""
+
+msgid "very low"
+msgstr ""
+
 msgid "weak"
 msgstr "gyenge"
 
+#, rust-format
+msgid "{} cannot be imported."
+msgid_plural "{} cannot be imported."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} character"
+msgid_plural "{} characters"
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} day."
+msgid_plural "{} days."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} digit"
+msgid_plural "{} digits"
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} entry"
+msgid_plural "{} entries"
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} hour"
+msgid_plural "{} hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} is already in the vault and will be skipped."
+msgid_plural "{} are already in the vault and will be skipped."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} item imported."
+msgid_plural "{} items imported."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} item will be imported."
+msgid_plural "{} items will be imported."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid ""
+"{} looks like an existing entry but has different content; it will be added, "
+"nothing is overwritten."
+msgid_plural ""
+"{} look like existing entries but have different content; they will be "
+"added, nothing is overwritten."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} minute"
+msgid_plural "{} minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} of these entries is synchronized with Nextcloud Passwords."
+msgid_plural "{} of these entries are synchronized with Nextcloud Passwords."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} password"
+msgid_plural "{} passwords"
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} second"
+msgid_plural "{} seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} was already in the vault."
+msgid_plural "{} were already in the vault."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} was imported with an adjustment — see the details."
+msgid_plural "{} were imported with adjustments — see the details."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} was not imported — see the details."
+msgid_plural "{} were not imported — see the details."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} will be imported with an adjustment."
+msgid_plural "{} will be imported with adjustments."
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} word"
+msgid_plural "{} words"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "…"
 msgstr "…"
+
+#, rust-format
+msgid "… and {} more"
+msgid_plural "… and {} more"
+msgstr[0] ""
+msgstr[1] ""

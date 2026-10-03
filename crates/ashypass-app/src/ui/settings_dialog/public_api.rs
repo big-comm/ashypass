@@ -25,31 +25,11 @@ pub fn import_from(
     source: ImportSource,
     anchor: gtk::Widget,
 ) {
-    if !state.vault.borrow().is_unlocked() {
-        return;
-    }
-    match source {
-        ImportSource::Bitwarden => run_import(state, toast, ImportKind::Bitwarden, anchor),
-        ImportSource::Onepassword => run_import(state, toast, ImportKind::Onepassword, anchor),
-        ImportSource::Keepass => run_import_kdbx(state, toast, anchor),
-        ImportSource::BrowserCsv | ImportSource::OtherCsv => {
-            run_import(state, toast, ImportKind::Csv, anchor)
-        }
-        ImportSource::Aegis => run_import(state, toast, ImportKind::Aegis, anchor),
-        ImportSource::Andotp => run_import(state, toast, ImportKind::Andotp, anchor),
-        ImportSource::AshyMerge => run_import_ashy(state, toast, anchor),
-    }
-}
-
-/// Restore an Ashy Pass backup into the current vault.
-pub fn restore_backup(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget) {
-    if !state.vault.borrow().is_unlocked() {
-        return;
-    }
-    run_import_ashy(state, toast, anchor);
+    crate::ui::import_flow::start(state, toast, source, anchor);
 }
 
 pub fn export_kdbx(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget) {
+    let toast: Toaster = toast.into();
     run_export_kdbx(state, toast, anchor);
 }
 
@@ -57,6 +37,7 @@ pub fn export_kdbx(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Wi
 /// it contains, and require the master password before choosing where to
 /// write it.
 pub fn export_csv_with_warning(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget) {
+    let toast: Toaster = toast.into();
     let dialog = adw::AlertDialog::builder()
         .heading(tr!("This file can be read without a password"))
         .body(tr!(
@@ -192,7 +173,7 @@ pub fn present_trash(parent: &impl IsA<gtk::Widget>, state: SharedState) {
     let toast = adw::ToastOverlay::new();
     let page = adw::PreferencesPage::new();
     let settings = Rc::new(RefCell::new(Settings::load()));
-    populate_trash(&page, state.clone(), settings, toast.clone());
+    populate_trash(&page, state.clone(), settings, toast.clone().into());
     let toolbar = adw::ToolbarView::new();
     toolbar.add_top_bar(&adw::HeaderBar::new());
     toolbar.set_content(Some(&page));
@@ -215,7 +196,7 @@ pub fn present_cloud_backups(parent: &impl IsA<gtk::Widget>, state: SharedState)
     populate_cloud(
         &page,
         state.clone(),
-        toast.clone(),
+        toast.clone().into(),
         parent.clone().upcast(),
         slot.clone(),
     );

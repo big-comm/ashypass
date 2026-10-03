@@ -13,6 +13,7 @@
 use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
+use crate::trn;
 use crate::ui::widgets::describe;
 use adw::prelude::*;
 use ashypass_core::config::MIN_MASTER_PASSWORD_LENGTH;
@@ -465,7 +466,7 @@ impl Inner {
         let (_, level) = ashypass_core::strength::legacy_score(password);
         self.strength_label.set_label(&format!(
             "{} · {}: {}",
-            crate::trn!("{} character", "{} characters", password.chars().count())
+            trn!("{} character", "{} characters", password.chars().count())
                 .replace("{}", &password.chars().count().to_string()),
             tr!("Estimated strength"),
             crate::ui::i18n::localized_strength_label(level)
@@ -650,7 +651,7 @@ impl Inner {
                             ));
                         } else {
                             inner.show_error(
-                                &crate::trn!(
+                                &trn!(
                                     "Incorrect PIN. {} attempt left.",
                                     "Incorrect PIN. {} attempts left.",
                                     remaining as usize

@@ -7,7 +7,7 @@ use super::*;
 // ---------------------------------------------------------------------------
 
 #[allow(dead_code)]
-pub(super) fn populate_two_factor(page: &adw::PreferencesPage, toast: adw::ToastOverlay) {
+pub(super) fn populate_two_factor(page: &adw::PreferencesPage, toast: Toaster) {
     use ashypass_core::fido2::{
         generate_backup_phrase, hash_backup_phrase, register, slot_short, Fido2Config, MAX_SLOTS,
     };

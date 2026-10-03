@@ -11,8 +11,32 @@ pub(super) fn populate_appearance(
     settings: Rc<RefCell<Settings>>,
     state: SharedState,
 ) {
+    let theme_group = adw::PreferencesGroup::builder().title(tr!("Style")).build();
+    let theme_values = ["system", "light", "dark"];
+    let theme_model = gtk::StringList::new(&[tr!("Follow the system"), tr!("Light"), tr!("Dark")]);
+    let theme_row = adw::ComboRow::builder()
+        .title(tr!("Appearance"))
+        .model(&theme_model)
+        .build();
+    let current = settings.borrow().color_scheme.clone();
+    theme_row.set_selected(theme_values.iter().position(|v| *v == current).unwrap_or(0) as u32);
+    {
+        let settings = settings.clone();
+        theme_row.connect_selected_notify(move |row| {
+            let value = theme_values
+                .get(row.selected() as usize)
+                .copied()
+                .unwrap_or("system");
+            settings.borrow_mut().color_scheme = value.to_string();
+            save_settings(&settings.borrow());
+            apply_color_scheme(value);
+        });
+    }
+    theme_group.add(&theme_row);
+    page.add(&theme_group);
+
     let group = adw::PreferencesGroup::builder()
-        .title(tr!("Vault List"))
+        .title(tr!("Password list"))
         .build();
 
     let favicons_row = adw::SwitchRow::builder()
@@ -55,7 +79,9 @@ pub(super) fn populate_appearance(
 
     let sync_badges_row = adw::SwitchRow::builder()
         .title(tr!("Show Nextcloud badges"))
-        .subtitle(tr!("Mark entries that are linked to Nextcloud Passwords"))
+        .subtitle(tr!(
+            "Only when some entries come from Nextcloud Passwords and others do not"
+        ))
         .active(settings.borrow().show_sync_badges)
         .build();
     {
@@ -87,20 +113,31 @@ pub(super) fn populate_appearance(
     page.add(&group);
 
     let two_factor_group = adw::PreferencesGroup::builder()
-        .title(tr!("2FA Codes"))
+        .title(tr!("Verification codes"))
         .build();
     let large_totp_row = adw::SwitchRow::builder()
-        .title(tr!("Large 2FA codes"))
+        .title(tr!("Large verification codes"))
         .subtitle(tr!("Use larger digits for easier reading"))
         .active(settings.borrow().large_totp_codes)
         .build();
     {
         let settings = settings.clone();
+        let state = state.clone();
         large_totp_row.connect_active_notify(move |row| {
             settings.borrow_mut().large_totp_codes = row.is_active();
             save_settings(&settings.borrow());
+            state.events.emit(crate::events::AppEvent::VaultChanged);
         });
     }
     two_factor_group.add(&large_totp_row);
     page.add(&two_factor_group);
+}
+
+/// Apply "system", "light" or "dark" to the whole app.
+pub(crate) fn apply_color_scheme(value: &str) {
+    adw::StyleManager::default().set_color_scheme(match value {
+        "light" => adw::ColorScheme::ForceLight,
+        "dark" => adw::ColorScheme::ForceDark,
+        _ => adw::ColorScheme::Default,
+    });
 }

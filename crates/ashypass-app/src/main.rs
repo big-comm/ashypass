@@ -5,6 +5,7 @@ mod clipboard;
 mod events;
 mod favicons;
 mod session;
+mod session_watch;
 mod state;
 mod ui;
 
@@ -69,7 +70,9 @@ fn main() -> glib::ExitCode {
             *state_holder.borrow_mut() = Some(state.clone());
 
             init_css();
-            let win = ui::MainWindow::new(app, state);
+            ui::settings_dialog::apply_color_scheme(&state.settings().color_scheme);
+            let win = ui::MainWindow::new(app, state.clone());
+            session_watch::install(state.clone(), win.lock_handle());
             win.present();
             #[cfg(debug_assertions)]
             run_dev_script(&win);
@@ -194,6 +197,15 @@ listview.ashy-entry-list > row {
     border-radius: 12px;
     background-color: alpha(@accent_bg_color, 0.12);
     box-shadow: inset 0 0 0 2px alpha(@accent_bg_color, 0.45);
+}
+listview.ashy-entry-list.ashy-compact > row {
+    margin: 1px 0;
+    border-radius: 8px;
+}
+listview.ashy-entry-list.ashy-compact .ashy-entry-row {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    min-height: 34px;
 }
 listview.ashy-entry-list > row:hover {
     background-color: mix(@card_bg_color, @window_fg_color, 0.04);

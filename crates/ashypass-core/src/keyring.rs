@@ -14,6 +14,9 @@ use crate::{Error, Result};
 use secret_service::blocking::SecretService;
 use secret_service::EncryptionType;
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::mpsc;
+use std::time::Duration;
 
 /// All Ashy Pass keyring items carry these attribute pairs so we can find
 /// them again and so they don't collide with other apps' secrets.
@@ -26,9 +29,42 @@ const LABEL: &str = "Ashy Pass — vault master password";
 const QUICK_UNLOCK_KIND: &str = "quick-unlock";
 const QUICK_UNLOCK_LABEL: &str = "Ashy Pass — quick-unlock state";
 
+/// How long to wait for the Secret Service to answer the initial connect.
+/// Activation of a keyring daemon takes a second or two; a service that is
+/// registered but never answers would otherwise block the caller forever
+/// (zbus calls have no timeout), freezing the GTK main loop.
+const CONNECT_TIMEOUT: Duration = Duration::from_secs(8);
+
+/// Set once a connect timed out: later calls fail fast instead of waiting
+/// again for a service that is not coming.
+static UNRESPONSIVE: AtomicBool = AtomicBool::new(false);
+
 fn service() -> Result<SecretService<'static>> {
-    SecretService::connect(EncryptionType::Dh)
-        .map_err(|e| Error::Other(format!("secret service connect: {e}")))
+    connect_with_timeout(CONNECT_TIMEOUT, || {
+        SecretService::connect(EncryptionType::Dh)
+    })
+}
+
+fn connect_with_timeout<T, E, F>(timeout: Duration, connect: F) -> Result<T>
+where
+    T: Send + 'static,
+    E: std::fmt::Display + Send + 'static,
+    F: FnOnce() -> std::result::Result<T, E> + Send + 'static,
+{
+    if UNRESPONSIVE.load(Ordering::Relaxed) {
+        return Err(Error::Other("secret service is not responding".into()));
+    }
+    let (sender, receiver) = mpsc::channel();
+    std::thread::spawn(move || {
+        let _ = sender.send(connect());
+    });
+    match receiver.recv_timeout(timeout) {
+        Ok(result) => result.map_err(|e| Error::Other(format!("secret service connect: {e}"))),
+        Err(_) => {
+            UNRESPONSIVE.store(true, Ordering::Relaxed);
+            Err(Error::Other("secret service is not responding".into()))
+        }
+    }
 }
 
 /// Write the master password to the user's default collection, replacing any
@@ -144,4 +180,25 @@ pub fn is_named_secret_stored(kind: &'static str) -> bool {
         return false;
     };
     !found.unlocked.is_empty() || !found.locked.is_empty()
+}
+
+#[cfg(test)]
+mod timeout_tests {
+    use super::*;
+
+    #[test]
+    fn a_service_that_never_answers_does_not_block_forever() {
+        let started = std::time::Instant::now();
+        let result: Result<()> = connect_with_timeout(Duration::from_millis(100), || {
+            std::thread::sleep(Duration::from_secs(5));
+            Ok::<(), String>(())
+        });
+        assert!(result.is_err());
+        assert!(started.elapsed() < Duration::from_secs(2));
+        // Later calls fail fast.
+        let again: Result<()> =
+            connect_with_timeout(Duration::from_secs(5), || Ok::<(), String>(()));
+        assert!(again.is_err());
+        UNRESPONSIVE.store(false, Ordering::Relaxed);
+    }
 }

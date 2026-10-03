@@ -9,7 +9,7 @@ use super::*;
 pub(super) fn populate_cloud(
     page: &adw::PreferencesPage,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     parent: gtk::Widget,
     dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) {
@@ -198,7 +198,10 @@ pub(super) fn populate_cloud(
     group.add(&backup_row);
 
     let restore_row = adw::ActionRow::builder()
-        .title(tr!("Restore latest"))
+        .title(tr!("Download the latest copy"))
+        .subtitle(tr!(
+            "Saved next to the vault and checked; your vault is not changed"
+        ))
         .activatable(true)
         .build();
     restore_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
@@ -238,13 +241,11 @@ pub(super) fn populate_cloud(
                     *state_done.backup.borrow_mut() = service;
                     row_done.set_sensitive(true);
                     match outcome {
-                        Ok(p) => show_toast(
+                        Ok(p) => present_downloaded_copy(&row_done, &p),
+                        Err(e) => show_toast(
                             &toast_done,
-                            &format!("{}: {}", tr!("Restored to"), p.display()),
+                            &format!("{}: {e}", tr!("The copy could not be downloaded")),
                         ),
-                        Err(e) => {
-                            show_toast(&toast_done, &format!("{}: {e}", tr!("Restore failed")))
-                        }
                     }
                 },
             );
@@ -255,12 +256,30 @@ pub(super) fn populate_cloud(
     page.add(&group);
 
     page.add(&build_webdav_group(state.clone(), toast.clone()));
+    let _ = (parent, dialog_slot);
+}
+
+/// Settings → Synchronization: services that keep entries in step, as
+/// opposed to the backup copies above.
+pub(super) fn populate_sync(
+    page: &adw::PreferencesPage,
+    state: SharedState,
+    toast: Toaster,
+    parent: gtk::Widget,
+    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+) {
     page.add(&build_nextcloud_passwords_group(
         state,
         toast,
         parent,
         dialog_slot,
     ));
+    let note = adw::PreferencesGroup::builder()
+        .description(tr!(
+            "Synchronization keeps the same entries on several devices. It is not a backup: a deletion is synchronized too. Encrypted copies to Google Drive or WebDAV are in Backups."
+        ))
+        .build();
+    page.add(&note);
 }
 
 pub(super) fn show_google_oauth_dialog(
@@ -269,7 +288,7 @@ pub(super) fn show_google_oauth_dialog(
     status: adw::ActionRow,
     configure: adw::ActionRow,
     signin_row: Option<adw::ActionRow>,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
 ) {
     let dialog = adw::AlertDialog::builder()
         .heading(tr!("Configure Google OAuth"))
@@ -333,10 +352,7 @@ pub(super) fn show_google_oauth_dialog(
     dialog.present(parent);
 }
 
-pub(super) fn build_webdav_group(
-    state: SharedState,
-    toast: adw::ToastOverlay,
-) -> adw::PreferencesGroup {
+pub(super) fn build_webdav_group(state: SharedState, toast: Toaster) -> adw::PreferencesGroup {
     let logged_in = state.webdav.borrow().is_logged_in();
     let group = adw::PreferencesGroup::builder()
         .title(tr!("WebDAV / Nextcloud"))
@@ -478,7 +494,10 @@ pub(super) fn build_webdav_group(
     group.add(&sync_row);
 
     let restore_row = adw::ActionRow::builder()
-        .title(tr!("Restore latest"))
+        .title(tr!("Download the latest copy"))
+        .subtitle(tr!(
+            "Saved next to the vault and checked; your vault is not changed"
+        ))
         .activatable(true)
         .build();
     restore_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
@@ -516,13 +535,11 @@ pub(super) fn build_webdav_group(
                 move |outcome| {
                     row_done.set_sensitive(true);
                     match outcome {
-                        Ok(p) => show_toast(
+                        Ok(p) => present_downloaded_copy(&row_done, &p),
+                        Err(e) => show_toast(
                             &toast_done,
-                            &format!("{}: {}", tr!("Restored to"), p.display()),
+                            &format!("{}: {e}", tr!("The copy could not be downloaded")),
                         ),
-                        Err(e) => {
-                            show_toast(&toast_done, &format!("{}: {e}", tr!("Restore failed")))
-                        }
                     }
                 },
             );
@@ -536,7 +553,7 @@ pub(super) fn build_webdav_group(
 pub(super) fn show_webdav_dialog<F>(
     parent: Option<&gtk::Window>,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     on_saved: F,
 ) where
     F: Fn() + 'static,
@@ -630,7 +647,7 @@ pub(super) fn show_webdav_dialog<F>(
 pub(super) fn run_webdav_sync(
     parent: Option<&gtk::Window>,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     force: bool,
 ) {
     use ashypass_core::backup::sync as sync_mod;
@@ -687,7 +704,7 @@ pub(super) fn run_webdav_sync(
 pub(super) fn prompt_webdav_push(
     parent: Option<&gtk::Window>,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     force: bool,
 ) {
     // Try keyring first so users who opted in get a one-click push.
@@ -725,12 +742,7 @@ pub(super) fn prompt_webdav_push(
     );
 }
 
-pub(super) fn do_webdav_push(
-    state: SharedState,
-    toast: adw::ToastOverlay,
-    master: String,
-    force: bool,
-) {
+pub(super) fn do_webdav_push(state: SharedState, toast: Toaster, master: String, force: bool) {
     use ashypass_core::backup::sync as sync_mod;
     let parts = match state.vault.borrow().session_reopen_parts() {
         Ok(parts) => parts,
@@ -793,7 +805,7 @@ pub(super) fn do_webdav_push(
 pub(super) fn show_sync_conflict_dialog(
     parent: Option<&gtk::Window>,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     local_gen: u64,
     remote_gen: u64,
 ) {
@@ -821,4 +833,20 @@ pub(super) fn show_sync_conflict_dialog(
         run_webdav_sync(parent.as_ref(), state.clone(), toast.clone(), true);
     });
     dialog.present(parent);
+}
+
+/// A downloaded copy is not a restored vault. Say where it is and how to
+/// actually restore it.
+fn present_downloaded_copy(anchor: &impl IsA<gtk::Widget>, path: &std::path::Path) {
+    let dialog = adw::AlertDialog::builder()
+        .heading(tr!("Copy downloaded and checked"))
+        .body(format!(
+            "{}\n\n{}\n\n{}",
+            tr!("Your vault was not changed. The copy was saved at:"),
+            path.display(),
+            tr!("To replace the vault with it, open Backups → Restore a backup and choose this file.")
+        ))
+        .build();
+    dialog.add_response("ok", tr!("Understood"));
+    dialog.present(Some(anchor));
 }

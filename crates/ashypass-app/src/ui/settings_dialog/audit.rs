@@ -10,20 +10,20 @@ pub(super) fn populate_audit(
     page: &adw::PreferencesPage,
     state: SharedState,
     settings: Rc<RefCell<Settings>>,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     parent: gtk::Widget,
     dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) {
     let opts_group = adw::PreferencesGroup::builder()
-        .title(tr!("Audit Options"))
+        .title(tr!("Check my passwords"))
         .description(tr!(
-            "Scan the vault for weak, duplicate, old, breached, and 2FA-less entries."
+            "Looks for weak, repeated and old passwords, accounts without a verification code and, if you allow it, passwords that appeared in known data breaches."
         ))
         .build();
     let hibp_row = adw::SwitchRow::builder()
-        .title(tr!("Check Have I Been Pwned (online)"))
+        .title(tr!("Check known data breaches (online)"))
         .subtitle(tr!(
-            "Sends only the first 5 hex chars of SHA-1(password) per entry. Cached locally for 7 days."
+            "Uses Have I Been Pwned. Only the first 5 characters of a hash of each password are sent, never the password. Results are kept on this computer for 7 days."
         ))
         .active(settings.borrow().audit_check_hibp)
         .build();
@@ -36,7 +36,7 @@ pub(super) fn populate_audit(
     }
     opts_group.add(&hibp_row);
     let run_row = adw::ActionRow::builder()
-        .title(tr!("Run Audit"))
+        .title(tr!("Check now"))
         .activatable(true)
         .build();
     let run_spinner = gtk::Spinner::new();
@@ -97,7 +97,7 @@ pub(super) fn populate_audit(
             Ok(parts) => parts,
             Err(e) => {
                 show_toast(&toast, &format!("{}: {e}", tr!("Audit failed")));
-                trigger.set_title(tr!("Run Audit"));
+                trigger.set_title(tr!("Check now"));
                 trigger.set_subtitle("");
                 trigger.set_sensitive(true);
                 run_spinner.stop();
@@ -122,9 +122,12 @@ pub(super) fn populate_audit(
             let _ = sender.send(outcome);
         });
 
+        let state_done = state.clone();
         glib::timeout_add_local(
             std::time::Duration::from_millis(150),
             move || match receiver.try_recv() {
+                // Locked meanwhile: never show entry names over a locked vault.
+                Ok(_) if !state_done.vault.borrow().is_unlocked() => glib::ControlFlow::Break,
                 Ok(Ok(report)) => {
                     render_audit_report(
                         &report,
@@ -133,7 +136,7 @@ pub(super) fn populate_audit(
                         &finding_rows,
                         &toast,
                     );
-                    trigger.set_title(tr!("Run Audit"));
+                    trigger.set_title(tr!("Check now"));
                     trigger.set_subtitle("");
                     trigger.set_sensitive(true);
                     run_spinner.stop();
@@ -145,7 +148,7 @@ pub(super) fn populate_audit(
                     show_toast(&toast, &format!("{}: {e}", tr!("Audit failed")));
                     summary_row.set_title(tr!("Audit failed"));
                     summary_row.set_subtitle(&e);
-                    trigger.set_title(tr!("Run Audit"));
+                    trigger.set_title(tr!("Check now"));
                     trigger.set_subtitle("");
                     trigger.set_sensitive(true);
                     run_spinner.stop();
@@ -158,7 +161,7 @@ pub(super) fn populate_audit(
                     show_toast(&toast, tr!("Audit failed"));
                     summary_row.set_title(tr!("Audit failed"));
                     summary_row.set_subtitle("");
-                    trigger.set_title(tr!("Run Audit"));
+                    trigger.set_title(tr!("Check now"));
                     trigger.set_subtitle("");
                     trigger.set_sensitive(true);
                     run_spinner.stop();
@@ -176,7 +179,7 @@ pub(super) fn render_audit_report(
     summary_row: &adw::ActionRow,
     findings_group: &adw::PreferencesGroup,
     finding_rows: &Rc<RefCell<Vec<adw::ActionRow>>>,
-    toast: &adw::ToastOverlay,
+    toast: &Toaster,
 ) {
     summary_row.set_title(&format!(
         "{} {}",

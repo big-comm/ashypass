@@ -24,8 +24,10 @@ mod nextcloud;
 mod public_api;
 mod security;
 mod trash;
+#[allow(dead_code)]
 mod two_factor;
 
+pub(crate) use appearance::apply_color_scheme;
 use appearance::*;
 use audit::*;
 use cloud::*;
@@ -36,7 +38,6 @@ pub(crate) use nextcloud::{present_sync_failure_dialog, present_sync_success_dia
 pub use public_api::*;
 use security::*;
 use trash::*;
-use two_factor::*;
 
 type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
 type NextcloudSyncResult = Result<ashypass_core::sync::SyncReport, String>;
@@ -57,159 +58,102 @@ struct NextcloudProgressUi {
 }
 
 pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::ToastOverlay) {
-    let parent_widget = parent.upcast_ref::<gtk::Widget>().clone();
-    let dialog_slot: Rc<RefCell<Option<adw::Dialog>>> = Rc::new(RefCell::new(None));
-    let toast = adw::ToastOverlay::new();
-    let settings = Rc::new(RefCell::new(Settings::load()));
-
-    // Build the 4 preference pages — each is an AdwPreferencesPage so the
-    // existing group/row helpers keep their look (with scroll).
-    let security_page = adw::PreferencesPage::builder().build();
-    populate_security(
-        &security_page,
-        state.clone(),
-        settings.clone(),
-        toast.clone(),
-        parent_widget.clone(),
-        dialog_slot.clone(),
-    );
-    populate_two_factor_unavailable(&security_page);
-    populate_audit(
-        &security_page,
-        state.clone(),
-        settings.clone(),
-        toast.clone(),
-        parent_widget.clone(),
-        dialog_slot.clone(),
-    );
-
-    let data_page = adw::PreferencesPage::builder().build();
-    populate_import_export(
-        &data_page,
-        state.clone(),
-        toast.clone(),
-        parent_widget.clone(),
-        dialog_slot.clone(),
-    );
-    populate_trash(&data_page, state.clone(), settings.clone(), toast.clone());
-
-    let cloud_page = adw::PreferencesPage::builder().build();
-    populate_cloud(
-        &cloud_page,
-        state.clone(),
-        toast.clone(),
-        parent_widget.clone(),
-        dialog_slot.clone(),
-    );
-
-    let appearance_page = adw::PreferencesPage::builder().build();
-    populate_appearance(&appearance_page, settings, state.clone());
-
-    // Sidebar + content stack: trades the bottom ViewSwitcherBar for a real
-    // left rail (GNOME-Settings style). NavigationSplitView is responsive —
-    // collapses to a stack on narrow widths.
-    let sections: [(&str, &str, &adw::PreferencesPage); 4] = [
-        ("security", "security-high-symbolic", &security_page),
-        ("data", "folder-symbolic", &data_page),
-        ("cloud", "folder-remote-symbolic", &cloud_page),
-        (
-            "appearance",
-            "preferences-desktop-appearance-symbolic",
-            &appearance_page,
-        ),
-    ];
-    let labels: [&str; 4] = [
-        tr!("Security"),
-        tr!("Data"),
-        tr!("Cloud"),
-        tr!("Appearance"),
-    ];
-
-    let stack = adw::ViewStack::new();
-    let listbox = gtk::ListBox::new();
-    listbox.set_selection_mode(gtk::SelectionMode::Single);
-    listbox.add_css_class("navigation-sidebar");
-
-    for (i, (name, icon, page)) in sections.iter().enumerate() {
-        stack.add_named(*page, Some(name));
-
-        let row = gtk::ListBoxRow::new();
-        let row_box = gtk::Box::new(gtk::Orientation::Horizontal, 12);
-        row_box.set_margin_top(8);
-        row_box.set_margin_bottom(8);
-        row_box.set_margin_start(12);
-        row_box.set_margin_end(12);
-        let img = gtk::Image::from_icon_name(icon);
-        let lbl = gtk::Label::builder()
-            .label(labels[i])
-            .xalign(0.0)
-            .hexpand(true)
-            .build();
-        row_box.append(&img);
-        row_box.append(&lbl);
-        row.set_child(Some(&row_box));
-        // The stack's child name lives in a widget property so the row-selected
-        // handler can map a row back to a page without a parallel array.
-        row.set_widget_name(name);
-        listbox.append(&row);
-    }
-
-    let stack_for_rows = stack.clone();
-    listbox.connect_row_selected(move |_, row| {
-        if let Some(row) = row {
-            stack_for_rows.set_visible_child_name(&row.widget_name());
-        }
-    });
-    if let Some(first) = listbox.row_at_index(0) {
-        listbox.select_row(Some(&first));
-    }
-
-    let sidebar_scroll = gtk::ScrolledWindow::builder()
-        .hscrollbar_policy(gtk::PolicyType::Never)
-        .vexpand(true)
-        .child(&listbox)
-        .build();
-    let sidebar_toolbar = adw::ToolbarView::new();
-    sidebar_toolbar.add_top_bar(&adw::HeaderBar::new());
-    sidebar_toolbar.set_content(Some(&sidebar_scroll));
-
-    let content_scroll = gtk::ScrolledWindow::builder()
-        .hscrollbar_policy(gtk::PolicyType::Never)
-        .vexpand(true)
-        .hexpand(true)
-        .child(&stack)
-        .build();
-    let content_toolbar = adw::ToolbarView::new();
-    content_toolbar.add_top_bar(&adw::HeaderBar::new());
-    content_toolbar.set_content(Some(&content_scroll));
-
-    let sidebar_page = adw::NavigationPage::builder()
+    let dialog = adw::PreferencesDialog::builder()
         .title(tr!("Settings"))
-        .child(&sidebar_toolbar)
-        .build();
-    let content_page = adw::NavigationPage::builder()
-        .title(tr!("Settings"))
-        .child(&content_toolbar)
-        .build();
-
-    let split = adw::NavigationSplitView::new();
-    split.set_sidebar(Some(&sidebar_page));
-    split.set_content(Some(&content_page));
-    split.set_min_sidebar_width(200.0);
-    split.set_max_sidebar_width(240.0);
-    toast.set_child(Some(&split));
-
-    let dialog = adw::Dialog::builder()
-        .title(tr!("Settings"))
-        .content_width(960)
+        .search_enabled(true)
+        .content_width(760)
         .content_height(680)
-        .child(&toast)
         .build();
-    *dialog_slot.borrow_mut() = Some(dialog.clone());
+    // Sub-dialogs and the legacy unlock prompt reach the settings window
+    // through this slot to close or re-open it.
+    let dialog_slot: Rc<RefCell<Option<adw::Dialog>>> =
+        Rc::new(RefCell::new(Some(dialog.clone().upcast())));
+    // Toasts raised from inside the dialog must show over it.
+    let toast = Toaster::Dialog(dialog.downgrade());
+    let parent_widget: gtk::Widget = dialog.clone().upcast();
+
+    let protection = adw::PreferencesPage::builder()
+        .title(tr!("Protection"))
+        .icon_name("security-high-symbolic")
+        .build();
+    populate_protection(
+        &protection,
+        state.clone(),
+        toast.clone(),
+        dialog.clone(),
+        dialog_slot.clone(),
+    );
+    let settings = Rc::new(RefCell::new(Settings::load()));
+    populate_audit(
+        &protection,
+        state.clone(),
+        settings.clone(),
+        toast.clone(),
+        parent_widget.clone(),
+        dialog_slot.clone(),
+    );
+
+    let sync = adw::PreferencesPage::builder()
+        .title(tr!("Synchronization"))
+        .icon_name("emblem-synchronizing-symbolic")
+        .build();
+    populate_sync(
+        &sync,
+        state.clone(),
+        toast.clone(),
+        parent_widget.clone(),
+        dialog_slot.clone(),
+    );
+
+    let browser = adw::PreferencesPage::builder()
+        .title(tr!("Browser"))
+        .icon_name("web-browser-symbolic")
+        .build();
+    populate_browser(&browser, state.clone());
+
+    let appearance = adw::PreferencesPage::builder()
+        .title(tr!("Appearance"))
+        .icon_name("preferences-desktop-appearance-symbolic")
+        .build();
+    populate_appearance(&appearance, settings, state.clone());
+
+    dialog.add(&protection);
+    dialog.add(&sync);
+    dialog.add(&browser);
+    dialog.add(&appearance);
+
+    state.track_sensitive_dialog(&dialog);
     dialog.present(Some(parent));
 }
 
-fn show_toast(overlay: &adw::ToastOverlay, message: &str) {
+/// Where a settings page sends its toasts: the preferences dialog itself, or
+/// an overlay when a section is shown in another dialog or page.
+#[derive(Clone)]
+pub enum Toaster {
+    Overlay(adw::ToastOverlay),
+    Dialog(glib::WeakRef<adw::PreferencesDialog>),
+}
+
+impl Toaster {
+    pub fn add_toast(&self, toast: adw::Toast) {
+        match self {
+            Self::Overlay(overlay) => overlay.add_toast(toast),
+            Self::Dialog(dialog) => {
+                if let Some(dialog) = dialog.upgrade() {
+                    dialog.add_toast(toast);
+                }
+            }
+        }
+    }
+}
+
+impl From<adw::ToastOverlay> for Toaster {
+    fn from(overlay: adw::ToastOverlay) -> Self {
+        Self::Overlay(overlay)
+    }
+}
+
+fn show_toast(overlay: &Toaster, message: &str) {
     overlay.add_toast(adw::Toast::builder().title(message).timeout(4).build());
 }
 
@@ -312,7 +256,7 @@ fn nextcloud_phase_label(phase: ashypass_core::sync::NextcloudSyncPhase) -> &'st
 
 fn locked_notice_group(
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     parent: gtk::Widget,
     dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) -> adw::PreferencesGroup {
@@ -334,7 +278,7 @@ fn locked_notice_group(
 fn show_settings_unlock_dialog(
     parent: &gtk::Widget,
     state: SharedState,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
     dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) {
     let has_master = state.vault.borrow().has_master_password().unwrap_or(false);
@@ -422,7 +366,7 @@ fn show_settings_unlock_dialog(
                     if let Some(settings_dialog) = open_settings {
                         settings_dialog.close();
                     }
-                    present(&parent, state.clone(), toast.clone());
+                    present(&parent, state.clone(), adw::ToastOverlay::new());
                 }
                 Err(ashypass_core::Error::InvalidMasterPassword) => {
                     show_toast(&toast, tr!("Incorrect master password"));

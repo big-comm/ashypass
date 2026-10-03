@@ -11,13 +11,20 @@
 
 use crate::state::SharedState;
 use crate::tr;
+use crate::trn;
 use crate::ui::settings_dialog::{self, ImportSource};
 use crate::ui::widgets::{page_heading, Chrome};
 use adw::prelude::*;
 use gtk::{gio, glib};
 use serde::{Deserialize, Serialize};
+use std::cell::RefCell;
 use std::path::PathBuf;
 use std::rc::Rc;
+use zeroize::Zeroizing;
+
+/// Replace the live vault with a validated backup: file, master password of
+/// the backup, and the file's own password for a `.ashy` copy.
+pub type ReplaceCallback = Box<dyn Fn(PathBuf, Zeroizing<String>, Option<Zeroizing<String>>)>;
 
 /// What the app remembers about the last backup it made on this computer.
 /// Kept apart from settings.json: it is a record, not a preference.
@@ -66,6 +73,7 @@ struct Inner {
     status_row: adw::ActionRow,
     status_icon: gtk::Image,
     import_page: adw::NavigationPage,
+    on_replace: RefCell<Option<ReplaceCallback>>,
 }
 
 impl BackupsView {
@@ -204,6 +212,7 @@ impl BackupsView {
             status_row,
             status_icon,
             import_page,
+            on_replace: RefCell::new(None),
         });
         inner.refresh_status();
 
@@ -219,11 +228,7 @@ impl BackupsView {
             let weak = Rc::downgrade(&inner);
             restore.connect_clicked(move |button| {
                 if let Some(inner) = weak.upgrade() {
-                    settings_dialog::restore_backup(
-                        inner.state.clone(),
-                        inner.toast.clone(),
-                        button.clone().upcast(),
-                    );
+                    inner.show_restore_dialog(button);
                 }
             });
         }
@@ -259,6 +264,15 @@ impl BackupsView {
         self.inner.show_import();
     }
 
+    /// The window owns the vault and does the actual swap.
+    pub fn set_on_replace(&self, cb: ReplaceCallback) {
+        *self.inner.on_replace.borrow_mut() = Some(cb);
+    }
+
+    pub fn show_restore(&self, anchor: &impl IsA<gtk::Widget>) {
+        self.inner.show_restore_dialog(anchor);
+    }
+
     pub fn on_unlocked(&self) {
         self.inner.refresh_status();
     }
@@ -291,7 +305,7 @@ impl Inner {
                 self.status_row.set_subtitle(&format!(
                     "{} · {} · {}",
                     crate::ui::vault_view::format_timestamp(status.when),
-                    crate::trn!("{} entry", "{} entries", status.entries)
+                    trn!("{} entry", "{} entries", status.entries)
                         .replace("{}", &status.entries.to_string()),
                     status.location
                 ));
@@ -393,6 +407,315 @@ impl Inner {
                 },
             );
         });
+    }
+
+    /// Two honest ways to restore: replace the vault with the copy (exact,
+    /// with attachments and history; the current vault is kept in a file),
+    /// or add the copy's entries to the current vault (nothing is removed).
+    fn show_restore_dialog(self: &Rc<Self>, anchor: &impl IsA<gtk::Widget>) {
+        let dialog = adw::Dialog::builder()
+            .title(tr!("Restore a backup"))
+            .content_width(560)
+            .content_height(640)
+            .build();
+        let header = adw::HeaderBar::builder()
+            .show_start_title_buttons(false)
+            .show_end_title_buttons(false)
+            .build();
+        let cancel = gtk::Button::with_label(tr!("Cancel"));
+        let restore = gtk::Button::with_label(tr!("Restore"));
+        restore.add_css_class("suggested-action");
+        restore.set_sensitive(false);
+        header.pack_start(&cancel);
+        header.pack_end(&restore);
+        let toolbar = adw::ToolbarView::new();
+        toolbar.add_top_bar(&header);
+
+        let page = adw::PreferencesPage::new();
+        let file_group = adw::PreferencesGroup::builder()
+            .title(tr!("Backup file"))
+            .description(tr!(
+                "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive or WebDAV."
+            ))
+            .build();
+        let file_row = adw::ActionRow::builder()
+            .title(tr!("No file chosen"))
+            .use_markup(false)
+            .build();
+        let choose = gtk::Button::builder()
+            .label(tr!("Choose…"))
+            .valign(gtk::Align::Center)
+            .build();
+        file_row.add_suffix(&choose);
+        file_group.add(&file_row);
+        page.add(&file_group);
+
+        let mode_group = adw::PreferencesGroup::builder()
+            .title(tr!("How to restore"))
+            .build();
+        let replace_check = gtk::CheckButton::new();
+        let merge_check = gtk::CheckButton::new();
+        merge_check.set_group(Some(&replace_check));
+        replace_check.set_active(true);
+        let replace_row = adw::ActionRow::builder()
+            .title(tr!("Replace the vault with this copy"))
+            .subtitle(tr!(
+                "Everything returns to how it was when the copy was made, including attachments and password history. Entries created later disappear. The current vault is kept in a file next to it."
+            ))
+            .activatable_widget(&replace_check)
+            .build();
+        replace_row.add_prefix(&replace_check);
+        let merge_row = adw::ActionRow::builder()
+            .title(tr!("Add the copy's entries to the current vault"))
+            .subtitle(tr!(
+                "Nothing is removed. Entries already in the vault are skipped."
+            ))
+            .activatable_widget(&merge_check)
+            .build();
+        merge_row.add_prefix(&merge_check);
+        mode_group.add(&replace_row);
+        mode_group.add(&merge_row);
+        page.add(&mode_group);
+
+        let password_group = adw::PreferencesGroup::builder()
+            .title(tr!("Passwords"))
+            .build();
+        let file_password = adw::PasswordEntryRow::builder()
+            .title(tr!("Password of the backup file"))
+            .build();
+        let master_password = adw::PasswordEntryRow::builder()
+            .title(tr!("Master password when the copy was made"))
+            .build();
+        let master_hint = gtk::Label::builder()
+            .label(tr!(
+                "Usually the same master password you use today. After replacing, the vault opens with this password."
+            ))
+            .wrap(true)
+            .xalign(0.0)
+            .margin_top(6)
+            .build();
+        master_hint.add_css_class("caption");
+        master_hint.add_css_class("dim-label");
+        password_group.add(&file_password);
+        password_group.add(&master_password);
+        password_group.add(&master_hint);
+        page.add(&password_group);
+
+        let error = gtk::Label::builder()
+            .wrap(true)
+            .xalign(0.0)
+            .visible(false)
+            .margin_start(12)
+            .margin_end(12)
+            .build();
+        error.add_css_class("error");
+        error.set_accessible_role(gtk::AccessibleRole::Alert);
+        let error_group = adw::PreferencesGroup::new();
+        error_group.add(&error);
+        page.add(&error_group);
+
+        toolbar.set_content(Some(&page));
+        dialog.set_child(Some(&toolbar));
+
+        let chosen: Rc<RefCell<Option<PathBuf>>> = Rc::default();
+        let update = {
+            let chosen = chosen.clone();
+            let restore = restore.clone();
+            let file_password = file_password.clone();
+            let master_password = master_password.clone();
+            let master_hint = master_hint.clone();
+            let replace_check = replace_check.clone();
+            move || {
+                let path = chosen.borrow().clone();
+                let is_ashy = path
+                    .as_ref()
+                    .and_then(|p| p.extension())
+                    .is_some_and(|e| e.eq_ignore_ascii_case("ashy"));
+                let replacing = replace_check.is_active();
+                file_password.set_visible(path.is_none() || is_ashy);
+                master_password.set_visible(replacing);
+                master_hint.set_visible(replacing);
+                let ready = path.is_some()
+                    && (!is_ashy || !file_password.text().is_empty())
+                    && (!replacing || !master_password.text().is_empty());
+                restore.set_sensitive(ready);
+            }
+        };
+        update();
+        {
+            let update = update.clone();
+            replace_check.connect_toggled(move |_| update());
+        }
+        {
+            let update = update.clone();
+            file_password.connect_changed(move |_| update());
+        }
+        {
+            let update = update.clone();
+            master_password.connect_changed(move |_| update());
+        }
+        {
+            let chosen = chosen.clone();
+            let file_row = file_row.clone();
+            let update = update.clone();
+            choose.connect_clicked(move |button| {
+                let filter = gtk::FileFilter::new();
+                filter.set_name(Some(tr!("Ashy Pass backups")));
+                filter.add_suffix("ashy");
+                filter.add_suffix("db");
+                let filters = gio::ListStore::new::<gtk::FileFilter>();
+                filters.append(&filter);
+                let picker = gtk::FileDialog::builder()
+                    .title(tr!("Choose a backup"))
+                    .filters(&filters)
+                    .modal(true)
+                    .build();
+                let parent = button.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+                let chosen = chosen.clone();
+                let file_row = file_row.clone();
+                let update = update.clone();
+                picker.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+                    let Ok(file) = result else { return };
+                    let Some(path) = file.path() else { return };
+                    file_row.set_title(
+                        &path
+                            .file_name()
+                            .map(|n| n.to_string_lossy().to_string())
+                            .unwrap_or_default(),
+                    );
+                    file_row.set_subtitle(
+                        &path
+                            .parent()
+                            .map(|p| p.display().to_string())
+                            .unwrap_or_default(),
+                    );
+                    *chosen.borrow_mut() = Some(path);
+                    update();
+                });
+            });
+        }
+        {
+            let dialog = dialog.clone();
+            cancel.connect_clicked(move |_| {
+                dialog.close();
+            });
+        }
+        {
+            let weak = Rc::downgrade(self);
+            let dialog_cl = dialog.clone();
+            restore.connect_clicked(move |button| {
+                let Some(inner) = weak.upgrade() else { return };
+                let Some(path) = chosen.borrow().clone() else { return };
+                let is_ashy = path
+                    .extension()
+                    .is_some_and(|e| e.eq_ignore_ascii_case("ashy"));
+                let file_pw = is_ashy.then(|| Zeroizing::new(file_password.text().to_string()));
+                if !replace_check.is_active() {
+                    let Some(file_pw) = file_pw else {
+                        error.set_label(tr!(
+                            "Adding entries works with .ashy copies. For a .db copy, choose “Replace”."
+                        ));
+                        error.set_visible(true);
+                        return;
+                    };
+                    dialog_cl.close();
+                    crate::ui::import_flow::analyse(
+                        inner.state.clone(),
+                        inner.toast.clone(),
+                        inner.nav.clone().upcast(),
+                        ashypass_core::importers::ImportSource::Ashy {
+                            password: file_pw.to_string(),
+                        },
+                        path,
+                    );
+                    return;
+                }
+                let master = Zeroizing::new(master_password.text().to_string());
+                // Check the copy completely before offering to replace.
+                button.set_sensitive(false);
+                error.set_visible(false);
+                let worker_path = path.clone();
+                let worker_master = master.clone();
+                let worker_file = file_pw.clone();
+                let weak = Rc::downgrade(&inner);
+                let dialog_cl = dialog_cl.clone();
+                let error = error.clone();
+                let button = button.clone();
+                settings_dialog::run_background_task(
+                    move || {
+                        ashypass_core::backup::validate_backup(
+                            &worker_path,
+                            &worker_master,
+                            worker_file.as_deref().map(|s| s.as_str()),
+                        )
+                    },
+                    move |checked| {
+                        button.set_sensitive(true);
+                        let Some(inner) = weak.upgrade() else { return };
+                        match checked {
+                            Ok(info) => {
+                                dialog_cl.close();
+                                inner.confirm_replace(path, master, file_pw, info.entries);
+                            }
+                            Err(ashypass_core::Error::InvalidMasterPassword) => {
+                                error.set_label(tr!(
+                                    "A password is incorrect: the file password or the master password of the copy. Nothing was changed."
+                                ));
+                                error.set_visible(true);
+                            }
+                            Err(e) => {
+                                error.set_label(&format!(
+                                    "{} ({e})",
+                                    tr!("This copy cannot be restored. Nothing was changed")
+                                ));
+                                error.set_visible(true);
+                            }
+                        }
+                    },
+                );
+            });
+        }
+        self.state.track_sensitive_dialog(&dialog);
+        dialog.present(Some(anchor));
+    }
+
+    fn confirm_replace(
+        self: &Rc<Self>,
+        path: PathBuf,
+        master: Zeroizing<String>,
+        file_pw: Option<Zeroizing<String>>,
+        entries: usize,
+    ) {
+        let dialog = adw::AlertDialog::builder()
+            .heading(tr!("Replace the vault with this copy?"))
+            .body(format!(
+                "{}\n\n{}",
+                trn!(
+                    "The copy was checked and has {} entry.",
+                    "The copy was checked and has {} entries.",
+                    entries
+                )
+                .replace("{}", &entries.to_string()),
+                tr!("The vault will lock. The current vault is kept in a file next to it, and the restored vault opens with the master password of the copy.")
+            ))
+            .close_response("cancel")
+            .default_response("cancel")
+            .build();
+        dialog.add_response("cancel", tr!("Cancel"));
+        dialog.add_response("replace", tr!("Replace vault"));
+        dialog.set_response_appearance("replace", adw::ResponseAppearance::Destructive);
+        let weak = Rc::downgrade(self);
+        dialog.connect_response(None, move |_, response| {
+            if response != "replace" {
+                return;
+            }
+            if let Some(inner) = weak.upgrade() {
+                if let Some(cb) = inner.on_replace.borrow().as_ref() {
+                    cb(path.clone(), master.clone(), file_pw.clone());
+                }
+            }
+        });
+        dialog.present(Some(&self.nav));
     }
 
     fn choose_export(self: &Rc<Self>, anchor: &adw::ActionRow) {

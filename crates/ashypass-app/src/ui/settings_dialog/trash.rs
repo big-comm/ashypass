@@ -10,7 +10,7 @@ pub(super) fn populate_trash(
     page: &adw::PreferencesPage,
     state: SharedState,
     settings: Rc<RefCell<Settings>>,
-    toast: adw::ToastOverlay,
+    toast: Toaster,
 ) {
     // Retention setting
     let retention_group = adw::PreferencesGroup::builder()

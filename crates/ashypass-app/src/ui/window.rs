@@ -16,6 +16,7 @@
 use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
+use crate::trn;
 use crate::ui::backups_view::BackupsView;
 use crate::ui::unlock_view::UnlockView;
 use crate::ui::widgets::Chrome;
@@ -63,10 +64,6 @@ fn requires_vault(page: &str) -> bool {
 
 pub struct MainWindow {
     pub window: adw::ApplicationWindow,
-    #[cfg_attr(
-        not(debug_assertions),
-        expect(dead_code, reason = "keeps view model alive for signal handlers")
-    )]
     inner: Rc<MainWindowInner>,
 }
 
@@ -335,6 +332,16 @@ impl MainWindow {
         self.window.present();
     }
 
+    /// Lock from outside the window (screen lock, suspend).
+    pub fn lock_handle(&self) -> Rc<dyn Fn()> {
+        let weak = Rc::downgrade(&self.inner);
+        Rc::new(move || {
+            if let Some(inner) = weak.upgrade() {
+                inner.lock_now(false);
+            }
+        })
+    }
+
     #[cfg(debug_assertions)]
     pub fn dev(&self) -> DevHandle {
         DevHandle {
@@ -414,6 +421,16 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
                 inner.backups_view.show_import();
             }
         }));
+    }
+    {
+        let weak = Rc::downgrade(inner);
+        inner
+            .backups_view
+            .set_on_replace(Box::new(move |path, master, file_password| {
+                if let Some(inner) = weak.upgrade() {
+                    inner.replace_vault(path, master, file_password);
+                }
+            }));
     }
     {
         let weak = Rc::downgrade(inner);
@@ -665,7 +682,7 @@ impl MainWindowInner {
                     .saturating_duration_since(std::time::Instant::now())
                     .as_secs();
                 banner.set_title(
-                    &crate::trn!(
+                    &trn!(
                         "The vault will lock in {} second because of inactivity.",
                         "The vault will lock in {} seconds because of inactivity.",
                         left as usize
@@ -684,8 +701,11 @@ impl MainWindowInner {
         let id = glib::timeout_add_seconds_local(1, move || {
             let left = update();
             if left == 0 {
+                // Either the lock happened (and hid the banner) or an open
+                // form is holding it off; a frozen "0 seconds" helps no one.
                 if let Some(inner) = weak.upgrade() {
                     *inner.banner_timer.borrow_mut() = None;
+                    inner.lock_banner.set_revealed(false);
                 }
                 return glib::ControlFlow::Break;
             }
@@ -748,12 +768,110 @@ impl MainWindowInner {
         let dialog = adw::AlertDialog::builder()
             .heading(tr!("Bring your passwords"))
             .body(tr!(
-                "Create your vault first. Then open Backups and choose Import passwords to bring them from another app, or Restore a backup to use a copy made by Ashy Pass."
+                "From another app: create your vault first, then open Backups → Import passwords.\n\nFrom a copy made by Ashy Pass: restore it now. The vault will open with the master password of the copy."
             ))
+            .close_response("ok")
             .build();
         dialog.add_response("ok", tr!("Understood"));
+        dialog.add_response("restore", tr!("Restore a backup…"));
         dialog.set_default_response(Some("ok"));
+        let weak = Rc::downgrade(self);
+        dialog.connect_response(None, move |_, response| {
+            if response == "restore" {
+                if let Some(inner) = weak.upgrade() {
+                    inner.backups_view.show_restore(&inner.window);
+                }
+            }
+        });
         dialog.present(Some(&self.window));
+    }
+
+    /// Swap the live vault for a validated backup. The open vault is closed
+    /// first (the restore refuses while another connection could still
+    /// write), the core keeps a copy of the current file, and the restored
+    /// vault reopens locked.
+    fn replace_vault(
+        self: &Rc<Self>,
+        candidate: std::path::PathBuf,
+        master: Zeroizing<String>,
+        file_password: Option<Zeroizing<String>>,
+    ) {
+        if self.unlocked() {
+            self.lock_now(false);
+        }
+        let live = ashypass_core::config::database_path();
+        let placeholder_path = ashypass_core::config::data_dir()
+            .join(format!(".restore-placeholder-{}.db", std::process::id()));
+        let placeholder = match ashypass_core::db::Vault::open(&placeholder_path) {
+            Ok(v) => v,
+            Err(e) => {
+                self.toast(&format!("{}: {e}", tr!("Nothing was restored")), 6);
+                return;
+            }
+        };
+        // Dropping the old vault closes its connection and checkpoints it.
+        drop(self.state.install_vault(placeholder));
+        self.toast(tr!("Restoring the copy…"), 3);
+        let weak = Rc::downgrade(self);
+        let worker_live = live.clone();
+        crate::ui::settings_dialog::run_background_task(
+            move || {
+                ashypass_core::backup::restore_db_snapshot_with(
+                    &worker_live,
+                    &candidate,
+                    &master,
+                    file_password.as_deref().map(|s| s.as_str()),
+                )
+            },
+            move |outcome| {
+                let Some(inner) = weak.upgrade() else { return };
+                // Reopen the live file whatever happened: on failure it is
+                // still the previous vault, untouched.
+                match ashypass_core::db::Vault::open(&live) {
+                    Ok(vault) => {
+                        drop(inner.state.install_vault(vault));
+                        for suffix in ["", "-wal", "-shm"] {
+                            let mut path = placeholder_path.clone().into_os_string();
+                            path.push(suffix);
+                            let _ = std::fs::remove_file(path);
+                        }
+                    }
+                    Err(e) => {
+                        log::error!("could not reopen the vault after restore: {e}");
+                    }
+                }
+                inner
+                    .state
+                    .events
+                    .emit(crate::events::AppEvent::VaultChanged);
+                inner.unlock_view.refresh();
+                inner.show_page("vault");
+                let (heading, body) = match outcome {
+                    Ok(done) => (
+                        tr!("Backup restored").to_string(),
+                        match done.previous_copy {
+                            Some(previous) => format!(
+                                "{}\n\n{}\n{}",
+                                tr!("Unlock with the master password of the copy."),
+                                tr!("The previous vault was kept at:"),
+                                previous.display()
+                            ),
+                            None => tr!("Unlock with the master password of the copy.").to_string(),
+                        },
+                    ),
+                    Err(e) => (
+                        tr!("Nothing was restored").to_string(),
+                        format!("{}\n\n{e}", tr!("Your vault was not changed.")),
+                    ),
+                };
+                let dialog = adw::AlertDialog::builder()
+                    .heading(heading)
+                    .body(body)
+                    .build();
+                dialog.add_response("ok", tr!("OK"));
+                dialog.present(Some(&inner.window));
+            },
+        );
     }
 }
 

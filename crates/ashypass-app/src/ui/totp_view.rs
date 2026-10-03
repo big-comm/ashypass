@@ -12,6 +12,7 @@
 use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
+use crate::trn;
 use crate::ui::entry_form::{self, parse_totp_input, totp_error_message, EntryFormOptions};
 use crate::ui::widgets::{account_line, copy_secret, group_code, page_heading, Chrome, EmptyState};
 use adw::prelude::*;
@@ -497,7 +498,7 @@ impl Inner {
             rd.progress.set_value(remaining as f64 / period as f64);
             rd.countdown_label.set_label(&format!("{remaining} s"));
             rd.countdown_label.set_tooltip_text(Some(
-                &crate::trn!(
+                &trn!(
                     "New code in {} second",
                     "New code in {} seconds",
                     remaining as usize
