@@ -63,6 +63,10 @@ const VERSION: &str = ashypass_core::config::APP_VERSION;
 /// Maximum incoming payload accepted. Mirrors the Chrome limit (~1 MiB),
 /// guarding against a runaway extension stream.
 const MAX_MESSAGE_BYTES: u32 = 1024 * 1024;
+/// Bounds for `generate` with `kind: "pin"`. Without a cap a single request
+/// could ask for a multi-gigabyte string.
+const PIN_MIN_LENGTH: usize = 4;
+const PIN_MAX_LENGTH: usize = 64;
 
 fn main() {
     // CLI helper modes for installing or printing the manifest. These run
@@ -254,12 +258,16 @@ impl HostSession {
 
 fn serve() -> Result<()> {
     let mut session = HostSession::open()?;
+    let stdin = std::io::stdin();
+    let mut input = stdin.lock();
 
     loop {
-        let req = match read_message::<Request>() {
-            Ok(Some(req)) => req,
-            Ok(None) => return Ok(()), // EOF: browser closed the port.
-            Err(e) => {
+        let req = match read_message::<Request>(&mut input)? {
+            Incoming::Message(req) => req,
+            Incoming::Eof => return Ok(()), // EOF: browser closed the port.
+            Incoming::Malformed(e) => {
+                // The frame was consumed in full, so the stream is still in
+                // sync: report and keep serving.
                 write_error(&format!("malformed request: {e}"))?;
                 continue;
             }
@@ -297,20 +305,14 @@ fn handle_list(vault: &Vault, query: Option<&str>) -> serde_json::Value {
 }
 
 fn handle_match_url(vault: &Vault, url: &str) -> serde_json::Value {
-    let target = url_host(url).unwrap_or_else(|| url.to_string());
-    if target.is_empty() {
+    if url_host(url).is_none() {
         return serde_json::json!({"ok": true, "entries": Vec::<EntrySummary>::new()});
     }
     match vault.list(None) {
         Ok(entries) => {
             let matches: Vec<EntrySummary> = entries
                 .iter()
-                .filter(|e| match &e.url {
-                    Some(u) => url_host(u)
-                        .map(|h| host_match(&h, &target))
-                        .unwrap_or(false),
-                    None => false,
-                })
+                .filter(|e| e.url.as_deref().is_some_and(|u| entry_matches_page(u, url)))
                 .map(EntrySummary::from)
                 .collect();
             serde_json::json!({"ok": true, "entries": matches})
@@ -342,7 +344,9 @@ fn handle_get(vault: &Vault, id: i64) -> serde_json::Value {
 fn handle_generate(length: &Option<usize>, kind: &Option<String>) -> Result<String> {
     match kind.as_deref() {
         Some("passphrase") => Ok(generate_passphrase(6, "-", true, true)),
-        Some("pin") => Ok(generate_pin(length.unwrap_or(6))),
+        Some("pin") => Ok(generate_pin(
+            length.unwrap_or(6).clamp(PIN_MIN_LENGTH, PIN_MAX_LENGTH),
+        )),
         Some("password") | None => {
             let cfg = PasswordConfig {
                 length: length.unwrap_or(PasswordConfig::default().length),
@@ -362,27 +366,46 @@ fn write_error(msg: &str) -> Result<()> {
     write_message(&error_response(msg))
 }
 
-fn read_message<T: for<'de> Deserialize<'de>>() -> Result<Option<T>> {
+/// Outcome of reading one native-messaging frame.
+#[derive(Debug)]
+enum Incoming<T> {
+    /// The browser closed the port.
+    Eof,
+    Message(T),
+    /// The frame was read in full but its payload is not a valid request.
+    /// The stream is still in sync, so the host can keep serving.
+    Malformed(String),
+}
+
+/// Read one `[u32 LE length][JSON]` frame.
+///
+/// Framing errors (oversized length, truncated payload, I/O failure) are
+/// returned as `Err`: once the length prefix cannot be trusted the stream is
+/// out of sync, and reading on would interpret attacker-controlled payload
+/// bytes as the next length. The caller must stop serving.
+fn read_message<T: for<'de> Deserialize<'de>>(input: &mut impl Read) -> Result<Incoming<T>> {
     let mut len_buf = [0u8; 4];
-    let stdin = std::io::stdin();
-    let mut lock = stdin.lock();
-    if let Err(e) = lock.read_exact(&mut len_buf) {
+    if let Err(e) = input.read_exact(&mut len_buf) {
         if e.kind() == std::io::ErrorKind::UnexpectedEof {
-            return Ok(None);
+            return Ok(Incoming::Eof);
         }
         return Err(e.into());
     }
     let len = u32::from_le_bytes(len_buf);
     if len == 0 {
-        return Err(anyhow!("zero-length frame"));
+        return Ok(Incoming::Malformed("zero-length frame".into()));
     }
     if len > MAX_MESSAGE_BYTES {
         bail!("message too large: {len} bytes");
     }
     let mut buf = vec![0u8; len as usize];
-    lock.read_exact(&mut buf)?;
-    let v: T = serde_json::from_slice(&buf)?;
-    Ok(Some(v))
+    input
+        .read_exact(&mut buf)
+        .context("truncated message payload")?;
+    Ok(match serde_json::from_slice(&buf) {
+        Ok(v) => Incoming::Message(v),
+        Err(e) => Incoming::Malformed(e.to_string()),
+    })
 }
 
 fn write_message<T: Serialize>(value: &T) -> Result<()> {
@@ -430,13 +453,65 @@ fn url_host(input: &str) -> Option<String> {
     }
 }
 
+/// Lower-case scheme of `input` (`https`, `http`, …), or `None` when the
+/// string has no `scheme://` prefix (a bare host saved by the user).
+fn url_scheme(input: &str) -> Option<String> {
+    let (scheme, _) = input.trim().split_once("://")?;
+    let mut chars = scheme.chars();
+    let valid = chars.next().is_some_and(|c| c.is_ascii_alphabetic())
+        && chars.all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '-' | '.'));
+    valid.then(|| scheme.to_ascii_lowercase())
+}
+
+/// Whether an entry saved with `entry` scheme may be offered on a page loaded
+/// with `page` scheme.
+///
+/// Downgrades are refused: a credential saved for `https://` (or saved as a
+/// bare host, which we treat as `https`) is never offered on an `http://`
+/// page, where a network attacker controls the content. An `http://` entry
+/// may be offered on the `https://` version of the site. Any other scheme
+/// must match exactly, and a page without a recognisable scheme only matches
+/// bare-host entries.
+fn scheme_compatible(entry: Option<&str>, page: Option<&str>) -> bool {
+    match (entry, page) {
+        (None, None) => true,
+        (None | Some("https"), Some(page)) => page == "https",
+        (Some("http"), Some(page)) => page == "http" || page == "https",
+        (Some(entry), Some(page)) => entry == page,
+        (Some(_), None) => false,
+    }
+}
+
+/// Full matching rule for `match_url`: compatible scheme and same site.
+fn entry_matches_page(entry_url: &str, page_url: &str) -> bool {
+    let (Some(entry_host), Some(page_host)) = (url_host(entry_url), url_host(page_url)) else {
+        return false;
+    };
+    scheme_compatible(
+        url_scheme(entry_url).as_deref(),
+        url_scheme(page_url).as_deref(),
+    ) && host_match(&entry_host, &page_host)
+}
+
+/// Top-level domains under which registrations happen directly at the second
+/// level (`example.com`), once the second-level public suffixes listed in
+/// [`MULTI_LABEL_SUFFIXES`] are accounted for. Hosts under any other TLD
+/// fail closed: they only ever match exactly (after `www.` shedding).
+const FLAT_TLDS: &[&str] = &[
+    "com", "org", "net", "edu", "gov", "mil", "int", "info", "biz", "dev", "app", "page", "xyz",
+    "online", "site", "shop", "store", "tech", "cloud", "io", "me", "ai", "co", "de", "nl", "ch",
+    "eu", "be", "dk", "fi", "cz", "es", "pt",
+];
+
 /// Multi-label public suffixes common enough to matter here. Without this a
 /// suffix match would treat `github.io` or `com.br` as a registrable domain and
 /// happily offer one tenant's credentials on another tenant's subdomain.
 ///
-/// This is deliberately a short list rather than a bundled Public Suffix List:
-/// the failure mode of a missing entry is a *refused* match (we fall back to
-/// requiring more labels), never a credential offered to the wrong site.
+/// This is deliberately a short list rather than a bundled Public Suffix List,
+/// so it must fail closed: a host whose suffix is neither listed here nor
+/// under one of the [`FLAT_TLDS`] has no registrable domain and only matches
+/// exactly. A missing entry therefore means a *refused* subdomain match,
+/// never a credential offered to the wrong site.
 const MULTI_LABEL_SUFFIXES: &[&str] = &[
     "co.uk",
     "org.uk",
@@ -473,17 +548,102 @@ const MULTI_LABEL_SUFFIXES: &[&str] = &[
     "fly.dev",
     "duckdns.org",
     "ngrok.io",
+    // Second-level registries of TLDs listed in FLAT_TLDS.
+    "com.io",
+    "net.io",
+    "org.io",
+    "edu.io",
+    "gov.io",
+    "mil.io",
+    "co.me",
+    "net.me",
+    "org.me",
+    "edu.me",
+    "ac.me",
+    "gov.me",
+    "its.me",
+    "priv.me",
+    "com.ai",
+    "net.ai",
+    "off.ai",
+    "org.ai",
+    "com.co",
+    "net.co",
+    "org.co",
+    "edu.co",
+    "gov.co",
+    "mil.co",
+    "nom.co",
+    "com.es",
+    "nom.es",
+    "org.es",
+    "gob.es",
+    "edu.es",
+    "com.pt",
+    "edu.pt",
+    "gov.pt",
+    "int.pt",
+    "net.pt",
+    "nome.pt",
+    "org.pt",
+    "publ.pt",
+    "ac.be",
+    "bv.nl",
+    "aland.fi",
+    // Common second-level registries of other ccTLDs.
+    "co.nz",
+    "org.nz",
+    "net.nz",
+    "ac.nz",
+    "govt.nz",
+    "ne.jp",
+    "or.jp",
+    "ac.jp",
+    "go.jp",
+    "co.kr",
+    "com.cn",
+    "net.cn",
+    "org.cn",
+    "com.hk",
+    "com.sg",
+    "com.tw",
+    "co.il",
+    "edu.au",
+    "net.au",
+    "org.au",
+    "gov.au",
+    "org.mx",
+    "gob.mx",
+    "edu.br",
+    "art.br",
+    // Shared hosting under flat TLDs.
+    "readthedocs.io",
+    "ngrok.app",
+    "ngrok-free.app",
+    "trycloudflare.com",
+    "r2.dev",
+    "azurestaticapps.net",
+    "cloudapp.azure.com",
+    "elasticbeanstalk.com",
+    "github.dev",
+    "dyndns.org",
 ];
 
 /// Number of trailing labels that belong to the public suffix plus one, i.e.
-/// the minimum label count of a registrable domain under `host`.
-fn registrable_label_count(host: &str) -> usize {
-    for suffix in MULTI_LABEL_SUFFIXES {
-        if host == *suffix || host.ends_with(&format!(".{suffix}")) {
-            return suffix.split('.').count() + 1;
-        }
+/// the minimum label count of a registrable domain under `host`. `None` when
+/// the suffix is unknown — the caller must then require an exact match.
+fn registrable_label_count(host: &str) -> Option<usize> {
+    // Longest listed suffix wins (`s3.amazonaws.com` before a shorter entry).
+    let listed = MULTI_LABEL_SUFFIXES
+        .iter()
+        .filter(|suffix| host == **suffix || host.ends_with(&format!(".{suffix}")))
+        .map(|suffix| suffix.split('.').count())
+        .max();
+    if let Some(labels) = listed {
+        return Some(labels + 1);
     }
-    2
+    let tld = host.rsplit('.').next()?;
+    FLAT_TLDS.contains(&tld).then_some(2)
 }
 
 /// The registrable domain of `host` (`mail.corp.example.co.uk` →
@@ -496,7 +656,7 @@ fn registrable_domain(host: &str) -> Option<String> {
         return None;
     }
     let labels: Vec<&str> = host.split('.').filter(|l| !l.is_empty()).collect();
-    let needed = registrable_label_count(host);
+    let needed = registrable_label_count(host)?;
     if labels.len() < needed {
         return None;
     }
@@ -540,39 +700,36 @@ fn manifest_chrome(exe_path: &str, allowed_extensions: &str) -> String {
     // URIs. The caller passes the bare extension IDs and we wrap them.
     let origins: Vec<String> = allowed_extensions
         .split(',')
-        .filter(|s| !s.trim().is_empty())
-        .map(|s| format!("\"chrome-extension://{}/\"", s.trim()))
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(|s| format!("chrome-extension://{s}/"))
         .collect();
-    format!(
-        r#"{{
-  "name": "{EXTENSION_NAME}",
-  "description": "Ashy Pass native messaging host",
-  "path": "{exe_path}",
-  "type": "stdio",
-  "allowed_origins": [{}]
-}}
-"#,
-        origins.join(", ")
-    )
+    render_manifest(exe_path, "allowed_origins", origins)
 }
 
 fn manifest_firefox(exe_path: &str, allowed_extensions: &[String]) -> String {
     let ids: Vec<String> = allowed_extensions
         .iter()
-        .filter(|s| !s.trim().is_empty())
-        .map(|s| format!("\"{}\"", s.trim()))
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .map(str::to_string)
         .collect();
-    format!(
-        r#"{{
-  "name": "{EXTENSION_NAME}",
-  "description": "Ashy Pass native messaging host",
-  "path": "{exe_path}",
-  "type": "stdio",
-  "allowed_extensions": [{}]
-}}
-"#,
-        ids.join(", ")
-    )
+    render_manifest(exe_path, "allowed_extensions", ids)
+}
+
+/// Serialise a host manifest with serde_json, so a path or extension id
+/// containing quotes or backslashes cannot break (or inject into) the JSON.
+fn render_manifest(exe_path: &str, allow_key: &str, allowed: Vec<String>) -> String {
+    let mut manifest = serde_json::json!({
+        "name": EXTENSION_NAME,
+        "description": "Ashy Pass native messaging host",
+        "path": exe_path,
+        "type": "stdio",
+    });
+    manifest[allow_key] = serde_json::Value::from(allowed);
+    let mut out = serde_json::to_string_pretty(&manifest).expect("manifest is valid JSON");
+    out.push('\n');
+    out
 }
 
 fn install_manifests(extension_ids: &[String]) -> Result<()> {
@@ -715,16 +872,195 @@ mod tests {
 
     #[test]
     fn manifest_chrome_lists_origins() {
-        let m = manifest_chrome("/bin/host", "abc,def");
-        assert!(m.contains("\"chrome-extension://abc/\""));
-        assert!(m.contains("\"chrome-extension://def/\""));
-        assert!(m.contains("\"path\": \"/bin/host\""));
+        let m: serde_json::Value =
+            serde_json::from_str(&manifest_chrome("/bin/host", "abc, def,")).unwrap();
+        assert_eq!(m["name"], EXTENSION_NAME);
+        assert_eq!(m["path"], "/bin/host");
+        assert_eq!(m["type"], "stdio");
+        assert_eq!(
+            m["allowed_origins"],
+            serde_json::json!(["chrome-extension://abc/", "chrome-extension://def/"])
+        );
     }
 
     #[test]
     fn manifest_firefox_lists_extension_ids() {
-        let m = manifest_firefox("/bin/host", &["abc@example".into(), "def@example".into()]);
-        assert!(m.contains("\"abc@example\""));
-        assert!(m.contains("\"def@example\""));
+        let m: serde_json::Value = serde_json::from_str(&manifest_firefox(
+            "/bin/host",
+            &["abc@example".into(), " ".into(), "def@example".into()],
+        ))
+        .unwrap();
+        assert_eq!(
+            m["allowed_extensions"],
+            serde_json::json!(["abc@example", "def@example"])
+        );
+    }
+
+    #[test]
+    fn manifest_escapes_hostile_input() {
+        let path = r#"/opt/we"ird\path"#;
+        let m: serde_json::Value =
+            serde_json::from_str(&manifest_chrome(path, r#"x"]}{"evil":["#)).unwrap();
+        assert_eq!(m["path"], path);
+        assert_eq!(m["allowed_origins"].as_array().unwrap().len(), 1);
+        assert!(m.get("evil").is_none());
+        let m: serde_json::Value =
+            serde_json::from_str(&manifest_firefox(path, &[r#"a"]}"#.into()])).unwrap();
+        assert_eq!(m["allowed_extensions"][0], r#"a"]}"#);
+    }
+
+    #[test]
+    fn unknown_public_suffixes_fail_closed() {
+        // `school.nz` is not in the built-in list and `nz` is not flat: the
+        // old two-label fallback made these "the same site".
+        assert!(!host_match("a.school.nz", "evil.school.nz"));
+        assert!(!host_match("login.example.zz", "example.zz"));
+        assert!(!host_match("a.example.zz", "b.example.zz"));
+        assert!(!host_match("a.gov.pl", "evil.gov.pl"));
+        // …but exact matches (and `www.`) still work there.
+        assert!(host_match("example.zz", "example.zz"));
+        assert!(host_match("www.example.zz", "example.zz"));
+        assert!(host_match("bank.school.nz", "bank.school.nz"));
+        // Listed second-level registries behave like a public suffix.
+        assert!(!host_match("a.co.nz", "evil.co.nz"));
+        assert!(host_match("shop.co.nz", "login.shop.co.nz"));
+        assert!(!host_match("a.com.io", "b.com.io"));
+        assert!(!host_match("a.edu.br", "b.edu.br"));
+        // Flat TLDs keep subdomain matching.
+        assert!(host_match("accounts.example.de", "example.de"));
+        assert_eq!(
+            registrable_domain("x.y.example.com").as_deref(),
+            Some("example.com")
+        );
+        assert_eq!(registrable_domain("x.example.zz"), None);
+        assert_eq!(registrable_domain("com"), None);
+    }
+
+    #[test]
+    fn longest_listed_suffix_wins() {
+        assert_eq!(
+            registrable_domain("bucket.s3.amazonaws.com").as_deref(),
+            Some("bucket.s3.amazonaws.com")
+        );
+        assert!(!host_match("a.s3.amazonaws.com", "b.s3.amazonaws.com"));
+    }
+
+    #[test]
+    fn scheme_rules() {
+        assert_eq!(url_scheme("HTTPS://example.com").as_deref(), Some("https"));
+        assert_eq!(url_scheme("example.com"), None);
+        assert_eq!(url_scheme("1x://example.com"), None);
+        // No downgrade.
+        assert!(!scheme_compatible(Some("https"), Some("http")));
+        assert!(!scheme_compatible(None, Some("http")));
+        // Same scheme or upgrade.
+        assert!(scheme_compatible(Some("https"), Some("https")));
+        assert!(scheme_compatible(None, Some("https")));
+        assert!(scheme_compatible(Some("http"), Some("http")));
+        assert!(scheme_compatible(Some("http"), Some("https")));
+        // Other schemes match exactly only.
+        assert!(scheme_compatible(Some("ftp"), Some("ftp")));
+        assert!(!scheme_compatible(Some("ftp"), Some("https")));
+        assert!(!scheme_compatible(None, Some("chrome-extension")));
+        assert!(!scheme_compatible(Some("https"), None));
+    }
+
+    #[test]
+    fn entry_matching_combines_scheme_and_host() {
+        assert!(entry_matches_page(
+            "https://example.com",
+            "https://login.example.com/x"
+        ));
+        assert!(entry_matches_page("example.com", "https://example.com/"));
+        assert!(!entry_matches_page(
+            "https://example.com",
+            "http://example.com/"
+        ));
+        assert!(!entry_matches_page("example.com", "http://example.com/"));
+        assert!(entry_matches_page(
+            "http://intranet.example.com",
+            "http://intranet.example.com/"
+        ));
+        assert!(entry_matches_page(
+            "http://example.com",
+            "https://example.com/"
+        ));
+        assert!(!entry_matches_page(
+            "https://example.com",
+            "https://evil.com#@example.com"
+        ));
+        assert!(!entry_matches_page("", "https://example.com"));
+    }
+
+    #[test]
+    fn pin_length_is_clamped() {
+        let pin = handle_generate(&Some(10_000_000), &Some("pin".into())).unwrap();
+        assert_eq!(pin.len(), PIN_MAX_LENGTH);
+        let pin = handle_generate(&Some(0), &Some("pin".into())).unwrap();
+        assert_eq!(pin.len(), PIN_MIN_LENGTH);
+        let pin = handle_generate(&None, &Some("pin".into())).unwrap();
+        assert_eq!(pin.len(), 6);
+        assert!(pin.chars().all(|c| c.is_ascii_digit()));
+    }
+
+    fn frame(payload: &[u8]) -> Vec<u8> {
+        let mut out = (payload.len() as u32).to_le_bytes().to_vec();
+        out.extend_from_slice(payload);
+        out
+    }
+
+    #[test]
+    fn frames_are_read_in_sequence() {
+        let mut bytes = frame(br#"{"cmd":"ping"}"#);
+        bytes.extend(frame(br#"{"cmd":"get","id":7}"#));
+        let mut input = std::io::Cursor::new(bytes);
+        assert!(matches!(
+            read_message::<Request>(&mut input).unwrap(),
+            Incoming::Message(Request::Ping)
+        ));
+        assert!(matches!(
+            read_message::<Request>(&mut input).unwrap(),
+            Incoming::Message(Request::Get { id: 7 })
+        ));
+        assert!(matches!(
+            read_message::<Request>(&mut input).unwrap(),
+            Incoming::Eof
+        ));
+    }
+
+    #[test]
+    fn malformed_payload_keeps_the_stream_in_sync() {
+        let mut bytes = frame(b"not json");
+        bytes.extend(frame(br#"{"cmd":"ping"}"#));
+        let mut input = std::io::Cursor::new(bytes);
+        assert!(matches!(
+            read_message::<Request>(&mut input).unwrap(),
+            Incoming::Malformed(_)
+        ));
+        assert!(matches!(
+            read_message::<Request>(&mut input).unwrap(),
+            Incoming::Message(Request::Ping)
+        ));
+    }
+
+    #[test]
+    fn oversized_or_truncated_frames_are_fatal() {
+        // An oversized length prefix followed by bytes that would parse as a
+        // valid frame if the reader resynchronised on them.
+        let mut bytes = (MAX_MESSAGE_BYTES + 1).to_le_bytes().to_vec();
+        bytes.extend(frame(br#"{"cmd":"ping"}"#));
+        let mut input = std::io::Cursor::new(bytes);
+        assert!(read_message::<Request>(&mut input).is_err());
+
+        let mut truncated = 100u32.to_le_bytes().to_vec();
+        truncated.extend_from_slice(b"{\"cmd\"");
+        let mut input = std::io::Cursor::new(truncated);
+        assert!(read_message::<Request>(&mut input).is_err());
+
+        let mut input = std::io::Cursor::new(0u32.to_le_bytes().to_vec());
+        assert!(matches!(
+            read_message::<Request>(&mut input).unwrap(),
+            Incoming::Malformed(_)
+        ));
     }
 }

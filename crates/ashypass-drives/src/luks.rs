@@ -112,19 +112,6 @@ pub fn build_close_spec(mapper_name: &str) -> CommandSpec {
         .arg(mapper_name.to_string())
 }
 
-pub fn build_add_key_spec(device: &Path) -> CommandSpec {
-    // cryptsetup reads the existing key from stdin first, then the new key.
-    // Two-key flow is handled by the caller via `with_stdin(existing || new)`.
-    CommandSpec::new("cryptsetup")
-        .arg("luksAddKey")
-        .arg("--pbkdf")
-        .arg(KDF)
-        .arg("--iter-time")
-        .arg(ITER_TIME_MS.to_string())
-        .arg("--key-file=-")
-        .arg(device.to_string_lossy().into_owned())
-}
-
 /// Format `device` as a fresh LUKS2 volume. **Destructive.**
 ///
 /// `device` must already have passed [`crate::safety::inspect`]. This
@@ -136,8 +123,9 @@ pub fn luks_format(
     passphrase: &Passphrase,
     opts: &FormatOptions,
 ) -> Result<()> {
-    if passphrase.is_empty() {
-        return Err(Error::Refused("refusing empty passphrase".into()));
+    crate::validate::validate_passphrase(passphrase)?;
+    if !opts.label.is_empty() {
+        crate::validate::validate_label(&opts.label)?;
     }
     let spec = build_format_spec(device, opts).with_passphrase(passphrase);
     runner.run(spec).map(|_| ())
@@ -150,12 +138,17 @@ pub fn luks_open(
     passphrase: &Passphrase,
     allow_discards: bool,
 ) -> Result<PathBuf> {
+    crate::validate::validate_mapper_name(mapper_name)?;
     let spec = build_open_spec(device, mapper_name, allow_discards).with_passphrase(passphrase);
     runner.run(spec)?;
     Ok(PathBuf::from(format!("/dev/mapper/{mapper_name}")))
 }
 
+/// Close an Ashy Pass mapping. Names without the `ashypass_` prefix are
+/// refused so this can never tear down another tool's (or the system's)
+/// dm-crypt device.
 pub fn luks_close(runner: &dyn Runner, mapper_name: &str) -> Result<()> {
+    crate::validate::validate_mapper_name(mapper_name)?;
     runner.run(build_close_spec(mapper_name)).map(|_| ())
 }
 
@@ -204,24 +197,6 @@ pub fn dump_json(runner: &dyn Runner, device: &Path) -> Result<String> {
     Ok(String::from_utf8_lossy(&out.stdout).into_owned())
 }
 
-pub fn luks_add_passphrase(
-    runner: &dyn Runner,
-    device: &Path,
-    existing: &Passphrase,
-    new: &Passphrase,
-) -> Result<()> {
-    if new.is_empty() {
-        return Err(Error::Refused("refusing empty new passphrase".into()));
-    }
-    // cryptsetup reads "existing\nnew\n" from stdin in --key-file=- mode.
-    let mut payload = existing.as_bytes().to_vec();
-    payload.push(b'\n');
-    payload.extend_from_slice(new.as_bytes());
-    payload.push(b'\n');
-    let spec = build_add_key_spec(device).with_stdin(payload);
-    runner.run(spec).map(|_| ())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -265,11 +240,5 @@ mod tests {
     fn close_spec_is_minimal() {
         let s = build_close_spec("ash0");
         assert_eq!(s.args, vec!["close".to_string(), "ash0".to_string()]);
-    }
-
-    #[test]
-    fn add_key_payload_separator() {
-        // The format expected on stdin: "old\nnew\n".
-        let _ = build_add_key_spec(Path::new("/dev/sda"));
     }
 }

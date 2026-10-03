@@ -1,0 +1,36 @@
+{
+   "blockdevices": [
+      {"name":"loop0", "path":"/dev/loop0", "size":15699744768, "type":"loop", "rm":false, "hotplug":false, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "fstype":"squashfs", "fsused":null, "fssize":null, "mountpoint":"/run/live", "label":null, "pttype":null, "uuid":null},
+      {"name":"sda", "path":"/dev/sda", "size":512110190592, "type":"disk", "rm":false, "hotplug":false, "ro":false, "rota":false, "tran":"sata", "vendor":"ATA     ", "model":"Samsung SSD 860", "serial":"S3Z9NB0K", "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":"gpt", "uuid":null,
+         "children": [
+            {"name":"sda1", "path":"/dev/sda1", "size":536870912, "type":"part", "rm":false, "hotplug":false, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "fstype":"vfat", "fsused":1000, "fssize":536000000, "mountpoint":"/boot/efi", "label":null, "pttype":"gpt", "uuid":"ABCD-1234"},
+            {"name":"sda2", "path":"/dev/sda2", "size":511572271104, "type":"part", "rm":false, "hotplug":false, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "fstype":"btrfs", "fsused":100000, "fssize":511000000000, "mountpoint":"/", "label":"root", "pttype":"gpt", "uuid":"11111111-2222-3333-4444-555555555555"}
+         ]
+      },
+      {"name":"sdb", "path":"/dev/sdb", "size":61991813120, "type":"disk", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":"usb", "vendor":"Kingston", "model":"DataTraveler 3.0", "serial":"E0D55EA5", "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":"dos", "uuid":null,
+         "children": [
+            {"name":"sdb1", "path":"/dev/sdb1", "size":61990764544, "type":"part", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "fstype":"vfat", "fsused":null, "fssize":null, "mountpoint":null, "label":"STICK", "pttype":"dos", "uuid":"5A1B-2C3D"}
+         ]
+      },
+      {"name":"sdc", "path":"/dev/sdc", "size":15376000000, "type":"disk", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":"usb", "vendor":"SanDisk", "model":"Cruzer", "serial":"4C530001", "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":"gpt", "uuid":null,
+         "children": [
+            {"name":"sdc1", "path":"/dev/sdc1", "size":15375000000, "type":"part", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "fstype":"crypto_LUKS", "fsused":null, "fssize":null, "mountpoint":null, "label":"docs", "pttype":"gpt", "uuid":"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+               "children": [
+                  {"name":"luks-aaaaaaaa", "path":"/dev/mapper/luks-aaaaaaaa", "size":15358000000, "type":"crypt", "rm":false, "hotplug":false, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "fstype":"ext4", "fsused":2000000, "fssize":15000000000, "mountpoint":"/run/media/user/docs", "label":"docs", "pttype":null, "uuid":"ffffffff-0000-1111-2222-333333333333"}
+               ]
+            }
+         ]
+      },
+      {"name":"sdd", "path":"/dev/sdd", "size":31004295168, "type":"disk", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":"usb", "vendor":"Samsung", "model":"Flash Drive FIT", "serial":"0374620080001234", "fstype":"crypto_LUKS", "fsused":null, "fssize":null, "mountpoint":null, "label":"vault", "pttype":null, "uuid":"0f6c1a2b-3c4d-5e6f-7a8b-9c0d1e2f3a4b",
+         "children": [
+            {"name":"ashypass_vault", "path":"/dev/mapper/ashypass_vault", "size":30987517952, "type":"crypt", "rm":false, "hotplug":false, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "fstype":"ext4", "fsused":4096000, "fssize":30000000000, "mountpoint":"/run/media/user/vault", "label":"vault", "pttype":null, "uuid":"12121212-3434-5656-7878-909090909090"}
+         ]
+      },
+      {"name":"sde", "path":"/dev/sde", "size":8053063680, "type":"disk", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":"usb", "vendor":"Generic", "model":"Flash Disk", "serial":null, "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":null, "uuid":null,
+         "children": [
+            {"name":"ashypass_wipe_tmp", "path":"/dev/mapper/ashypass_wipe_tmp", "size":8053063680, "type":"crypt", "rm":false, "hotplug":false, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":null, "uuid":null}
+         ]
+      },
+      {"name":"sdf", "path":"/dev/sdf", "size":128043712512, "type":"disk", "rm":false, "hotplug":true, "ro":false, "rota":false, "tran":"usb", "vendor":"WD", "model":"Elements 25A3", "serial":"57584C31", "fstype":"crypto_LUKS", "fsused":null, "fssize":null, "mountpoint":null, "label":"backup", "pttype":null, "uuid":"9a8b7c6d-5e4f-3a2b-1c0d-ffeeddccbbaa"}
+   ]
+}

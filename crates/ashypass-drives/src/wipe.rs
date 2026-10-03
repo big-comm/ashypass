@@ -124,6 +124,48 @@ pub enum WipeMode {
 
 const WIPE_MAPPER: &str = "ashypass_wipe_tmp";
 
+/// True for mapper names the wipe step creates (`ashypass_wipe_tmp` and its
+/// device-tagged variants).
+pub fn is_wipe_mapper(name: &str) -> bool {
+    name == WIPE_MAPPER || name.starts_with(&format!("{WIPE_MAPPER}_"))
+}
+
+/// Candidate wipe mapper names for `device`, in preference order.
+fn wipe_mapper_candidates(device: &Path) -> Vec<String> {
+    let tag = crate::mapper::device_tag(device, None);
+    vec![
+        WIPE_MAPPER.to_string(),
+        format!("{WIPE_MAPPER}_{}", sanitize_tag(&tag)),
+    ]
+}
+
+fn sanitize_tag(tag: &str) -> String {
+    tag.chars()
+        .map(|c| if c.is_ascii_alphanumeric() { c } else { '_' })
+        .take(32)
+        .collect()
+}
+
+/// Pick the wipe mapper for `device`. A mapping left behind by an
+/// interrupted run on the **same** device is closed and reused; a mapping
+/// that belongs to another device is never touched (a device-specific name
+/// is used instead).
+fn prepare_wipe_mapper(runner: &dyn Runner, device: &Path) -> Result<String> {
+    let node = std::fs::canonicalize(device).map_err(Error::Io)?;
+    let (name, state) = crate::mapper::pick_mapper(&wipe_mapper_candidates(&node), |name| {
+        crate::mapper::mapper_state(name, &node)
+    })?;
+    if state == crate::mapper::MapperState::SameDevice {
+        log::warn!("closing stale wipe mapping /dev/mapper/{name}");
+        runner.run(
+            CommandSpec::new("cryptsetup")
+                .arg("close")
+                .arg(name.clone()),
+        )?;
+    }
+    Ok(name)
+}
+
 pub fn wipe(runner: &dyn Runner, device: &Path, mode: WipeMode) -> Result<()> {
     wipe_with_progress(runner, device, mode, &mut |_| {})
 }
@@ -184,6 +226,8 @@ fn wipe_encrypted_zero(
     //    pointing cryptsetup at `/dev/urandom` directly: depending on the
     //    cryptsetup version, `--keyfile-size` can be ignored for special
     //    files and cryptsetup ends up reading urandom forever.
+    let mapper = prepare_wipe_mapper(runner, device)?;
+
     use std::io::Read as _;
     let mut key_bytes = vec![0u8; 64];
     std::fs::File::open("/dev/urandom")
@@ -200,7 +244,7 @@ fn wipe_encrypted_zero(
         .arg("--key-file")
         .arg("-")
         .arg(device.to_string_lossy().into_owned())
-        .arg(WIPE_MAPPER)
+        .arg(mapper.clone())
         .with_stdin(key_bytes);
     runner.run(open)?;
 
@@ -211,7 +255,7 @@ fn wipe_encrypted_zero(
     //    sudo's pty layer and never reaches us reliably).
     let zero = CommandSpec::new("dd")
         .arg("if=/dev/zero")
-        .arg(format!("of=/dev/mapper/{WIPE_MAPPER}"))
+        .arg(format!("of=/dev/mapper/{mapper}"))
         .arg("bs=4M")
         .arg("conv=fsync")
         .arg("status=none");
@@ -227,7 +271,7 @@ fn wipe_encrypted_zero(
     );
 
     // 3. Always tear down the mapping, even if dd failed.
-    let close = CommandSpec::new("cryptsetup").arg("close").arg(WIPE_MAPPER);
+    let close = CommandSpec::new("cryptsetup").arg("close").arg(mapper);
     let close_result = runner.run(close);
 
     // dd is expected to terminate with ENOSPC once it fills the device — dd
@@ -298,6 +342,52 @@ mod tests {
             None
         );
         assert_eq!(parse_dd_bytes(""), None);
+    }
+
+    #[test]
+    fn wipe_mapper_names() {
+        assert!(is_wipe_mapper("ashypass_wipe_tmp"));
+        assert!(is_wipe_mapper("ashypass_wipe_tmp_sdb"));
+        assert!(!is_wipe_mapper("ashypass_vault"));
+        assert!(!is_wipe_mapper("ashypass_wipe_tmpfoo"));
+        let candidates = wipe_mapper_candidates(Path::new("/dev/sdb"));
+        assert_eq!(candidates, ["ashypass_wipe_tmp", "ashypass_wipe_tmp_sdb"]);
+        for name in &candidates {
+            assert!(is_wipe_mapper(name));
+            crate::validate::validate_mapper_name(name).unwrap();
+        }
+    }
+
+    #[test]
+    fn stale_wipe_mapper_of_another_device_is_not_reused() {
+        use crate::mapper::{pick_mapper, MapperState};
+        let candidates = wipe_mapper_candidates(Path::new("/dev/sdb"));
+        // Stale mapping on the same device: reuse (after closing it).
+        let (name, state) = pick_mapper(&candidates, |n| {
+            if n == WIPE_MAPPER {
+                MapperState::SameDevice
+            } else {
+                MapperState::Free
+            }
+        })
+        .unwrap();
+        assert_eq!(
+            (name.as_str(), state),
+            (WIPE_MAPPER, MapperState::SameDevice)
+        );
+        // Mapping held by another device: fall back to the tagged name.
+        let (name, state) = pick_mapper(&candidates, |n| {
+            if n == WIPE_MAPPER {
+                MapperState::OtherDevice
+            } else {
+                MapperState::Free
+            }
+        })
+        .unwrap();
+        assert_eq!(
+            (name.as_str(), state),
+            ("ashypass_wipe_tmp_sdb", MapperState::Free)
+        );
     }
 
     #[test]

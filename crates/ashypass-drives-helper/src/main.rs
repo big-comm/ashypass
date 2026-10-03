@@ -10,8 +10,8 @@
 //!
 //! Request lines look like:
 //! ```json
-//! {"op":"luks-format","device":"/dev/sda","label":"vault","allow_discards":false,"passphrase_b64":"..."}
-//! {"op":"wipe","device":"/dev/sda","mode":"encrypted-zero"}
+//! {"op":"luks-format","device":"/dev/disk/by-id/usb-…","label":"vault","allow_discards":false,"passphrase_b64":"...","expected":{"serial":"…","size_bytes":…,"model":"…"}}
+//! {"op":"wipe","device":"/dev/disk/by-id/usb-…","mode":"encrypted-zero","expected":{…}}
 //! {"op":"mkfs","mapped":"/dev/mapper/ashypass_vault","fs":"ext4","label":"vault"}
 //! {"op":"close","mapper":"ashypass_vault"}
 //! {"op":"shutdown"}
@@ -26,20 +26,27 @@
 //!
 //! Passphrases are transmitted base64-encoded so newlines and shell-special
 //! bytes in user input never collide with the line-based protocol.
+//!
+//! Destructive requests (`wipe`, `luks-format`) carry the identity (serial,
+//! size, model) of the drive the user confirmed. The helper re-runs the
+//! safety inspection on every such request and refuses if the device behind
+//! the path is no longer that drive.
 
 use ashypass_drives::{
-    detect::list_all,
+    detect::{find_volume_owner, list_all},
     fs::{mkfs, Filesystem},
     luks::{luks_close, luks_format, luks_open, FormatOptions},
-    passphrase::Passphrase,
+    passphrase::{Passphrase, SecretString},
     runner::PlainRunner,
-    safety::{inspect, resolve_by_id, SafetyPolicy},
+    safety::{inspect, is_stable_link, resolve_by_id, DeviceIdentity, SafetyPolicy},
+    validate,
     wipe::{wipe_with_progress, WipeMode},
 };
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::io::{BufRead, Write};
 use std::path::{Path, PathBuf};
+use zeroize::Zeroize;
 
 const MAX_REQUEST_BYTES: usize = 1024 * 1024;
 
@@ -57,14 +64,19 @@ enum Request {
         #[serde(default)]
         allow_discards: bool,
         /// Base64-encoded passphrase (binary-safe over the JSON line protocol).
-        passphrase_b64: String,
+        /// Redacted in `Debug`, wiped on drop.
+        passphrase_b64: SecretString,
+        /// Identity of the drive the user confirmed.
+        expected: DeviceIdentity,
     },
     LuksOpen {
         device: PathBuf,
         mapper_name: String,
-        passphrase_b64: String,
+        passphrase_b64: SecretString,
         #[serde(default)]
         allow_discards: bool,
+        #[serde(default)]
+        expected: Option<DeviceIdentity>,
     },
     LuksClose {
         mapper_name: String,
@@ -72,6 +84,7 @@ enum Request {
     Wipe {
         device: PathBuf,
         mode: WipeModeReq,
+        expected: DeviceIdentity,
     },
     Mkfs {
         mapped: PathBuf,
@@ -147,7 +160,7 @@ fn main() {
     let mut input = stdin.lock();
 
     loop {
-        let line = match read_request_line(&mut input) {
+        let mut line = match read_request_line(&mut input) {
             Ok(Some(line)) => line,
             Ok(None) => break,
             Err(e) => {
@@ -163,7 +176,10 @@ fn main() {
         if line.trim().is_empty() {
             continue;
         }
-        let req: Request = match serde_json::from_str(&line) {
+        let parsed = serde_json::from_str::<Request>(&line);
+        // The raw line may carry a base64 passphrase.
+        line.zeroize();
+        let req: Request = match parsed {
             Ok(r) => r,
             Err(e) => {
                 write_response(
@@ -198,8 +214,9 @@ fn handle(
             label,
             allow_discards,
             passphrase_b64,
+            expected,
         } => {
-            let device = match validate_destructive_device(&device) {
+            let device = match validate_destructive_device(&device, &expected) {
                 Ok(device) => device,
                 Err(error) => return Response::Error { error },
             };
@@ -210,6 +227,11 @@ fn handle(
                 Ok(p) => p,
                 Err(e) => return Response::Error { error: e },
             };
+            if pp.is_empty() {
+                return Response::Error {
+                    error: "refusing empty passphrase".into(),
+                };
+            }
             let opts = FormatOptions {
                 label,
                 subsystem: Some("ashypass".into()),
@@ -227,8 +249,9 @@ fn handle(
             mapper_name,
             passphrase_b64,
             allow_discards,
+            expected,
         } => {
-            let device = match validate_luks_device(&device) {
+            let device = match validate_luks_device(&device, expected.as_ref()) {
                 Ok(device) => device,
                 Err(error) => return Response::Error { error },
             };
@@ -265,8 +288,12 @@ fn handle(
                 },
             }
         }
-        Request::Wipe { device, mode } => {
-            let device = match validate_destructive_device(&device) {
+        Request::Wipe {
+            device,
+            mode,
+            expected,
+        } => {
+            let device = match validate_destructive_device(&device, &expected) {
                 Ok(device) => device,
                 Err(error) => return Response::Error { error },
             };
@@ -301,10 +328,13 @@ fn handle(
                     error: "refusing to format a mapper not opened by this session".into(),
                 };
             }
-            if let Err(error) = validate_label(&label) {
-                return Response::Error { error };
+            let fs: Filesystem = fs.into();
+            if let Err(error) = validate::validate_label_for_fs(&label, fs) {
+                return Response::Error {
+                    error: error.to_string(),
+                };
             }
-            match mkfs(runner, &mapped, fs.into(), &label) {
+            match mkfs(runner, &mapped, fs, &label) {
                 Ok(()) => Response::Ok { ok: true },
                 Err(e) => Response::Error {
                     error: e.to_string(),
@@ -352,29 +382,48 @@ fn read_request_line(reader: &mut impl BufRead) -> std::io::Result<Option<String
         .map_err(|_| std::io::Error::new(std::io::ErrorKind::InvalidData, "request is not UTF-8"))
 }
 
-fn validate_destructive_device(device: &Path) -> std::result::Result<PathBuf, String> {
+/// Re-inspect a whole-disk target right before a destructive step: it must
+/// pass every safety guard **and** still be the drive the user confirmed.
+fn validate_destructive_device(
+    device: &Path,
+    expected: &DeviceIdentity,
+) -> std::result::Result<PathBuf, String> {
     let report = inspect(device, SafetyPolicy::default()).map_err(|error| error.to_string())?;
     report.assert_safe().map_err(|error| error.to_string())?;
+    expected
+        .verify(&report.identity())
+        .map_err(|error| error.to_string())?;
     require_stable_device(report.canonical_path)
 }
 
-fn validate_luks_device(device: &Path) -> std::result::Result<PathBuf, String> {
+/// Validate the target of `luks-open`: a whole disk or partition of a
+/// detected removable drive, addressed by its node or a `/dev/disk/` link.
+fn validate_luks_device(
+    device: &Path,
+    expected: Option<&DeviceIdentity>,
+) -> std::result::Result<PathBuf, String> {
+    let node = std::fs::canonicalize(device)
+        .map_err(|_| format!("device not found: {}", device.display()))?;
+    if node != device && !is_stable_link(device) {
+        return Err("device must be a kernel node or a /dev/disk/by-id link".into());
+    }
     let drives = list_all().map_err(|error| error.to_string())?;
-    let parent = drives
-        .iter()
-        .find(|drive| {
-            Path::new(&drive.path) == device
-                || drive
-                    .partitions
-                    .iter()
-                    .any(|partition| Path::new(&partition.path) == device)
-        })
+    let parent = find_volume_owner(&drives, &node)
         .ok_or_else(|| "device is not a detected removable drive or partition".to_string())?;
     let report = inspect(Path::new(&parent.path), SafetyPolicy::default())
         .map_err(|error| error.to_string())?;
     report.assert_safe().map_err(|error| error.to_string())?;
-    let stable = resolve_by_id(device)
-        .ok_or_else(|| "device has no stable /dev/disk/by-id path".to_string())?;
+    if let Some(expected) = expected {
+        expected
+            .verify(&report.identity())
+            .map_err(|error| error.to_string())?;
+    }
+    let stable = if device.starts_with("/dev/disk/by-id") {
+        device.to_path_buf()
+    } else {
+        resolve_by_id(&node)
+            .ok_or_else(|| "device has no stable /dev/disk/by-id path".to_string())?
+    };
     require_stable_device(stable)
 }
 
@@ -386,27 +435,16 @@ fn require_stable_device(path: PathBuf) -> std::result::Result<PathBuf, String> 
 }
 
 fn validate_mapper_name(name: &str) -> std::result::Result<(), String> {
-    if !name.starts_with("ashypass_")
-        || name.len() > 96
-        || !name
-            .bytes()
-            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-'))
-    {
-        return Err("invalid Ashy Pass mapper name".into());
-    }
-    Ok(())
+    validate::validate_mapper_name(name).map_err(|error| error.to_string())
 }
 
 fn validate_label(label: &str) -> std::result::Result<(), String> {
-    if label.chars().count() > 48 || label.chars().any(char::is_control) {
-        return Err("filesystem label is too long or contains control characters".into());
-    }
-    Ok(())
+    validate::validate_label(label).map_err(|error| error.to_string())
 }
 
-fn decode_pp(b64: &str) -> std::result::Result<Passphrase, String> {
+fn decode_pp(b64: &SecretString) -> std::result::Result<Passphrase, String> {
     use base64_decode_minimal as b64dec;
-    let bytes = b64dec::decode(b64).map_err(|e| format!("passphrase base64: {e}"))?;
+    let bytes = b64dec::decode(b64.expose()).map_err(|e| format!("passphrase base64: {e}"))?;
     Ok(Passphrase::new(bytes))
 }
 
@@ -426,6 +464,51 @@ mod tests {
         assert!(validate_mapper_name("ashypass_vault-1").is_ok());
         assert!(validate_mapper_name("system-root").is_err());
         assert!(validate_mapper_name("ashypass_../../root").is_err());
+    }
+
+    #[test]
+    fn validates_labels() {
+        assert!(validate_label("vault").is_ok());
+        assert!(validate_label("").is_err());
+        assert!(validate_label("a\nb").is_err());
+        assert!(validate_label(&"a".repeat(48)).is_err());
+    }
+
+    #[test]
+    fn destructive_requests_require_the_confirmed_identity() {
+        // No `expected`: refused at parse time, before any device access.
+        let missing = r#"{"op":"wipe","device":"/dev/sdb","mode":"none"}"#;
+        assert!(serde_json::from_str::<Request>(missing).is_err());
+        let missing =
+            r#"{"op":"luks-format","device":"/dev/sdb","label":"v","passphrase_b64":"cHc="}"#;
+        assert!(serde_json::from_str::<Request>(missing).is_err());
+
+        let ok = r#"{"op":"wipe","device":"/dev/disk/by-id/usb-X-0:0","mode":"encrypted-zero","expected":{"serial":"E0D55EA5","size_bytes":42,"model":null}}"#;
+        match serde_json::from_str::<Request>(ok).unwrap() {
+            Request::Wipe { expected, .. } => {
+                assert_eq!(expected.serial.as_deref(), Some("E0D55EA5"));
+                assert_eq!(expected.size_bytes, 42);
+            }
+            other => panic!("unexpected {other:?}"),
+        }
+    }
+
+    #[test]
+    fn request_debug_never_shows_the_passphrase() {
+        let line = r#"{"op":"luks-open","device":"/dev/sdb","mapper_name":"ashypass_v","passphrase_b64":"c2VjcmV0LXBhc3M="}"#;
+        let req: Request = serde_json::from_str(line).unwrap();
+        let debug = format!("{req:?}");
+        assert!(!debug.contains("c2VjcmV0LXBhc3M"), "{debug}");
+    }
+
+    #[test]
+    fn base64_decoder_roundtrip() {
+        assert_eq!(
+            base64_decode_minimal::decode("Zm9vYmFy").unwrap(),
+            b"foobar"
+        );
+        assert_eq!(base64_decode_minimal::decode("Zg==").unwrap(), b"f");
+        assert!(base64_decode_minimal::decode("Zm9v*").is_err());
     }
 
     #[test]

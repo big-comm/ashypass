@@ -61,7 +61,9 @@ check() {
     cd "${srcdir}/${pkgname}"
     export RUSTUP_TOOLCHAIN=stable
     export CARGO_TARGET_DIR=target
-    cargo test --release --locked --workspace || true
+    # Tests that need root and real block devices are #[ignore]d and do not
+    # run here; any other failure must fail the build.
+    cargo test --release --locked --workspace
 }
 
 package() {
