@@ -153,9 +153,14 @@ impl TotpView {
     }
 
     pub fn on_locked(&self) {
+        // The rows hold live codes and account names; drop them, not just
+        // the timer that refreshes them. Clear the search first: it schedules
+        // a reload that the cancel below drops.
+        self.inner.search_entry.set_text("");
         self.inner.cancel_pending_search_reload();
         self.inner.stop_timer();
         self.inner.rows.borrow_mut().clear();
+        self.inner.list_box.remove_all();
         self.inner.main_stack.set_visible_child_name("locked");
         self.focus_auth_field();
     }

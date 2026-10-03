@@ -54,6 +54,14 @@ pub(super) fn build_nextcloud_passwords_group(
         let dialog_slot = dialog_slot.clone();
         configure_row.connect_activated(move |row| {
             if state.nextcloud.borrow().is_logged_in() {
+                // Drop the sync records before the credentials: if this fails
+                // the account stays signed in, and stale mappings never meet
+                // a different account on the next sign-in.
+                let reset = state.vault.borrow_mut().nc_reset_sync_state();
+                if let Err(e) = reset {
+                    show_toast(&toast, &format!("{}: {e}", tr!("Sign out failed")));
+                    return;
+                }
                 if let Err(e) = state.nextcloud.borrow_mut().logout() {
                     show_toast(&toast, &format!("{}: {e}", tr!("Sign out failed")));
                     return;

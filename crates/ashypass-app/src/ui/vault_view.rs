@@ -122,6 +122,11 @@ struct Inner {
     expanded_folders: RefCell<HashSet<String>>,
 
     on_auth_changed: RefCell<Option<AuthChangedCb>>,
+    /// Keyring-backed unlock is a startup convenience only. Once it has been
+    /// tried, or the user has locked the vault, it must not run again: every
+    /// lock goes through `update_view`, which would otherwise reopen the vault
+    /// on the spot with the stored master password.
+    keyring_unlock_allowed: Cell<bool>,
 }
 
 impl VaultView {
@@ -203,6 +208,7 @@ impl VaultView {
             view_mode: Cell::new(ViewMode::All),
             expanded_folders: RefCell::new(HashSet::new()),
             on_auth_changed: RefCell::new(None),
+            keyring_unlock_allowed: Cell::new(true),
         });
 
         wire_auth(&inner);
@@ -242,6 +248,7 @@ impl VaultView {
 
     /// Lock the vault triggered by user click or external (session timeout).
     pub fn lock_vault(&self) {
+        self.inner.keyring_unlock_allowed.set(false);
         self.inner.cancel_pending_search_reload();
         self.inner.cancel_pending_event_reload();
         self.inner.cancel_pending_render();
@@ -676,6 +683,9 @@ impl Inner {
         if self.state.vault.borrow().is_unlocked() {
             return true;
         }
+        if !self.keyring_unlock_allowed.replace(false) {
+            return false;
+        }
         if !self
             .state
             .vault
@@ -688,15 +698,25 @@ impl Inner {
         let Ok(Some(pw)) = ashypass_core::keyring::load_master() else {
             return false;
         };
-        if self.state.vault.borrow_mut().unlock(&pw).is_ok() {
-            SessionManager::login(&self.state.session);
-            self.notify_auth_changed();
-            true
-        } else {
-            // Stored secret no longer matches the vault — purge it so we don't
-            // keep trying on every restart.
-            let _ = ashypass_core::keyring::delete_master();
-            false
+        let result = self.state.vault.borrow_mut().unlock(&pw);
+        match result {
+            Ok(()) => {
+                SessionManager::login(&self.state.session);
+                self.notify_auth_changed();
+                true
+            }
+            Err(ashypass_core::Error::InvalidMasterPassword) => {
+                // Stored secret no longer matches the vault — purge it so we
+                // don't keep trying on every restart.
+                let _ = ashypass_core::keyring::delete_master();
+                false
+            }
+            Err(e) => {
+                // A transient failure (busy database, I/O) says nothing about
+                // the stored secret, so keep it for the next start.
+                log::warn!("keyring unlock failed: {e}");
+                false
+            }
         }
     }
 
@@ -710,6 +730,11 @@ impl Inner {
             self.main_stack.set_visible_child_name("vault");
             self.load_passwords(None);
         } else {
+            // Hidden is not gone: drop the rendered rows (titles, usernames,
+            // URLs) and the search text so nothing outlives the lock. Clear
+            // the text first — it schedules a reload the cancels below drop.
+            self.search_entry.set_text("");
+            self.reset_password_list_box();
             self.invalidate_list_caches();
             self.cancel_pending_search_reload();
             self.cancel_pending_event_reload();
@@ -966,7 +991,10 @@ impl Inner {
                 self.show_auth_error(tr!("Passwords do not match"));
                 return;
             }
-            match self.state.vault.borrow_mut().set_master_password(&password) {
+            // Bind the result first: a `borrow_mut()` in the match scrutinee
+            // would stay alive through `update_view()`, which borrows the vault.
+            let result = self.state.vault.borrow_mut().set_master_password(&password);
+            match result {
                 Ok(()) => {
                     if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
                         log::warn!("could not save settings: {error}");

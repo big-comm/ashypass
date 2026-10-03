@@ -270,10 +270,7 @@ impl MainWindow {
         }
         {
             let inner_cl = inner.clone();
-            lock_button.connect_clicked(move |_| {
-                inner_cl.vault_view.lock_vault();
-                inner_cl.update_auth_nav();
-            });
+            lock_button.connect_clicked(move |_| inner_cl.lock_now());
         }
         {
             let inner_cl = inner.clone();
@@ -301,17 +298,13 @@ impl MainWindow {
         {
             let inner_cl = inner.clone();
             let toast_cl = toast_overlay.clone();
-            let events = state.events.clone();
             let cb: Rc<dyn Fn()> = Rc::new(move || {
-                inner_cl.vault_view.lock_vault();
-                inner_cl.totp_view.on_locked();
-                inner_cl.update_auth_nav();
+                inner_cl.lock_now();
                 let toast = adw::Toast::builder()
                     .title(tr!("Vault locked due to inactivity"))
                     .timeout(4)
                     .build();
                 toast_cl.add_toast(toast);
-                events.emit(crate::events::AppEvent::SessionLocked);
             });
             state.session.borrow_mut().set_lock_callback(cb);
         }
@@ -463,9 +456,7 @@ impl MainWindow {
             let inner_cl = inner.clone();
             lock_action.connect_activate(move |_, _| {
                 if inner_cl.state.session.borrow().is_authenticated() {
-                    inner_cl.vault_view.lock_vault();
-                    SessionManager::logout(&inner_cl.state.session);
-                    inner_cl.update_auth_nav();
+                    inner_cl.lock_now();
                 }
             });
         }
@@ -558,11 +549,7 @@ fn on_nav_clicked(
         "settings" => {
             settings_dialog::present(window, inner.state.clone(), inner.toast_overlay.clone());
         }
-        "lock" => {
-            inner.vault_view.lock_vault();
-            SessionManager::logout(&inner.state.session);
-            inner.update_auth_nav();
-        }
+        "lock" => inner.lock_now(),
         "groups" => {
             inner.highlight_nav("groups");
             inner.content_stack.set_visible_child_name("vault");
@@ -629,6 +616,20 @@ impl MainWindowInner {
                 self.vault_view.focus_auth_field();
             }
         }
+    }
+
+    /// The single lock path for every trigger: toolbar button, sidebar item,
+    /// Ctrl+L and the idle timer. Every view must drop its secrets, and the
+    /// bus must hear about it, whichever way the lock was requested.
+    fn lock_now(&self) {
+        // `lock_vault` also marks the session locked, cancelling the idle
+        // timers, so the lock callback cannot fire a second time.
+        self.vault_view.lock_vault();
+        self.totp_view.on_locked();
+        self.update_auth_nav();
+        self.state
+            .events
+            .emit(crate::events::AppEvent::SessionLocked);
     }
 
     fn update_auth_nav(&self) {

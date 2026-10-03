@@ -411,9 +411,12 @@ fn url_host(input: &str) -> Option<String> {
         return None;
     }
     let no_scheme = s.split_once("://").map(|(_, r)| r).unwrap_or(s);
-    let before_path = no_scheme.split('/').next().unwrap_or("");
-    let before_query = before_path.split('?').next().unwrap_or("");
-    let authority = before_query.split('@').next_back().unwrap_or("");
+    // The authority ends at the first `/`, `?` or `#`. Missing `#` here let
+    // `https://evil.com#@example.com` resolve to `example.com`.
+    let authority_end = no_scheme
+        .find(['/', '?', '#', '\\'])
+        .unwrap_or(no_scheme.len());
+    let authority = no_scheme[..authority_end].rsplit('@').next().unwrap_or("");
     // A bracketed IPv6 literal is full of colons, so strip the port only after
     // the closing bracket; splitting on ':' first would reduce it to "[".
     let host = match authority.strip_prefix('[') {
@@ -649,6 +652,22 @@ mod tests {
             Some("host.tld".into())
         );
         assert_eq!(url_host(""), None);
+    }
+
+    #[test]
+    fn url_host_ignores_userinfo_lookalikes_after_the_authority() {
+        assert_eq!(
+            url_host("https://evil.com#@example.com/"),
+            Some("evil.com".into())
+        );
+        assert_eq!(
+            url_host("https://evil.com?@example.com"),
+            Some("evil.com".into())
+        );
+        assert_eq!(
+            url_host("https://evil.com\\@example.com"),
+            Some("evil.com".into())
+        );
     }
 
     #[test]

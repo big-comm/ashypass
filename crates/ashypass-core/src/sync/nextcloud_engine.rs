@@ -175,6 +175,24 @@ where
         .map(|p| (p.id.clone(), p))
         .collect();
 
+    // A mapped entry missing from the server is treated as a remote delete
+    // and removed locally. If *every* mapped entry is missing, that is far
+    // more likely a different account, a wiped server or a truncated listing
+    // than the user deleting everything elsewhere — refuse rather than empty
+    // the local vault.
+    let mapped_uuids: Vec<String> = vault
+        .nc_all_mappings()?
+        .into_iter()
+        .map(|m| m.nc_uuid)
+        .collect();
+    if all_mappings_vanished(&mapped_uuids, &remote_by_uuid) {
+        return Err(crate::Error::Other(format!(
+            "none of the {} entries previously synced exist on the server; \
+             refusing to delete them locally (signed in to a different account?)",
+            mapped_uuids.len()
+        )));
+    }
+
     // Mirror local empty folders too. Entry sync below also calls this for
     // every categorized password, but that would miss folders with no entries.
     let local_folders = vault.categories()?;
@@ -729,9 +747,24 @@ fn sha1_hex(data: &[u8]) -> String {
     s
 }
 
+/// True when there are mapped entries and none of them is present remotely.
+fn all_mappings_vanished<V>(mapped_uuids: &[String], remote: &HashMap<String, V>) -> bool {
+    !mapped_uuids.is_empty() && mapped_uuids.iter().all(|u| !remote.contains_key(u))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn vanished_guard_trips_only_when_every_mapping_is_gone() {
+        let mapped = vec!["a".to_string(), "b".to_string()];
+        let mut remote: HashMap<String, ()> = HashMap::new();
+        assert!(all_mappings_vanished(&mapped, &remote));
+        remote.insert("b".into(), ());
+        assert!(!all_mappings_vanished(&mapped, &remote));
+        assert!(!all_mappings_vanished(&[], &HashMap::<String, ()>::new()));
+    }
 
     #[test]
     fn resolution_prefers_remote_on_tie() {

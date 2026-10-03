@@ -541,6 +541,19 @@ impl Vault {
         Ok(rows)
     }
 
+    /// Forget every Nextcloud Passwords sync record: entry and folder
+    /// mappings and pending remote deletes. Must run when the account is
+    /// signed out — mappings left behind would make the next sync against a
+    /// different account read every mapped entry as deleted remotely.
+    pub fn nc_reset_sync_state(&mut self) -> Result<()> {
+        let tx = self.conn.transaction()?;
+        tx.execute("DELETE FROM nextcloud_mapping", [])?;
+        tx.execute("DELETE FROM nextcloud_folder_mapping", [])?;
+        tx.execute("DELETE FROM nextcloud_tombstones", [])?;
+        tx.commit()?;
+        Ok(())
+    }
+
     pub fn nc_clear_tombstone(&self, uuid: &str) -> Result<()> {
         self.conn.execute(
             "DELETE FROM nextcloud_tombstones WHERE nc_uuid = ?",
