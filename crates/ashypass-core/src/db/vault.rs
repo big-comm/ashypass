@@ -1797,12 +1797,17 @@ impl Vault {
     /// forgotten the master password: the PIN already gives full access to
     /// the vault key, so it grants nothing new. The vault must be unlocked
     /// and the PIN record must unwrap exactly the key in use.
+    ///
+    /// Returns the PIN record re-wrapped around the new key, so the same PIN
+    /// keeps working. It is the PIN just proven, so the minimum length for
+    /// *new* PINs does not apply: a short PIN accepted by an older version
+    /// must not be lost here.
     pub fn reset_master_password_with_pin(
         &mut self,
         pin: &str,
         prefs: &QuickUnlockPrefs,
         new: &str,
-    ) -> Result<()> {
+    ) -> Result<QuickUnlockPrefs> {
         let current = self.key()?.clone();
         let (from_pin, _) = derive_quick_unlock_key(pin, prefs)?;
         if !bool::from(subtle::ConstantTimeEq::ct_eq(
@@ -1811,7 +1816,11 @@ impl Vault {
         )) {
             return Err(Error::KeyMismatch);
         }
-        self.rekey_with_new_master(new)
+        self.rekey_with_new_master(new)?;
+        let key = self.key()?.clone();
+        self.quick_pin_hash = Some(argon2_kdf::hash_session_secret(pin)?);
+        self.cached_key = Some(key.clone());
+        wrap_quick_unlock_key(pin, &key)
     }
 
     /// Re-encrypt every protected value under a key derived from `new`, in
@@ -2163,6 +2172,26 @@ mod tests {
         let mut vault = Vault::open(path).unwrap();
         vault.set_master_password("master password here").unwrap();
         vault
+    }
+
+    #[test]
+    fn a_short_pin_from_an_older_version_survives_a_master_reset() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("v.db");
+        let mut vault = unlocked_vault(&path);
+        // A 4-character PIN, as earlier versions allowed.
+        let key = vault.key().unwrap().clone();
+        let short = wrap_quick_unlock_key("1234", &key).unwrap();
+        let rewrapped = vault
+            .reset_master_password_with_pin("1234", &short, "a new master password")
+            .unwrap();
+        drop(vault);
+        let mut by_pin = Vault::open(&path).unwrap();
+        by_pin
+            .quick_unlock_persistent_upgrading("1234", &rewrapped)
+            .unwrap();
+        let mut by_master = Vault::open(&path).unwrap();
+        by_master.unlock("a new master password").unwrap();
     }
 
     #[test]

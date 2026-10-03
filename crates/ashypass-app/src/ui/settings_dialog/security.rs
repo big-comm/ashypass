@@ -307,24 +307,23 @@ fn reset_master_page(
                 .reset_master_password_with_pin(&pin, &prefs, &new);
             button.set_sensitive(true);
             match result {
-                Ok(()) => {
-                    // The vault key changed: wrap the new key with the same
-                    // PIN so unlocking by PIN keeps working.
-                    let rewrapped = state
-                        .vault
-                        .borrow_mut()
-                        .enable_persistent_quick_unlock(&pin);
-                    match rewrapped.and_then(|p| ashypass_core::keyring::store_quick_unlock(&p)) {
+                Ok(rewrapped) => {
+                    // The vault key changed; the core re-wrapped it with the
+                    // same PIN, so unlocking by PIN keeps working.
+                    let pin_kept = match ashypass_core::keyring::store_quick_unlock(&rewrapped) {
                         Ok(()) => {
                             if let Err(e) = state.update_settings(|s| s.quick_unlock = None) {
                                 log::warn!("could not clear legacy quick-unlock state: {e}");
                             }
+                            true
                         }
                         Err(e) => {
-                            log::warn!("could not re-create the PIN: {e}");
+                            log::warn!("could not store the PIN: {e}");
                             let _ = ashypass_core::keyring::delete_quick_unlock();
+                            state.vault.borrow_mut().disable_quick_unlock();
+                            false
                         }
-                    }
+                    };
                     if ashypass_core::keyring::is_stored() {
                         if let Err(e) = ashypass_core::keyring::store_master(&new) {
                             log::warn!("could not update the keyring copy: {e}");
@@ -333,10 +332,12 @@ fn reset_master_page(
                     }
                     toast.add_toast(
                         adw::Toast::builder()
-                            .title(tr!(
-                                "New master password set. Write it down somewhere safe."
-                            ))
-                            .timeout(6)
+                            .title(if pin_kept {
+                                tr!("New master password set. Write it down somewhere safe.")
+                            } else {
+                                tr!("New master password set, but the PIN could not be kept. Set it up again below.")
+                            })
+                            .timeout(8)
                             .build(),
                     );
                     dialog.pop_subpage();

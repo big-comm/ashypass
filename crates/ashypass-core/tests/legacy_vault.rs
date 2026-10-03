@@ -265,7 +265,7 @@ fn forgotten_master_password_can_be_replaced_with_the_pin() {
     assert!(vault
         .reset_master_password_with_pin(PIN, &prefs, "short")
         .is_err());
-    vault
+    let rewrapped = vault
         .reset_master_password_with_pin(PIN, &prefs, "new master after forgetting")
         .unwrap();
     drop(vault);
@@ -274,6 +274,13 @@ fn forgotten_master_password_can_be_replaced_with_the_pin() {
     assert!(vault.unlock(MASTER).is_err());
     vault.unlock("new master after forgetting").unwrap();
     assert_all_data(&vault);
+
+    // The same PIN still opens the vault through the returned record.
+    let mut by_pin = Vault::open(&db).unwrap();
+    by_pin
+        .quick_unlock_persistent_upgrading(PIN, &rewrapped)
+        .unwrap();
+    assert_all_data(&by_pin);
 }
 
 #[test]
