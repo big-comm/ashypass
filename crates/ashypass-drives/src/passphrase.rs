@@ -53,3 +53,46 @@ impl std::fmt::Debug for Passphrase {
         write!(f, "Passphrase({} bytes redacted)", self.0.len())
     }
 }
+
+/// A secret carried as text inside a protocol message (the base64-encoded
+/// passphrase of a helper request). Serialises transparently, but `Debug`
+/// is redacted and the buffer is wiped on drop.
+#[derive(Default, serde::Serialize, serde::Deserialize)]
+#[serde(transparent)]
+pub struct SecretString(String);
+
+impl SecretString {
+    pub fn new(value: String) -> Self {
+        Self(value)
+    }
+
+    pub fn expose(&self) -> &str {
+        &self.0
+    }
+}
+
+impl Drop for SecretString {
+    fn drop(&mut self) {
+        self.0.zeroize();
+    }
+}
+
+impl std::fmt::Debug for SecretString {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("SecretString(<redacted>)")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn debug_output_never_contains_the_secret() {
+        let p = Passphrase::from_text("hunter2");
+        assert!(!format!("{p:?}").contains("hunter2"));
+        let s = SecretString::new("aHVudGVyMg==".into());
+        assert!(!format!("{s:?}").contains("aHVudGVyMg"));
+        assert_eq!(serde_json::to_string(&s).unwrap(), "\"aHVudGVyMg==\"");
+    }
+}

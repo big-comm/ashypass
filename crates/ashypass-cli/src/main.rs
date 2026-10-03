@@ -66,8 +66,10 @@ enum DrivesAction {
     },
     /// **Destructive.** Encrypt a block device with LUKS2.
     Format {
+        /// Whole-disk device, e.g. /dev/sdb or /dev/disk/by-id/usb-….
         device: std::path::PathBuf,
-        /// User-visible label written to the LUKS2 header and the filesystem.
+        /// User-visible label written to the LUKS2 header and the filesystem
+        /// (ext4: up to 16 bytes, xfs: 12, btrfs: 47).
         #[arg(long)]
         label: Option<String>,
         /// Filesystem to create on top of the opened mapping.
@@ -100,18 +102,19 @@ enum DrivesAction {
     /// Open an encrypted device and expose it under /dev/mapper.
     Unlock {
         device: std::path::PathBuf,
-        /// Label used to derive the mapper name (must match the label used
-        /// at format time, or be supplied via --mapper-name).
-        #[arg(long)]
+        /// Label used to derive the mapper name (`ashypass_<label>`; a
+        /// device-specific suffix is added if another drive already uses it).
+        #[arg(long, conflicts_with = "mapper_name")]
         label: Option<String>,
-        /// Explicit mapper name; overrides the label-derived default.
+        /// Explicit mapper name, used verbatim. Must start with `ashypass_`
+        /// and contain only letters, digits, '_' or '-'.
         #[arg(long)]
         mapper_name: Option<String>,
         /// Forward TRIM through the mapping.
         #[arg(long)]
         allow_discards: bool,
     },
-    /// Close an open mapping.
+    /// Close an open Ashy Pass mapping (`ashypass_*` only).
     Lock {
         /// Mapper name (e.g. `ashypass_vault`) or full /dev/mapper/... path.
         mapper: String,
@@ -208,7 +211,7 @@ fn run_drives(action: DrivesAction) -> Result<()> {
     use ashypass_drives::detect::{human_size, list_all, list_removable};
     use ashypass_drives::fs::Filesystem;
     use ashypass_drives::pipeline::{
-        encrypt_new_drive, mapper_name_for, unlock_existing, EncryptRequest, Progress,
+        encrypt_new_drive, unlock_existing_with, EncryptRequest, Progress,
     };
     use ashypass_drives::runner::{auto_runner, CommandSpec};
     use ashypass_drives::safety;
@@ -317,6 +320,8 @@ fn run_drives(action: DrivesAction) -> Result<()> {
                 parse_wipe(&wipe)?
             };
             let label = label.unwrap_or_else(|| "ashypass".into());
+            ashypass_drives::validate::validate_label_for_fs(&label, filesystem)
+                .map_err(|e| anyhow!("invalid --label: {e}"))?;
 
             // Safety pre-flight before we collect a passphrase, so we fail
             // fast and the user doesn't waste a prompt typing on a device
@@ -345,6 +350,9 @@ fn run_drives(action: DrivesAction) -> Result<()> {
                 }
             }
 
+            // Everything after this point must target the drive printed
+            // above; the pipeline re-inspects and compares before wiping.
+            let expected = report.identity();
             let passphrase = prompt_new_passphrase()?;
 
             eprintln!();
@@ -355,6 +363,7 @@ fn run_drives(action: DrivesAction) -> Result<()> {
                 runner.as_ref(),
                 &EncryptRequest {
                     device: device.clone(),
+                    expected,
                     label: label.clone(),
                     filesystem,
                     wipe_mode,
@@ -381,11 +390,11 @@ fn run_drives(action: DrivesAction) -> Result<()> {
             println!("Encrypted successfully.");
             println!("  device:        {}", outcome.canonical_device.display());
             println!("  label:         {label}");
-            println!("  mapper name:   {}", mapper_name_for(&label));
+            println!("  mapper name:   {}", outcome.mapper_name);
             println!();
             println!("Unlock again with:");
             println!(
-                "  ashypass-cli drives unlock {} --label {}",
+                "  ashypass-cli drives unlock {} --label {:?}",
                 device.display(),
                 label
             );
@@ -398,14 +407,13 @@ fn run_drives(action: DrivesAction) -> Result<()> {
             mapper_name,
             allow_discards,
         } => {
-            let mapper = mapper_name
-                .unwrap_or_else(|| mapper_name_for(label.as_deref().unwrap_or("ashypass")));
+            let choice = unlock_mapper_choice(label.as_deref(), mapper_name.as_deref())?;
             let passphrase = prompt_passphrase("LUKS passphrase: ")?;
             let runner = auto_runner();
-            let mapped = unlock_existing(
+            let mapped = unlock_existing_with(
                 runner.as_ref(),
                 &device,
-                mapper.trim_start_matches("ashypass_"),
+                choice,
                 &passphrase,
                 allow_discards,
             )
@@ -415,9 +423,9 @@ fn run_drives(action: DrivesAction) -> Result<()> {
         }
 
         DrivesAction::Lock { mapper } => {
-            let mapper = mapper.trim_start_matches("/dev/mapper/");
+            let mapper = lock_target(&mapper)?;
             let runner = auto_runner();
-            ashypass_drives::luks::luks_close(runner.as_ref(), mapper)
+            ashypass_drives::luks::luks_close(runner.as_ref(), &mapper)
                 .map_err(|e| anyhow!("close failed: {e}"))?;
             println!("Closed mapping {mapper}");
             Ok(())
@@ -447,6 +455,33 @@ fn run_drives(action: DrivesAction) -> Result<()> {
             Ok(())
         }
     }
+}
+
+/// Resolve `drives unlock --label/--mapper-name` into a mapper choice. An
+/// explicit name is used verbatim and must pass the mapper whitelist.
+fn unlock_mapper_choice<'a>(
+    label: Option<&'a str>,
+    mapper_name: Option<&'a str>,
+) -> Result<ashypass_drives::pipeline::MapperChoice<'a>> {
+    use ashypass_drives::pipeline::MapperChoice;
+    match mapper_name {
+        Some(name) => {
+            ashypass_drives::validate::validate_mapper_name(name)
+                .map_err(|e| anyhow!("--mapper-name: {e}"))?;
+            Ok(MapperChoice::Explicit(name))
+        }
+        None => Ok(MapperChoice::FromLabel(label.unwrap_or("ashypass"))),
+    }
+}
+
+/// Normalise the argument of `drives lock`. Only Ashy Pass mappings
+/// (`ashypass_*`) may be closed, so this command can never tear down the
+/// system's or another tool's dm-crypt device.
+fn lock_target(arg: &str) -> Result<String> {
+    let name = arg.strip_prefix("/dev/mapper/").unwrap_or(arg);
+    ashypass_drives::validate::validate_mapper_name(name)
+        .map_err(|e| anyhow!("refusing to close {arg}: {e}"))?;
+    Ok(name.to_string())
 }
 
 fn step_label(step: ashypass_drives::pipeline::Step) -> &'static str {
@@ -857,5 +892,112 @@ fn human_duration(seconds: f64) -> String {
         format!("{}m{:02}s", s / 60, s % 60)
     } else {
         format!("{}h{:02}m", s / 3600, (s % 3600) / 60)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ashypass_drives::pipeline::MapperChoice;
+
+    fn parse(args: &[&str]) -> std::result::Result<Cli, clap::Error> {
+        Cli::try_parse_from(std::iter::once("ashypass-cli").chain(args.iter().copied()))
+    }
+
+    #[test]
+    fn format_accepts_by_id_paths() {
+        let cli = parse(&[
+            "drives",
+            "format",
+            "/dev/disk/by-id/usb-Kingston_DataTraveler_3.0_E0D55EA5-0:0",
+            "--label",
+            "vault",
+            "--filesystem",
+            "xfs",
+        ])
+        .unwrap();
+        match cli.command {
+            Command::Drives {
+                action:
+                    DrivesAction::Format {
+                        device,
+                        label,
+                        filesystem,
+                        ..
+                    },
+            } => {
+                assert_eq!(
+                    device,
+                    std::path::PathBuf::from(
+                        "/dev/disk/by-id/usb-Kingston_DataTraveler_3.0_E0D55EA5-0:0"
+                    )
+                );
+                assert_eq!(label.as_deref(), Some("vault"));
+                assert_eq!(filesystem, "xfs");
+            }
+            other => panic!("unexpected {other:?}"),
+        }
+    }
+
+    #[test]
+    fn quick_conflicts_with_wipe() {
+        assert!(parse(&["drives", "format", "/dev/sdb", "--quick", "--wipe", "random"]).is_err());
+    }
+
+    #[test]
+    fn unlock_label_and_mapper_name_are_exclusive() {
+        assert!(parse(&[
+            "drives",
+            "unlock",
+            "/dev/sdb",
+            "--label",
+            "a",
+            "--mapper-name",
+            "ashypass_b"
+        ])
+        .is_err());
+    }
+
+    #[test]
+    fn explicit_mapper_names_are_used_verbatim_or_refused() {
+        assert!(matches!(
+            unlock_mapper_choice(None, Some("ashypass_foo")).unwrap(),
+            MapperChoice::Explicit("ashypass_foo")
+        ));
+        // Previously `foo` silently became `ashypass_foo`; now it is refused.
+        assert!(unlock_mapper_choice(None, Some("foo")).is_err());
+        assert!(unlock_mapper_choice(None, Some("ashypass_../x")).is_err());
+        assert!(matches!(
+            unlock_mapper_choice(Some("vault"), None).unwrap(),
+            MapperChoice::FromLabel("vault")
+        ));
+        assert!(matches!(
+            unlock_mapper_choice(None, None).unwrap(),
+            MapperChoice::FromLabel("ashypass")
+        ));
+    }
+
+    #[test]
+    fn lock_only_closes_ashypass_mappers() {
+        assert_eq!(lock_target("ashypass_vault").unwrap(), "ashypass_vault");
+        assert_eq!(
+            lock_target("/dev/mapper/ashypass_vault").unwrap(),
+            "ashypass_vault"
+        );
+        assert!(lock_target("luks-1234").is_err());
+        assert!(lock_target("/dev/mapper/root").is_err());
+        assert!(lock_target("/dev/mapper/ashypass_../control").is_err());
+        assert!(lock_target("ashypass_").is_err());
+    }
+
+    #[test]
+    fn lock_command_parses() {
+        let cli = parse(&["drives", "lock", "/dev/mapper/ashypass_vault"]).unwrap();
+        assert!(matches!(
+            cli.command,
+            Command::Drives {
+                action: DrivesAction::Lock { .. }
+            }
+        ));
     }
 }

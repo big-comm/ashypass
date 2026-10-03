@@ -1,18 +1,27 @@
 //! End-to-end orchestrator for "encrypt this drive".
 //!
-//! Sequences: safety check → wipe → luksFormat → luksOpen → mkfs → luksClose.
-//! Every step emits a [`Progress`] event so a UI can render a stepper without
-//! polling.
+//! Sequences: validation + safety check → wipe → luksFormat → luksOpen →
+//! mkfs → luksClose. Every step emits a [`Progress`] event so a UI can render
+//! a stepper without polling.
+//!
+//! Everything that can be checked without touching the device (label,
+//! filesystem label limits, mapper name collisions, passphrase presence, the
+//! identity of the device the user confirmed) is checked in [`preflight`],
+//! **before** the first destructive step.
 
 use crate::fs::{mkfs, Filesystem};
 use crate::helper_client::HelperClient;
 use crate::luks::{luks_close, luks_format, luks_open, FormatOptions};
+use crate::mapper::{device_tag, mapper_state, pick_mapper, MapperState};
 use crate::passphrase::Passphrase;
 use crate::runner::Runner;
-use crate::safety::{inspect, SafetyPolicy, SafetyReport};
+use crate::safety::{inspect, DeviceIdentity, SafetyPolicy, SafetyReport};
+use crate::validate::{validate_label_for_fs, validate_mapper_name, validate_passphrase};
 use crate::wipe::{wipe_with_progress, WipeMode};
 use crate::{Error, Result};
 use std::path::{Path, PathBuf};
+
+pub use crate::mapper::{mapper_name_for, mapper_name_with_tag};
 
 #[derive(Debug, Clone, Copy)]
 pub enum Step {
@@ -39,7 +48,11 @@ pub enum Progress {
 
 #[derive(Debug, Clone)]
 pub struct EncryptRequest {
+    /// Whole-disk node (`/dev/sdb`) or `/dev/disk/by-id/...` link.
     pub device: PathBuf,
+    /// What the user confirmed (serial / size / model). The pipeline and the
+    /// privileged helper refuse to touch the device if it no longer matches.
+    pub expected: DeviceIdentity,
     pub label: String,
     pub filesystem: Filesystem,
     pub wipe_mode: WipeMode,
@@ -49,7 +62,49 @@ pub struct EncryptRequest {
 #[derive(Debug)]
 pub struct EncryptOutcome {
     pub canonical_device: PathBuf,
+    /// Mapper name used while formatting; the same name is preferred again by
+    /// [`unlock_existing`] for this label.
+    pub mapper_name: String,
     pub safety: SafetyReport,
+}
+
+/// Validation that must pass before anything destructive happens. Returns
+/// the safety report (with the pinned device path) and the mapper name to
+/// use for the format-time mapping.
+pub fn preflight(
+    request: &EncryptRequest,
+    passphrase: &Passphrase,
+) -> Result<(SafetyReport, String)> {
+    validate_passphrase(passphrase)?;
+    validate_label_for_fs(&request.label, request.filesystem)?;
+
+    let report = inspect(&request.device, SafetyPolicy::default())?;
+    report.assert_safe()?;
+    request.expected.verify(&report.identity())?;
+
+    let node = report.device_node.clone();
+    let mapper_name = format_mapper_name(&request.label, &node, |name| mapper_state(name, &node))?;
+    Ok((report, mapper_name))
+}
+
+/// Choose the format-time mapper name. The target device is never mapped at
+/// this point (safety refuses open mappings), so a name that already exists
+/// belongs to another device and must not be reused.
+fn format_mapper_name(
+    label: &str,
+    node: &Path,
+    state_of: impl FnMut(&str) -> MapperState,
+) -> Result<String> {
+    let candidates = [
+        mapper_name_for(label),
+        mapper_name_with_tag(label, &device_tag(node, None)),
+    ];
+    match pick_mapper(&candidates, state_of)? {
+        (name, MapperState::Free) => Ok(name),
+        (name, _) => Err(Error::Refused(format!(
+            "/dev/mapper/{name} is already open; close it before encrypting"
+        ))),
+    }
 }
 
 pub fn encrypt_new_drive(
@@ -59,8 +114,7 @@ pub fn encrypt_new_drive(
     mut on_progress: impl FnMut(Progress),
 ) -> Result<EncryptOutcome> {
     on_progress(Progress::Started(Step::Safety));
-    let report = inspect(&request.device, SafetyPolicy::default())?;
-    report.assert_safe()?;
+    let (report, mapper_name) = preflight(request, passphrase)?;
     on_progress(Progress::Finished(Step::Safety));
 
     // Pin the device by its by-id symlink for the remainder of the pipeline.
@@ -83,8 +137,6 @@ pub fn encrypt_new_drive(
     on_progress(Progress::Started(Step::LuksFormat));
     luks_format(runner, pinned, passphrase, &opts)?;
     on_progress(Progress::Finished(Step::LuksFormat));
-
-    let mapper_name = mapper_name_for(&request.label);
 
     on_progress(Progress::Started(Step::LuksOpen));
     let mapped = luks_open(
@@ -114,6 +166,7 @@ pub fn encrypt_new_drive(
 
     Ok(EncryptOutcome {
         canonical_device: report.canonical_path.clone(),
+        mapper_name,
         safety: report,
     })
 }
@@ -121,37 +174,52 @@ pub fn encrypt_new_drive(
 /// Same orchestration as [`encrypt_new_drive`] but routed through a single
 /// privileged helper session (`HelperClient`). The user authenticates with
 /// polkit **once** when the helper spawns; subsequent steps run inside that
-/// elevated process. Pipeline ordering, progress events, and error handling
-/// are identical — only the privilege-escalation strategy differs.
+/// elevated process, which re-validates the device and its identity before
+/// every destructive request.
 pub fn encrypt_via_helper(
     request: &EncryptRequest,
     passphrase: &Passphrase,
     mut on_progress: impl FnMut(Progress),
 ) -> Result<EncryptOutcome> {
     on_progress(Progress::Started(Step::Safety));
-    let report = inspect(&request.device, SafetyPolicy::default())?;
-    report.assert_safe()?;
+    let (report, mapper_name) = preflight(request, passphrase)?;
     on_progress(Progress::Finished(Step::Safety));
 
     let pinned: &Path = &report.canonical_path;
     let total = report.size_bytes;
+    let expected = &request.expected;
 
     let mut helper = HelperClient::spawn()?;
 
     on_progress(Progress::Started(Step::Wipe));
-    helper.wipe(pinned, wipe_mode_tag(request.wipe_mode), &mut |copied| {
-        on_progress(Progress::Wiping { copied, total });
-    })?;
+    helper.wipe(
+        pinned,
+        wipe_mode_tag(request.wipe_mode),
+        expected,
+        &mut |copied| {
+            on_progress(Progress::Wiping { copied, total });
+        },
+    )?;
     on_progress(Progress::Finished(Step::Wipe));
 
     on_progress(Progress::Started(Step::LuksFormat));
-    helper.luks_format(pinned, &request.label, passphrase, request.allow_discards)?;
+    helper.luks_format(
+        pinned,
+        &request.label,
+        passphrase,
+        request.allow_discards,
+        expected,
+    )?;
     on_progress(Progress::Finished(Step::LuksFormat));
 
-    let mapper_name = mapper_name_for(&request.label);
-
     on_progress(Progress::Started(Step::LuksOpen));
-    let mapped = helper.luks_open(pinned, &mapper_name, passphrase, request.allow_discards)?;
+    let mapped = helper.luks_open(
+        pinned,
+        &mapper_name,
+        passphrase,
+        request.allow_discards,
+        Some(expected),
+    )?;
     on_progress(Progress::Finished(Step::LuksOpen));
 
     on_progress(Progress::Started(Step::MkFs));
@@ -170,6 +238,7 @@ pub fn encrypt_via_helper(
 
     Ok(EncryptOutcome {
         canonical_device: report.canonical_path.clone(),
+        mapper_name,
         safety: report,
     })
 }
@@ -191,32 +260,20 @@ fn fs_tag(f: Filesystem) -> &'static str {
     }
 }
 
-/// Derive a stable dm-crypt mapper name from a user label. Constrains to
-/// `[A-Za-z0-9_-]` so it round-trips through `/dev/mapper/...`.
-pub fn mapper_name_for(label: &str) -> String {
-    let cleaned: String = label
-        .chars()
-        .map(|c| {
-            if c.is_ascii_alphanumeric() || c == '-' || c == '_' {
-                c
-            } else {
-                '_'
-            }
-        })
-        .collect();
-    if cleaned.is_empty() {
-        return "ashypass_drive".into();
-    }
-    format!("ashypass_{cleaned}")
+/// How [`unlock_existing_with`] chooses the mapper name.
+#[derive(Debug, Clone, Copy)]
+pub enum MapperChoice<'a> {
+    /// Derive from the label (`ashypass_<label>`), falling back to a
+    /// device-tagged name when another drive already uses the plain one.
+    FromLabel(&'a str),
+    /// Use exactly this name; it must pass
+    /// [`crate::validate::validate_mapper_name`].
+    Explicit(&'a str),
 }
 
-/// Open an already-formatted drive.
+/// Open an already-formatted drive, deriving the mapper name from `label`.
 ///
-/// Unlock is a non-destructive operation, so we don't run the full
-/// [`safety::inspect`] pre-flight (which is designed around the format
-/// pipeline and only accepts whole-disk top-level devices). We require
-/// only that the path resolves to an existing block device — cryptsetup
-/// itself returns a clear error for non-LUKS data or wrong passphrase.
+/// See [`unlock_existing_with`].
 pub fn unlock_existing(
     runner: &dyn Runner,
     device: &Path,
@@ -224,23 +281,65 @@ pub fn unlock_existing(
     passphrase: &Passphrase,
     allow_discards: bool,
 ) -> Result<PathBuf> {
-    if !device.exists() {
+    unlock_existing_with(
+        runner,
+        device,
+        MapperChoice::FromLabel(label),
+        passphrase,
+        allow_discards,
+    )
+}
+
+/// Open an already-formatted drive.
+///
+/// Unlock is a non-destructive operation, so we don't run the full
+/// [`crate::safety::inspect`] pre-flight (which only accepts whole-disk
+/// devices). We require that the path resolves to an existing block device;
+/// cryptsetup itself returns a clear error for non-LUKS data or a wrong
+/// passphrase.
+///
+/// An existing mapping is only reused when it is backed by **this** device;
+/// a mapping with the same name that belongs to another drive is never
+/// returned (a device-tagged name is used instead).
+pub fn unlock_existing_with(
+    runner: &dyn Runner,
+    device: &Path,
+    choice: MapperChoice<'_>,
+    passphrase: &Passphrase,
+    allow_discards: bool,
+) -> Result<PathBuf> {
+    use std::os::unix::fs::FileTypeExt;
+
+    let node = std::fs::canonicalize(device)
+        .map_err(|_| Error::Refused(format!("device not found: {}", device.display())))?;
+    let is_block = std::fs::metadata(&node).is_ok_and(|m| m.file_type().is_block_device());
+    if !is_block {
         return Err(Error::Refused(format!(
-            "device not found: {}",
+            "{} is not a block device",
             device.display()
         )));
     }
-    let mapper_name = mapper_name_for(label);
-    let mapper_path = PathBuf::from(format!("/dev/mapper/{mapper_name}"));
 
-    // Idempotency: if the mapping is already live (from a previous click,
-    // a CLI session, or another tool), don't try to open it again — that
-    // returns cryptsetup exit 5 ("device exists") which confuses users.
-    // Surface the existing path so the caller can carry on.
-    if mapper_path.exists() {
-        return Ok(mapper_path);
+    let candidates = unlock_candidates(choice, &node, crate::mapper::uuid_of(&node).as_deref());
+    let (mapper_name, state) = pick_mapper(&candidates, |name| mapper_state(name, &node))?;
+    if state == MapperState::SameDevice {
+        // Already unlocked from this very device (previous click, CLI
+        // session). Re-opening would fail with "device in use".
+        return Ok(PathBuf::from(format!("/dev/mapper/{mapper_name}")));
     }
+    validate_passphrase(passphrase)?;
+    validate_mapper_name(&mapper_name)?;
     luks_open(runner, device, &mapper_name, passphrase, allow_discards)
+}
+
+fn unlock_candidates(choice: MapperChoice<'_>, node: &Path, uuid: Option<&str>) -> Vec<String> {
+    match choice {
+        MapperChoice::Explicit(name) => vec![name.to_string()],
+        MapperChoice::FromLabel(label) => vec![
+            mapper_name_for(label),
+            mapper_name_with_tag(label, &device_tag(node, uuid)),
+        ],
+    }
 }
 
 #[cfg(test)]
@@ -248,10 +347,70 @@ mod tests {
     use super::*;
 
     #[test]
-    fn mapper_name_sanitizes_unsafe_chars() {
-        assert_eq!(mapper_name_for("my drive"), "ashypass_my_drive");
-        assert_eq!(mapper_name_for("../etc/shadow"), "ashypass____etc_shadow");
-        assert_eq!(mapper_name_for(""), "ashypass_drive");
-        assert_eq!(mapper_name_for("vault-2026"), "ashypass_vault-2026");
+    fn format_mapper_falls_back_to_device_tag() {
+        let node = Path::new("/dev/sdb");
+        assert_eq!(
+            format_mapper_name("vault", node, |_| MapperState::Free).unwrap(),
+            "ashypass_vault"
+        );
+        assert_eq!(
+            format_mapper_name("vault", node, |n| if n == "ashypass_vault" {
+                MapperState::OtherDevice
+            } else {
+                MapperState::Free
+            })
+            .unwrap(),
+            "ashypass_vault_sdb"
+        );
+        // Both names taken: refused before anything is wiped.
+        assert!(format_mapper_name("vault", node, |_| MapperState::OtherDevice).is_err());
+        // The device itself mapped: also refused (never reuse during format).
+        assert!(format_mapper_name("vault", node, |_| MapperState::SameDevice).is_err());
+    }
+
+    #[test]
+    fn unlock_candidates_follow_the_choice() {
+        let node = Path::new("/dev/sdc1");
+        assert_eq!(
+            unlock_candidates(MapperChoice::FromLabel("docs"), node, Some("aaaaaaaa-bbbb")),
+            ["ashypass_docs", "ashypass_docs_aaaaaaaa"]
+        );
+        assert_eq!(
+            unlock_candidates(MapperChoice::FromLabel("docs"), node, None),
+            ["ashypass_docs", "ashypass_docs_sdc1"]
+        );
+        assert_eq!(
+            unlock_candidates(MapperChoice::Explicit("ashypass_foo"), node, None),
+            ["ashypass_foo"]
+        );
+    }
+
+    #[test]
+    fn explicit_mapper_names_are_validated() {
+        let node = Path::new("/dev/sdc1");
+        let candidates = unlock_candidates(MapperChoice::Explicit("foo"), node, None);
+        assert!(pick_mapper(&candidates, |_| MapperState::Free).is_err());
+    }
+
+    #[test]
+    fn unlock_refuses_missing_device_before_prompting_privileges() {
+        struct NoRunner;
+        impl Runner for NoRunner {
+            fn run(&self, _: crate::runner::CommandSpec) -> Result<crate::runner::CommandOutput> {
+                panic!("must not run anything");
+            }
+        }
+        let pp = Passphrase::from_text("secret");
+        assert!(unlock_existing(
+            &NoRunner,
+            Path::new("/dev/does-not-exist-ashypass"),
+            "x",
+            &pp,
+            false
+        )
+        .is_err());
+        // A regular file is not a block device.
+        let file = tempfile::NamedTempFile::new().unwrap();
+        assert!(unlock_existing(&NoRunner, file.path(), "x", &pp, false).is_err());
     }
 }

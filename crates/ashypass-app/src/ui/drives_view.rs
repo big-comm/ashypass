@@ -19,6 +19,7 @@
 use crate::tr;
 use adw::prelude::*;
 use ashypass_drives::detect::{human_size, list_removable, Drive, Partition};
+use ashypass_drives::validate::validate_mapper_name;
 use gtk::glib;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -64,6 +65,10 @@ fn install_usage_css() {
     });
 }
 
+/// Icon for removable drives. `drive-removable-media-*` renders as an eject
+/// glyph in several themes; `media-removable` is the USB-stick shape.
+const REMOVABLE_DRIVE_ICON: &str = "media-removable-symbolic";
+
 pub struct DrivesView {
     pub root: gtk::Box,
     #[expect(dead_code, reason = "keeps view model alive for signal handlers")]
@@ -88,7 +93,7 @@ impl DrivesView {
 
         let banner = adw::Banner::builder()
             .title(tr!(
-                "Preview — drive encryption backend not yet enabled. Listing is read-only."
+                "Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
             ))
             .revealed(true)
             .build();
@@ -104,7 +109,7 @@ impl DrivesView {
             .build();
         let refresh_btn = gtk::Button::builder()
             .icon_name("view-refresh-symbolic")
-            .tooltip_text(tr!("Rescan drives"))
+            .tooltip_text(tr!("Search for drives"))
             .build();
         refresh_btn.add_css_class("flat");
         action_strip.append(&refresh_btn);
@@ -116,10 +121,10 @@ impl DrivesView {
             .build();
 
         let empty_status = adw::StatusPage::builder()
-            .icon_name("drive-removable-media-symbolic")
+            .icon_name(REMOVABLE_DRIVE_ICON)
             .title(tr!("No external drives detected"))
             .description(tr!(
-                "Plug in a USB drive or external disk, then press Rescan."
+                "Plug in a USB drive or external disk, then search for drives."
             ))
             .vexpand(true)
             .build();
@@ -212,7 +217,7 @@ impl Inner {
 
         let group = adw::PreferencesGroup::new();
         for drive in drives {
-            group.add(&drive_row(drive));
+            group.add(&drive_row(drive, &self.toast));
         }
         self.list_container.append(&group);
     }
@@ -225,7 +230,9 @@ fn signature(drives: &[Drive]) -> String {
         s.push_str(&d.path);
         s.push(':');
         s.push_str(&d.size_bytes.to_string());
-        for p in &d.partitions {
+        s.push(':');
+        s.push_str(d.fstype.as_deref().unwrap_or("-"));
+        for p in d.volumes() {
             s.push('|');
             s.push_str(&p.name);
             s.push(',');
@@ -248,7 +255,7 @@ fn signature(drives: &[Drive]) -> String {
     s
 }
 
-fn drive_row(drive: &Drive) -> adw::ExpanderRow {
+fn drive_row(drive: &Drive, toast: &adw::ToastOverlay) -> adw::ExpanderRow {
     let row = adw::ExpanderRow::new();
 
     let title = drive
@@ -291,12 +298,10 @@ fn drive_row(drive: &Drive) -> adw::ExpanderRow {
     encrypt_btn.add_css_class("destructive-action");
     encrypt_btn.add_css_class("pill");
     let drive_for_btn = drive.clone();
+    let toast_for_btn = toast.clone();
     encrypt_btn.connect_clicked(move |btn| {
         if let Some(window) = btn.root().and_downcast::<gtk::Window>() {
-            // Toast overlay isn't strictly needed here — wizard runs in its
-            // own modal window. Pass a fresh empty one.
-            let toast = adw::ToastOverlay::new();
-            super::drives_wizard::present(&window, drive_for_btn.clone(), toast);
+            super::drives_wizard::present(&window, drive_for_btn.clone(), toast_for_btn.clone());
         }
     });
     row.add_suffix(&encrypt_btn);
@@ -304,17 +309,21 @@ fn drive_row(drive: &Drive) -> adw::ExpanderRow {
     // Details summary as the first child row.
     row.add_row(&drive_details_row(drive));
 
-    // Partition children.
-    if drive.partitions.is_empty() {
+    // Volume children. A drive encrypted by Ashy Pass has no partition
+    // table: the whole disk is the LUKS volume and gets the same row (and
+    // Unlock / Lock / FIDO2 actions) as a partition would.
+    if !drive.partitions.is_empty() {
+        for part in &drive.partitions {
+            row.add_row(&partition_row(part, toast));
+        }
+    } else if let Some(volume) = drive.whole_disk.as_ref() {
+        row.add_row(&partition_row(volume, toast));
+    } else {
         let blank = adw::ActionRow::builder()
             .title(tr!("Whole device — no partition table"))
             .subtitle(human_size(drive.size_bytes))
             .build();
         row.add_row(&blank);
-    } else {
-        for part in &drive.partitions {
-            row.add_row(&partition_row(part));
-        }
     }
     row
 }
@@ -460,18 +469,18 @@ fn media_kind(drive: &Drive) -> &'static str {
 
 fn drive_icon_name(drive: &Drive) -> &'static str {
     match (drive.transport.as_deref(), drive.rotational) {
-        (Some("usb"), false) => "drive-removable-media-usb-symbolic",
+        (Some("usb"), false) => REMOVABLE_DRIVE_ICON,
         (Some("usb"), true) => "drive-harddisk-usb-symbolic",
         (Some("nvme"), _) => "drive-harddisk-solidstate-symbolic",
         (Some("sata"), false) => "drive-harddisk-solidstate-symbolic",
         (Some("sata"), true) => "drive-harddisk-symbolic",
         (Some("mmc") | Some("sd"), _) => "media-flash-symbolic",
-        _ if drive.removable => "drive-removable-media-symbolic",
+        _ if drive.removable => REMOVABLE_DRIVE_ICON,
         _ => "drive-harddisk-symbolic",
     }
 }
 
-fn partition_row(part: &Partition) -> adw::ActionRow {
+fn partition_row(part: &Partition, toast: &adw::ToastOverlay) -> adw::ActionRow {
     // Title: <mono>sda1</mono>  ·  <sans>Ventoy</sans>
     let mut title = mono_span(&part.name);
     if let Some(l) = part.label.as_deref().filter(|l| !l.is_empty()) {
@@ -530,62 +539,26 @@ fn partition_row(part: &Partition) -> adw::ActionRow {
                 mp_label.add_css_class("dim-label");
                 row.add_suffix(&mp_label);
             }
-            let mapped_path = std::path::PathBuf::from(format!("/dev/mapper/{mapping}"));
-            let inner_mp = part.inner_mountpoint.clone();
             let lock_btn = gtk::Button::builder()
                 .label(tr!("Lock"))
-                .tooltip_text(format!(
-                    "{}: /dev/mapper/{mapping}",
-                    tr!("Close active mapping")
-                ))
                 .valign(gtk::Align::Center)
                 .build();
             lock_btn.add_css_class("destructive-action");
             lock_btn.add_css_class("pill");
-            lock_btn.connect_clicked(move |btn| {
-                let mapping_for_thread = mapping.clone();
-                let mapping_for_log = mapping.clone();
-                let mapped_cl = mapped_path.clone();
-                let mounted = inner_mp.is_some();
-                btn.set_sensitive(false);
-
-                let (sender, receiver) = std::sync::mpsc::channel::<Result<(), String>>();
-                std::thread::spawn(move || {
-                    // Best-effort unmount first — Nautilus or any other
-                    // client holding the mapping would block cryptsetup
-                    // close with EBUSY.
-                    if mounted {
-                        let _ = std::process::Command::new("udisksctl")
-                            .arg("unmount")
-                            .arg("-b")
-                            .arg(&mapped_cl)
-                            .output();
-                    }
-                    let runner = ashypass_drives::runner::PkexecRunner;
-                    let r = ashypass_drives::luks::luks_close(&runner, &mapping_for_thread);
-                    let _ = sender.send(r.map_err(|e| e.to_string()));
-                });
-
-                let btn_done = btn.clone();
-                glib::timeout_add_local(std::time::Duration::from_millis(120), move || {
-                    match receiver.try_recv() {
-                        Ok(Ok(())) => {
-                            eprintln!("ashypass: locked /dev/mapper/{mapping_for_log}");
-                            btn_done.set_sensitive(true);
-                            glib::ControlFlow::Break
-                        }
-                        Ok(Err(msg)) => {
-                            eprintln!("ashypass: lock failed: {msg}");
-                            btn_done.set_sensitive(true);
-                            glib::ControlFlow::Break
-                        }
-                        Err(std::sync::mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
-                        Err(std::sync::mpsc::TryRecvError::Disconnected) => {
-                            glib::ControlFlow::Break
-                        }
-                    }
-                });
-            });
+            if validate_mapper_name(&mapping).is_ok() {
+                lock_btn.set_tooltip_text(Some(&format!(
+                    "{}: /dev/mapper/{mapping}",
+                    tr!("Close active mapping")
+                )));
+                connect_lock(&lock_btn, mapping, part.inner_mountpoint.is_some(), toast);
+            } else {
+                // Opened by udisks / the file manager (or another tool):
+                // Ashy Pass only ever closes its own `ashypass_*` mappings.
+                lock_btn.set_sensitive(false);
+                lock_btn.set_tooltip_text(Some(tr!(
+                    "Unlocked by another application. Lock it from your file manager."
+                )));
+            }
             row.add_suffix(&lock_btn);
         } else {
             let label_hint = part.label.clone();
@@ -597,13 +570,13 @@ fn partition_row(part: &Partition) -> adw::ActionRow {
                 .valign(gtk::Align::Center)
                 .build();
             fido_btn.add_css_class("flat");
+            let toast_fido = toast.clone();
             fido_btn.connect_clicked(move |btn| {
                 if let Some(window) = btn.root().and_downcast::<gtk::Window>() {
-                    let toast = adw::ToastOverlay::new();
                     super::drives_wizard::present_enroll_fido2(
                         &window,
                         part_path_fido.clone(),
-                        toast,
+                        toast_fido.clone(),
                     );
                 }
             });
@@ -611,19 +584,19 @@ fn partition_row(part: &Partition) -> adw::ActionRow {
 
             let unlock_btn = gtk::Button::builder()
                 .label(tr!("Unlock"))
-                .tooltip_text(tr!("Open the encrypted partition"))
+                .tooltip_text(tr!("Open the encrypted volume"))
                 .valign(gtk::Align::Center)
                 .build();
             unlock_btn.add_css_class("suggested-action");
             unlock_btn.add_css_class("pill");
+            let toast_unlock = toast.clone();
             unlock_btn.connect_clicked(move |btn| {
                 if let Some(window) = btn.root().and_downcast::<gtk::Window>() {
-                    let toast = adw::ToastOverlay::new();
                     super::drives_wizard::present_unlock(
                         &window,
                         part_path.clone(),
                         label_hint.clone(),
-                        toast,
+                        toast_unlock.clone(),
                     );
                 }
             });
@@ -632,6 +605,55 @@ fn partition_row(part: &Partition) -> adw::ActionRow {
     }
 
     row
+}
+
+/// Wire the Lock button: unmount (best effort), close the mapping through
+/// polkit, and report the outcome on the window's toast overlay.
+fn connect_lock(btn: &gtk::Button, mapping: String, mounted: bool, toast: &adw::ToastOverlay) {
+    let toast = toast.clone();
+    btn.connect_clicked(move |btn| {
+        let mapping_for_thread = mapping.clone();
+        let mapped_path = std::path::PathBuf::from(format!("/dev/mapper/{mapping}"));
+        btn.set_sensitive(false);
+
+        let (sender, receiver) = std::sync::mpsc::channel::<Result<(), String>>();
+        std::thread::spawn(move || {
+            // Best-effort unmount first — Nautilus or any other client
+            // holding the mapping would block cryptsetup close with EBUSY.
+            if mounted {
+                let _ = std::process::Command::new("udisksctl")
+                    .arg("unmount")
+                    .arg("-b")
+                    .arg(&mapped_path)
+                    .output();
+            }
+            let runner = ashypass_drives::runner::PkexecRunner;
+            let r = ashypass_drives::luks::luks_close(&runner, &mapping_for_thread);
+            let _ = sender.send(r.map_err(|e| e.to_string()));
+        });
+
+        let btn_done = btn.clone();
+        let toast_done = toast.clone();
+        glib::timeout_add_local(std::time::Duration::from_millis(120), move || {
+            let message = match receiver.try_recv() {
+                Ok(Ok(())) => tr!("Drive locked").to_string(),
+                Ok(Err(msg)) => format!("{}: {msg}", tr!("Could not lock the drive")),
+                Err(std::sync::mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
+                Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                    tr!("Could not lock the drive").to_string()
+                }
+            };
+            btn_done.set_sensitive(true);
+            // Toast titles are Pango markup; cryptsetup output may contain `<`.
+            toast_done.add_toast(
+                adw::Toast::builder()
+                    .title(glib::markup_escape_text(&message).as_str())
+                    .timeout(5)
+                    .build(),
+            );
+            glib::ControlFlow::Break
+        });
+    });
 }
 
 fn usage_widget(used: u64, size: u64) -> gtk::Box {

@@ -4,26 +4,32 @@
 //! covers the whole encryption session) and streams JSON-Lines requests to
 //! its stdin, reading JSON-Lines responses from stdout.
 //!
-//! Wiring the GUI to this client is a follow-up: the wizard today goes
-//! through `PkexecRunner`, which prompts polkit per privileged command.
-//! This module ships so that swap can happen with no further protocol work.
+//! The GUI encryption wizard uses this client through
+//! [`crate::pipeline::encrypt_via_helper`]. Destructive requests carry the
+//! [`DeviceIdentity`] the user confirmed; the helper re-inspects the device
+//! and refuses if it no longer matches.
 
-use crate::passphrase::Passphrase;
+use crate::passphrase::{Passphrase, SecretString};
+use crate::safety::DeviceIdentity;
 use crate::{Error, Result};
 use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
+use zeroize::Zeroize;
 
 const HELPER_PATH: &str = "/usr/libexec/ashypass/ashypass-drives-helper";
 
-/// Honour `$ASHYPASS_HELPER_PATH` for development: lets you point at a
-/// freshly-built `target/release/ashypass-drives-helper` without pkg install.
-/// Falls back to the production path otherwise.
-fn helper_path() -> std::path::PathBuf {
-    std::env::var_os("ASHYPASS_HELPER_PATH")
-        .map(std::path::PathBuf::from)
-        .unwrap_or_else(|| std::path::PathBuf::from(HELPER_PATH))
+/// Debug builds honour `$ASHYPASS_HELPER_PATH` so a freshly built helper can
+/// be tested without installing the package. Release builds always use the
+/// installed path: the polkit action is bound to it, and an environment
+/// variable must never decide which binary gets elevated.
+fn helper_path() -> PathBuf {
+    #[cfg(debug_assertions)]
+    if let Some(path) = std::env::var_os("ASHYPASS_HELPER_PATH") {
+        return PathBuf::from(path);
+    }
+    PathBuf::from(HELPER_PATH)
 }
 
 #[derive(Debug, Serialize)]
@@ -32,15 +38,17 @@ enum HelperRequest<'a> {
     LuksFormat {
         device: &'a Path,
         label: &'a str,
-        #[serde(default)]
         allow_discards: bool,
-        passphrase_b64: String,
+        passphrase_b64: SecretString,
+        expected: &'a DeviceIdentity,
     },
     LuksOpen {
         device: &'a Path,
         mapper_name: &'a str,
-        passphrase_b64: String,
+        passphrase_b64: SecretString,
         allow_discards: bool,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        expected: Option<&'a DeviceIdentity>,
     },
     LuksClose {
         mapper_name: &'a str,
@@ -48,6 +56,7 @@ enum HelperRequest<'a> {
     Wipe {
         device: &'a Path,
         mode: &'a str,
+        expected: &'a DeviceIdentity,
     },
     Mkfs {
         mapped: &'a Path,
@@ -112,11 +121,16 @@ impl HelperClient {
         req: &HelperRequest<'_>,
         on_progress: &mut dyn FnMut(u64),
     ) -> Result<()> {
-        let line = serde_json::to_string(req)
-            .map_err(|e| Error::Refused(format!("encode request: {e}")))?;
-        self.stdin.write_all(line.as_bytes())?;
-        self.stdin.write_all(b"\n")?;
-        self.stdin.flush()?;
+        let mut line =
+            serde_json::to_vec(req).map_err(|e| Error::Refused(format!("encode request: {e}")))?;
+        line.push(b'\n');
+        let written = self
+            .stdin
+            .write_all(&line)
+            .and_then(|()| self.stdin.flush());
+        // The line may carry a base64 passphrase.
+        line.zeroize();
+        written?;
 
         loop {
             let mut buf = String::new();
@@ -140,13 +154,15 @@ impl HelperClient {
         label: &str,
         passphrase: &Passphrase,
         allow_discards: bool,
+        expected: &DeviceIdentity,
     ) -> Result<()> {
         self.round_trip(
             &HelperRequest::LuksFormat {
                 device,
                 label,
                 allow_discards,
-                passphrase_b64: b64_encode(passphrase.as_bytes()),
+                passphrase_b64: SecretString::new(b64_encode(passphrase.as_bytes())),
+                expected,
             },
             &mut |_| {},
         )
@@ -158,13 +174,15 @@ impl HelperClient {
         mapper_name: &str,
         passphrase: &Passphrase,
         allow_discards: bool,
+        expected: Option<&DeviceIdentity>,
     ) -> Result<PathBuf> {
         self.round_trip(
             &HelperRequest::LuksOpen {
                 device,
                 mapper_name,
                 allow_discards,
-                passphrase_b64: b64_encode(passphrase.as_bytes()),
+                passphrase_b64: SecretString::new(b64_encode(passphrase.as_bytes())),
+                expected,
             },
             &mut |_| {},
         )?;
@@ -179,9 +197,17 @@ impl HelperClient {
         &mut self,
         device: &Path,
         mode: &str,
+        expected: &DeviceIdentity,
         on_progress: &mut dyn FnMut(u64),
     ) -> Result<()> {
-        self.round_trip(&HelperRequest::Wipe { device, mode }, on_progress)
+        self.round_trip(
+            &HelperRequest::Wipe {
+                device,
+                mode,
+                expected,
+            },
+            on_progress,
+        )
     }
 
     pub fn mkfs(&mut self, mapped: &Path, fs: &str, label: &str) -> Result<()> {
@@ -231,4 +257,76 @@ fn b64_encode(bytes: &[u8]) -> String {
         _ => {}
     }
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn identity() -> DeviceIdentity {
+        DeviceIdentity {
+            serial: Some("E0D55EA5".into()),
+            size_bytes: 61_991_813_120,
+            model: Some("DataTraveler 3.0".into()),
+        }
+    }
+
+    #[test]
+    fn destructive_requests_carry_the_confirmed_identity() {
+        let id = identity();
+        let device = Path::new("/dev/disk/by-id/usb-Kingston-0:0");
+        let wipe = serde_json::to_value(HelperRequest::Wipe {
+            device,
+            mode: "encrypted-zero",
+            expected: &id,
+        })
+        .unwrap();
+        assert_eq!(wipe["op"], "wipe");
+        assert_eq!(wipe["expected"]["serial"], "E0D55EA5");
+        assert_eq!(wipe["expected"]["size_bytes"], 61_991_813_120u64);
+
+        let format = serde_json::to_value(HelperRequest::LuksFormat {
+            device,
+            label: "vault",
+            allow_discards: false,
+            passphrase_b64: SecretString::new(b64_encode(b"pw")),
+            expected: &id,
+        })
+        .unwrap();
+        assert_eq!(format["op"], "luks-format");
+        assert_eq!(format["passphrase_b64"], "cHc=");
+        assert_eq!(format["expected"]["model"], "DataTraveler 3.0");
+    }
+
+    #[test]
+    fn request_debug_output_redacts_passphrases() {
+        let id = identity();
+        let req = HelperRequest::LuksOpen {
+            device: Path::new("/dev/sdb"),
+            mapper_name: "ashypass_vault",
+            passphrase_b64: SecretString::new(b64_encode(b"correct horse")),
+            allow_discards: false,
+            expected: Some(&id),
+        };
+        let debug = format!("{req:?}");
+        assert!(!debug.contains(&b64_encode(b"correct horse")), "{debug}");
+        assert!(debug.contains("redacted"), "{debug}");
+    }
+
+    #[test]
+    fn base64_matches_rfc4648_vectors() {
+        assert_eq!(b64_encode(b""), "");
+        assert_eq!(b64_encode(b"f"), "Zg==");
+        assert_eq!(b64_encode(b"fo"), "Zm8=");
+        assert_eq!(b64_encode(b"foo"), "Zm9v");
+        assert_eq!(b64_encode(b"foobar"), "Zm9vYmFy");
+    }
+
+    /// Runs under `cargo test --release` (the PKGBUILD `check()`).
+    #[cfg(not(debug_assertions))]
+    #[test]
+    fn release_builds_ignore_the_helper_path_override() {
+        std::env::set_var("ASHYPASS_HELPER_PATH", "/tmp/not-the-helper");
+        assert_eq!(helper_path(), PathBuf::from(HELPER_PATH));
+    }
 }

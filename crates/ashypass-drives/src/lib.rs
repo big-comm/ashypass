@@ -14,6 +14,8 @@
 //! - [`wipe`] — pre-format wipe strategies.
 //! - [`fs`] — `mkfs.*` on the opened mapping.
 //! - [`passphrase`] — zeroizing newtype that never appears in argv.
+//! - [`mapper`] — dm-crypt mapper naming and collision checks.
+//! - [`validate`] — label / mapper / passphrase rules checked before wiping.
 //!
 //! The high-level orchestrator that ties these into a single
 //! `encrypt_new_drive` pipeline lives in [`pipeline`].
@@ -23,10 +25,12 @@ pub mod error;
 pub mod fs;
 pub mod helper_client;
 pub mod luks;
+pub mod mapper;
 pub mod passphrase;
 pub mod pipeline;
 pub mod runner;
 pub mod safety;
+pub mod validate;
 pub mod wipe;
 
 pub use error::{Error, Result};

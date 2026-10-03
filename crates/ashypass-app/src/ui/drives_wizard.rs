@@ -5,7 +5,8 @@
 //! progress flows back to the main loop via a `glib::MainContext` channel.
 //!
 //! Pages:
-//!   1. `confirm` — device summary + safety reasons + destructive consent
+//!   1. `confirm` — device summary + safety reasons + typed destructive
+//!      consent (last 4 characters of the serial, or the device path)
 //!   2. `key`     — passphrase × 2 with live strength meter
 //!   3. `options` — filesystem / wipe mode / allow-discards
 //!   4. `run`     — live progress (`adw::ProgressBar`) + step ticker
@@ -20,7 +21,8 @@ use ashypass_drives::pipeline::{
     encrypt_via_helper, unlock_existing, EncryptRequest, Progress, Step,
 };
 use ashypass_drives::runner::PkexecRunner;
-use ashypass_drives::safety;
+use ashypass_drives::safety::{self, DeviceIdentity};
+use ashypass_drives::validate::{check_label_for_fs, LabelError};
 use ashypass_drives::wipe::WipeMode;
 use gtk::glib;
 use std::cell::RefCell;
@@ -56,6 +58,9 @@ pub fn present(parent: &impl IsA<gtk::Window>, drive: Drive, toast: adw::ToastOv
 
 #[derive(Default, Debug)]
 struct WizardState {
+    /// Stable path (`/dev/disk/by-id/...`) pinned by the confirm-page safety
+    /// check; used for the destructive run instead of `/dev/sdX`.
+    pinned_device: Option<PathBuf>,
     passphrase: Option<Passphrase>,
     filesystem: Filesystem,
     wipe_mode: Option<WipeMode>,
@@ -116,10 +121,9 @@ fn build_confirm_page(
     ));
     info.add(&detail_row(tr!("Size"), &human_size(drive.size_bytes)));
     info.add(&detail_row(tr!("Path"), &drive.path));
-    if !drive.partitions.is_empty() {
+    if drive.volumes().next().is_some() {
         let parts: Vec<String> = drive
-            .partitions
-            .iter()
+            .volumes()
             .map(|p| {
                 format!(
                     "{} ({}, {})",
@@ -133,9 +137,14 @@ fn build_confirm_page(
     }
     content.append(&info);
 
-    // Safety pre-flight check — same `safety::inspect` the CLI uses.
+    // Safety pre-flight check — same `safety::inspect` the CLI uses — plus a
+    // check that the device behind the path is still the one listed above.
     let safety_group = adw::PreferencesGroup::new();
-    let report = safety::inspect(&PathBuf::from(&drive.path), safety::SafetyPolicy::default());
+    let report = safety::inspect(&PathBuf::from(&drive.path), safety::SafetyPolicy::default())
+        .and_then(|r| {
+            DeviceIdentity::of(&drive).verify(&r.identity())?;
+            Ok(r)
+        });
     match &report {
         Ok(r) if r.allow_destructive => {
             let r = adw::ActionRow::builder()
@@ -166,6 +175,27 @@ fn build_confirm_page(
     }
     content.append(&safety_group);
 
+    // Typed confirmation: the destructive button stays disabled until the
+    // user types something only visible on this page for *this* drive.
+    let token = ConfirmToken::for_drive(&drive);
+    let confirm_group = adw::PreferencesGroup::builder()
+        .title(tr!("Confirm"))
+        .description(match token {
+            ConfirmToken::SerialSuffix(_) => {
+                tr!("Type the last 4 characters of the serial number shown above.")
+            }
+            ConfirmToken::Path(_) => tr!("Type the device path shown above."),
+        })
+        .build();
+    let confirm_entry = adw::EntryRow::builder()
+        .title(match token {
+            ConfirmToken::SerialSuffix(_) => tr!("Last 4 characters of the serial"),
+            ConfirmToken::Path(_) => tr!("Device path"),
+        })
+        .build();
+    confirm_group.add(&confirm_entry);
+    content.append(&confirm_group);
+
     let actions = button_row();
     let cancel = gtk::Button::with_label(tr!("Cancel"));
     let next = gtk::Button::builder()
@@ -173,7 +203,18 @@ fn build_confirm_page(
         .build();
     next.add_css_class("destructive-action");
     next.add_css_class("pill");
-    next.set_sensitive(matches!(&report, Ok(r) if r.allow_destructive));
+    next.set_sensitive(false);
+    let safe = matches!(&report, Ok(r) if r.allow_destructive);
+    confirm_entry.set_sensitive(safe);
+    if let Ok(r) = &report {
+        state.borrow_mut().pinned_device = Some(r.canonical_path.clone());
+    }
+    {
+        let next_cl = next.clone();
+        confirm_entry.connect_changed(move |entry| {
+            next_cl.set_sensitive(safe && token.matches(entry.text().as_str()));
+        });
+    }
     actions.append(&cancel);
     actions.append(&next);
     content.append(&actions);
@@ -200,6 +241,42 @@ fn build_confirm_page(
     }
 
     page
+}
+
+/// What the user must type on the confirm page.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum ConfirmToken {
+    /// Last 4 characters of the serial number (case-insensitive).
+    SerialSuffix(String),
+    /// Full device path, for drives without a usable serial.
+    Path(String),
+}
+
+impl ConfirmToken {
+    fn for_drive(drive: &Drive) -> Self {
+        match drive.serial.as_deref().map(str::trim) {
+            Some(serial) if serial.chars().count() >= 4 => {
+                let suffix: String = serial
+                    .chars()
+                    .rev()
+                    .take(4)
+                    .collect::<Vec<_>>()
+                    .into_iter()
+                    .rev()
+                    .collect();
+                Self::SerialSuffix(suffix)
+            }
+            _ => Self::Path(drive.path.clone()),
+        }
+    }
+
+    fn matches(&self, typed: &str) -> bool {
+        let typed = typed.trim();
+        match self {
+            Self::SerialSuffix(expected) => typed.eq_ignore_ascii_case(expected),
+            Self::Path(expected) => typed == expected,
+        }
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -368,6 +445,11 @@ fn build_options_page(
     group.add(&discards_row);
     content.append(&group);
 
+    let label_error = gtk::Label::builder().xalign(0.0).wrap(true).build();
+    label_error.add_css_class("caption");
+    label_error.add_css_class("error");
+    content.append(&label_error);
+
     let actions = button_row();
     let back = gtk::Button::with_label(tr!("Back"));
     let go = gtk::Button::with_label(tr!("Encrypt"));
@@ -376,6 +458,35 @@ fn build_options_page(
     actions.append(&back);
     actions.append(&go);
     content.append(&actions);
+
+    // Live label validation against the selected filesystem's limit, so a
+    // label mkfs would reject is caught before anything is wiped.
+    {
+        let label_cl = label_row.clone();
+        let fs_cl = fs_row.clone();
+        let error_cl = label_error.clone();
+        let go_cl = go.clone();
+        let validate = Rc::new(move || {
+            let result = check_label_for_fs(&label_cl.text(), selected_filesystem(&fs_cl));
+            match result {
+                Ok(()) => {
+                    label_cl.remove_css_class("error");
+                    error_cl.set_visible(false);
+                }
+                Err(e) => {
+                    label_cl.add_css_class("error");
+                    error_cl.set_label(&label_error_text(e));
+                    error_cl.set_visible(true);
+                }
+            }
+            go_cl.set_sensitive(result.is_ok());
+        });
+        validate();
+        let v1 = validate.clone();
+        label_row.connect_changed(move |_| v1());
+        let v2 = validate.clone();
+        fs_row.connect_selected_notify(move |_| v2());
+    }
 
     toolbar.set_content(Some(&content));
     page.set_child(Some(&toolbar));
@@ -392,11 +503,7 @@ fn build_options_page(
         let drive_cl = drive.clone();
         go.connect_clicked(move |_| {
             let mut st = state_cl.borrow_mut();
-            st.filesystem = match fs_row.selected() {
-                1 => Filesystem::Btrfs,
-                2 => Filesystem::Xfs,
-                _ => Filesystem::Ext4,
-            };
+            st.filesystem = selected_filesystem(&fs_row);
             st.wipe_mode = Some(match wipe_row.selected() {
                 1 => WipeMode::SecureDiscard,
                 2 => WipeMode::Random,
@@ -413,6 +520,28 @@ fn build_options_page(
     }
 
     page
+}
+
+fn selected_filesystem(row: &adw::ComboRow) -> Filesystem {
+    match row.selected() {
+        1 => Filesystem::Btrfs,
+        2 => Filesystem::Xfs,
+        _ => Filesystem::Ext4,
+    }
+}
+
+fn label_error_text(error: LabelError) -> String {
+    match error {
+        LabelError::Empty => tr!("Enter a label.").to_string(),
+        LabelError::TooLong { max_bytes } => format!(
+            "{}: {max_bytes}",
+            tr!("Label too long for this filesystem. Maximum length in bytes")
+        ),
+        LabelError::InvalidCharacters => {
+            tr!("The label cannot start with \"-\" or contain \"/\" or control characters.")
+                .to_string()
+        }
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -480,9 +609,12 @@ fn build_run_page(
 
     // Move state out for the worker thread; runs in background, posts events
     // to the main loop via a glib channel.
-    let drive_path = drive.path.clone();
-    let total_bytes = drive.size_bytes;
+    let expected = DeviceIdentity::of(&drive);
     let st = state.borrow();
+    let drive_path = st
+        .pinned_device
+        .clone()
+        .unwrap_or_else(|| PathBuf::from(&drive.path));
     let passphrase = st.passphrase.as_ref().map(|p| p.as_bytes().to_vec());
     let wipe_mode = st.wipe_mode.unwrap_or(WipeMode::EncryptedZero);
     let filesystem = st.filesystem;
@@ -509,7 +641,8 @@ fn build_run_page(
     std::thread::spawn(move || {
         let pp = Passphrase::new(passphrase_bytes);
         let req = EncryptRequest {
-            device: PathBuf::from(&drive_path),
+            device: drive_path,
+            expected,
             label: label.clone(),
             filesystem,
             wipe_mode,
@@ -558,10 +691,6 @@ fn build_run_page(
             }
         });
     }
-
-    // Silence `total_bytes` unused-warning — it lives only to feed the
-    // Wiping event, which already carries its own total.
-    let _ = total_bytes;
 
     page
 }
@@ -955,4 +1084,52 @@ fn detail_row(label: &str, value: &str) -> adw::ActionRow {
     v.add_css_class("numeric");
     row.add_suffix(&v);
     row
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn drive(serial: Option<&str>) -> Drive {
+        Drive {
+            path: "/dev/sdb".into(),
+            name: "sdb".into(),
+            size_bytes: 1,
+            vendor: None,
+            model: None,
+            serial: serial.map(str::to_string),
+            transport: Some("usb".into()),
+            removable: true,
+            hotplug: true,
+            read_only: false,
+            mountpoint: None,
+            rotational: false,
+            partition_table: None,
+            fstype: None,
+            whole_disk: None,
+            partitions: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn confirmation_uses_serial_suffix_when_available() {
+        let token = ConfirmToken::for_drive(&drive(Some("E0D55EA5")));
+        assert_eq!(token, ConfirmToken::SerialSuffix("5EA5".into()));
+        assert!(token.matches("5EA5"));
+        assert!(token.matches(" 5ea5 "));
+        assert!(!token.matches("E0D5"));
+        assert!(!token.matches(""));
+        assert!(!token.matches("/dev/sdb"));
+    }
+
+    #[test]
+    fn confirmation_falls_back_to_the_path() {
+        for serial in [None, Some("ab"), Some("   ")] {
+            let token = ConfirmToken::for_drive(&drive(serial));
+            assert_eq!(token, ConfirmToken::Path("/dev/sdb".into()));
+            assert!(token.matches("/dev/sdb"));
+            assert!(!token.matches("/dev/sdc"));
+            assert!(!token.matches("/DEV/SDB"));
+        }
+    }
 }
