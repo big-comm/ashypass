@@ -19,6 +19,8 @@ thread_local! {
     /// to clear. Lets `clear_now` (lock / shutdown) wipe a secret whose timer
     /// has not fired yet, without ever holding the secret itself.
     static PENDING: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
+    /// Bumped on every timed copy; a timer only acts for its own copy.
+    static GENERATION: std::cell::Cell<u64> = const { std::cell::Cell::new(0) };
 }
 
 fn digest(text: &str) -> [u8; 32] {
@@ -28,21 +30,29 @@ fn digest(text: &str) -> [u8; 32] {
 /// Copy `text` to the clipboard and schedule a clear after `seconds`.
 /// `0` disables the auto-clear.
 pub fn copy(text: &str, seconds: u64) {
+    copy_with(text, seconds, false);
+}
+
+/// Like [`copy`]; with `hide_from_history` the copy also carries KDE's
+/// password-manager hint, which Klipper, Big Clipboard and other history
+/// managers honour by not recording the entry.
+pub fn copy_with(text: &str, seconds: u64, hide_from_history: bool) {
     let Some(display) = gdk::Display::default() else {
         return;
     };
     let clipboard = display.clipboard();
-    // Offer the text plus KDE's password-manager hint, which Klipper and
-    // other history managers honour by not recording the entry. Managers
-    // that ignore it may still keep a copy; the settings text says so.
-    let provider = gdk::ContentProvider::new_union(&[
-        gdk::ContentProvider::for_value(&text.to_value()),
-        gdk::ContentProvider::for_bytes(
-            "x-kde-passwordManagerHint",
-            &glib::Bytes::from_static(b"secret"),
-        ),
-    ]);
-    if clipboard.set_content(Some(&provider)).is_err() {
+    if hide_from_history {
+        let provider = gdk::ContentProvider::new_union(&[
+            gdk::ContentProvider::for_value(&text.to_value()),
+            gdk::ContentProvider::for_bytes(
+                "x-kde-passwordManagerHint",
+                &glib::Bytes::from_static(b"secret"),
+            ),
+        ]);
+        if clipboard.set_content(Some(&provider)).is_err() {
+            clipboard.set_text(text);
+        }
+    } else {
         clipboard.set_text(text);
     }
 
@@ -53,11 +63,18 @@ pub fn copy(text: &str, seconds: u64) {
 
     let expected = digest(text);
     PENDING.with(|p| *p.borrow_mut() = Some(expected));
+    // Each copy gets its own generation: copying the same text again must
+    // restart the countdown, not be cleared early by the first copy's timer.
+    let generation = GENERATION.with(|g| {
+        g.set(g.get().wrapping_add(1));
+        g.get()
+    });
 
     glib::timeout_add_seconds_local(seconds as u32, move || {
         // Only clear if this is still the copy we made; a later `copy()` or an
         // explicit `clear_now()` supersedes us.
-        let still_ours = PENDING.with(|p| *p.borrow() == Some(expected));
+        let still_ours = PENDING.with(|p| *p.borrow() == Some(expected))
+            && GENERATION.with(|g| g.get()) == generation;
         if still_ours {
             clear_if_matches(expected);
         }

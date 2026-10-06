@@ -168,8 +168,13 @@ impl DrivesView {
         // rebuild widgets when the device topology actually changes.
         {
             let inner_cl = inner.clone();
+            let root_cl = root.clone();
             glib::timeout_add_seconds_local(3, move || {
-                inner_cl.refresh_if_changed();
+                // Only while the page is on screen: lsblk runs on the main
+                // loop and nobody needs the list while it is hidden.
+                if root_cl.is_mapped() {
+                    inner_cl.refresh_if_changed();
+                }
                 glib::ControlFlow::Continue
             });
         }

@@ -349,11 +349,13 @@ fn show_settings_unlock_dialog(
             match result {
                 Ok(()) => {
                     if !has_master {
-                        let mut settings = Settings::load();
-                        settings.quick_unlock = None;
-                        save_settings(&settings);
+                        if let Err(e) = state.update_settings(|s| s.quick_unlock = None) {
+                            log::warn!("could not save settings: {e}");
+                        }
                     }
                     SessionManager::login(&state.session);
+                    // The main window must leave its unlock screen too.
+                    state.events.emit(crate::events::AppEvent::VaultUnlocked);
                     state.events.emit(crate::events::AppEvent::VaultChanged);
                     dlg.close();
                     // Take before closing: `close()` can run handlers that
@@ -441,10 +443,4 @@ where
             }
         },
     );
-}
-
-fn save_settings(settings: &Settings) {
-    if let Err(error) = settings.save() {
-        log::warn!("could not save settings: {error}");
-    }
 }

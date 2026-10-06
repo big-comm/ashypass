@@ -382,6 +382,18 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
     }
     {
         let weak = Rc::downgrade(inner);
+        let _permanent = inner.state.events.subscribe(move |event| {
+            if matches!(event, crate::events::AppEvent::VaultUnlocked) {
+                if let Some(inner) = weak.upgrade() {
+                    if inner.unlocked() {
+                        inner.on_unlocked();
+                    }
+                }
+            }
+        });
+    }
+    {
+        let weak = Rc::downgrade(inner);
         inner.unlock_view.set_on_import_help(Box::new(move || {
             if let Some(inner) = weak.upgrade() {
                 inner.show_import_help();
@@ -642,7 +654,7 @@ impl MainWindowInner {
             .emit(crate::events::AppEvent::SessionLocked);
         if closed > 0 {
             self.toast(
-                tr!("Vault locked. The open form was closed without saving."),
+                tr!("Vault locked. Open windows were closed; unsaved changes were discarded."),
                 6,
             );
         } else if idle {
@@ -821,7 +833,25 @@ impl MainWindowInner {
                         }
                     }
                     Err(e) => {
+                        // Never let the empty placeholder pose as the user's
+                        // vault: stop here and ask for a restart.
                         log::error!("could not reopen the vault after restore: {e}");
+                        let dialog = adw::AlertDialog::builder()
+                            .heading(tr!("The vault could not be reopened"))
+                            .body(format!(
+                                "{}\n\n{e}",
+                                tr!("Ashy Pass will close. Open it again to continue; your vault file was not deleted.")
+                            ))
+                            .build();
+                        dialog.add_response("quit", tr!("Close Ashy Pass"));
+                        let window = inner.window.clone();
+                        dialog.connect_response(None, move |_, _| {
+                            if let Some(app) = window.application() {
+                                app.quit();
+                            }
+                        });
+                        dialog.present(Some(&inner.window));
+                        return;
                     }
                 }
                 inner
@@ -992,6 +1022,31 @@ impl DevHandle {
                     });
                 }
             }
+            "click" => {
+                // click:<button label> — anywhere in the window, dialogs included.
+                match find_widget(&inner.window.clone().upcast(), &|w| {
+                    button_label(w).as_deref() == Some(arg)
+                }) {
+                    Some(w) => {
+                        if let Ok(button) = w.downcast::<gtk::Button>() {
+                            button.emit_clicked();
+                            eprintln!("dev: clicked {arg}");
+                        }
+                    }
+                    None => eprintln!("dev: no button {arg}"),
+                }
+            }
+            "field" => {
+                // field:<row title> — print the text of an entry row.
+                let found = find_widget(&inner.window.clone().upcast(), &|w| {
+                    w.downcast_ref::<adw::EntryRow>()
+                        .is_some_and(|row| row.title() == arg)
+                });
+                match found.and_then(|w| w.downcast::<adw::EntryRow>().ok()) {
+                    Some(row) => eprintln!("dev: field {arg} = {:?}", row.text().len()),
+                    None => eprintln!("dev: no field {arg}"),
+                }
+            }
             "count" => {
                 let n = inner
                     .state
@@ -1023,4 +1078,35 @@ impl DevHandle {
     pub fn state(&self) -> SharedState {
         self.inner.state.clone()
     }
+}
+
+#[cfg(debug_assertions)]
+fn button_label(widget: &gtk::Widget) -> Option<String> {
+    let button = widget.downcast_ref::<gtk::Button>()?;
+    if let Some(label) = button.label() {
+        return Some(label.to_string());
+    }
+    let child = button.child()?;
+    if let Some(label) = child.downcast_ref::<gtk::Label>() {
+        return Some(label.label().to_string());
+    }
+    if let Some(content) = child.downcast_ref::<adw::ButtonContent>() {
+        return Some(content.label().to_string());
+    }
+    None
+}
+
+#[cfg(debug_assertions)]
+fn find_widget(root: &gtk::Widget, test: &dyn Fn(&gtk::Widget) -> bool) -> Option<gtk::Widget> {
+    if test(root) && root.is_mapped() {
+        return Some(root.clone());
+    }
+    let mut child = root.first_child();
+    while let Some(c) = child {
+        if let Some(found) = find_widget(&c, test) {
+            return Some(found);
+        }
+        child = c.next_sibling();
+    }
+    None
 }

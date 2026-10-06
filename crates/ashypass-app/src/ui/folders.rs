@@ -96,27 +96,34 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                     let render = render.clone();
                     let name = name.clone();
                     rename.connect_clicked(move |button| {
-                        ask_name(button, tr!("Rename folder"), &name, tr!("Rename"), {
-                            let state = state.clone();
-                            let toast = toast.clone();
-                            let render = render.clone();
-                            let old = name.clone();
-                            move |new| {
-                                let result = state.vault.borrow().rename_folder(&old, new);
-                                let message = match result {
-                                    Ok(_) => tr!("Folder renamed").to_string(),
-                                    Err(e) => {
-                                        format!("{}: {e}", tr!("Could not rename the folder"))
+                        ask_name(
+                            &state,
+                            button,
+                            tr!("Rename folder"),
+                            &name,
+                            tr!("Rename"),
+                            {
+                                let state = state.clone();
+                                let toast = toast.clone();
+                                let render = render.clone();
+                                let old = name.clone();
+                                move |new| {
+                                    let result = state.vault.borrow().rename_folder(&old, new);
+                                    let message = match result {
+                                        Ok(_) => tr!("Folder renamed").to_string(),
+                                        Err(e) => {
+                                            format!("{}: {e}", tr!("Could not rename the folder"))
+                                        }
+                                    };
+                                    toast.add_toast(
+                                        adw::Toast::builder().title(message).timeout(3).build(),
+                                    );
+                                    if let Some(r) = render.borrow().as_ref() {
+                                        r();
                                     }
-                                };
-                                toast.add_toast(
-                                    adw::Toast::builder().title(message).timeout(3).build(),
-                                );
-                                if let Some(r) = render.borrow().as_ref() {
-                                    r();
                                 }
-                            }
-                        });
+                            },
+                        );
                     });
                 }
                 {
@@ -145,6 +152,7 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                         confirm.add_response("remove", tr!("Remove folder"));
                         confirm
                             .set_response_appearance("remove", adw::ResponseAppearance::Destructive);
+                        state.track_sensitive_dialog(&confirm);
                         let state = state.clone();
                         let toast = toast.clone();
                         let render = render.clone();
@@ -181,6 +189,14 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
     });
     *render.borrow_mut() = Some(render_fn.clone());
     render_fn();
+    // The slot and the closure reference each other; break the cycle when
+    // the dialog goes away.
+    {
+        let render = render.clone();
+        dialog.connect_closed(move |_| {
+            render.borrow_mut().take();
+        });
+    }
 
     {
         let state = state.clone();
@@ -190,7 +206,9 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
             let state = state.clone();
             let toast = toast.clone();
             let render = render.clone();
+            let tracker = state.clone();
             ask_name(
+                &tracker,
                 button,
                 tr!("Create folder"),
                 "",
@@ -214,8 +232,14 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
     dialog.present(Some(parent));
 }
 
-fn ask_name<F>(anchor: &impl IsA<gtk::Widget>, heading: &str, current: &str, action: &str, done: F)
-where
+fn ask_name<F>(
+    state: &SharedState,
+    anchor: &impl IsA<gtk::Widget>,
+    heading: &str,
+    current: &str,
+    action: &str,
+    done: F,
+) where
     F: Fn(&str) + 'static,
 {
     let dialog = adw::AlertDialog::builder()
@@ -245,5 +269,6 @@ where
             }
         }
     });
+    state.track_sensitive_dialog(&dialog);
     dialog.present(Some(anchor));
 }

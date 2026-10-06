@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 20:34-0300\n"
+"POT-Creation-Date: 2026-10-06 19:49-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -181,6 +181,15 @@ msgstr ""
 "Ashy Pass 无法与 Nextcloud 通信。请检查您的网络连接、服务器地址以及应用密码。"
 
 msgid ""
+"Ashy Pass will close. Open it again to continue; your vault file was not "
+"deleted."
+msgstr "Ashy Pass 将关闭。请重新打开以继续；保险库文件未被删除。"
+
+msgid ""
+"Asks history managers such as Big Clipboard and Klipper not to record them"
+msgstr "请求 Big Clipboard、Klipper 等历史记录管理器不要记录它们"
+
+msgid ""
 "At least 8 characters. A four-word passphrase from the EFF wordlist is a "
 "strong default."
 msgstr ""
@@ -355,6 +364,9 @@ msgstr "剪贴板"
 
 msgid "Close"
 msgstr "关闭"
+
+msgid "Close Ashy Pass"
+msgstr "关闭 Ashy Pass"
 
 msgid "Close active mapping"
 msgstr "关闭活动映射"
@@ -915,6 +927,9 @@ msgstr "Google Drive 和 WebDAV"
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr "有助于SSD磨损均衡，但会将空闲空间模式泄露给设备。"
+
+msgid "Hide copied passwords from clipboard history"
+msgstr "在剪贴板历史中隐藏复制的密码"
 
 msgid "Hide password"
 msgstr "隐藏密码"
@@ -2052,6 +2067,9 @@ msgstr "同步已结束，但部分项目报告了错误。"
 msgid "The system keyring is not available, so the PIN was not saved"
 msgstr "系统密钥环不可用，因此未保存 PIN"
 
+msgid "The vault could not be reopened"
+msgstr "无法重新打开保险库"
+
 msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr "保险库已锁定。未保存任何内容——请解锁后重试。"
 
@@ -2357,8 +2375,8 @@ msgstr "保管库已同步"
 msgid "Vault locked after a period of inactivity"
 msgstr "保险库因闲置一段时间而锁定"
 
-msgid "Vault locked. The open form was closed without saving."
-msgstr "保险库已锁定。打开的表单已关闭且未保存。"
+msgid "Vault locked. Open windows were closed; unsaved changes were discarded."
+msgstr "保险库已锁定。打开的窗口已关闭，未保存的更改已丢弃。"
 
 msgid "Vault must be unlocked to configure"
 msgstr "需先解锁密码库才能配置"

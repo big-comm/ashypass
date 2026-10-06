@@ -381,6 +381,11 @@ impl Inner {
     }
 
     fn refresh(&self) {
+        // An unlock is running in the background: do not wipe the field and
+        // re-enable the button under it, or a second attempt could start.
+        if self.busy.get() {
+            return;
+        }
         let mode = if !self.has_master() {
             UnlockMode::Setup
         } else if !self.prefer_password.get() && self.pin_configured() {

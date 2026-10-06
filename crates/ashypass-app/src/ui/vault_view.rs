@@ -142,6 +142,9 @@ struct Inner {
     folder_button: gtk::MenuButton,
     folder_menu: gio::Menu,
     folder_filter: RefCell<FolderFilter>,
+    /// The stateful `vault.folder` actions, so the menu's radio mark follows
+    /// changes made outside the menu (reset on lock, "Search all folders").
+    folder_actions: RefCell<Vec<gio::SimpleAction>>,
     favorites_toggle: gtk::ToggleButton,
     count_label: gtk::Label,
     sync_label: gtk::Label,
@@ -320,6 +323,7 @@ impl VaultView {
             folder_button,
             folder_menu,
             folder_filter: RefCell::new(FolderFilter::All),
+            folder_actions: RefCell::new(Vec::new()),
             favorites_toggle,
             count_label,
             sync_label,
@@ -374,6 +378,7 @@ impl VaultView {
         inner.invalidate_caches();
         *inner.folder_filter.borrow_mut() = FolderFilter::All;
         inner.folder_button.set_label(tr!("All folders"));
+        inner.sync_folder_actions(&FolderFilter::All);
         inner.favorites_toggle.set_active(false);
         inner.folder_menu.remove_all();
         inner.close_details();
@@ -712,6 +717,7 @@ fn install_actions(inner: &Rc<Inner>, widget: &gtk::Widget) {
         });
     }
     group.add_action(&folder);
+    inner.folder_actions.borrow_mut().push(folder.clone());
 
     let simple = |name: &str, run: fn(&Rc<Inner>)| {
         let action = gio::SimpleAction::new(name, None);
@@ -836,6 +842,7 @@ impl Inner {
         if stale {
             *self.folder_filter.borrow_mut() = FolderFilter::All;
             self.folder_button.set_label(tr!("All folders"));
+            self.sync_folder_actions(&FolderFilter::All);
         }
         self.apply_filter();
         // Keep the open details in step with the data (edited, deleted…).
@@ -949,8 +956,16 @@ impl Inner {
         self.folder_menu.append_section(None, &manage);
     }
 
+    fn sync_folder_actions(&self, filter: &FolderFilter) {
+        let target = filter.target().to_variant();
+        for action in self.folder_actions.borrow().iter() {
+            action.set_state(&target);
+        }
+    }
+
     fn set_folder_filter(&self, filter: FolderFilter) {
         self.folder_button.set_label(&filter.label());
+        self.sync_folder_actions(&filter);
         *self.folder_filter.borrow_mut() = filter;
         self.apply_filter();
         SessionManager::on_activity(&self.state.session);
@@ -973,11 +988,33 @@ impl Inner {
         let favorites_only = self.favorites_toggle.is_active();
         let entries = cache.filtered(search.as_deref(), &folder, favorites_only);
 
-        let items: Vec<glib::Object> = entries
-            .iter()
-            .map(|e| glib::BoxedAnyObject::new(e.clone()).upcast())
-            .collect();
-        self.store.splice(0, self.store.n_items(), &items);
+        // Replacing the model scrolls the list back to the top. Skip it when
+        // the same entries are already shown in the same order.
+        let unchanged = self.store.n_items() as usize == entries.len()
+            && entries.iter().enumerate().all(|(i, e)| {
+                self.store
+                    .item(i as u32)
+                    .and_then(|o| o.downcast::<glib::BoxedAnyObject>().ok())
+                    .is_some_and(|b| Rc::ptr_eq(&b.borrow::<Rc<PasswordEntry>>(), e))
+            });
+        if !unchanged {
+            // Same number of rows: a refresh of the same entries (a favorite,
+            // an edit, a sync), so keep the user's place in the list.
+            let refresh = self.store.n_items() as usize == entries.len();
+            let adjustment = self.list_view.vadjustment();
+            let position = adjustment.as_ref().map(|a| a.value()).unwrap_or(0.0);
+            let items: Vec<glib::Object> = entries
+                .iter()
+                .map(|e| glib::BoxedAnyObject::new(e.clone()).upcast())
+                .collect();
+            self.store.splice(0, self.store.n_items(), &items);
+            if let (true, Some(adjustment)) = (refresh, adjustment) {
+                glib::idle_add_local_once(move || {
+                    let max = (adjustment.upper() - adjustment.page_size()).max(0.0);
+                    adjustment.set_value(position.min(max));
+                });
+            }
+        }
 
         let shown = entries.len();
         self.count_label.set_label(
@@ -1377,7 +1414,10 @@ impl Inner {
         dialog.add_response("cancel", tr!("Cancel"));
         dialog.add_response("create", tr!("Create"));
         dialog.set_response_appearance("create", adw::ResponseAppearance::Suggested);
-        let name_row = adw::EntryRow::builder().title(tr!("Folder name")).build();
+        let name_row = adw::EntryRow::builder()
+            .title(tr!("Folder name"))
+            .activates_default(true)
+            .build();
         let list = gtk::ListBox::builder()
             .selection_mode(gtk::SelectionMode::None)
             .build();

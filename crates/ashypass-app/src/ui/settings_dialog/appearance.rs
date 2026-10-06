@@ -22,14 +22,20 @@ pub(super) fn populate_appearance(
     theme_row.set_selected(theme_values.iter().position(|v| *v == current).unwrap_or(0) as u32);
     {
         let settings = settings.clone();
+        let state_s = state.clone();
         theme_row.connect_selected_notify(move |row| {
             let value = theme_values
                 .get(row.selected() as usize)
                 .copied()
                 .unwrap_or("system");
-            settings.borrow_mut().color_scheme = value.to_string();
-            save_settings(&settings.borrow());
-            apply_color_scheme(value);
+            let value = value.to_string();
+            settings.borrow_mut().color_scheme = value.clone();
+            apply_color_scheme(&value);
+            // Persist through the shared state: saving this page's snapshot
+            // would write back stale values changed on other pages.
+            if let Err(e) = state_s.update_settings(|s| s.color_scheme = value) {
+                log::warn!("could not save settings: {e}");
+            }
         });
     }
     theme_group.add(&theme_row);
@@ -46,10 +52,16 @@ pub(super) fn populate_appearance(
         .build();
     {
         let settings = settings.clone();
+        let state_s = state.clone();
         let state = state.clone();
         favicons_row.connect_active_notify(move |row| {
-            settings.borrow_mut().show_favicons = row.is_active();
-            save_settings(&settings.borrow());
+            let value = row.is_active();
+            settings.borrow_mut().show_favicons = value;
+            // Persist through the shared state: saving this page's snapshot
+            // would write back stale values changed on other pages.
+            if let Err(e) = state_s.update_settings(|s| s.show_favicons = value) {
+                log::warn!("could not save settings: {e}");
+            }
             state.events.emit(crate::events::AppEvent::VaultChanged);
         });
     }
@@ -64,10 +76,16 @@ pub(super) fn populate_appearance(
         .build();
     {
         let settings = settings.clone();
+        let state_s = state.clone();
         let state = state.clone();
         favicon_fallback_row.connect_active_notify(move |row| {
-            settings.borrow_mut().favicon_third_party_fallback = row.is_active();
-            save_settings(&settings.borrow());
+            let value = row.is_active();
+            settings.borrow_mut().favicon_third_party_fallback = value;
+            // Persist through the shared state: saving this page's snapshot
+            // would write back stale values changed on other pages.
+            if let Err(e) = state_s.update_settings(|s| s.favicon_third_party_fallback = value) {
+                log::warn!("could not save settings: {e}");
+            }
             state.events.emit(crate::events::AppEvent::VaultChanged);
         });
     }
@@ -86,10 +104,16 @@ pub(super) fn populate_appearance(
         .build();
     {
         let settings = settings.clone();
+        let state_s = state.clone();
         let state = state.clone();
         sync_badges_row.connect_active_notify(move |row| {
-            settings.borrow_mut().show_sync_badges = row.is_active();
-            save_settings(&settings.borrow());
+            let value = row.is_active();
+            settings.borrow_mut().show_sync_badges = value;
+            // Persist through the shared state: saving this page's snapshot
+            // would write back stale values changed on other pages.
+            if let Err(e) = state_s.update_settings(|s| s.show_sync_badges = value) {
+                log::warn!("could not save settings: {e}");
+            }
             state.events.emit(crate::events::AppEvent::VaultChanged);
         });
     }
@@ -102,10 +126,16 @@ pub(super) fn populate_appearance(
         .build();
     {
         let settings = settings.clone();
+        let state_s = state.clone();
         let state = state.clone();
         compact_row.connect_active_notify(move |row| {
-            settings.borrow_mut().compact_vault_list = row.is_active();
-            save_settings(&settings.borrow());
+            let value = row.is_active();
+            settings.borrow_mut().compact_vault_list = value;
+            // Persist through the shared state: saving this page's snapshot
+            // would write back stale values changed on other pages.
+            if let Err(e) = state_s.update_settings(|s| s.compact_vault_list = value) {
+                log::warn!("could not save settings: {e}");
+            }
             state.events.emit(crate::events::AppEvent::VaultChanged);
         });
     }
@@ -122,10 +152,16 @@ pub(super) fn populate_appearance(
         .build();
     {
         let settings = settings.clone();
+        let state_s = state.clone();
         let state = state.clone();
         large_totp_row.connect_active_notify(move |row| {
-            settings.borrow_mut().large_totp_codes = row.is_active();
-            save_settings(&settings.borrow());
+            let value = row.is_active();
+            settings.borrow_mut().large_totp_codes = value;
+            // Persist through the shared state: saving this page's snapshot
+            // would write back stale values changed on other pages.
+            if let Err(e) = state_s.update_settings(|s| s.large_totp_codes = value) {
+                log::warn!("could not save settings: {e}");
+            }
             state.events.emit(crate::events::AppEvent::VaultChanged);
         });
     }

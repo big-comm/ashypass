@@ -161,8 +161,12 @@ impl EmptyState {
 
 /// Copy `text` and arm the auto-clear timer from the user's setting.
 pub fn copy_secret(state: &SharedState, text: &str) {
-    let seconds = state.settings().clipboard_clear;
-    crate::clipboard::copy(text, seconds);
+    let settings = state.settings();
+    crate::clipboard::copy_with(
+        text,
+        settings.clipboard_clear,
+        settings.clipboard_hide_from_history,
+    );
 }
 
 /// The host of a URL without scheme, credentials, port, path or `www.`, for

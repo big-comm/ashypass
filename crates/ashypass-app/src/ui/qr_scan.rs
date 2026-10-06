@@ -188,6 +188,7 @@ fn capture_screen(anchor: &gtk::Button, done: Done) {
     let sender = unique.trim_start_matches(':').replace('.', "_");
     let request_path = format!("/org/freedesktop/portal/desktop/request/{sender}/{token}");
 
+    let window_hidden = anchor.root().and_then(|r| r.downcast::<gtk::Window>().ok());
     // Subscribe before calling, so a fast response is not missed.
     let subscription: Rc<std::cell::RefCell<Option<gio::SignalSubscriptionId>>> = Rc::default();
     let handled = Rc::new(std::cell::Cell::new(false));
@@ -196,6 +197,7 @@ fn capture_screen(anchor: &gtk::Button, done: Done) {
         let subscription_cl = subscription.clone();
         let done = done.clone();
         let handled = handled.clone();
+        let window_back = window_hidden.clone();
         #[allow(deprecated)]
         let id = connection.signal_subscribe(
             Some("org.freedesktop.portal.Desktop"),
@@ -207,6 +209,10 @@ fn capture_screen(anchor: &gtk::Button, done: Done) {
             move |_, _, _, _, _, params| {
                 if handled.replace(true) {
                     return;
+                }
+                // The capture is done (or cancelled): bring the window back.
+                if let Some(window) = window_back.as_ref() {
+                    window.present();
                 }
                 if let Some(id) = subscription_cl.borrow_mut().take() {
                     #[allow(deprecated)]
@@ -251,7 +257,6 @@ fn capture_screen(anchor: &gtk::Button, done: Done) {
     options.insert("interactive", true);
     options.insert("modal", true);
     let parameters = ("", options.end()).to_variant();
-    let window_hidden = anchor.root().and_then(|r| r.downcast::<gtk::Window>().ok());
     // Let the user see the screen: hide our window while they pick the area.
     if let Some(window) = window_hidden.as_ref() {
         window.minimize();
@@ -269,10 +274,13 @@ fn capture_screen(anchor: &gtk::Button, done: Done) {
         -1,
         gio::Cancellable::NONE,
         move |result| {
-            if let Some(window) = window_hidden.as_ref() {
-                window.present();
-            }
+            // This reply only acknowledges the request; the capture itself
+            // arrives later as `Response`. Restore the window here only if
+            // the request failed.
             if let Err(e) = result {
+                if let Some(window) = window_hidden.as_ref() {
+                    window.present();
+                }
                 if let Some(id) = subscription_err.borrow_mut().take() {
                     #[allow(deprecated)]
                     connection_err.signal_unsubscribe(id);

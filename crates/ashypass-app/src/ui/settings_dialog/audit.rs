@@ -29,9 +29,15 @@ pub(super) fn populate_audit(
         .build();
     {
         let settings = settings.clone();
+        let state_s = state.clone();
         hibp_row.connect_active_notify(move |row| {
-            settings.borrow_mut().audit_check_hibp = row.is_active();
-            save_settings(&settings.borrow());
+            let value = row.is_active();
+            settings.borrow_mut().audit_check_hibp = value;
+            // Persist through the shared state: saving this page's snapshot
+            // would write back stale values changed on other pages.
+            if let Err(e) = state_s.update_settings(|s| s.audit_check_hibp = value) {
+                log::warn!("could not save settings: {e}");
+            }
         });
     }
     opts_group.add(&hibp_row);

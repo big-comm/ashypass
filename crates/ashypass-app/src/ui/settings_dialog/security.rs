@@ -191,6 +191,23 @@ pub(super) fn populate_protection(
         );
         clip_group.add(&row);
     }
+    let history_row = adw::SwitchRow::builder()
+        .title(tr!("Hide copied passwords from clipboard history"))
+        .subtitle(tr!(
+            "Asks history managers such as Big Clipboard and Klipper not to record them"
+        ))
+        .active(settings.clipboard_hide_from_history)
+        .build();
+    {
+        let state = state.clone();
+        history_row.connect_active_notify(move |row| {
+            let active = row.is_active();
+            if let Err(e) = state.update_settings(|s| s.clipboard_hide_from_history = active) {
+                log::warn!("could not save settings: {e}");
+            }
+        });
+    }
+    clip_group.add(&history_row);
     page.add(&clip_group);
 
     page.add(&pin_group(&state, &toast, unlocked));

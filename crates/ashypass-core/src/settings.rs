@@ -79,6 +79,11 @@ pub struct Settings {
     pub lock_on_screen_lock: bool,
     /// "system", "light" or "dark". Anything else follows the system.
     pub color_scheme: String,
+    /// Mark copied secrets with `x-kde-passwordManagerHint` so clipboard
+    /// history managers that honour it (Klipper, Big Clipboard) skip them.
+    /// Off by default: earlier versions did not mark copies, and many people
+    /// rely on their clipboard history.
+    pub clipboard_hide_from_history: bool,
 }
 
 /// Wrapping-KDF generation for `QuickUnlockPrefs::encrypted_key`.
@@ -148,6 +153,7 @@ impl Default for Settings {
             nextcloud_sync_on_unlock: true,
             lock_on_screen_lock: true,
             color_scheme: "system".to_string(),
+            clipboard_hide_from_history: false,
         }
     }
 }
@@ -299,6 +305,8 @@ mod tests {
         assert!(!settings.show_favicons);
         assert!(settings.lock_on_screen_lock);
         assert_eq!(settings.color_scheme, "system");
+        // Copies stay visible to clipboard history unless the user opts out.
+        assert!(!settings.clipboard_hide_from_history);
         settings.save_to(&path).unwrap();
         let again = Settings::load_from(&path);
         assert_eq!(again.lock_timeout, 45);

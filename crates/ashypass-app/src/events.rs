@@ -36,6 +36,9 @@ pub enum AppEvent {
     VaultChanged,
     /// Session auto-locked due to inactivity. Views must hide secrets.
     SessionLocked,
+    /// The vault was unlocked somewhere other than the main unlock screen
+    /// (the Settings prompt). The window catches up with its own state.
+    VaultUnlocked,
     /// Session is about to lock — `seconds_left` is the countdown.
     SessionWarning { seconds_left: u64 },
     /// A WebDAV sync push completed successfully.

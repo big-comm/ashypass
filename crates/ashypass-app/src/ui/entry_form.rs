@@ -428,7 +428,12 @@ pub fn present(
 
     // ---- Attachments (existing entries only) --------------------------
     if let Some(eid) = entry.as_ref().map(|e| e.id) {
-        content.append(&build_attachments_group(state, toast, eid));
+        let (group, render_slot) = build_attachments_group(state, toast, eid);
+        content.append(&group);
+        // Break the closure/slot cycle when the form closes.
+        dialog.connect_closed(move |_| {
+            render_slot.borrow_mut().take();
+        });
     }
 
     let clamp = adw::Clamp::builder()
@@ -725,6 +730,12 @@ fn present_embedded_generator<F>(
         .build();
     toolbar.set_content(Some(&scrolled));
     dialog.set_child(Some(&toolbar));
+    // The panel's handlers hold it weakly; keep it alive for as long as the
+    // dialog is open, or every button would silently do nothing.
+    let keep_alive = RefCell::new(Some(panel));
+    dialog.connect_closed(move |_| {
+        keep_alive.borrow_mut().take();
+    });
     state.track_sensitive_dialog(&dialog);
     dialog.present(Some(parent));
 }
@@ -733,7 +744,7 @@ fn build_attachments_group(
     state: &SharedState,
     toast: &adw::ToastOverlay,
     eid: i64,
-) -> adw::PreferencesGroup {
+) -> (adw::PreferencesGroup, RenderSlot) {
     let group = adw::PreferencesGroup::builder()
         .title(tr!("Attachments"))
         .description(tr!("Files are encrypted and stored inside the vault."))
@@ -833,6 +844,7 @@ fn build_attachments_group(
                             "remove",
                             adw::ResponseAppearance::Destructive,
                         );
+                        state.track_sensitive_dialog(&confirm);
                         let state = state.clone();
                         let toast = toast.clone();
                         let render = render.clone();
@@ -934,7 +946,7 @@ fn build_attachments_group(
             });
         });
     }
-    group
+    (group, render)
 }
 
 /// Suffix menu listing `values`, calling `pick` with the chosen one. `None`

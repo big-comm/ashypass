@@ -25,9 +25,15 @@ pub(super) fn populate_trash(
     retention_row.set_value(settings.borrow().trash_retention_days as f64);
     {
         let settings = settings.clone();
+        let state_s = state.clone();
         retention_row.connect_value_notify(move |row| {
-            settings.borrow_mut().trash_retention_days = row.value() as u32;
-            save_settings(&settings.borrow());
+            let value = row.value() as u32;
+            settings.borrow_mut().trash_retention_days = value;
+            // Persist through the shared state: saving this page's snapshot
+            // would write back stale values changed on other pages.
+            if let Err(e) = state_s.update_settings(|s| s.trash_retention_days = value) {
+                log::warn!("could not save settings: {e}");
+            }
         });
     }
     retention_group.add(&retention_row);
