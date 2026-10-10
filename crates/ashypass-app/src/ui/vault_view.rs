@@ -397,8 +397,13 @@ impl VaultView {
 
     /// Type-to-search: characters typed anywhere on the list go to the
     /// search box.
-    pub fn set_key_capture(&self, widget: &impl IsA<gtk::Widget>) {
-        self.inner.search_entry.set_key_capture_widget(Some(widget));
+    /// The page's search box, for type-to-search from anywhere in the window.
+    /// Typing goes to the list, so leave a open details page first.
+    pub fn search_entry_for_typing(&self) -> gtk::SearchEntry {
+        if self.inner.split.is_collapsed() {
+            self.inner.split.set_show_content(false);
+        }
+        self.inner.search_entry.clone()
     }
 
     #[cfg(debug_assertions)]

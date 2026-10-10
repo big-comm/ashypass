@@ -116,7 +116,6 @@ impl TotpView {
         let root = adw::ToolbarView::new();
         root.add_top_bar(&header);
         root.set_content(Some(&scrolled));
-        search_entry.set_key_capture_widget(Some(&scrolled));
 
         let inner = Rc::new(Inner {
             state,
@@ -215,6 +214,10 @@ impl TotpView {
 
     pub fn focus_search(&self) {
         self.inner.search_entry.grab_focus();
+    }
+
+    pub fn search_entry(&self) -> gtk::SearchEntry {
+        self.inner.search_entry.clone()
     }
 
     pub fn show_add_dialog(&self) {

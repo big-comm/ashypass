@@ -282,9 +282,6 @@ impl MainWindow {
         window.add_breakpoint(medium);
         window.add_breakpoint(narrow);
 
-        // Typing anywhere on the list goes to its search box.
-        vault_view.set_key_capture(&vault_view.root);
-
         let auto_sync = crate::auto_sync::install(state.clone(), toast_overlay.clone());
 
         let inner = Rc::new(MainWindowInner {
@@ -485,6 +482,25 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
                 inner.on_user_activity();
             }
             glib::Propagation::Proceed
+        });
+        inner.window.add_controller(key);
+    }
+    // Type-to-search: on My passwords and Verification codes, typing anywhere
+    // in the window filters the list, without clicking the search box first.
+    // Bubble phase, so a focused text field or button keeps its own keys.
+    {
+        let key = gtk::EventControllerKey::new();
+        key.set_propagation_phase(gtk::PropagationPhase::Bubble);
+        let weak = Rc::downgrade(inner);
+        key.connect_key_pressed(move |_, keyval, _, modifiers| {
+            let Some(inner) = weak.upgrade() else {
+                return glib::Propagation::Proceed;
+            };
+            if inner.type_to_search(keyval, modifiers) {
+                glib::Propagation::Stop
+            } else {
+                glib::Propagation::Proceed
+            }
         });
         inner.window.add_controller(key);
     }
@@ -741,6 +757,45 @@ impl MainWindowInner {
             self.show_page("vault");
             self.vault_view.show_add_dialog(None);
         }
+    }
+
+    /// Send a printable key to the current page's search box. Returns true
+    /// when the key was used.
+    fn type_to_search(&self, keyval: gtk::gdk::Key, modifiers: gtk::gdk::ModifierType) -> bool {
+        if !self.unlocked()
+            || self.gate.visible_child_name().as_deref() != Some("pages")
+            // A dialog owns the keyboard; never type behind it.
+            || self.window.visible_dialog().is_some()
+            || modifiers.intersects(
+                gtk::gdk::ModifierType::CONTROL_MASK
+                    | gtk::gdk::ModifierType::ALT_MASK
+                    | gtk::gdk::ModifierType::SUPER_MASK
+                    | gtk::gdk::ModifierType::META_MASK,
+            )
+        {
+            return false;
+        }
+        let Some(ch) = keyval.to_unicode() else {
+            return false;
+        };
+        if ch.is_control() || ch.is_whitespace() {
+            return false;
+        }
+        let entry = match self.current.get() {
+            "vault" => self.vault_view.search_entry_for_typing(),
+            "totp" => self.totp_view.search_entry(),
+            _ => return false,
+        };
+        if entry.has_focus() {
+            return false;
+        }
+        // Continue the current search rather than replacing it, and keep
+        // the focus there so the next keys go straight to the box.
+        entry.grab_focus();
+        let mut position = entry.text().chars().count() as i32;
+        entry.insert_text(&ch.to_string(), &mut position);
+        entry.set_position(position);
+        true
     }
 
     fn focus_search(self: &Rc<Self>) {
@@ -1045,6 +1100,21 @@ impl DevHandle {
                 match found.and_then(|w| w.downcast::<adw::EntryRow>().ok()) {
                     Some(row) => eprintln!("dev: field {arg} = {:?}", row.text().len()),
                     None => eprintln!("dev: no field {arg}"),
+                }
+            }
+            "type" => {
+                // type:<text> — keys as the window would receive them, with
+                // the focus on the sidebar (the case that used to fail).
+                if let Some(row) = inner.nav_list.row_at_index(0) {
+                    row.grab_focus();
+                }
+                for ch in arg.chars() {
+                    let used = inner.type_to_search(
+                        gtk::gdk::Key::from_name(ch.to_string())
+                            .unwrap_or(gtk::gdk::Key::VoidSymbol),
+                        gtk::gdk::ModifierType::empty(),
+                    );
+                    eprintln!("dev: key {ch:?} used={used}");
                 }
             }
             "count" => {
