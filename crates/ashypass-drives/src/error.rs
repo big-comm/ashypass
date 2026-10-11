@@ -21,6 +21,11 @@ pub enum Error {
     #[error("refused destructive operation: {0}")]
     Refused(String),
 
+    /// `pkexec` exited with 126/127: the polkit prompt was dismissed or the
+    /// user is not authorised. Nothing was run with elevated privileges.
+    #[error("authentication was cancelled")]
+    AuthCancelled,
+
     #[error("not implemented yet")]
     NotImplemented,
 }

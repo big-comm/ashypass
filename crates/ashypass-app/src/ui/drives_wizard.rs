@@ -16,18 +16,27 @@ use adw::prelude::*;
 use ashypass_core::strength::legacy_score;
 use ashypass_drives::detect::{human_size, Drive};
 use ashypass_drives::fs::Filesystem;
+use ashypass_drives::helper_client::HelperClient;
 use ashypass_drives::passphrase::Passphrase;
 use ashypass_drives::pipeline::{
-    encrypt_via_helper, unlock_existing, EncryptRequest, Progress, Step,
+    encrypt_via_helper, unlock_via_helper, EncryptRequest, Progress, Step,
 };
-use ashypass_drives::runner::PkexecRunner;
-use ashypass_drives::safety::{self, DeviceIdentity};
+use ashypass_drives::safety::{self, DeviceIdentity, SafetyReport};
 use ashypass_drives::validate::{check_label_for_fs, LabelError};
 use ashypass_drives::wipe::WipeMode;
 use gtk::glib;
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::path::PathBuf;
 use std::rc::Rc;
+
+/// User-facing text for a drive operation error. A dismissed polkit prompt
+/// is not a failure worth a technical message.
+pub(super) fn describe_error(error: &ashypass_drives::Error) -> String {
+    match error {
+        ashypass_drives::Error::AuthCancelled => tr!("Authentication was cancelled").to_string(),
+        other => other.to_string(),
+    }
+}
 
 /// Open the wizard against `drive`. Calls `on_done(success)` when the user
 /// finishes or cancels.
@@ -43,6 +52,19 @@ pub fn present(parent: &impl IsA<gtk::Window>, drive: Drive, toast: adw::ToastOv
     let nav = adw::NavigationView::new();
     let drive_rc = Rc::new(drive);
     let state = Rc::new(RefCell::new(WizardState::default()));
+
+    // Closing the window does not stop the worker thread or the helper, so
+    // it would hide a half-written drive. Refuse while the pipeline runs.
+    {
+        let running = state.borrow().running.clone();
+        win.connect_close_request(move |_| {
+            if running.get() {
+                glib::Propagation::Stop
+            } else {
+                glib::Propagation::Proceed
+            }
+        });
+    }
 
     let confirm = build_confirm_page(&nav, drive_rc.clone(), state.clone());
     nav.add(&confirm);
@@ -61,6 +83,11 @@ struct WizardState {
     /// Stable path (`/dev/disk/by-id/...`) pinned by the confirm-page safety
     /// check; used for the destructive run instead of `/dev/sdX`.
     pinned_device: Option<PathBuf>,
+    /// Identity from the confirm-page inspection (includes the by-id link);
+    /// every destructive helper request is checked against it.
+    expected: Option<DeviceIdentity>,
+    /// True while the encryption pipeline runs; blocks closing the window.
+    running: Rc<Cell<bool>>,
     passphrase: Option<Passphrase>,
     filesystem: Filesystem,
     wipe_mode: Option<WipeMode>,
@@ -139,40 +166,14 @@ fn build_confirm_page(
 
     // Safety pre-flight check — same `safety::inspect` the CLI uses — plus a
     // check that the device behind the path is still the one listed above.
+    // It runs `lsblk` and walks sysfs, so it runs off the main loop; the
+    // confirmation entry stays disabled until it passes.
     let safety_group = adw::PreferencesGroup::new();
-    let report = safety::inspect(&PathBuf::from(&drive.path), safety::SafetyPolicy::default())
-        .and_then(|r| {
-            DeviceIdentity::of(&drive).verify(&r.identity())?;
-            Ok(r)
-        });
-    match &report {
-        Ok(r) if r.allow_destructive => {
-            let r = adw::ActionRow::builder()
-                .title(tr!("Safety checks passed"))
-                .build();
-            let ok = gtk::Image::from_icon_name("emblem-ok-symbolic");
-            ok.add_css_class("success");
-            r.add_prefix(&ok);
-            safety_group.add(&r);
-        }
-        Ok(r) => {
-            let row = adw::ActionRow::builder()
-                .title(tr!("Safety checks failed"))
-                .subtitle(r.reasons.join("\n"))
-                .build();
-            let ic = gtk::Image::from_icon_name("dialog-error-symbolic");
-            ic.add_css_class("error");
-            row.add_prefix(&ic);
-            safety_group.add(&row);
-        }
-        Err(e) => {
-            let row = adw::ActionRow::builder()
-                .title(tr!("Safety check error"))
-                .subtitle(format!("{e}"))
-                .build();
-            safety_group.add(&row);
-        }
-    }
+    let checking_row = adw::ActionRow::builder()
+        .title(tr!("Checking the drive…"))
+        .build();
+    checking_row.add_prefix(&gtk::Spinner::builder().spinning(true).build());
+    safety_group.add(&checking_row);
     content.append(&safety_group);
 
     // Typed confirmation: the destructive button stays disabled until the
@@ -204,16 +205,34 @@ fn build_confirm_page(
     next.add_css_class("destructive-action");
     next.add_css_class("pill");
     next.set_sensitive(false);
-    let safe = matches!(&report, Ok(r) if r.allow_destructive);
-    confirm_entry.set_sensitive(safe);
-    if let Ok(r) = &report {
-        state.borrow_mut().pinned_device = Some(r.canonical_path.clone());
-    }
+    let safe = Rc::new(Cell::new(false));
+    confirm_entry.set_sensitive(false);
     {
         let next_cl = next.clone();
+        let safe_cl = safe.clone();
         confirm_entry.connect_changed(move |entry| {
-            next_cl.set_sensitive(safe && token.matches(entry.text().as_str()));
+            next_cl.set_sensitive(safe_cl.get() && token.matches(entry.text().as_str()));
         });
+    }
+    {
+        let snapshot = (*drive).clone();
+        let safety_group = safety_group.clone();
+        let confirm_entry = confirm_entry.clone();
+        let state = state.clone();
+        super::settings_dialog::run_background(
+            move || inspect_confirmed(&snapshot),
+            move |report| {
+                safety_group.remove(&checking_row);
+                let passed = show_safety_result(&safety_group, &report);
+                if let Ok(r) = &report {
+                    let mut st = state.borrow_mut();
+                    st.pinned_device = Some(r.canonical_path.clone());
+                    st.expected = Some(r.identity());
+                }
+                safe.set(passed);
+                confirm_entry.set_sensitive(passed);
+            },
+        );
     }
     actions.append(&cancel);
     actions.append(&next);
@@ -241,6 +260,90 @@ fn build_confirm_page(
     }
 
     page
+}
+
+/// Inspect the drive the user picked and check that the device behind its
+/// path is still the one listed. Blocking; runs on a worker thread.
+fn inspect_confirmed(snapshot: &Drive) -> ashypass_drives::Result<SafetyReport> {
+    let report = safety::inspect(
+        &PathBuf::from(&snapshot.path),
+        safety::SafetyPolicy::default(),
+    )?;
+    DeviceIdentity::of(snapshot).check_unchanged(&report.identity())?;
+    Ok(report)
+}
+
+/// Outcome of the confirm-page safety check.
+#[derive(Debug, PartialEq, Eq)]
+enum SafetyVerdict {
+    Passed,
+    /// One or more guards refused; the reasons, one per line.
+    Refused(String),
+    /// Safe, but there is no `/dev/disk/by-id` link to pin the drive with.
+    /// The helper would refuse it after the passphrase step, so stop here.
+    NoStableLink,
+    Error(String),
+}
+
+fn safety_verdict(report: &ashypass_drives::Result<SafetyReport>) -> SafetyVerdict {
+    match report {
+        Ok(r) if !r.allow_destructive => SafetyVerdict::Refused(r.reasons.join("\n")),
+        Ok(r) if !r.pinned_by_id() => SafetyVerdict::NoStableLink,
+        Ok(_) => SafetyVerdict::Passed,
+        Err(e) => SafetyVerdict::Error(e.to_string()),
+    }
+}
+
+/// Render the safety verdict into `group`. Returns true when the drive may
+/// be encrypted.
+fn show_safety_result(
+    group: &adw::PreferencesGroup,
+    report: &ashypass_drives::Result<SafetyReport>,
+) -> bool {
+    let verdict = safety_verdict(report);
+    let passed = verdict == SafetyVerdict::Passed;
+    let (title, subtitle, icon, class) = match verdict {
+        SafetyVerdict::Passed => (
+            tr!("Safety checks passed"),
+            None,
+            "emblem-ok-symbolic",
+            "success",
+        ),
+        SafetyVerdict::Refused(reasons) => (
+            tr!("Safety checks failed"),
+            Some(reasons),
+            "dialog-error-symbolic",
+            "error",
+        ),
+        SafetyVerdict::NoStableLink => (
+            tr!("No stable device link"),
+            Some(
+                tr!(
+                    "This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure \
+                     it is still the same drive when erasing it. It cannot be encrypted here."
+                )
+                .to_string(),
+            ),
+            "dialog-error-symbolic",
+            "error",
+        ),
+        SafetyVerdict::Error(message) => (
+            tr!("Safety check error"),
+            Some(message),
+            "dialog-error-symbolic",
+            "error",
+        ),
+    };
+    let row = adw::ActionRow::builder().title(title).build();
+    if let Some(subtitle) = subtitle {
+        // Subtitles are Pango markup; reasons may contain paths with `<`.
+        row.set_subtitle(&glib::markup_escape_text(&subtitle));
+    }
+    let image = gtk::Image::from_icon_name(icon);
+    image.add_css_class(class);
+    row.add_prefix(&image);
+    group.add(&row);
+    passed
 }
 
 /// What the user must type on the confirm page.
@@ -619,8 +722,9 @@ fn build_run_page(
 
     // Move state out for the worker thread; runs in background, posts events
     // to the main loop via a glib channel.
-    let expected = DeviceIdentity::of(&drive);
     let st = state.borrow();
+    let running = st.running.clone();
+    let expected = st.expected.clone();
     let drive_path = st
         .pinned_device
         .clone()
@@ -638,8 +742,21 @@ fn build_run_page(
 
     let Some(passphrase_bytes) = passphrase else {
         status_label.set_label(tr!("Internal error: no passphrase set"));
+        close_btn.set_sensitive(true);
         return page;
     };
+    let Some(expected) = expected else {
+        status_label.set_label(tr!("Internal error: the drive was not checked"));
+        close_btn.set_sensitive(true);
+        return page;
+    };
+
+    // From here until the worker reports back the window must stay open.
+    let window = nav.root().and_downcast::<gtk::Window>();
+    running.set(true);
+    if let Some(window) = &window {
+        window.set_deletable(false);
+    }
 
     // Cross-thread channel: worker → main loop. The deprecated
     // `glib::MainContext::channel` was removed in glib 0.20, so we use
@@ -661,15 +778,13 @@ fn build_run_page(
         let result = encrypt_via_helper(&req, &pp, |p| {
             let _ = sender.send(UiEvent::Progress(p));
         });
-        let _ = sender.send(match result {
-            Ok(_) => UiEvent::Done(Ok(label)),
-            Err(e) => UiEvent::Done(Err(e.to_string())),
-        });
+        let _ = sender.send(UiEvent::Done(result.map(|_| label)));
     });
 
     // Main-loop drain — poll every 80 ms. The timeout source lives until
     // the worker drops its sender, then `try_recv` returns Disconnected
-    // and we tear down.
+    // and we tear down (and allow closing the window again, even if the
+    // worker died without reporting).
     let row_map = Rc::new(row_map);
     let status_label_cl = status_label.clone();
     let progress_cl = progress.clone();
@@ -682,6 +797,11 @@ fn build_run_page(
                 Err(std::sync::mpsc::TryRecvError::Empty) => break,
                 Err(std::sync::mpsc::TryRecvError::Disconnected) => {
                     alive = false;
+                    running.set(false);
+                    if let Some(window) = &window {
+                        window.set_deletable(true);
+                    }
+                    close_btn_cl.set_sensitive(true);
                     break;
                 }
             }
@@ -752,7 +872,8 @@ fn handle_event(
             progress.set_text(Some(&format!("{}: {}", tr!("Encrypted as"), label)));
             close_btn.set_sensitive(true);
         }
-        UiEvent::Done(Err(msg)) => {
+        UiEvent::Done(Err(error)) => {
+            let msg = describe_error(&error);
             status_label.set_label(&format!("{}: {msg}", tr!("Failed")));
             progress.set_text(Some(tr!("Error")));
             close_btn.set_sensitive(true);
@@ -762,7 +883,7 @@ fn handle_event(
 
 enum UiEvent {
     Progress(Progress),
-    Done(std::result::Result<String, String>),
+    Done(std::result::Result<String, ashypass_drives::Error>),
 }
 
 fn step_tag(s: Step) -> &'static str {
@@ -854,18 +975,16 @@ pub fn present_unlock(
             btn.set_sensitive(false);
             status_cl.set_label(tr!("Unlocking…"));
 
-            let (sender, receiver) = std::sync::mpsc::channel::<UnlockResult>();
+            let (sender, receiver) = std::sync::mpsc::channel::<ashypass_drives::Result<String>>();
             let device = device_path.clone();
             let label = label_hint.clone().unwrap_or_else(|| "ashypass".into());
             let pp_bytes = pp_text.as_bytes().to_vec();
             std::thread::spawn(move || {
                 let pp = Passphrase::new(pp_bytes);
-                let runner = PkexecRunner;
-                let r = unlock_existing(&runner, &device, &label, &pp, false);
-                let _ = sender.send(match r {
-                    Ok(path) => UnlockResult::Ok(path.display().to_string()),
-                    Err(e) => UnlockResult::Err(e.to_string()),
-                });
+                // Through the privileged helper: it re-checks that the target
+                // is a LUKS volume on a removable drive before opening it.
+                let r = unlock_via_helper(&device, &label, &pp, false);
+                let _ = sender.send(r.map(|path| path.display().to_string()));
             });
 
             let win_done = win_cl.clone();
@@ -875,17 +994,20 @@ pub fn present_unlock(
             glib::timeout_add_local(
                 std::time::Duration::from_millis(120),
                 move || match receiver.try_recv() {
-                    Ok(UnlockResult::Ok(path)) => {
+                    Ok(Ok(path)) => {
                         let t = adw::Toast::builder()
-                            .title(format!("{}: {path}", tr!("Unlocked at")))
+                            .title(glib::markup_escape_text(&format!(
+                                "{}: {path}",
+                                tr!("Unlocked at")
+                            )))
                             .timeout(5)
                             .build();
                         toast_done.add_toast(t);
                         win_done.close();
                         glib::ControlFlow::Break
                     }
-                    Ok(UnlockResult::Err(msg)) => {
-                        status_done.set_label(&msg);
+                    Ok(Err(error)) => {
+                        status_done.set_label(&describe_error(&error));
                         btn_done.set_sensitive(true);
                         glib::ControlFlow::Break
                     }
@@ -897,14 +1019,10 @@ pub fn present_unlock(
     }
 }
 
-enum UnlockResult {
-    Ok(String),
-    Err(String),
-}
-
 /// Modal that enrolls a FIDO2 token on an existing LUKS device. Prompts for
-/// the current passphrase (needed to authorise the new keyslot), then
-/// invokes `systemd-cryptenroll --fido2-device=auto` via `pkexec`. The
+/// the current passphrase (needed to authorise the new keyslot), then has
+/// the privileged helper (which validates the device first) run
+/// `systemd-cryptenroll --fido2-device=auto`. The
 /// token-specific dance (touch, optional PIN) is driven by systemd, not us.
 pub fn present_enroll_fido2(
     parent: &impl IsA<gtk::Window>,
@@ -997,19 +1115,16 @@ pub fn present_enroll_fido2(
                 "Talking to your token… check the device for a touch prompt."
             ));
 
-            let (sender, receiver) = std::sync::mpsc::channel::<UnlockResult>();
+            let (sender, receiver) = std::sync::mpsc::channel::<ashypass_drives::Result<()>>();
             let device = device_path.clone();
             let pp_bytes = text.as_bytes().to_vec();
             let pin = pin_row.is_active();
             let presence = presence_row.is_active();
             std::thread::spawn(move || {
                 let pp = Passphrase::new(pp_bytes);
-                let runner = PkexecRunner;
-                let r = ashypass_drives::luks::enroll_fido2(&runner, &device, &pp, pin, presence);
-                let _ = sender.send(match r {
-                    Ok(()) => UnlockResult::Ok("ok".into()),
-                    Err(e) => UnlockResult::Err(e.to_string()),
-                });
+                let r = HelperClient::spawn()
+                    .and_then(|mut helper| helper.enroll_fido2(&device, &pp, pin, presence));
+                let _ = sender.send(r);
             });
 
             let win_done = win_cl.clone();
@@ -1019,7 +1134,7 @@ pub fn present_enroll_fido2(
             glib::timeout_add_local(
                 std::time::Duration::from_millis(120),
                 move || match receiver.try_recv() {
-                    Ok(UnlockResult::Ok(_)) => {
+                    Ok(Ok(())) => {
                         let t = adw::Toast::builder()
                             .title(tr!("FIDO2 keyslot added"))
                             .timeout(5)
@@ -1028,8 +1143,8 @@ pub fn present_enroll_fido2(
                         win_done.close();
                         glib::ControlFlow::Break
                     }
-                    Ok(UnlockResult::Err(msg)) => {
-                        status_done.set_label(&msg);
+                    Ok(Err(error)) => {
+                        status_done.set_label(&describe_error(&error));
                         btn_done.set_sensitive(true);
                         glib::ControlFlow::Break
                     }
@@ -1108,6 +1223,8 @@ mod tests {
             vendor: None,
             model: None,
             serial: serial.map(str::to_string),
+            wwn: None,
+            ptuuid: None,
             transport: Some("usb".into()),
             removable: true,
             hotplug: true,
@@ -1118,6 +1235,7 @@ mod tests {
             fstype: None,
             whole_disk: None,
             partitions: Vec::new(),
+            stacked: Vec::new(),
         }
     }
 
@@ -1130,6 +1248,51 @@ mod tests {
         assert!(!token.matches("E0D5"));
         assert!(!token.matches(""));
         assert!(!token.matches("/dev/sdb"));
+    }
+
+    fn report(allow: bool, canonical: &str) -> SafetyReport {
+        SafetyReport {
+            canonical_path: PathBuf::from(canonical),
+            device_node: PathBuf::from("/dev/sdb"),
+            serial: Some("E0D55EA5".into()),
+            size_bytes: 1,
+            model: None,
+            vendor: None,
+            wwn: None,
+            ptuuid: None,
+            allow_destructive: allow,
+            reasons: if allow {
+                Vec::new()
+            } else {
+                vec!["device is read-only".into()]
+            },
+        }
+    }
+
+    #[test]
+    fn confirm_page_requires_a_by_id_link() {
+        let pinned = Ok(report(true, "/dev/disk/by-id/usb-Kingston-0:0"));
+        assert_eq!(safety_verdict(&pinned), SafetyVerdict::Passed);
+        // Safe, but only reachable as /dev/sdb: stop before the passphrase.
+        let unpinned = Ok(report(true, "/dev/sdb"));
+        assert_eq!(safety_verdict(&unpinned), SafetyVerdict::NoStableLink);
+        // by-path links are stable but the helper only accepts by-id.
+        let by_path = Ok(report(true, "/dev/disk/by-path/pci-0000:00:14.0-usb-0:1"));
+        assert_eq!(safety_verdict(&by_path), SafetyVerdict::NoStableLink);
+        // Guard refusals still win.
+        let refused = Ok(report(false, "/dev/sdb"));
+        assert_eq!(
+            safety_verdict(&refused),
+            SafetyVerdict::Refused("device is read-only".into())
+        );
+    }
+
+    #[test]
+    fn dismissed_polkit_prompt_is_reported_plainly() {
+        assert_eq!(
+            describe_error(&ashypass_drives::Error::AuthCancelled),
+            "Authentication was cancelled"
+        );
     }
 
     #[test]

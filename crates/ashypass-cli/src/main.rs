@@ -299,6 +299,9 @@ fn run_drives(action: DrivesAction) -> Result<()> {
         }
 
         DrivesAction::Info { device, json } => {
+            // Checked before elevating: `sudo cryptsetup luksDump` must never
+            // be pointed at an arbitrary file.
+            require_block_device(&device)?;
             let runner = auto_runner();
             let mut spec = CommandSpec::new("cryptsetup").arg("luksDump");
             if json {
@@ -467,6 +470,17 @@ fn run_drives(action: DrivesAction) -> Result<()> {
             Ok(())
         }
     }
+}
+
+/// Refuse anything that does not resolve to a block device.
+fn require_block_device(device: &std::path::Path) -> Result<()> {
+    use std::os::unix::fs::FileTypeExt;
+    let is_block =
+        std::fs::metadata(device).is_ok_and(|metadata| metadata.file_type().is_block_device());
+    if !is_block {
+        bail!("{} is not a block device", device.display());
+    }
+    Ok(())
 }
 
 /// Resolve `drives unlock --label/--mapper-name` into a mapper choice. An
@@ -1036,5 +1050,14 @@ mod tests {
                 action: DrivesAction::Lock { .. }
             }
         ));
+    }
+
+    #[test]
+    fn info_requires_a_block_device() {
+        assert!(require_block_device(std::path::Path::new("/etc/passwd")).is_err());
+        assert!(require_block_device(std::path::Path::new("/dev/null")).is_err());
+        assert!(
+            require_block_device(std::path::Path::new("/dev/does-not-exist-ashypass")).is_err()
+        );
     }
 }

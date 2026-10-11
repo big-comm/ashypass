@@ -15,6 +15,11 @@ pub struct Drive {
     pub vendor: Option<String>,
     pub model: Option<String>,
     pub serial: Option<String>,
+    /// World Wide Name, when the device reports one (most SATA/NVMe/SAS
+    /// disks, some USB bridges).
+    pub wwn: Option<String>,
+    /// Partition table UUID (GPT disk GUID or MBR disk signature).
+    pub ptuuid: Option<String>,
     pub transport: Option<String>,
     pub removable: bool,
     pub hotplug: bool,
@@ -32,6 +37,12 @@ pub struct Drive {
     /// exactly what [`crate::pipeline`] produces when it encrypts a drive.
     pub whole_disk: Option<Partition>,
     pub partitions: Vec<Partition>,
+    /// Devices stacked on the drive other than partitions and the dm-crypt
+    /// mappings tracked in [`Partition::active_mapping`]: LVM volumes, md
+    /// RAID members, other device-mapper targets, nested partitions. Each
+    /// entry reads `<parent> → <child> (<type>)`. Any entry means the drive
+    /// is in use and must not be erased.
+    pub stacked: Vec<String>,
 }
 
 impl Drive {
@@ -96,6 +107,10 @@ struct LsblkNode {
     #[serde(default)]
     serial: Option<String>,
     #[serde(default)]
+    wwn: Option<String>,
+    #[serde(default)]
+    ptuuid: Option<String>,
+    #[serde(default)]
     fstype: Option<String>,
     #[serde(default)]
     mountpoint: Option<String>,
@@ -127,7 +142,7 @@ pub fn list_removable() -> Result<Vec<Drive>> {
 /// Columns requested from `lsblk`. Kept next to [`parse_lsblk`] so the
 /// fixture-based tests exercise the same shape production sees.
 const LSBLK_COLUMNS: &str =
-    "NAME,PATH,SIZE,TYPE,RM,HOTPLUG,RO,ROTA,TRAN,VENDOR,MODEL,SERIAL,FSTYPE,FSUSED,FSSIZE,MOUNTPOINT,LABEL,PTTYPE,UUID";
+    "NAME,PATH,SIZE,TYPE,RM,HOTPLUG,RO,ROTA,TRAN,VENDOR,MODEL,SERIAL,WWN,PTUUID,FSTYPE,FSUSED,FSSIZE,MOUNTPOINT,LABEL,PTTYPE,UUID";
 
 /// List every disk-type block device. Caller is responsible for filtering.
 pub fn list_all() -> Result<Vec<Drive>> {
@@ -176,6 +191,7 @@ pub fn parse_lsblk(json: &[u8]) -> Result<Vec<Drive>> {
             .iter()
             .any(|c| c.dev_type.as_deref() == Some("crypt"));
         let whole_disk = (fstype.is_some() || has_direct_mapping).then(|| volume_from_node(&node));
+        let stacked = stacked_children(&node);
 
         drives.push(Drive {
             path: node.path,
@@ -184,6 +200,8 @@ pub fn parse_lsblk(json: &[u8]) -> Result<Vec<Drive>> {
             vendor: clean(node.vendor),
             model: clean(node.model),
             serial: clean(node.serial),
+            wwn: clean(node.wwn),
+            ptuuid: clean(node.ptuuid),
             transport: clean(node.tran),
             removable: node.rm.unwrap_or(false),
             hotplug: node.hotplug.unwrap_or(false),
@@ -194,9 +212,41 @@ pub fn parse_lsblk(json: &[u8]) -> Result<Vec<Drive>> {
             fstype,
             whole_disk,
             partitions,
+            stacked,
         });
     }
     Ok(drives)
+}
+
+/// Children of a disk that are neither its partitions nor a dm-crypt mapping
+/// of a volume (those are modelled by [`Partition`]). Anything else stacked
+/// on the disk or on one of its partitions (LVM, md RAID, multipath, other
+/// dm targets, a partition table inside a partition) is reported so the
+/// safety checks can treat the drive as in use.
+fn stacked_children(disk: &LsblkNode) -> Vec<String> {
+    let mut found = Vec::new();
+    let mut note = |parent: &LsblkNode, child: &LsblkNode| {
+        found.push(format!(
+            "{} → {} ({})",
+            parent.name,
+            child.name,
+            child.dev_type.as_deref().unwrap_or("unknown")
+        ));
+    };
+    for child in &disk.children {
+        match child.dev_type.as_deref() {
+            Some("part") => {
+                for grandchild in &child.children {
+                    if grandchild.dev_type.as_deref() != Some("crypt") {
+                        note(child, grandchild);
+                    }
+                }
+            }
+            Some("crypt") => {}
+            _ => note(disk, child),
+        }
+    }
+    found
 }
 
 /// Build a [`Partition`] view of `node` (a partition or a whole disk). An
@@ -362,5 +412,65 @@ mod tests {
     fn vendor_padding_is_trimmed() {
         let drives = drives();
         assert_eq!(drives[0].vendor.as_deref(), Some("ATA"));
+    }
+
+    const STACKED: &str = include_str!("../tests/fixtures/lsblk_stacked.json");
+
+    fn stacked_drives() -> Vec<Drive> {
+        parse_lsblk(STACKED.as_bytes()).unwrap()
+    }
+
+    #[test]
+    fn plain_and_luks_drives_have_nothing_stacked() {
+        // Partitions and dm-crypt mappings are modelled elsewhere; they are
+        // not "stacked" devices.
+        for drive in drives() {
+            assert!(
+                drive.stacked.is_empty(),
+                "{}: {:?}",
+                drive.name,
+                drive.stacked
+            );
+        }
+    }
+
+    #[test]
+    fn any_other_child_is_reported_as_stacked() {
+        let drives = stacked_drives();
+        let stacked = |name: &str| {
+            find_disk(&drives, Path::new(&format!("/dev/{name}")))
+                .unwrap()
+                .stacked
+                .clone()
+        };
+        // LVM on a partition.
+        assert_eq!(stacked("sdg"), ["sdg1 → vg0-data (lvm)"]);
+        // md RAID on the whole disk.
+        assert_eq!(stacked("sdh"), ["sdh → md127 (raid1)"]);
+        // A partition inside a partition.
+        assert_eq!(stacked("sdi"), ["sdi1 → sdi5 (part)"]);
+        // A non-crypt device-mapper target on the whole disk; it must not be
+        // mistaken for an unlocked whole-disk LUKS volume either.
+        assert_eq!(stacked("sdj"), ["sdj → snap-cow (dm)"]);
+        assert!(find_disk(&drives, Path::new("/dev/sdj"))
+            .unwrap()
+            .whole_disk
+            .is_none());
+        assert!(stacked("sdk").is_empty());
+    }
+
+    #[test]
+    fn wwn_and_partition_table_uuid_are_parsed() {
+        let drives = stacked_drives();
+        let sdk = find_disk(&drives, Path::new("/dev/sdk")).unwrap();
+        assert_eq!(sdk.wwn.as_deref(), Some("0x5000000000000abc"));
+        assert_eq!(
+            sdk.ptuuid.as_deref(),
+            Some("0f0e0d0c-0b0a-0908-0706-050403020100")
+        );
+        // Columns missing from older captures parse as absent.
+        let older = self::drives();
+        let sdb = find_disk(&older, Path::new("/dev/sdb")).unwrap();
+        assert_eq!((&sdb.wwn, &sdb.ptuuid), (&None, &None));
     }
 }
