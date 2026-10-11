@@ -116,7 +116,11 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                                         }
                                     };
                                     toast.add_toast(
-                                        adw::Toast::builder().title(message).timeout(3).build(),
+                                        adw::Toast::builder()
+                                            .use_markup(false)
+                                            .title(message)
+                                            .timeout(3)
+                                            .build(),
                                     );
                                     if let Some(r) = render.borrow().as_ref() {
                                         r();
@@ -171,7 +175,7 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                                     ),
                                 };
                             toast.add_toast(
-                                adw::Toast::builder().title(message).timeout(4).build(),
+                                adw::Toast::builder().use_markup(false).title(message).timeout(4).build(),
                             );
                             if let Some(r) = render.borrow().as_ref() {
                                 r();
@@ -219,7 +223,13 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                         Ok(false) => tr!("This folder already exists").to_string(),
                         Err(e) => format!("{}: {e}", tr!("Could not create the folder")),
                     };
-                    toast.add_toast(adw::Toast::builder().title(message).timeout(3).build());
+                    toast.add_toast(
+                        adw::Toast::builder()
+                            .use_markup(false)
+                            .title(message)
+                            .timeout(3)
+                            .build(),
+                    );
                     if let Some(r) = render.borrow().as_ref() {
                         r();
                     }

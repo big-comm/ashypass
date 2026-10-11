@@ -1136,6 +1136,7 @@ pub fn present_enroll_fido2(
                 move || match receiver.try_recv() {
                     Ok(Ok(())) => {
                         let t = adw::Toast::builder()
+                            .use_markup(false)
                             .title(tr!("FIDO2 keyslot added"))
                             .timeout(5)
                             .build();

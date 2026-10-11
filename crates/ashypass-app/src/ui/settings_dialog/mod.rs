@@ -40,7 +40,7 @@ use security::*;
 use trash::*;
 
 type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
-type NextcloudSyncResult = Result<ashypass_core::sync::SyncReport, String>;
+type NextcloudSyncResult = Result<ashypass_core::sync::SyncReport, ashypass_core::Error>;
 type AuditResult = Result<ashypass_core::audit::Report, String>;
 
 enum NextcloudSyncMessage {
@@ -167,7 +167,13 @@ impl From<adw::ToastOverlay> for Toaster {
 }
 
 fn show_toast(overlay: &Toaster, message: &str) {
-    overlay.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+    overlay.add_toast(
+        adw::Toast::builder()
+            .use_markup(false)
+            .title(message)
+            .timeout(4)
+            .build(),
+    );
 }
 
 fn show_message_dialog(parent: Option<&gtk::Window>, heading: &str, body: &str) {

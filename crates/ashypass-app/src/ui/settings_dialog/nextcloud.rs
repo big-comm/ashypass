@@ -77,6 +77,11 @@ pub(super) fn build_nextcloud_passwords_group(
                 for row in action_rows.borrow().iter() {
                     row.set_sensitive(false);
                 }
+                // No status and no badges any more under the list.
+                state.set_sync_status(crate::state::SyncStatus::Unknown);
+                state
+                    .events
+                    .emit(crate::events::AppEvent::SyncStatusChanged);
                 show_toast(&toast, tr!("Signed out"));
                 return;
             }
@@ -416,8 +421,7 @@ pub(super) fn run_nextcloud_sync(
                     let _ = progress_sender.send(NextcloudSyncMessage::Progress(progress));
                 },
             )
-        })()
-        .map_err(|e| e.to_string());
+        })();
         let _ = worker_sender.send(NextcloudSyncMessage::Finished(outcome));
     });
     drop(sender);
@@ -491,14 +495,32 @@ pub(super) fn finish_nextcloud_sync(
     match result {
         Ok(r) => {
             present_sync_success_dialog(parent, &toast, &r);
+            // The line under the list follows manual syncs too.
+            let at = chrono::Utc::now().timestamp();
+            state.set_sync_status(if r.stats.errors.is_empty() {
+                crate::state::SyncStatus::Synced { at }
+            } else {
+                crate::state::SyncStatus::Failed { at }
+            });
             state.events.emit(crate::events::AppEvent::SyncCompleted {
                 filename: "nextcloud".into(),
             });
         }
+        Err(ashypass_core::Error::MassDelete { count, .. }) => {
+            // Not a failure to report: a question for the user, asked by the
+            // auto-sync scheduler (which reruns the sync if confirmed).
+            state
+                .events
+                .emit(crate::events::AppEvent::MassDeletePending { count });
+        }
         Err(e) => {
+            let e = e.to_string();
             // Concise toast + structured dialog with the raw error tucked
             // behind an expander so the surface stays calm.
             show_toast(&toast, tr!("Sync failed"));
+            state.set_sync_status(crate::state::SyncStatus::Failed {
+                at: chrono::Utc::now().timestamp(),
+            });
             present_sync_failure_dialog(parent, &e);
             state
                 .events

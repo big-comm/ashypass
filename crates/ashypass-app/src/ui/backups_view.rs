@@ -284,8 +284,13 @@ impl BackupsView {
 
 impl Inner {
     fn toast(&self, message: &str) {
-        self.toast
-            .add_toast(adw::Toast::builder().title(message).timeout(4).build());
+        self.toast.add_toast(
+            adw::Toast::builder()
+                .use_markup(false)
+                .title(message)
+                .timeout(4)
+                .build(),
+        );
     }
 
     fn show_import(&self) {

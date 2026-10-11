@@ -377,7 +377,7 @@ fn reset_master_page(
                         }
                     }
                     toast.add_toast(
-                        adw::Toast::builder()
+                        adw::Toast::builder().use_markup(false)
                             .title(if pin_kept {
                                 tr!("New master password set. Write it down somewhere safe.")
                             } else {
@@ -553,6 +553,7 @@ fn change_master_page(
                             }
                             toast.add_toast(
                                 adw::Toast::builder()
+                                    .use_markup(false)
                                     .title(tr!(
                                 "Master password changed. If you used a PIN, set it up again."
                             ))
@@ -674,7 +675,13 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
     let notify = {
         let toast = toast.clone();
         move |message: &str| {
-            toast.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+            toast.add_toast(
+                adw::Toast::builder()
+                    .use_markup(false)
+                    .title(message)
+                    .timeout(4)
+                    .build(),
+            );
         }
     };
     {
@@ -700,7 +707,7 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
                 }
             };
             enum Outcome {
-                Saved,
+                Saved(ashypass_core::crypto::key::DerivedKey),
                 Keyring(ashypass_core::Error),
                 Failed(ashypass_core::Error),
             }
@@ -716,7 +723,7 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
             run_background(
                 move || match ashypass_core::db::vault::prepare_quick_unlock(&pin, &key) {
                     Ok(prefs) => match ashypass_core::keyring::store_quick_unlock(&prefs) {
-                        Ok(()) => Outcome::Saved,
+                        Ok(()) => Outcome::Saved(key),
                         Err(e) => Outcome::Keyring(e),
                     },
                     Err(e) => Outcome::Failed(e),
@@ -725,7 +732,18 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
                     button.set_sensitive(true);
                     let result =
                         match outcome {
-                            Outcome::Saved => state.vault.borrow_mut().cache_key_for_quick_unlock(),
+                            Outcome::Saved(wrapped) => {
+                                let cached = state
+                                    .vault
+                                    .borrow_mut()
+                                    .cache_key_for_quick_unlock(&wrapped);
+                                // Locked or re-keyed meanwhile: the stored
+                                // record must not stay behind.
+                                if cached.is_err() {
+                                    let _ = ashypass_core::keyring::delete_quick_unlock();
+                                }
+                                cached
+                            }
                             Outcome::Keyring(error) => {
                                 notify(&format!(
                         "{}: {error}",
@@ -840,6 +858,7 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
             if pw.is_empty() {
                 toast.add_toast(
                     adw::Toast::builder()
+                        .use_markup(false)
                         .title(tr!("Type the master password first"))
                         .timeout(4)
                         .build(),
@@ -877,7 +896,13 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
                         Ok(false) => tr!("Incorrect master password").to_string(),
                         Err(e) => format!("{}: {e}", tr!("Keyring error")),
                     };
-                    toast.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+                    toast.add_toast(
+                        adw::Toast::builder()
+                            .use_markup(false)
+                            .title(message)
+                            .timeout(4)
+                            .build(),
+                    );
                 },
             );
         });
@@ -892,7 +917,13 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
                 }
                 Err(e) => format!("{}: {e}", tr!("Keyring error")),
             };
-            toast.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+            toast.add_toast(
+                adw::Toast::builder()
+                    .use_markup(false)
+                    .title(message)
+                    .timeout(4)
+                    .build(),
+            );
         });
     }
     group
@@ -1196,7 +1227,13 @@ fn legacy_backup_group(state: &SharedState, toast: &Toaster) -> Option<adw::Pref
                 }
                 Err(e) => format!("{}: {e}", tr!("Could not remove the old copy")),
             };
-            toast.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+            toast.add_toast(
+                adw::Toast::builder()
+                    .use_markup(false)
+                    .title(message)
+                    .timeout(4)
+                    .build(),
+            );
         });
         confirm.present(Some(button));
     });

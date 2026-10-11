@@ -583,6 +583,7 @@ impl MainWindowInner {
     fn toast(&self, message: &str, timeout: u32) {
         self.toast_overlay.add_toast(
             adw::Toast::builder()
+                .use_markup(false)
                 .title(message)
                 .timeout(timeout)
                 .build(),
@@ -822,6 +823,10 @@ impl MainWindowInner {
     }
 
     fn open_settings(self: &Rc<Self>) {
+        // Ctrl+, twice, or over the entry form, must not stack dialogs.
+        if self.window.visible_dialog().is_some() {
+            return;
+        }
         settings_dialog::present(&self.window, self.state.clone(), self.toast_overlay.clone());
     }
 

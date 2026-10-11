@@ -123,6 +123,7 @@ pub(super) fn populate_trash(
                             Ok(Some(_)) => {
                                 toast.add_toast(
                                     adw::Toast::builder()
+                                        .use_markup(false)
                                         .title(tr!("Entry restored"))
                                         .timeout(3)
                                         .build(),
@@ -141,6 +142,7 @@ pub(super) fn populate_trash(
                             Err(e) => {
                                 toast.add_toast(
                                     adw::Toast::builder()
+                                        .use_markup(false)
                                         .title(format!("{e}"))
                                         .timeout(3)
                                         .build(),
@@ -172,6 +174,7 @@ pub(super) fn populate_trash(
                                     Ok(_) => {
                                         toast.add_toast(
                                             adw::Toast::builder()
+                                                .use_markup(false)
                                                 .title(tr!("Permanently deleted"))
                                                 .timeout(3)
                                                 .build(),
@@ -255,6 +258,7 @@ pub(super) fn populate_trash(
                     Ok(n) => {
                         toast.add_toast(
                             adw::Toast::builder()
+                                .use_markup(false)
                                 .title(format!("{} {}", n, tr!("entries removed")))
                                 .timeout(3)
                                 .build(),

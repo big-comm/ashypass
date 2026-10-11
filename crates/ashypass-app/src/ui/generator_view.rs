@@ -587,6 +587,7 @@ impl PanelInner {
         // Only what happened: it was copied, not saved and not used anywhere.
         self.toast.add_toast(
             adw::Toast::builder()
+                .use_markup(false)
                 .title(tr!("Password copied"))
                 .timeout(3)
                 .build(),

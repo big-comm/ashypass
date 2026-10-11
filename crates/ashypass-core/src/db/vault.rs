@@ -60,6 +60,10 @@ pub struct Vault {
     /// after auto-lock without re-running Argon2 on the master password.
     /// Cleared on `full_lock()` or app exit.
     cached_key: Option<DerivedKey>,
+    /// For a handle opened by a worker with a session key: the master salt
+    /// that key belongs to. A master password change elsewhere replaces the
+    /// salt, and the worker must then stop writing (its key is stale).
+    session_salt: Option<String>,
     /// PHC-format Argon2id hash of the quick-unlock PIN. None means quick-
     /// unlock is not configured for this session.
     quick_pin_hash: Option<String>,
@@ -195,6 +199,7 @@ impl Vault {
             conn,
             key: None,
             cached_key: None,
+            session_salt: None,
             quick_pin_hash: None,
             listeners: Rc::new(RefCell::new(Vec::new())),
         })
@@ -277,6 +282,7 @@ impl Vault {
         // A worker that opens the vault after a master password change must
         // not write rows under the old key: they could never be read again.
         vault.ensure_key_matches(&key)?;
+        vault.session_salt = Some(vault.master_salt()?);
         vault.key = Some(key.clone());
         vault.cached_key = Some(key);
         Ok(vault)
@@ -798,8 +804,19 @@ impl Vault {
     /// Keep the current key cached for PIN unlocks after a record made by
     /// `prepare_quick_unlock` was persisted. Later PIN unlocks in this
     /// session go through that record.
-    pub fn cache_key_for_quick_unlock(&mut self) -> Result<()> {
-        self.cached_key = Some(self.key()?.clone());
+    ///
+    /// `wrapped` is the key the record wraps: if the vault was re-keyed in
+    /// the meantime the record is stale and this fails with `KeyMismatch`
+    /// (the caller should remove the record).
+    pub fn cache_key_for_quick_unlock(&mut self, wrapped: &DerivedKey) -> Result<()> {
+        let current = self.key()?.clone();
+        if !bool::from(subtle::ConstantTimeEq::ct_eq(
+            wrapped.as_bytes().as_slice(),
+            current.as_bytes().as_slice(),
+        )) {
+            return Err(Error::KeyMismatch);
+        }
+        self.cached_key = Some(current);
         self.quick_pin_hash = None;
         Ok(())
     }
@@ -889,7 +906,19 @@ impl Vault {
         self.key.as_ref().ok_or(Error::Locked)
     }
 
+    /// A worker handle refuses to encrypt once the vault was re-keyed by
+    /// another connection: rows written with the old key could never be read.
+    fn ensure_session_current(&self) -> Result<()> {
+        if let Some(salt) = self.session_salt.as_deref() {
+            if self.master_salt()? != salt {
+                return Err(Error::KeyMismatch);
+            }
+        }
+        Ok(())
+    }
+
     fn encrypt(&self, plaintext: &str) -> Result<Vec<u8>> {
+        self.ensure_session_current()?;
         aes_gcm_v2::encrypt(self.key()?, plaintext.as_bytes())
     }
 
@@ -1106,6 +1135,7 @@ impl Vault {
 
     pub fn update(&self, id: i64, change: UpdateEntry) -> Result<bool> {
         self.update_inner(id, change, None)
+            .map(|written| written.is_some())
     }
 
     /// Like [`Vault::update`], but only when the entry's `updated_at` still
@@ -1113,12 +1143,15 @@ impl Vault {
     /// anything (not even password history) when the entry changed or is
     /// gone. Used by sync so a pulled remote change never overwrites a local
     /// edit made after the sync read the entry.
+    ///
+    /// Returns the `updated_at` it wrote, so a sync can record exactly that
+    /// value (a later local edit then always compares newer).
     pub fn update_if_unchanged(
         &self,
         id: i64,
         expected_updated_at: i64,
         change: UpdateEntry,
-    ) -> Result<bool> {
+    ) -> Result<Option<i64>> {
         self.update_inner(id, change, Some(expected_updated_at))
     }
 
@@ -1127,7 +1160,7 @@ impl Vault {
         id: i64,
         change: UpdateEntry,
         expected_updated_at: Option<i64>,
-    ) -> Result<bool> {
+    ) -> Result<Option<i64>> {
         if let Some(algorithm) = change.totp_algorithm.as_deref() {
             crate::totp::Algorithm::parse(algorithm)?;
         }
@@ -1167,7 +1200,7 @@ impl Vault {
                 .optional()?;
             if current != Some(expected) {
                 // Dropping the transaction rolls it back.
-                return Ok(false);
+                return Ok(None);
             }
         }
         let mut sets: Vec<&'static str> = Vec::new();
@@ -1244,19 +1277,27 @@ impl Vault {
         }
 
         if sets.is_empty() {
-            return Ok(false);
+            return Ok(None);
         }
-        sets.push("updated_at = ?");
+        // Strictly increasing, even for two edits within one second: change
+        // detection (sync snapshots) compares `updated_at` with `>`.
+        sets.push("updated_at = MAX(?, COALESCE(updated_at, 0) + 1)");
         vals.push(chrono::Utc::now().timestamp().into());
         vals.push(id.into());
 
         let sql = format!("UPDATE passwords SET {} WHERE id = ?", sets.join(", "));
         let n = tx.execute(&sql, params_from_iter(vals))?;
-        tx.commit()?;
-        if n > 0 {
-            self.notify_change();
+        if n == 0 {
+            return Ok(None);
         }
-        Ok(n > 0)
+        let written: i64 = tx.query_row(
+            "SELECT updated_at FROM passwords WHERE id = ?",
+            params![id],
+            |r| r.get(0),
+        )?;
+        tx.commit()?;
+        self.notify_change();
+        Ok(Some(written))
     }
 
     /// Past passwords for an entry, newest first. Each row was the active
@@ -1533,21 +1574,25 @@ impl Vault {
     }
 
     /// Flip the favorite flag in one statement. Returns the new state, or
-    /// `None` when the entry does not exist.
+    /// `None` when the entry does not exist. (No `RETURNING`: the system
+    /// SQLite may predate 3.35.)
     pub fn toggle_favorite(&self, id: i64) -> Result<Option<bool>> {
-        let new: Option<i64> = self
-            .conn
-            .query_row(
-                "UPDATE passwords SET favorite = 1 - (COALESCE(favorite, 0) != 0)
-                 WHERE id = ? RETURNING favorite",
-                params![id],
-                |r| r.get(0),
-            )
-            .optional()?;
-        if new.is_some() {
-            self.notify_change();
+        let tx = self.conn.unchecked_transaction()?;
+        let changed = tx.execute(
+            "UPDATE passwords SET favorite = 1 - (COALESCE(favorite, 0) != 0) WHERE id = ?",
+            params![id],
+        )?;
+        if changed == 0 {
+            return Ok(None);
         }
-        Ok(new.map(|v| v != 0))
+        let now: i64 = tx.query_row(
+            "SELECT favorite FROM passwords WHERE id = ?",
+            params![id],
+            |r| r.get(0),
+        )?;
+        tx.commit()?;
+        self.notify_change();
+        Ok(Some(now != 0))
     }
 
     pub fn set_favorite(&self, id: i64, favorite: bool) -> Result<bool> {
@@ -1748,6 +1793,7 @@ impl Vault {
         mime_type: Option<&str>,
         data: &[u8],
     ) -> Result<i64> {
+        self.ensure_session_current()?;
         let ciphertext = aes_gcm_v2::encrypt(self.key()?, data)?;
         let size = data.len() as i64;
         let now = chrono::Utc::now().timestamp();
@@ -3375,6 +3421,76 @@ mod tests {
         vault.full_lock();
         vault.unlock("a brand new master").unwrap();
         assert_eq!(vault.key_format().unwrap(), KeyFormat::Compatible);
+    }
+
+    #[test]
+    fn a_worker_opened_before_a_rekey_cannot_write_with_the_old_key() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let (path, key) = vault.session_reopen_parts().unwrap();
+        let worker = Vault::open_with_session_key(&path, key).unwrap();
+        // A worker write before the change is fine.
+        worker
+            .add(NewEntry {
+                title: "Before".into(),
+                password: "one".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        vault
+            .change_master_password("master password here", "a brand new master")
+            .unwrap();
+        let late = worker.add(NewEntry {
+            title: "After".into(),
+            password: "two".into(),
+            ..Default::default()
+        });
+        assert!(matches!(late, Err(Error::KeyMismatch)));
+        // Everything in the vault still opens with the new key.
+        for entry in vault.list(None).unwrap() {
+            assert!(vault.get_without_touch(entry.id).unwrap().is_some());
+        }
+    }
+
+    #[test]
+    fn two_edits_in_one_second_both_advance_updated_at() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let vault = unlocked_vault(tmp.path());
+        let id = vault
+            .add(NewEntry {
+                title: "Mail".into(),
+                password: "one".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        let before = vault.entry_updated_at(id).unwrap().unwrap();
+        let first = vault
+            .update_if_unchanged(
+                id,
+                before,
+                UpdateEntry {
+                    title: Some("Mail 2".into()),
+                    ..Default::default()
+                },
+            )
+            .unwrap()
+            .unwrap();
+        assert!(first > before);
+        assert!(vault
+            .update(
+                id,
+                UpdateEntry {
+                    title: Some("Mail 3".into()),
+                    ..Default::default()
+                },
+            )
+            .unwrap());
+        assert!(vault.entry_updated_at(id).unwrap().unwrap() > first);
+        // A stale expectation writes nothing.
+        assert!(vault
+            .update_if_unchanged(id, first, UpdateEntry::default())
+            .unwrap()
+            .is_none());
     }
 }
 

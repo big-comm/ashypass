@@ -777,11 +777,8 @@ pub(super) fn do_webdav_push(state: SharedState, toast: Toaster, master: String,
                     // Should be unreachable with force=true, but stay defensive.
                     show_toast(
                         &toast_done,
-                        &format!(
-                            "{}: remote generation {}",
-                            tr!("Sync conflict"),
-                            plan.remote_max_generation
-                        ),
+                        &tr!("Sync conflict: the server has a newer copy (generation {})")
+                            .replace("{}", &plan.remote_max_generation.to_string()),
                     );
                     state_done
                         .events

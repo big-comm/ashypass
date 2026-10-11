@@ -19,7 +19,7 @@ use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 use std::time::Duration;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Clone, Serialize, Deserialize, Default)]
 pub struct WebdavConfig {
     /// Full base URL including any per-user prefix. Trailing slash optional.
     /// e.g. `https://cloud.example.com/remote.php/dav/files/alice`
@@ -296,6 +296,34 @@ impl Default for WebdavService {
 /// allowed for listing and folder requests on a slow link.
 const TRANSFER_TIMEOUT: Duration = Duration::from_secs(30 * 60);
 
+impl std::fmt::Debug for WebdavConfig {
+    // Never print the password, even in a debug log.
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("WebdavConfig")
+            .field("base_url", &self.base_url)
+            .field("username", &self.username)
+            .field("password", &"<redacted>")
+            .field("folder", &self.folder)
+            .finish()
+    }
+}
+
+/// Follow redirects, but never from https to plain http: the request carries
+/// the account password (Basic auth), which must not go out unencrypted.
+pub(crate) fn redirect_policy() -> reqwest::redirect::Policy {
+    reqwest::redirect::Policy::custom(|attempt| {
+        let leaves_https = attempt.url().scheme() != "https"
+            && attempt.previous().iter().any(|url| url.scheme() == "https");
+        if attempt.previous().len() >= 10 {
+            attempt.error("too many redirects")
+        } else if leaves_https {
+            attempt.stop()
+        } else {
+            attempt.follow()
+        }
+    })
+}
+
 fn http_client() -> Result<&'static Client> {
     static CLIENT: OnceLock<Client> = OnceLock::new();
     if let Some(client) = CLIENT.get() {
@@ -303,6 +331,7 @@ fn http_client() -> Result<&'static Client> {
     }
     let client = Client::builder()
         .timeout(Duration::from_secs(60))
+        .redirect(redirect_policy())
         .build()
         .map_err(|e| Error::Other(format!("webdav http: {e}")))?;
     let _ = CLIENT.set(client);

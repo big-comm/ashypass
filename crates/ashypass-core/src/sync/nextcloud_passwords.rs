@@ -26,7 +26,7 @@ use std::time::Duration;
 /// Persisted config. Service password is stored in Secret Service when
 /// available; the JSON file is still chmod 0600 and keeps legacy fallback
 /// compatibility on sessions without a keyring.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Clone, Serialize, Deserialize, Default)]
 pub struct NcConfig {
     /// Base URL of the Nextcloud instance, e.g.
     /// `https://cloud.example.com`. No trailing slash, no `/index.php`.
@@ -41,7 +41,7 @@ const APP_PASSWORD_SECRET_LABEL: &str = "Ashy Pass — Nextcloud Passwords app p
 
 /// A password entry as returned by the Nextcloud Passwords API. Only the
 /// fields the sync engine cares about are deserialised; extras are dropped.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Clone, Serialize, Deserialize, Default)]
 pub struct NcPassword {
     pub id: String,
     #[serde(default)]
@@ -89,7 +89,7 @@ pub struct NcFolder {
 /// Fields accepted on `password/create` and `password/update`. Server fills
 /// in defaults for anything we omit; the API does require `password` and
 /// `label` to be non-empty on create.
-#[derive(Debug, Clone, Serialize, Default)]
+#[derive(Clone, Serialize, Default)]
 pub struct NcCreateOrUpdate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -120,6 +120,41 @@ pub struct NcFolderUpdate {
     pub label: String,
     #[serde(skip_serializing_if = "String::is_empty")]
     pub parent: String,
+}
+
+impl std::fmt::Debug for NcConfig {
+    // Never print the app password, even in a debug log.
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("NcConfig")
+            .field("base_url", &self.base_url)
+            .field("username", &self.username)
+            .finish_non_exhaustive()
+    }
+}
+
+impl std::fmt::Debug for NcPassword {
+    // Entry secrets stay out of debug output.
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("NcPassword")
+            .field("id", &self.id)
+            .field("label", &self.label)
+            .field("revision", &self.revision)
+            .field("edited", &self.edited)
+            .field("trashed", &self.trashed)
+            .field("folder", &self.folder)
+            .finish_non_exhaustive()
+    }
+}
+
+impl std::fmt::Debug for NcCreateOrUpdate {
+    // Entry secrets stay out of debug output.
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("NcCreateOrUpdate")
+            .field("id", &self.id)
+            .field("label", &self.label)
+            .field("folder", &self.folder)
+            .finish_non_exhaustive()
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -474,6 +509,7 @@ fn http_client() -> Result<&'static Client> {
     }
     let client = Client::builder()
         .timeout(Duration::from_secs(60))
+        .redirect(crate::backup::webdav::redirect_policy())
         .build()
         .map_err(|e| Error::Other(format!("nextcloud http: {e}")))?;
     let _ = CLIENT.set(client);

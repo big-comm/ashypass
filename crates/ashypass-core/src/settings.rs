@@ -159,6 +159,15 @@ impl Default for Settings {
 }
 
 impl Settings {
+    /// Keep hand-edited durations in a range the timers can represent (they
+    /// count in `u32` seconds): one day at most.
+    fn clamped(mut self) -> Self {
+        const MAX_SECONDS: u64 = 24 * 3600;
+        self.lock_timeout = self.lock_timeout.min(MAX_SECONDS);
+        self.clipboard_clear = self.clipboard_clear.min(MAX_SECONDS);
+        self
+    }
+
     pub fn load() -> Self {
         Self::load_from(&settings_file())
     }
@@ -189,8 +198,8 @@ impl Settings {
                 return Self::default();
             }
         };
-        match serde_json::from_slice(&bytes) {
-            Ok(settings) => settings,
+        match serde_json::from_slice::<Self>(&bytes) {
+            Ok(settings) => settings.clamped(),
             Err(error) => {
                 log::error!(
                     "settings file {} could not be parsed: {error}",
@@ -391,5 +400,19 @@ mod tests {
         assert!(current.is_configured());
         assert!(!current.needs_upgrade());
         assert!(!QuickUnlockPrefs::default().is_configured());
+    }
+
+    #[test]
+    fn huge_durations_are_clamped_on_load() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("settings.json");
+        std::fs::write(
+            &path,
+            r#"{"lock_timeout": 4294967296, "clipboard_clear": 18446744073709551615}"#,
+        )
+        .unwrap();
+        let settings = Settings::load_from(&path);
+        assert_eq!(settings.lock_timeout, 24 * 3600);
+        assert_eq!(settings.clipboard_clear, 24 * 3600);
     }
 }

@@ -75,6 +75,12 @@ impl Vault {
             "UPDATE passwords SET category = NULL, updated_at = ? WHERE category = ?",
             params![ts, name],
         )?;
+        // Trashed entries follow: restoring one must not bring the removed
+        // folder back.
+        tx.execute(
+            "UPDATE passwords_trash SET category = NULL WHERE category = ?",
+            params![name],
+        )?;
         tx.execute("DELETE FROM folders WHERE name = ?", params![name])?;
         if let Some(uuid) = mapped_folder_uuid(&tx, &name)? {
             // Forget the mapping so sync does not pull the folder back, and

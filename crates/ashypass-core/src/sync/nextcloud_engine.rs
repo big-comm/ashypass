@@ -48,7 +48,7 @@ use crate::sync::nextcloud_passwords::{
 };
 use crate::Result;
 use std::collections::{HashMap, HashSet};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 
 /// UUID of the Nextcloud Passwords base (root) folder.
 const BASE_FOLDER_UUID: &str = "00000000-0000-0000-0000-000000000000";
@@ -73,6 +73,15 @@ impl Drop for SyncGuard {
     fn drop(&mut self) {
         SYNC_RUNNING.store(false, Ordering::Release);
     }
+}
+
+/// Deletions the user confirmed for the next sync (see `Error::MassDelete`).
+static MASS_DELETE_APPROVED: AtomicUsize = AtomicUsize::new(0);
+
+/// Allow the next sync to delete up to `count` entries locally (they go to
+/// Deleted items) after the user confirmed they were deleted on the server.
+pub fn approve_mass_delete(count: usize) {
+    MASS_DELETE_APPROVED.store(count, Ordering::Release);
 }
 
 /// True while a Nextcloud reconcile is in progress in this process.
@@ -252,12 +261,13 @@ where
             })
         })
         .count();
-    if too_many_local_deletes(would_delete, mappings.len()) {
-        return Err(crate::Error::Other(format!(
-            "{would_delete} of the {} entries previously synced are missing on the server; \
-             refusing to delete that many locally in one sync (incomplete server response?)",
-            mappings.len()
-        )));
+    // An approval covers one sync, and only up to the count the user saw.
+    let approved = MASS_DELETE_APPROVED.swap(0, Ordering::AcqRel);
+    if too_many_local_deletes(would_delete, mappings.len()) && would_delete > approved {
+        return Err(crate::Error::MassDelete {
+            count: would_delete,
+            mapped: mappings.len(),
+        });
     }
 
     drop_pending_deletes(&mut remote_by_uuid, &pending_deletes);
@@ -364,7 +374,10 @@ where
                         entry_id: local_full.id,
                         nc_uuid: uuid,
                         last_synced_at: chrono::Utc::now().timestamp(),
-                        local_updated_at_snapshot: local_full.updated_at,
+                        // One second behind: the local copy counts as changed,
+                        // so its folder (not compared above) is sent to the
+                        // server instead of being replaced by the remote one.
+                        local_updated_at_snapshot: local_full.updated_at - 1,
                         remote_edited_snapshot: remote.edited,
                         remote_revision_snapshot: remote.revision,
                     })?;
@@ -489,11 +502,13 @@ where
 
                 match (local_changed, remote_changed) {
                     (false, false) => {
-                        if category_changed
-                            && apply_remote_to_local(vault, &local_full, &remote, remote_category)?
-                        {
-                            update_mapping_after_pull(vault, local_full.id, &remote, &map)?;
-                            report.stats.updated_locally += 1;
+                        if category_changed {
+                            if let Some(written) =
+                                apply_remote_to_local(vault, &local_full, &remote, remote_category)?
+                            {
+                                update_mapping_after_pull(vault, written, &remote, &map)?;
+                                report.stats.updated_locally += 1;
+                            }
                         }
                     }
                     (true, false) => {
@@ -533,8 +548,10 @@ where
                         }
                     }
                     (false, true) => {
-                        if apply_remote_to_local(vault, &local_full, &remote, remote_category)? {
-                            update_mapping_after_pull(vault, local_full.id, &remote, &map)?;
+                        if let Some(written) =
+                            apply_remote_to_local(vault, &local_full, &remote, remote_category)?
+                        {
+                            update_mapping_after_pull(vault, written, &remote, &map)?;
                             report.stats.updated_locally += 1;
                         }
                     }
@@ -598,13 +615,13 @@ where
                             _ => {
                                 // `Vault::update` moves the losing local
                                 // password into the password history.
-                                if apply_remote_to_local(
+                                if let Some(written) = apply_remote_to_local(
                                     vault,
                                     &local_full,
                                     &remote,
                                     remote_category,
                                 )? {
-                                    update_mapping_after_pull(vault, local_full.id, &remote, &map)?;
+                                    update_mapping_after_pull(vault, written, &remote, &map)?;
                                     report.stats.updated_locally += 1;
                                 }
                             }
@@ -1083,8 +1100,8 @@ fn remote_update(local: &PasswordEntry, r: &NcPassword, category: Option<String>
     }
 }
 
-/// Apply a remote item to the local entry. Returns true when the mapping
-/// should be advanced to the remote state (also for empty-password remote
+/// Apply a remote item to the local entry. Returns the `updated_at` written
+/// when the mapping should be advanced to the remote state (also for empty-password remote
 /// items, which would otherwise be re-applied on every sync).
 ///
 /// Returns false and writes nothing when the entry was edited (or deleted)
@@ -1095,7 +1112,7 @@ fn apply_remote_to_local(
     local: &PasswordEntry,
     r: &NcPassword,
     category: Option<String>,
-) -> Result<bool> {
+) -> Result<Option<i64>> {
     vault.update_if_unchanged(
         local.id,
         local.updated_at,
@@ -1139,16 +1156,19 @@ fn too_many_local_deletes(would_delete: usize, mapped: usize) -> bool {
     would_delete > MASS_DELETE_FLOOR && would_delete * 5 > mapped
 }
 
+/// `written` is the `updated_at` the pull itself wrote. It is recorded as
+/// is, not re-read: re-reading could pick up a local edit made right after
+/// the pull, which would then never count as a local change.
 fn update_mapping_after_pull(
     vault: &Vault,
-    entry_id: i64,
+    written: i64,
     remote: &NcPassword,
     prev: &NextcloudMapping,
 ) -> Result<()> {
     let now = chrono::Utc::now().timestamp();
-    let local_updated = vault.entry_updated_at(entry_id)?.unwrap_or(now);
+    let local_updated = written;
     let new_map = NextcloudMapping {
-        entry_id,
+        entry_id: prev.entry_id,
         nc_uuid: prev.nc_uuid.clone(),
         last_synced_at: now,
         local_updated_at_snapshot: local_updated,
@@ -1275,6 +1295,9 @@ fn find_adoptable(
                 && remote.username.trim() == user
                 && remote.url.trim() == url
                 && local.password.as_deref() == Some(remote.password.as_str())
+                // Notes too: adopting would otherwise let the next edit on
+                // either side silently replace the other side's notes.
+                && remote.notes.trim() == text(local.notes.as_deref())
         })
         .map(|(uuid, _)| uuid)
         .collect();
@@ -1357,6 +1380,10 @@ mod tests {
         // Already linked to another local entry: not adopted twice.
         let mapped: HashSet<String> = ["b".to_string()].into();
         assert_eq!(find_adoptable(&local, &remotes, &mapped), None);
+        // Different notes: kept apart rather than one side's notes lost.
+        let mut with_notes = local_entry("secret", None);
+        with_notes.notes = Some("recovery codes".into());
+        assert_eq!(find_adoptable(&with_notes, &remotes, &none), None);
         // A different user name is a different account.
         let mut with_user = local_entry("secret", None);
         with_user.username = Some("ana".into());
@@ -1422,7 +1449,11 @@ mod tests {
             })
             .unwrap();
         let local = vault.get_without_touch(id).unwrap().unwrap();
-        assert!(apply_remote_to_local(&vault, &local, &remote("r", 1, ""), None).unwrap());
+        assert!(
+            apply_remote_to_local(&vault, &local, &remote("r", 1, ""), None)
+                .unwrap()
+                .is_some()
+        );
         let after = vault.get_without_touch(id).unwrap().unwrap();
         assert_eq!(after.password.as_deref(), Some("secret"));
         assert_eq!(after.title, "Remote");
@@ -1449,7 +1480,9 @@ mod tests {
         let mut stale = vault.get_without_touch(id).unwrap().unwrap();
         stale.updated_at -= 1;
         assert!(
-            !apply_remote_to_local(&vault, &stale, &remote("r", 1, "remote-pw"), None).unwrap()
+            apply_remote_to_local(&vault, &stale, &remote("r", 1, "remote-pw"), None)
+                .unwrap()
+                .is_none()
         );
         let after = vault.get_without_touch(id).unwrap().unwrap();
         assert_eq!(after.title, "Local");

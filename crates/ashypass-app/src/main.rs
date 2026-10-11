@@ -336,7 +336,13 @@ fn run_dev_script(window: &ui::MainWindow) {
     };
     let safe = ["XDG_DATA_HOME", "XDG_CONFIG_HOME", "XDG_CACHE_HOME"]
         .iter()
-        .all(|var| std::env::var(var).is_ok_and(|v| v.starts_with("/tmp/")));
+        .all(|var| {
+            // Resolved, so `/tmp/../home/...` does not pass.
+            std::env::var(var)
+                .ok()
+                .and_then(|v| std::fs::canonicalize(v).ok())
+                .is_some_and(|p| p.starts_with("/tmp/"))
+        });
     if !safe {
         eprintln!("ASHYPASS_DEV_SCRIPT refused: XDG_DATA_HOME, XDG_CONFIG_HOME and XDG_CACHE_HOME must be under /tmp");
         return;

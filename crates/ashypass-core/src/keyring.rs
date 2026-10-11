@@ -57,6 +57,15 @@ fn recently_unresponsive() -> bool {
 }
 
 fn service() -> Result<SecretService<'static>> {
+    // The scripted UI harness of debug builds runs with throwaway data, but
+    // keyring items are global to the session: never let it read or replace
+    // the real master password or PIN record.
+    #[cfg(debug_assertions)]
+    if std::env::var_os("ASHYPASS_DEV_SCRIPT").is_some() {
+        return Err(Error::Other(
+            "keyring disabled while a dev script runs".into(),
+        ));
+    }
     connect_with_timeout(CONNECT_TIMEOUT, || {
         SecretService::connect(EncryptionType::Dh)
     })

@@ -136,7 +136,13 @@ where
 }
 
 fn toast_message(toast: &adw::ToastOverlay, message: &str) {
-    toast.add_toast(adw::Toast::builder().title(message).timeout(5).build());
+    toast.add_toast(
+        adw::Toast::builder()
+            .use_markup(false)
+            .title(message)
+            .timeout(5)
+            .build(),
+    );
 }
 
 /// Read and compare with the vault in the background, then show the preview.

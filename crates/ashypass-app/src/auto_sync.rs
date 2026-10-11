@@ -26,6 +26,8 @@
 use crate::events::AppEvent;
 use crate::state::{SharedState, SyncStatus};
 use crate::tr;
+use crate::trn;
+use adw::prelude::*;
 use ashypass_core::settings::Settings;
 use ashypass_core::sync::{nextcloud_engine, ConflictResolution, SyncReport};
 use gtk::glib;
@@ -53,6 +55,7 @@ pub fn install(state: SharedState, toast: adw::ToastOverlay) -> Handle {
         rerun_after: Cell::new(false),
         failures: Cell::new(0),
         had_issues: Cell::new(false),
+        asked_mass_delete: Cell::new(0),
     });
 
     // Subscribe to vault mutations — schedule a debounced sync. Changes made
@@ -62,6 +65,10 @@ pub fn install(state: SharedState, toast: adw::ToastOverlay) -> Handle {
         let _permanent = inner.state.events.subscribe(move |event| match event {
             AppEvent::VaultChanged => inner_for_sub.schedule_debounced(),
             AppEvent::SyncSettingsChanged => inner_for_sub.reload_settings(),
+            AppEvent::MassDeletePending { count } => {
+                inner_for_sub.asked_mass_delete.set(*count);
+                inner_for_sub.ask_mass_delete(*count);
+            }
             _ => {}
         });
     }
@@ -105,6 +112,8 @@ struct Inner {
     /// The last sync finished with per-entry errors: the same issues are
     /// not toasted again on every interval.
     had_issues: Cell<bool>,
+    /// Size of the last mass deletion the user was asked about.
+    asked_mass_delete: Cell<usize>,
     settings: RefCell<Settings>,
 }
 
@@ -214,13 +223,11 @@ impl Inner {
         self.in_flight.set(true);
         self.state.set_sync_status(SyncStatus::Running);
         let client = self.state.nextcloud.borrow().clone();
-        let (tx, rx) = mpsc::channel::<Result<SyncReport, String>>();
+        let (tx, rx) = mpsc::channel::<Result<SyncReport, ashypass_core::Error>>();
         std::thread::spawn(move || {
-            let result = (|| -> Result<SyncReport, String> {
-                let vault = ashypass_core::db::Vault::open_with_session_key(db_path, session_key)
-                    .map_err(|e| e.to_string())?;
+            let result = (|| -> Result<SyncReport, ashypass_core::Error> {
+                let vault = ashypass_core::db::Vault::open_with_session_key(db_path, session_key)?;
                 nextcloud_engine::sync(&vault, &client, ConflictResolution::LastWriteWins)
-                    .map_err(|e| e.to_string())
             })();
             let _ = tx.send(result);
         });
@@ -264,6 +271,18 @@ impl Inner {
                     inner.finish();
                     glib::ControlFlow::Break
                 }
+                Ok(Err(ashypass_core::Error::MassDelete { count, .. })) => {
+                    inner.in_flight.set(false);
+                    inner.state.set_sync_status(SyncStatus::Failed {
+                        at: chrono::Utc::now().timestamp(),
+                    });
+                    // Ask once per count, not on every interval.
+                    if inner.asked_mass_delete.replace(count) != count {
+                        inner.ask_mass_delete(count);
+                    }
+                    inner.finish();
+                    glib::ControlFlow::Break
+                }
                 Ok(Err(msg)) => {
                     inner.in_flight.set(false);
                     inner.failures.set(inner.failures.get().saturating_add(1));
@@ -293,6 +312,39 @@ impl Inner {
         true
     }
 
+    /// Many synced entries vanished from the server at once: either the user
+    /// deleted them there, or the server answered only in part. Only the
+    /// user can tell, so ask before deleting anything here.
+    fn ask_mass_delete(self: &Rc<Self>, count: usize) {
+        let dialog = adw::AlertDialog::builder()
+            .heading(
+                trn!(
+                    "Delete {} entry here too?",
+                    "Delete {} entries here too?",
+                    count
+                )
+                .replace("{}", &count.to_string()),
+            )
+            .body(tr!(
+                "They were synchronized with Nextcloud Passwords and are no longer on the server. If you deleted them there, they move to Deleted items here. If you did not, the server may have answered only in part: keep them and the next sync tries again."
+            ))
+            .close_response("keep")
+            .default_response("keep")
+            .build();
+        dialog.add_response("keep", tr!("Keep them"));
+        dialog.add_response("delete", tr!("Move to Deleted items"));
+        dialog.set_response_appearance("delete", adw::ResponseAppearance::Destructive);
+        let inner = self.clone();
+        dialog.connect_response(Some("delete"), move |_, _| {
+            nextcloud_engine::approve_mass_delete(count);
+            inner.asked_mass_delete.set(0);
+            inner.cancel_debounce();
+            inner.run_sync();
+        });
+        self.state.track_sensitive_dialog(&dialog);
+        dialog.present(Some(&self.toast));
+    }
+
     /// After a sync: restart the periodic timer (with the current backoff)
     /// and run a sync that was requested meanwhile.
     fn finish(self: &Rc<Self>) {
@@ -306,7 +358,11 @@ impl Inner {
         let inner = self.clone();
         let id = glib::timeout_add_seconds_local(DEBOUNCE_SECONDS, move || {
             inner.debounce_source.borrow_mut().take();
-            inner.run_sync();
+            // Nothing ran (signed out, locked meanwhile): the periodic timer
+            // may have handed over to this retry, so arm it again.
+            if !inner.run_sync() && inner.periodic_source.borrow().is_none() {
+                inner.schedule_periodic();
+            }
             glib::ControlFlow::Break
         });
         *self.debounce_source.borrow_mut() = Some(id);
@@ -333,7 +389,11 @@ fn periodic_delay_seconds(interval_minutes: u32, failures: u32) -> u64 {
 }
 
 fn show_toast(overlay: &adw::ToastOverlay, msg: &str) {
-    let t = adw::Toast::builder().title(msg).timeout(4).build();
+    let t = adw::Toast::builder()
+        .use_markup(false)
+        .title(msg)
+        .timeout(4)
+        .build();
     overlay.add_toast(t);
 }
 

@@ -721,6 +721,9 @@ fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) 
                 if let Some(cache) = inner.cache.borrow().clone() {
                     let badges = inner.state.settings().show_sync_badges;
                     inner.update_sync_state(&cache, badges);
+                    if inner.rebind_all.get() {
+                        inner.apply_filter();
+                    }
                 }
             }
             _ => {}
@@ -792,8 +795,13 @@ impl Inner {
     }
 
     fn toast(&self, message: &str) {
-        self.toast
-            .add_toast(adw::Toast::builder().title(message).timeout(3).build());
+        self.toast.add_toast(
+            adw::Toast::builder()
+                .use_markup(false)
+                .title(message)
+                .timeout(3)
+                .build(),
+        );
     }
 
     fn cancel_search_reload(&self) {
@@ -811,8 +819,10 @@ impl Inner {
     }
 
     fn invalidate_caches(&self) {
+        // `synced_ids` stays: `update_sync_state` replaces it on every reload
+        // and compares it with the previous set to decide whether rows must
+        // re-bind.
         self.cache.borrow_mut().take();
-        self.synced_ids.borrow_mut().take();
     }
 
     fn cache(&self) -> ashypass_core::Result<Rc<PasswordListCache>> {
@@ -848,12 +858,9 @@ impl Inner {
             return;
         }
         let settings = self.state.settings();
-        let look_before = (
-            self.show_favicons.get(),
-            self.show_badges.get(),
-            self.synced_ids.borrow().clone(),
-        );
-        self.show_favicons.set(settings.show_favicons);
+        if self.show_favicons.replace(settings.show_favicons) != settings.show_favicons {
+            self.rebind_all.set(true);
+        }
         if settings.compact_vault_list {
             self.list_view.add_css_class("ashy-compact");
         } else {
@@ -873,14 +880,6 @@ impl Inner {
             }
         };
         self.update_sync_state(&cache, settings.show_sync_badges);
-        let look_after = (
-            self.show_favicons.get(),
-            self.show_badges.get(),
-            self.synced_ids.borrow().clone(),
-        );
-        if look_before != look_after {
-            self.rebind_all.set(true);
-        }
         self.rebuild_folder_menu(&cache.categories);
         // A folder that no longer exists cannot stay selected.
         let stale = matches!(&*self.folder_filter.borrow(), FolderFilter::Named(name) if !cache.categories.contains(name));
@@ -914,8 +913,19 @@ impl Inner {
         let total = cache.len();
         let synced = cache.entries.iter().filter(|e| ids.contains(&e.id)).count();
         let all_synced = total > 0 && synced == total;
-        self.show_badges
-            .set(badges_enabled && synced > 0 && !all_synced);
+        let show_badges = badges_enabled && synced > 0 && !all_synced;
+        // Rows show a badge per synced entry: re-bind them all when that
+        // changes (a first upload, a sign-out), not only edited rows.
+        let badges_changed = self.show_badges.replace(show_badges) != show_badges
+            || (show_badges
+                && self
+                    .synced_ids
+                    .borrow()
+                    .as_deref()
+                    .is_none_or(|old| *old != ids));
+        if badges_changed {
+            self.rebind_all.set(true);
+        }
         // The observed sync state first: it tells the user whether the
         // latest changes reached the server, not just that a link exists.
         let time = |at: i64| {
@@ -973,7 +983,8 @@ impl Inner {
         self.folder_menu.remove_all();
         let filters = gio::Menu::new();
         let item = |label: &str, filter: FolderFilter| {
-            let item = gio::MenuItem::new(Some(label), None);
+            // `_` marks a mnemonic in menu labels: show folder names as typed.
+            let item = gio::MenuItem::new(Some(&label.replace('_', "__")), None);
             item.set_action_and_target_value(
                 Some("vault.folder"),
                 Some(&filter.target().to_variant()),
@@ -1434,6 +1445,7 @@ impl Inner {
     /// "Undo" is offered only because the trash really holds the entry.
     fn offer_undo(self: &Rc<Self>, original_id: i64) {
         let toast = adw::Toast::builder()
+            .use_markup(false)
             .title(tr!("Moved to Deleted items"))
             .button_label(tr!("Undo"))
             .timeout(6)
@@ -2092,22 +2104,20 @@ pub(crate) fn save_attachment_copy(
             Ok(None) => tr!("Attachment not found").to_string(),
             Err(e) => format!("{}: {e}", tr!("Could not decrypt the attachment")),
         };
-        toast.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+        toast.add_toast(
+            adw::Toast::builder()
+                .use_markup(false)
+                .title(message)
+                .timeout(4)
+                .build(),
+        );
     });
 }
 
-/// Attachments are secrets too: write them owner-only.
-fn write_private(path: &std::path::Path, data: &[u8]) -> std::io::Result<()> {
-    use std::io::Write;
-    use std::os::unix::fs::OpenOptionsExt;
-    let mut file = std::fs::OpenOptions::new()
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .mode(0o600)
-        .open(path)?;
-    file.write_all(data)?;
-    file.sync_all()
+/// Attachments are secrets too: write them owner-only, through a temporary
+/// file so a failed write never destroys a file being replaced.
+fn write_private(path: &std::path::Path, data: &[u8]) -> ashypass_core::Result<()> {
+    ashypass_core::backup::write_private_file(path, data)
 }
 
 fn password_search_text(entry: &PasswordEntry) -> String {

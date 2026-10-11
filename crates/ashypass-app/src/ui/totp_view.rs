@@ -241,8 +241,13 @@ impl Inner {
     }
 
     fn toast(&self, message: &str) {
-        self.toast
-            .add_toast(adw::Toast::builder().title(message).timeout(3).build());
+        self.toast.add_toast(
+            adw::Toast::builder()
+                .use_markup(false)
+                .title(message)
+                .timeout(3)
+                .build(),
+        );
     }
 
     fn stop_timer(&self) {

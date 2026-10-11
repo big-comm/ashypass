@@ -41,6 +41,9 @@ pub enum AppEvent {
     /// as for [`AppEvent::VaultChanged`]; the auto-sync scheduler ignores it,
     /// so a sync does not trigger another one.
     VaultChangedBySync,
+    /// A manual sync stopped because `count` synced entries vanished from
+    /// the server at once; the user must confirm before they are deleted.
+    MassDeletePending { count: usize },
     /// The Nextcloud auto-sync preferences were changed in Settings.
     SyncSettingsChanged,
     /// Session auto-locked due to inactivity. Views must hide secrets.
