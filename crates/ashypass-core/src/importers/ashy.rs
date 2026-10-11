@@ -21,6 +21,7 @@ use rusqlite::{Connection, OpenFlags};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::Path;
+use zeroize::Zeroizing;
 
 const MAGIC: &[u8; 7] = b"ASHYP\x00\x01";
 const SALT_LEN: usize = 16;
@@ -71,7 +72,7 @@ fn derive_key(
     time_cost: u32,
     memory_kib: u32,
     parallelism: u32,
-) -> Result<[u8; 32]> {
+) -> Result<Zeroizing<[u8; 32]>> {
     // Bound `parallelism` before using it in `8 * parallelism`, so a hostile
     // header cannot overflow the multiplication.
     if parallelism == 0
@@ -86,9 +87,9 @@ fn derive_key(
     let params = Params::new(memory_kib, time_cost, parallelism, Some(32))
         .map_err(|error| Error::Argon2(error.to_string()))?;
     let argon = Argon2::new(Algorithm::Argon2id, Version::V0x13, params);
-    let mut output = [0u8; 32];
+    let mut output = Zeroizing::new([0u8; 32]);
     argon
-        .hash_password_into(password.as_bytes(), salt, &mut output)
+        .hash_password_into(password.as_bytes(), salt, output.as_mut())
         .map_err(|error| Error::Argon2(error.to_string()))?;
     Ok(output)
 }
@@ -137,29 +138,48 @@ pub fn export_vault(vault: &Vault, path: impl AsRef<Path>, export_password: &str
         database_snapshot: Some(STANDARD.encode(snapshot)),
     };
     let entry_count = doc.entries.len();
-    let plaintext = serde_json::to_vec(&doc)?;
+    let plaintext = Zeroizing::new(serde_json::to_vec(&doc)?);
+    drop(doc);
+    let output = encrypt_document(
+        &plaintext,
+        export_password,
+        ARGON2_T,
+        ARGON2_M_KIB,
+        ARGON2_P,
+    )?;
+    // Replacing an existing file is intended: the save dialog already asked.
+    write_private_replacing(path.as_ref(), &output)?;
+    Ok(entry_count)
+}
 
+/// Encrypt a serialized document into the `.ashy` container:
+/// magic | salt | t | m | p (little-endian u32) | nonce | AES-GCM ciphertext.
+fn encrypt_document(
+    plaintext: &[u8],
+    export_password: &str,
+    time_cost: u32,
+    memory_kib: u32,
+    parallelism: u32,
+) -> Result<Vec<u8>> {
     let mut salt = [0u8; SALT_LEN];
     rand::thread_rng().fill_bytes(&mut salt);
     let mut nonce_bytes = [0u8; NONCE_LEN];
     rand::thread_rng().fill_bytes(&mut nonce_bytes);
-    let key = derive_key(export_password, &salt, ARGON2_T, ARGON2_M_KIB, ARGON2_P)?;
-    let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(&key));
+    let key = derive_key(export_password, &salt, time_cost, memory_kib, parallelism)?;
+    let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(key.as_slice()));
     let ciphertext = cipher
-        .encrypt(Nonce::from_slice(&nonce_bytes), plaintext.as_slice())
+        .encrypt(Nonce::from_slice(&nonce_bytes), plaintext)
         .map_err(|error| Error::Crypto(format!("ashy export encrypt: {error}")))?;
 
     let mut output = Vec::with_capacity(MAGIC.len() + SALT_LEN + 12 + NONCE_LEN + ciphertext.len());
     output.extend_from_slice(MAGIC);
     output.extend_from_slice(&salt);
-    output.extend_from_slice(&ARGON2_T.to_le_bytes());
-    output.extend_from_slice(&ARGON2_M_KIB.to_le_bytes());
-    output.extend_from_slice(&ARGON2_P.to_le_bytes());
+    output.extend_from_slice(&time_cost.to_le_bytes());
+    output.extend_from_slice(&memory_kib.to_le_bytes());
+    output.extend_from_slice(&parallelism.to_le_bytes());
     output.extend_from_slice(&nonce_bytes);
     output.extend_from_slice(&ciphertext);
-    // Replacing an existing file is intended: the save dialog already asked.
-    write_private_replacing(path.as_ref(), &output)?;
-    Ok(entry_count)
+    Ok(output)
 }
 
 pub fn read_export(path: impl AsRef<Path>, export_password: &str) -> Result<ExportDocument> {
@@ -168,6 +188,10 @@ pub fn read_export(path: impl AsRef<Path>, export_password: &str) -> Result<Expo
         return Err(Error::InvalidInput(".ashy file is too large".into()));
     }
     let raw = fs::read(path)?;
+    decrypt_document(&raw, export_password)
+}
+
+fn decrypt_document(raw: &[u8], export_password: &str) -> Result<ExportDocument> {
     let header_len = MAGIC.len() + SALT_LEN + 12 + NONCE_LEN;
     if raw.len() < header_len + 16 {
         return Err(Error::InvalidInput(".ashy file is truncated".into()));
@@ -189,13 +213,15 @@ pub fn read_export(path: impl AsRef<Path>, export_password: &str) -> Result<Expo
         memory_kib,
         parallelism,
     )?;
-    let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(&key));
-    let plaintext = cipher
-        .decrypt(
-            Nonce::from_slice(&raw[nonce_start..nonce_start + NONCE_LEN]),
-            &raw[header_len..],
-        )
-        .map_err(|_| Error::Crypto("ashy import: wrong password or corrupt file".into()))?;
+    let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(key.as_slice()));
+    let plaintext = Zeroizing::new(
+        cipher
+            .decrypt(
+                Nonce::from_slice(&raw[nonce_start..nonce_start + NONCE_LEN]),
+                &raw[header_len..],
+            )
+            .map_err(|_| Error::Crypto("ashy import: wrong password or corrupt file".into()))?,
+    );
     let document: ExportDocument = serde_json::from_slice(&plaintext)?;
     if !(1..=2).contains(&document.version) {
         return Err(Error::UnsupportedCryptoVersion(document.version as i64));
@@ -413,6 +439,99 @@ mod tests {
         assert!(matches!(
             read_export(&path, "password"),
             Err(Error::InvalidInput(_))
+        ));
+    }
+
+    /// Cheapest parameters `derive_key` accepts, to keep these tests fast.
+    fn tiny_container(plaintext: &[u8]) -> Vec<u8> {
+        encrypt_document(plaintext, "password", 1, 8, 1).unwrap()
+    }
+
+    fn with_params(
+        mut bytes: Vec<u8>,
+        time_cost: u32,
+        memory_kib: u32,
+        parallelism: u32,
+    ) -> Vec<u8> {
+        let params = MAGIC.len() + SALT_LEN;
+        bytes[params..params + 4].copy_from_slice(&time_cost.to_le_bytes());
+        bytes[params + 4..params + 8].copy_from_slice(&memory_kib.to_le_bytes());
+        bytes[params + 8..params + 12].copy_from_slice(&parallelism.to_le_bytes());
+        bytes
+    }
+
+    #[test]
+    fn hostile_containers_are_errors_not_panics() {
+        let document = br#"{"version": 2, "created_at": 0, "entries": []}"#;
+        let good = tiny_container(document);
+        assert!(decrypt_document(&good, "password").is_ok());
+        assert!(matches!(
+            decrypt_document(&good, "wrong"),
+            Err(Error::Crypto(_))
+        ));
+
+        // Truncated at every length up to and including the bare header.
+        let header_len = MAGIC.len() + SALT_LEN + 12 + NONCE_LEN;
+        for len in [0, 1, MAGIC.len(), header_len, header_len + 15] {
+            assert!(matches!(
+                decrypt_document(&good[..len], "password"),
+                Err(Error::InvalidInput(_))
+            ));
+        }
+        // Truncated ciphertext (tag cut off).
+        assert!(decrypt_document(&good[..good.len() - 1], "password").is_err());
+
+        let mut wrong_magic = good.clone();
+        wrong_magic[0] ^= 0xff;
+        assert!(matches!(
+            decrypt_document(&wrong_magic, "password"),
+            Err(Error::InvalidInput(_))
+        ));
+
+        for (t, m, p) in [
+            (0, 8, 1),
+            (1, 0, 1),
+            (1, 8, 0),
+            (0, 0, 0),
+            (MAX_ARGON2_T + 1, 8, 1),
+            (1, MAX_ARGON2_M_KIB + 1, 1),
+            (1, 8 * (MAX_ARGON2_P + 1), MAX_ARGON2_P + 1),
+            (u32::MAX, u32::MAX, u32::MAX),
+            (1, 7, 1),
+        ] {
+            assert!(
+                matches!(
+                    decrypt_document(&with_params(good.clone(), t, m, p), "password"),
+                    Err(Error::InvalidInput(_))
+                ),
+                "t={t} m={m} p={p}"
+            );
+        }
+
+        let mut tampered_tag = good.clone();
+        *tampered_tag.last_mut().unwrap() ^= 0x01;
+        assert!(matches!(
+            decrypt_document(&tampered_tag, "password"),
+            Err(Error::Crypto(_))
+        ));
+        let mut tampered_body = good.clone();
+        tampered_body[header_len] ^= 0x01;
+        assert!(decrypt_document(&tampered_body, "password").is_err());
+        let mut tampered_salt = good.clone();
+        tampered_salt[MAGIC.len()] ^= 0x01;
+        assert!(decrypt_document(&tampered_salt, "password").is_err());
+
+        // Authentic but malformed or unsupported content.
+        assert!(matches!(
+            decrypt_document(&tiny_container(b"not json"), "password"),
+            Err(Error::Json(_))
+        ));
+        assert!(matches!(
+            decrypt_document(
+                &tiny_container(br#"{"version": 9, "created_at": 0, "entries": []}"#),
+                "password"
+            ),
+            Err(Error::UnsupportedCryptoVersion(9))
         ));
     }
 

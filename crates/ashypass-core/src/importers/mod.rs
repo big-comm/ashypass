@@ -32,6 +32,10 @@ use std::path::Path;
 /// Largest text export (CSV/JSON) accepted by the importers.
 pub const MAX_IMPORT_TEXT_BYTES: u64 = 256 * 1024 * 1024;
 
+/// Largest binary export (KeePass KDBX) accepted. Higher than the text limit
+/// because KDBX files may embed attachments.
+pub const MAX_IMPORT_BINARY_BYTES: u64 = 512 * 1024 * 1024;
+
 /// An import source plus the password it needs, if any.
 #[derive(Debug, Clone)]
 pub enum ImportSource {

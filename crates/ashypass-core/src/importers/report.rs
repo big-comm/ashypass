@@ -229,7 +229,12 @@ pub fn apply_with(
             ..ImportReport::default()
         };
         for folder in parsed.folders.iter().filter(|f| !f.trim().is_empty()) {
-            vault.create_folder(folder)?;
+            per_item(
+                vault.create_folder(folder),
+                folder,
+                "folder not created",
+                &mut report.warnings,
+            )?;
         }
         for candidate in parsed.candidates {
             let mut entry = candidate.entry;
@@ -249,17 +254,42 @@ pub fn apply_with(
             let remembered = entry.clone();
             match vault.add(entry) {
                 Ok(id) => {
+                    // The entry itself is stored: a rejected extra (tag,
+                    // history item, attachment) is reported as a warning on
+                    // this item instead of dropping the entry or aborting
+                    // the whole import.
+                    let warnings = &mut report.warnings;
                     if candidate.favorite {
-                        vault.set_favorite(id, true)?;
+                        per_item(
+                            vault.set_favorite(id, true),
+                            &title,
+                            "favorite flag not set",
+                            warnings,
+                        )?;
                     }
                     if !candidate.tags.is_empty() {
-                        vault.set_tags(id, &candidate.tags)?;
+                        per_item(
+                            vault.set_tags(id, &candidate.tags),
+                            &title,
+                            "tags not imported",
+                            warnings,
+                        )?;
                     }
                     for (password, changed_at) in &candidate.history {
-                        vault.append_password_history(id, password, *changed_at)?;
+                        per_item(
+                            vault.append_password_history(id, password, *changed_at),
+                            &title,
+                            "password history item not imported",
+                            warnings,
+                        )?;
                     }
                     for (name, data) in &candidate.attachments {
-                        vault.add_attachment(id, name, None, data)?;
+                        per_item(
+                            vault.add_attachment(id, name, None, data),
+                            &title,
+                            &format!("attachment {name} not imported"),
+                            warnings,
+                        )?;
                     }
                     index.remember(&remembered);
                     report.imported += 1;
@@ -274,6 +304,24 @@ pub fn apply_with(
         }
         Ok(report)
     })
+}
+
+/// Turn a per-item validation error into a warning on `title`; any other
+/// error (SQLite, crypto, I/O) is returned so the whole import rolls back.
+fn per_item<T>(
+    result: Result<T>,
+    title: &str,
+    what: &str,
+    warnings: &mut Vec<ImportIssue>,
+) -> Result<Option<T>> {
+    match result {
+        Ok(value) => Ok(Some(value)),
+        Err(Error::InvalidInput(reason)) => {
+            warnings.push(ImportIssue::new(title, &format!("{what}: {reason}")));
+            Ok(None)
+        }
+        Err(error) => Err(error),
+    }
 }
 
 /// Move a TOTP the vault would reject into the notes instead of failing the
@@ -582,6 +630,68 @@ pub(crate) mod tests {
             .unwrap()
             .contains(&"New folder".to_string()));
         assert_eq!(vault.current_generation().unwrap(), generation);
+    }
+
+    #[test]
+    fn per_item_errors_become_warnings_and_hard_errors_stay_fatal() {
+        let mut warnings = Vec::new();
+        let rejected: Result<()> = Err(Error::InvalidInput("bad tag".into()));
+        assert_eq!(
+            per_item(rejected, "Item", "tags not imported", &mut warnings).unwrap(),
+            None
+        );
+        assert_eq!(
+            warnings,
+            vec![ImportIssue::new("Item", "tags not imported: bad tag")]
+        );
+        assert_eq!(
+            per_item(Ok(7), "Item", "x", &mut warnings).unwrap(),
+            Some(7)
+        );
+        let hard: Result<()> = Err(Error::Sqlite(rusqlite::Error::InvalidQuery));
+        assert!(per_item(hard, "Item", "x", &mut warnings).is_err());
+        assert_eq!(warnings.len(), 1);
+    }
+
+    #[test]
+    fn counts_add_up_with_extras_and_bad_items() {
+        let (_dir, vault) = test_vault();
+        vault.add(login("Existing", "one").entry).unwrap();
+
+        let mut parsed = ParsedImport::default();
+        parsed.folders.push("   ".into()); // blank folder names are ignored
+        parsed.folders.push("Work".into());
+        parsed.push(login("Existing", "one")); // duplicate
+        parsed.push(NewEntry::default()); // empty: failed
+        parsed.skip("Card", "unsupported"); // skipped
+        let mut rich = login("Rich", "pw");
+        rich.favorite = true;
+        rich.tags = vec!["  ".into(), "mail".into(), "MAIL".into()];
+        rich.history = vec![("old".into(), Some(1)), (String::new(), None)];
+        rich.attachments = vec![("a.txt".into(), b"a".to_vec())];
+        parsed.push(rich);
+        parsed.push(login("Plain", "pw"));
+        let found = parsed.candidates.len() + parsed.skipped.len();
+
+        let report = apply(&vault, parsed).unwrap();
+        assert_eq!(
+            report.imported + report.duplicates + report.skipped.len() + report.failed.len(),
+            found
+        );
+        assert_eq!(report.imported, 2);
+        assert_eq!(report.duplicates, 1);
+        assert_eq!(report.failed.len(), 1);
+        let rich = vault
+            .list(None)
+            .unwrap()
+            .into_iter()
+            .find(|e| e.title == "Rich")
+            .unwrap();
+        assert!(rich.favorite);
+        assert_eq!(vault.tags_of(rich.id).unwrap(), vec!["mail"]);
+        assert_eq!(vault.password_history(rich.id).unwrap().len(), 1);
+        assert_eq!(vault.list_attachments(rich.id).unwrap().len(), 1);
+        assert!(vault.categories().unwrap().contains(&"Work".to_string()));
     }
 
     #[test]

@@ -10,23 +10,35 @@
 //! `otp` field (otpauth:// URI), KeePass 2.47+ `TimeOtp-*` fields, or the
 //! legacy KeePassXC `TOTP Seed`/`TOTP Settings` pair. Custom fields go to the
 //! notes, attachments and tags are kept, and earlier passwords from the entry
-//! history become password history.
+//! history become password history. The file is capped at
+//! [`MAX_IMPORT_BINARY_BYTES`](super::MAX_IMPORT_BINARY_BYTES) and attachments
+//! above [`MAX_ATTACHMENT_BYTES`] are skipped with a warning.
 //!
 //! On export: we emit KDBX4; a category "A/B" becomes nested groups A → B.
+//! Tags, attachments (as KDBX binaries) and password history (as entry
+//! history snapshots that differ only in the password) are exported. KDBX
+//! has no favorite flag, so favorites are not exported.
 //! Argon2 KDF defaults are taken from `Database::new()` — the user picks the
 //! export password independently of their vault master.
 
 use crate::backup::files::write_private_replacing;
-use crate::db::vault::{NewEntry, PasswordEntry, Vault};
+use crate::db::vault::{NewEntry, PasswordEntry, PasswordHistoryEntry, Vault};
 use crate::importers::otp::{self, TotpField};
 use crate::importers::report::{self, ImportCandidate, ImportPreview, ImportReport, ParsedImport};
 use crate::{Error, Result};
 use base64::{engine::general_purpose::STANDARD, Engine as _};
-use keepass::db::{fields, Database, EntryMut, EntryRef, GroupId, GroupRef};
+use keepass::db::{
+    fields, Database, Entry as KdbxEntry, EntryMut, EntryRef, GroupId, GroupRef, History, Value,
+};
 use keepass::DatabaseKey;
 use std::collections::HashMap;
 use std::fs::File;
+use std::io::Read;
 use std::path::Path;
+
+/// Largest single attachment read from a KDBX file; bigger ones are skipped
+/// with a warning (same limit as the 1Password importer).
+const MAX_ATTACHMENT_BYTES: usize = 64 * 1024 * 1024;
 
 /// Fields that hold TOTP configuration and are consumed by [`entry_totp`].
 const OTP_FIELDS: &[&str] = &[
@@ -44,22 +56,50 @@ const OTP_FIELDS: &[&str] = &[
 
 pub fn parse_file(path: impl AsRef<Path>, password: &str) -> Result<ParsedImport> {
     let mut file = File::open(&path)?;
+    if file.metadata()?.len() > super::MAX_IMPORT_BINARY_BYTES {
+        return Err(too_large());
+    }
     parse_reader(&mut file, password)
 }
 
-pub fn parse_reader(reader: &mut dyn std::io::Read, password: &str) -> Result<ParsedImport> {
+pub fn parse_reader(reader: &mut dyn Read, password: &str) -> Result<ParsedImport> {
+    parse_reader_limited(reader, password, super::MAX_IMPORT_BINARY_BYTES)
+}
+
+fn parse_reader_limited(reader: &mut dyn Read, password: &str, limit: u64) -> Result<ParsedImport> {
+    // Read through a bounded reader so a growing or special file cannot make
+    // us buffer more than the limit (the keepass crate loads it all anyway).
+    let mut bytes = Vec::new();
+    reader
+        .take(limit.saturating_add(1))
+        .read_to_end(&mut bytes)?;
+    if bytes.len() as u64 > limit {
+        return Err(too_large());
+    }
     let key = DatabaseKey::new().with_password(password);
-    let db = Database::open(reader, key).map_err(|e| Error::Other(format!("kdbx open: {e}")))?;
+    let db = Database::open(&mut bytes.as_slice(), key)
+        .map_err(|e| Error::Other(format!("kdbx open: {e}")))?;
     Ok(parse_database(&db))
 }
 
+fn too_large() -> Error {
+    Error::InvalidInput(format!(
+        "KeePass file is larger than the {} MiB limit",
+        super::MAX_IMPORT_BINARY_BYTES / (1024 * 1024)
+    ))
+}
+
 pub fn parse_database(db: &Database) -> ParsedImport {
+    parse_database_with(db, MAX_ATTACHMENT_BYTES)
+}
+
+fn parse_database_with(db: &Database, attachment_limit: usize) -> ParsedImport {
     let mut out = ParsedImport::default();
     let recycle_bin = db.recycle_bin().map(|g| g.id());
     let root = db.root();
-    collect_entries(&root, &[], &mut out);
+    collect_entries(&root, &[], attachment_limit, &mut out);
     for sub in root.groups() {
-        walk_group(&sub, Vec::new(), recycle_bin, &mut out);
+        walk_group(&sub, Vec::new(), recycle_bin, attachment_limit, &mut out);
     }
     out
 }
@@ -68,6 +108,7 @@ fn walk_group(
     group: &GroupRef<'_>,
     mut path: Vec<String>,
     recycle_bin: Option<GroupId>,
+    attachment_limit: usize,
     out: &mut ParsedImport,
 ) {
     if Some(group.id()) == recycle_bin {
@@ -81,9 +122,9 @@ fn walk_group(
         name.replace('/', "-")
     });
     out.folders.push(path.join("/"));
-    collect_entries(group, &path, out);
+    collect_entries(group, &path, attachment_limit, out);
     for sub in group.groups() {
-        walk_group(&sub, path.clone(), recycle_bin, out);
+        walk_group(&sub, path.clone(), recycle_bin, attachment_limit, out);
     }
 }
 
@@ -111,7 +152,12 @@ fn non_empty(entry: &EntryRef<'_>, key: &str) -> Option<String> {
         .map(|s| s.to_string())
 }
 
-fn collect_entries(group: &GroupRef<'_>, path: &[String], out: &mut ParsedImport) {
+fn collect_entries(
+    group: &GroupRef<'_>,
+    path: &[String],
+    attachment_limit: usize,
+    out: &mut ParsedImport,
+) {
     let category = (!path.is_empty()).then(|| path.join("/"));
     let mut entries: Vec<EntryRef<'_>> = group.entries().collect();
     entries.sort_by_key(entry_title);
@@ -163,10 +209,20 @@ fn collect_entries(group: &GroupRef<'_>, path: &[String], out: &mut ParsedImport
             }
         }
 
-        let attachments = entry
-            .attachments_named()
-            .map(|(name, attachment)| (name.to_string(), attachment.data.get().clone()))
-            .collect();
+        let mut attachments = Vec::new();
+        let mut named: Vec<_> = entry.attachments_named().collect();
+        named.sort_by(|a, b| a.0.cmp(b.0));
+        for (name, attachment) in named {
+            let data = attachment.data.get();
+            if data.len() > attachment_limit {
+                out.warnings.push(report::ImportIssue::new(
+                    &new_entry.title,
+                    &format!("attachment too large: {name}"),
+                ));
+                continue;
+            }
+            attachments.push((name.to_string(), data.clone()));
+        }
 
         out.push(ImportCandidate {
             entry: new_entry,
@@ -334,11 +390,75 @@ fn build_export_database(vault: &Vault) -> Result<Database> {
         let mut group = db
             .group_mut(group_id)
             .ok_or_else(|| Error::Other("kdbx export: missing group".into()))?;
+        let history = vault.password_history(full.id)?;
+        let mut attachments = Vec::new();
+        for info in vault.list_attachments(full.id)? {
+            if let Some((info, data)) = vault.get_attachment(info.id)? {
+                attachments.push((info.filename, data));
+            }
+        }
         let mut entry = group.add_entry();
         fill_entry(&mut entry, &full);
         entry.tags = vault.tags_of(full.id)?;
+        add_history(&mut entry, &full, &history);
+        add_attachments(&mut entry, attachments);
     }
     Ok(db)
+}
+
+/// Store previous passwords as KDBX history snapshots: a copy of the entry
+/// with the old password and its change time. `history` is newest first.
+fn add_history(entry: &mut EntryMut<'_>, full: &PasswordEntry, history: &[PasswordHistoryEntry]) {
+    let current = full.password.as_deref().unwrap_or("");
+    let snapshot_base: KdbxEntry = (**entry).clone();
+    let mut kdbx_history = History::default();
+    // `History::add_entry` prepends, so add the oldest first to end up with
+    // the newest snapshot at the front, as KeePass does.
+    for old in history.iter().rev() {
+        if old.password.is_empty() || old.password == current {
+            continue;
+        }
+        let mut snapshot = snapshot_base.clone();
+        snapshot.set_protected(fields::PASSWORD, old.password.as_str());
+        if let Some(changed) = chrono::DateTime::from_timestamp(old.changed_at, 0) {
+            snapshot.times.last_modification = Some(changed.naive_utc());
+        }
+        kdbx_history.add_entry(snapshot);
+    }
+    if !kdbx_history.get_entries().is_empty() {
+        entry.history = Some(kdbx_history);
+    }
+}
+
+/// Add attachments as KDBX binaries. KDBX keys attachments by name, so
+/// repeated file names get a " (2)", " (3)", … suffix instead of replacing
+/// each other.
+fn add_attachments(entry: &mut EntryMut<'_>, attachments: Vec<(String, Vec<u8>)>) {
+    let mut used: Vec<String> = Vec::new();
+    for (filename, data) in attachments {
+        let name = unique_attachment_name(&filename, &used);
+        used.push(name.clone());
+        entry.add_attachment(name, Value::protected(data));
+    }
+}
+
+fn unique_attachment_name(filename: &str, used: &[String]) -> String {
+    let base = if filename.trim().is_empty() {
+        "attachment"
+    } else {
+        filename
+    };
+    if !used.iter().any(|u| u == base) {
+        return base.to_string();
+    }
+    let (stem, extension) = match base.rfind('.') {
+        Some(dot) if dot > 0 => (&base[..dot], &base[dot..]),
+        _ => (base, ""),
+    };
+    (2..)
+        .map(|n| format!("{stem} ({n}){extension}"))
+        .find(|candidate| !used.iter().any(|u| u == candidate))
+        .expect("an unused name exists")
 }
 
 /// Find or create the nested group for "A/B/C" below the root.
@@ -413,7 +533,6 @@ fn url_escape(s: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use keepass::db::Value;
 
     const PASSWORD: &str = "kdbx test password";
 
@@ -518,6 +637,111 @@ mod tests {
         assert!(steam.totp_secret.is_none());
         assert!(steam.notes.as_deref().unwrap().contains("TOTP Seed"));
         assert_eq!(parsed.warnings.len(), 1);
+    }
+
+    #[test]
+    fn oversized_input_and_attachments_are_limited() {
+        let bytes = fixture();
+        let limit = bytes.len() as u64 - 1;
+        assert!(matches!(
+            parse_reader_limited(&mut std::io::Cursor::new(bytes.clone()), PASSWORD, limit),
+            Err(Error::InvalidInput(_))
+        ));
+
+        // A small limit stands in for MAX_ATTACHMENT_BYTES to keep the test fast.
+        let mut db = Database::new();
+        {
+            let mut root = db.root_mut();
+            let mut e = root.add_entry();
+            e.set_unprotected(fields::TITLE, "Big file");
+            e.set_protected(fields::PASSWORD, "pw");
+            e.add_attachment("huge.bin", Value::unprotected(vec![0u8; 17]));
+            e.add_attachment("small.txt", Value::unprotected(b"ok".to_vec()));
+        }
+        let parsed = parse_database_with(&db, 16);
+        assert_eq!(parsed.candidates.len(), 1, "the entry itself is kept");
+        assert_eq!(
+            parsed.candidates[0].attachments,
+            vec![("small.txt".into(), b"ok".to_vec())]
+        );
+        assert_eq!(parsed.warnings.len(), 1);
+        assert!(parsed.warnings[0].reason.contains("huge.bin"));
+    }
+
+    #[test]
+    fn export_keeps_attachments_and_history() {
+        let (directory, vault) = crate::importers::report::tests::test_vault();
+        let id = vault
+            .add(NewEntry {
+                title: "With extras".into(),
+                password: "current".into(),
+                ..NewEntry::default()
+            })
+            .unwrap();
+        vault
+            .append_password_history(id, "oldest", Some(1_600_000_000))
+            .unwrap();
+        vault
+            .append_password_history(id, "older", Some(1_700_000_000))
+            .unwrap();
+        vault.add_attachment(id, "a.txt", None, b"one").unwrap();
+        vault.add_attachment(id, "a.txt", None, b"two").unwrap();
+        vault.add_attachment(id, "b.bin", None, &[0, 1, 2]).unwrap();
+
+        let out = directory.path().join("extras.kdbx");
+        assert_eq!(export_vault(&vault, &out, "export pw").unwrap(), 1);
+        let parsed = parse_file(&out, "export pw").unwrap();
+        assert_eq!(parsed.candidates.len(), 1);
+        let candidate = &parsed.candidates[0];
+        assert_eq!(candidate.entry.password, "current");
+
+        let mut history = candidate.history.clone();
+        history.sort();
+        assert_eq!(
+            history,
+            vec![
+                ("older".to_string(), Some(1_700_000_000)),
+                ("oldest".to_string(), Some(1_600_000_000)),
+            ]
+        );
+
+        let mut contents: Vec<Vec<u8>> = candidate
+            .attachments
+            .iter()
+            .map(|(_, d)| d.clone())
+            .collect();
+        contents.sort();
+        assert_eq!(
+            contents,
+            vec![vec![0, 1, 2], b"one".to_vec(), b"two".to_vec()]
+        );
+        let mut names: Vec<&str> = candidate
+            .attachments
+            .iter()
+            .map(|(n, _)| n.as_str())
+            .collect();
+        names.sort_unstable();
+        assert_eq!(names, vec!["a (2).txt", "a.txt", "b.bin"]);
+
+        // And back into a fresh vault.
+        let (_other_dir, other) = crate::importers::report::tests::test_vault();
+        let report = import_into_vault(&other, &out, "export pw").unwrap();
+        assert_eq!(report.imported, 1);
+        let imported = other.list(None).unwrap()[0].id;
+        assert_eq!(other.password_history(imported).unwrap().len(), 2);
+        assert_eq!(other.list_attachments(imported).unwrap().len(), 3);
+    }
+
+    #[test]
+    fn attachment_names_are_unique() {
+        let used = vec!["a.txt".to_string(), "a (2).txt".to_string()];
+        assert_eq!(unique_attachment_name("a.txt", &used), "a (3).txt");
+        assert_eq!(unique_attachment_name("b", &used), "b");
+        assert_eq!(unique_attachment_name("", &[]), "attachment");
+        assert_eq!(
+            unique_attachment_name(".env", &[".env".to_string()]),
+            ".env (2)"
+        );
     }
 
     #[test]
