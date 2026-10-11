@@ -16,7 +16,22 @@ The `master.crypto_version` column tags the format used by the current vault:
 | Value | KDF                        | Cipher                | Status     |
 |-------|----------------------------|-----------------------|------------|
 | 1     | PBKDF2-HMAC-SHA256 (100k)  | Fernet (AES-128-CBC + HMAC-SHA256) | Read-only — migrate on unlock |
-| 2     | Argon2id (t=3, m=64 MiB, p=4) | AES-256-GCM        | **Current** |
+| 2     | Argon2id (t=3, m=64 MiB, p=4) | AES-256-GCM        | **Current default** |
+| 3     | Argon2id, costs stored in the salt (auto-tuned) | AES-256-GCM | Opt-in ("Use these costs for the vault key") |
+
+Formats 2 and 3 share the cipher and every blob; only the derivation of the
+vault key differs. The format is decided by the **salt text**, not by
+`crypto_version` (which is informational for 2 and 3): a salt that starts with
+`v3$` is format 3, any other salt is format 2. This matters for downgrades: an
+older release unlocked by PIN can still change the master password, and it then
+writes a plain salt and hash while leaving `crypto_version = 3`; the vault stays
+readable as format 2.
+
+In format 3 `master.password_hash` is the PHC string prefixed with `ashyv3$`.
+Releases before format 3 cannot parse it, so they reject the master password
+instead of deriving the format 2 key and writing entries nobody could read. They
+can still unlock with a PIN record, which wraps the real vault key, and the
+blobs they write are ordinary v2 envelopes.
 
 A v1 vault is upgraded to v2 by re-encrypting every BLOB column (active, trash, history and attachment tables, where present) inside a single transaction; if any row fails, the transaction rolls back and the vault stays v1. Before the transaction, once the master password has been verified, a consistent snapshot is written to `<db>.db.v1.bak` (mode 0600) with the SQLite online-backup API, so pages still in the WAL are included. The snapshot is never overwritten or deleted automatically; `Vault::remove_legacy_backup` overwrites it with zeros and unlinks it when the user asks.
 
@@ -67,6 +82,18 @@ key  = Argon2id(
 ```
 
 The resulting 32-byte `key` is used directly as the AES-256-GCM symmetric key. No additional encoding step (no base64-of-key) is performed in v2.
+
+### Encryption key derivation (format 3)
+
+```
+salt = "v3$m=<KiB>,t=<passes>,p=<lanes>$<43-char base64url of 32 random bytes>"
+key  = Argon2id(password, salt.as_bytes(), t, m, p, output_len = 32)
+```
+
+The costs come from the salt and are bounds-checked with the same limits as
+PHC hashes before any work is done; a malformed or out-of-range salt is an
+error. Switching between formats re-encrypts every blob in one transaction
+(like a password change) and revokes the PIN, which wraps the old key.
 
 ### Encryption key derivation (v1, legacy / read-only)
 
@@ -177,8 +204,11 @@ record        = { salt, encrypted_key, kdf_version: 1, failed_attempts, pin_hash
 ## Salt Generation
 
 ```
-salt = SaltString::generate(OsRng)    // Argon2 16-byte random salt, base64 encoded
+salt = base64url_no_pad(32 random bytes from the OS RNG)   // 43 characters
 ```
+
+(Format 3 prefixes it with its costs, see above. The PHC hash in
+`password_hash` has its own separate 16-byte salt.)
 
 The salt is stored verbatim as text in `master.salt`. On master password change a fresh salt is generated and every encrypted active-password, history, trash, and attachment column is re-encrypted inside a single SQLite transaction.
 
@@ -190,8 +220,8 @@ The salt is stored verbatim as text in `master.salt`. On master password change 
 |-----------------|---------|-------------|
 | id              | INTEGER | Always `1` (single-row table, `CHECK (id = 1)`) |
 | password_hash   | TEXT    | Argon2id PHC string |
-| salt            | TEXT    | Argon2 SaltString |
-| crypto_version  | INTEGER | `1` or `2` |
+| salt            | TEXT    | Vault key salt (see Salt Generation; `v3$…` in format 3) |
+| crypto_version  | INTEGER | `1`, `2` or `3` |
 | created_at      | INTEGER | Unix timestamp (seconds) |
 
 ### `passwords`
@@ -324,14 +354,14 @@ counter         = 1234567890 / 30 = 41152263
 ## Security Properties
 
 1. **At-rest encryption** — every sensitive column is AEAD-protected (AES-256-GCM).
-2. **Memory-hard KDF** — Argon2id `t=3, m=64 MiB, p=4` for both verification and derivation.
+2. **Memory-hard KDF** — the vault key uses Argon2id `t=3, m=64 MiB, p=4` (format 2) or the auto-tuned costs stored with the salt (format 3, opt-in). The PHC hash is not on the unlock path when the key verifier exists, so its tuned costs alone do not slow guessing.
 3. **Authenticated** — GCM tag verifies ciphertext and version byte; tamper → decrypt failure.
-4. **Forward secrecy on password change** — new salt + new key + atomic re-encrypt.
+4. **Re-key on password change** — new salt + new key + atomic re-encrypt. Backups and synced copies made earlier still open with the old password.
 5. **Atomic migration** — v1 → v2 happens inside one transaction; partial failure rolls back.
 6. **TOTP secrets encrypted** — same v2 envelope as passwords.
 7. **Clipboard auto-clear** — both passwords and TOTP codes scheduled for clear; only cleared if contents still match what was written.
 8. **Reserved 2FA design is not claimed** — CTAP2 vault protection remains disabled until registration, assertion, and recovery are fully implemented and tested.
-9. **Zero-knowledge cloud backup** — Google Drive only ever sees the encrypted SQLite file.
+9. **Encrypted cloud backup** — Google Drive and WebDAV receive the SQLite file as it is on disk (or an encrypted `.ashy` export). Secrets are encrypted, but `title`, `username`, `url` and `category` are plaintext columns, so a raw database copy exposes that metadata.
 
 ---
 

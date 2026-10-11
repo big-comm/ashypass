@@ -317,11 +317,14 @@ fn reset_master_page(
                 ));
                 return;
             };
-            let key = match state.vault.borrow().session_reopen_parts() {
-                Ok((_, key)) => key,
-                Err(_) => {
-                    show(tr!("Unlock the vault first"));
-                    return;
+            let (key, format) = {
+                let vault = state.vault.borrow();
+                match (vault.session_reopen_parts(), vault.key_format()) {
+                    (Ok((_, key)), Ok(format)) => (key, format),
+                    _ => {
+                        show(tr!("Unlock the vault first"));
+                        return;
+                    }
                 }
             };
             // Three memory-hard derivations: off the main loop, so the
@@ -335,7 +338,13 @@ fn reset_master_page(
             let button = button.clone();
             let worker_new = new.clone();
             run_background(
-                move || ashypass_core::db::vault::prepare_pin_reset(&pin, &prefs, &key, &worker_new),
+                move || ashypass_core::db::vault::prepare_pin_reset(
+                        &pin,
+                        &prefs,
+                        &key,
+                        &worker_new,
+                        format,
+                    ),
                 move |prepared| {
             let show = |message: &str| {
                 status.set_label(message);
@@ -485,8 +494,14 @@ fn change_master_page(
                 show(tr!("The new passwords do not match."), false);
                 return;
             }
-            let hash = match state.vault.borrow().master_hash() {
-                Ok(hash) => hash,
+            let master = {
+                let vault = state.vault.borrow();
+                vault
+                    .master_hash()
+                    .and_then(|hash| Ok((hash, vault.key_format()?)))
+            };
+            let (hash, format) = match master {
+                Ok(master) => master,
                 Err(e) => {
                     show(
                         &format!("{} ({e})", tr!("The password was not changed")),
@@ -510,7 +525,7 @@ fn change_master_page(
                     if !ashypass_core::crypto::argon2_kdf::verify_master(&current, &hash)? {
                         return Err(ashypass_core::Error::InvalidMasterPassword);
                     }
-                    ashypass_core::db::vault::prepare_rekey(&worker_new)
+                    ashypass_core::db::vault::prepare_rekey(&worker_new, format)
                 },
                 move |prepared| {
                     button.set_sensitive(true);
@@ -837,7 +852,7 @@ fn kdf_group(state: &SharedState) -> adw::PreferencesGroup {
         .build();
     let about = adw::ActionRow::builder()
         .title(tr!(
-            "Higher costs slow down guessing attacks and also slow down unlocking. Auto-tune picks values for about half a second on this computer; they apply the next time the master password is set or changed."
+            "Higher costs slow down guessing attacks and also slow down unlocking. Auto-tune picks values for about half a second on this computer."
         ))
         .build();
     about.add_css_class("dim-label");
@@ -895,8 +910,150 @@ fn kdf_group(state: &SharedState) -> adw::PreferencesGroup {
             );
         });
     }
+    expander.add_row(&strong_key_row(state));
     group.add(&expander);
     group
+}
+
+/// Opt-in switch for the vault key format. Off (the default) keeps the fixed
+/// costs every Ashy Pass 3 release opens; on derives the vault key with the
+/// auto-tuned costs, which older releases refuse.
+fn strong_key_row(state: &SharedState) -> adw::SwitchRow {
+    use ashypass_core::db::vault::KeyFormat;
+    let current = state
+        .vault
+        .borrow()
+        .key_format()
+        .unwrap_or(KeyFormat::Compatible);
+    let row = adw::SwitchRow::builder()
+        .title(tr!("Use these costs for the vault key"))
+        .subtitle(tr!(
+            "Stronger against guessing the master password. While this is on, older versions of Ashy Pass cannot open the vault with the master password."
+        ))
+        .active(current == KeyFormat::Strong)
+        .build();
+    row.set_sensitive(state.vault.borrow().is_unlocked());
+    // Set while the switch is moved back by code, so the handler ignores it.
+    let restoring = Rc::new(std::cell::Cell::new(false));
+    let state = state.clone();
+    row.connect_active_notify(move |row| {
+        if restoring.get() {
+            return;
+        }
+        let wanted = if row.is_active() {
+            KeyFormat::Strong
+        } else {
+            KeyFormat::Compatible
+        };
+        // Nothing changes until the master password is confirmed.
+        restoring.set(true);
+        row.set_active(!row.is_active());
+        restoring.set(false);
+        ask_key_format_change(&state, row, wanted, restoring.clone());
+    });
+    row
+}
+
+fn ask_key_format_change(
+    state: &SharedState,
+    row: &adw::SwitchRow,
+    wanted: ashypass_core::db::vault::KeyFormat,
+    restoring: Rc<std::cell::Cell<bool>>,
+) {
+    use ashypass_core::db::vault::KeyFormat;
+    let dialog = adw::AlertDialog::builder()
+        .heading(tr!("Change how the vault key is protected?"))
+        .body(if wanted == KeyFormat::Strong {
+            tr!("Everything in the vault is encrypted again with a key derived using the costs above. Older versions of Ashy Pass will not open the vault with the master password. The PIN must be set up again.")
+        } else {
+            tr!("Everything in the vault is encrypted again with the standard costs, which every version of Ashy Pass 3 opens. The PIN must be set up again.")
+        })
+        .close_response("cancel")
+        .default_response("change")
+        .build();
+    dialog.add_response("cancel", tr!("Cancel"));
+    dialog.add_response("change", tr!("Encrypt again"));
+    dialog.set_response_appearance("change", adw::ResponseAppearance::Suggested);
+    let password = adw::PasswordEntryRow::builder()
+        .title(tr!("Master password"))
+        .activates_default(true)
+        .build();
+    let list = gtk::ListBox::builder()
+        .selection_mode(gtk::SelectionMode::None)
+        .build();
+    list.add_css_class("boxed-list");
+    list.append(&password);
+    dialog.set_extra_child(Some(&list));
+    let state_cl = state.clone();
+    let row_cl = row.clone();
+    dialog.connect_response(Some("change"), move |_, _| {
+        let state = state_cl.clone();
+        let row = row_cl.clone();
+        let restoring = restoring.clone();
+        let typed = Zeroizing::new(password.text().to_string());
+        let Ok(hash) = state.vault.borrow().master_hash() else {
+            return;
+        };
+        row.set_sensitive(false);
+        toast_near(&row, tr!("Encrypting the vault again…"));
+        run_background(
+            move || -> ashypass_core::Result<_> {
+                if !ashypass_core::crypto::argon2_kdf::verify_master(&typed, &hash)? {
+                    return Err(ashypass_core::Error::InvalidMasterPassword);
+                }
+                ashypass_core::db::vault::prepare_rekey(&typed, wanted)
+            },
+            move |prepared| {
+                row.set_sensitive(true);
+                let show = |message: &str| toast_near(&row, message);
+                if !state.vault.borrow().is_unlocked() {
+                    show(tr!("Unlock the vault first"));
+                    return;
+                }
+                let result = prepared.and_then(|p| state.vault.borrow_mut().apply_rekey(p));
+                match result {
+                    Ok(()) => {
+                        // The PIN wraps the old key.
+                        if let Err(error) = ashypass_core::keyring::delete_quick_unlock() {
+                            log::warn!("could not revoke quick-unlock keyring state: {error}");
+                        }
+                        state.vault.borrow_mut().disable_quick_unlock();
+                        if let Err(error) = state.update_settings(|s| s.quick_unlock = None) {
+                            log::warn!("could not clear quick-unlock settings: {error}");
+                        }
+                        restoring.set(true);
+                        row.set_active(wanted == KeyFormat::Strong);
+                        restoring.set(false);
+                        show(tr!(
+                            "Vault encrypted again. Set up the PIN again if you used one."
+                        ));
+                    }
+                    Err(ashypass_core::Error::InvalidMasterPassword) => {
+                        show(tr!("Incorrect master password. Nothing was changed."));
+                    }
+                    Err(e) => show(&format!("{} ({e})", tr!("Nothing was changed"))),
+                }
+            },
+        );
+    });
+    state.track_sensitive_dialog(&dialog);
+    dialog.present(Some(row));
+}
+
+/// A toast on the settings dialog that contains `widget`.
+fn toast_near(widget: &impl IsA<gtk::Widget>, message: &str) {
+    if let Some(dialog) = widget
+        .ancestor(adw::PreferencesDialog::static_type())
+        .and_then(|w| w.downcast::<adw::PreferencesDialog>().ok())
+    {
+        dialog.add_toast(
+            adw::Toast::builder()
+                .title(message)
+                .use_markup(false)
+                .timeout(6)
+                .build(),
+        );
+    }
 }
 
 /// After a migration from Ashy Pass 2.x a copy of the old vault, protected

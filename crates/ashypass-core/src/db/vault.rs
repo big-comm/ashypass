@@ -613,7 +613,7 @@ impl Vault {
         if self.has_master_password()? {
             return Err(Error::MasterAlreadySet);
         }
-        self.install_master_password(prepare_rekey(password)?)
+        self.install_master_password(prepare_rekey(password, KeyFormat::Compatible)?)
     }
 
     /// Create the master row from a password prepared by `prepare_rekey`
@@ -626,14 +626,15 @@ impl Vault {
             salt_text,
             key,
             hash,
+            format,
         } = prepared;
         let ts = chrono::Utc::now().timestamp();
 
         let tx = self.conn.unchecked_transaction()?;
         tx.execute(
             "INSERT INTO master (id, password_hash, salt, crypto_version, created_at)
-             VALUES (1, ?, ?, 2, ?)",
-            params![hash, salt_text, ts],
+             VALUES (1, ?, ?, ?, ?)",
+            params![hash, salt_text, format.crypto_version(), ts],
         )?;
         key_check::write(&tx, &key, &salt_text)?;
         tx.commit()?;
@@ -1813,7 +1814,18 @@ impl Vault {
         if !argon2_kdf::verify_master(current, &self.master_hash()?)? {
             return Err(Error::InvalidMasterPassword);
         }
-        self.apply_rekey(prepare_rekey(new)?)
+        let format = self.key_format()?;
+        self.apply_rekey(prepare_rekey(new, format)?)
+    }
+
+    /// How the vault key is derived from the master password today. A new
+    /// master password keeps the same format unless the user changes it.
+    pub fn key_format(&self) -> Result<KeyFormat> {
+        Ok(if argon2_kdf::is_strong_salt(&self.master_salt()?) {
+            KeyFormat::Strong
+        } else {
+            KeyFormat::Compatible
+        })
     }
 
     /// The stored PHC hash of the master password, for verifying a typed
@@ -1844,7 +1856,7 @@ impl Vault {
         new: &str,
     ) -> Result<QuickUnlockPrefs> {
         let current = self.key()?.clone();
-        let reset = prepare_pin_reset(pin, prefs, &current, new)?;
+        let reset = prepare_pin_reset(pin, prefs, &current, new, self.key_format()?)?;
         self.apply_pin_reset(reset)
     }
 
@@ -1874,6 +1886,7 @@ impl Vault {
             salt_text: new_salt_text,
             key: new_key,
             hash: new_hash,
+            format,
         } = prepared;
         let old_key = self.key()?.clone();
 
@@ -1936,8 +1949,8 @@ impl Vault {
             }
         }
         tx.execute(
-            "UPDATE master SET password_hash = ?, salt = ? WHERE id = 1",
-            params![new_hash, new_salt_text],
+            "UPDATE master SET password_hash = ?, salt = ?, crypto_version = ? WHERE id = 1",
+            params![new_hash, new_salt_text, format.crypto_version()],
         )?;
         key_check::write(&tx, &new_key, &new_salt_text)?;
         tx.commit()?;
@@ -1950,27 +1963,72 @@ impl Vault {
     }
 }
 
+/// How the vault key is derived from the master password.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum KeyFormat {
+    /// Fixed Argon2id costs (64 MiB, 3 passes). Every Ashy Pass 3 release
+    /// opens it. The default.
+    Compatible,
+    /// The costs auto-tuned for this computer, stored with the salt. Stronger
+    /// against guessing; releases before this one cannot open the vault
+    /// with the master password (they refuse it without writing anything).
+    Strong,
+}
+
+impl KeyFormat {
+    fn crypto_version(self) -> i64 {
+        match self {
+            Self::Compatible => 2,
+            Self::Strong => 3,
+        }
+    }
+}
+
 /// Salt, key and PHC hash for a new master password; see `prepare_rekey`.
 pub struct PreparedRekey {
     salt_text: String,
     key: DerivedKey,
     hash: String,
+    format: KeyFormat,
 }
 
 /// Run the expensive part of a master password change (both KDFs) without
 /// the vault, so it can happen on a worker thread. Apply the result with
-/// `Vault::apply_rekey`.
-pub fn prepare_rekey(new: &str) -> Result<PreparedRekey> {
+/// `Vault::apply_rekey` (or `install_master_password` for a new vault).
+pub fn prepare_rekey(new: &str, format: KeyFormat) -> Result<PreparedRekey> {
+    let costs = match format {
+        KeyFormat::Compatible => None,
+        KeyFormat::Strong => Some(argon2_kdf::tuned_params()),
+    };
+    prepare_rekey_with(new, format, costs)
+}
+
+fn prepare_rekey_with(
+    new: &str,
+    format: KeyFormat,
+    costs: Option<argon2::Params>,
+) -> Result<PreparedRekey> {
     validate_new_master_password(new)?;
     let mut salt = [0u8; 32];
     rand::thread_rng().fill_bytes(&mut salt);
-    let salt_text = URL_SAFE_NO_PAD.encode(salt);
-    let key = argon2_kdf::derive_key_v2(new, salt_text.as_bytes())?;
-    let hash = argon2_kdf::hash_master(new)?;
+    let random = URL_SAFE_NO_PAD.encode(salt);
+    let (salt_text, hash) = match format {
+        KeyFormat::Compatible => (random, argon2_kdf::hash_master(new)?),
+        KeyFormat::Strong => (
+            argon2_kdf::strong_salt(&costs.unwrap_or_else(argon2_kdf::tuned_params), &random),
+            format!(
+                "{}{}",
+                argon2_kdf::STRONG_HASH_PREFIX,
+                argon2_kdf::hash_master(new)?
+            ),
+        ),
+    };
+    let key = argon2_kdf::derive_vault_key(new, &salt_text)?;
     Ok(PreparedRekey {
         salt_text,
         key,
         hash,
+        format,
     })
 }
 
@@ -2000,6 +2058,7 @@ pub fn prepare_pin_reset(
     prefs: &QuickUnlockPrefs,
     current_key: &DerivedKey,
     new: &str,
+    format: KeyFormat,
 ) -> Result<PinReset> {
     let (from_pin, _) = derive_quick_unlock_key(pin, prefs)?;
     if !bool::from(subtle::ConstantTimeEq::ct_eq(
@@ -2008,7 +2067,7 @@ pub fn prepare_pin_reset(
     )) {
         return Err(Error::KeyMismatch);
     }
-    let rekey = prepare_rekey(new)?;
+    let rekey = prepare_rekey(new, format)?;
     let rewrapped = wrap_quick_unlock_key(pin, &rekey.key)?;
     Ok(PinReset {
         old_key: current_key.clone(),
@@ -2043,7 +2102,7 @@ impl std::fmt::Debug for UnlockInputs {
 /// derived key either opens the verifier or the password is checked against
 /// the PHC hash as a fallback); otherwise the PHC hash is verified as before.
 pub fn derive_unlock_key(password: &str, inputs: &UnlockInputs) -> Result<DerivedKey> {
-    let key = argon2_kdf::derive_key_v2(password, inputs.salt.as_bytes())?;
+    let key = argon2_kdf::derive_vault_key(password, &inputs.salt)?;
     if inputs
         .key_check
         .as_deref()
@@ -3179,6 +3238,98 @@ mod tests {
 
         vault.get_without_touch(id).unwrap().unwrap();
         assert_eq!(vault.list(None).unwrap()[0].last_accessed, touched);
+    }
+    #[test]
+    fn strong_key_format_round_trips_and_stays_readable() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let id = vault
+            .add(NewEntry {
+                title: "Mail".into(),
+                password: "kept-secret".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        assert_eq!(vault.key_format().unwrap(), KeyFormat::Compatible);
+
+        // Upgrade with small costs (the tuned ones may be up to 1 GiB).
+        let small = argon2::Params::new(8 * 1024, 1, 1, Some(32)).unwrap();
+        let strong =
+            prepare_rekey_with("master password here", KeyFormat::Strong, Some(small)).unwrap();
+        vault.apply_rekey(strong).unwrap();
+        assert_eq!(vault.key_format().unwrap(), KeyFormat::Strong);
+        let (hash, version): (String, i64) = vault
+            .conn
+            .query_row(
+                "SELECT password_hash, crypto_version FROM master WHERE id = 1",
+                [],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .unwrap();
+        assert_eq!(version, 3);
+        // Older releases parse the hash with the PHC parser and refuse it,
+        // so they never derive the wrong key and write with it.
+        assert!(argon2::password_hash::PasswordHash::new(&hash).is_err());
+
+        // A fresh handle unlocks with the master password, by both paths.
+        vault.full_lock();
+        drop(vault);
+        let mut reopened = Vault::open(tmp.path()).unwrap();
+        reopened.unlock("master password here").unwrap();
+        assert_eq!(
+            reopened
+                .get_without_touch(id)
+                .unwrap()
+                .unwrap()
+                .password
+                .as_deref(),
+            Some("kept-secret")
+        );
+        reopened.full_lock();
+        let inputs = reopened.unlock_inputs().unwrap().unwrap();
+        let key = derive_unlock_key("master password here", &inputs).unwrap();
+        reopened.unlock_with_key(&inputs, key).unwrap();
+
+        // Back to the compatible format.
+        let compatible =
+            prepare_rekey_with("master password here", KeyFormat::Compatible, None).unwrap();
+        reopened.apply_rekey(compatible).unwrap();
+        assert_eq!(reopened.key_format().unwrap(), KeyFormat::Compatible);
+        reopened.full_lock();
+        reopened.unlock("master password here").unwrap();
+        assert_eq!(
+            reopened
+                .get_without_touch(id)
+                .unwrap()
+                .unwrap()
+                .password
+                .as_deref(),
+            Some("kept-secret")
+        );
+    }
+
+    #[test]
+    fn an_older_version_rewriting_the_master_row_stays_readable() {
+        // An older release unlocked by PIN can still change the master
+        // password: it writes a plain salt and hash but keeps
+        // crypto_version = 3. The plain salt decides, not the version.
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let small = argon2::Params::new(8 * 1024, 1, 1, Some(32)).unwrap();
+        vault
+            .apply_rekey(
+                prepare_rekey_with("master password here", KeyFormat::Strong, Some(small)).unwrap(),
+            )
+            .unwrap();
+        let legacy = prepare_rekey_with("a brand new master", KeyFormat::Compatible, None).unwrap();
+        vault.apply_rekey(legacy).unwrap();
+        vault
+            .conn
+            .execute("UPDATE master SET crypto_version = 3", [])
+            .unwrap();
+        vault.full_lock();
+        vault.unlock("a brand new master").unwrap();
+        assert_eq!(vault.key_format().unwrap(), KeyFormat::Compatible);
     }
 }
 

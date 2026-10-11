@@ -579,7 +579,12 @@ impl Inner {
         let password = Zeroizing::new(password);
         let weak = Rc::downgrade(self);
         crate::ui::settings_dialog::run_background_task(
-            move || ashypass_core::db::vault::prepare_rekey(&password),
+            move || {
+                ashypass_core::db::vault::prepare_rekey(
+                    &password,
+                    ashypass_core::db::vault::KeyFormat::Compatible,
+                )
+            },
             move |prepared| {
                 let Some(inner) = weak.upgrade() else { return };
                 inner.set_busy(false);

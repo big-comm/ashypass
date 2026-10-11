@@ -401,7 +401,12 @@ fn show_settings_unlock_dialog(
             let password = zeroize::Zeroizing::new(password);
             if !has_master {
                 run_background(
-                    move || ashypass_core::db::vault::prepare_rekey(&password),
+                    move || {
+                        ashypass_core::db::vault::prepare_rekey(
+                            &password,
+                            ashypass_core::db::vault::KeyFormat::Compatible,
+                        )
+                    },
                     move |prepared| {
                         let result = prepared.and_then(|p| {
                             finish_state.vault.borrow_mut().install_master_password(p)
