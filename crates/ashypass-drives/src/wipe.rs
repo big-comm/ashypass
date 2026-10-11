@@ -65,14 +65,23 @@ fn with_progress_poller<R: Send>(
     body: impl FnOnce() -> R + Send,
 ) -> R {
     use std::sync::atomic::{AtomicBool, Ordering};
+
+    /// Sets the flag when dropped, so the poll loop ends even if `body`
+    /// panics (otherwise the scope would wait on the loop forever).
+    struct StopOnDrop<'a>(&'a AtomicBool);
+    impl Drop for StopOnDrop<'_> {
+        fn drop(&mut self) {
+            self.0.store(true, Ordering::Relaxed);
+        }
+    }
+
     let stopped = AtomicBool::new(false);
     let baseline = read_written_bytes(device).unwrap_or(0);
 
     std::thread::scope(|s| {
         let worker = s.spawn(|| {
-            let r = body();
-            stopped.store(true, Ordering::Relaxed);
-            r
+            let _stop = StopOnDrop(&stopped);
+            body()
         });
         while !stopped.load(Ordering::Relaxed) {
             if let Some(total) = read_written_bytes(device) {
@@ -84,7 +93,9 @@ fn with_progress_poller<R: Send>(
         if let Some(total) = read_written_bytes(device) {
             on_bytes(total.saturating_sub(baseline));
         }
-        worker.join().expect("dd worker thread panicked")
+        worker
+            .join()
+            .unwrap_or_else(|panic| std::panic::resume_unwind(panic))
     })
 }
 
@@ -333,9 +344,9 @@ fn wipe_encrypted_zero(
         || runner.run(zero),
     );
 
-    // 3. Always tear down the mapping, even if dd failed.
-    let close = CommandSpec::new("cryptsetup").arg("close").arg(mapper);
-    let close_result = runner.run(close);
+    // 3. Always tear down the mapping, even if dd failed. udev probes the
+    //    freshly written mapping, so wait for it and retry while busy.
+    let close_result = crate::luks::luks_close_settled(runner, &mapper);
 
     // dd is expected to terminate with ENOSPC once it fills the device — dd
     // surfaces that as exit code 1, but every preceding sector has been
@@ -347,7 +358,7 @@ fn wipe_encrypted_zero(
             return Err(e);
         }
     }
-    close_result.map(|_| ())
+    close_result
 }
 
 fn block_device_size(device: &Path) -> Option<u64> {
@@ -500,6 +511,33 @@ mod tests {
         let device = Path::new("/dev/sdz");
         assert!(clear_signatures_with_size(&runner, device, 1 << 30).is_err());
         assert_eq!(runner.calls(), ["wipefs --all /dev/sdz"]);
+    }
+
+    #[test]
+    fn progress_poller_stops_when_the_worker_panics() {
+        let device = Path::new("/dev/ashypass-test-missing");
+        let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            with_progress_poller(device, &mut |_| {}, || -> u8 { panic!("dd worker") })
+        }));
+        // Without the guard the poll loop would spin forever.
+        assert!(outcome.is_err());
+        assert_eq!(with_progress_poller(device, &mut |_| {}, || 7), 7);
+    }
+
+    #[test]
+    fn encrypted_zero_closes_the_wipe_mapping_through_udev_settle() {
+        use crate::runner::fake::FakeRunner;
+        // Nothing runs: the fake runner only records the commands. /dev/null
+        // stands in for a device that exists but backs no mapping.
+        let runner = FakeRunner::default();
+        wipe(&runner, Path::new("/dev/null"), WipeMode::EncryptedZero).unwrap();
+        let calls = runner.calls();
+        let close = calls.last().unwrap();
+        assert!(
+            close.starts_with("cryptsetup close ashypass_wipe_tmp"),
+            "{calls:?}"
+        );
+        assert_eq!(calls[calls.len() - 2], "udevadm settle --timeout=10");
     }
 
     #[test]

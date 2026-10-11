@@ -366,6 +366,7 @@ mod tests {
             by_id: Some("usb-Kingston_DataTraveler_3.0_E0D55EA5-0:0".into()),
             wwn: None,
             ptuuid: None,
+            diskseq: None,
         }
     }
 

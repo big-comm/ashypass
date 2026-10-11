@@ -35,10 +35,11 @@
 //! Passphrases are transmitted base64-encoded so newlines and shell-special
 //! bytes in user input never collide with the line-based protocol.
 //!
-//! Destructive requests (`wipe`, `luks-format`) carry the identity (serial,
-//! size, model) of the drive the user confirmed. The helper re-runs the
-//! safety inspection on every such request and refuses if the device behind
-//! the path is no longer that drive.
+//! Destructive requests (`wipe`, `luks-format`, and the session `luks-open`
+//! whose mapping `mkfs` then formats) carry the identity (serial, size,
+//! model, …) of the drive the user confirmed. The helper re-runs the safety
+//! inspection on every such request, and again before `mkfs`, and refuses if
+//! the device behind the path is no longer that drive.
 
 use ashypass_drives::{
     detect::{find_volume_owner, list_all},
@@ -51,10 +52,10 @@ use ashypass_drives::{
         DeviceIdentity, SafetyPolicy,
     },
     validate,
-    wipe::{wipe_with_progress, WipeMode},
+    wipe::{is_wipe_mapper, wipe_with_progress, WipeMode},
 };
 use serde::{Deserialize, Serialize};
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::io::{BufRead, Write};
 use std::path::{Path, PathBuf};
 use zeroize::Zeroize;
@@ -63,7 +64,17 @@ const MAX_REQUEST_BYTES: usize = 1024 * 1024;
 
 #[derive(Default)]
 struct SessionState {
-    opened_mappers: HashSet<String>,
+    /// Mappings opened by this session (the format pipeline), keyed by
+    /// mapper name. Only these may be formatted or closed with `luks-close`.
+    opened_mappers: HashMap<String, SessionMapping>,
+}
+
+/// What a session mapping was opened on, so `mkfs` can re-check that the
+/// mapping still sits on the drive the user confirmed.
+struct SessionMapping {
+    /// Stable `/dev/disk/by-id` path of the LUKS volume.
+    device: PathBuf,
+    expected: DeviceIdentity,
 }
 
 #[derive(Debug, Deserialize)]
@@ -284,31 +295,46 @@ fn handle(
             expected,
             keep_open,
         } => {
+            if let Err(error) = validate_open_mapper_name(&mapper_name) {
+                return Response::Error { error };
+            }
+            if state.opened_mappers.contains_key(&mapper_name) {
+                return Response::Error {
+                    error: "mapper is already open in this session".into(),
+                };
+            }
             let validated = if keep_open {
                 if expected.is_some() {
                     return Response::Error {
                         error: "keep_open cannot be combined with expected".into(),
                     };
                 }
-                validate_unlock_device(&device, true)
+                validate_unlock_device(&device, true).map(|device| (device, None))
             } else {
-                validate_luks_device(&device, expected.as_ref())
+                // A session mapping is what `mkfs` formats: it must be bound
+                // to the drive the user confirmed, like the other
+                // destructive steps.
+                let Some(expected) = expected else {
+                    return Response::Error {
+                        error: "a session luks-open requires the confirmed device identity".into(),
+                    };
+                };
+                validate_luks_device(&device, &expected).map(|device| (device, Some(expected)))
             };
-            let device = match validated {
-                Ok(device) => device,
+            let (device, expected) = match validated {
+                Ok(validated) => validated,
                 Err(error) => return Response::Error { error },
             };
-            if let Err(error) = validate_mapper_name(&mapper_name) {
-                return Response::Error { error };
-            }
             let pp = match decode_pp(&passphrase_b64) {
                 Ok(p) => p,
                 Err(e) => return Response::Error { error: e },
             };
             match luks_open(runner, &device, &mapper_name, &pp, allow_discards) {
                 Ok(_) => {
-                    if !keep_open {
-                        state.opened_mappers.insert(mapper_name);
+                    if let Some(expected) = expected {
+                        state
+                            .opened_mappers
+                            .insert(mapper_name, SessionMapping { device, expected });
                     }
                     Response::Ok { ok: true }
                 }
@@ -318,7 +344,7 @@ fn handle(
             }
         }
         Request::LuksClose { mapper_name } => {
-            if !state.opened_mappers.contains(&mapper_name) {
+            if !state.opened_mappers.contains_key(&mapper_name) {
                 return Response::Error {
                     error: "refusing to close a mapper not opened by this session".into(),
                 };
@@ -335,7 +361,7 @@ fn handle(
             }
         }
         Request::LuksLock { mapper_name } => {
-            if state.opened_mappers.contains(&mapper_name) {
+            if state.opened_mappers.contains_key(&mapper_name) {
                 return Response::Error {
                     error: "mapper belongs to this session; use luks-close".into(),
                 };
@@ -412,17 +438,21 @@ fn handle(
                     error: "invalid mapper path".into(),
                 };
             };
-            let expected = PathBuf::from("/dev/mapper").join(mapper_name);
-            if mapped != expected || !state.opened_mappers.contains(mapper_name) {
+            let mapper_path = PathBuf::from("/dev/mapper").join(mapper_name);
+            let session = state.opened_mappers.get(mapper_name);
+            let Some(session) = session.filter(|_| mapped == mapper_path) else {
                 return Response::Error {
                     error: "refusing to format a mapper not opened by this session".into(),
                 };
-            }
+            };
             let fs: Filesystem = fs.into();
             if let Err(error) = validate::validate_label_for_fs(&label, fs) {
                 return Response::Error {
                     error: error.to_string(),
                 };
+            }
+            if let Err(error) = verify_session_mapping(mapper_name, session) {
+                return Response::Error { error };
             }
             match mkfs(runner, &mapped, fs, &label) {
                 Ok(()) => Response::Ok { ok: true },
@@ -435,26 +465,36 @@ fn handle(
 }
 
 fn close_session_mappers(runner: &PlainRunner, state: &mut SessionState) {
-    for mapper in std::mem::take(&mut state.opened_mappers) {
+    for mapper in std::mem::take(&mut state.opened_mappers).into_keys() {
         if let Err(error) = luks_close(runner, &mapper) {
             eprintln!("ashypass-drives-helper: could not close {mapper}: {error}");
         }
     }
 }
 
+/// Read one request line of at most [`MAX_REQUEST_BYTES`]. Lines may carry a
+/// base64 passphrase, so every partial buffer is wiped on the error paths.
 fn read_request_line(reader: &mut impl BufRead) -> std::io::Result<Option<String>> {
     let mut bytes = Vec::new();
     let read = {
         let mut limited = std::io::Read::take(&mut *reader, (MAX_REQUEST_BYTES + 1) as u64);
-        limited.read_until(b'\n', &mut bytes)?
+        limited.read_until(b'\n', &mut bytes)
+    };
+    let read = match read {
+        Ok(read) => read,
+        Err(error) => {
+            bytes.zeroize();
+            return Err(error);
+        }
     };
     if read == 0 {
         return Ok(None);
     }
     if bytes.len() > MAX_REQUEST_BYTES {
-        if !bytes.ends_with(b"\n") {
-            let mut discarded = Vec::new();
-            reader.read_until(b'\n', &mut discarded)?;
+        let complete = bytes.ends_with(b"\n");
+        bytes.zeroize();
+        if !complete {
+            discard_line(reader)?;
         }
         return Err(std::io::Error::new(
             std::io::ErrorKind::InvalidData,
@@ -467,9 +507,35 @@ fn read_request_line(reader: &mut impl BufRead) -> std::io::Result<Option<String
             bytes.pop();
         }
     }
-    String::from_utf8(bytes)
-        .map(Some)
-        .map_err(|_| std::io::Error::new(std::io::ErrorKind::InvalidData, "request is not UTF-8"))
+    String::from_utf8(bytes).map(Some).map_err(|error| {
+        error.into_bytes().zeroize();
+        std::io::Error::new(std::io::ErrorKind::InvalidData, "request is not UTF-8")
+    })
+}
+
+/// Skip the rest of the current line (through its `\n`, or to EOF) without
+/// buffering it: only the reader's own buffer is ever touched.
+fn discard_line(reader: &mut impl BufRead) -> std::io::Result<()> {
+    loop {
+        let (consumed, done) = {
+            let buf = match reader.fill_buf() {
+                Ok(buf) => buf,
+                Err(error) if error.kind() == std::io::ErrorKind::Interrupted => continue,
+                Err(error) => return Err(error),
+            };
+            if buf.is_empty() {
+                return Ok(());
+            }
+            match buf.iter().position(|&b| b == b'\n') {
+                Some(end) => (end + 1, true),
+                None => (buf.len(), false),
+            }
+        };
+        reader.consume(consumed);
+        if done {
+            return Ok(());
+        }
+    }
 }
 
 /// Re-inspect a whole-disk target right before a destructive step: it must
@@ -486,11 +552,13 @@ fn validate_destructive_device(
     require_stable_device(report.canonical_path)
 }
 
-/// Validate the target of `luks-open`: a whole disk or partition of a
-/// detected removable drive, addressed by its node or a `/dev/disk/` link.
+/// Validate the target of a session `luks-open`: a whole disk or partition
+/// of a detected removable drive, addressed by its node or a `/dev/disk/`
+/// link, that passes every safety guard and is still the drive the user
+/// confirmed.
 fn validate_luks_device(
     device: &Path,
-    expected: Option<&DeviceIdentity>,
+    expected: &DeviceIdentity,
 ) -> std::result::Result<PathBuf, String> {
     let node = std::fs::canonicalize(device)
         .map_err(|_| format!("device not found: {}", device.display()))?;
@@ -503,11 +571,9 @@ fn validate_luks_device(
     let report = inspect(Path::new(&parent.path), SafetyPolicy::default())
         .map_err(|error| error.to_string())?;
     report.assert_safe().map_err(|error| error.to_string())?;
-    if let Some(expected) = expected {
-        expected
-            .verify(&report.identity())
-            .map_err(|error| error.to_string())?;
-    }
+    expected
+        .verify(&report.identity())
+        .map_err(|error| error.to_string())?;
     let stable = if device.starts_with("/dev/disk/by-id") {
         device.to_path_buf()
     } else {
@@ -542,6 +608,61 @@ fn validate_unlock_device(
     require_stable_device(stable)
 }
 
+/// Re-check a session mapping right before `mkfs` writes through it: it must
+/// still be open on the volume it was opened on, nothing on the drive may be
+/// mounted or stacked, and the drive must still be the one the user
+/// confirmed.
+fn verify_session_mapping(
+    mapper_name: &str,
+    session: &SessionMapping,
+) -> std::result::Result<(), String> {
+    let node = std::fs::canonicalize(&session.device)
+        .map_err(|_| format!("device not found: {}", session.device.display()))?;
+    let drives = list_all().map_err(|error| error.to_string())?;
+    let drive = find_volume_owner(&drives, &node)
+        .ok_or_else(|| "device is not a detected removable drive or partition".to_string())?;
+    let volume = drive
+        .volumes()
+        .find(|v| Path::new(&v.path) == node)
+        .ok_or_else(|| format!("{} holds no volume", node.display()))?;
+    if volume.active_mapping.as_deref() != Some(mapper_name) {
+        return Err(format!(
+            "/dev/mapper/{mapper_name} is no longer open on {}",
+            session.device.display()
+        ));
+    }
+    if drive.mountpoint.is_some()
+        || drive
+            .volumes()
+            .any(|v| v.mountpoint.is_some() || v.inner_mountpoint.is_some())
+    {
+        return Err("a volume of the device is mounted".into());
+    }
+    if drive
+        .volumes()
+        .any(|v| v.active_mapping.is_some() && v.path != volume.path)
+    {
+        return Err("the device has another open encrypted mapping".into());
+    }
+    if let Some(stacked) = drive.stacked.first() {
+        return Err(format!("device is in use by {stacked}"));
+    }
+    // The session's own mapping is expected here, so the mount and mapping
+    // guards were applied above; the remaining guards (removable, writable,
+    // not in crypttab) and the identity check run as for the other
+    // destructive steps.
+    let policy = SafetyPolicy {
+        allow_mounted: true,
+        ..SafetyPolicy::default()
+    };
+    let report = inspect(Path::new(&drive.path), policy).map_err(|error| error.to_string())?;
+    report.assert_safe().map_err(|error| error.to_string())?;
+    session
+        .expected
+        .verify(&report.identity())
+        .map_err(|error| error.to_string())
+}
+
 fn require_stable_device(path: PathBuf) -> std::result::Result<PathBuf, String> {
     if !path.starts_with("/dev/disk/by-id") {
         return Err("device has no stable /dev/disk/by-id path".into());
@@ -551,6 +672,17 @@ fn require_stable_device(path: PathBuf) -> std::result::Result<PathBuf, String> 
 
 fn validate_mapper_name(name: &str) -> std::result::Result<(), String> {
     validate::validate_mapper_name(name).map_err(|error| error.to_string())
+}
+
+/// Mapper names a `luks-open` may create: valid, and outside the namespace
+/// reserved for the wipe step (a leftover wipe mapping is closed and reused
+/// by the wipe, and must never be handed out as an unlocked volume).
+fn validate_open_mapper_name(name: &str) -> std::result::Result<(), String> {
+    validate_mapper_name(name)?;
+    if is_wipe_mapper(name) {
+        return Err(format!("mapper name {name} is reserved for the wipe step"));
+    }
+    Ok(())
 }
 
 fn validate_label(label: &str) -> std::result::Result<(), String> {
@@ -579,6 +711,79 @@ mod tests {
         assert!(validate_mapper_name("ashypass_vault-1").is_ok());
         assert!(validate_mapper_name("system-root").is_err());
         assert!(validate_mapper_name("ashypass_../../root").is_err());
+    }
+
+    #[test]
+    fn luks_open_refuses_the_wipe_mapper_namespace() {
+        assert!(validate_open_mapper_name("ashypass_vault").is_ok());
+        assert!(validate_open_mapper_name("ashypass_wipe_tmpfoo").is_ok());
+        for name in ["ashypass_wipe_tmp", "ashypass_wipe_tmp_sdb"] {
+            let error = validate_open_mapper_name(name).unwrap_err();
+            assert!(error.contains("reserved"), "{error}");
+        }
+        assert!(validate_open_mapper_name("system-root").is_err());
+    }
+
+    fn handle_line(state: &mut SessionState, line: &str) -> Response {
+        let req: Request = serde_json::from_str(line).unwrap();
+        let stdout = std::io::stdout();
+        handle(&PlainRunner, state, req, &mut stdout.lock())
+    }
+
+    fn error_of(response: Response) -> String {
+        match response {
+            Response::Error { error } => error,
+            other => panic!("expected an error, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn session_luks_open_requires_the_confirmed_identity() {
+        // Refused before any device access or passphrase decoding.
+        let mut state = SessionState::default();
+        let line = r#"{"op":"luks-open","device":"/dev/disk/by-id/usb-X-0:0","mapper_name":"ashypass_v","passphrase_b64":"cHc="}"#;
+        let error = error_of(handle_line(&mut state, line));
+        assert!(error.contains("identity"), "{error}");
+        // Reserved names are refused in both modes.
+        for keep_open in ["false", "true"] {
+            let line = format!(
+                r#"{{"op":"luks-open","device":"/dev/sdb","mapper_name":"ashypass_wipe_tmp","passphrase_b64":"cHc=","keep_open":{keep_open}}}"#
+            );
+            let error = error_of(handle_line(&mut state, &line));
+            assert!(error.contains("reserved"), "{error}");
+        }
+        assert!(state.opened_mappers.is_empty());
+    }
+
+    #[test]
+    fn mkfs_only_targets_session_mappings() {
+        let mut state = SessionState::default();
+        let line = r#"{"op":"mkfs","mapped":"/dev/mapper/ashypass_v","fs":"ext4","label":"v"}"#;
+        let error = error_of(handle_line(&mut state, line));
+        assert!(error.contains("not opened by this session"), "{error}");
+        // A path that merely ends in a session mapper name is refused too.
+        state.opened_mappers.insert(
+            "ashypass_v".into(),
+            SessionMapping {
+                device: PathBuf::from("/dev/disk/by-id/usb-ashypass-test-missing-0:0"),
+                expected: DeviceIdentity {
+                    serial: Some("X".into()),
+                    size_bytes: 1,
+                    model: None,
+                    by_id: None,
+                    wwn: None,
+                    ptuuid: None,
+                    diskseq: None,
+                },
+            },
+        );
+        let line = r#"{"op":"mkfs","mapped":"/tmp/ashypass_v","fs":"ext4","label":"v"}"#;
+        let error = error_of(handle_line(&mut state, line));
+        assert!(error.contains("not opened by this session"), "{error}");
+        // The backing device is re-checked before anything is written.
+        let line = r#"{"op":"mkfs","mapped":"/dev/mapper/ashypass_v","fs":"ext4","label":"v"}"#;
+        let error = error_of(handle_line(&mut state, line));
+        assert!(error.contains("device not found"), "{error}");
     }
 
     #[test]
@@ -679,6 +884,41 @@ mod tests {
 
         let mut oversized = std::io::Cursor::new(vec![b'x'; MAX_REQUEST_BYTES + 2]);
         assert!(read_request_line(&mut oversized).is_err());
+    }
+
+    #[test]
+    fn oversized_lines_are_skipped_in_bounded_chunks() {
+        // Several MiB with no newline, then a valid request: the reader
+        // resynchronises on the next line.
+        let mut input = vec![b'x'; 3 * MAX_REQUEST_BYTES + 17];
+        input.extend_from_slice(b"\n{\"op\":\"shutdown\"}\n");
+        let mut reader = std::io::BufReader::with_capacity(64, std::io::Cursor::new(input));
+        assert!(read_request_line(&mut reader).is_err());
+        assert_eq!(
+            read_request_line(&mut reader).unwrap().as_deref(),
+            Some("{\"op\":\"shutdown\"}")
+        );
+        assert_eq!(read_request_line(&mut reader).unwrap(), None);
+
+        // Over the limit up to EOF.
+        let mut reader = std::io::Cursor::new(vec![b'x'; MAX_REQUEST_BYTES + 5]);
+        assert!(read_request_line(&mut reader).is_err());
+        assert_eq!(read_request_line(&mut reader).unwrap(), None);
+
+        // Not UTF-8: refused, and the stream stays in sync.
+        let mut reader = std::io::Cursor::new(b"\xff\xfe\n{\"op\":\"shutdown\"}\n".to_vec());
+        assert!(read_request_line(&mut reader).is_err());
+        assert!(read_request_line(&mut reader).unwrap().is_some());
+    }
+
+    #[test]
+    fn discard_line_stops_after_the_newline() {
+        let mut reader =
+            std::io::BufReader::with_capacity(4, std::io::Cursor::new(b"abcdefg\nnext".to_vec()));
+        discard_line(&mut reader).unwrap();
+        let mut rest = String::new();
+        std::io::Read::read_to_string(&mut reader, &mut rest).unwrap();
+        assert_eq!(rest, "next");
     }
 }
 

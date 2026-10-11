@@ -21,7 +21,9 @@ pub struct DeviceIdentity {
     pub model: Option<String>,
     /// File name of the `/dev/disk/by-id/` link (e.g.
     /// `usb-Kingston_DataTraveler_3.0_E0D55EA5-0:0`). Only known after a
-    /// [`inspect`], never from `lsblk`.
+    /// [`inspect`], never from `lsblk`. It is derived from the path being
+    /// inspected, so on its own it proves nothing: it only counts as
+    /// evidence when it embeds the serial number or WWN.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub by_id: Option<String>,
     /// World Wide Name, when the device reports one.
@@ -31,6 +33,11 @@ pub struct DeviceIdentity {
     /// wiped, so it only counts when both sides report it.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ptuuid: Option<String>,
+    /// Kernel disk sequence number (`/sys/block/<disk>/diskseq`, Linux 5.15
+    /// and later). Never reused within a boot: a re-plugged or swapped
+    /// device gets a new one. Compared only when both sides know it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub diskseq: Option<u64>,
 }
 
 impl DeviceIdentity {
@@ -42,34 +49,57 @@ impl DeviceIdentity {
             by_id: None,
             wwn: drive.wwn.clone(),
             ptuuid: drive.ptuuid.clone(),
+            diskseq: drive.diskseq,
         }
     }
 
     /// Refuse unless `actual` is the same device the user confirmed.
     ///
     /// Serial, size and model must match exactly, as before. The by-id link,
-    /// WWN and partition table UUID are compared only when both sides know
-    /// them (`lsblk` does not always report them, and a wipe removes the
-    /// partition table). On top of that at least one stable identifier
-    /// (serial, WWN, PTUUID or by-id link) must be present on both sides and
-    /// equal: two serial-less sticks of the same model and size are not
-    /// "the same device" just because every field is empty.
+    /// WWN, partition table UUID and disk sequence number are compared only
+    /// when both sides know them (`lsblk` does not always report them, older
+    /// kernels have no `diskseq`, and a wipe removes the partition table).
+    /// On top of that at least one stable identifier (serial, WWN, PTUUID or
+    /// disk sequence number) must be present on both sides and equal: two
+    /// serial-less sticks of the same model and size are not "the same
+    /// device" just because every field is empty. A matching by-id link only
+    /// counts when it embeds the serial or WWN, since it is derived from the
+    /// very path the caller asked for.
     pub fn verify(&self, actual: &DeviceIdentity) -> Result<()> {
         self.check_unchanged(actual)?;
         let positive = |a: &Option<String>, b: &Option<String>| a.is_some() && a == b;
         if positive(&self.serial, &actual.serial)
             || positive(&self.wwn, &actual.wwn)
             || positive(&self.ptuuid, &actual.ptuuid)
-            || positive(&self.by_id, &actual.by_id)
+            || (self.diskseq.is_some() && self.diskseq == actual.diskseq)
+            || (positive(&self.by_id, &actual.by_id) && self.by_id_embeds_hardware_id())
         {
             Ok(())
         } else {
             Err(Error::Refused(
                 "the device has no serial number, WWN, partition table UUID or \
-                 /dev/disk/by-id link to confirm its identity"
+                 disk sequence number to confirm its identity"
                     .into(),
             ))
         }
+    }
+
+    /// True when the by-id link name contains the serial number or the WWN
+    /// (udev replaces whitespace with `_` in link names).
+    fn by_id_embeds_hardware_id(&self) -> bool {
+        let Some(by_id) = self.by_id.as_deref() else {
+            return false;
+        };
+        let by_id = by_id.to_ascii_lowercase();
+        [&self.serial, &self.wwn]
+            .into_iter()
+            .flatten()
+            .map(|id| {
+                id.trim()
+                    .replace(char::is_whitespace, "_")
+                    .to_ascii_lowercase()
+            })
+            .any(|id| !id.is_empty() && by_id.contains(&id))
     }
 
     /// The field comparison of [`Self::verify`] without the requirement of
@@ -89,6 +119,13 @@ impl DeviceIdentity {
                 if confirmed != current {
                     diffs.push(format!("{name} is {current} instead of {confirmed}"));
                 }
+            }
+        }
+        if let (Some(confirmed), Some(current)) = (self.diskseq, actual.diskseq) {
+            if confirmed != current {
+                diffs.push(format!(
+                    "disk sequence number is {current} instead of {confirmed}"
+                ));
             }
         }
         if self.serial != actual.serial {
@@ -138,6 +175,8 @@ pub struct SafetyReport {
     pub vendor: Option<String>,
     pub wwn: Option<String>,
     pub ptuuid: Option<String>,
+    /// Kernel disk sequence number, when the kernel exposes it.
+    pub diskseq: Option<u64>,
     pub allow_destructive: bool,
     pub reasons: Vec<String>,
 }
@@ -151,6 +190,7 @@ impl SafetyReport {
             by_id: by_id_name(&self.canonical_path),
             wwn: self.wwn.clone(),
             ptuuid: self.ptuuid.clone(),
+            diskseq: self.diskseq,
         }
     }
 
@@ -187,7 +227,10 @@ pub fn inspect(device: &Path, policy: SafetyPolicy) -> Result<SafetyReport> {
     let resolved = fs::canonicalize(device)
         .map_err(|_| Error::Refused(format!("device not found: {}", device.display())))?;
     let drive = locate_disk(&drives, device, &resolved)?;
-    let pinned = if is_stable_link(device) {
+    // Keep a hardware-derived by-id link the caller passed; anything else
+    // (kernel node, by-path link, a content-derived by-id link that a wipe
+    // would remove) is re-pinned to the best hardware-derived link.
+    let pinned = if by_id_name(device).is_some_and(|name| by_id_rank(&name).is_some()) {
         device.to_path_buf()
     } else {
         resolve_by_id(&resolved).unwrap_or_else(|| resolved.clone())
@@ -249,6 +292,7 @@ pub fn inspect(device: &Path, policy: SafetyPolicy) -> Result<SafetyReport> {
         vendor: drive.vendor.clone(),
         wwn: drive.wwn.clone(),
         ptuuid: drive.ptuuid.clone(),
+        diskseq: drive.diskseq,
         allow_destructive: allow,
         reasons,
     })
@@ -525,19 +569,55 @@ fn listed_in_crypttab(drive: &Drive) -> Result<bool> {
     }))
 }
 
-/// Walk `/dev/disk/by-id/` looking for a symlink whose target is `device`.
-/// The by-id name encodes vendor/model/serial and is stable across reboots
-/// and re-plugs, which makes it the right handle to pin between the safety
-/// check and the destructive call. Entries are visited in sorted order so
-/// the choice is deterministic.
-pub fn resolve_by_id(device: &Path) -> Option<PathBuf> {
-    let dir = fs::read_dir("/dev/disk/by-id").ok()?;
-    let target_canon = fs::canonicalize(device).ok()?;
-    let mut entries: Vec<PathBuf> = dir.flatten().map(|e| e.path()).collect();
-    entries.sort();
-    entries
+const BY_ID_DIR: &str = "/dev/disk/by-id";
+
+/// Prefixes of `/dev/disk/by-id/` links that udev derives from the hardware
+/// (WWN, or transport plus vendor/model/serial), in order of preference.
+/// Links derived from the content of the device (`lvm-pv-uuid-*`, `md-*`,
+/// `dm-*`, …) change or vanish once the drive is wiped, so they are never
+/// used to pin a device.
+const HARDWARE_BY_ID_PREFIXES: &[&str] = &[
+    "wwn-",
+    "usb-",
+    "ata-",
+    "scsi-",
+    "nvme-",
+    "mmc-",
+    "ieee1394-",
+    "memstick-",
+];
+
+/// Preference rank of a by-id link name, `None` when the name is not derived
+/// from the hardware.
+fn by_id_rank(name: &str) -> Option<usize> {
+    HARDWARE_BY_ID_PREFIXES
+        .iter()
+        .position(|prefix| name.starts_with(prefix))
+}
+
+/// Best hardware-derived link name among `names`: lowest prefix rank, then
+/// alphabetical so the choice is deterministic.
+fn pick_by_id(names: impl IntoIterator<Item = String>) -> Option<String> {
+    names
         .into_iter()
-        .find(|path| fs::canonicalize(path).is_ok_and(|resolved| resolved == target_canon))
+        .filter_map(|name| by_id_rank(&name).map(|rank| (rank, name)))
+        .min()
+        .map(|(_, name)| name)
+}
+
+/// Walk `/dev/disk/by-id/` looking for a hardware-derived symlink (see
+/// [`HARDWARE_BY_ID_PREFIXES`]) whose target is `device`. Such a name encodes
+/// the WWN or vendor/model/serial and survives reboots, re-plugs and wipes,
+/// which makes it the right handle to pin between the safety check and the
+/// destructive call.
+pub fn resolve_by_id(device: &Path) -> Option<PathBuf> {
+    let dir = fs::read_dir(BY_ID_DIR).ok()?;
+    let target_canon = fs::canonicalize(device).ok()?;
+    let names = dir
+        .flatten()
+        .filter(|entry| fs::canonicalize(entry.path()).is_ok_and(|r| r == target_canon))
+        .filter_map(|entry| entry.file_name().to_str().map(str::to_string));
+    pick_by_id(names).map(|name| Path::new(BY_ID_DIR).join(name))
 }
 
 #[cfg(test)]
@@ -638,6 +718,7 @@ mod tests {
             by_id: Some("usb-X_ABC-0:0".into()),
             wwn: None,
             ptuuid: Some("1a2b3c4d".into()),
+            diskseq: Some(17),
         };
         let json = serde_json::to_string(&id).unwrap();
         assert_eq!(serde_json::from_str::<DeviceIdentity>(&json).unwrap(), id);
@@ -645,6 +726,7 @@ mod tests {
         let old: DeviceIdentity =
             serde_json::from_str(r#"{"serial":"ABC","size_bytes":42,"model":null}"#).unwrap();
         assert_eq!((old.by_id, old.wwn, old.ptuuid), (None, None, None));
+        assert_eq!(old.diskseq, None);
     }
 
     fn serialless(by_id: Option<&str>) -> DeviceIdentity {
@@ -655,6 +737,7 @@ mod tests {
             by_id: by_id.map(str::to_string),
             wwn: None,
             ptuuid: None,
+            diskseq: None,
         }
     }
 
@@ -671,13 +754,103 @@ mod tests {
         let sde = DeviceIdentity::of(find_disk(&drives, Path::new("/dev/sde")).unwrap());
         assert!(sde.verify(&sde.clone()).is_err());
 
-        // A matching by-id link is positive evidence.
+        // A matching by-id link is derived from the requested path, so it
+        // proves nothing unless it embeds the serial or WWN.
         let linked = serialless(Some("usb-Generic_Flash_Disk_1234-0:0"));
-        assert!(linked.verify(&linked.clone()).is_ok());
+        assert!(linked.verify(&linked.clone()).is_err());
         // A different link is a different device.
         assert!(linked
             .verify(&serialless(Some("usb-Generic_Flash_Disk_9999-0:0")))
             .is_err());
+    }
+
+    #[test]
+    fn by_id_counts_only_when_it_embeds_the_serial_or_wwn() {
+        // The WWN is in the link but `lsblk` did not report it this time.
+        let mut confirmed = serialless(Some("wwn-0x5000c500a1b2c3d4"));
+        confirmed.wwn = Some("0x5000C500A1B2C3D4".into());
+        let mut current = confirmed.clone();
+        current.wwn = None;
+        assert!(confirmed.verify(&current).is_ok());
+        // A link that does not carry the WWN does not count.
+        let mut other = confirmed.clone();
+        other.by_id = Some("usb-Generic_Flash_Disk-0:0".into());
+        let mut other_current = other.clone();
+        other_current.wwn = None;
+        assert!(other.verify(&other_current).is_err());
+        // A serial with spaces matches udev's underscore form.
+        let mut spaced = serialless(Some("usb-Generic_Flash_AB_12-0:0"));
+        spaced.serial = Some("AB 12".into());
+        assert!(spaced.by_id_embeds_hardware_id());
+        spaced.serial = Some("   ".into());
+        assert!(!spaced.by_id_embeds_hardware_id());
+    }
+
+    #[test]
+    fn disk_sequence_number_is_evidence_and_detects_a_replug() {
+        let mut confirmed = serialless(None);
+        confirmed.diskseq = Some(42);
+        assert!(confirmed.verify(&confirmed.clone()).is_ok());
+        // Re-plugged or swapped: new sequence number.
+        let mut replugged = confirmed.clone();
+        replugged.diskseq = Some(43);
+        assert!(confirmed.verify(&replugged).is_err());
+        assert!(confirmed.check_unchanged(&replugged).is_err());
+        // Unknown on one side: not compared, and not evidence either.
+        let mut unknown = confirmed.clone();
+        unknown.diskseq = None;
+        assert!(confirmed.check_unchanged(&unknown).is_ok());
+        assert!(confirmed.verify(&unknown).is_err());
+        assert!(unknown.verify(&confirmed).is_err());
+    }
+
+    #[test]
+    fn pins_only_hardware_derived_by_id_links() {
+        let names = |list: &[&str]| list.iter().map(|n| n.to_string()).collect::<Vec<_>>();
+        // Content-derived links sort first alphabetically but are skipped.
+        assert_eq!(
+            pick_by_id(names(&[
+                "dm-name-foo",
+                "lvm-pv-uuid-abc",
+                "md-uuid-1234",
+                "usb-Kingston_DataTraveler_3.0_E0D55EA5-0:0",
+            ]))
+            .as_deref(),
+            Some("usb-Kingston_DataTraveler_3.0_E0D55EA5-0:0")
+        );
+        // The WWN wins over the transport links.
+        assert_eq!(
+            pick_by_id(names(&[
+                "ata-Samsung_SSD_870_S1234",
+                "usb-X-0:0",
+                "wwn-0x5002538e40000000",
+            ]))
+            .as_deref(),
+            Some("wwn-0x5002538e40000000")
+        );
+        // Then usb-, ata-, scsi-, nvme-, mmc-, …
+        assert_eq!(
+            pick_by_id(names(&["scsi-SX", "ata-X", "usb-X"])).as_deref(),
+            Some("usb-X")
+        );
+        assert_eq!(
+            pick_by_id(names(&["scsi-SX", "ata-X"])).as_deref(),
+            Some("ata-X")
+        );
+        assert_eq!(
+            pick_by_id(names(&["mmc-SD_0x1", "nvme-eui.1"])).as_deref(),
+            Some("nvme-eui.1")
+        );
+        // Same rank: alphabetical.
+        assert_eq!(
+            pick_by_id(names(&["usb-B-0:0", "usb-A-0:0"])).as_deref(),
+            Some("usb-A-0:0")
+        );
+        // Nothing hardware-derived: no pin.
+        assert_eq!(pick_by_id(names(&["lvm-pv-uuid-abc", "md-name-x"])), None);
+        for name in ["ieee1394-0x1", "memstick-X"] {
+            assert!(by_id_rank(name).is_some(), "{name}");
+        }
     }
 
     #[test]

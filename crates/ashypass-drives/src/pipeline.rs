@@ -17,7 +17,7 @@ use crate::passphrase::Passphrase;
 use crate::runner::Runner;
 use crate::safety::{inspect, DeviceIdentity, SafetyPolicy, SafetyReport};
 use crate::validate::{validate_label_for_fs, validate_mapper_name, validate_passphrase};
-use crate::wipe::{wipe_with_progress, WipeMode};
+use crate::wipe::{is_wipe_mapper, wipe_with_progress, WipeMode};
 use crate::{Error, Result};
 use std::path::{Path, PathBuf};
 
@@ -365,6 +365,13 @@ fn unlock_with(
     }
 
     let candidates = unlock_candidates(choice, &node, crate::mapper::uuid_of(&node).as_deref());
+    if let Some(reserved) = candidates.iter().find(|name| is_wipe_mapper(name)) {
+        // A leftover wipe mapping must never be handed out as the unlocked
+        // volume.
+        return Err(Error::Refused(format!(
+            "mapper name {reserved} is reserved for the wipe step"
+        )));
+    }
     let (mapper_name, state) = pick_mapper(&candidates, |name| mapper_state(name, &node))?;
     if state == MapperState::SameDevice {
         // Already unlocked from this very device (previous click, CLI
