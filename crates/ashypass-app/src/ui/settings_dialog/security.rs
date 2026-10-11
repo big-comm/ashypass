@@ -918,47 +918,59 @@ fn kdf_group(state: &SharedState) -> adw::PreferencesGroup {
 /// Opt-in switch for the vault key format. Off (the default) keeps the fixed
 /// costs every Ashy Pass 3 release opens; on derives the vault key with the
 /// auto-tuned costs, which older releases refuse.
-fn strong_key_row(state: &SharedState) -> adw::SwitchRow {
+fn strong_key_row(state: &SharedState) -> adw::ActionRow {
     use ashypass_core::db::vault::KeyFormat;
     let current = state
         .vault
         .borrow()
         .key_format()
         .unwrap_or(KeyFormat::Compatible);
-    let row = adw::SwitchRow::builder()
+    let switch = gtk::Switch::builder()
+        .active(current == KeyFormat::Strong)
+        .valign(gtk::Align::Center)
+        .build();
+    let row = adw::ActionRow::builder()
         .title(tr!("Use these costs for the vault key"))
         .subtitle(tr!(
             "Stronger against guessing the master password. While this is on, older versions of Ashy Pass cannot open the vault with the master password."
         ))
-        .active(current == KeyFormat::Strong)
+        .activatable_widget(&switch)
         .build();
+    row.add_suffix(&switch);
     row.set_sensitive(state.vault.borrow().is_unlocked());
-    // Set while the switch is moved back by code, so the handler ignores it.
-    let restoring = Rc::new(std::cell::Cell::new(false));
     let state = state.clone();
-    row.connect_active_notify(move |row| {
-        if restoring.get() {
-            return;
+    // Set while the code moves the switch, so that is not taken as a request.
+    let by_code = Rc::new(std::cell::Cell::new(false));
+    // Refuse the change here; it happens only after the master password is
+    // confirmed and the vault was encrypted again.
+    switch.connect_state_set(move |switch, wanted| {
+        if by_code.get() {
+            return glib::Propagation::Proceed;
         }
-        let wanted = if row.is_active() {
+        let wanted = if wanted {
             KeyFormat::Strong
         } else {
             KeyFormat::Compatible
         };
-        // Nothing changes until the master password is confirmed.
-        restoring.set(true);
-        row.set_active(!row.is_active());
-        restoring.set(false);
-        ask_key_format_change(&state, row, wanted, restoring.clone());
+        ask_key_format_change(&state, switch, wanted, by_code.clone());
+        glib::Propagation::Stop
     });
     row
 }
 
+/// Move `switch` to `on` without asking again.
+fn set_switch(switch: &gtk::Switch, on: bool, by_code: &std::cell::Cell<bool>) {
+    by_code.set(true);
+    switch.set_active(on);
+    switch.set_state(on);
+    by_code.set(false);
+}
+
 fn ask_key_format_change(
     state: &SharedState,
-    row: &adw::SwitchRow,
+    row: &gtk::Switch,
     wanted: ashypass_core::db::vault::KeyFormat,
-    restoring: Rc<std::cell::Cell<bool>>,
+    by_code: Rc<std::cell::Cell<bool>>,
 ) {
     use ashypass_core::db::vault::KeyFormat;
     let dialog = adw::AlertDialog::builder()
@@ -984,14 +996,34 @@ fn ask_key_format_change(
     list.add_css_class("boxed-list");
     list.append(&password);
     dialog.set_extra_child(Some(&list));
+    {
+        // Cancelled: the switch goes back to what is in effect.
+        let row = row.clone();
+        let by_code = by_code.clone();
+        dialog.connect_response(Some("cancel"), move |_, _| {
+            set_switch(&row, row.state(), &by_code);
+        });
+    }
+    {
+        // Closed without an answer (the vault locked): same as cancel,
+        // unless the change is already running.
+        let row = row.clone();
+        let by_code = by_code.clone();
+        dialog.connect_closed(move |_| {
+            if row.is_sensitive() && row.is_active() != row.state() {
+                set_switch(&row, row.state(), &by_code);
+            }
+        });
+    }
     let state_cl = state.clone();
     let row_cl = row.clone();
     dialog.connect_response(Some("change"), move |_, _| {
         let state = state_cl.clone();
         let row = row_cl.clone();
-        let restoring = restoring.clone();
+        let by_code = by_code.clone();
         let typed = Zeroizing::new(password.text().to_string());
         let Ok(hash) = state.vault.borrow().master_hash() else {
+            set_switch(&row, row.state(), &by_code);
             return;
         };
         row.set_sensitive(false);
@@ -1007,10 +1039,14 @@ fn ask_key_format_change(
                 row.set_sensitive(true);
                 let show = |message: &str| toast_near(&row, message);
                 if !state.vault.borrow().is_unlocked() {
+                    set_switch(&row, row.state(), &by_code);
                     show(tr!("Unlock the vault first"));
                     return;
                 }
                 let result = prepared.and_then(|p| state.vault.borrow_mut().apply_rekey(p));
+                if result.is_err() {
+                    set_switch(&row, row.state(), &by_code);
+                }
                 match result {
                     Ok(()) => {
                         // The PIN wraps the old key.
@@ -1021,9 +1057,7 @@ fn ask_key_format_change(
                         if let Err(error) = state.update_settings(|s| s.quick_unlock = None) {
                             log::warn!("could not clear quick-unlock settings: {error}");
                         }
-                        restoring.set(true);
-                        row.set_active(wanted == KeyFormat::Strong);
-                        restoring.set(false);
+                        set_switch(&row, wanted == KeyFormat::Strong, &by_code);
                         show(tr!(
                             "Vault encrypted again. Set up the PIN again if you used one."
                         ));

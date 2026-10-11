@@ -1036,6 +1036,20 @@ impl DevHandle {
             "add" => inner.vault_view.show_add_dialog(None),
             "add-code" => inner.totp_view.show_add_dialog(),
             "settings" => inner.open_settings(),
+            // settings-page:<index> — switch the open Settings dialog's page.
+            "settings-page" => {
+                if let Some(dialog) = inner
+                    .window
+                    .visible_dialog()
+                    .and_then(|d| d.downcast::<adw::PreferencesDialog>().ok())
+                {
+                    let mut pages = Vec::new();
+                    collect_pages(dialog.upcast_ref(), &mut pages);
+                    if let Some(page) = pages.get(arg.parse().unwrap_or(0)) {
+                        dialog.set_visible_page(page);
+                    }
+                }
+            }
             "lock" => inner.lock_now(false),
             "warn" => inner.show_lock_warning(arg.parse().unwrap_or(20)),
             "gen-kind" => inner.generator_view.panel.dev_set_kind(arg),
@@ -1105,6 +1119,54 @@ impl DevHandle {
                     }
                     None => eprintln!("dev: no button {arg}"),
                 }
+            }
+            "expand" => {
+                // expand:<row title> — open an expander row.
+                let found = find_widget(&inner.window.clone().upcast(), &|w| {
+                    w.downcast_ref::<adw::ExpanderRow>()
+                        .is_some_and(|row| row.title() == arg)
+                });
+                match found.and_then(|w| w.downcast::<adw::ExpanderRow>().ok()) {
+                    Some(row) => row.set_expanded(true),
+                    None => eprintln!("dev: no expander {arg}"),
+                }
+            }
+            "switch" => {
+                // switch:<row title> — flip a switch row.
+                let found = find_widget(&inner.window.clone().upcast(), &|w| {
+                    w.downcast_ref::<adw::PreferencesRow>()
+                        .is_some_and(|row| row.title() == arg)
+                });
+                match found {
+                    Some(w) if w.is::<adw::SwitchRow>() => {
+                        let row = w.downcast::<adw::SwitchRow>().expect("checked");
+                        row.set_active(!row.is_active());
+                    }
+                    Some(w) => match w
+                        .downcast_ref::<adw::ActionRow>()
+                        .and_then(|row| row.activatable_widget())
+                        .and_then(|s| s.downcast::<gtk::Switch>().ok())
+                    {
+                        Some(switch) => switch.set_active(!switch.is_active()),
+                        None => eprintln!("dev: {arg} is not a switch"),
+                    },
+                    None => eprintln!("dev: no switch {arg}"),
+                }
+            }
+            "fill" => {
+                // fill:<row title>=<text> — type into an entry row.
+                let (title, text) = arg.split_once('=').unwrap_or((arg, ""));
+                // The last match: a dialog on top comes after the page below.
+                let mut rows = Vec::new();
+                collect_entry_rows(&inner.window.clone().upcast(), title, &mut rows);
+                match rows.pop() {
+                    Some(row) => row.set_text(text),
+                    None => eprintln!("dev: no field {title}"),
+                }
+            }
+            "keyformat" => {
+                let format = inner.state.vault.borrow().key_format();
+                eprintln!("dev: key format {format:?}");
             }
             "field" => {
                 // field:<row title> — print the text of an entry row.
@@ -1179,6 +1241,33 @@ fn button_label(widget: &gtk::Widget) -> Option<String> {
         return Some(content.label().to_string());
     }
     None
+}
+
+#[cfg(debug_assertions)]
+fn collect_entry_rows(root: &gtk::Widget, title: &str, out: &mut Vec<adw::EntryRow>) {
+    if let Some(row) = root.downcast_ref::<adw::EntryRow>() {
+        if row.title() == title && row.is_mapped() {
+            out.push(row.clone());
+        }
+    }
+    let mut child = root.first_child();
+    while let Some(c) = child {
+        collect_entry_rows(&c, title, out);
+        child = c.next_sibling();
+    }
+}
+
+#[cfg(debug_assertions)]
+fn collect_pages(root: &gtk::Widget, out: &mut Vec<adw::PreferencesPage>) {
+    if let Some(page) = root.downcast_ref::<adw::PreferencesPage>() {
+        out.push(page.clone());
+        return;
+    }
+    let mut child = root.first_child();
+    while let Some(c) = child {
+        collect_pages(&c, out);
+        child = c.next_sibling();
+    }
 }
 
 #[cfg(debug_assertions)]
