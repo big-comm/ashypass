@@ -49,9 +49,23 @@ enum HelperRequest<'a> {
         allow_discards: bool,
         #[serde(skip_serializing_if = "Option::is_none")]
         expected: Option<&'a DeviceIdentity>,
+        /// Leave the mapping open when the session ends (a user unlock)
+        /// instead of tearing it down with the session (format pipeline).
+        #[serde(skip_serializing_if = "std::ops::Not::not")]
+        keep_open: bool,
     },
     LuksClose {
         mapper_name: &'a str,
+    },
+    /// Close a mapping opened outside this session (the user's Lock button).
+    LuksLock {
+        mapper_name: &'a str,
+    },
+    EnrollFido2 {
+        device: &'a Path,
+        passphrase_b64: SecretString,
+        pin_required: bool,
+        user_presence_required: bool,
     },
     Wipe {
         device: &'a Path,
@@ -98,6 +112,11 @@ impl HelperClient {
     /// Spawn the helper via `pkexec`. Triggers exactly one polkit prompt.
     pub fn spawn() -> Result<Self> {
         let path = helper_path();
+        // pkexec reports a missing program with the same exit code (127) as
+        // a refused authorisation; check first so the two are not confused.
+        if !path.is_file() {
+            return Err(Error::MissingTool(path.display().to_string()));
+        }
         let mut cmd = Command::new("pkexec");
         cmd.arg(&path);
         cmd.stdin(Stdio::piped())
@@ -116,6 +135,15 @@ impl HelperClient {
         })
     }
 
+    /// Error to report once the helper stopped talking: reap the child and
+    /// translate its exit status.
+    fn exit_error(&mut self) -> Error {
+        match self.child.wait() {
+            Ok(status) => exit_status_error(status.code()),
+            Err(error) => Error::Io(error),
+        }
+    }
+
     fn round_trip(
         &mut self,
         req: &HelperRequest<'_>,
@@ -130,13 +158,17 @@ impl HelperClient {
             .and_then(|()| self.stdin.flush());
         // The line may carry a base64 passphrase.
         line.zeroize();
-        written?;
+        if written.is_err() {
+            // Broken pipe: pkexec (or the helper) is already gone. Its exit
+            // status says why, which is more useful than EPIPE.
+            return Err(self.exit_error());
+        }
 
         loop {
             let mut buf = String::new();
             let n = self.stdout.read_line(&mut buf)?;
             if n == 0 {
-                return Err(Error::Refused("helper closed stdout".into()));
+                return Err(self.exit_error());
             }
             let resp: HelperResponse = serde_json::from_str(buf.trim())
                 .map_err(|e| Error::Refused(format!("decode response: {e}; line was: {buf:?}")))?;
@@ -183,6 +215,30 @@ impl HelperClient {
                 allow_discards,
                 passphrase_b64: SecretString::new(b64_encode(passphrase.as_bytes())),
                 expected,
+                keep_open: false,
+            },
+            &mut |_| {},
+        )?;
+        Ok(PathBuf::from(format!("/dev/mapper/{mapper_name}")))
+    }
+
+    /// Unlock an existing LUKS volume for the user. Unlike [`Self::luks_open`]
+    /// the mapping stays open after the helper exits.
+    pub fn luks_unlock(
+        &mut self,
+        device: &Path,
+        mapper_name: &str,
+        passphrase: &Passphrase,
+        allow_discards: bool,
+    ) -> Result<PathBuf> {
+        self.round_trip(
+            &HelperRequest::LuksOpen {
+                device,
+                mapper_name,
+                allow_discards,
+                passphrase_b64: SecretString::new(b64_encode(passphrase.as_bytes())),
+                expected: None,
+                keep_open: true,
             },
             &mut |_| {},
         )?;
@@ -191,6 +247,33 @@ impl HelperClient {
 
     pub fn luks_close(&mut self, mapper_name: &str) -> Result<()> {
         self.round_trip(&HelperRequest::LuksClose { mapper_name }, &mut |_| {})
+    }
+
+    /// Lock an Ashy Pass mapping on a removable drive (opened earlier by
+    /// [`Self::luks_unlock`], the CLI, or a previous session). The mapping
+    /// must already be unmounted.
+    pub fn luks_lock(&mut self, mapper_name: &str) -> Result<()> {
+        self.round_trip(&HelperRequest::LuksLock { mapper_name }, &mut |_| {})
+    }
+
+    /// Add a FIDO2 keyslot with `systemd-cryptenroll`, authorised by the
+    /// current passphrase.
+    pub fn enroll_fido2(
+        &mut self,
+        device: &Path,
+        passphrase: &Passphrase,
+        pin_required: bool,
+        user_presence_required: bool,
+    ) -> Result<()> {
+        self.round_trip(
+            &HelperRequest::EnrollFido2 {
+                device,
+                passphrase_b64: SecretString::new(b64_encode(passphrase.as_bytes())),
+                pin_required,
+                user_presence_required,
+            },
+            &mut |_| {},
+        )
     }
 
     pub fn wipe(
@@ -224,6 +307,18 @@ impl Drop for HelperClient {
             let _ = self.stdin.write_all(b"\n");
         }
         let _ = self.child.wait();
+    }
+}
+
+/// Map the exit code of `pkexec <helper>` to an error. pkexec exits with
+/// 126 when the authentication dialog was dismissed and 127 when the user is
+/// not authorised (or authentication failed); the helper itself never uses
+/// those codes.
+fn exit_status_error(code: Option<i32>) -> Error {
+    match code {
+        Some(126 | 127) => Error::AuthCancelled,
+        Some(code) => Error::Refused(format!("the privileged helper exited with status {code}")),
+        None => Error::Refused("the privileged helper was terminated by a signal".into()),
     }
 }
 
@@ -268,7 +363,78 @@ mod tests {
             serial: Some("E0D55EA5".into()),
             size_bytes: 61_991_813_120,
             model: Some("DataTraveler 3.0".into()),
+            by_id: Some("usb-Kingston_DataTraveler_3.0_E0D55EA5-0:0".into()),
+            wwn: None,
+            ptuuid: None,
         }
+    }
+
+    #[test]
+    fn identity_carries_the_by_id_link_and_omits_unknown_fields() {
+        let id = identity();
+        let wipe = serde_json::to_value(HelperRequest::Wipe {
+            device: Path::new("/dev/disk/by-id/usb-Kingston-0:0"),
+            mode: "none",
+            expected: &id,
+        })
+        .unwrap();
+        assert_eq!(
+            wipe["expected"]["by_id"],
+            "usb-Kingston_DataTraveler_3.0_E0D55EA5-0:0"
+        );
+        assert!(wipe["expected"].get("wwn").is_none());
+    }
+
+    #[test]
+    fn unlock_lock_and_enrol_requests() {
+        let device = Path::new("/dev/disk/by-id/usb-Kingston-0:0-part1");
+        let session = serde_json::to_value(HelperRequest::LuksOpen {
+            device,
+            mapper_name: "ashypass_vault",
+            passphrase_b64: SecretString::new(b64_encode(b"pw")),
+            allow_discards: false,
+            expected: None,
+            keep_open: false,
+        })
+        .unwrap();
+        // Format-session opens keep the original wire format.
+        assert!(session.get("keep_open").is_none());
+
+        let unlock = serde_json::to_value(HelperRequest::LuksOpen {
+            device,
+            mapper_name: "ashypass_vault",
+            passphrase_b64: SecretString::new(b64_encode(b"pw")),
+            allow_discards: false,
+            expected: None,
+            keep_open: true,
+        })
+        .unwrap();
+        assert_eq!(unlock["keep_open"], true);
+
+        let lock = serde_json::to_value(HelperRequest::LuksLock {
+            mapper_name: "ashypass_vault",
+        })
+        .unwrap();
+        assert_eq!(lock["op"], "luks-lock");
+
+        let enrol = serde_json::to_value(HelperRequest::EnrollFido2 {
+            device,
+            passphrase_b64: SecretString::new(b64_encode(b"pw")),
+            pin_required: true,
+            user_presence_required: false,
+        })
+        .unwrap();
+        assert_eq!(enrol["op"], "enroll-fido2");
+        assert_eq!(enrol["passphrase_b64"], "cHc=");
+        assert_eq!(enrol["user_presence_required"], false);
+    }
+
+    #[test]
+    fn pkexec_refusals_mean_authentication_was_cancelled() {
+        assert!(matches!(exit_status_error(Some(126)), Error::AuthCancelled));
+        assert!(matches!(exit_status_error(Some(127)), Error::AuthCancelled));
+        assert!(matches!(exit_status_error(Some(2)), Error::Refused(_)));
+        assert!(matches!(exit_status_error(None), Error::Refused(_)));
     }
 
     #[test]
@@ -307,6 +473,7 @@ mod tests {
             passphrase_b64: SecretString::new(b64_encode(b"correct horse")),
             allow_discards: false,
             expected: Some(&id),
+            keep_open: false,
         };
         let debug = format!("{req:?}");
         assert!(!debug.contains(&b64_encode(b"correct horse")), "{debug}");

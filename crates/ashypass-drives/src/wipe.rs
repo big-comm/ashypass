@@ -117,8 +117,10 @@ pub enum WipeMode {
     /// Single pass of `/dev/urandom`. Slowest, no kernel dependency on
     /// dm-crypt being usable at wipe time.
     Random,
-    /// Skip the wipe. Callers must surface a clear warning that previously
-    /// written plaintext outside LUKS-managed sectors may survive.
+    /// Skip the full wipe. Only the old signatures are cleared (`wipefs -a`
+    /// plus the last MiB, where the backup GPT lives; the first MiB is
+    /// overwritten by the LUKS2 header). Callers must surface a clear warning
+    /// that previously written plaintext may survive.
     None,
 }
 
@@ -181,11 +183,72 @@ pub fn wipe_with_progress(
     on_bytes: &mut dyn FnMut(u64),
 ) -> Result<()> {
     match mode {
-        WipeMode::None => Ok(()),
+        WipeMode::None => clear_signatures(runner, device),
         WipeMode::Random => wipe_random(runner, device, on_bytes),
         WipeMode::EncryptedZero => wipe_encrypted_zero(runner, device, on_bytes),
         WipeMode::SecureDiscard => wipe_secure_discard(runner, device),
     }
+}
+
+/// Bytes zeroed at the end of the device in quick mode. Covers the backup
+/// GPT header and entry array (16 KiB + 512 B) with ample margin.
+const TAIL_ZERO_BYTES: u64 = 1024 * 1024;
+
+/// Quick mode: `luksFormat` only rewrites the start of the disk, so the
+/// backup GPT at the end survives and tools (and some firmware) would keep
+/// "seeing" the old partitions and offer to repair them. Clear every known
+/// signature and zero the last MiB.
+fn clear_signatures(runner: &dyn Runner, device: &Path) -> Result<()> {
+    let size = match block_device_size(device) {
+        Some(size) => size,
+        None => query_device_size(runner, device)?,
+    };
+    clear_signatures_with_size(runner, device, size)
+}
+
+fn clear_signatures_with_size(runner: &dyn Runner, device: &Path, size: u64) -> Result<()> {
+    runner.run(
+        CommandSpec::new("wipefs")
+            .arg("--all")
+            .arg(device.to_string_lossy().into_owned()),
+    )?;
+    runner.run(build_tail_zero_spec(device, size)?)?;
+    Ok(())
+}
+
+/// `dd` that zeroes the last [`TAIL_ZERO_BYTES`] of a device of `size`
+/// bytes (the whole device if it is smaller). Block devices are always a
+/// multiple of 512 bytes, which is the block size used here.
+fn build_tail_zero_spec(device: &Path, size: u64) -> Result<CommandSpec> {
+    const BS: u64 = 512;
+    if size == 0 || size % BS != 0 {
+        return Err(Error::Refused(format!(
+            "unexpected size for {}: {size} bytes",
+            device.display()
+        )));
+    }
+    let count = TAIL_ZERO_BYTES.min(size) / BS;
+    let seek = size / BS - count;
+    Ok(CommandSpec::new("dd")
+        .arg("if=/dev/zero")
+        .arg(format!("of={}", device.display()))
+        .arg(format!("bs={BS}"))
+        .arg(format!("seek={seek}"))
+        .arg(format!("count={count}"))
+        .arg("conv=fsync")
+        .arg("status=none"))
+}
+
+fn query_device_size(runner: &dyn Runner, device: &Path) -> Result<u64> {
+    let out = runner.run(
+        CommandSpec::new("blockdev")
+            .arg("--getsize64")
+            .arg(device.to_string_lossy().into_owned()),
+    )?;
+    String::from_utf8_lossy(&out.stdout)
+        .trim()
+        .parse()
+        .map_err(|_| Error::Refused(format!("could not read the size of {}", device.display())))
 }
 
 fn wipe_random(runner: &dyn Runner, device: &Path, on_bytes: &mut dyn FnMut(u64)) -> Result<()> {
@@ -388,6 +451,55 @@ mod tests {
             (name.as_str(), state),
             ("ashypass_wipe_tmp_sdb", MapperState::Free)
         );
+    }
+
+    #[test]
+    fn quick_mode_clears_signatures_and_the_backup_gpt() {
+        use crate::runner::fake::FakeRunner;
+        // A path with no sysfs entry: the size comes from `blockdev`.
+        let device = Path::new("/dev/disk/by-id/usb-ashypass-test-missing-0:0");
+        let runner = FakeRunner::default().stdout("8053063680\n");
+        wipe(&runner, device, WipeMode::None).unwrap();
+        let sectors = 8_053_063_680u64 / 512;
+        assert_eq!(
+            runner.calls(),
+            [
+                format!("blockdev --getsize64 {}", device.display()),
+                format!("wipefs --all {}", device.display()),
+                format!(
+                    "dd if=/dev/zero of={} bs=512 seek={} count=2048 conv=fsync status=none",
+                    device.display(),
+                    sectors - 2048
+                ),
+            ]
+        );
+    }
+
+    #[test]
+    fn tail_zero_covers_tiny_devices_and_rejects_odd_sizes() {
+        let device = Path::new("/dev/sdz");
+        let tiny = build_tail_zero_spec(device, 64 * 1024).unwrap();
+        assert!(tiny.args.contains(&"seek=0".to_string()), "{:?}", tiny.args);
+        assert!(
+            tiny.args.contains(&"count=128".to_string()),
+            "{:?}",
+            tiny.args
+        );
+        assert!(build_tail_zero_spec(device, 0).is_err());
+        assert!(build_tail_zero_spec(device, 1000).is_err());
+    }
+
+    #[test]
+    fn quick_mode_stops_when_wipefs_fails() {
+        use crate::runner::fake::FakeRunner;
+        let runner = FakeRunner::default().reply(Err(Error::CommandFailed {
+            cmd: "wipefs".into(),
+            status: 1,
+            stderr: "probing initialization failed: Device or resource busy".into(),
+        }));
+        let device = Path::new("/dev/sdz");
+        assert!(clear_signatures_with_size(&runner, device, 1 << 30).is_err());
+        assert_eq!(runner.calls(), ["wipefs --all /dev/sdz"]);
     }
 
     #[test]

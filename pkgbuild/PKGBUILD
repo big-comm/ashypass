@@ -19,6 +19,7 @@ optdepends=(
     'btrfs-progs: Btrfs filesystem support for encrypted drives'
     'xfsprogs: XFS filesystem support for encrypted drives'
     'systemd: FIDO2 token enrolment via systemd-cryptenroll'
+    'udisks2: unmount an unlocked drive before locking it'
 )
 makedepends=(
     'rust'
@@ -82,6 +83,11 @@ package() {
     if [ -d "usr/share" ]; then
         cp -a usr/share "${pkgdir}/usr/"
     fi
+
+    # Install the polkit policy with a fixed mode rather than relying on the
+    # permissions `cp -a` copied from the checkout.
+    install -Dm644 usr/share/polkit-1/actions/com.bigcommunity.ashypass.drives.policy \
+        "${pkgdir}/usr/share/polkit-1/actions/com.bigcommunity.ashypass.drives.policy"
 
     # Compile and install .po translations as .mo if present.
     if [ -d "locale" ]; then

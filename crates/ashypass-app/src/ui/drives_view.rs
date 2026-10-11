@@ -21,7 +21,7 @@ use adw::prelude::*;
 use ashypass_drives::detect::{human_size, list_removable, Drive, Partition};
 use ashypass_drives::validate::validate_mapper_name;
 use gtk::glib;
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use std::sync::Once;
 
@@ -82,6 +82,14 @@ struct Inner {
     empty_status: adw::StatusPage,
     content_stack: gtk::Stack,
     last_signature: RefCell<String>,
+    /// A scan is running on a worker thread; polls are skipped meanwhile.
+    scanning: Cell<bool>,
+    /// The user asked for a refresh while a poll was running: rebuild with
+    /// that poll's result and report its errors.
+    forced_pending: Cell<bool>,
+    /// Last scan error logged, so a persistent failure is logged once
+    /// instead of every poll.
+    last_error: RefCell<Option<String>>,
 }
 
 impl DrivesView {
@@ -155,25 +163,29 @@ impl DrivesView {
             empty_status,
             content_stack,
             last_signature: RefCell::new(String::new()),
+            scanning: Cell::new(false),
+            forced_pending: Cell::new(false),
+            last_error: RefCell::new(None),
         });
 
-        inner.refresh();
+        inner.scan(true);
 
         {
             let inner_cl = inner.clone();
-            refresh_btn.connect_clicked(move |_| inner_cl.refresh());
+            refresh_btn.connect_clicked(move |_| inner_cl.scan(true));
         }
 
-        // Hot-plug poll. Cheap (one lsblk call) and signature-based: we only
-        // rebuild widgets when the device topology actually changes.
+        // Hot-plug poll. Cheap (one lsblk call, on a worker thread) and
+        // signature-based: we only rebuild widgets when the device topology
+        // actually changes.
         {
             let inner_cl = inner.clone();
             let root_cl = root.clone();
             glib::timeout_add_seconds_local(3, move || {
-                // Only while the page is on screen: lsblk runs on the main
-                // loop and nobody needs the list while it is hidden.
+                // Only while the page is on screen: nobody needs the list
+                // while it is hidden.
                 if root_cl.is_mapped() {
-                    inner_cl.refresh_if_changed();
+                    inner_cl.scan(false);
                 }
                 glib::ControlFlow::Continue
             });
@@ -184,30 +196,48 @@ impl DrivesView {
 }
 
 impl Inner {
-    fn refresh(&self) {
-        match list_removable() {
-            Ok(drives) => {
-                *self.last_signature.borrow_mut() = signature(&drives);
-                self.populate(&drives);
+    /// Run `lsblk` on a worker thread and update the list from the main
+    /// loop. `force` rebuilds even if nothing changed and reports failures
+    /// with a toast; polls only rebuild on change and log failures.
+    fn scan(self: &Rc<Self>, force: bool) {
+        if self.scanning.replace(true) {
+            if force {
+                self.forced_pending.set(true);
             }
-            Err(e) => {
-                let toast = adw::Toast::builder()
-                    .title(format!("{}: {e}", tr!("Failed to scan drives")))
-                    .timeout(4)
-                    .build();
-                self.toast.add_toast(toast);
-            }
+            return;
         }
-    }
-
-    fn refresh_if_changed(&self) {
-        if let Ok(drives) = list_removable() {
-            let sig = signature(&drives);
-            if sig != *self.last_signature.borrow() {
-                *self.last_signature.borrow_mut() = sig;
-                self.populate(&drives);
+        let inner = self.clone();
+        super::settings_dialog::run_background(list_removable, move |result| {
+            inner.scanning.set(false);
+            let force = force || inner.forced_pending.replace(false);
+            match result {
+                Ok(drives) => {
+                    inner.last_error.replace(None);
+                    let sig = signature(&drives);
+                    if force || sig != *inner.last_signature.borrow() {
+                        *inner.last_signature.borrow_mut() = sig;
+                        inner.populate(&drives);
+                    }
+                }
+                Err(e) => {
+                    let message = e.to_string();
+                    if inner.last_error.borrow().as_deref() != Some(message.as_str()) {
+                        log::warn!("drive scan failed: {message}");
+                        inner.last_error.replace(Some(message.clone()));
+                    }
+                    if force {
+                        let toast = adw::Toast::builder()
+                            .title(glib::markup_escape_text(&format!(
+                                "{}: {message}",
+                                tr!("Failed to scan drives")
+                            )))
+                            .timeout(4)
+                            .build();
+                        inner.toast.add_toast(toast);
+                    }
+                }
             }
-        }
+        });
     }
 
     fn populate(&self, drives: &[Drive]) {
@@ -229,6 +259,11 @@ impl Inner {
 }
 
 /// Cheap fingerprint of device topology. Only changes here should rebuild rows.
+///
+/// Usage figures (`fs_used`) are deliberately left out: copying files to a
+/// mounted drive would otherwise rebuild the list (and collapse every
+/// expanded row) on each poll. The usage bars catch up on the next
+/// topology change or manual refresh.
 fn signature(drives: &[Drive]) -> String {
     let mut s = String::new();
     for d in drives {
@@ -244,16 +279,12 @@ fn signature(drives: &[Drive]) -> String {
             s.push_str(p.fstype.as_deref().unwrap_or("-"));
             s.push(',');
             s.push_str(p.mountpoint.as_deref().unwrap_or("-"));
-            s.push(',');
-            s.push_str(&p.fs_used.unwrap_or(0).to_string());
             // LUKS open/close state — without this the row never flips
             // between Unlock and Lock on auto-refresh.
             s.push(',');
             s.push_str(p.active_mapping.as_deref().unwrap_or("-"));
             s.push(',');
             s.push_str(p.inner_mountpoint.as_deref().unwrap_or("-"));
-            s.push(',');
-            s.push_str(&p.inner_fs_used.unwrap_or(0).to_string());
         }
         s.push('\n');
     }
@@ -613,8 +644,10 @@ fn partition_row(part: &Partition, toast: &adw::ToastOverlay) -> adw::ActionRow 
     row
 }
 
-/// Wire the Lock button: unmount (best effort), close the mapping through
-/// polkit, and report the outcome on the window's toast overlay.
+/// Wire the Lock button: unmount through udisks (best effort; the helper
+/// refuses a still-mounted mapping with a clear message), close the mapping
+/// through the privileged helper, and report the outcome on the window's
+/// toast overlay.
 fn connect_lock(btn: &gtk::Button, mapping: String, mounted: bool, toast: &adw::ToastOverlay) {
     let toast = toast.clone();
     btn.connect_clicked(move |btn| {
@@ -622,20 +655,16 @@ fn connect_lock(btn: &gtk::Button, mapping: String, mounted: bool, toast: &adw::
         let mapped_path = std::path::PathBuf::from(format!("/dev/mapper/{mapping}"));
         btn.set_sensitive(false);
 
-        let (sender, receiver) = std::sync::mpsc::channel::<Result<(), String>>();
+        let (sender, receiver) = std::sync::mpsc::channel::<ashypass_drives::Result<()>>();
         std::thread::spawn(move || {
-            // Best-effort unmount first — Nautilus or any other client
-            // holding the mapping would block cryptsetup close with EBUSY.
+            // Unmount first — Nautilus or any other client holding the
+            // mapping would block cryptsetup close with EBUSY.
             if mounted {
-                let _ = std::process::Command::new("udisksctl")
-                    .arg("unmount")
-                    .arg("-b")
-                    .arg(&mapped_path)
-                    .output();
+                unmount_with_udisks(&mapped_path);
             }
-            let runner = ashypass_drives::runner::PkexecRunner;
-            let r = ashypass_drives::luks::luks_close(&runner, &mapping_for_thread);
-            let _ = sender.send(r.map_err(|e| e.to_string()));
+            let r = ashypass_drives::helper_client::HelperClient::spawn()
+                .and_then(|mut helper| helper.luks_lock(&mapping_for_thread));
+            let _ = sender.send(r);
         });
 
         let btn_done = btn.clone();
@@ -643,7 +672,11 @@ fn connect_lock(btn: &gtk::Button, mapping: String, mounted: bool, toast: &adw::
         glib::timeout_add_local(std::time::Duration::from_millis(120), move || {
             let message = match receiver.try_recv() {
                 Ok(Ok(())) => tr!("Drive locked").to_string(),
-                Ok(Err(msg)) => format!("{}: {msg}", tr!("Could not lock the drive")),
+                Ok(Err(error)) => format!(
+                    "{}: {}",
+                    tr!("Could not lock the drive"),
+                    super::drives_wizard::describe_error(&error)
+                ),
                 Err(std::sync::mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
                 Err(std::sync::mpsc::TryRecvError::Disconnected) => {
                     tr!("Could not lock the drive").to_string()
@@ -660,6 +693,26 @@ fn connect_lock(btn: &gtk::Button, mapping: String, mounted: bool, toast: &adw::
             glib::ControlFlow::Break
         });
     });
+}
+
+/// `udisksctl unmount -b <mapping>`. Failures are logged, not fatal: the
+/// helper re-checks the mount state and refuses with a clear reason.
+fn unmount_with_udisks(mapped_path: &std::path::Path) {
+    match std::process::Command::new("udisksctl")
+        .arg("unmount")
+        .arg("-b")
+        .arg(mapped_path)
+        .stdin(std::process::Stdio::null())
+        .output()
+    {
+        Ok(output) if output.status.success() => {}
+        Ok(output) => log::warn!(
+            "udisksctl unmount {} failed: {}",
+            mapped_path.display(),
+            String::from_utf8_lossy(&output.stderr).trim()
+        ),
+        Err(error) => log::warn!("could not run udisksctl: {error}"),
+    }
 }
 
 fn usage_widget(used: u64, size: u64) -> gtk::Box {

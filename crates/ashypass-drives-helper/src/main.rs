@@ -13,9 +13,17 @@
 //! {"op":"luks-format","device":"/dev/disk/by-id/usb-…","label":"vault","allow_discards":false,"passphrase_b64":"...","expected":{"serial":"…","size_bytes":…,"model":"…"}}
 //! {"op":"wipe","device":"/dev/disk/by-id/usb-…","mode":"encrypted-zero","expected":{…}}
 //! {"op":"mkfs","mapped":"/dev/mapper/ashypass_vault","fs":"ext4","label":"vault"}
-//! {"op":"close","mapper":"ashypass_vault"}
+//! {"op":"luks-close","mapper_name":"ashypass_vault"}
+//! {"op":"luks-open","device":"/dev/disk/by-id/usb-…-part1","mapper_name":"ashypass_docs","passphrase_b64":"...","keep_open":true}
+//! {"op":"luks-lock","mapper_name":"ashypass_docs"}
+//! {"op":"enroll-fido2","device":"/dev/disk/by-id/usb-…","passphrase_b64":"...","pin_required":true,"user_presence_required":true}
 //! {"op":"shutdown"}
 //! ```
+//!
+//! Besides the format session, the GUI uses one-shot sessions for the
+//! user's Unlock (`luks-open` with `keep_open`, the mapping outlives the
+//! session), Lock (`luks-lock`) and FIDO2 enrolment, so those also go
+//! through the device checks below and the branded polkit action.
 //!
 //! Each request produces one or more response lines:
 //! ```json
@@ -35,10 +43,13 @@
 use ashypass_drives::{
     detect::{find_volume_owner, list_all},
     fs::{mkfs, Filesystem},
-    luks::{luks_close, luks_format, luks_open, FormatOptions},
+    luks::{enroll_fido2, luks_close, luks_close_settled, luks_format, luks_open, FormatOptions},
     passphrase::{Passphrase, SecretString},
     runner::PlainRunner,
-    safety::{inspect, is_stable_link, resolve_by_id, DeviceIdentity, SafetyPolicy},
+    safety::{
+        check_lock_target, check_luks_volume, inspect, is_stable_link, resolve_by_id,
+        DeviceIdentity, SafetyPolicy,
+    },
     validate,
     wipe::{wipe_with_progress, WipeMode},
 };
@@ -77,9 +88,26 @@ enum Request {
         allow_discards: bool,
         #[serde(default)]
         expected: Option<DeviceIdentity>,
+        /// User unlock: the mapping is not tied to this session (it stays
+        /// open when the helper exits and `mkfs` is refused on it).
+        #[serde(default)]
+        keep_open: bool,
     },
     LuksClose {
         mapper_name: String,
+    },
+    /// Close an `ashypass_*` mapping opened outside this session (the
+    /// user's Lock action). The mapping must be unmounted already.
+    LuksLock {
+        mapper_name: String,
+    },
+    EnrollFido2 {
+        device: PathBuf,
+        passphrase_b64: SecretString,
+        #[serde(default = "default_true")]
+        pin_required: bool,
+        #[serde(default = "default_true")]
+        user_presence_required: bool,
     },
     Wipe {
         device: PathBuf,
@@ -92,6 +120,10 @@ enum Request {
         label: String,
     },
     Shutdown,
+}
+
+fn default_true() -> bool {
+    true
 }
 
 #[derive(Debug, Deserialize)]
@@ -250,8 +282,19 @@ fn handle(
             passphrase_b64,
             allow_discards,
             expected,
+            keep_open,
         } => {
-            let device = match validate_luks_device(&device, expected.as_ref()) {
+            let validated = if keep_open {
+                if expected.is_some() {
+                    return Response::Error {
+                        error: "keep_open cannot be combined with expected".into(),
+                    };
+                }
+                validate_unlock_device(&device, true)
+            } else {
+                validate_luks_device(&device, expected.as_ref())
+            };
+            let device = match validated {
                 Ok(device) => device,
                 Err(error) => return Response::Error { error },
             };
@@ -264,7 +307,9 @@ fn handle(
             };
             match luks_open(runner, &device, &mapper_name, &pp, allow_discards) {
                 Ok(_) => {
-                    state.opened_mappers.insert(mapper_name);
+                    if !keep_open {
+                        state.opened_mappers.insert(mapper_name);
+                    }
                     Response::Ok { ok: true }
                 }
                 Err(e) => Response::Error {
@@ -278,11 +323,56 @@ fn handle(
                     error: "refusing to close a mapper not opened by this session".into(),
                 };
             }
-            match luks_close(runner, &mapper_name) {
+            // Runs right after mkfs: wait for udev and retry while busy.
+            match luks_close_settled(runner, &mapper_name) {
                 Ok(()) => {
                     state.opened_mappers.remove(&mapper_name);
                     Response::Ok { ok: true }
                 }
+                Err(e) => Response::Error {
+                    error: e.to_string(),
+                },
+            }
+        }
+        Request::LuksLock { mapper_name } => {
+            if state.opened_mappers.contains(&mapper_name) {
+                return Response::Error {
+                    error: "mapper belongs to this session; use luks-close".into(),
+                };
+            }
+            if let Err(error) = list_all()
+                .map_err(|error| error.to_string())
+                .and_then(|drives| {
+                    check_lock_target(&drives, &mapper_name)
+                        .map(|_| ())
+                        .map_err(|error| error.to_string())
+                })
+            {
+                return Response::Error { error };
+            }
+            match luks_close_settled(runner, &mapper_name) {
+                Ok(()) => Response::Ok { ok: true },
+                Err(e) => Response::Error {
+                    error: e.to_string(),
+                },
+            }
+        }
+        Request::EnrollFido2 {
+            device,
+            passphrase_b64,
+            pin_required,
+            user_presence_required,
+        } => {
+            let device = match validate_unlock_device(&device, false) {
+                Ok(device) => device,
+                Err(error) => return Response::Error { error },
+            };
+            let pp = match decode_pp(&passphrase_b64) {
+                Ok(p) => p,
+                Err(e) => return Response::Error { error: e },
+            };
+            match enroll_fido2(runner, &device, &pp, pin_required, user_presence_required) {
+                Ok(()) => Response::Ok { ok: true },
                 Err(e) => Response::Error {
                     error: e.to_string(),
                 },
@@ -427,6 +517,31 @@ fn validate_luks_device(
     require_stable_device(stable)
 }
 
+/// Validate the target of a user unlock or FIDO2 enrolment: a `crypto_LUKS`
+/// volume (whole disk or partition) of a detected removable drive, addressed
+/// by its node or a `/dev/disk/` link, and reachable through a stable
+/// `/dev/disk/by-id` path. Unlike [`validate_luks_device`] other volumes of
+/// the drive may be mounted: nothing is erased here.
+fn validate_unlock_device(
+    device: &Path,
+    require_locked: bool,
+) -> std::result::Result<PathBuf, String> {
+    let node = std::fs::canonicalize(device)
+        .map_err(|_| format!("device not found: {}", device.display()))?;
+    if node != device && !is_stable_link(device) {
+        return Err("device must be a kernel node or a /dev/disk/by-id link".into());
+    }
+    let drives = list_all().map_err(|error| error.to_string())?;
+    check_luks_volume(&drives, &node, require_locked).map_err(|error| error.to_string())?;
+    let stable = if device.starts_with("/dev/disk/by-id") {
+        device.to_path_buf()
+    } else {
+        resolve_by_id(&node)
+            .ok_or_else(|| "device has no stable /dev/disk/by-id path".to_string())?
+    };
+    require_stable_device(stable)
+}
+
 fn require_stable_device(path: PathBuf) -> std::result::Result<PathBuf, String> {
     if !path.starts_with("/dev/disk/by-id") {
         return Err("device has no stable /dev/disk/by-id path".into());
@@ -491,6 +606,49 @@ mod tests {
             }
             other => panic!("unexpected {other:?}"),
         }
+    }
+
+    #[test]
+    fn unlock_lock_and_enrol_requests_parse() {
+        // Old clients never send `keep_open`: a session-bound open.
+        let line = r#"{"op":"luks-open","device":"/dev/sdb","mapper_name":"ashypass_v","passphrase_b64":"cHc="}"#;
+        match serde_json::from_str::<Request>(line).unwrap() {
+            Request::LuksOpen { keep_open, .. } => assert!(!keep_open),
+            other => panic!("unexpected {other:?}"),
+        }
+        let line = r#"{"op":"luks-open","device":"/dev/sdb","mapper_name":"ashypass_v","passphrase_b64":"cHc=","keep_open":true}"#;
+        match serde_json::from_str::<Request>(line).unwrap() {
+            Request::LuksOpen { keep_open, .. } => assert!(keep_open),
+            other => panic!("unexpected {other:?}"),
+        }
+        let line = r#"{"op":"luks-lock","mapper_name":"ashypass_v"}"#;
+        assert!(matches!(
+            serde_json::from_str::<Request>(line).unwrap(),
+            Request::LuksLock { .. }
+        ));
+        let line = r#"{"op":"enroll-fido2","device":"/dev/sdb","passphrase_b64":"cHc="}"#;
+        match serde_json::from_str::<Request>(line).unwrap() {
+            Request::EnrollFido2 {
+                pin_required,
+                user_presence_required,
+                ..
+            } => assert!(pin_required && user_presence_required),
+            other => panic!("unexpected {other:?}"),
+        }
+    }
+
+    #[test]
+    fn unlock_targets_are_validated_before_anything_runs() {
+        assert!(validate_unlock_device(Path::new("/dev/does-not-exist-ashypass"), true).is_err());
+        // A symlink outside /dev/disk is refused even if it resolves.
+        let link =
+            std::env::temp_dir().join(format!("ashypass-helper-test-{}", std::process::id()));
+        let _ = std::fs::remove_file(&link);
+        std::os::unix::fs::symlink("/dev/null", &link).unwrap();
+        let result = validate_unlock_device(&link, true);
+        let _ = std::fs::remove_file(&link);
+        let error = result.unwrap_err();
+        assert!(error.contains("kernel node"), "{error}");
     }
 
     #[test]

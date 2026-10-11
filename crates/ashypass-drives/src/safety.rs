@@ -5,7 +5,7 @@
 //! confused user. The cost of a false negative (formatting the rootfs) is
 //! catastrophic data loss. We err strongly toward refusal.
 
-use crate::detect::{find_disk, list_all, Drive};
+use crate::detect::{find_disk, list_all, Drive, Partition};
 use crate::{Error, Result};
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -19,6 +19,18 @@ pub struct DeviceIdentity {
     pub serial: Option<String>,
     pub size_bytes: u64,
     pub model: Option<String>,
+    /// File name of the `/dev/disk/by-id/` link (e.g.
+    /// `usb-Kingston_DataTraveler_3.0_E0D55EA5-0:0`). Only known after a
+    /// [`inspect`], never from `lsblk`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub by_id: Option<String>,
+    /// World Wide Name, when the device reports one.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wwn: Option<String>,
+    /// Partition table UUID. Legitimately disappears once the drive is
+    /// wiped, so it only counts when both sides report it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ptuuid: Option<String>,
 }
 
 impl DeviceIdentity {
@@ -27,13 +39,58 @@ impl DeviceIdentity {
             serial: drive.serial.clone(),
             size_bytes: drive.size_bytes,
             model: drive.model.clone(),
+            by_id: None,
+            wwn: drive.wwn.clone(),
+            ptuuid: drive.ptuuid.clone(),
         }
     }
 
     /// Refuse unless `actual` is the same device the user confirmed.
+    ///
+    /// Serial, size and model must match exactly, as before. The by-id link,
+    /// WWN and partition table UUID are compared only when both sides know
+    /// them (`lsblk` does not always report them, and a wipe removes the
+    /// partition table). On top of that at least one stable identifier
+    /// (serial, WWN, PTUUID or by-id link) must be present on both sides and
+    /// equal: two serial-less sticks of the same model and size are not
+    /// "the same device" just because every field is empty.
     pub fn verify(&self, actual: &DeviceIdentity) -> Result<()> {
+        self.check_unchanged(actual)?;
+        let positive = |a: &Option<String>, b: &Option<String>| a.is_some() && a == b;
+        if positive(&self.serial, &actual.serial)
+            || positive(&self.wwn, &actual.wwn)
+            || positive(&self.ptuuid, &actual.ptuuid)
+            || positive(&self.by_id, &actual.by_id)
+        {
+            Ok(())
+        } else {
+            Err(Error::Refused(
+                "the device has no serial number, WWN, partition table UUID or \
+                 /dev/disk/by-id link to confirm its identity"
+                    .into(),
+            ))
+        }
+    }
+
+    /// The field comparison of [`Self::verify`] without the requirement of
+    /// a positively matching identifier. Only for checking a fresh
+    /// inspection against the `lsblk` snapshot the UI displayed, which never
+    /// carries a by-id link; anything destructive must use [`Self::verify`]
+    /// with an identity taken from a [`SafetyReport`].
+    pub fn check_unchanged(&self, actual: &DeviceIdentity) -> Result<()> {
         let none = "(none)";
         let mut diffs = Vec::new();
+        for (name, confirmed, current) in [
+            ("by-id link", &self.by_id, &actual.by_id),
+            ("WWN", &self.wwn, &actual.wwn),
+            ("partition table UUID", &self.ptuuid, &actual.ptuuid),
+        ] {
+            if let (Some(confirmed), Some(current)) = (confirmed, current) {
+                if confirmed != current {
+                    diffs.push(format!("{name} is {current} instead of {confirmed}"));
+                }
+            }
+        }
         if self.serial != actual.serial {
             diffs.push(format!(
                 "serial is {} instead of {}",
@@ -79,6 +136,8 @@ pub struct SafetyReport {
     pub size_bytes: u64,
     pub model: Option<String>,
     pub vendor: Option<String>,
+    pub wwn: Option<String>,
+    pub ptuuid: Option<String>,
     pub allow_destructive: bool,
     pub reasons: Vec<String>,
 }
@@ -89,7 +148,17 @@ impl SafetyReport {
             serial: self.serial.clone(),
             size_bytes: self.size_bytes,
             model: self.model.clone(),
+            by_id: by_id_name(&self.canonical_path),
+            wwn: self.wwn.clone(),
+            ptuuid: self.ptuuid.clone(),
         }
+    }
+
+    /// True when the device is pinned by a `/dev/disk/by-id/` link. The
+    /// privileged helper refuses anything else, so callers should check this
+    /// before asking the user for a passphrase.
+    pub fn pinned_by_id(&self) -> bool {
+        by_id_name(&self.canonical_path).is_some()
     }
 
     pub fn assert_safe(&self) -> Result<()> {
@@ -148,6 +217,14 @@ pub fn inspect(device: &Path, policy: SafetyPolicy) -> Result<SafetyReport> {
                 "device has an open encrypted mapping (/dev/mapper/{mapping})"
             ));
         }
+        if let Some(stacked) = drive.stacked.first() {
+            allow = false;
+            reasons.push(format!("device is in use by {stacked}"));
+        }
+        if let Some(holder) = first_holder(Path::new(SYS_BLOCK), drive) {
+            allow = false;
+            reasons.push(format!("device is in use: {holder}"));
+        }
         if hosts_rootfs(drive)? {
             allow = false;
             reasons.push("device hosts the running root filesystem".into());
@@ -170,6 +247,8 @@ pub fn inspect(device: &Path, policy: SafetyPolicy) -> Result<SafetyReport> {
         size_bytes: drive.size_bytes,
         model: drive.model.clone(),
         vendor: drive.vendor.clone(),
+        wwn: drive.wwn.clone(),
+        ptuuid: drive.ptuuid.clone(),
         allow_destructive: allow,
         reasons,
     })
@@ -228,6 +307,132 @@ fn first_active_mapping(drive: &Drive) -> Option<String> {
         .volumes()
         .filter_map(|v| v.active_mapping.clone())
         .find(|name| !crate::wipe::is_wipe_mapper(name))
+}
+
+/// Check the target of a non-destructive LUKS operation (unlock, FIDO2
+/// enrolment): `node` (canonical kernel node) must be a `crypto_LUKS` volume
+/// (whole disk or partition) of a detected removable / hotplug drive. With
+/// `require_locked`, the volume must not already have an open mapping.
+pub fn check_luks_volume<'a>(
+    drives: &'a [Drive],
+    node: &Path,
+    require_locked: bool,
+) -> Result<&'a Partition> {
+    let drive = crate::detect::find_volume_owner(drives, node).ok_or_else(|| {
+        Error::Refused(format!(
+            "{} is not a volume of a detected drive",
+            node.display()
+        ))
+    })?;
+    if !(drive.removable || drive.hotplug) {
+        return Err(Error::Refused(
+            "device is not removable or hotplug-capable".into(),
+        ));
+    }
+    let volume = drive
+        .volumes()
+        .find(|v| Path::new(&v.path) == node)
+        .ok_or_else(|| Error::Refused(format!("{} holds no volume", node.display())))?;
+    if volume.fstype.as_deref() != Some("crypto_LUKS") {
+        return Err(Error::Refused(format!(
+            "{} is not a LUKS volume",
+            node.display()
+        )));
+    }
+    if require_locked {
+        if let Some(mapping) = &volume.active_mapping {
+            return Err(Error::Refused(format!(
+                "{} is already unlocked as /dev/mapper/{mapping}",
+                node.display()
+            )));
+        }
+    }
+    Ok(volume)
+}
+
+/// Check that `mapper_name` may be locked: an Ashy Pass mapping (by name)
+/// of a volume on a detected removable / hotplug drive, and no longer
+/// mounted. Returns the backing volume.
+pub fn check_lock_target<'a>(drives: &'a [Drive], mapper_name: &str) -> Result<&'a Partition> {
+    crate::validate::validate_mapper_name(mapper_name)?;
+    let (drive, volume) = drives
+        .iter()
+        .find_map(|drive| {
+            drive
+                .volumes()
+                .find(|v| v.active_mapping.as_deref() == Some(mapper_name))
+                .map(|volume| (drive, volume))
+        })
+        .ok_or_else(|| {
+            Error::Refused(format!(
+                "/dev/mapper/{mapper_name} is not open on a detected drive"
+            ))
+        })?;
+    if !(drive.removable || drive.hotplug) {
+        return Err(Error::Refused(
+            "device is not removable or hotplug-capable".into(),
+        ));
+    }
+    if let Some(mountpoint) = &volume.inner_mountpoint {
+        return Err(Error::Refused(format!(
+            "/dev/mapper/{mapper_name} is still mounted at {mountpoint}"
+        )));
+    }
+    Ok(volume)
+}
+
+const SYS_BLOCK: &str = "/sys/block";
+
+/// First kernel holder of the disk or one of its partitions, read from
+/// `<sys_block>/<disk>/holders` and `<sys_block>/<disk>/<part>/holders`.
+/// Catches stacking `lsblk` may not show (bcache, a dm table set up by
+/// another tool, an md array being assembled). Holders that are the
+/// dm-crypt mappings already reported by [`first_active_mapping`], or a
+/// stale wipe mapping of ours, are skipped.
+fn first_holder(sys_block: &Path, drive: &Drive) -> Option<String> {
+    let disk_dir = sys_block.join(&drive.name);
+    let known_mappings: Vec<&str> = drive
+        .volumes()
+        .filter_map(|v| v.active_mapping.as_deref())
+        .collect();
+    let dirs = std::iter::once((drive.name.as_str(), disk_dir.join("holders"))).chain(
+        drive
+            .partitions
+            .iter()
+            .map(|p| (p.name.as_str(), disk_dir.join(&p.name).join("holders"))),
+    );
+    for (owner, dir) in dirs {
+        let Ok(entries) = fs::read_dir(&dir) else {
+            continue;
+        };
+        let mut holders: Vec<String> = entries
+            .flatten()
+            .filter_map(|e| e.file_name().to_str().map(str::to_string))
+            .collect();
+        holders.sort();
+        for holder in holders {
+            let dm_name = fs::read_to_string(sys_block.join(&holder).join("dm").join("name"))
+                .ok()
+                .map(|name| name.trim().to_string());
+            match dm_name.as_deref() {
+                Some(name) if crate::wipe::is_wipe_mapper(name) => continue,
+                Some(name) if known_mappings.contains(&name) => continue,
+                Some(name) => return Some(format!("{owner} is held by {holder} ({name})")),
+                None => return Some(format!("{owner} is held by {holder}")),
+            }
+        }
+    }
+    None
+}
+
+/// File name of `path` when it is a `/dev/disk/by-id/<name>` link.
+fn by_id_name(path: &Path) -> Option<String> {
+    if !path.starts_with("/dev/disk/by-id") || !is_stable_link(path) {
+        return None;
+    }
+    path.file_name()
+        .and_then(|name| name.to_str())
+        .map(str::to_string)
 }
 
 /// True if the device or any of its volumes backs `/`.
@@ -430,9 +635,167 @@ mod tests {
             serial: Some("ABC".into()),
             size_bytes: 42,
             model: None,
+            by_id: Some("usb-X_ABC-0:0".into()),
+            wwn: None,
+            ptuuid: Some("1a2b3c4d".into()),
         };
         let json = serde_json::to_string(&id).unwrap();
         assert_eq!(serde_json::from_str::<DeviceIdentity>(&json).unwrap(), id);
+        // Identities from before the new fields still parse.
+        let old: DeviceIdentity =
+            serde_json::from_str(r#"{"serial":"ABC","size_bytes":42,"model":null}"#).unwrap();
+        assert_eq!((old.by_id, old.wwn, old.ptuuid), (None, None, None));
+    }
+
+    fn serialless(by_id: Option<&str>) -> DeviceIdentity {
+        DeviceIdentity {
+            serial: None,
+            size_bytes: 8_053_063_680,
+            model: Some("Flash Disk".into()),
+            by_id: by_id.map(str::to_string),
+            wwn: None,
+            ptuuid: None,
+        }
+    }
+
+    #[test]
+    fn empty_fields_alone_never_prove_identity() {
+        // Same model and size, nothing else: two generic sticks would look
+        // identical, so this must be refused.
+        let bare = serialless(None);
+        assert!(bare.verify(&bare.clone()).is_err());
+        // The snapshot comparison alone does not demand evidence.
+        assert!(bare.check_unchanged(&bare.clone()).is_ok());
+        assert!(bare.check_unchanged(&serialless(Some("usb-x-0:0"))).is_ok());
+        let drives = drives();
+        let sde = DeviceIdentity::of(find_disk(&drives, Path::new("/dev/sde")).unwrap());
+        assert!(sde.verify(&sde.clone()).is_err());
+
+        // A matching by-id link is positive evidence.
+        let linked = serialless(Some("usb-Generic_Flash_Disk_1234-0:0"));
+        assert!(linked.verify(&linked.clone()).is_ok());
+        // A different link is a different device.
+        assert!(linked
+            .verify(&serialless(Some("usb-Generic_Flash_Disk_9999-0:0")))
+            .is_err());
+    }
+
+    #[test]
+    fn optional_identifiers_are_compared_only_when_both_known() {
+        let drives = drives();
+        let mut confirmed = DeviceIdentity::of(find_disk(&drives, Path::new("/dev/sdb")).unwrap());
+        confirmed.ptuuid = Some("1a2b3c4d".into());
+        confirmed.by_id = Some("usb-Kingston_DataTraveler_3.0_E0D55EA5-0:0".into());
+
+        // lsblk did not report it, or the wipe removed the partition table.
+        let mut wiped = confirmed.clone();
+        wiped.ptuuid = None;
+        wiped.by_id = None;
+        assert!(confirmed.verify(&wiped).is_ok());
+
+        let mut other_table = confirmed.clone();
+        other_table.ptuuid = Some("deadbeef".into());
+        assert!(confirmed.verify(&other_table).is_err());
+
+        let mut other_wwn = confirmed.clone();
+        confirmed.wwn = Some("0x5000000000000001".into());
+        other_wwn.wwn = Some("0x5000000000000002".into());
+        assert!(confirmed.verify(&other_wwn).is_err());
+    }
+
+    #[test]
+    fn unlock_targets_must_be_luks_volumes_on_removable_drives() {
+        let drives = drives();
+        // Locked whole-disk LUKS on a hotplug drive.
+        let sdf = check_luks_volume(&drives, Path::new("/dev/sdf"), true).unwrap();
+        assert_eq!(sdf.label.as_deref(), Some("backup"));
+        // Already unlocked: refused for unlock, fine for FIDO2 enrolment.
+        assert!(check_luks_volume(&drives, Path::new("/dev/sdc1"), true).is_err());
+        assert!(check_luks_volume(&drives, Path::new("/dev/sdc1"), false).is_ok());
+        // Not LUKS, not removable, not a volume, unknown.
+        assert!(check_luks_volume(&drives, Path::new("/dev/sdb1"), false).is_err());
+        assert!(check_luks_volume(&drives, Path::new("/dev/sda2"), false).is_err());
+        assert!(check_luks_volume(&drives, Path::new("/dev/sdb"), false).is_err());
+        assert!(check_luks_volume(&drives, Path::new("/dev/sdz1"), false).is_err());
+    }
+
+    #[test]
+    fn lock_targets_must_be_unmounted_ashypass_mappings() {
+        let drives = drives();
+        // Still mounted: the GUI unmounts through udisks first.
+        let mounted = check_lock_target(&drives, "ashypass_vault").unwrap_err();
+        assert!(mounted.to_string().contains("still mounted"), "{mounted}");
+        // Opened by udisks: not ours to close.
+        assert!(check_lock_target(&drives, "luks-aaaaaaaa").is_err());
+        // Not open anywhere.
+        assert!(check_lock_target(&drives, "ashypass_nothing").is_err());
+
+        let mut unmounted = drives.clone();
+        let sdd = unmounted.iter_mut().find(|d| d.name == "sdd").unwrap();
+        sdd.whole_disk.as_mut().unwrap().inner_mountpoint = None;
+        let volume = check_lock_target(&unmounted, "ashypass_vault").unwrap();
+        assert_eq!(volume.path, "/dev/sdd");
+    }
+
+    #[test]
+    fn by_id_pinning() {
+        assert_eq!(
+            by_id_name(Path::new("/dev/disk/by-id/usb-X-0:0")).as_deref(),
+            Some("usb-X-0:0")
+        );
+        assert_eq!(
+            by_id_name(Path::new("/dev/disk/by-path/pci-0000:00:14.0")),
+            None
+        );
+        assert_eq!(by_id_name(Path::new("/dev/sdb")), None);
+    }
+
+    #[test]
+    fn sysfs_holders_mark_the_drive_in_use() {
+        let all = drives();
+        let sdb = find_disk(&all, Path::new("/dev/sdb")).unwrap();
+        let sys = tempfile::tempdir().unwrap();
+        let root = sys.path();
+        std::fs::create_dir_all(root.join("sdb/holders")).unwrap();
+        std::fs::create_dir_all(root.join("sdb/sdb1/holders")).unwrap();
+        assert_eq!(first_holder(root, sdb), None);
+
+        // Our own stale wipe mapping is tolerated (handled by the wipe step).
+        std::fs::create_dir_all(root.join("dm-0/dm")).unwrap();
+        std::fs::write(root.join("dm-0/dm/name"), "ashypass_wipe_tmp\n").unwrap();
+        std::fs::write(root.join("sdb/holders/dm-0"), "").unwrap();
+        assert_eq!(first_holder(root, sdb), None);
+
+        // Anything else holding a partition is not.
+        std::fs::write(root.join("sdb/sdb1/holders/md127"), "").unwrap();
+        assert_eq!(
+            first_holder(root, sdb).as_deref(),
+            Some("sdb1 is held by md127")
+        );
+
+        // A named dm target on the disk is reported with its name.
+        std::fs::create_dir_all(root.join("dm-1/dm")).unwrap();
+        std::fs::write(root.join("dm-1/dm/name"), "vg0-data\n").unwrap();
+        std::fs::write(root.join("sdb/holders/dm-1"), "").unwrap();
+        assert_eq!(
+            first_holder(root, sdb).as_deref(),
+            Some("sdb is held by dm-1 (vg0-data)")
+        );
+    }
+
+    #[test]
+    fn known_crypt_mappings_are_not_reported_twice() {
+        let all = drives();
+        let sdd = find_disk(&all, Path::new("/dev/sdd")).unwrap();
+        let sys = tempfile::tempdir().unwrap();
+        let root = sys.path();
+        std::fs::create_dir_all(root.join("dm-2/dm")).unwrap();
+        std::fs::write(root.join("dm-2/dm/name"), "ashypass_vault\n").unwrap();
+        std::fs::create_dir_all(root.join("sdd/holders")).unwrap();
+        std::fs::write(root.join("sdd/holders/dm-2"), "").unwrap();
+        // Reported by `first_active_mapping` instead.
+        assert_eq!(first_holder(root, sdd), None);
+        assert!(first_active_mapping(sdd).is_some());
     }
 
     #[test]
