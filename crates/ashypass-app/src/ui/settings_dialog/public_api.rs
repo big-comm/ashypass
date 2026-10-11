@@ -71,19 +71,19 @@ pub fn export_csv_with_warning(state: SharedState, toast: adw::ToastOverlay, anc
         if response != "export" {
             return;
         }
-        let ok = state
-            .vault
-            .borrow()
-            .verify_master_password(&password.text())
-            .unwrap_or(false);
-        if !ok {
-            show_toast(
-                &toast,
-                tr!("Incorrect master password. Nothing was exported."),
-            );
-            return;
-        }
-        run_export_csv(state.clone(), toast.clone(), anchor_cl.clone());
+        let state = state.clone();
+        let toast = toast.clone();
+        let anchor = anchor_cl.clone();
+        verify_master_in_background(&state.clone(), &password.text(), move |ok| {
+            if !ok {
+                show_toast(
+                    &toast,
+                    tr!("Incorrect master password. Nothing was exported."),
+                );
+                return;
+            }
+            run_export_csv(state, toast, anchor);
+        });
     });
     let tracked = dialog.clone();
     dialog.present(Some(&anchor));
@@ -124,25 +124,25 @@ pub fn confirm_master_password<F>(
     dialog.set_extra_child(Some(&list));
     let state_cl = state.clone();
     let anchor_cl = anchor.clone();
+    let on_ok = Rc::new(on_ok);
     dialog.connect_response(None, move |_, response| {
         if response != "ok" {
             return;
         }
-        let ok = state_cl
-            .vault
-            .borrow()
-            .verify_master_password(&password.text())
-            .unwrap_or(false);
-        if ok {
-            on_ok();
-        } else {
-            let warn = adw::AlertDialog::builder()
-                .heading(tr!("Incorrect master password"))
-                .body(tr!("Nothing was changed."))
-                .build();
-            warn.add_response("ok", tr!("OK"));
-            warn.present(Some(&anchor_cl));
-        }
+        let on_ok = on_ok.clone();
+        let anchor_cl = anchor_cl.clone();
+        verify_master_in_background(&state_cl, &password.text(), move |ok| {
+            if ok {
+                on_ok();
+            } else {
+                let warn = adw::AlertDialog::builder()
+                    .heading(tr!("Incorrect master password"))
+                    .body(tr!("Nothing was changed."))
+                    .build();
+                warn.add_response("ok", tr!("OK"));
+                warn.present(Some(&anchor_cl));
+            }
+        });
     });
     state.track_sensitive_dialog(&dialog);
     dialog.present(Some(anchor));

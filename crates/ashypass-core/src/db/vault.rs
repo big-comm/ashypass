@@ -613,13 +613,20 @@ impl Vault {
         if self.has_master_password()? {
             return Err(Error::MasterAlreadySet);
         }
-        validate_new_master_password(password)?;
-        let mut salt = [0u8; 32];
-        rand::thread_rng().fill_bytes(&mut salt);
-        let salt_text = URL_SAFE_NO_PAD.encode(salt);
+        self.install_master_password(prepare_rekey(password)?)
+    }
 
-        let hash = argon2_kdf::hash_master(password)?;
-        let key = argon2_kdf::derive_key_v2(password, salt_text.as_bytes())?;
+    /// Create the master row from a password prepared by `prepare_rekey`
+    /// (on a worker thread) and unlock the new vault.
+    pub fn install_master_password(&mut self, prepared: PreparedRekey) -> Result<()> {
+        if self.has_master_password()? {
+            return Err(Error::MasterAlreadySet);
+        }
+        let PreparedRekey {
+            salt_text,
+            key,
+            hash,
+        } = prepared;
         let ts = chrono::Utc::now().timestamp();
 
         let tx = self.conn.unchecked_transaction()?;
@@ -783,6 +790,15 @@ impl Vault {
         self.enable_quick_unlock(pin)?;
         let key = self.cached_key.as_ref().ok_or(Error::Locked)?;
         wrap_quick_unlock_key(pin, key)
+    }
+
+    /// Keep the current key cached for PIN unlocks after a record made by
+    /// `prepare_quick_unlock` was persisted. Later PIN unlocks in this
+    /// session go through that record.
+    pub fn cache_key_for_quick_unlock(&mut self) -> Result<()> {
+        self.cached_key = Some(self.key()?.clone());
+        self.quick_pin_hash = None;
+        Ok(())
     }
 
     /// Re-acquire the encryption key using a previously-set quick-unlock PIN.
@@ -1789,16 +1805,25 @@ impl Vault {
     }
 
     /// Change master password and re-encrypt every protected value atomically.
+    ///
+    /// Runs every KDF on the calling thread. The UI uses `master_hash`,
+    /// `argon2_kdf::verify_master` and `prepare_rekey` on a worker and then
+    /// `apply_rekey` here instead.
     pub fn change_master_password(&mut self, current: &str, new: &str) -> Result<()> {
-        let hash: String =
-            self.conn
-                .query_row("SELECT password_hash FROM master WHERE id = 1", [], |row| {
-                    row.get(0)
-                })?;
-        if !argon2_kdf::verify_master(current, &hash)? {
+        if !argon2_kdf::verify_master(current, &self.master_hash()?)? {
             return Err(Error::InvalidMasterPassword);
         }
-        self.rekey_with_new_master(new)
+        self.apply_rekey(prepare_rekey(new)?)
+    }
+
+    /// The stored PHC hash of the master password, for verifying a typed
+    /// password off the thread that owns the vault.
+    pub fn master_hash(&self) -> Result<String> {
+        Ok(self
+            .conn
+            .query_row("SELECT password_hash FROM master WHERE id = 1", [], |row| {
+                row.get(0)
+            })?)
     }
 
     /// Set a new master password without the current one, proving instead
@@ -1819,30 +1844,37 @@ impl Vault {
         new: &str,
     ) -> Result<QuickUnlockPrefs> {
         let current = self.key()?.clone();
-        let (from_pin, _) = derive_quick_unlock_key(pin, prefs)?;
-        if !bool::from(subtle::ConstantTimeEq::ct_eq(
-            from_pin.as_bytes().as_slice(),
-            current.as_bytes().as_slice(),
-        )) {
-            return Err(Error::KeyMismatch);
-        }
-        self.rekey_with_new_master(new)?;
-        let key = self.key()?.clone();
-        self.quick_pin_hash = Some(argon2_kdf::hash_session_secret(pin)?);
-        self.cached_key = Some(key.clone());
-        wrap_quick_unlock_key(pin, &key)
+        let reset = prepare_pin_reset(pin, prefs, &current, new)?;
+        self.apply_pin_reset(reset)
     }
 
-    /// Re-encrypt every protected value under a key derived from `new`, in
-    /// one transaction, and store the new master hash and verifier.
-    fn rekey_with_new_master(&mut self, new: &str) -> Result<()> {
-        validate_new_master_password(new)?;
+    /// Commit a reset prepared by `prepare_pin_reset`. Everything that can
+    /// fail for reasons other than the database already ran, so a success
+    /// here means the new master password and the re-wrapped PIN both work.
+    pub fn apply_pin_reset(&mut self, reset: PinReset) -> Result<QuickUnlockPrefs> {
+        let current = self.key()?.clone();
+        if !bool::from(subtle::ConstantTimeEq::ct_eq(
+            reset.old_key.as_bytes().as_slice(),
+            current.as_bytes().as_slice(),
+        )) {
+            // The vault key changed while the reset was being prepared.
+            return Err(Error::KeyMismatch);
+        }
+        let key = reset.rekey.key.clone();
+        self.apply_rekey(reset.rekey)?;
+        // Cached for this session; later PIN unlocks go through the record.
+        self.cached_key = Some(key);
+        Ok(reset.rewrapped)
+    }
 
-        let mut salt = [0u8; 32];
-        rand::thread_rng().fill_bytes(&mut salt);
-        let new_salt_text = URL_SAFE_NO_PAD.encode(salt);
-        let new_key = argon2_kdf::derive_key_v2(new, new_salt_text.as_bytes())?;
-        let new_hash = argon2_kdf::hash_master(new)?;
+    /// Re-encrypt every protected value under the key in `prepared`, in one
+    /// transaction, and store the new master hash and verifier.
+    pub fn apply_rekey(&mut self, prepared: PreparedRekey) -> Result<()> {
+        let PreparedRekey {
+            salt_text: new_salt_text,
+            key: new_key,
+            hash: new_hash,
+        } = prepared;
         let old_key = self.key()?.clone();
 
         // Take the write lock *before* reading the rows: another connection
@@ -1916,6 +1948,73 @@ impl Vault {
         self.notify_change();
         Ok(())
     }
+}
+
+/// Salt, key and PHC hash for a new master password; see `prepare_rekey`.
+pub struct PreparedRekey {
+    salt_text: String,
+    key: DerivedKey,
+    hash: String,
+}
+
+/// Run the expensive part of a master password change (both KDFs) without
+/// the vault, so it can happen on a worker thread. Apply the result with
+/// `Vault::apply_rekey`.
+pub fn prepare_rekey(new: &str) -> Result<PreparedRekey> {
+    validate_new_master_password(new)?;
+    let mut salt = [0u8; 32];
+    rand::thread_rng().fill_bytes(&mut salt);
+    let salt_text = URL_SAFE_NO_PAD.encode(salt);
+    let key = argon2_kdf::derive_key_v2(new, salt_text.as_bytes())?;
+    let hash = argon2_kdf::hash_master(new)?;
+    Ok(PreparedRekey {
+        salt_text,
+        key,
+        hash,
+    })
+}
+
+/// Wrap `key` with a new PIN, off the vault's thread (expensive). Persist the
+/// record, then call `Vault::cache_key_for_quick_unlock`.
+pub fn prepare_quick_unlock(pin: &str, key: &DerivedKey) -> Result<QuickUnlockPrefs> {
+    if pin.chars().count() < MIN_QUICK_UNLOCK_PIN_LENGTH {
+        return Err(Error::InvalidInput(format!(
+            "PIN must contain at least {MIN_QUICK_UNLOCK_PIN_LENGTH} characters"
+        )));
+    }
+    wrap_quick_unlock_key(pin, key)
+}
+
+/// A PIN-based master reset, checked and prepared off the vault's thread.
+pub struct PinReset {
+    old_key: DerivedKey,
+    rekey: PreparedRekey,
+    rewrapped: QuickUnlockPrefs,
+}
+
+/// Prove `pin` against the persisted record `prefs` (it must unwrap exactly
+/// `current_key`), and prepare the new master password and the PIN record
+/// re-wrapped around the new key. Expensive; does not touch the vault.
+pub fn prepare_pin_reset(
+    pin: &str,
+    prefs: &QuickUnlockPrefs,
+    current_key: &DerivedKey,
+    new: &str,
+) -> Result<PinReset> {
+    let (from_pin, _) = derive_quick_unlock_key(pin, prefs)?;
+    if !bool::from(subtle::ConstantTimeEq::ct_eq(
+        from_pin.as_bytes().as_slice(),
+        current_key.as_bytes().as_slice(),
+    )) {
+        return Err(Error::KeyMismatch);
+    }
+    let rekey = prepare_rekey(new)?;
+    let rewrapped = wrap_quick_unlock_key(pin, &rekey.key)?;
+    Ok(PinReset {
+        old_key: current_key.clone(),
+        rekey,
+        rewrapped,
+    })
 }
 
 /// Snapshot of what `derive_unlock_key` needs, taken by `Vault::unlock_inputs`.

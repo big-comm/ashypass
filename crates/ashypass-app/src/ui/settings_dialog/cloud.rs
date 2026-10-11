@@ -727,16 +727,16 @@ pub(super) fn prompt_webdav_push(
             let state = state.clone();
             let toast = toast.clone();
             move |pw| {
-                let ok = state
-                    .vault
-                    .borrow()
-                    .verify_master_password(&pw)
-                    .unwrap_or(false);
-                if !ok {
-                    show_toast(&toast, tr!("Wrong master password"));
-                    return;
-                }
-                do_webdav_push(state.clone(), toast.clone(), pw, force);
+                let state = state.clone();
+                let toast = toast.clone();
+                let checked = pw.clone();
+                verify_master_in_background(&state.clone(), &checked, move |ok| {
+                    if !ok {
+                        show_toast(&toast, tr!("Wrong master password"));
+                        return;
+                    }
+                    do_webdav_push(state, toast, pw, force);
+                });
             }
         },
     );

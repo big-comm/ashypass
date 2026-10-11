@@ -138,6 +138,14 @@ pub enum Toaster {
 }
 
 impl Toaster {
+    /// The main window's overlay (or the overlay itself), for a dialog that
+    /// is reopened after this one closed.
+    pub fn window_overlay(&self) -> adw::ToastOverlay {
+        match self {
+            Self::Overlay(overlay) | Self::Dialog(_, overlay) => overlay.clone(),
+        }
+    }
+
     pub fn add_toast(&self, toast: adw::Toast) {
         // Messages carry file names, entry titles and server errors: show
         // them as plain text, never as Pango markup.
@@ -340,9 +348,7 @@ fn show_settings_unlock_dialog(
                 return;
             }
 
-            let result = if has_master {
-                state.vault.borrow_mut().unlock(&password)
-            } else {
+            if !has_master {
                 if password.chars().count() < MIN_MASTER_PASSWORD_LENGTH {
                     show_toast(&toast, tr!("Password too short"));
                     return;
@@ -351,10 +357,19 @@ fn show_settings_unlock_dialog(
                     show_toast(&toast, tr!("Passwords do not match"));
                     return;
                 }
-                state.vault.borrow_mut().set_master_password(&password)
-            };
-
-            match result {
+            }
+            // The settings dialog closes on success; reopen it over the main
+            // window, which stays rooted.
+            let anchor: gtk::Widget = parent
+                .root()
+                .map(|root| root.upcast())
+                .unwrap_or_else(|| parent.clone());
+            let state = state.clone();
+            let toast = toast.clone();
+            let dialog_slot = dialog_slot.clone();
+            let dlg = dlg.clone();
+            let finish_state = state.clone();
+            let finish = move |result: ashypass_core::Result<()>| match result {
                 Ok(()) => {
                     if !has_master {
                         if let Err(e) = state.update_settings(|s| s.quick_unlock = None) {
@@ -373,7 +388,7 @@ fn show_settings_unlock_dialog(
                     if let Some(settings_dialog) = open_settings {
                         settings_dialog.close();
                     }
-                    present(&parent, state.clone(), adw::ToastOverlay::new());
+                    present(&anchor, state.clone(), toast.window_overlay());
                 }
                 Err(ashypass_core::Error::InvalidMasterPassword) => {
                     show_toast(&toast, tr!("Incorrect master password"));
@@ -381,6 +396,58 @@ fn show_settings_unlock_dialog(
                 Err(e) => {
                     show_toast(&toast, &format!("{}: {e}", tr!("Failed to unlock vault")));
                 }
+            };
+            // Argon2 runs on a worker; the vault is updated back here.
+            let password = zeroize::Zeroizing::new(password);
+            if !has_master {
+                run_background(
+                    move || ashypass_core::db::vault::prepare_rekey(&password),
+                    move |prepared| {
+                        let result = prepared.and_then(|p| {
+                            finish_state.vault.borrow_mut().install_master_password(p)
+                        });
+                        finish(result);
+                    },
+                );
+                return;
+            }
+            let inputs = finish_state.vault.borrow().unlock_inputs();
+            match inputs {
+                Ok(Some(inputs)) => {
+                    let worker_inputs = inputs.clone();
+                    let worker_password = password.clone();
+                    run_background(
+                        move || {
+                            ashypass_core::db::vault::derive_unlock_key(
+                                &worker_password,
+                                &worker_inputs,
+                            )
+                        },
+                        move |key| {
+                            let result = key.and_then(|key| {
+                                let installed = finish_state
+                                    .vault
+                                    .borrow_mut()
+                                    .unlock_with_key(&inputs, key);
+                                match installed {
+                                    // The master row changed meanwhile, or the
+                                    // verifier needs repair: the full path.
+                                    Err(ashypass_core::Error::KeyMismatch) => {
+                                        finish_state.vault.borrow_mut().unlock(&password)
+                                    }
+                                    other => other,
+                                }
+                            });
+                            finish(result);
+                        },
+                    );
+                }
+                // A v1 vault migrates through the synchronous path.
+                Ok(None) => {
+                    let result = finish_state.vault.borrow_mut().unlock(&password);
+                    finish(result);
+                }
+                Err(e) => finish(Err(e)),
             }
         });
     }
@@ -419,6 +486,23 @@ fn restore_destination() -> std::path::PathBuf {
     let stamp = chrono::Utc::now().format("%Y%m%d-%H%M%S");
     let nonce = chrono::Utc::now().timestamp_subsec_nanos();
     ashypass_core::config::data_dir().join(format!("passwords-restored-{stamp}-{:08x}.db", nonce))
+}
+
+/// Check a typed master password on a worker (Argon2 is memory-hard and
+/// would freeze the window); `done` gets the answer on the main thread.
+pub(crate) fn verify_master_in_background<F>(state: &SharedState, password: &str, done: F)
+where
+    F: FnOnce(bool) + 'static,
+{
+    let hash = match state.vault.borrow().master_hash() {
+        Ok(hash) => hash,
+        Err(_) => return done(false),
+    };
+    let password = zeroize::Zeroizing::new(password.to_string());
+    run_background(
+        move || ashypass_core::crypto::argon2_kdf::verify_master(&password, &hash).unwrap_or(false),
+        done,
+    );
 }
 
 pub(crate) fn run_background<T, F, C>(task: F, complete: C)

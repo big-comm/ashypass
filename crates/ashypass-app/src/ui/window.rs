@@ -1090,9 +1090,8 @@ impl DevHandle {
                 // click:<button label> — anywhere in the window, dialogs included.
                 match find_widget(&inner.window.clone().upcast(), &|w| {
                     button_label(w).as_deref() == Some(arg)
-                        || w.downcast_ref::<gtk::MenuButton>().is_some_and(|m| {
-                            m.tooltip_text().as_deref() == Some(arg)
-                        })
+                        || w.downcast_ref::<gtk::MenuButton>()
+                            .is_some_and(|m| m.tooltip_text().as_deref() == Some(arg))
                 }) {
                     Some(w) => {
                         if let Some(menu) = w.downcast_ref::<gtk::MenuButton>() {

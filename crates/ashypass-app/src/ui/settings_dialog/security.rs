@@ -317,12 +317,32 @@ fn reset_master_page(
                 ));
                 return;
             };
+            let key = match state.vault.borrow().session_reopen_parts() {
+                Ok((_, key)) => key,
+                Err(_) => {
+                    show(tr!("Unlock the vault first"));
+                    return;
+                }
+            };
+            // Three memory-hard derivations: off the main loop, so the
+            // window keeps drawing; the vault itself changes back here.
             button.set_sensitive(false);
-            let result = state
-                .vault
-                .borrow_mut()
-                .reset_master_password_with_pin(&pin, &prefs, &new);
+            show(tr!("Encrypting the vault again…"));
+            let state = state.clone();
+            let toast = toast.clone();
+            let dialog = dialog.clone();
+            let status = status.clone();
+            let button = button.clone();
+            let worker_new = new.clone();
+            run_background(
+                move || ashypass_core::db::vault::prepare_pin_reset(&pin, &prefs, &key, &worker_new),
+                move |prepared| {
+            let show = |message: &str| {
+                status.set_label(message);
+                status.set_visible(true);
+            };
             button.set_sensitive(true);
+            let result = prepared.and_then(|reset| state.vault.borrow_mut().apply_pin_reset(reset));
             match result {
                 Ok(rewrapped) => {
                     // The vault key changed; the core re-wrapped it with the
@@ -369,6 +389,8 @@ fn reset_master_page(
                 }
                 Err(e) => show(&format!("{} ({e})", tr!("The password was not changed"))),
             }
+                },
+            );
         });
     }
 
@@ -463,50 +485,80 @@ fn change_master_page(
                 show(tr!("The new passwords do not match."), false);
                 return;
             }
+            let hash = match state.vault.borrow().master_hash() {
+                Ok(hash) => hash,
+                Err(e) => {
+                    show(
+                        &format!("{} ({e})", tr!("The password was not changed")),
+                        false,
+                    );
+                    return;
+                }
+            };
+            // Verifying and deriving are memory-hard: run them on a worker
+            // and re-encrypt on the main thread, which owns the vault.
             button.set_sensitive(false);
-            let result = state
-                .vault
-                .borrow_mut()
-                .change_master_password(&current, &new);
-            button.set_sensitive(true);
-            match result {
-                Ok(()) => {
-                    // The PIN wraps the old key: it must be set up again.
-                    if let Err(error) = ashypass_core::keyring::delete_quick_unlock() {
-                        log::warn!("could not revoke quick-unlock keyring state: {error}");
+            show(tr!("Encrypting the vault again…"), true);
+            let state = state.clone();
+            let toast = toast.clone();
+            let dialog = dialog.clone();
+            let show = show.clone();
+            let button = button.clone();
+            let worker_new = new.clone();
+            run_background(
+                move || -> ashypass_core::Result<_> {
+                    if !ashypass_core::crypto::argon2_kdf::verify_master(&current, &hash)? {
+                        return Err(ashypass_core::Error::InvalidMasterPassword);
                     }
-                    state.vault.borrow_mut().disable_quick_unlock();
-                    if let Err(error) = state.update_settings(|s| s.quick_unlock = None) {
-                        log::warn!("could not clear quick-unlock settings: {error}");
+                    ashypass_core::db::vault::prepare_rekey(&worker_new)
+                },
+                move |prepared| {
+                    button.set_sensitive(true);
+                    if !state.vault.borrow().is_unlocked() {
+                        show(tr!("Unlock the vault first"), false);
+                        return;
                     }
-                    // A copy in the keyring would no longer open the vault.
-                    if ashypass_core::keyring::is_stored() {
-                        if let Err(error) = ashypass_core::keyring::store_master(&new) {
-                            log::warn!("could not update the keyring copy: {error}");
-                            let _ = ashypass_core::keyring::delete_master();
-                        }
-                    }
-                    toast.add_toast(
-                        adw::Toast::builder()
-                            .title(tr!(
+                    let result = prepared.and_then(|p| state.vault.borrow_mut().apply_rekey(p));
+                    match result {
+                        Ok(()) => {
+                            // The PIN wraps the old key: it must be set up again.
+                            if let Err(error) = ashypass_core::keyring::delete_quick_unlock() {
+                                log::warn!("could not revoke quick-unlock keyring state: {error}");
+                            }
+                            state.vault.borrow_mut().disable_quick_unlock();
+                            if let Err(error) = state.update_settings(|s| s.quick_unlock = None) {
+                                log::warn!("could not clear quick-unlock settings: {error}");
+                            }
+                            // A copy in the keyring would no longer open the vault.
+                            if ashypass_core::keyring::is_stored() {
+                                if let Err(error) = ashypass_core::keyring::store_master(&new) {
+                                    log::warn!("could not update the keyring copy: {error}");
+                                    let _ = ashypass_core::keyring::delete_master();
+                                }
+                            }
+                            toast.add_toast(
+                                adw::Toast::builder()
+                                    .title(tr!(
                                 "Master password changed. If you used a PIN, set it up again."
                             ))
-                            .timeout(6)
-                            .build(),
-                    );
-                    dialog.pop_subpage();
-                }
-                Err(ashypass_core::Error::InvalidMasterPassword) => {
-                    show(
+                                    .timeout(6)
+                                    .build(),
+                            );
+                            dialog.pop_subpage();
+                        }
+                        Err(ashypass_core::Error::InvalidMasterPassword) => {
+                            show(
                         tr!("The current master password is incorrect. Nothing was changed."),
                         false,
                     );
-                }
-                Err(e) => show(
-                    &format!("{} ({e})", tr!("The password was not changed")),
-                    false,
-                ),
-            }
+                        }
+                        Err(e) => show(
+                            &format!("{} ({e})", tr!("The password was not changed")),
+                            false,
+                        ),
+                    }
+                },
+            );
         });
     }
 
@@ -584,35 +636,68 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
         let status_label = status_label.clone();
         let render = render.clone();
         let notify = notify.clone();
-        enable.connect_clicked(move |_| {
+        enable.connect_clicked(move |button| {
             let pin = Zeroizing::new(pin_row.text().to_string());
-            let result = state
-                .vault
-                .borrow_mut()
-                .enable_persistent_quick_unlock(&pin);
-            match result {
-                Ok(prefs) => {
-                    if let Err(error) = ashypass_core::keyring::store_quick_unlock(&prefs) {
-                        state.vault.borrow_mut().disable_quick_unlock();
-                        notify(&format!(
-                            "{}: {error}",
-                            tr!("The system keyring is not available, so the PIN was not saved")
-                        ));
-                        return;
-                    }
-                    if let Err(error) = state.update_settings(|s| s.quick_unlock = None) {
-                        log::warn!("could not clear legacy quick-unlock state: {error}");
-                    }
-                    pin_row.set_text("");
-                    status_label.set_label(render());
-                    notify(tr!("PIN set for this computer"));
+            let key = match state.vault.borrow().session_reopen_parts() {
+                Ok((_, key)) => key,
+                Err(_) => {
+                    notify(tr!("Unlock the vault first"));
+                    return;
                 }
-                Err(ashypass_core::Error::Locked) => notify(tr!("Unlock the vault first")),
-                Err(ashypass_core::Error::InvalidInput(_)) => {
-                    notify(tr!("The PIN must have at least 4 characters"))
-                }
-                Err(e) => notify(&format!("{}: {e}", tr!("The PIN was not set"))),
+            };
+            enum Outcome {
+                Saved,
+                Keyring(ashypass_core::Error),
+                Failed(ashypass_core::Error),
             }
+            // Wrapping the key is deliberately slow and the keyring is a
+            // D-Bus round trip: both run on a worker.
+            button.set_sensitive(false);
+            let state = state.clone();
+            let pin_row = pin_row.clone();
+            let status_label = status_label.clone();
+            let render = render.clone();
+            let notify = notify.clone();
+            let button = button.clone();
+            run_background(
+                move || match ashypass_core::db::vault::prepare_quick_unlock(&pin, &key) {
+                    Ok(prefs) => match ashypass_core::keyring::store_quick_unlock(&prefs) {
+                        Ok(()) => Outcome::Saved,
+                        Err(e) => Outcome::Keyring(e),
+                    },
+                    Err(e) => Outcome::Failed(e),
+                },
+                move |outcome| {
+                    button.set_sensitive(true);
+                    let result =
+                        match outcome {
+                            Outcome::Saved => state.vault.borrow_mut().cache_key_for_quick_unlock(),
+                            Outcome::Keyring(error) => {
+                                notify(&format!(
+                        "{}: {error}",
+                        tr!("The system keyring is not available, so the PIN was not saved")
+                    ));
+                                return;
+                            }
+                            Outcome::Failed(e) => Err(e),
+                        };
+                    match result {
+                        Ok(()) => {
+                            if let Err(error) = state.update_settings(|s| s.quick_unlock = None) {
+                                log::warn!("could not clear legacy quick-unlock state: {error}");
+                            }
+                            pin_row.set_text("");
+                            status_label.set_label(render());
+                            notify(tr!("PIN set for this computer"));
+                        }
+                        Err(ashypass_core::Error::Locked) => notify(tr!("Unlock the vault first")),
+                        Err(ashypass_core::Error::InvalidInput(_)) => {
+                            notify(tr!("The PIN must have at least 4 characters"))
+                        }
+                        Err(e) => notify(&format!("{}: {e}", tr!("The PIN was not set"))),
+                    }
+                },
+            );
         });
     }
     {
@@ -678,28 +763,51 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
         let toast = toast.clone();
         let master_row = master_row.clone();
         let status_label = status_label.clone();
-        store.connect_clicked(move |_| {
+        store.connect_clicked(move |button| {
             let pw = Zeroizing::new(master_row.text().to_string());
-            let message = if pw.is_empty() {
-                tr!("Type the master password first").to_string()
-            } else if !state
-                .vault
-                .borrow()
-                .verify_master_password(&pw)
-                .unwrap_or(false)
-            {
-                tr!("Incorrect master password").to_string()
-            } else {
-                match ashypass_core::keyring::store_master(&pw) {
-                    Ok(()) => {
-                        master_row.set_text("");
-                        status_label.set_label(render());
-                        tr!("The vault will open automatically at login").to_string()
-                    }
-                    Err(e) => format!("{}: {e}", tr!("Keyring error")),
-                }
+            if pw.is_empty() {
+                toast.add_toast(
+                    adw::Toast::builder()
+                        .title(tr!("Type the master password first"))
+                        .timeout(4)
+                        .build(),
+                );
+                return;
+            }
+            let Ok(hash) = state.vault.borrow().master_hash() else {
+                return;
             };
-            toast.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+            // Argon2 verification and the keyring write run on a worker.
+            button.set_sensitive(false);
+            let toast = toast.clone();
+            let master_row = master_row.clone();
+            let status_label = status_label.clone();
+            let button = button.clone();
+            run_background(
+                move || -> Result<bool, String> {
+                    if !ashypass_core::crypto::argon2_kdf::verify_master(&pw, &hash)
+                        .unwrap_or(false)
+                    {
+                        return Ok(false);
+                    }
+                    ashypass_core::keyring::store_master(&pw)
+                        .map(|()| true)
+                        .map_err(|e| e.to_string())
+                },
+                move |result| {
+                    button.set_sensitive(true);
+                    let message = match result {
+                        Ok(true) => {
+                            master_row.set_text("");
+                            status_label.set_label(render());
+                            tr!("The vault will open automatically at login").to_string()
+                        }
+                        Ok(false) => tr!("Incorrect master password").to_string(),
+                        Err(e) => format!("{}: {e}", tr!("Keyring error")),
+                    };
+                    toast.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+                },
+            );
         });
     }
     {

@@ -573,18 +573,34 @@ impl Inner {
             self.show_error(tr!("The passwords do not match"));
             return;
         }
-        // Bind the result first: a `borrow_mut()` in a match scrutinee would
-        // stay alive through the callback, which borrows the vault again.
-        let result = self.state.vault.borrow_mut().set_master_password(&password);
-        match result {
-            Ok(()) => {
-                if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
-                    log::warn!("could not save settings: {error}");
+        // Deriving the key is memory-hard: do it on a worker, then create
+        // the master row here, where the vault lives.
+        self.set_busy(true);
+        let password = Zeroizing::new(password);
+        let weak = Rc::downgrade(self);
+        crate::ui::settings_dialog::run_background_task(
+            move || ashypass_core::db::vault::prepare_rekey(&password),
+            move |prepared| {
+                let Some(inner) = weak.upgrade() else { return };
+                inner.set_busy(false);
+                // Bind the result first: a `borrow_mut()` in a match
+                // scrutinee would stay alive through the callback, which
+                // borrows the vault again.
+                let result = prepared
+                    .and_then(|p| inner.state.vault.borrow_mut().install_master_password(p));
+                match result {
+                    Ok(()) => {
+                        if let Err(error) = inner.state.update_settings(|s| s.quick_unlock = None) {
+                            log::warn!("could not save settings: {error}");
+                        }
+                        inner.finish_unlock();
+                    }
+                    Err(e) => {
+                        inner.show_error(&format!("{}: {e}", tr!("Could not create the vault")))
+                    }
                 }
-                self.finish_unlock();
-            }
-            Err(e) => self.show_error(&format!("{}: {e}", tr!("Could not create the vault"))),
-        }
+            },
+        );
     }
 
     fn unlock_with_password(self: &Rc<Self>) {
