@@ -639,6 +639,38 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
     buttons.append(&enable);
     group.add(&buttons);
 
+    // The PIN itself is never stored (only the vault key wrapped with it),
+    // so there is nothing to show. With a PIN on, the field for a new one
+    // stays hidden until the user asks to change it.
+    let editing = Rc::new(std::cell::Cell::new(false));
+    let layout: Rc<dyn Fn()> = {
+        let status_row = status_row.clone();
+        let status_label = status_label.clone();
+        let pin_row = pin_row.clone();
+        let enable = enable.clone();
+        let disable = disable.clone();
+        let editing = editing.clone();
+        let render = render.clone();
+        Rc::new(move || {
+            let label = render();
+            status_label.set_label(label);
+            let on = label != tr!("Off");
+            status_row.set_subtitle(if on {
+                tr!("The PIN is not stored anywhere, so it cannot be shown. To change it, set a new one.")
+            } else {
+                ""
+            });
+            pin_row.set_visible(!on || editing.get());
+            enable.set_label(match (on, editing.get()) {
+                (false, _) => tr!("Set PIN"),
+                (true, false) => tr!("Change PIN"),
+                (true, true) => tr!("Save new PIN"),
+            });
+            disable.set_sensitive(on);
+        })
+    };
+    layout();
+
     let notify = {
         let toast = toast.clone();
         move |message: &str| {
@@ -648,10 +680,17 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
     {
         let state = state.clone();
         let pin_row = pin_row.clone();
-        let status_label = status_label.clone();
-        let render = render.clone();
         let notify = notify.clone();
+        let layout = layout.clone();
+        let editing = editing.clone();
         enable.connect_clicked(move |button| {
+            if !pin_row.is_visible() {
+                // "Change PIN": open the field first.
+                editing.set(true);
+                layout();
+                pin_row.grab_focus();
+                return;
+            }
             let pin = Zeroizing::new(pin_row.text().to_string());
             let key = match state.vault.borrow().session_reopen_parts() {
                 Ok((_, key)) => key,
@@ -670,10 +709,10 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
             button.set_sensitive(false);
             let state = state.clone();
             let pin_row = pin_row.clone();
-            let status_label = status_label.clone();
-            let render = render.clone();
             let notify = notify.clone();
             let button = button.clone();
+            let layout = layout.clone();
+            let editing = editing.clone();
             run_background(
                 move || match ashypass_core::db::vault::prepare_quick_unlock(&pin, &key) {
                     Ok(prefs) => match ashypass_core::keyring::store_quick_unlock(&prefs) {
@@ -702,7 +741,8 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
                                 log::warn!("could not clear legacy quick-unlock state: {error}");
                             }
                             pin_row.set_text("");
-                            status_label.set_label(render());
+                            editing.set(false);
+                            layout();
                             notify(tr!("PIN set for this computer"));
                         }
                         Err(ashypass_core::Error::Locked) => notify(tr!("Unlock the vault first")),
@@ -717,7 +757,7 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
     }
     {
         let state = state.clone();
-        let status_label = status_label.clone();
+        let editing = editing.clone();
         disable.connect_clicked(move |_| {
             if let Err(error) = ashypass_core::keyring::delete_quick_unlock() {
                 notify(&format!("{}: {error}", tr!("Could not turn off the PIN")));
@@ -727,7 +767,8 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
             if let Err(error) = state.update_settings(|s| s.quick_unlock = None) {
                 log::warn!("could not clear legacy quick-unlock state: {error}");
             }
-            status_label.set_label(render());
+            editing.set(false);
+            layout();
             notify(tr!(
                 "PIN turned off. The master password is required to unlock."
             ));
@@ -773,11 +814,27 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
     buttons.append(&remove);
     buttons.append(&store);
     group.add(&buttons);
+    // The field only confirms the master password when turning this on;
+    // once it is on there is nothing to edit there.
+    let layout: Rc<dyn Fn()> = {
+        let status_label = status_label.clone();
+        let master_row = master_row.clone();
+        let remove = remove.clone();
+        let store = store.clone();
+        Rc::new(move || {
+            let on = ashypass_core::keyring::is_stored();
+            status_label.set_label(if on { tr!("On") } else { tr!("Off") });
+            master_row.set_visible(!on);
+            store.set_visible(!on);
+            remove.set_sensitive(on);
+        })
+    };
+    layout();
     {
         let state = state.clone();
         let toast = toast.clone();
         let master_row = master_row.clone();
-        let status_label = status_label.clone();
+        let layout = layout.clone();
         store.connect_clicked(move |button| {
             let pw = Zeroizing::new(master_row.text().to_string());
             if pw.is_empty() {
@@ -796,7 +853,7 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
             button.set_sensitive(false);
             let toast = toast.clone();
             let master_row = master_row.clone();
-            let status_label = status_label.clone();
+            let layout = layout.clone();
             let button = button.clone();
             run_background(
                 move || -> Result<bool, String> {
@@ -814,7 +871,7 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
                     let message = match result {
                         Ok(true) => {
                             master_row.set_text("");
-                            status_label.set_label(render());
+                            layout();
                             tr!("The vault will open automatically at login").to_string()
                         }
                         Ok(false) => tr!("Incorrect master password").to_string(),
@@ -827,11 +884,10 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
     }
     {
         let toast = toast.clone();
-        let status_label = status_label.clone();
         remove.connect_clicked(move |_| {
             let message = match ashypass_core::keyring::delete_master() {
                 Ok(()) => {
-                    status_label.set_label(render());
+                    layout();
                     tr!("Removed from the keyring").to_string()
                 }
                 Err(e) => format!("{}: {e}", tr!("Keyring error")),

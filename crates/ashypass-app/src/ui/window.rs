@@ -1164,6 +1164,32 @@ impl DevHandle {
                     None => eprintln!("dev: no field {title}"),
                 }
             }
+            "focus" => {
+                // focus:<entry row title> — focus (and scroll to) a field.
+                let mut rows = Vec::new();
+                collect_entry_rows(&inner.window.clone().upcast(), arg, &mut rows);
+                match rows.pop() {
+                    Some(row) => {
+                        row.grab_focus();
+                    }
+                    None => eprintln!("dev: no field {arg}"),
+                }
+            }
+            "scroll" => {
+                // scroll:<pixels> — scroll the open dialog's page.
+                if let Some(dialog) = inner.window.visible_dialog() {
+                    let mut scrolled = Vec::new();
+                    collect_scrolled(dialog.upcast_ref(), &mut scrolled);
+                    for sw in scrolled {
+                        sw.vadjustment().set_value(arg.parse().unwrap_or(0.0));
+                    }
+                }
+            }
+            "session-pin" => {
+                // session-pin:<pin> — a PIN for this session only (no keyring).
+                let result = inner.state.vault.borrow_mut().enable_quick_unlock(arg);
+                eprintln!("dev: session pin {result:?}");
+            }
             "keyformat" => {
                 let format = inner.state.vault.borrow().key_format();
                 eprintln!("dev: key format {format:?}");
@@ -1253,6 +1279,20 @@ fn collect_entry_rows(root: &gtk::Widget, title: &str, out: &mut Vec<adw::EntryR
     let mut child = root.first_child();
     while let Some(c) = child {
         collect_entry_rows(&c, title, out);
+        child = c.next_sibling();
+    }
+}
+
+#[cfg(debug_assertions)]
+fn collect_scrolled(root: &gtk::Widget, out: &mut Vec<gtk::ScrolledWindow>) {
+    if let Some(sw) = root.downcast_ref::<gtk::ScrolledWindow>() {
+        if sw.is_mapped() {
+            out.push(sw.clone());
+        }
+    }
+    let mut child = root.first_child();
+    while let Some(c) = child {
+        collect_scrolled(&c, out);
         child = c.next_sibling();
     }
 }
