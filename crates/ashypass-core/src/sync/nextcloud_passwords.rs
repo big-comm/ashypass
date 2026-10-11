@@ -112,6 +112,16 @@ pub struct NcFolderCreate {
     pub parent: String,
 }
 
+/// Fields accepted on `folder/update`. The server moves a folder without a
+/// `parent` to the base folder, so the current parent is always sent back.
+#[derive(Debug, Clone, Serialize, Default)]
+pub struct NcFolderUpdate {
+    pub id: String,
+    pub label: String,
+    #[serde(skip_serializing_if = "String::is_empty")]
+    pub parent: String,
+}
+
 #[derive(Debug, Clone)]
 pub struct NextcloudPasswordsClient {
     pub config: Option<NcConfig>,
@@ -225,6 +235,27 @@ impl NextcloudPasswordsClient {
         let r = self.request_with_cfg(cfg, "POST", "/folder/create", Some(body))?;
         ensure_2xx(&r)?;
         parse_single_folder(&r.body)
+    }
+
+    pub fn update_folder(&self, payload: &NcFolderUpdate) -> Result<NcFolder> {
+        let cfg = self.require()?;
+        let body = serde_json::to_string(payload)?;
+        let r = self.request_with_cfg(cfg, "PATCH", "/folder/update", Some(body))?;
+        ensure_2xx(&r)?;
+        parse_single_folder(&r.body)
+    }
+
+    /// Delete a folder (the server moves it to its trash first). `Ok(false)`
+    /// means the server answered HTTP 404: the folder is already gone.
+    pub fn delete_folder_if_exists(&self, id: &str) -> Result<bool> {
+        let cfg = self.require()?;
+        let body = serde_json::json!({ "id": id }).to_string();
+        let r = self.request_with_cfg(cfg, "DELETE", "/folder/delete", Some(body))?;
+        if r.status == 404 {
+            return Ok(false);
+        }
+        ensure_2xx(&r)?;
+        Ok(true)
     }
 
     // -----------------------------------------------------------------
@@ -550,6 +581,24 @@ mod tests {
         };
         let json = serde_json::to_string(&payload).unwrap();
         assert!(json.contains(r#""folder":"folder-uuid""#));
+    }
+
+    #[test]
+    fn folder_update_keeps_the_parent_when_known() {
+        let nested = NcFolderUpdate {
+            id: "f1".into(),
+            label: "Renamed".into(),
+            parent: "p1".into(),
+        };
+        let json = serde_json::to_string(&nested).unwrap();
+        assert!(json.contains(r#""parent":"p1""#));
+        assert!(json.contains(r#""label":"Renamed""#));
+        let root = NcFolderUpdate {
+            id: "f1".into(),
+            label: "Renamed".into(),
+            parent: String::new(),
+        };
+        assert!(!serde_json::to_string(&root).unwrap().contains("parent"));
     }
 
     #[test]

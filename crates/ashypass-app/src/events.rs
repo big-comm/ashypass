@@ -37,6 +37,12 @@ pub enum AppEvent {
     /// A display preference changed (compact list, large codes, …). Views
     /// re-render; unlike `VaultChanged` it does not schedule a sync.
     DisplayChanged,
+    /// A Nextcloud Passwords sync changed vault data. Views refresh exactly
+    /// as for [`AppEvent::VaultChanged`]; the auto-sync scheduler ignores it,
+    /// so a sync does not trigger another one.
+    VaultChangedBySync,
+    /// The Nextcloud auto-sync preferences were changed in Settings.
+    SyncSettingsChanged,
     /// Session auto-locked due to inactivity. Views must hide secrets.
     SessionLocked,
     /// The vault was unlocked somewhere other than the main unlock screen

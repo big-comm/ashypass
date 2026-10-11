@@ -6,9 +6,27 @@
 //! to "no folder". Both operations bump `updated_at` on the affected entries
 //! so Nextcloud sync sends the new folder to the server.
 
-use super::{normalize_folder_name, Vault};
+use super::{normalize_folder_name, NextcloudFolderMapping, Vault};
 use crate::{Error, Result};
-use rusqlite::params;
+use rusqlite::{params, Connection, OptionalExtension};
+
+/// A local folder change waiting to be sent to Nextcloud Passwords.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum NextcloudFolderOp {
+    /// Rename the remote folder `nc_uuid` to `label`.
+    Rename { nc_uuid: String, label: String },
+    /// The local folder `label` was removed; remove the remote folder
+    /// `nc_uuid` once no password is left in it.
+    Delete { nc_uuid: String, label: String },
+}
+
+impl NextcloudFolderOp {
+    pub fn nc_uuid(&self) -> &str {
+        match self {
+            Self::Rename { nc_uuid, .. } | Self::Delete { nc_uuid, .. } => nc_uuid,
+        }
+    }
+}
 
 impl Vault {
     /// Rename `old` to `new` for every entry and the folder record. Merges
@@ -35,6 +53,13 @@ impl Vault {
         if !existed && moved == 0 {
             return Err(Error::InvalidInput(format!("folder not found: {old}")));
         }
+        // Restoring a trashed entry must land in the renamed folder, not
+        // bring the old name back.
+        tx.execute(
+            "UPDATE passwords_trash SET category = ? WHERE category = ?",
+            params![new, old],
+        )?;
+        record_nextcloud_folder_rename(&tx, &old, &new, ts)?;
         tx.commit()?;
         self.notify_change();
         Ok(moved)
@@ -51,9 +76,127 @@ impl Vault {
             params![ts, name],
         )?;
         tx.execute("DELETE FROM folders WHERE name = ?", params![name])?;
+        if let Some(uuid) = mapped_folder_uuid(&tx, &name)? {
+            // Forget the mapping so sync does not pull the folder back, and
+            // remember to remove it remotely once it is empty.
+            tx.execute(
+                "DELETE FROM nextcloud_folder_mapping WHERE nc_uuid = ?",
+                params![uuid],
+            )?;
+            queue_folder_op(&tx, &uuid, "delete", &name, ts)?;
+        }
         tx.commit()?;
         self.notify_change();
         Ok(moved)
+    }
+
+    // -----------------------------------------------------------------
+    // Nextcloud Passwords folder state
+    // -----------------------------------------------------------------
+
+    /// Folder changes waiting to be sent to Nextcloud Passwords.
+    pub fn nc_folder_ops(&self) -> Result<Vec<NextcloudFolderOp>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT nc_uuid, op, label FROM nextcloud_folder_ops ORDER BY created_at, nc_uuid",
+        )?;
+        let rows = stmt
+            .query_map([], |r| {
+                Ok((
+                    r.get::<_, String>(0)?,
+                    r.get::<_, String>(1)?,
+                    r.get::<_, String>(2)?,
+                ))
+            })?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        Ok(rows
+            .into_iter()
+            .filter_map(|(nc_uuid, op, label)| match op.as_str() {
+                "rename" => Some(NextcloudFolderOp::Rename { nc_uuid, label }),
+                "delete" => Some(NextcloudFolderOp::Delete { nc_uuid, label }),
+                // Written by a newer build: leave it alone.
+                _ => None,
+            })
+            .collect())
+    }
+
+    pub fn nc_clear_folder_op(&self, nc_uuid: &str) -> Result<()> {
+        self.conn.execute(
+            "DELETE FROM nextcloud_folder_ops WHERE nc_uuid = ?",
+            params![nc_uuid],
+        )?;
+        Ok(())
+    }
+
+    pub fn nc_folder_mapping_delete(&self, nc_uuid: &str) -> Result<()> {
+        self.conn.execute(
+            "DELETE FROM nextcloud_folder_mapping WHERE nc_uuid = ?",
+            params![nc_uuid],
+        )?;
+        Ok(())
+    }
+
+    /// Apply a rename made on the server to the local folder mapped to it.
+    /// Entries keep their `updated_at`: their remote copy is already in the
+    /// renamed folder, so there is nothing to send back. Returns false (and
+    /// changes nothing) when another remote folder is already mapped to the
+    /// new name.
+    pub fn nc_apply_remote_folder_rename(&self, mapping: &NextcloudFolderMapping) -> Result<bool> {
+        let new = normalize_folder_name(&mapping.local_name)?;
+        let tx = self.conn.unchecked_transaction()?;
+        let taken: Option<String> = tx
+            .query_row(
+                "SELECT nc_uuid FROM nextcloud_folder_mapping
+                 WHERE local_name = ? COLLATE NOCASE AND nc_uuid != ?",
+                params![new, mapping.nc_uuid],
+                |r| r.get(0),
+            )
+            .optional()?;
+        if taken.is_some() {
+            return Ok(false);
+        }
+        let old: Option<String> = tx
+            .query_row(
+                "SELECT local_name FROM nextcloud_folder_mapping WHERE nc_uuid = ?",
+                params![mapping.nc_uuid],
+                |r| r.get(0),
+            )
+            .optional()?;
+        let ts = chrono::Utc::now().timestamp();
+        if let Some(old) = old.as_deref() {
+            tx.execute(
+                "UPDATE passwords SET category = ? WHERE category = ?",
+                params![new, old],
+            )?;
+            tx.execute(
+                "UPDATE passwords_trash SET category = ? WHERE category = ?",
+                params![new, old],
+            )?;
+            tx.execute("DELETE FROM folders WHERE name = ?", params![old])?;
+        }
+        tx.execute(
+            "INSERT OR IGNORE INTO folders (name, created_at, updated_at) VALUES (?, ?, ?)",
+            params![new, ts, ts],
+        )?;
+        tx.execute(
+            "DELETE FROM nextcloud_folder_mapping WHERE nc_uuid = ?",
+            params![mapping.nc_uuid],
+        )?;
+        tx.execute(
+            "INSERT INTO nextcloud_folder_mapping (
+                 local_name, nc_uuid, last_synced_at,
+                 remote_edited_snapshot, remote_revision_snapshot)
+             VALUES (?, ?, ?, ?, ?)",
+            params![
+                new,
+                mapping.nc_uuid,
+                mapping.last_synced_at,
+                mapping.remote_edited_snapshot,
+                mapping.remote_revision_snapshot,
+            ],
+        )?;
+        tx.commit()?;
+        self.notify_change();
+        Ok(true)
     }
 
     /// Number of entries in each folder, for "Organize folders".
@@ -75,9 +218,53 @@ impl Vault {
     }
 }
 
+fn mapped_folder_uuid(conn: &Connection, name: &str) -> Result<Option<String>> {
+    Ok(conn
+        .query_row(
+            "SELECT nc_uuid FROM nextcloud_folder_mapping WHERE local_name = ? COLLATE NOCASE",
+            params![name],
+            |r| r.get(0),
+        )
+        .optional()?)
+}
+
+fn queue_folder_op(conn: &Connection, uuid: &str, op: &str, label: &str, ts: i64) -> Result<()> {
+    conn.execute(
+        "INSERT OR REPLACE INTO nextcloud_folder_ops (nc_uuid, op, label, created_at)
+         VALUES (?, ?, ?, ?)",
+        params![uuid, op, label, ts],
+    )?;
+    Ok(())
+}
+
+/// Keep the Nextcloud folder mapping in step with a local rename, so sync
+/// renames the remote folder instead of creating a second one and pulling
+/// the old name back.
+fn record_nextcloud_folder_rename(conn: &Connection, old: &str, new: &str, ts: i64) -> Result<()> {
+    let Some(uuid) = mapped_folder_uuid(conn, old)? else {
+        return Ok(());
+    };
+    let target = mapped_folder_uuid(conn, new)?.filter(|other| *other != uuid);
+    if target.is_some() {
+        // Merged into a folder that already exists remotely: the old remote
+        // folder is left without entries and goes away like a removal.
+        conn.execute(
+            "DELETE FROM nextcloud_folder_mapping WHERE nc_uuid = ?",
+            params![uuid],
+        )?;
+        queue_folder_op(conn, &uuid, "delete", old, ts)
+    } else {
+        conn.execute(
+            "UPDATE nextcloud_folder_mapping SET local_name = ? WHERE nc_uuid = ?",
+            params![new, uuid],
+        )?;
+        queue_folder_op(conn, &uuid, "rename", new, ts)
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::db::vault::{NewEntry, Vault};
+    use crate::db::vault::{NewEntry, NextcloudFolderMapping, NextcloudFolderOp, Vault};
 
     fn vault() -> (Vault, std::path::PathBuf) {
         let dir = std::env::temp_dir().join(format!(
@@ -134,6 +321,124 @@ mod tests {
         assert!(cats.contains(&"Still empty".to_string()));
         assert!(!cats.contains(&"Old".to_string()));
         assert!(v.rename_folder("Missing", "X").is_err());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    fn map_folder(v: &Vault, name: &str, uuid: &str) {
+        v.nc_folder_mapping_upsert(&NextcloudFolderMapping {
+            local_name: name.into(),
+            nc_uuid: uuid.into(),
+            last_synced_at: 1,
+            remote_edited_snapshot: 1,
+            remote_revision_snapshot: "r1".into(),
+        })
+        .unwrap();
+    }
+
+    #[test]
+    fn renaming_a_synced_folder_queues_a_remote_rename() {
+        let (v, dir) = vault();
+        let a = add(&v, "A", Some("Old"));
+        let trashed = add(&v, "T", Some("Old"));
+        v.delete(trashed).unwrap();
+        map_folder(&v, "Old", "uuid-old");
+        v.rename_folder("Old", "New").unwrap();
+
+        let mapping = v.nc_folder_mapping_for_uuid("uuid-old").unwrap().unwrap();
+        assert_eq!(mapping.local_name, "New");
+        assert_eq!(
+            v.nc_folder_ops().unwrap(),
+            vec![NextcloudFolderOp::Rename {
+                nc_uuid: "uuid-old".into(),
+                label: "New".into()
+            }]
+        );
+        assert_eq!(v.get(a).unwrap().unwrap().category.as_deref(), Some("New"));
+        let trash = v.list_trash().unwrap();
+        assert_eq!(trash[0].category.as_deref(), Some("New"));
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn merging_into_a_synced_folder_queues_a_remote_delete() {
+        let (v, dir) = vault();
+        add(&v, "A", Some("Old"));
+        add(&v, "B", Some("Target"));
+        map_folder(&v, "Old", "uuid-old");
+        map_folder(&v, "Target", "uuid-target");
+        v.rename_folder("Old", "Target").unwrap();
+        assert!(v.nc_folder_mapping_for_uuid("uuid-old").unwrap().is_none());
+        assert_eq!(
+            v.nc_folder_mapping_for_name("Target")
+                .unwrap()
+                .unwrap()
+                .nc_uuid,
+            "uuid-target"
+        );
+        assert_eq!(
+            v.nc_folder_ops().unwrap(),
+            vec![NextcloudFolderOp::Delete {
+                nc_uuid: "uuid-old".into(),
+                label: "Old".into()
+            }]
+        );
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn removing_a_synced_folder_queues_a_remote_delete() {
+        let (v, dir) = vault();
+        add(&v, "A", Some("Work"));
+        add(&v, "B", Some("Plain"));
+        map_folder(&v, "Work", "uuid-work");
+        v.remove_folder_keep_entries("Work").unwrap();
+        v.remove_folder_keep_entries("Plain").unwrap();
+        assert!(v.nc_folder_mapping_for_uuid("uuid-work").unwrap().is_none());
+        assert_eq!(
+            v.nc_folder_ops().unwrap(),
+            vec![NextcloudFolderOp::Delete {
+                nc_uuid: "uuid-work".into(),
+                label: "Work".into()
+            }]
+        );
+        v.nc_clear_folder_op("uuid-work").unwrap();
+        assert!(v.nc_folder_ops().unwrap().is_empty());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn remote_folder_rename_moves_entries_without_marking_them_changed() {
+        let (v, dir) = vault();
+        let a = add(&v, "A", Some("Old"));
+        let before = v.entry_updated_at(a).unwrap();
+        map_folder(&v, "Old", "uuid-old");
+        map_folder(&v, "Taken", "uuid-taken");
+        let renamed = NextcloudFolderMapping {
+            local_name: "Renamed".into(),
+            nc_uuid: "uuid-old".into(),
+            last_synced_at: 2,
+            remote_edited_snapshot: 2,
+            remote_revision_snapshot: "r2".into(),
+        };
+        assert!(v.nc_apply_remote_folder_rename(&renamed).unwrap());
+        assert_eq!(
+            v.get(a).unwrap().unwrap().category.as_deref(),
+            Some("Renamed")
+        );
+        assert_eq!(v.entry_updated_at(a).unwrap(), before);
+        assert!(!v.categories().unwrap().contains(&"Old".to_string()));
+        assert!(v.nc_folder_ops().unwrap().is_empty());
+
+        // A name already mapped to another remote folder is left alone.
+        let clash = NextcloudFolderMapping {
+            local_name: "taken".into(),
+            ..renamed
+        };
+        assert!(!v.nc_apply_remote_folder_rename(&clash).unwrap());
+        assert_eq!(
+            v.get(a).unwrap().unwrap().category.as_deref(),
+            Some("Renamed")
+        );
         std::fs::remove_dir_all(dir).unwrap();
     }
 

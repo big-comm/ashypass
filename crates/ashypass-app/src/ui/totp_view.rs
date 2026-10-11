@@ -191,6 +191,7 @@ impl TotpView {
                     event,
                     crate::events::AppEvent::VaultChanged
                         | crate::events::AppEvent::DisplayChanged
+                        | crate::events::AppEvent::VaultChangedBySync
                         | crate::events::AppEvent::SyncCompleted { .. }
                 ) && inner.root.is_mapped()
                 {

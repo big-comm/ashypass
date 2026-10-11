@@ -30,6 +30,7 @@ pub const MIN_QUICK_UNLOCK_PIN_LENGTH: usize = 4;
 
 #[path = "vault_folders.rs"]
 mod folders;
+pub use folders::NextcloudFolderOp;
 
 type ChangeListener = Rc<dyn Fn() + 'static>;
 type EncryptedEntryRow = (i64, Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>);
@@ -568,6 +569,7 @@ impl Vault {
         tx.execute("DELETE FROM nextcloud_mapping", [])?;
         tx.execute("DELETE FROM nextcloud_folder_mapping", [])?;
         tx.execute("DELETE FROM nextcloud_tombstones", [])?;
+        tx.execute("DELETE FROM nextcloud_folder_ops", [])?;
         tx.commit()?;
         Ok(())
     }
@@ -1103,6 +1105,29 @@ impl Vault {
     }
 
     pub fn update(&self, id: i64, change: UpdateEntry) -> Result<bool> {
+        self.update_inner(id, change, None)
+    }
+
+    /// Like [`Vault::update`], but only when the entry's `updated_at` still
+    /// equals `expected_updated_at`. Returns `Ok(false)` without writing
+    /// anything (not even password history) when the entry changed or is
+    /// gone. Used by sync so a pulled remote change never overwrites a local
+    /// edit made after the sync read the entry.
+    pub fn update_if_unchanged(
+        &self,
+        id: i64,
+        expected_updated_at: i64,
+        change: UpdateEntry,
+    ) -> Result<bool> {
+        self.update_inner(id, change, Some(expected_updated_at))
+    }
+
+    fn update_inner(
+        &self,
+        id: i64,
+        change: UpdateEntry,
+        expected_updated_at: Option<i64>,
+    ) -> Result<bool> {
         if let Some(algorithm) = change.totp_algorithm.as_deref() {
             crate::totp::Algorithm::parse(algorithm)?;
         }
@@ -1124,7 +1149,27 @@ impl Vault {
                 )?;
             }
         }
-        let tx = self.conn.unchecked_transaction()?;
+        let tx = match expected_updated_at {
+            // Take the write lock up front so the check below and the write
+            // see the same row: no other connection can slip in between.
+            Some(_) => {
+                rusqlite::Transaction::new_unchecked(&self.conn, TransactionBehavior::Immediate)?
+            }
+            None => self.conn.unchecked_transaction()?,
+        };
+        if let Some(expected) = expected_updated_at {
+            let current: Option<i64> = tx
+                .query_row(
+                    "SELECT updated_at FROM passwords WHERE id = ?",
+                    params![id],
+                    |r| r.get(0),
+                )
+                .optional()?;
+            if current != Some(expected) {
+                // Dropping the transaction rolls it back.
+                return Ok(false);
+            }
+        }
         let mut sets: Vec<&'static str> = Vec::new();
         let mut vals: Vec<Value> = Vec::new();
 

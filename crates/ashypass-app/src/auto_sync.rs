@@ -9,7 +9,8 @@
 //! 2. **Periodic** — every `nextcloud_auto_sync_interval_minutes` minutes,
 //!    we run a sync to pull remote changes that came from other clients
 //!    (Nextcloud Passwords web/mobile/etc.). Nextcloud has no push API for
-//!    Passwords, so polling is the only option.
+//!    Passwords, so polling is the only option. After consecutive failures
+//!    the delay doubles, up to one hour, and resets on the next success.
 //! 3. **On unlock** — when the vault transitions from locked to unlocked,
 //!    we kick off one sync so the first view is fresh.
 //!
@@ -18,8 +19,9 @@
 //! again immediately after the running sync completes.
 //!
 //! Failures surface as a toast on the toplevel window's toast overlay.
-//! Success is silent (sidebar badges and entry rows update via the existing
-//! `VaultChanged` event the sync itself emits).
+//! Success is silent: when the sync changed local data it emits
+//! [`AppEvent::VaultChangedBySync`], which refreshes the views without
+//! scheduling another sync.
 
 use crate::events::AppEvent;
 use crate::state::{SharedState, SyncStatus};
@@ -32,31 +34,35 @@ use std::rc::Rc;
 use std::sync::mpsc;
 
 const DEBOUNCE_SECONDS: u32 = 5;
+/// Longest periodic delay reached by backing off after failures.
+const MAX_BACKOFF_SECONDS: u64 = 60 * 60;
 
 /// Install the auto-sync scheduler onto the given application state.
 ///
-/// Holds references through `Rc`/`RefCell`. The returned handle lets the
-/// settings dialog re-apply config when the user toggles the auto-sync
-/// preference or changes the interval.
+/// Holds references through `Rc`/`RefCell`. The settings dialog announces
+/// preference changes with [`AppEvent::SyncSettingsChanged`], which makes the
+/// scheduler re-read them.
 pub fn install(state: SharedState, toast: adw::ToastOverlay) -> Handle {
     let inner = Rc::new(Inner {
+        settings: RefCell::new((*state.settings()).clone()),
         state,
         toast,
         debounce_source: RefCell::new(None),
         periodic_source: RefCell::new(None),
         in_flight: Cell::new(false),
         rerun_after: Cell::new(false),
-        last_failed: Cell::new(false),
-        settings: RefCell::new(Settings::load()),
+        failures: Cell::new(0),
+        had_issues: Cell::new(false),
     });
 
-    // Subscribe to vault mutations — schedule a debounced sync.
+    // Subscribe to vault mutations — schedule a debounced sync. Changes made
+    // by a sync arrive as `VaultChangedBySync` and are deliberately ignored.
     {
         let inner_for_sub = inner.clone();
-        let _permanent = inner.state.events.subscribe(move |event| {
-            if matches!(event, AppEvent::VaultChanged) {
-                inner_for_sub.schedule_debounced();
-            }
+        let _permanent = inner.state.events.subscribe(move |event| match event {
+            AppEvent::VaultChanged => inner_for_sub.schedule_debounced(),
+            AppEvent::SyncSettingsChanged => inner_for_sub.reload_settings(),
+            _ => {}
         });
     }
 
@@ -64,21 +70,13 @@ pub fn install(state: SharedState, toast: adw::ToastOverlay) -> Handle {
     Handle { inner }
 }
 
-/// Public handle returned by [`install`]. Used by the settings dialog to
-/// re-apply preferences after the user changes them.
+/// Public handle returned by [`install`].
 #[derive(Clone)]
 pub struct Handle {
     inner: Rc<Inner>,
 }
 
 impl Handle {
-    /// Re-read settings from disk and reconfigure the periodic timer.
-    #[allow(dead_code)] // Public API: the settings dialog will call this
-    pub fn reload_settings(&self) {
-        *self.inner.settings.borrow_mut() = Settings::load();
-        self.inner.apply_settings();
-    }
-
     /// Trigger one sync right now, cancelling any pending debounce.
     #[allow(dead_code)] // Public API: the settings dialog will call this
     pub fn sync_now(&self) {
@@ -102,29 +100,54 @@ struct Inner {
     periodic_source: RefCell<Option<glib::SourceId>>,
     in_flight: Cell<bool>,
     rerun_after: Cell<bool>,
-    /// The previous run failed: repeat failures stay quiet instead of
-    /// toasting on every interval while offline.
-    last_failed: Cell<bool>,
+    /// Syncs that failed in a row; stretches the periodic delay.
+    failures: Cell<u32>,
+    /// The last sync finished with per-entry errors: the same issues are
+    /// not toasted again on every interval.
+    had_issues: Cell<bool>,
     settings: RefCell<Settings>,
 }
 
 impl Inner {
+    /// Re-read the preferences and reconfigure the timers.
+    fn reload_settings(self: &Rc<Self>) {
+        *self.settings.borrow_mut() = (*self.state.settings()).clone();
+        if !self.settings.borrow().nextcloud_auto_sync {
+            self.cancel_debounce();
+        }
+        self.apply_settings();
+    }
+
     /// Apply the periodic-timer side of the current settings. Idempotent —
     /// cancels any prior timer before installing a new one.
     fn apply_settings(self: &Rc<Self>) {
+        self.schedule_periodic();
+    }
+
+    /// (Re)start the periodic timer from now. One-shot: each run schedules
+    /// the next one when it finishes, so the delay can follow the failures.
+    fn schedule_periodic(self: &Rc<Self>) {
         if let Some(id) = self.periodic_source.borrow_mut().take() {
             id.remove();
         }
-        let s = self.settings.borrow();
-        if !s.nextcloud_auto_sync || s.nextcloud_auto_sync_interval_minutes == 0 {
-            return;
-        }
-        let interval_secs = (s.nextcloud_auto_sync_interval_minutes as u64) * 60;
+        let interval_minutes = {
+            let s = self.settings.borrow();
+            if !s.nextcloud_auto_sync || s.nextcloud_auto_sync_interval_minutes == 0 {
+                return;
+            }
+            s.nextcloud_auto_sync_interval_minutes
+        };
+        let delay = periodic_delay_seconds(interval_minutes, self.failures.get());
         let inner = self.clone();
-        let id = glib::timeout_add_seconds_local(interval_secs as u32, move || {
-            inner.run_sync();
-            glib::ControlFlow::Continue
-        });
+        let id =
+            glib::timeout_add_seconds_local(u32::try_from(delay).unwrap_or(u32::MAX), move || {
+                inner.periodic_source.borrow_mut().take();
+                if !inner.run_sync() {
+                    // Nothing ran (signed out, locked): try again later.
+                    inner.schedule_periodic();
+                }
+                glib::ControlFlow::Break
+            });
         *self.periodic_source.borrow_mut() = Some(id);
     }
 
@@ -151,25 +174,28 @@ impl Inner {
         }
     }
 
-    fn run_sync(self: &Rc<Self>) {
+    /// Start a sync. Returns false when none was started or queued (not
+    /// signed in, vault locked); a queued or started sync reschedules the
+    /// periodic timer when it finishes.
+    fn run_sync(self: &Rc<Self>) -> bool {
         // No-op if Nextcloud isn't configured or vault is locked.
         if !self.state.nextcloud.borrow().is_logged_in() {
-            return;
+            return false;
         }
         if !self.state.vault.borrow().is_unlocked() {
-            return;
+            return false;
         }
         if self.in_flight.get() {
             // A sync is already running — request another one when it
             // finishes so we don't drop the user's edits.
             self.rerun_after.set(true);
-            return;
+            return true;
         }
         if nextcloud_engine::is_sync_running() {
             // A manual sync from Settings is running; try again afterwards
             // instead of failing with "already running".
             self.retry_later();
-            return;
+            return true;
         }
 
         // Clone what the worker thread needs. The Nextcloud client owns its
@@ -182,7 +208,7 @@ impl Inner {
             Err(e) => {
                 log::warn!("auto-sync: vault not reopenable: {e}");
                 self.in_flight.set(false);
-                return;
+                return false;
             }
         };
         self.in_flight.set(true);
@@ -204,6 +230,7 @@ impl Inner {
             match rx.try_recv() {
                 Ok(Ok(report)) => {
                     inner.in_flight.set(false);
+                    inner.failures.set(0);
                     let now = chrono::Utc::now().timestamp();
                     inner
                         .state
@@ -213,7 +240,7 @@ impl Inner {
                             SyncStatus::Failed { at: now }
                         });
                     let failed = !report.stats.errors.is_empty();
-                    if failed && !inner.last_failed.replace(failed) {
+                    if failed && !inner.had_issues.replace(failed) {
                         show_toast(
                             &inner.toast,
                             &format!(
@@ -223,41 +250,54 @@ impl Inner {
                             ),
                         );
                     }
-                    inner.last_failed.set(failed);
+                    inner.had_issues.set(failed);
                     // The sync may have inserted/updated entries locally —
-                    // notify the rest of the UI so views refresh.
+                    // notify the rest of the UI so views refresh. Not
+                    // `VaultChanged`: that would schedule another sync.
                     if report.stats.created_locally
                         + report.stats.updated_locally
                         + report.stats.deleted_locally
                         > 0
                     {
-                        inner.state.events.emit(AppEvent::VaultChanged);
+                        inner.state.events.emit(AppEvent::VaultChangedBySync);
                     }
-                    inner.maybe_rerun();
+                    inner.finish();
                     glib::ControlFlow::Break
                 }
                 Ok(Err(msg)) => {
                     inner.in_flight.set(false);
+                    inner.failures.set(inner.failures.get().saturating_add(1));
                     inner.state.set_sync_status(SyncStatus::Failed {
                         at: chrono::Utc::now().timestamp(),
                     });
-                    if !inner.last_failed.replace(true) {
+                    // Only the first failure in a row: offline, the timer
+                    // would otherwise toast on every attempt.
+                    if inner.failures.get() == 1 {
                         show_toast(&inner.toast, &format!("{}: {msg}", tr!("Sync failed")));
                     }
-                    inner.maybe_rerun();
+                    inner.finish();
                     glib::ControlFlow::Break
                 }
                 Err(mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
                 Err(mpsc::TryRecvError::Disconnected) => {
                     inner.in_flight.set(false);
+                    inner.failures.set(inner.failures.get().saturating_add(1));
                     inner.state.set_sync_status(SyncStatus::Failed {
                         at: chrono::Utc::now().timestamp(),
                     });
-                    inner.maybe_rerun();
+                    inner.finish();
                     glib::ControlFlow::Break
                 }
             }
         });
+        true
+    }
+
+    /// After a sync: restart the periodic timer (with the current backoff)
+    /// and run a sync that was requested meanwhile.
+    fn finish(self: &Rc<Self>) {
+        self.schedule_periodic();
+        self.maybe_rerun();
     }
 
     /// Re-arm the debounce without touching the visible status.
@@ -283,7 +323,34 @@ impl Inner {
     }
 }
 
+/// Seconds until the next periodic sync: the configured interval, doubled
+/// for each consecutive failure, but never more than an hour (or the
+/// interval itself, if that is longer).
+fn periodic_delay_seconds(interval_minutes: u32, failures: u32) -> u64 {
+    let base = u64::from(interval_minutes) * 60;
+    let backoff = base.saturating_mul(1u64 << failures.min(16));
+    backoff.min(MAX_BACKOFF_SECONDS.max(base))
+}
+
 fn show_toast(overlay: &adw::ToastOverlay, msg: &str) {
     let t = adw::Toast::builder().title(msg).timeout(4).build();
     overlay.add_toast(t);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::periodic_delay_seconds;
+
+    #[test]
+    fn failures_double_the_delay_up_to_an_hour() {
+        assert_eq!(periodic_delay_seconds(5, 0), 300);
+        assert_eq!(periodic_delay_seconds(5, 1), 600);
+        assert_eq!(periodic_delay_seconds(5, 2), 1200);
+        assert_eq!(periodic_delay_seconds(5, 3), 2400);
+        assert_eq!(periodic_delay_seconds(5, 4), 3600);
+        assert_eq!(periodic_delay_seconds(5, 40), 3600);
+        // An interval of an hour or more is never shortened.
+        assert_eq!(periodic_delay_seconds(60, 0), 3600);
+        assert_eq!(periodic_delay_seconds(90, 3), 5400);
+    }
 }

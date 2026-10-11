@@ -107,6 +107,102 @@ fn opens_and_reads_every_field() {
     assert_all_data(&vault);
 }
 
+/// Every table and column of `conn`, sorted, for schema comparisons.
+fn schema_of(conn: &rusqlite::Connection) -> Vec<(String, Vec<String>)> {
+    let mut tables: Vec<String> = conn
+        .prepare("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name")
+        .unwrap()
+        .query_map([], |r| r.get(0))
+        .unwrap()
+        .collect::<rusqlite::Result<_>>()
+        .unwrap();
+    tables.retain(|t| !t.starts_with("sqlite_") && !t.starts_with("passwords_fts"));
+    tables
+        .into_iter()
+        .map(|table| {
+            let mut columns: Vec<String> = conn
+                .prepare(&format!("PRAGMA table_info({table})"))
+                .unwrap()
+                .query_map([], |r| r.get(1))
+                .unwrap()
+                .collect::<rusqlite::Result<_>>()
+                .unwrap();
+            columns.sort();
+            (table, columns)
+        })
+        .collect()
+}
+
+#[test]
+fn nextcloud_folder_changes_leave_the_3_0_1_schema_intact() {
+    let (_dir, db) = copy_of_fixture();
+    let before = schema_of(&rusqlite::Connection::open(&db).unwrap());
+
+    let mut vault = Vault::open(&db).unwrap();
+    vault.unlock(MASTER).unwrap();
+    // Queue one remote rename and one remote delete, as the folder screen
+    // does for folders known to Nextcloud.
+    for (name, uuid) in [("Extra", "uuid-extra"), ("Spare", "uuid-spare")] {
+        vault.create_folder(name).unwrap();
+        vault
+            .nc_folder_mapping_upsert(&ashypass_core::db::vault::NextcloudFolderMapping {
+                local_name: name.into(),
+                nc_uuid: uuid.into(),
+                last_synced_at: 1,
+                remote_edited_snapshot: 1,
+                remote_revision_snapshot: "r1".into(),
+            })
+            .unwrap();
+    }
+    vault.rename_folder("Extra", "Extra renamed").unwrap();
+    vault.remove_folder_keep_entries("Spare").unwrap();
+    assert_eq!(vault.nc_folder_ops().unwrap().len(), 2);
+    assert_all_data(&vault);
+    drop(vault);
+
+    // Purely additive: every 3.0.1 table keeps every column it had.
+    let conn = rusqlite::Connection::open(&db).unwrap();
+    let after = schema_of(&conn);
+    for (table, columns) in &before {
+        let now = after
+            .iter()
+            .find(|(t, _)| t == table)
+            .unwrap_or_else(|| panic!("table {table} disappeared"));
+        for column in columns {
+            assert!(now.1.contains(column), "{table}.{column} disappeared");
+        }
+    }
+    assert!(after.iter().any(|(t, _)| t == "nextcloud_folder_ops"));
+
+    // The queries 3.0.1 runs against the Nextcloud tables still work.
+    let name: String = conn
+        .query_row(
+            "SELECT local_name FROM nextcloud_folder_mapping WHERE nc_uuid = ?",
+            ["uuid-extra"],
+            |r| r.get(0),
+        )
+        .unwrap();
+    assert_eq!(name, "Extra renamed");
+    conn.execute(
+        "DELETE FROM nextcloud_folder_mapping WHERE nc_uuid = ? OR local_name = ? COLLATE NOCASE",
+        ["uuid-extra", "Extra renamed"],
+    )
+    .unwrap();
+    conn.execute(
+        "INSERT INTO nextcloud_folder_mapping (local_name, nc_uuid, last_synced_at,
+             remote_edited_snapshot, remote_revision_snapshot) VALUES ('Extra', 'uuid-extra', 2, 2, 'r2')",
+        [],
+    )
+    .unwrap();
+    drop(conn);
+
+    // And the current code copes with what the old build wrote: the rename
+    // no longer matches the mapping, so the stale queue entry is harmless.
+    let mut vault = Vault::open(&db).unwrap();
+    vault.unlock(MASTER).unwrap();
+    assert_all_data(&vault);
+}
+
 #[test]
 fn background_unlock_path_matches_the_synchronous_one() {
     let (_dir, db) = copy_of_fixture();
