@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:31\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -372,6 +372,9 @@ msgstr "Očisti kopirane lozinke nakon"
 msgid "Clear history"
 msgstr "Očisti povijest"
 
+msgid "Clear the password history?"
+msgstr "Očistiti povijest lozinki?"
+
 msgid "Client ID"
 msgstr "ID klijenta"
 
@@ -516,6 +519,9 @@ msgstr "Nije moguće izbrisati"
 msgid "Could not lock the drive"
 msgstr "Nije moguće zaključati pogon"
 
+msgid "Could not open the vault"
+msgstr "Trezor se nije mogao otvoriti"
+
 msgid "Could not open this access"
 msgstr "Nije moguće otvoriti ovaj unos"
 
@@ -631,6 +637,9 @@ msgstr "Izbriši unos…"
 msgid "Delete permanently"
 msgstr "Trajno izbriši"
 
+msgid "Delete permanently?"
+msgstr "Trajno izbrisati?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Izbrišite izvezenu datoteku ako nije bila zaštićena lozinkom."
 
@@ -704,6 +713,9 @@ msgstr "Prazna lozinka"
 
 msgid "Empty trash"
 msgstr "Isprazni smeće"
+
+msgid "Empty trash?"
+msgstr "Isprazniti smeće?"
 
 msgid "Encrypt"
 msgstr "Enkriptiraj"
@@ -1365,6 +1377,11 @@ msgstr "Ništa se ne uklanja. Unosi koji su već u trezoru preskaču se."
 
 msgid "Nothing was changed."
 msgstr "Ništa nije promijenjeno."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Ništa nije promijenjeno. Zatvorite ostale kopije Ashy Passa i pokušajte "
+"ponovno."
 
 msgid "Nothing was imported"
 msgstr "Ništa nije uvezeno"
@@ -2128,6 +2145,13 @@ msgstr "Lozinka nije promijenjena"
 msgid "The passwords do not match"
 msgstr "Lozinke se ne podudaraju"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Prethodne lozinke ovog pristupa bit će trajno izbrisane. Ovo se ne može "
+"poništiti."
+
 msgid "The previous vault was kept at:"
 msgstr "Prethodni trezor sačuvan je u:"
 
@@ -2173,6 +2197,17 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Trezor će se automatski otvoriti pri prijavi"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"Sve stavke u smeću ({}) bit će trajno izbrisane. Ovo se ne može poništiti."
+msgstr[1] ""
+"Sve stavke u smeću ({}) bit će trajno izbrisane. Ovo se ne može poništiti."
+msgstr[2] ""
+"Sve stavke u smeću ({}) bit će trajno izbrisane. Ovo se ne može poništiti."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2516,6 +2551,9 @@ msgstr "Vrlo jaka"
 
 msgid "Very Weak"
 msgstr "Vrlo slaba"
+
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Pričekajte da se sinkronizacija završi, a zatim se odjavite."
 
 msgid "Waiting for Nextcloud..."
 msgstr "Čekanje na Nextcloud..."
@@ -2870,6 +2908,10 @@ msgid_plural "{} words"
 msgstr[0] "{} riječ"
 msgstr[1] "{} riječi"
 msgstr[2] "{} riječi"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "„{}” bit će trajno izbrisano. Ovo se ne može poništiti."
 
 msgid "…"
 msgstr "…"

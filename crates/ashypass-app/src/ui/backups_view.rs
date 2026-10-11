@@ -652,6 +652,11 @@ impl Inner {
                     move |checked| {
                         button.set_sensitive(true);
                         let Some(inner) = weak.upgrade() else { return };
+                        // Cancelled, or closed by a lock, while the copy was
+                        // being checked: do not pop the confirmation up.
+                        if !dialog_cl.is_mapped() {
+                            return;
+                        }
                         match checked {
                             Ok(info) => {
                                 dialog_cl.close();
@@ -715,6 +720,8 @@ impl Inner {
                 }
             }
         });
+        // It holds the passwords of the copy: close it on lock.
+        self.state.track_sensitive_dialog(&dialog);
         dialog.present(Some(&self.nav));
     }
 

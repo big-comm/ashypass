@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -367,6 +367,9 @@ msgstr "Hreinsa afrituð lykilorð eftir"
 msgid "Clear history"
 msgstr "Hreinsa feril"
 
+msgid "Clear the password history?"
+msgstr "Hreinsa lykilorðaferil?"
+
 msgid "Client ID"
 msgstr "Biðlaraauðkenni"
 
@@ -511,6 +514,9 @@ msgstr "Ekki tókst að eyða"
 msgid "Could not lock the drive"
 msgstr "Ekki tókst að læsa drifinu"
 
+msgid "Could not open the vault"
+msgstr "Ekki tókst að opna hvelfinguna"
+
 msgid "Could not open this access"
 msgstr "Ekki tókst að opna þessa færslu"
 
@@ -626,6 +632,9 @@ msgstr "Eyða færslu…"
 msgid "Delete permanently"
 msgstr "Eyða varanlega"
 
+msgid "Delete permanently?"
+msgstr "Eyða varanlega?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Eyddu útflutningsskránni ef hún var ekki varin með lykilorði."
 
@@ -700,6 +709,9 @@ msgstr "Tóm lykilorðaseta"
 
 msgid "Empty trash"
 msgstr "Tæma ruslið"
+
+msgid "Empty trash?"
+msgstr "Tæma ruslið?"
 
 msgid "Encrypt"
 msgstr "Dulkóða"
@@ -1356,6 +1368,9 @@ msgstr "Engu er eytt. Færslum sem þegar eru í hvelfingunni er sleppt."
 
 msgid "Nothing was changed."
 msgstr "Engu var breytt."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "Engu var breytt. Lokaðu öðrum eintökum af Ashy Pass og reyndu aftur."
 
 msgid "Nothing was imported"
 msgstr "Ekkert var flutt inn"
@@ -2124,6 +2139,13 @@ msgstr "Lykilorðinu var ekki breytt"
 msgid "The passwords do not match"
 msgstr "Lykilorðin stemma ekki"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Fyrri lykilorðum þessa aðgangs verður eytt varanlega. Ekki er hægt að "
+"afturkalla þetta."
+
 msgid "The previous vault was kept at:"
 msgstr "Fyrri hvelfingin var geymd í:"
 
@@ -2166,6 +2188,15 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Hvelfingin opnast sjálfkrafa við innskráningu"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"{} færslu í ruslinu verður eytt varanlega. Ekki er hægt að afturkalla þetta."
+msgstr[1] ""
+"{} færslum í ruslinu verður eytt varanlega. Ekki er hægt að afturkalla þetta."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2507,6 +2538,9 @@ msgstr "Mjög sterkur"
 msgid "Very Weak"
 msgstr "Mjög veikur"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Bíddu eftir að samstillingu ljúki og skráðu þig svo út."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Beðið eftir Nextcloud..."
 
@@ -2835,6 +2869,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} orð"
 msgstr[1] "{} orð"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "„{}“ verður eytt varanlega. Ekki er hægt að afturkalla þetta."
 
 msgid "…"
 msgstr "…"

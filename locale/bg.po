@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:19\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -373,6 +373,9 @@ msgstr "Изчистване на копираните пароли след"
 msgid "Clear history"
 msgstr "Изчистване на историята"
 
+msgid "Clear the password history?"
+msgstr "Изчистване на историята на паролите?"
+
 msgid "Client ID"
 msgstr "ID на клиента"
 
@@ -517,6 +520,9 @@ msgstr "Изтриването е неуспешно"
 msgid "Could not lock the drive"
 msgstr "Устройството не може да бъде заключено"
 
+msgid "Could not open the vault"
+msgstr "Трезорът не може да бъде отворен"
+
 msgid "Could not open this access"
 msgstr "Записът не може да бъде отворен"
 
@@ -631,6 +637,9 @@ msgstr "Изтриване на записа…"
 msgid "Delete permanently"
 msgstr "Изтриване завинаги"
 
+msgid "Delete permanently?"
+msgstr "Окончателно изтриване?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Изтрийте файла с експорта, ако не е бил защитен с парола."
 
@@ -706,6 +715,9 @@ msgstr "Празна парола"
 
 msgid "Empty trash"
 msgstr "Изпразване на кошчето"
+
+msgid "Empty trash?"
+msgstr "Изпразване на кошчето?"
 
 msgid "Encrypt"
 msgstr "Криптиране"
@@ -1366,6 +1378,10 @@ msgstr ""
 
 msgid "Nothing was changed."
 msgstr "Нищо не е променено."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Нищо не е променено. Затворете другите копия на Ashy Pass и опитайте отново."
 
 msgid "Nothing was imported"
 msgstr "Нищо не е импортирано"
@@ -2136,6 +2152,13 @@ msgstr "Паролата не е променена"
 msgid "The passwords do not match"
 msgstr "Паролите не съвпадат"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Предишните пароли на този достъп ще бъдат изтрити окончателно. Това не може "
+"да бъде отменено."
+
 msgid "The previous vault was kept at:"
 msgstr "Предишното хранилище е запазено в:"
 
@@ -2179,6 +2202,16 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Хранилището ще се отваря автоматично при влизане"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"{} запис в кошчето ще бъде изтрит окончателно. Това не може да бъде отменено."
+msgstr[1] ""
+"{} записа в кошчето ще бъдат изтрити окончателно. Това не може да бъде "
+"отменено."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2524,6 +2557,9 @@ msgstr "Много силна"
 msgid "Very Weak"
 msgstr "Много слаба"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Изчакайте синхронизацията да приключи и след това излезте."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Изчакване на Nextcloud..."
 
@@ -2852,6 +2888,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} дума"
 msgstr[1] "{} думи"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "„{}“ ще бъде изтрит окончателно. Това не може да бъде отменено."
 
 msgid "…"
 msgstr "…"

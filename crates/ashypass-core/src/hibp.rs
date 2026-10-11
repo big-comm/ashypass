@@ -112,6 +112,10 @@ fn parse_body(body: &str, suffix: &str) -> BreachStatus {
         };
         if s.eq_ignore_ascii_case(suffix) {
             let count = it.next().and_then(|c| c.parse::<u64>().ok()).unwrap_or(1);
+            // Padding rows (Add-Padding) carry a count of 0: not a breach.
+            if count == 0 {
+                return BreachStatus::NotFound;
+            }
             return BreachStatus::Found { count };
         }
     }

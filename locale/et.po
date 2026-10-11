@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:26\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -367,6 +367,9 @@ msgstr "Tühjenda kopeeritud paroolid pärast"
 msgid "Clear history"
 msgstr "Tühista ajalugu"
 
+msgid "Clear the password history?"
+msgstr "Kas tühjendada paroolide ajalugu?"
+
 msgid "Client ID"
 msgstr "Kliendi ID"
 
@@ -511,6 +514,9 @@ msgstr "Kustutamine ebaõnnestus"
 msgid "Could not lock the drive"
 msgstr "Ketast ei õnnestunud lukustada"
 
+msgid "Could not open the vault"
+msgstr "Seifi ei õnnestunud avada"
+
 msgid "Could not open this access"
 msgstr "Seda kirjet ei õnnestunud avada"
 
@@ -625,6 +631,9 @@ msgstr "Kustuta kirje…"
 msgid "Delete permanently"
 msgstr "Kustuta jäädavalt"
 
+msgid "Delete permanently?"
+msgstr "Kas kustutada jäädavalt?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Kustuta ekspordifail, kui see polnud parooliga kaitstud."
 
@@ -698,6 +707,9 @@ msgstr "Tühi paroolifraas"
 
 msgid "Empty trash"
 msgstr "Tühjenda prügikast"
+
+msgid "Empty trash?"
+msgstr "Kas tühjendada prügikast?"
 
 msgid "Encrypt"
 msgstr "Krüpti"
@@ -1351,6 +1363,9 @@ msgstr "Midagi ei eemaldata. Hoidlas juba olevad kirjed jäetakse vahele."
 
 msgid "Nothing was changed."
 msgstr "Midagi ei muudetud."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "Midagi ei muudetud. Sulge Ashy Passi teised koopiad ja proovi uuesti."
 
 msgid "Nothing was imported"
 msgstr "Midagi ei imporditud"
@@ -2108,6 +2123,13 @@ msgstr "Parooli ei muudetud"
 msgid "The passwords do not match"
 msgstr "Paroolid ei ühti"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Selle juurdepääsu varasemad paroolid kustutatakse jäädavalt. Seda ei saa "
+"tagasi võtta."
+
 msgid "The previous vault was kept at:"
 msgstr "Eelmine hoidla säilitati asukohas:"
 
@@ -2150,6 +2172,16 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Hoidla avaneb sisselogimisel automaatselt"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"Prügikastis olev {} kirje kustutatakse jäädavalt. Seda ei saa tagasi võtta."
+msgstr[1] ""
+"Prügikastis olevad {} kirjet kustutatakse jäädavalt. Seda ei saa tagasi "
+"võtta."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2490,6 +2522,9 @@ msgstr "Väga tugev"
 msgid "Very Weak"
 msgstr "Väga nõrk"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Oota, kuni sünkroonimine lõpeb, ja logi siis välja."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Ootan Nextcloudi..."
 
@@ -2817,6 +2852,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} sõna"
 msgstr[1] "{} sõna"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "„{}” kustutatakse jäädavalt. Seda ei saa tagasi võtta."
 
 msgid "…"
 msgstr "…"

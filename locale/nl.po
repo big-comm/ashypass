@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:38\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -374,6 +374,9 @@ msgstr "Gekopieerde wachtwoorden wissen na"
 msgid "Clear history"
 msgstr "Geschiedenis wissen"
 
+msgid "Clear the password history?"
+msgstr "Wachtwoordgeschiedenis wissen?"
+
 msgid "Client ID"
 msgstr "Client-ID"
 
@@ -518,6 +521,9 @@ msgstr "Kan niet verwijderen"
 msgid "Could not lock the drive"
 msgstr "Kan de schijf niet vergrendelen"
 
+msgid "Could not open the vault"
+msgstr "De kluis kon niet worden geopend"
+
 msgid "Could not open this access"
 msgstr "Kan dit item niet openen"
 
@@ -633,6 +639,9 @@ msgstr "Item verwijderen…"
 msgid "Delete permanently"
 msgstr "Permanent verwijderen"
 
+msgid "Delete permanently?"
+msgstr "Definitief verwijderen?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr ""
 "Verwijder het exportbestand als het niet met een wachtwoord was beveiligd."
@@ -709,6 +718,9 @@ msgstr "Lege wachtzin"
 
 msgid "Empty trash"
 msgstr "Prullenbak legen"
+
+msgid "Empty trash?"
+msgstr "Prullenbak legen?"
 
 msgid "Encrypt"
 msgstr "Versleutelen"
@@ -1375,6 +1387,11 @@ msgstr ""
 
 msgid "Nothing was changed."
 msgstr "Er is niets gewijzigd."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Er is niets gewijzigd. Sluit andere exemplaren van Ashy Pass en probeer het "
+"opnieuw."
 
 msgid "Nothing was imported"
 msgstr "Er is niets geïmporteerd"
@@ -2155,6 +2172,13 @@ msgstr "Het wachtwoord is niet gewijzigd"
 msgid "The passwords do not match"
 msgstr "De wachtwoorden komen niet overeen"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"De vorige wachtwoorden van deze toegang worden definitief verwijderd. Dit "
+"kan niet ongedaan worden gemaakt."
+
 msgid "The previous vault was kept at:"
 msgstr "De vorige kluis is bewaard in:"
 
@@ -2201,6 +2225,17 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "De kluis opent automatisch bij aanmelden"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"{} item in de prullenbak wordt definitief verwijderd. Dit kan niet ongedaan "
+"worden gemaakt."
+msgstr[1] ""
+"{} items in de prullenbak worden definitief verwijderd. Dit kan niet "
+"ongedaan worden gemaakt."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2550,6 +2585,9 @@ msgstr "Zeer sterk"
 msgid "Very Weak"
 msgstr "Zeer zwak"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Wacht tot de synchronisatie klaar is en meld je daarna af."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Wachten op Nextcloud..."
 
@@ -2878,6 +2916,11 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} woord"
 msgstr[1] "{} woorden"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr ""
+"‘{}’ wordt definitief verwijderd. Dit kan niet ongedaan worden gemaakt."
 
 msgid "…"
 msgstr "…"

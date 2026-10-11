@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -353,6 +353,9 @@ msgstr "清除已复制密码的时间"
 msgid "Clear history"
 msgstr "清除历史记录"
 
+msgid "Clear the password history?"
+msgstr "要清除密码历史记录吗？"
+
 msgid "Client ID"
 msgstr "客户端 ID"
 
@@ -496,6 +499,9 @@ msgstr "无法删除"
 msgid "Could not lock the drive"
 msgstr "无法锁定驱动器"
 
+msgid "Could not open the vault"
+msgstr "无法打开密码库"
+
 msgid "Could not open this access"
 msgstr "无法打开此条目"
 
@@ -610,6 +616,9 @@ msgstr "删除条目…"
 msgid "Delete permanently"
 msgstr "永久删除"
 
+msgid "Delete permanently?"
+msgstr "要永久删除吗？"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "如果导出文件没有密码保护，请将其删除。"
 
@@ -682,6 +691,9 @@ msgstr "空密码短语"
 
 msgid "Empty trash"
 msgstr "清空回收站"
+
+msgid "Empty trash?"
+msgstr "要清空回收站吗？"
 
 msgid "Encrypt"
 msgstr "加密"
@@ -1308,6 +1320,9 @@ msgstr "不会删除任何内容。已在保险库中的条目将被跳过。"
 
 msgid "Nothing was changed."
 msgstr "未做任何更改。"
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "未做任何更改。请关闭其他 Ashy Pass 窗口后重试。"
 
 msgid "Nothing was imported"
 msgstr "未导入任何内容"
@@ -2046,6 +2061,11 @@ msgstr "密码未更改"
 msgid "The passwords do not match"
 msgstr "两次输入的密码不一致"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr "此访问项的旧密码将被永久删除。此操作无法撤销。"
+
 msgid "The previous vault was kept at:"
 msgstr "之前的保险库已保存在："
 
@@ -2087,6 +2107,12 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "登录时将自动打开保险库"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] "回收站中的 {} 个项目将被永久删除。此操作无法撤销。"
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2408,6 +2434,9 @@ msgstr "非常强"
 msgid "Very Weak"
 msgstr "非常弱"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "请等待同步完成，然后再退出登录。"
+
 msgid "Waiting for Nextcloud..."
 msgstr "正在等待 Nextcloud..."
 
@@ -2699,6 +2728,10 @@ msgstr[0] "{} 个将在调整后导入。"
 msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} 个单词"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "“{}”将被永久删除。此操作无法撤销。"
 
 msgid "…"
 msgstr "…"

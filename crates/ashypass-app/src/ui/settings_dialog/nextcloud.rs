@@ -54,6 +54,12 @@ pub(super) fn build_nextcloud_passwords_group(
         let dialog_slot = dialog_slot.clone();
         configure_row.connect_activated(move |row| {
             if state.nextcloud.borrow().is_logged_in() {
+                // A running sync would write its mappings back after the
+                // reset below.
+                if ashypass_core::sync::nextcloud_engine::is_sync_running() {
+                    show_toast(&toast, tr!("Wait for the sync to finish, then sign out."));
+                    return;
+                }
                 // Drop the sync records before the credentials: if this fails
                 // the account stays signed in, and stale mappings never meet
                 // a different account on the next sign-in.
@@ -552,6 +558,7 @@ pub(crate) fn present_sync_success_dialog(
                     "remote" => tr!("Kept remote version"),
                     other => other,
                 })
+                .use_markup(false)
                 .build();
             group.add(&r);
         }
@@ -598,7 +605,10 @@ pub(crate) fn present_sync_success_dialog(
         icon.add_css_class("warning");
         expander.add_prefix(&icon);
         for err in s.errors.iter().take(10) {
-            let r = adw::ActionRow::builder().title(err.as_str()).build();
+            let r = adw::ActionRow::builder()
+                .title(err.as_str())
+                .use_markup(false)
+                .build();
             r.add_css_class("monospace");
             expander.add_row(&r);
         }
@@ -662,7 +672,10 @@ pub(crate) fn present_sync_failure_dialog(parent: Option<&gtk::Window>, error: &
     let icon = gtk::Image::from_icon_name("dialog-error-symbolic");
     icon.add_css_class("error");
     expander.add_prefix(&icon);
-    let err_row = adw::ActionRow::builder().title(error).build();
+    let err_row = adw::ActionRow::builder()
+        .title(error)
+        .use_markup(false)
+        .build();
     err_row.add_css_class("monospace");
     expander.add_row(&err_row);
     group.add(&expander);

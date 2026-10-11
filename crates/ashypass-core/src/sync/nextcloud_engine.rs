@@ -228,6 +228,11 @@ where
     }
 
     drop_pending_deletes(&mut remote_by_uuid, &pending_deletes);
+    // Remote items no local entry is mapped to yet. After a sign-out (which
+    // forgets the mappings) or on a first sync against a server that already
+    // holds the same passwords, identical entries are linked instead of
+    // being created again on both sides.
+    let mapped_set: HashSet<String> = mapped_uuids.into_iter().collect();
 
     // Mirror local empty folders too. Entry sync below also calls this for
     // every categorized password, but that would miss folders with no entries.
@@ -272,6 +277,25 @@ where
                 // Local-only entry — push as new.
                 if is_passwordless(&local_full) {
                     report.stats.skipped_passwordless += 1;
+                    progress(NextcloudSyncProgress::new(
+                        NextcloudSyncPhase::SyncingLocal,
+                        idx + 1,
+                        local_entries.len(),
+                    ));
+                    continue;
+                }
+                if let Some(uuid) = find_adoptable(&local_full, &remote_by_uuid, &mapped_set) {
+                    let remote = remote_by_uuid
+                        .remove(&uuid)
+                        .expect("adoptable uuid comes from the map");
+                    vault.nc_mapping_upsert(&NextcloudMapping {
+                        entry_id: local_full.id,
+                        nc_uuid: uuid,
+                        last_synced_at: chrono::Utc::now().timestamp(),
+                        local_updated_at_snapshot: local_full.updated_at,
+                        remote_edited_snapshot: remote.edited,
+                        remote_revision_snapshot: remote.revision,
+                    })?;
                     progress(NextcloudSyncProgress::new(
                         NextcloudSyncPhase::SyncingLocal,
                         idx + 1,
@@ -355,7 +379,13 @@ where
                             }
                         } else {
                             match vault.delete(local_full.id) {
-                                Ok(true) => report.stats.deleted_locally += 1,
+                                Ok(true) => {
+                                    // The server already dropped it: a
+                                    // tombstone would only make the next
+                                    // sync delete it remotely again.
+                                    vault.nc_clear_tombstone(&map.nc_uuid)?;
+                                    report.stats.deleted_locally += 1;
+                                }
                                 Ok(false) => {}
                                 Err(e) => report
                                     .stats
@@ -605,7 +635,11 @@ impl<'a> FolderResolver<'a> {
             return Ok(String::new());
         };
         if let Some(mapping) = self.vault.nc_folder_mapping_for_name(local_name)? {
-            return Ok(mapping.nc_uuid);
+            // A folder deleted on the server leaves a stale mapping; using it
+            // would make every push of this entry fail.
+            if self.remote_by_uuid.contains_key(&mapping.nc_uuid) {
+                return Ok(mapping.nc_uuid);
+            }
         }
         if let Some(uuid) = self
             .remote_uuid_by_label
@@ -845,6 +879,32 @@ fn all_mappings_vanished<V>(mapped_uuids: &[String], remote: &HashMap<String, V>
     !mapped_uuids.is_empty() && mapped_uuids.iter().all(|u| !remote.contains_key(u))
 }
 
+/// An unmapped remote item with the same name, user, address and password
+/// as `local`: the same entry, already on both sides.
+fn find_adoptable(
+    local: &PasswordEntry,
+    remote_by_uuid: &HashMap<String, NcPassword>,
+    mapped: &HashSet<String>,
+) -> Option<String> {
+    let text = |value: Option<&str>| value.unwrap_or("").trim().to_string();
+    let user = text(local.username.as_deref());
+    let url = text(local.url.as_deref());
+    let mut candidates: Vec<&String> = remote_by_uuid
+        .iter()
+        .filter(|(uuid, remote)| {
+            !mapped.contains(*uuid)
+                && remote.label.trim() == local.title.trim()
+                && remote.username.trim() == user
+                && remote.url.trim() == url
+                && local.password.as_deref() == Some(remote.password.as_str())
+        })
+        .map(|(uuid, _)| uuid)
+        .collect();
+    // Deterministic choice when the server itself holds duplicates.
+    candidates.sort();
+    candidates.first().map(|uuid| (*uuid).clone())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -900,6 +960,29 @@ mod tests {
             updated_at: 0,
             last_accessed: None,
         }
+    }
+
+    #[test]
+    fn identical_unmapped_remote_items_are_adopted_not_duplicated() {
+        let local = local_entry("secret", None);
+        let mut same = remote("r1", 1, "secret");
+        same.id = "b".into();
+        same.label = "Local".into();
+        let mut other = same.clone();
+        other.id = "a".into();
+        other.password = "different".into();
+        let mut remotes: HashMap<String, NcPassword> = HashMap::new();
+        remotes.insert(same.id.clone(), same.clone());
+        remotes.insert(other.id.clone(), other);
+        let none = HashSet::new();
+        assert_eq!(find_adoptable(&local, &remotes, &none), Some("b".into()));
+        // Already linked to another local entry: not adopted twice.
+        let mapped: HashSet<String> = ["b".to_string()].into();
+        assert_eq!(find_adoptable(&local, &remotes, &mapped), None);
+        // A different user name is a different account.
+        let mut with_user = local_entry("secret", None);
+        with_user.username = Some("ana".into());
+        assert_eq!(find_adoptable(&with_user, &remotes, &none), None);
     }
 
     #[test]

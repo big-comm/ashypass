@@ -77,20 +77,42 @@ pub fn fetch_blocking(host: &str) -> Result<PathBuf> {
             Ok(r) if r.status().is_success() => r,
             _ => continue,
         };
-        let bytes = match resp.bytes() {
-            Ok(b) if !b.is_empty() && b.len() <= MAX_BYTES => b,
-            _ => continue,
-        };
-        if let Ok(img) = image::load_from_memory(&bytes) {
-            if img.save(&path).is_ok() {
-                return Ok(path);
-            }
-        } else {
-            // not parseable; store raw bytes anyway (e.g. animated/atypical ico)
-            if fs::write(&path, &bytes).is_ok() {
-                return Ok(path);
-            }
+        if resp
+            .content_length()
+            .is_some_and(|len| len > MAX_BYTES as u64)
+        {
+            continue;
         }
+        // Read at most one byte past the limit so a hostile server cannot
+        // stream an unbounded body into memory.
+        let mut bytes = Vec::new();
+        if std::io::Read::read_to_end(
+            &mut std::io::Read::take(resp, MAX_BYTES as u64 + 1),
+            &mut bytes,
+        )
+        .is_err()
+            || bytes.is_empty()
+            || bytes.len() > MAX_BYTES
+        {
+            continue;
+        }
+        // Write to a temporary name and rename, so a crash or a concurrent
+        // fetch never leaves a truncated file that looks cached.
+        let tmp = path.with_extension("png.part");
+        let written = if let Ok(img) = image::load_from_memory(&bytes) {
+            img.save_with_format(&tmp, image::ImageFormat::Png).is_ok()
+        } else if bytes.starts_with(&[0, 0, 1, 0]) {
+            // An icon the decoder does not handle; GTK may still load it.
+            // Anything else (often an HTML error page served with 200) is
+            // not cached, so the next source is tried.
+            fs::write(&tmp, &bytes).is_ok()
+        } else {
+            false
+        };
+        if written && fs::rename(&tmp, &path).is_ok() {
+            return Ok(path);
+        }
+        let _ = fs::remove_file(&tmp);
     }
 
     Err(Error::Other(format!("favicon: no source for {host}")))

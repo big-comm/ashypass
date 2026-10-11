@@ -62,7 +62,7 @@ pub(super) fn populate_appearance(
             if let Err(e) = state_s.update_settings(|s| s.show_favicons = value) {
                 log::warn!("could not save settings: {e}");
             }
-            state.events.emit(crate::events::AppEvent::VaultChanged);
+            state.events.emit(crate::events::AppEvent::DisplayChanged);
         });
     }
     group.add(&favicons_row);
@@ -86,7 +86,7 @@ pub(super) fn populate_appearance(
             if let Err(e) = state_s.update_settings(|s| s.favicon_third_party_fallback = value) {
                 log::warn!("could not save settings: {e}");
             }
-            state.events.emit(crate::events::AppEvent::VaultChanged);
+            state.events.emit(crate::events::AppEvent::DisplayChanged);
         });
     }
     favicons_row
@@ -114,7 +114,7 @@ pub(super) fn populate_appearance(
             if let Err(e) = state_s.update_settings(|s| s.show_sync_badges = value) {
                 log::warn!("could not save settings: {e}");
             }
-            state.events.emit(crate::events::AppEvent::VaultChanged);
+            state.events.emit(crate::events::AppEvent::DisplayChanged);
         });
     }
     group.add(&sync_badges_row);
@@ -136,7 +136,7 @@ pub(super) fn populate_appearance(
             if let Err(e) = state_s.update_settings(|s| s.compact_vault_list = value) {
                 log::warn!("could not save settings: {e}");
             }
-            state.events.emit(crate::events::AppEvent::VaultChanged);
+            state.events.emit(crate::events::AppEvent::DisplayChanged);
         });
     }
     group.add(&compact_row);
@@ -162,7 +162,7 @@ pub(super) fn populate_appearance(
             if let Err(e) = state_s.update_settings(|s| s.large_totp_codes = value) {
                 log::warn!("could not save settings: {e}");
             }
-            state.events.emit(crate::events::AppEvent::VaultChanged);
+            state.events.emit(crate::events::AppEvent::DisplayChanged);
         });
     }
     two_factor_group.add(&large_totp_row);

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:48\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -369,6 +369,9 @@ msgstr "Очищати скопійовані паролі через"
 msgid "Clear history"
 msgstr "Очистити історію"
 
+msgid "Clear the password history?"
+msgstr "Очистити історію паролів?"
+
 msgid "Client ID"
 msgstr "Ідентифікатор клієнта"
 
@@ -513,6 +516,9 @@ msgstr "Не вдалося видалити"
 msgid "Could not lock the drive"
 msgstr "Не вдалося заблокувати диск"
 
+msgid "Could not open the vault"
+msgstr "Не вдалося відкрити сховище"
+
 msgid "Could not open this access"
 msgstr "Не вдалося відкрити цей запис"
 
@@ -627,6 +633,9 @@ msgstr "Видалити запис…"
 msgid "Delete permanently"
 msgstr "Видалити назавжди"
 
+msgid "Delete permanently?"
+msgstr "Видалити назавжди?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Видаліть файл експорту, якщо він не був захищений паролем."
 
@@ -702,6 +711,9 @@ msgstr "Порожня парольна фраза"
 
 msgid "Empty trash"
 msgstr "Очистити кошик"
+
+msgid "Empty trash?"
+msgstr "Очистити смітник?"
 
 msgid "Encrypt"
 msgstr "Зашифрувати"
@@ -1364,6 +1376,9 @@ msgstr "Нічого не видаляється. Записи, які вже є
 
 msgid "Nothing was changed."
 msgstr "Нічого не змінено."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "Нічого не змінено. Закрийте інші копії Ashy Pass і спробуйте ще раз."
 
 msgid "Nothing was imported"
 msgstr "Нічого не імпортовано"
@@ -2134,6 +2149,13 @@ msgstr "Пароль не змінено"
 msgid "The passwords do not match"
 msgstr "Паролі не збігаються"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Попередні паролі цього доступу буде видалено назавжди. Цю дію не можна "
+"скасувати."
+
 msgid "The previous vault was kept at:"
 msgstr "Попереднє сховище збережено тут:"
 
@@ -2179,6 +2201,17 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Сховище відкриватиметься автоматично під час входу"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"Усі записи у смітнику ({}) буде видалено назавжди. Цю дію не можна скасувати."
+msgstr[1] ""
+"Усі записи у смітнику ({}) буде видалено назавжди. Цю дію не можна скасувати."
+msgstr[2] ""
+"Усі записи у смітнику ({}) буде видалено назавжди. Цю дію не можна скасувати."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2521,6 +2554,10 @@ msgstr "Дуже надійна"
 
 msgid "Very Weak"
 msgstr "Дуже слабка"
+
+msgid "Wait for the sync to finish, then sign out."
+msgstr ""
+"Дочекайтеся завершення синхронізації, потім вийдіть з облікового запису."
 
 msgid "Waiting for Nextcloud..."
 msgstr "Очікування Nextcloud..."
@@ -2874,6 +2911,10 @@ msgid_plural "{} words"
 msgstr[0] "{} слово"
 msgstr[1] "{} слова"
 msgstr[2] "{} слів"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "«{}» буде видалено назавжди. Цю дію не можна скасувати."
 
 msgid "…"
 msgstr "…"

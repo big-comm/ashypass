@@ -182,6 +182,7 @@ impl TotpView {
                 if matches!(
                     event,
                     crate::events::AppEvent::VaultChanged
+                        | crate::events::AppEvent::DisplayChanged
                         | crate::events::AppEvent::SyncCompleted { .. }
                 ) && inner.root.is_mapped()
                 {
@@ -867,6 +868,13 @@ impl Inner {
         {
             let error = error.clone();
             key_row.connect_changed(move |row| {
+                error.set_visible(false);
+                row.remove_css_class("error");
+            });
+        }
+        {
+            let error = error.clone();
+            title_row.connect_changed(move |row| {
                 error.set_visible(false);
                 row.remove_css_class("error");
             });

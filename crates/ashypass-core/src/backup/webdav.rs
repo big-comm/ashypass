@@ -138,10 +138,15 @@ impl WebdavService {
         let cfg = self.require()?;
         let folder = self.folder_url()?;
         let url = format!("{folder}/{}", url_escape_path(remote_name));
-        let body = reqwest::blocking::Body::new(fs::File::open(local.as_ref())?);
+        let file = fs::File::open(local.as_ref())?;
+        let len = file.metadata()?.len();
+        // A known length lets the server reject a truncated upload instead
+        // of storing a short file (chunked bodies cannot be checked).
+        let body = reqwest::blocking::Body::sized(file, len);
         let client = http_client()?;
         let resp = client
             .put(&url)
+            .timeout(TRANSFER_TIMEOUT)
             .basic_auth(&cfg.username, Some(&cfg.password))
             .body(body)
             .send()
@@ -198,6 +203,7 @@ impl WebdavService {
         let client = http_client()?;
         let mut resp = client
             .get(&url)
+            .timeout(TRANSFER_TIMEOUT)
             .basic_auth(&cfg.username, Some(&cfg.password))
             .send()
             .map_err(|e| Error::Other(format!("webdav get: {e}")))?;
@@ -285,6 +291,10 @@ impl Default for WebdavService {
         Self::new()
     }
 }
+
+/// Uploads and downloads of a whole vault can take longer than the 60 s
+/// allowed for listing and folder requests on a slow link.
+const TRANSFER_TIMEOUT: Duration = Duration::from_secs(30 * 60);
 
 fn http_client() -> Result<&'static Client> {
     static CLIENT: OnceLock<Client> = OnceLock::new();

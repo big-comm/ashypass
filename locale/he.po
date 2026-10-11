@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -356,6 +356,9 @@ msgstr "ניקוי סיסמאות שהועתקו לאחר"
 msgid "Clear history"
 msgstr "נקה היסטוריה"
 
+msgid "Clear the password history?"
+msgstr "לנקות את היסטוריית הססמאות?"
+
 msgid "Client ID"
 msgstr "מזהה לקוח"
 
@@ -499,6 +502,9 @@ msgstr "לא ניתן למחוק"
 msgid "Could not lock the drive"
 msgstr "לא ניתן לנעול את הכונן"
 
+msgid "Could not open the vault"
+msgstr "לא ניתן לפתוח את הכספת"
+
 msgid "Could not open this access"
 msgstr "לא ניתן לפתוח רשומה זו"
 
@@ -613,6 +619,9 @@ msgstr "מחיקת הרשומה…"
 msgid "Delete permanently"
 msgstr "מחיקה לצמיתות"
 
+msgid "Delete permanently?"
+msgstr "למחוק לצמיתות?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "יש למחוק את קובץ הייצוא אם לא היה מוגן בסיסמה."
 
@@ -685,6 +694,9 @@ msgstr "ביטוי סיסמה ריק"
 
 msgid "Empty trash"
 msgstr "רוקן את סל המיחזור"
+
+msgid "Empty trash?"
+msgstr "לרוקן את האשפה?"
 
 msgid "Encrypt"
 msgstr "הצפן"
@@ -1322,6 +1334,9 @@ msgstr "דבר לא נמחק. רשומות שכבר נמצאות בכספת יד
 
 msgid "Nothing was changed."
 msgstr "דבר לא שונה."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "דבר לא שונה. סגרו עותקים אחרים של Ashy Pass ונסו שוב."
 
 msgid "Nothing was imported"
 msgstr "דבר לא יובא"
@@ -2066,6 +2081,11 @@ msgstr "הסיסמה לא שונתה"
 msgid "The passwords do not match"
 msgstr "הסיסמאות אינן תואמות"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr "הססמאות הקודמות של גישה זו יימחקו לצמיתות. לא ניתן לבטל פעולה זו."
+
 msgid "The previous vault was kept at:"
 msgstr "הכספת הקודמת נשמרה ב־:"
 
@@ -2108,6 +2128,13 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "הכספת תיפתח אוטומטית בכניסה למערכת"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] "כל הפריטים באשפה ({}) יימחקו לצמיתות. לא ניתן לבטל פעולה זו."
+msgstr[1] "כל הפריטים באשפה ({}) יימחקו לצמיתות. לא ניתן לבטל פעולה זו."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2439,6 +2466,9 @@ msgstr "חזק מאוד"
 msgid "Very Weak"
 msgstr "חלש מאוד"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "המתינו לסיום הסנכרון ואז התנתקו."
+
 msgid "Waiting for Nextcloud..."
 msgstr "ממתין ל-Nextcloud..."
 
@@ -2763,6 +2793,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "מילה {}"
 msgstr[1] "{} מילים"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "„{}” יימחק לצמיתות. לא ניתן לבטל פעולה זו."
 
 msgid "…"
 msgstr "…"

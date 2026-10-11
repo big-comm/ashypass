@@ -34,6 +34,9 @@ pub enum AppEvent {
     /// Vault data mutated (add / update / delete / restore / attachment, …).
     /// Views should refresh whatever they show from the vault.
     VaultChanged,
+    /// A display preference changed (compact list, large codes, …). Views
+    /// re-render; unlike `VaultChanged` it does not schedule a sync.
+    DisplayChanged,
     /// Session auto-locked due to inactivity. Views must hide secrets.
     SessionLocked,
     /// The vault was unlocked somewhere other than the main unlock screen

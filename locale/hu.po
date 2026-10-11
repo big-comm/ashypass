@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -375,6 +375,9 @@ msgstr "Másolt jelszavak törlése ennyi idő után"
 msgid "Clear history"
 msgstr "Előzmények törlése"
 
+msgid "Clear the password history?"
+msgstr "Törli a jelszóelőzményeket?"
+
 msgid "Client ID"
 msgstr "Ügyfélazonosító"
 
@@ -519,6 +522,9 @@ msgstr "Nem sikerült a törlés"
 msgid "Could not lock the drive"
 msgstr "Nem sikerült zárolni a meghajtót"
 
+msgid "Could not open the vault"
+msgstr "A széf nem nyitható meg"
+
 msgid "Could not open this access"
 msgstr "Nem sikerült megnyitni ezt a bejegyzést"
 
@@ -634,6 +640,9 @@ msgstr "Bejegyzés törlése…"
 msgid "Delete permanently"
 msgstr "Végleges törlés"
 
+msgid "Delete permanently?"
+msgstr "Végleges törlés?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Törölje az exportfájlt, ha nem volt jelszóval védve."
 
@@ -709,6 +718,9 @@ msgstr "Üres jelszó"
 
 msgid "Empty trash"
 msgstr "Kuka ürítése"
+
+msgid "Empty trash?"
+msgstr "Kiüríti a kukát?"
 
 msgid "Encrypt"
 msgstr "Titkosítás"
@@ -1374,6 +1386,10 @@ msgstr "Semmi sem törlődik. A tárban már meglévő bejegyzések kimaradnak."
 
 msgid "Nothing was changed."
 msgstr "Semmi sem változott."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Semmi sem változott. Zárja be az Ashy Pass többi példányát, és próbálja újra."
 
 msgid "Nothing was imported"
 msgstr "Semmi sem lett importálva"
@@ -2150,6 +2166,12 @@ msgstr "A jelszó nem lett módosítva"
 msgid "The passwords do not match"
 msgstr "A jelszavak nem egyeznek"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"A hozzáférés korábbi jelszavai véglegesen törlődnek. Ez nem vonható vissza."
+
 msgid "The previous vault was kept at:"
 msgstr "Az előző tár itt maradt meg:"
 
@@ -2193,6 +2215,13 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "A tár automatikusan megnyílik bejelentkezéskor"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] "A kukában lévő {} elem véglegesen törlődik. Ez nem vonható vissza."
+msgstr[1] "A kukában lévő {} elem véglegesen törlődik. Ez nem vonható vissza."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2535,6 +2564,9 @@ msgstr "Nagyon erős"
 msgid "Very Weak"
 msgstr "Nagyon gyenge"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Várja meg a szinkronizálás végét, majd jelentkezzen ki."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Várakozás a Nextcloudra..."
 
@@ -2866,6 +2898,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} szó"
 msgstr[1] "{} szó"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "„{}” véglegesen törlődik. Ez nem vonható vissza."
 
 msgid "…"
 msgstr "…"

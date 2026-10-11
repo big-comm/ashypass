@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:23\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -380,6 +380,9 @@ msgstr "Εκκαθάριση αντιγραμμένων κωδικών μετά 
 msgid "Clear history"
 msgstr "Εκκαθάριση ιστορικού"
 
+msgid "Clear the password history?"
+msgstr "Εκκαθάριση ιστορικού κωδικών;"
+
 msgid "Client ID"
 msgstr "Αναγνωριστικό πελάτη"
 
@@ -528,6 +531,9 @@ msgstr "Δεν ήταν δυνατή η διαγραφή"
 msgid "Could not lock the drive"
 msgstr "Δεν ήταν δυνατό το κλείδωμα της μονάδας"
 
+msgid "Could not open the vault"
+msgstr "Δεν ήταν δυνατό το άνοιγμα του θησαυροφυλακίου"
+
 msgid "Could not open this access"
 msgstr "Δεν ήταν δυνατό το άνοιγμα αυτής της καταχώρησης"
 
@@ -643,6 +649,9 @@ msgstr "Διαγραφή καταχώρησης…"
 msgid "Delete permanently"
 msgstr "Οριστική διαγραφή"
 
+msgid "Delete permanently?"
+msgstr "Οριστική διαγραφή;"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Διαγράψτε το αρχείο εξαγωγής αν δεν προστατευόταν με κωδικό πρόσβασης."
 
@@ -718,6 +727,9 @@ msgstr "Κενή φράση πρόσβασης"
 
 msgid "Empty trash"
 msgstr "Άδειασμα κάδου"
+
+msgid "Empty trash?"
+msgstr "Άδειασμα κάδου;"
 
 msgid "Encrypt"
 msgstr "Κρυπτογράφηση"
@@ -1402,6 +1414,11 @@ msgstr ""
 
 msgid "Nothing was changed."
 msgstr "Δεν άλλαξε τίποτα."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Δεν άλλαξε τίποτα. Κλείστε τα άλλα αντίγραφα του Ashy Pass και δοκιμάστε "
+"ξανά."
 
 msgid "Nothing was imported"
 msgstr "Δεν εισήχθη τίποτα"
@@ -2194,6 +2211,13 @@ msgstr "Ο κωδικός πρόσβασης δεν άλλαξε"
 msgid "The passwords do not match"
 msgstr "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Οι προηγούμενοι κωδικοί αυτής της πρόσβασης διαγράφονται οριστικά. Η "
+"ενέργεια δεν αναιρείται."
+
 msgid "The previous vault was kept at:"
 msgstr "Το προηγούμενο θησαυροφυλάκιο φυλάχτηκε στο:"
 
@@ -2241,6 +2265,15 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Το θησαυροφυλάκιο θα ανοίγει αυτόματα κατά τη σύνδεση"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"Το {} στοιχείο του κάδου διαγράφεται οριστικά. Η ενέργεια δεν αναιρείται."
+msgstr[1] ""
+"Τα {} στοιχεία του κάδου διαγράφονται οριστικά. Η ενέργεια δεν αναιρείται."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2598,6 +2631,9 @@ msgstr "Πολύ ισχυρή"
 msgid "Very Weak"
 msgstr "Πολύ αδύναμη"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Περιμένετε να ολοκληρωθεί ο συγχρονισμός και μετά αποσυνδεθείτε."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Αναμονή για Nextcloud..."
 
@@ -2930,6 +2966,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} λέξη"
 msgstr[1] "{} λέξεις"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "Το «{}» διαγράφεται οριστικά. Η ενέργεια δεν αναιρείται."
 
 msgid "…"
 msgstr "…"

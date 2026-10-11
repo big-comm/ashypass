@@ -56,7 +56,25 @@ fn main() -> glib::ExitCode {
                 Ok(v) => v,
                 Err(e) => {
                     eprintln!("Failed to open vault: {e}");
-                    app.quit();
+                    // Started from the menu there is no terminal: say why
+                    // the app is not opening before quitting.
+                    let dialog = adw::AlertDialog::builder()
+                        .heading(tr!("Could not open the vault"))
+                        .body(format!(
+                            "{}\n\n{e}",
+                            tr!("Nothing was changed. Close other copies of Ashy Pass and try again.")
+                        ))
+                        .close_response("close")
+                        .default_response("close")
+                        .build();
+                    dialog.add_response("close", tr!("Close"));
+                    let hold = RefCell::new(Some(app.hold()));
+                    let app = app.clone();
+                    dialog.connect_closed(move |_| {
+                        hold.borrow_mut().take();
+                        app.quit();
+                    });
+                    dialog.present(None::<&gtk::Widget>);
                     return;
                 }
             };

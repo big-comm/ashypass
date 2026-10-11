@@ -261,6 +261,15 @@ fn ask_name<F>(
     list.add_css_class("boxed-list");
     list.append(&entry);
     dialog.set_extra_child(Some(&list));
+    dialog.set_response_enabled("ok", !current.trim().is_empty());
+    {
+        let dialog = dialog.downgrade();
+        entry.connect_changed(move |row| {
+            if let Some(dialog) = dialog.upgrade() {
+                dialog.set_response_enabled("ok", !row.text().trim().is_empty());
+            }
+        });
+    }
     dialog.connect_response(None, move |_, response| {
         if response == "ok" {
             let name = entry.text().trim().to_string();

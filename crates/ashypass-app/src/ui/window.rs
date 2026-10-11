@@ -619,7 +619,11 @@ impl MainWindowInner {
         self.pages.set_visible_child_name(page);
         if requires_vault(page) && !self.unlocked() {
             self.pending_page.set(Some(page));
-            self.unlock_view.refresh();
+            // Already on the unlock screen (moving between locked pages):
+            // keep what was typed and skip the keyring query.
+            if self.gate.visible_child_name().as_deref() != Some("unlock") {
+                self.unlock_view.refresh();
+            }
             self.gate.set_visible_child_name("unlock");
             self.unlock_view.focus();
         } else {
@@ -659,6 +663,7 @@ impl MainWindowInner {
         self.totp_view.on_locked();
         self.backups_view.on_locked();
         self.unlock_view.on_locked();
+        self.generator_view.panel.regenerate();
         self.lock_button.set_visible(false);
         if requires_vault(self.current.get()) {
             self.pending_page.set(Some(self.current.get()));
@@ -748,7 +753,9 @@ impl MainWindowInner {
     }
 
     fn new_entry(self: &Rc<Self>) {
-        if !self.unlocked() {
+        // Not behind an open dialog: Ctrl+N inside the entry form would
+        // stack a second form.
+        if !self.unlocked() || self.window.visible_dialog().is_some() {
             return;
         }
         if self.current.get() == "totp" {
@@ -799,7 +806,9 @@ impl MainWindowInner {
     }
 
     fn focus_search(self: &Rc<Self>) {
-        if !self.unlocked() {
+        // Not behind an open dialog: Ctrl+N inside the entry form would
+        // stack a second form.
+        if !self.unlocked() || self.window.visible_dialog().is_some() {
             return;
         }
         match self.current.get() {
@@ -1081,9 +1090,15 @@ impl DevHandle {
                 // click:<button label> — anywhere in the window, dialogs included.
                 match find_widget(&inner.window.clone().upcast(), &|w| {
                     button_label(w).as_deref() == Some(arg)
+                        || w.downcast_ref::<gtk::MenuButton>().is_some_and(|m| {
+                            m.tooltip_text().as_deref() == Some(arg)
+                        })
                 }) {
                     Some(w) => {
-                        if let Ok(button) = w.downcast::<gtk::Button>() {
+                        if let Some(menu) = w.downcast_ref::<gtk::MenuButton>() {
+                            menu.popup();
+                            eprintln!("dev: opened menu {arg}");
+                        } else if let Ok(button) = w.downcast::<gtk::Button>() {
                             button.emit_clicked();
                             eprintln!("dev: clicked {arg}");
                         }

@@ -193,6 +193,7 @@ impl Inner {
             Err(e) => {
                 let toast = adw::Toast::builder()
                     .title(format!("{}: {e}", tr!("Failed to scan drives")))
+                    .use_markup(false)
                     .timeout(4)
                     .build();
                 self.toast.add_toast(toast);
@@ -499,13 +500,13 @@ fn partition_row(part: &Partition, toast: &adw::ToastOverlay) -> adw::ActionRow 
     subtitle.push_str("  ·  ");
     match part.mountpoint.as_deref() {
         Some(mp) => subtitle.push_str(&mono_span(mp)),
-        None => subtitle.push_str(tr!("not mounted")),
+        None => subtitle.push_str(&glib::markup_escape_text(tr!("not mounted"))),
     }
 
+    // Title and subtitle are markup built from escaped parts.
     let row = adw::ActionRow::builder()
         .title(&title)
         .subtitle(&subtitle)
-        .use_markup(false)
         .build();
 
     // Suffix box: usage bar (when mounted) above the filesystem badge.

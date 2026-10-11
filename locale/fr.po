@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:29\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -379,6 +379,9 @@ msgstr "Effacer les mots de passe copiés après"
 msgid "Clear history"
 msgstr "Effacer l'historique"
 
+msgid "Clear the password history?"
+msgstr "Effacer l’historique des mots de passe ?"
+
 msgid "Client ID"
 msgstr "ID client"
 
@@ -524,6 +527,9 @@ msgstr "Impossible de supprimer"
 msgid "Could not lock the drive"
 msgstr "Impossible de verrouiller le disque"
 
+msgid "Could not open the vault"
+msgstr "Impossible d’ouvrir le coffre"
+
 msgid "Could not open this access"
 msgstr "Impossible d’ouvrir cette entrée"
 
@@ -638,6 +644,9 @@ msgstr "Supprimer l’entrée…"
 msgid "Delete permanently"
 msgstr "Supprimer définitivement"
 
+msgid "Delete permanently?"
+msgstr "Supprimer définitivement ?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr ""
 "Supprimez le fichier exporté s’il n’était pas protégé par un mot de passe."
@@ -714,6 +723,9 @@ msgstr "Phrase de passe vide"
 
 msgid "Empty trash"
 msgstr "Vider la corbeille"
+
+msgid "Empty trash?"
+msgstr "Vider la corbeille ?"
 
 msgid "Encrypt"
 msgstr "Chiffrer"
@@ -1389,6 +1401,10 @@ msgstr ""
 
 msgid "Nothing was changed."
 msgstr "Rien n’a été modifié."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Rien n’a été modifié. Fermez les autres instances d’Ashy Pass et réessayez."
 
 msgid "Nothing was imported"
 msgstr "Rien n’a été importé"
@@ -2179,6 +2195,13 @@ msgstr "Le mot de passe n’a pas été modifié"
 msgid "The passwords do not match"
 msgstr "Les mots de passe ne correspondent pas"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Les anciens mots de passe de cet accès seront supprimés définitivement. "
+"Cette action est irréversible."
+
 msgid "The previous vault was kept at:"
 msgstr "Le coffre précédent a été conservé ici :"
 
@@ -2225,6 +2248,17 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Le coffre s’ouvrira automatiquement à la connexion"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"L’élément de la corbeille ({}) sera supprimé définitivement. Cette action "
+"est irréversible."
+msgstr[1] ""
+"Les {} éléments de la corbeille seront supprimés définitivement. Cette "
+"action est irréversible."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2580,6 +2614,9 @@ msgstr "Très fort"
 msgid "Very Weak"
 msgstr "Très faible"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Attendez la fin de la synchronisation, puis déconnectez-vous."
+
 msgid "Waiting for Nextcloud..."
 msgstr "En attente de Nextcloud..."
 
@@ -2908,6 +2945,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} mot"
 msgstr[1] "{} mots"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "« {} » sera supprimé définitivement. Cette action est irréversible."
 
 msgid "…"
 msgstr "…"

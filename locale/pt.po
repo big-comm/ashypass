@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: Portuguese\n"
@@ -384,6 +384,9 @@ msgstr "Limpar palavras-passe copiadas após"
 msgid "Clear history"
 msgstr "Limpar histórico"
 
+msgid "Clear the password history?"
+msgstr "Limpar o histórico de palavras-passe?"
+
 msgid "Client ID"
 msgstr "ID do cliente"
 
@@ -531,6 +534,9 @@ msgstr "Não foi possível eliminar"
 msgid "Could not lock the drive"
 msgstr "Não foi possível bloquear a unidade"
 
+msgid "Could not open the vault"
+msgstr "Não foi possível abrir o cofre"
+
 msgid "Could not open this access"
 msgstr "Não foi possível abrir este acesso"
 
@@ -649,6 +655,9 @@ msgstr "Eliminar acesso…"
 msgid "Delete permanently"
 msgstr "Eliminar definitivamente"
 
+msgid "Delete permanently?"
+msgstr "Eliminar permanentemente?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Apague o ficheiro exportado se não estava protegido por palavra-passe."
 
@@ -726,6 +735,9 @@ msgstr "Frase-passe vazia"
 
 msgid "Empty trash"
 msgstr "Esvaziar itens eliminados"
+
+msgid "Empty trash?"
+msgstr "Esvaziar o lixo?"
 
 msgid "Encrypt"
 msgstr "Encriptar"
@@ -1405,6 +1417,9 @@ msgstr "Nada é apagado. Os acessos que já estão no cofre são ignorados."
 
 msgid "Nothing was changed."
 msgstr "Nada foi alterado."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "Nada foi alterado. Feche outras cópias do Ashy Pass e tente novamente."
 
 msgid "Nothing was imported"
 msgstr "Nada foi importado"
@@ -2210,6 +2225,13 @@ msgstr "A palavra-passe não foi alterada"
 msgid "The passwords do not match"
 msgstr "As palavras-passe não coincidem"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"As palavras-passe anteriores deste acesso serão eliminadas definitivamente. "
+"Isto não pode ser desfeito."
+
 msgid "The previous vault was kept at:"
 msgstr "O cofre anterior foi guardado em:"
 
@@ -2255,6 +2277,16 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "O cofre abrirá automaticamente ao iniciar sessão"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"O {} item do lixo será eliminado definitivamente. Isto não pode ser desfeito."
+msgstr[1] ""
+"Os {} itens do lixo serão eliminados definitivamente. Isto não pode ser "
+"desfeito."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2606,6 +2638,9 @@ msgstr "Muito forte"
 msgid "Very Weak"
 msgstr "Muito fraca"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Aguarde que a sincronização termine e depois termine a sessão."
+
 msgid "Waiting for Nextcloud..."
 msgstr "A aguardar o Nextcloud..."
 
@@ -2935,6 +2970,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} palavra"
 msgstr[1] "{} palavras"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "“{}” será eliminado definitivamente. Isto não pode ser desfeito."
 
 msgid "…"
 msgstr "…"

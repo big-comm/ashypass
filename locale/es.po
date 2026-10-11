@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:25\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -373,6 +373,9 @@ msgstr "Borrar las contraseñas copiadas tras"
 msgid "Clear history"
 msgstr "Borrar historial"
 
+msgid "Clear the password history?"
+msgstr "¿Borrar el historial de contraseñas?"
+
 msgid "Client ID"
 msgstr "ID de cliente"
 
@@ -518,6 +521,9 @@ msgstr "No se pudo eliminar"
 msgid "Could not lock the drive"
 msgstr "No se pudo bloquear la unidad"
 
+msgid "Could not open the vault"
+msgstr "No se pudo abrir la bóveda"
+
 msgid "Could not open this access"
 msgstr "No se pudo abrir este acceso"
 
@@ -632,6 +638,9 @@ msgstr "Eliminar acceso…"
 msgid "Delete permanently"
 msgstr "Eliminar permanentemente"
 
+msgid "Delete permanently?"
+msgstr "¿Eliminar permanentemente?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Borra el archivo exportado si no estaba protegido con contraseña."
 
@@ -707,6 +716,9 @@ msgstr "Frase de contraseña vacía"
 
 msgid "Empty trash"
 msgstr "Vaciar papelera"
+
+msgid "Empty trash?"
+msgstr "¿Vaciar la papelera?"
 
 msgid "Encrypt"
 msgstr "Cifrar"
@@ -1371,6 +1383,10 @@ msgstr "No se elimina nada. Los accesos que ya están en la bóveda se omiten."
 
 msgid "Nothing was changed."
 msgstr "No se ha cambiado nada."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"No se cambió nada. Cierre otras copias de Ashy Pass e inténtelo de nuevo."
 
 msgid "Nothing was imported"
 msgstr "No se ha importado nada"
@@ -2142,6 +2158,13 @@ msgstr "No se cambió la contraseña"
 msgid "The passwords do not match"
 msgstr "Las contraseñas no coinciden"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Las contraseñas anteriores de este acceso se eliminarán para siempre. Esto "
+"no se puede deshacer."
+
 msgid "The previous vault was kept at:"
 msgstr "La bóveda anterior se guardó en:"
 
@@ -2186,6 +2209,17 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "La bóveda se abrirá automáticamente al iniciar sesión"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"El {} elemento de la papelera se eliminará para siempre. Esto no se puede "
+"deshacer."
+msgstr[1] ""
+"Los {} elementos de la papelera se eliminarán para siempre. Esto no se puede "
+"deshacer."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2535,6 +2569,9 @@ msgstr "Muy fuerte"
 msgid "Very Weak"
 msgstr "Muy débil"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Espere a que termine la sincronización y luego cierre la sesión."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Esperando a Nextcloud..."
 
@@ -2863,6 +2900,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} palabra"
 msgstr[1] "{} palabras"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "“{}” se eliminará para siempre. Esto no se puede deshacer."
 
 msgid "…"
 msgstr "…"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:28\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -371,6 +371,9 @@ msgstr "Tyhjennä kopioidut salasanat"
 msgid "Clear history"
 msgstr "Tyhjennä historia"
 
+msgid "Clear the password history?"
+msgstr "Tyhjennetäänkö salasanahistoria?"
+
 msgid "Client ID"
 msgstr "Asiakastunnus"
 
@@ -515,6 +518,9 @@ msgstr "Poistaminen epäonnistui"
 msgid "Could not lock the drive"
 msgstr "Aseman lukitseminen epäonnistui"
 
+msgid "Could not open the vault"
+msgstr "Holvia ei voitu avata"
+
 msgid "Could not open this access"
 msgstr "Tämän kirjautumistiedon avaaminen epäonnistui"
 
@@ -629,6 +635,9 @@ msgstr "Poista kirjautumistieto…"
 msgid "Delete permanently"
 msgstr "Poista pysyvästi"
 
+msgid "Delete permanently?"
+msgstr "Poistetaanko pysyvästi?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Poista vientitiedosto, jos sitä ei ollut suojattu salasanalla."
 
@@ -703,6 +712,9 @@ msgstr "Tyhjä salasana"
 
 msgid "Empty trash"
 msgstr "Tyhjennä roskakori"
+
+msgid "Empty trash?"
+msgstr "Tyhjennetäänkö roskakori?"
 
 msgid "Encrypt"
 msgstr "Salaa"
@@ -1360,6 +1372,9 @@ msgstr "Mitään ei poisteta. Holvissa jo olevat merkinnät ohitetaan."
 
 msgid "Nothing was changed."
 msgstr "Mitään ei muutettu."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "Mitään ei muutettu. Sulje muut Ashy Passin ikkunat ja yritä uudelleen."
 
 msgid "Nothing was imported"
 msgstr "Mitään ei tuotu"
@@ -2126,6 +2141,13 @@ msgstr "Salasanaa ei vaihdettu"
 msgid "The passwords do not match"
 msgstr "Salasanat eivät täsmää"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Tämän käyttöoikeuden aiemmat salasanat poistetaan pysyvästi. Tätä ei voi "
+"perua."
+
 msgid "The previous vault was kept at:"
 msgstr "Aiempi holvi säilytettiin sijainnissa:"
 
@@ -2169,6 +2191,13 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Holvi avautuu automaattisesti kirjautuessa"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] "Roskakorin {} kohde poistetaan pysyvästi. Tätä ei voi perua."
+msgstr[1] "Roskakorin {} kohdetta poistetaan pysyvästi. Tätä ei voi perua."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2514,6 +2543,9 @@ msgstr "Erittäin vahva"
 msgid "Very Weak"
 msgstr "Erittäin heikko"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Odota, että synkronointi päättyy, ja kirjaudu sitten ulos."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Odotetaan Nextcloudia..."
 
@@ -2841,6 +2873,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} sana"
 msgstr[1] "{} sanaa"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "”{}” poistetaan pysyvästi. Tätä ei voi perua."
 
 msgid "…"
 msgstr "…"

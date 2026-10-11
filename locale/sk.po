@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:45\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -370,6 +370,9 @@ msgstr "Vymazať skopírované heslá po"
 msgid "Clear history"
 msgstr "Vymazať históriu"
 
+msgid "Clear the password history?"
+msgstr "Vymazať históriu hesiel?"
+
 msgid "Client ID"
 msgstr "ID klienta"
 
@@ -514,6 +517,9 @@ msgstr "Odstránenie zlyhalo"
 msgid "Could not lock the drive"
 msgstr "Jednotku sa nepodarilo uzamknúť"
 
+msgid "Could not open the vault"
+msgstr "Trezor sa nepodarilo otvoriť"
+
 msgid "Could not open this access"
 msgstr "Tento prístup sa nepodarilo otvoriť"
 
@@ -628,6 +634,9 @@ msgstr "Odstrániť prístup…"
 msgid "Delete permanently"
 msgstr "Natrvalo odstrániť"
 
+msgid "Delete permanently?"
+msgstr "Odstrániť natrvalo?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Ak exportný súbor nebol chránený heslom, odstráňte ho."
 
@@ -702,6 +711,9 @@ msgstr "Prázdna prístupová fráza"
 
 msgid "Empty trash"
 msgstr "Vyprázdniť kôš"
+
+msgid "Empty trash?"
+msgstr "Vyprázdniť kôš?"
 
 msgid "Encrypt"
 msgstr "Zašifrovať"
@@ -1363,6 +1375,9 @@ msgstr "Nič sa neodstráni. Prístupy, ktoré už sú v trezore, sa preskočia.
 
 msgid "Nothing was changed."
 msgstr "Nič sa nezmenilo."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "Nič sa nezmenilo. Zatvorte ďalšie kópie Ashy Pass a skúste to znova."
 
 msgid "Nothing was imported"
 msgstr "Nič sa neimportovalo"
@@ -2126,6 +2141,13 @@ msgstr "Heslo nebolo zmenené"
 msgid "The passwords do not match"
 msgstr "Heslá sa nezhodujú"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Predchádzajúce heslá tohto prístupu budú natrvalo odstránené. Túto akciu "
+"nemožno vrátiť späť."
+
 msgid "The previous vault was kept at:"
 msgstr "Predchádzajúci trezor bol uložený do:"
 
@@ -2170,6 +2192,20 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Trezor sa po prihlásení otvorí automaticky"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"Všetky položky v koši ({}) budú natrvalo odstránené. Túto akciu nemožno "
+"vrátiť späť."
+msgstr[1] ""
+"Všetky položky v koši ({}) budú natrvalo odstránené. Túto akciu nemožno "
+"vrátiť späť."
+msgstr[2] ""
+"Všetky položky v koši ({}) budú natrvalo odstránené. Túto akciu nemožno "
+"vrátiť späť."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2509,6 +2545,9 @@ msgstr "Veľmi silná"
 
 msgid "Very Weak"
 msgstr "Veľmi slabá"
+
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Počkajte na dokončenie synchronizácie a potom sa odhláste."
 
 msgid "Waiting for Nextcloud..."
 msgstr "Čakám na Nextcloud..."
@@ -2862,6 +2901,10 @@ msgid_plural "{} words"
 msgstr[0] "{} slovo"
 msgstr[1] "{} slová"
 msgstr[2] "{} slov"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "„{}“ bude natrvalo odstránené. Túto akciu nemožno vrátiť späť."
 
 msgid "…"
 msgstr "…"

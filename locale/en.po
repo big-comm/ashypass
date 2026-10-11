@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: English\n"
@@ -375,6 +375,9 @@ msgstr "Clear copied passwords after"
 msgid "Clear history"
 msgstr "Clear history"
 
+msgid "Clear the password history?"
+msgstr "Clear the password history?"
+
 msgid "Client ID"
 msgstr "Client ID"
 
@@ -520,6 +523,9 @@ msgstr "Could not delete"
 msgid "Could not lock the drive"
 msgstr "Could not lock the drive"
 
+msgid "Could not open the vault"
+msgstr "Could not open the vault"
+
 msgid "Could not open this access"
 msgstr "Could not open this access"
 
@@ -637,6 +643,9 @@ msgstr "Delete access…"
 msgid "Delete permanently"
 msgstr "Delete permanently"
 
+msgid "Delete permanently?"
+msgstr "Delete permanently?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Delete the export file if it was not protected by a password."
 
@@ -711,6 +720,9 @@ msgstr "Empty passphrase"
 
 msgid "Empty trash"
 msgstr "Empty trash"
+
+msgid "Empty trash?"
+msgstr "Empty trash?"
 
 msgid "Encrypt"
 msgstr "Encrypt"
@@ -1372,6 +1384,9 @@ msgstr "Nothing is removed. Entries already in the vault are skipped."
 
 msgid "Nothing was changed."
 msgstr "Nothing was changed."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "Nothing was changed. Close other copies of Ashy Pass and try again."
 
 msgid "Nothing was imported"
 msgstr "Nothing was imported"
@@ -2163,6 +2178,13 @@ msgstr "The password was not changed"
 msgid "The passwords do not match"
 msgstr "The passwords do not match"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+
 msgid "The previous vault was kept at:"
 msgstr "The previous vault was kept at:"
 
@@ -2205,6 +2227,15 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "The vault will open automatically at login"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"The {} entry in the trash is deleted for good. This cannot be undone."
+msgstr[1] ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2552,6 +2583,9 @@ msgstr "Very Strong"
 msgid "Very Weak"
 msgstr "Very Weak"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Wait for the sync to finish, then sign out."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Waiting for Nextcloud..."
 
@@ -2880,6 +2914,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} word"
 msgstr[1] "{} words"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "“{}” is deleted for good. This cannot be undone."
 
 msgid "…"
 msgstr "…"

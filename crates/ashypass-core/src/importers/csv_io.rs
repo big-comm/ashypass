@@ -53,6 +53,11 @@ pub fn import_csv(path: impl AsRef<Path>) -> Result<Vec<CsvEntry>> {
     let get = |row: &csv::StringRecord, i: Option<usize>| -> String {
         i.and_then(|i| row.get(i)).unwrap_or("").trim().to_string()
     };
+    // Passwords and notes are kept exactly: a password that starts or ends
+    // with a space would no longer work if it were trimmed.
+    let get_raw = |row: &csv::StringRecord, i: Option<usize>| -> String {
+        i.and_then(|i| row.get(i)).unwrap_or("").to_string()
+    };
 
     let mut out = Vec::new();
     for row in rdr.records() {
@@ -68,16 +73,16 @@ pub fn import_csv(path: impl AsRef<Path>) -> Result<Vec<CsvEntry>> {
             },
             url: get(&row, i_url),
             username: get(&row, i_user),
-            password: get(&row, i_pw),
-            notes: get(&row, i_notes),
+            password: get_raw(&row, i_pw),
+            notes: get_raw(&row, i_notes),
         };
         // Only fully blank rows are dropped; a row with just a URL or a
         // username is still user data.
         let has_data = entry.title != "Untitled"
-            || !entry.password.is_empty()
+            || !entry.password.trim().is_empty()
             || !entry.url.is_empty()
             || !entry.username.is_empty()
-            || !entry.notes.is_empty();
+            || !entry.notes.trim().is_empty();
         if has_data {
             out.push(entry);
         }

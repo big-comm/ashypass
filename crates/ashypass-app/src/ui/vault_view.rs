@@ -348,8 +348,25 @@ impl VaultView {
 
         setup_factory(&inner, &factory);
         wire(&inner, &list_view, &add_button);
-        install_actions(&inner, list_body.upcast_ref());
+        // On the toolbar view, not the body: the "More options" menu lives in
+        // the header bar, a sibling of the body.
+        install_actions(&inner, list_toolbar.upcast_ref());
         install_actions(&inner, inner.details_toolbar.upcast_ref());
+        {
+            // In the collapsed layout the header Back button pops the details
+            // without going through `close_details`: drop the decrypted
+            // content, the open highlight and the timer once it is gone.
+            let weak = Rc::downgrade(&inner);
+            inner.details_page.connect_hidden(move |_| {
+                let Some(inner) = weak.upgrade() else { return };
+                if inner.split.is_collapsed()
+                    && !inner.split.shows_content()
+                    && inner.open_id.get().is_some()
+                {
+                    inner.close_details();
+                }
+            });
+        }
 
         Rc::new(Self { root: split, inner })
     }
@@ -684,6 +701,7 @@ fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) 
         let Some(inner) = weak.upgrade() else { return };
         match event {
             crate::events::AppEvent::VaultChanged
+            | crate::events::AppEvent::DisplayChanged
             | crate::events::AppEvent::SyncCompleted { .. }
                 if inner.can_show_vault_data() =>
             {
@@ -1131,12 +1149,11 @@ impl Inner {
     fn toggle_favorite(&self, id: i64) {
         let result = self.state.vault.borrow().toggle_favorite(id);
         match result {
-            Ok(true) => self.toast(tr!("Added to favorites")),
-            Ok(false) => self.toast(tr!("Removed from favorites")),
+            Ok(Some(true)) => self.toast(tr!("Added to favorites")),
+            Ok(Some(false)) => self.toast(tr!("Removed from favorites")),
+            Ok(None) => self.toast(tr!("This access no longer exists")),
             Err(e) => self.toast(&format!("{}: {e}", tr!("Could not change the favorite"))),
         }
-        // Favorites do not change `updated_at`, so the change listener may
-        // not fire; refresh explicitly.
         self.invalidate_caches();
         SessionManager::on_activity(&self.state.session);
     }
@@ -1254,7 +1271,7 @@ impl Inner {
                     // Read the value at click time instead of keeping a copy
                     // of every old password alive in the closure.
                     let inner = self.clone();
-                    let changed_at = h.changed_at;
+                    let history_id = h.id;
                     copy.connect_clicked(move |_| {
                         if !inner.can_show_vault_data() {
                             return;
@@ -1268,7 +1285,7 @@ impl Inner {
                             .and_then(|items| {
                                 items
                                     .into_iter()
-                                    .find(|item| item.changed_at == changed_at)
+                                    .find(|item| item.id == history_id)
                                     .map(|item| Zeroizing::new(item.password))
                             });
                         if let Some(value) = value {
@@ -1290,16 +1307,32 @@ impl Inner {
             {
                 let inner = self.clone();
                 let dialog = dialog.clone();
-                clear.connect_clicked(move |_| {
-                    match inner.state.vault.borrow().clear_password_history(id) {
-                        Ok(_) => {
-                            inner.toast(tr!("History cleared"));
-                            dialog.close();
+                clear.connect_clicked(move |button| {
+                    let confirm = adw::AlertDialog::builder()
+                        .heading(tr!("Clear the password history?"))
+                        .body(tr!(
+                            "The previous passwords of this access are deleted for good. This cannot be undone."
+                        ))
+                        .close_response("cancel")
+                        .default_response("cancel")
+                        .build();
+                    confirm.add_response("cancel", tr!("Cancel"));
+                    confirm.add_response("clear", tr!("Clear history"));
+                    confirm.set_response_appearance("clear", adw::ResponseAppearance::Destructive);
+                    inner.state.track_sensitive_dialog(&confirm);
+                    let inner = inner.clone();
+                    let dialog = dialog.clone();
+                    confirm.connect_response(Some("clear"), move |_, _| {
+                        match inner.state.vault.borrow().clear_password_history(id) {
+                            Ok(_) => {
+                                inner.toast(tr!("History cleared"));
+                                dialog.close();
+                            }
+                            Err(e) => inner
+                                .toast(&format!("{}: {e}", tr!("Could not clear the history"))),
                         }
-                        Err(e) => {
-                            inner.toast(&format!("{}: {e}", tr!("Could not clear the history")))
-                        }
-                    }
+                    });
+                    confirm.present(Some(button));
                 });
             }
             actions.add(&clear);
@@ -1429,6 +1462,16 @@ impl Inner {
         list.add_css_class("boxed-list");
         list.append(&name_row);
         dialog.set_extra_child(Some(&list));
+        // Nothing to create until a name is typed.
+        dialog.set_response_enabled("create", false);
+        {
+            let dialog = dialog.downgrade();
+            name_row.connect_changed(move |row| {
+                if let Some(dialog) = dialog.upgrade() {
+                    dialog.set_response_enabled("create", !row.text().trim().is_empty());
+                }
+            });
+        }
         let inner = self.clone();
         dialog.connect_response(None, move |_, response| {
             if response != "create" {
@@ -1438,14 +1481,20 @@ impl Inner {
             if name.is_empty() {
                 return;
             }
-            match inner.state.vault.borrow().create_folder(&name) {
-                Ok(true) => inner.toast(tr!("Folder created")),
-                Ok(false) => inner.toast(tr!("This folder already exists")),
+            let result = inner.state.vault.borrow().create_folder(&name);
+            match result {
+                Ok(created) => {
+                    inner.toast(if created {
+                        tr!("Folder created")
+                    } else {
+                        tr!("This folder already exists")
+                    });
+                    inner.invalidate_caches();
+                    inner.reload();
+                    inner.set_folder_filter(FolderFilter::Named(name));
+                }
                 Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not create the folder"))),
             }
-            inner.invalidate_caches();
-            inner.reload();
-            inner.set_folder_filter(FolderFilter::Named(name));
         });
         self.state.track_sensitive_dialog(&dialog);
         dialog.present(Some(&self.split));
@@ -2046,15 +2095,20 @@ fn password_search_text(entry: &PasswordEntry) -> String {
     text
 }
 
+/// A fixed-width mask that does not reveal the length. Long passwords keep
+/// their last three characters as a hint to tell versions apart; short ones
+/// (PINs) show nothing, since three characters would give most of it away.
 fn mask_password(s: &str) -> String {
+    const MASK: &str = "••••••••";
     let len = s.chars().count();
     if len == 0 {
         return String::new();
     }
-    let visible = len.min(3);
-    let masked = "•".repeat(len.saturating_sub(visible));
-    let tail: String = s.chars().skip(len.saturating_sub(visible)).collect();
-    format!("{masked}{tail}")
+    if len < 12 {
+        return MASK.to_string();
+    }
+    let tail: String = s.chars().skip(len - 3).collect();
+    format!("{MASK}{tail}")
 }
 
 pub(crate) fn human_size(bytes: u64) -> String {
@@ -2215,9 +2269,10 @@ mod tests {
     }
 
     #[test]
-    fn history_mask_keeps_only_the_tail() {
-        assert_eq!(mask_password("abcdef"), "•••def");
-        assert_eq!(mask_password("ab"), "ab");
+    fn history_mask_hides_length_and_short_values() {
+        assert_eq!(mask_password("1234"), "••••••••");
+        assert_eq!(mask_password("ab"), "••••••••");
+        assert_eq!(mask_password("correct-horse-staple"), "••••••••ple");
         assert_eq!(mask_password(""), "");
     }
 }

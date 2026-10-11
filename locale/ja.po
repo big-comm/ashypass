@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -370,6 +370,9 @@ msgstr "コピーしたパスワードを消去するまでの時間"
 msgid "Clear history"
 msgstr "履歴を消去"
 
+msgid "Clear the password history?"
+msgstr "パスワード履歴を消去しますか？"
+
 msgid "Client ID"
 msgstr "クライアントID"
 
@@ -514,6 +517,9 @@ msgstr "削除できませんでした"
 msgid "Could not lock the drive"
 msgstr "ドライブをロックできませんでした"
 
+msgid "Could not open the vault"
+msgstr "保管庫を開けませんでした"
+
 msgid "Could not open this access"
 msgstr "このエントリを開けませんでした"
 
@@ -628,6 +634,9 @@ msgstr "エントリを削除…"
 msgid "Delete permanently"
 msgstr "完全に削除"
 
+msgid "Delete permanently?"
+msgstr "完全に削除しますか？"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr ""
 "パスワードで保護されていない場合は、エクスポートしたファイルを削除してくださ"
@@ -703,6 +712,9 @@ msgstr "空のパスフレーズ"
 
 msgid "Empty trash"
 msgstr "ゴミ箱を空にする"
+
+msgid "Empty trash?"
+msgstr "ゴミ箱を空にしますか？"
 
 msgid "Encrypt"
 msgstr "暗号化"
@@ -1360,6 +1372,11 @@ msgstr "何も削除されません。すでにボールトにあるエントリ
 
 msgid "Nothing was changed."
 msgstr "何も変更されていません。"
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"何も変更されていません。ほかの Ashy Pass を閉じてから、もう一度お試しくださ"
+"い。"
 
 msgid "Nothing was imported"
 msgstr "何もインポートされませんでした"
@@ -2128,6 +2145,13 @@ msgstr "パスワードは変更されませんでした"
 msgid "The passwords do not match"
 msgstr "パスワードが一致しません"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"このアクセスの以前のパスワードは完全に削除されます。この操作は元に戻せませ"
+"ん。"
+
 msgid "The previous vault was kept at:"
 msgstr "以前のボールトの保存先:"
 
@@ -2171,6 +2195,13 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "ログイン時にボールトが自動的に開きます"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"ゴミ箱の {} 件の項目は完全に削除されます。この操作は元に戻せません。"
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2513,6 +2544,9 @@ msgstr "非常に強い"
 msgid "Very Weak"
 msgstr "非常に弱い"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "同期が終わるまで待ってから、サインアウトしてください。"
+
 msgid "Waiting for Nextcloud..."
 msgstr "Nextcloudを待機中..."
 
@@ -2816,6 +2850,10 @@ msgstr[0] "{} 件は調整してインポートされます。"
 msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} 語"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "「{}」は完全に削除されます。この操作は元に戻せません。"
 
 msgid "…"
 msgstr "…"

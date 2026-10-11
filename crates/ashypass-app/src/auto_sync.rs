@@ -46,6 +46,7 @@ pub fn install(state: SharedState, toast: adw::ToastOverlay) -> Handle {
         periodic_source: RefCell::new(None),
         in_flight: Cell::new(false),
         rerun_after: Cell::new(false),
+        last_failed: Cell::new(false),
         settings: RefCell::new(Settings::load()),
     });
 
@@ -101,6 +102,9 @@ struct Inner {
     periodic_source: RefCell<Option<glib::SourceId>>,
     in_flight: Cell<bool>,
     rerun_after: Cell<bool>,
+    /// The previous run failed: repeat failures stay quiet instead of
+    /// toasting on every interval while offline.
+    last_failed: Cell<bool>,
     settings: RefCell<Settings>,
 }
 
@@ -161,8 +165,12 @@ impl Inner {
             self.rerun_after.set(true);
             return;
         }
-        self.in_flight.set(true);
-        self.state.set_sync_status(SyncStatus::Running);
+        if nextcloud_engine::is_sync_running() {
+            // A manual sync from Settings is running; try again afterwards
+            // instead of failing with "already running".
+            self.retry_later();
+            return;
+        }
 
         // Clone what the worker thread needs. The Nextcloud client owns its
         // HTTP transport and is Send + Sync. The vault is borrowed through
@@ -177,6 +185,8 @@ impl Inner {
                 return;
             }
         };
+        self.in_flight.set(true);
+        self.state.set_sync_status(SyncStatus::Running);
         let client = self.state.nextcloud.borrow().clone();
         let (tx, rx) = mpsc::channel::<Result<SyncReport, String>>();
         std::thread::spawn(move || {
@@ -202,7 +212,8 @@ impl Inner {
                         } else {
                             SyncStatus::Failed { at: now }
                         });
-                    if !report.stats.errors.is_empty() {
+                    let failed = !report.stats.errors.is_empty();
+                    if failed && !inner.last_failed.replace(failed) {
                         show_toast(
                             &inner.toast,
                             &format!(
@@ -212,6 +223,7 @@ impl Inner {
                             ),
                         );
                     }
+                    inner.last_failed.set(failed);
                     // The sync may have inserted/updated entries locally —
                     // notify the rest of the UI so views refresh.
                     if report.stats.created_locally
@@ -229,7 +241,9 @@ impl Inner {
                     inner.state.set_sync_status(SyncStatus::Failed {
                         at: chrono::Utc::now().timestamp(),
                     });
-                    show_toast(&inner.toast, &format!("{}: {msg}", tr!("Sync failed")));
+                    if !inner.last_failed.replace(true) {
+                        show_toast(&inner.toast, &format!("{}: {msg}", tr!("Sync failed")));
+                    }
                     inner.maybe_rerun();
                     glib::ControlFlow::Break
                 }
@@ -244,6 +258,18 @@ impl Inner {
                 }
             }
         });
+    }
+
+    /// Re-arm the debounce without touching the visible status.
+    fn retry_later(self: &Rc<Self>) {
+        self.cancel_debounce();
+        let inner = self.clone();
+        let id = glib::timeout_add_seconds_local(DEBOUNCE_SECONDS, move || {
+            inner.debounce_source.borrow_mut().take();
+            inner.run_sync();
+            glib::ControlFlow::Break
+        });
+        *self.debounce_source.borrow_mut() = Some(id);
     }
 
     fn maybe_rerun(self: &Rc<Self>) {

@@ -501,7 +501,13 @@ fn build_options_page(
         let nav_cl = nav.clone();
         let state_cl = state.clone();
         let drive_cl = drive.clone();
-        go.connect_clicked(move |_| {
+        go.connect_clicked(move |button| {
+            // A double click must not start two destructive pipelines on
+            // the same drive.
+            if !button.is_sensitive() {
+                return;
+            }
+            button.set_sensitive(false);
             let mut st = state_cl.borrow_mut();
             st.filesystem = selected_filesystem(&fs_row);
             st.wipe_mode = Some(match wipe_row.selected() {
@@ -517,6 +523,10 @@ fn build_options_page(
             let run = build_run_page(&nav_cl, drive_cl.clone(), state_cl.clone());
             nav_cl.push(&run);
         });
+    }
+    {
+        let go = go.clone();
+        page.connect_shown(move |_| go.set_sensitive(true));
     }
 
     page

@@ -14,9 +14,8 @@ use crate::{Error, Result};
 use secret_service::blocking::SecretService;
 use secret_service::EncryptionType;
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::mpsc;
-use std::time::Duration;
+use std::sync::{mpsc, Mutex};
+use std::time::{Duration, Instant};
 
 /// All Ashy Pass keyring items carry these attribute pairs so we can find
 /// them again and so they don't collide with other apps' secrets.
@@ -35,9 +34,27 @@ const QUICK_UNLOCK_LABEL: &str = "Ashy Pass — quick-unlock state";
 /// (zbus calls have no timeout), freezing the GTK main loop.
 const CONNECT_TIMEOUT: Duration = Duration::from_secs(8);
 
-/// Set once a connect timed out: later calls fail fast instead of waiting
-/// again for a service that is not coming.
-static UNRESPONSIVE: AtomicBool = AtomicBool::new(false);
+/// After a connect timed out, later calls fail fast for this long instead of
+/// waiting again; then the service is tried once more (it may have been slow
+/// only while the session was starting).
+const RETRY_AFTER: Duration = Duration::from_secs(60);
+
+/// When the last connect timed out, if it did.
+static UNRESPONSIVE_SINCE: Mutex<Option<Instant>> = Mutex::new(None);
+
+fn mark_unresponsive(value: Option<Instant>) {
+    if let Ok(mut since) = UNRESPONSIVE_SINCE.lock() {
+        *since = value;
+    }
+}
+
+fn recently_unresponsive() -> bool {
+    UNRESPONSIVE_SINCE
+        .lock()
+        .ok()
+        .and_then(|since| *since)
+        .is_some_and(|at| at.elapsed() < RETRY_AFTER)
+}
 
 fn service() -> Result<SecretService<'static>> {
     connect_with_timeout(CONNECT_TIMEOUT, || {
@@ -51,7 +68,7 @@ where
     E: std::fmt::Display + Send + 'static,
     F: FnOnce() -> std::result::Result<T, E> + Send + 'static,
 {
-    if UNRESPONSIVE.load(Ordering::Relaxed) {
+    if recently_unresponsive() {
         return Err(Error::Other("secret service is not responding".into()));
     }
     let (sender, receiver) = mpsc::channel();
@@ -59,9 +76,12 @@ where
         let _ = sender.send(connect());
     });
     match receiver.recv_timeout(timeout) {
-        Ok(result) => result.map_err(|e| Error::Other(format!("secret service connect: {e}"))),
+        Ok(result) => {
+            mark_unresponsive(None);
+            result.map_err(|e| Error::Other(format!("secret service connect: {e}")))
+        }
         Err(_) => {
-            UNRESPONSIVE.store(true, Ordering::Relaxed);
+            mark_unresponsive(Some(Instant::now()));
             Err(Error::Other("secret service is not responding".into()))
         }
     }
@@ -199,6 +219,6 @@ mod timeout_tests {
         let again: Result<()> =
             connect_with_timeout(Duration::from_secs(5), || Ok::<(), String>(()));
         assert!(again.is_err());
-        UNRESPONSIVE.store(false, Ordering::Relaxed);
+        mark_unresponsive(None);
     }
 }

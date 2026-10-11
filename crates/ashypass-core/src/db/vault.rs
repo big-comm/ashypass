@@ -273,6 +273,9 @@ impl Vault {
 
     pub fn open_with_session_key(path: impl AsRef<Path>, key: DerivedKey) -> Result<Self> {
         let mut vault = Self::open(path)?;
+        // A worker that opens the vault after a master password change must
+        // not write rows under the old key: they could never be read again.
+        vault.ensure_key_matches(&key)?;
         vault.key = Some(key.clone());
         vault.cached_key = Some(key);
         Ok(vault)
@@ -1069,11 +1072,15 @@ impl Vault {
         drop(rows);
         drop(stmt);
         if touch {
+            // Best effort: the read already succeeded, so a busy database
+            // (another connection writing) must not turn it into an error.
             let now = chrono::Utc::now().timestamp();
-            self.conn.execute(
+            if let Err(e) = self.conn.execute(
                 "UPDATE passwords SET last_accessed = ? WHERE id = ?",
                 params![now, id],
-            )?;
+            ) {
+                log::debug!("could not record access time for entry {id}: {e}");
+            }
         }
         Ok(Some(entry))
     }
@@ -1463,23 +1470,22 @@ impl Vault {
         Ok(n)
     }
 
-    pub fn toggle_favorite(&self, id: i64) -> Result<bool> {
-        let current: Option<i64> = self
+    /// Flip the favorite flag in one statement. Returns the new state, or
+    /// `None` when the entry does not exist.
+    pub fn toggle_favorite(&self, id: i64) -> Result<Option<bool>> {
+        let new: Option<i64> = self
             .conn
             .query_row(
-                "SELECT favorite FROM passwords WHERE id = ?",
+                "UPDATE passwords SET favorite = 1 - (COALESCE(favorite, 0) != 0)
+                 WHERE id = ? RETURNING favorite",
                 params![id],
                 |r| r.get(0),
             )
-            .ok();
-        let Some(cur) = current else { return Ok(false) };
-        let new = if cur == 0 { 1 } else { 0 };
-        self.conn.execute(
-            "UPDATE passwords SET favorite = ? WHERE id = ?",
-            params![new, id],
-        )?;
-        self.notify_change();
-        Ok(new != 0)
+            .optional()?;
+        if new.is_some() {
+            self.notify_change();
+        }
+        Ok(new.map(|v| v != 0))
     }
 
     pub fn set_favorite(&self, id: i64, favorite: bool) -> Result<bool> {
@@ -2521,9 +2527,10 @@ mod tests {
             vault.unlock_with_key(&stale_inputs, key.clone()),
             Err(Error::KeyMismatch)
         ));
-        let session = Vault::open_with_session_key(&path, key).unwrap();
+        // A worker handed the old key is refused at open, before it could
+        // write rows nobody can read.
         assert!(matches!(
-            session.verify_session_key(),
+            Vault::open_with_session_key(&path, key),
             Err(Error::KeyMismatch)
         ));
 

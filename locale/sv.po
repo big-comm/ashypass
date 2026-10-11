@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:46\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -369,6 +369,9 @@ msgstr "Rensa kopierade lösenord efter"
 msgid "Clear history"
 msgstr "Rensa historik"
 
+msgid "Clear the password history?"
+msgstr "Rensa lösenordshistoriken?"
+
 msgid "Client ID"
 msgstr "Klient-ID"
 
@@ -513,6 +516,9 @@ msgstr "Det gick inte att ta bort"
 msgid "Could not lock the drive"
 msgstr "Det gick inte att låsa enheten"
 
+msgid "Could not open the vault"
+msgstr "Valvet kunde inte öppnas"
+
 msgid "Could not open this access"
 msgstr "Det gick inte att öppna denna inloggning"
 
@@ -628,6 +634,9 @@ msgstr "Ta bort inloggning…"
 msgid "Delete permanently"
 msgstr "Ta bort permanent"
 
+msgid "Delete permanently?"
+msgstr "Ta bort permanent?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Ta bort exportfilen om den inte var skyddad med lösenord."
 
@@ -701,6 +710,9 @@ msgstr "Tom lösenfras"
 
 msgid "Empty trash"
 msgstr "Töm papperskorgen"
+
+msgid "Empty trash?"
+msgstr "Töm papperskorgen?"
 
 msgid "Encrypt"
 msgstr "Kryptera"
@@ -1360,6 +1372,9 @@ msgstr "Inget tas bort. Poster som redan finns i valvet hoppas över."
 
 msgid "Nothing was changed."
 msgstr "Inget har ändrats."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "Inget ändrades. Stäng andra kopior av Ashy Pass och försök igen."
 
 msgid "Nothing was imported"
 msgstr "Inget importerades"
@@ -2122,6 +2137,13 @@ msgstr "Lösenordet ändrades inte"
 msgid "The passwords do not match"
 msgstr "Lösenorden matchar inte"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"De tidigare lösenorden för den här åtkomsten tas bort permanent. Detta kan "
+"inte ångras."
+
 msgid "The previous vault was kept at:"
 msgstr "Det tidigare valvet sparades i:"
 
@@ -2164,6 +2186,15 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Valvet öppnas automatiskt vid inloggning"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"{} objekt i papperskorgen tas bort permanent. Detta kan inte ångras."
+msgstr[1] ""
+"{} objekt i papperskorgen tas bort permanent. Detta kan inte ångras."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2505,6 +2536,9 @@ msgstr "Mycket starkt"
 msgid "Very Weak"
 msgstr "Mycket svagt"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Vänta tills synkroniseringen är klar och logga sedan ut."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Väntar på Nextcloud..."
 
@@ -2832,6 +2866,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} ord"
 msgstr[1] "{} ord"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "”{}” tas bort permanent. Detta kan inte ångras."
 
 msgid "…"
 msgstr "…"

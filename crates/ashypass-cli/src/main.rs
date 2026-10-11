@@ -157,7 +157,7 @@ struct GenArgs {
     /// Length in characters (ignored for --passphrase / --pin).
     #[arg(long, default_value_t = 20)]
     length: usize,
-    /// Generate a 4-word passphrase instead.
+    /// Generate a 6-word passphrase instead.
     #[arg(long)]
     passphrase: bool,
     /// Generate a numeric PIN instead.

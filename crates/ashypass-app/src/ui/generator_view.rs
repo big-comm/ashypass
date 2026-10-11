@@ -423,6 +423,12 @@ impl GeneratorPanel {
         *self.inner.on_primary.borrow_mut() = Some(cb);
     }
 
+    /// Replace the shown value with a fresh one (on lock, so the last
+    /// password does not stay on screen).
+    pub fn regenerate(&self) {
+        self.inner.generate();
+    }
+
     #[cfg(debug_assertions)]
     pub fn dev_set_kind(&self, id: &str) {
         self.inner.set_kind(GeneratorKind::from_id(id));
@@ -547,6 +553,10 @@ impl PanelInner {
                         log::warn!("password generation failed: {e}");
                         self.summary_label
                             .set_label(tr!("These options cannot produce a password."));
+                        // Drop the previous value so Copy and Use cannot
+                        // pick up a password that no longer matches.
+                        self.password_label.set_label("");
+                        *self.current.borrow_mut() = Zeroizing::new(String::new());
                         return;
                     }
                 }

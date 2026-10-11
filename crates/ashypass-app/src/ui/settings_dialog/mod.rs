@@ -57,7 +57,11 @@ struct NextcloudProgressUi {
     progress: gtk::ProgressBar,
 }
 
-pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::ToastOverlay) {
+pub fn present(
+    parent: &impl IsA<gtk::Widget>,
+    state: SharedState,
+    window_toast: adw::ToastOverlay,
+) {
     let dialog = adw::PreferencesDialog::builder()
         .title(tr!("Settings"))
         .search_enabled(true)
@@ -69,7 +73,7 @@ pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::
     let dialog_slot: Rc<RefCell<Option<adw::Dialog>>> =
         Rc::new(RefCell::new(Some(dialog.clone().upcast())));
     // Toasts raised from inside the dialog must show over it.
-    let toast = Toaster::Dialog(dialog.downgrade());
+    let toast = Toaster::Dialog(dialog.downgrade(), window_toast);
     let parent_widget: gtk::Widget = dialog.clone().upcast();
 
     let protection = adw::PreferencesPage::builder()
@@ -128,18 +132,22 @@ pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::
 #[derive(Clone)]
 pub enum Toaster {
     Overlay(adw::ToastOverlay),
-    Dialog(glib::WeakRef<adw::PreferencesDialog>),
+    /// The dialog, with the main window's overlay for results that arrive
+    /// after the dialog was closed (uploads, exports, …).
+    Dialog(glib::WeakRef<adw::PreferencesDialog>, adw::ToastOverlay),
 }
 
 impl Toaster {
     pub fn add_toast(&self, toast: adw::Toast) {
+        // Messages carry file names, entry titles and server errors: show
+        // them as plain text, never as Pango markup.
+        toast.set_use_markup(false);
         match self {
             Self::Overlay(overlay) => overlay.add_toast(toast),
-            Self::Dialog(dialog) => {
-                if let Some(dialog) = dialog.upgrade() {
-                    dialog.add_toast(toast);
-                }
-            }
+            Self::Dialog(dialog, fallback) => match dialog.upgrade() {
+                Some(dialog) if dialog.is_mapped() => dialog.add_toast(toast),
+                _ => fallback.add_toast(toast),
+            },
         }
     }
 }

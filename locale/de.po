@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:22\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: German <de@li.org>\n"
@@ -375,6 +375,9 @@ msgstr "Kopierte Passwörter löschen nach"
 msgid "Clear history"
 msgstr "Verlauf löschen"
 
+msgid "Clear the password history?"
+msgstr "Passwortverlauf löschen?"
+
 msgid "Client ID"
 msgstr "Client-ID"
 
@@ -519,6 +522,9 @@ msgstr "Löschen fehlgeschlagen"
 msgid "Could not lock the drive"
 msgstr "Laufwerk konnte nicht gesperrt werden"
 
+msgid "Could not open the vault"
+msgstr "Der Tresor konnte nicht geöffnet werden"
+
 msgid "Could not open this access"
 msgstr "Dieser Eintrag konnte nicht geöffnet werden"
 
@@ -634,6 +640,9 @@ msgstr "Eintrag löschen …"
 msgid "Delete permanently"
 msgstr "Endgültig löschen"
 
+msgid "Delete permanently?"
+msgstr "Endgültig löschen?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr ""
 "Löschen Sie die Exportdatei, wenn sie nicht durch ein Passwort geschützt war."
@@ -710,6 +719,9 @@ msgstr "Leere Passphrase"
 
 msgid "Empty trash"
 msgstr "Papierkorb leeren"
+
+msgid "Empty trash?"
+msgstr "Papierkorb leeren?"
 
 msgid "Encrypt"
 msgstr "Verschlüsseln"
@@ -1387,6 +1399,11 @@ msgstr ""
 
 msgid "Nothing was changed."
 msgstr "Es wurde nichts geändert."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Es wurde nichts geändert. Schließen Sie andere Instanzen von Ashy Pass und "
+"versuchen Sie es erneut."
 
 msgid "Nothing was imported"
 msgstr "Nichts importiert"
@@ -2178,6 +2195,13 @@ msgstr "Das Passwort wurde nicht geändert"
 msgid "The passwords do not match"
 msgstr "Die Passwörter stimmen nicht überein"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Die früheren Passwörter dieses Zugangs werden endgültig gelöscht. Dies kann "
+"nicht rückgängig gemacht werden."
+
 msgid "The previous vault was kept at:"
 msgstr "Der vorherige Tresor wurde aufbewahrt unter:"
 
@@ -2227,6 +2251,17 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Der Tresor wird bei der Anmeldung automatisch geöffnet"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"{} Eintrag im Papierkorb wird endgültig gelöscht. Dies kann nicht rückgängig "
+"gemacht werden."
+msgstr[1] ""
+"{} Einträge im Papierkorb werden endgültig gelöscht. Dies kann nicht "
+"rückgängig gemacht werden."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2585,6 +2620,11 @@ msgstr "Sehr stark"
 msgid "Very Weak"
 msgstr "Sehr schwach"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr ""
+"Warten Sie, bis die Synchronisierung abgeschlossen ist, und melden Sie sich "
+"dann ab."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Warte auf Nextcloud..."
 
@@ -2914,6 +2954,11 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} Wort"
 msgstr[1] "{} Wörter"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr ""
+"„{}“ wird endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
 
 msgid "…"
 msgstr "…"

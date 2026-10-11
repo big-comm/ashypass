@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:47\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -374,6 +374,9 @@ msgstr "Kopyalanan parolaları şu süre sonra temizle"
 msgid "Clear history"
 msgstr "Geçmişi temizle"
 
+msgid "Clear the password history?"
+msgstr "Parola geçmişi temizlensin mi?"
+
 msgid "Client ID"
 msgstr "İstemci Kimliği"
 
@@ -518,6 +521,9 @@ msgstr "Silinemedi"
 msgid "Could not lock the drive"
 msgstr "Sürücü kilitlenemedi"
 
+msgid "Could not open the vault"
+msgstr "Kasa açılamadı"
+
 msgid "Could not open this access"
 msgstr "Bu kayıt açılamadı"
 
@@ -632,6 +638,9 @@ msgstr "Kaydı sil…"
 msgid "Delete permanently"
 msgstr "Kalıcı olarak sil"
 
+msgid "Delete permanently?"
+msgstr "Kalıcı olarak silinsin mi?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Parolayla korunmuyorsa dışa aktarma dosyasını silin."
 
@@ -705,6 +714,9 @@ msgstr "Boş parola ifadesi"
 
 msgid "Empty trash"
 msgstr "Çöp kutusunu boşalt"
+
+msgid "Empty trash?"
+msgstr "Çöp kutusu boşaltılsın mı?"
 
 msgid "Encrypt"
 msgstr "Şifrele"
@@ -1361,6 +1373,11 @@ msgstr "Hiçbir şey kaldırılmaz. Kasada zaten bulunan kayıtlar atlanır."
 
 msgid "Nothing was changed."
 msgstr "Hiçbir şey değiştirilmedi."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Hiçbir şey değiştirilmedi. Ashy Pass’in diğer kopyalarını kapatıp yeniden "
+"deneyin."
 
 msgid "Nothing was imported"
 msgstr "Hiçbir şey içe aktarılmadı"
@@ -2123,6 +2140,12 @@ msgstr "Parola değiştirilmedi"
 msgid "The passwords do not match"
 msgstr "Parolalar eşleşmiyor"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Bu erişimin önceki parolaları kalıcı olarak silinir. Bu işlem geri alınamaz."
+
 msgid "The previous vault was kept at:"
 msgstr "Önceki kasa şurada saklandı:"
 
@@ -2165,6 +2188,15 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Kasa oturum açıldığında otomatik olarak açılacak"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"Çöp kutusundaki {} öge kalıcı olarak silinir. Bu işlem geri alınamaz."
+msgstr[1] ""
+"Çöp kutusundaki {} öge kalıcı olarak silinir. Bu işlem geri alınamaz."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2506,6 +2538,9 @@ msgstr "Çok güçlü"
 msgid "Very Weak"
 msgstr "Çok zayıf"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Eşitlemenin bitmesini bekleyin, ardından oturumu kapatın."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Nextcloud bekleniyor..."
 
@@ -2833,6 +2868,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} kelime"
 msgstr[1] "{} kelime"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "“{}” kalıcı olarak silinir. Bu işlem geri alınamaz."
 
 msgid "…"
 msgstr "…"

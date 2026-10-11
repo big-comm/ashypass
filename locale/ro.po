@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:43\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -375,6 +375,9 @@ msgstr "Golește parolele copiate după"
 msgid "Clear history"
 msgstr "Șterge istoricul"
 
+msgid "Clear the password history?"
+msgstr "Ștergeți istoricul parolelor?"
+
 msgid "Client ID"
 msgstr "ID client"
 
@@ -520,6 +523,9 @@ msgstr "Nu s-a putut șterge"
 msgid "Could not lock the drive"
 msgstr "Nu s-a putut bloca unitatea"
 
+msgid "Could not open the vault"
+msgstr "Seiful nu a putut fi deschis"
+
 msgid "Could not open this access"
 msgstr "Nu s-a putut deschide această intrare"
 
@@ -634,6 +640,9 @@ msgstr "Șterge intrarea…"
 msgid "Delete permanently"
 msgstr "Șterge definitiv"
 
+msgid "Delete permanently?"
+msgstr "Ștergeți definitiv?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Ștergeți fișierul exportat dacă nu era protejat cu parolă."
 
@@ -709,6 +718,9 @@ msgstr "Fraza de acces goală"
 
 msgid "Empty trash"
 msgstr "Golește coșul de gunoi"
+
+msgid "Empty trash?"
+msgstr "Goliți coșul de gunoi?"
 
 msgid "Encrypt"
 msgstr "Criptează"
@@ -1374,6 +1386,11 @@ msgstr "Nu se elimină nimic. Intrările care sunt deja în seif sunt omise."
 
 msgid "Nothing was changed."
 msgstr "Nu s-a modificat nimic."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Nu s-a modificat nimic. Închideți celelalte copii Ashy Pass și încercați din "
+"nou."
 
 msgid "Nothing was imported"
 msgstr "Nu s-a importat nimic"
@@ -2148,6 +2165,13 @@ msgstr "Parola nu a fost schimbată"
 msgid "The passwords do not match"
 msgstr "Parolele nu se potrivesc"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Parolele anterioare ale acestui acces vor fi șterse definitiv. Acțiunea nu "
+"poate fi anulată."
+
 msgid "The previous vault was kept at:"
 msgstr "Seiful anterior a fost păstrat în:"
 
@@ -2193,6 +2217,20 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Seiful se va deschide automat la autentificare"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"Elementele din coș ({}) vor fi șterse definitiv. Acțiunea nu poate fi "
+"anulată."
+msgstr[1] ""
+"Elementele din coș ({}) vor fi șterse definitiv. Acțiunea nu poate fi "
+"anulată."
+msgstr[2] ""
+"Elementele din coș ({}) vor fi șterse definitiv. Acțiunea nu poate fi "
+"anulată."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2536,6 +2574,9 @@ msgstr "Foarte puternică"
 
 msgid "Very Weak"
 msgstr "Foarte slabă"
+
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Așteptați finalizarea sincronizării, apoi deconectați-vă."
 
 msgid "Waiting for Nextcloud..."
 msgstr "Se așteaptă Nextcloud..."
@@ -2890,6 +2931,10 @@ msgid_plural "{} words"
 msgstr[0] "{} cuvânt"
 msgstr[1] "{} cuvinte"
 msgstr[2] "{} de cuvinte"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "„{}” va fi șters definitiv. Acțiunea nu poate fi anulată."
 
 msgid "…"
 msgstr "…"

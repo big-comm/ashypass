@@ -364,7 +364,7 @@ pub fn present(
         .build();
     let period_row = adw::SpinRow::builder()
         .title(tr!("New code every (seconds)"))
-        .adjustment(&gtk::Adjustment::new(30.0, 15.0, 120.0, 15.0, 15.0, 0.0))
+        .adjustment(&gtk::Adjustment::new(30.0, 1.0, 300.0, 1.0, 15.0, 0.0))
         .build();
     totp_expander.add_row(&totp_row);
     totp_expander.add_row(&algo_row);
@@ -622,7 +622,17 @@ pub fn present(
                             category: Some(category),
                         },
                     )
-                    .map(|_| id)
+                    .and_then(|updated| {
+                        // `false`: the entry was deleted meanwhile (sync,
+                        // another window); do not report a save.
+                        if updated {
+                            Ok(id)
+                        } else {
+                            Err(ashypass_core::error::Error::Other(
+                                "the entry no longer exists".into(),
+                            ))
+                        }
+                    })
             } else {
                 state.vault.borrow().add(NewEntry {
                     title,

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-10 20:59-0300\n"
 "PO-Revision-Date: 2026-05-12 19:39\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -370,6 +370,9 @@ msgstr "Tøm kopierte passord etter"
 msgid "Clear history"
 msgstr "Tøm historikk"
 
+msgid "Clear the password history?"
+msgstr "Tømme passordhistorikken?"
+
 msgid "Client ID"
 msgstr "Klient-ID"
 
@@ -514,6 +517,9 @@ msgstr "Kunne ikke slette"
 msgid "Could not lock the drive"
 msgstr "Kunne ikke låse stasjonen"
 
+msgid "Could not open the vault"
+msgstr "Kunne ikke åpne hvelvet"
+
 msgid "Could not open this access"
 msgstr "Kunne ikke åpne denne påloggingen"
 
@@ -628,6 +634,9 @@ msgstr "Slett pålogging…"
 msgid "Delete permanently"
 msgstr "Slett permanent"
 
+msgid "Delete permanently?"
+msgstr "Slette permanent?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Slett eksportfilen hvis den ikke var beskyttet med passord."
 
@@ -702,6 +711,9 @@ msgstr "Tom passfrase"
 
 msgid "Empty trash"
 msgstr "Tøm papirkurv"
+
+msgid "Empty trash?"
+msgstr "Tømme papirkurven?"
 
 msgid "Encrypt"
 msgstr "Krypter"
@@ -1359,6 +1371,9 @@ msgstr "Ingenting fjernes. Oppføringer som allerede er i hvelvet, hoppes over."
 
 msgid "Nothing was changed."
 msgstr "Ingenting ble endret."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "Ingenting ble endret. Lukk andre kopier av Ashy Pass og prøv igjen."
 
 msgid "Nothing was imported"
 msgstr "Ingenting ble importert"
@@ -2126,6 +2141,13 @@ msgstr "Passordet ble ikke endret"
 msgid "The passwords do not match"
 msgstr "Passordene er ikke like"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"De tidligere passordene for denne tilgangen slettes permanent. Dette kan "
+"ikke angres."
+
 msgid "The previous vault was kept at:"
 msgstr "Det forrige hvelvet ble lagret i:"
 
@@ -2169,6 +2191,14 @@ msgstr ""
 
 msgid "The vault will open automatically at login"
 msgstr "Hvelvet åpnes automatisk ved pålogging"
+
+#, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] "{} element i papirkurven slettes permanent. Dette kan ikke angres."
+msgstr[1] ""
+"{} elementer i papirkurven slettes permanent. Dette kan ikke angres."
 
 #, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
@@ -2509,6 +2539,9 @@ msgstr "Svært sterk"
 msgid "Very Weak"
 msgstr "Svært svak"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Vent til synkroniseringen er ferdig, og logg deretter ut."
+
 msgid "Waiting for Nextcloud..."
 msgstr "Venter på Nextcloud..."
 
@@ -2836,6 +2869,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} ord"
 msgstr[1] "{} ord"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "«{}» slettes permanent. Dette kan ikke angres."
 
 msgid "…"
 msgstr "…"

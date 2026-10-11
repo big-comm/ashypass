@@ -59,6 +59,7 @@ pub(super) fn populate_audit(
     let summary_row = adw::ActionRow::builder()
         .title(tr!("Not run yet"))
         .subtitle("")
+        .use_markup(false)
         .build();
     summary_group.add(&summary_row);
     page.add(&summary_group);
