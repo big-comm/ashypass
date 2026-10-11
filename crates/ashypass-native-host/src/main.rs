@@ -42,6 +42,8 @@
 //!   key in memory all day.
 //! - The `browser_integration` setting gates everything: when the user turns
 //!   it off, vault commands are refused without consulting the keyring.
+//! - With `lock_on_screen_lock` on, vault commands are refused (and the key
+//!   dropped) while logind reports the session's screen as locked.
 //!
 //! ## Installing the manifest
 //!
@@ -54,6 +56,7 @@ use ashypass_core::db::vault::{PasswordEntry, Vault};
 use ashypass_core::generator::{
     generate_passphrase, generate_password, generate_pin, PasswordConfig,
 };
+use ashypass_core::settings::Settings;
 use serde::{Deserialize, Serialize};
 use std::io::{Read, Write};
 use std::time::{Duration, Instant};
@@ -196,6 +199,7 @@ impl From<&PasswordEntry> for EntrySummary {
 struct HostSession {
     vault: Vault,
     last_used: Option<Instant>,
+    screen_lock: ScreenLockProbe,
 }
 
 impl HostSession {
@@ -205,29 +209,36 @@ impl HostSession {
         Ok(Self {
             vault,
             last_used: None,
+            screen_lock: ScreenLockProbe::default(),
         })
     }
 
     /// Idle window before the key is dropped. Follows the desktop auto-lock
     /// setting so the browser never outlives the policy the user chose, with a
     /// floor that keeps a normal fill-then-submit flow from re-deriving.
-    fn idle_timeout() -> Duration {
-        let seconds = ashypass_core::settings::Settings::load()
-            .lock_timeout
-            .max(30);
-        Duration::from_secs(seconds)
+    fn idle_timeout(settings: &Settings) -> Duration {
+        Duration::from_secs(settings.lock_timeout.max(30))
     }
 
     /// True when the vault is usable for this request. Drops an expired key
     /// first, then unlocks from the keyring on demand.
     fn ensure_unlocked(&mut self) -> bool {
-        if !ashypass_core::settings::Settings::load().browser_integration {
+        let settings = Settings::load();
+        if !settings.browser_integration {
+            self.relock();
+            return false;
+        }
+
+        // Mirror the desktop "lock when the screen locks" policy. The host
+        // cannot listen for signals between requests, so it asks logind on
+        // each vault request instead; sleep is covered by the idle timeout.
+        if settings.lock_on_screen_lock && self.screen_lock.is_locked() {
             self.relock();
             return false;
         }
 
         if let Some(last) = self.last_used {
-            if last.elapsed() >= Self::idle_timeout() {
+            if last.elapsed() >= Self::idle_timeout(&settings) {
                 self.relock();
             }
         }
@@ -247,12 +258,74 @@ impl HostSession {
         let Ok(Some(master)) = ashypass_core::keyring::load_master() else {
             return false;
         };
+        let master = zeroize::Zeroizing::new(master);
         self.vault.unlock(&master).is_ok()
     }
 
     fn relock(&mut self) {
         self.vault.full_lock();
         self.last_used = None;
+    }
+}
+
+/// How long to wait for the system bus (connect, or one property read)
+/// before treating the screen-lock state as unknown.
+const SCREEN_LOCK_TIMEOUT: Duration = Duration::from_secs(2);
+
+/// Reads logind's `LockedHint` for the caller's session over the system bus.
+///
+/// Desktop environments (GNOME, KDE, …) set the hint while the screen is
+/// locked. When the bus or logind is unreachable the state is reported as
+/// unlocked, matching the desktop app, which also has nothing to react to
+/// then; the idle timeout still applies.
+#[derive(Default)]
+struct ScreenLockProbe {
+    connection: Option<zbus::blocking::Connection>,
+    /// Set once connecting failed or timed out: later requests skip the
+    /// probe instead of waiting again for a bus that is not there.
+    unavailable: bool,
+}
+
+impl ScreenLockProbe {
+    fn is_locked(&mut self) -> bool {
+        if self.unavailable {
+            return false;
+        }
+        if self.connection.is_none() {
+            self.connection = Self::connect();
+            self.unavailable = self.connection.is_none();
+        }
+        self.connection
+            .as_ref()
+            .and_then(Self::locked_hint)
+            .unwrap_or(false)
+    }
+
+    fn connect() -> Option<zbus::blocking::Connection> {
+        // Connecting performs an authentication handshake with no timeout of
+        // its own, so run it on a helper thread and give up after a while.
+        let (sender, receiver) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            let connection = zbus::blocking::connection::Builder::system()
+                .map(|b| b.method_timeout(SCREEN_LOCK_TIMEOUT))
+                .and_then(|b| b.build());
+            let _ = sender.send(connection);
+        });
+        receiver.recv_timeout(SCREEN_LOCK_TIMEOUT).ok()?.ok()
+    }
+
+    fn locked_hint(connection: &zbus::blocking::Connection) -> Option<bool> {
+        let reply = connection
+            .call_method(
+                Some("org.freedesktop.login1"),
+                "/org/freedesktop/login1/session/auto",
+                Some("org.freedesktop.DBus.Properties"),
+                "Get",
+                &("org.freedesktop.login1.Session", "LockedHint"),
+            )
+            .ok()?;
+        let value: zbus::zvariant::OwnedValue = reply.body().deserialize().ok()?;
+        bool::try_from(value).ok()
     }
 }
 
@@ -322,7 +395,9 @@ fn handle_match_url(vault: &Vault, url: &str) -> serde_json::Value {
 }
 
 fn handle_get(vault: &Vault, id: i64) -> serde_json::Value {
-    match vault.get(id) {
+    // Browser reads must not bump `last_accessed`: that would write to the
+    // vault on every autofill and skew the desktop app's "recently used".
+    match vault.get_without_touch(id) {
         Ok(Some(e)) => {
             let full = EntryFull {
                 id: e.id,
@@ -433,13 +508,7 @@ fn url_host(input: &str) -> Option<String> {
     if s.is_empty() {
         return None;
     }
-    let no_scheme = s.split_once("://").map(|(_, r)| r).unwrap_or(s);
-    // The authority ends at the first `/`, `?` or `#`. Missing `#` here let
-    // `https://evil.com#@example.com` resolve to `example.com`.
-    let authority_end = no_scheme
-        .find(['/', '?', '#', '\\'])
-        .unwrap_or(no_scheme.len());
-    let authority = no_scheme[..authority_end].rsplit('@').next().unwrap_or("");
+    let authority = url_authority(s);
     // A bracketed IPv6 literal is full of colons, so strip the port only after
     // the closing bracket; splitting on ':' first would reduce it to "[".
     let host = match authority.strip_prefix('[') {
@@ -450,6 +519,72 @@ fn url_host(input: &str) -> Option<String> {
         None
     } else {
         Some(host.to_ascii_lowercase())
+    }
+}
+
+/// The `host[:port]` part of a URL, without scheme, userinfo or path.
+fn url_authority(input: &str) -> &str {
+    let no_scheme = input.split_once("://").map(|(_, r)| r).unwrap_or(input);
+    // The authority ends at the first `/`, `?` or `#`. Missing `#` here let
+    // `https://evil.com#@example.com` resolve to `example.com`.
+    let authority_end = no_scheme
+        .find(['/', '?', '#', '\\'])
+        .unwrap_or(no_scheme.len());
+    no_scheme[..authority_end].rsplit('@').next().unwrap_or("")
+}
+
+/// Port component of a URL.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum UrlPort {
+    /// No port, or an empty one (`host:`): the scheme's default port.
+    Default,
+    Explicit(u16),
+    /// Not a number in `0..=65535`. Never matches anything.
+    Invalid,
+}
+
+fn url_port(input: &str) -> UrlPort {
+    let authority = url_authority(input.trim());
+    let after_host = match authority.strip_prefix('[') {
+        Some(rest) => rest.split_once(']').map_or("", |(_, r)| r),
+        None => authority.split_once(':').map_or("", |(_, p)| p),
+    };
+    let port = after_host.strip_prefix(':').unwrap_or(after_host);
+    if port.is_empty() {
+        UrlPort::Default
+    } else if port.bytes().all(|b| b.is_ascii_digit()) {
+        port.parse().map_or(UrlPort::Invalid, UrlPort::Explicit)
+    } else {
+        UrlPort::Invalid
+    }
+}
+
+/// Well-known default port of `scheme`, if any.
+fn default_port(scheme: Option<&str>) -> Option<u16> {
+    match scheme? {
+        "http" | "ws" => Some(80),
+        "https" | "wss" => Some(443),
+        "ftp" => Some(21),
+        _ => None,
+    }
+}
+
+/// Whether an entry saved with `entry_url` may be offered on `page_url` as
+/// far as the port goes. An entry with an explicit port (`https://nas:5001`)
+/// only matches a page on that same port; an entry without one only matches
+/// pages on the default port of their scheme, so a credential for
+/// `https://example.com` is not offered to a service on `example.com:8443`.
+fn port_compatible(entry_url: &str, page_url: &str) -> bool {
+    let page_default = default_port(url_scheme(page_url).as_deref());
+    let page_port = match url_port(page_url) {
+        UrlPort::Invalid => return false,
+        UrlPort::Default => None,
+        UrlPort::Explicit(port) => Some(port),
+    };
+    match url_port(entry_url) {
+        UrlPort::Invalid => false,
+        UrlPort::Default => page_port.is_none() || page_port == page_default,
+        UrlPort::Explicit(port) => page_port.or(page_default) == Some(port),
     }
 }
 
@@ -482,7 +617,8 @@ fn scheme_compatible(entry: Option<&str>, page: Option<&str>) -> bool {
     }
 }
 
-/// Full matching rule for `match_url`: compatible scheme and same site.
+/// Full matching rule for `match_url`: compatible scheme, compatible port and
+/// same site.
 fn entry_matches_page(entry_url: &str, page_url: &str) -> bool {
     let (Some(entry_host), Some(page_host)) = (url_host(entry_url), url_host(page_url)) else {
         return false;
@@ -490,177 +626,34 @@ fn entry_matches_page(entry_url: &str, page_url: &str) -> bool {
     scheme_compatible(
         url_scheme(entry_url).as_deref(),
         url_scheme(page_url).as_deref(),
-    ) && host_match(&entry_host, &page_host)
-}
-
-/// Top-level domains under which registrations happen directly at the second
-/// level (`example.com`), once the second-level public suffixes listed in
-/// [`MULTI_LABEL_SUFFIXES`] are accounted for. Hosts under any other TLD
-/// fail closed: they only ever match exactly (after `www.` shedding).
-const FLAT_TLDS: &[&str] = &[
-    "com", "org", "net", "edu", "gov", "mil", "int", "info", "biz", "dev", "app", "page", "xyz",
-    "online", "site", "shop", "store", "tech", "cloud", "io", "me", "ai", "co", "de", "nl", "ch",
-    "eu", "be", "dk", "fi", "cz", "es", "pt",
-];
-
-/// Multi-label public suffixes common enough to matter here. Without this a
-/// suffix match would treat `github.io` or `com.br` as a registrable domain and
-/// happily offer one tenant's credentials on another tenant's subdomain.
-///
-/// This is deliberately a short list rather than a bundled Public Suffix List,
-/// so it must fail closed: a host whose suffix is neither listed here nor
-/// under one of the [`FLAT_TLDS`] has no registrable domain and only matches
-/// exactly. A missing entry therefore means a *refused* subdomain match,
-/// never a credential offered to the wrong site.
-const MULTI_LABEL_SUFFIXES: &[&str] = &[
-    "co.uk",
-    "org.uk",
-    "gov.uk",
-    "ac.uk",
-    "co.jp",
-    "com.br",
-    "net.br",
-    "org.br",
-    "gov.br",
-    "com.au",
-    "com.mx",
-    "com.ar",
-    "co.za",
-    "co.in",
-    "com.tr",
-    "github.io",
-    "gitlab.io",
-    "pages.dev",
-    "workers.dev",
-    "vercel.app",
-    "netlify.app",
-    "herokuapp.com",
-    "azurewebsites.net",
-    "cloudfront.net",
-    "s3.amazonaws.com",
-    "blogspot.com",
-    "wordpress.com",
-    "firebaseapp.com",
-    "web.app",
-    "appspot.com",
-    "glitch.me",
-    "onrender.com",
-    "fly.dev",
-    "duckdns.org",
-    "ngrok.io",
-    // Second-level registries of TLDs listed in FLAT_TLDS.
-    "com.io",
-    "net.io",
-    "org.io",
-    "edu.io",
-    "gov.io",
-    "mil.io",
-    "co.me",
-    "net.me",
-    "org.me",
-    "edu.me",
-    "ac.me",
-    "gov.me",
-    "its.me",
-    "priv.me",
-    "com.ai",
-    "net.ai",
-    "off.ai",
-    "org.ai",
-    "com.co",
-    "net.co",
-    "org.co",
-    "edu.co",
-    "gov.co",
-    "mil.co",
-    "nom.co",
-    "com.es",
-    "nom.es",
-    "org.es",
-    "gob.es",
-    "edu.es",
-    "com.pt",
-    "edu.pt",
-    "gov.pt",
-    "int.pt",
-    "net.pt",
-    "nome.pt",
-    "org.pt",
-    "publ.pt",
-    "ac.be",
-    "bv.nl",
-    "aland.fi",
-    // Common second-level registries of other ccTLDs.
-    "co.nz",
-    "org.nz",
-    "net.nz",
-    "ac.nz",
-    "govt.nz",
-    "ne.jp",
-    "or.jp",
-    "ac.jp",
-    "go.jp",
-    "co.kr",
-    "com.cn",
-    "net.cn",
-    "org.cn",
-    "com.hk",
-    "com.sg",
-    "com.tw",
-    "co.il",
-    "edu.au",
-    "net.au",
-    "org.au",
-    "gov.au",
-    "org.mx",
-    "gob.mx",
-    "edu.br",
-    "art.br",
-    // Shared hosting under flat TLDs.
-    "readthedocs.io",
-    "ngrok.app",
-    "ngrok-free.app",
-    "trycloudflare.com",
-    "r2.dev",
-    "azurestaticapps.net",
-    "cloudapp.azure.com",
-    "elasticbeanstalk.com",
-    "github.dev",
-    "dyndns.org",
-];
-
-/// Number of trailing labels that belong to the public suffix plus one, i.e.
-/// the minimum label count of a registrable domain under `host`. `None` when
-/// the suffix is unknown — the caller must then require an exact match.
-fn registrable_label_count(host: &str) -> Option<usize> {
-    // Longest listed suffix wins (`s3.amazonaws.com` before a shorter entry).
-    let listed = MULTI_LABEL_SUFFIXES
-        .iter()
-        .filter(|suffix| host == **suffix || host.ends_with(&format!(".{suffix}")))
-        .map(|suffix| suffix.split('.').count())
-        .max();
-    if let Some(labels) = listed {
-        return Some(labels + 1);
-    }
-    let tld = host.rsplit('.').next()?;
-    FLAT_TLDS.contains(&tld).then_some(2)
+    ) && port_compatible(entry_url, page_url)
+        && host_match(&entry_host, &page_host)
 }
 
 /// The registrable domain of `host` (`mail.corp.example.co.uk` →
-/// `example.co.uk`). Returns `None` when `host` is itself a public suffix or
-/// otherwise has too few labels to own credentials.
+/// `example.co.uk`), per the Public Suffix List including its private section
+/// (`github.io`, `myshopify.com`, `s3.amazonaws.com`, …). Returns `None` when
+/// `host` is itself a public suffix, an IP literal, or sits under a suffix the
+/// list does not know: such hosts only ever match exactly.
 fn registrable_domain(host: &str) -> Option<String> {
     // IP literals have no registrable domain; treating the last two octets as
     // one would make 192.168.1.10 and 10.0.1.10 "the same site".
     if host.parse::<std::net::IpAddr>().is_ok() || host.contains(':') {
         return None;
     }
-    let labels: Vec<&str> = host.split('.').filter(|l| !l.is_empty()).collect();
-    let needed = registrable_label_count(host)?;
-    if labels.len() < needed {
+    let host = host.trim_end_matches('.');
+    if host.is_empty() || host.split('.').any(str::is_empty) {
         return None;
     }
-    Some(labels[labels.len() - needed..].join("."))
+    let domain = psl::domain(host.as_bytes())?;
+    // The PSL's implicit `*` rule makes any unknown TLD a suffix. Fail closed
+    // there instead of guessing that registrations happen at the second level.
+    if !domain.suffix().is_known() {
+        return None;
+    }
+    std::str::from_utf8(domain.as_bytes())
+        .ok()
+        .map(str::to_string)
 }
 
 /// Match `candidate` against `target`, allowing `www.` shedding and
@@ -943,6 +936,125 @@ mod tests {
             Some("bucket.s3.amazonaws.com")
         );
         assert!(!host_match("a.s3.amazonaws.com", "b.s3.amazonaws.com"));
+    }
+
+    #[test]
+    fn public_suffix_list_private_section_is_honoured() {
+        // Shared hosts under a flat TLD: each tenant is its own site.
+        assert!(!host_match("shop.myshopify.com", "evil.myshopify.com"));
+        assert!(host_match("shop.myshopify.com", "www.shop.myshopify.com"));
+        assert!(host_match("admin.shop.myshopify.com", "shop.myshopify.com"));
+        assert_eq!(
+            registrable_domain("admin.shop.myshopify.com").as_deref(),
+            Some("shop.myshopify.com")
+        );
+        assert_eq!(registrable_domain("myshopify.com"), None);
+        assert!(!host_match("victim.github.io", "attacker.github.io"));
+        assert!(host_match("victim.github.io", "docs.victim.github.io"));
+        assert_eq!(registrable_domain("github.io"), None);
+    }
+
+    #[test]
+    fn public_suffix_list_icann_section_is_honoured() {
+        assert_eq!(
+            registrable_domain("mail.corp.example.co.uk").as_deref(),
+            Some("example.co.uk")
+        );
+        assert_eq!(registrable_domain("co.uk"), None);
+        assert!(host_match("login.example.co.uk", "example.co.uk"));
+        assert!(!host_match("example.co.uk", "attacker.co.uk"));
+        // A plain second-level registration.
+        assert_eq!(
+            registrable_domain("a.b.example.com").as_deref(),
+            Some("example.com")
+        );
+        assert!(host_match("accounts.example.com", "example.com"));
+        assert!(!host_match("example.com", "example.com.evil.net"));
+        // Trailing dots and empty labels.
+        assert_eq!(
+            registrable_domain("www.example.com.").as_deref(),
+            Some("example.com")
+        );
+        assert_eq!(registrable_domain("a..example.com"), None);
+    }
+
+    #[test]
+    fn url_port_parsing() {
+        assert_eq!(url_port("https://example.com/x"), UrlPort::Default);
+        assert_eq!(url_port("https://example.com:/x"), UrlPort::Default);
+        assert_eq!(url_port("example.com:8443"), UrlPort::Explicit(8443));
+        assert_eq!(
+            url_port("https://u:p@example.com:8443/x"),
+            UrlPort::Explicit(8443)
+        );
+        assert_eq!(url_port("http://[::1]:8080/"), UrlPort::Explicit(8080));
+        assert_eq!(url_port("http://[::1]/"), UrlPort::Default);
+        assert_eq!(url_port("https://example.com:99999"), UrlPort::Invalid);
+        assert_eq!(url_port("https://example.com:80x"), UrlPort::Invalid);
+    }
+
+    #[test]
+    fn entry_matching_respects_ports() {
+        // An entry without a port only matches the default port.
+        assert!(entry_matches_page(
+            "https://example.com",
+            "https://example.com/"
+        ));
+        assert!(entry_matches_page(
+            "https://example.com",
+            "https://example.com:443/"
+        ));
+        assert!(!entry_matches_page(
+            "https://example.com",
+            "https://example.com:8443/"
+        ));
+        assert!(!entry_matches_page(
+            "example.com",
+            "https://example.com:8443/"
+        ));
+        assert!(entry_matches_page(
+            "http://example.com",
+            "https://example.com/"
+        ));
+        // An explicit port only matches that port.
+        assert!(entry_matches_page(
+            "https://nas.example.com:5001",
+            "https://nas.example.com:5001/login"
+        ));
+        assert!(!entry_matches_page(
+            "https://nas.example.com:5001",
+            "https://nas.example.com/"
+        ));
+        assert!(!entry_matches_page(
+            "https://nas.example.com:5001",
+            "https://nas.example.com:5002/"
+        ));
+        assert!(entry_matches_page(
+            "example.com:8443",
+            "https://example.com:8443/"
+        ));
+        // An explicit default port behaves like no port.
+        assert!(entry_matches_page(
+            "https://example.com:443",
+            "https://example.com/"
+        ));
+        assert!(entry_matches_page(
+            "http://192.168.1.10:8080",
+            "http://192.168.1.10:8080/"
+        ));
+        assert!(!entry_matches_page(
+            "http://192.168.1.10:8080",
+            "http://192.168.1.10/"
+        ));
+        // Malformed ports never match.
+        assert!(!entry_matches_page(
+            "https://example.com:abc",
+            "https://example.com/"
+        ));
+        assert!(!entry_matches_page(
+            "https://example.com",
+            "https://example.com:abc/"
+        ));
     }
 
     #[test]
