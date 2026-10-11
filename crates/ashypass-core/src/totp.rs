@@ -229,6 +229,107 @@ mod tests {
         }
     }
 
+    fn base32_of(ascii: &str) -> String {
+        base32::encode(
+            base32::Alphabet::Rfc4648 { padding: false },
+            ascii.as_bytes(),
+        )
+    }
+
+    // RFC 6238 Appendix B: the SHA256 and SHA512 vectors use 32- and 64-byte
+    // seeds (the ASCII digits repeated), not the 20-byte SHA1 seed.
+    #[test]
+    fn rfc6238_vectors_sha256_and_sha512() {
+        let sha256 = base32_of("12345678901234567890123456789012");
+        let sha512 = base32_of("1234567890123456789012345678901234567890123456789012345678901234");
+        let cases: &[(u64, &str, &str)] = &[
+            (59, "46119246", "90693936"),
+            (1111111109, "68084774", "25091201"),
+            (1111111111, "67062674", "99943326"),
+            (1234567890, "91819424", "93441116"),
+            (2000000000, "90698825", "38618901"),
+            (20000000000, "77737706", "47863826"),
+        ];
+        for (t, expected_256, expected_512) in cases {
+            assert_eq!(
+                generate_totp(&sha256, Algorithm::Sha256, 8, 30, *t).unwrap(),
+                *expected_256,
+                "SHA256 ts={t}"
+            );
+            assert_eq!(
+                generate_totp(&sha512, Algorithm::Sha512, 8, 30, *t).unwrap(),
+                *expected_512,
+                "SHA512 ts={t}"
+            );
+        }
+        let uri = format!("otpauth://totp/x?secret={sha512}&algorithm=sha512&digits=8");
+        let parsed = parse_otpauth(&uri).unwrap();
+        assert_eq!(parsed.algorithm, Algorithm::Sha512);
+        assert_eq!(
+            generate_totp(&parsed.secret, parsed.algorithm, 8, 30, 59).unwrap(),
+            "90693936"
+        );
+    }
+
+    #[test]
+    fn secret_spellings_produce_the_same_code() {
+        let reference =
+            generate_totp("JBSWY3DPEHPK3PXP", Algorithm::Sha1, 6, 30, 1234567890).unwrap();
+        for spelling in [
+            "jbswy3dpehpk3pxp",
+            "JBSW Y3DP EHPK 3PXP",
+            " jbsw y3dp\tehpk 3pxp ",
+        ] {
+            assert_eq!(
+                generate_totp(spelling, Algorithm::Sha1, 6, 30, 1234567890).unwrap(),
+                reference,
+                "{spelling:?}"
+            );
+        }
+        // Lowercase and percent-encoded spaces inside an otpauth URI.
+        let parsed =
+            parse_otpauth("otpauth://totp/x?secret=jbsw%20y3dp%20ehpk%203pxp&issuer=x").unwrap();
+        assert_eq!(
+            generate_totp(&parsed.secret, parsed.algorithm, 6, 30, 1234567890).unwrap(),
+            reference
+        );
+        // Padded and hyphen-grouped secrets are normalized by the import
+        // parser before they reach `generate_totp`.
+        for spelling in [
+            "JBSWY3DPEHPK3PXP====",
+            "jbsw-y3dp-ehpk-3pxp",
+            "otpauth://totp/x?secret=jbsw-y3dp-ehpk-3pxp%3D%3D",
+        ] {
+            let crate::importers::otp::TotpField::Supported(params) =
+                crate::importers::otp::parse_field(spelling)
+            else {
+                panic!("{spelling:?} should be supported");
+            };
+            assert_eq!(params.secret, "JBSWY3DPEHPK3PXP");
+            assert_eq!(
+                generate_totp(&params.secret, Algorithm::Sha1, 6, 30, 1234567890).unwrap(),
+                reference
+            );
+        }
+    }
+
+    #[test]
+    fn period_bounds_are_inclusive() {
+        for period in [1, 300] {
+            assert!(validate_parameters(6, period).is_ok());
+            assert!(generate_totp("JBSWY3DPEHPK3PXP", Algorithm::Sha1, 6, period, 1_000).is_ok());
+            let uri = format!("otpauth://totp/x?secret=JBSWY3DPEHPK3PXP&period={period}");
+            assert_eq!(parse_otpauth(&uri).unwrap().period, period);
+        }
+        assert_eq!(remaining_seconds(1, 1_000), 1);
+        assert_eq!(remaining_seconds(300, 1_000), 200);
+        for period in [0, 301] {
+            assert!(validate_parameters(6, period).is_err());
+            let uri = format!("otpauth://totp/x?secret=JBSWY3DPEHPK3PXP&period={period}");
+            assert!(parse_otpauth(&uri).is_err());
+        }
+    }
+
     #[test]
     fn google_authenticator_default_secret() {
         // Secret JBSWY3DPEHPK3PXP decodes to "Hello!\xDE\xAD\xBE\xEF" — the standard

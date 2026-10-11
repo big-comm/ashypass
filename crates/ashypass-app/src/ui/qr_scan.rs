@@ -5,12 +5,26 @@
 //!
 //! A screen capture holds the secret, so the file the portal wrote is deleted
 //! as soon as it has been read.
+//!
+//! Reading and decoding run on a worker thread and are bounded (file size,
+//! pixel dimensions, decoder allocations) so a huge or hostile image cannot
+//! freeze or exhaust the app.
 
 use crate::tr;
+use crate::ui::settings_dialog::run_background_task;
 use adw::prelude::*;
 use gtk::{gdk, gio, glib};
-use std::path::PathBuf;
+use std::io::Read;
+use std::path::{Path, PathBuf};
 use std::rc::Rc;
+
+/// Largest image file read for a QR code.
+const MAX_IMAGE_FILE_BYTES: u64 = 20 * 1024 * 1024;
+/// Largest accepted width and height, in pixels.
+const MAX_IMAGE_DIMENSION: u32 = 8192;
+/// Upper bound for the decoder's own allocations (an 8192×8192 RGBA image
+/// needs 256 MiB).
+const MAX_DECODE_ALLOC_BYTES: u64 = 320 * 1024 * 1024;
 
 /// What a scan found.
 #[derive(Debug, PartialEq, Eq)]
@@ -24,11 +38,27 @@ pub enum ScanResult {
     Other,
     /// No QR code in the image.
     NotFound,
+    /// The file or image could not be read (missing, too large, or not a
+    /// supported picture).
+    Unreadable,
 }
 
-/// Decode every QR code in an encoded image (PNG, JPEG, …).
+fn decode_limits() -> image::Limits {
+    let mut limits = image::Limits::default();
+    limits.max_image_width = Some(MAX_IMAGE_DIMENSION);
+    limits.max_image_height = Some(MAX_IMAGE_DIMENSION);
+    limits.max_alloc = Some(MAX_DECODE_ALLOC_BYTES);
+    limits
+}
+
+/// Decode every QR code in an encoded image (PNG, JPEG, …). Images larger
+/// than [`MAX_IMAGE_DIMENSION`] on either side are refused.
 pub fn decode_image_bytes(bytes: &[u8]) -> Result<Vec<String>, String> {
-    let image = image::load_from_memory(bytes).map_err(|e| e.to_string())?;
+    let mut reader = image::ImageReader::new(std::io::Cursor::new(bytes))
+        .with_guessed_format()
+        .map_err(|e| e.to_string())?;
+    reader.limits(decode_limits());
+    let image = reader.decode().map_err(|e| e.to_string())?;
     let luma = image.to_luma8();
     let (width, height) = luma.dimensions();
     let mut prepared =
@@ -68,8 +98,48 @@ pub fn classify(contents: &[String]) -> ScanResult {
 pub fn scan_bytes(bytes: &[u8]) -> ScanResult {
     match decode_image_bytes(bytes) {
         Ok(contents) => classify(&contents),
-        Err(_) => ScanResult::NotFound,
+        Err(error) => {
+            log::debug!("QR image could not be decoded: {error}");
+            ScanResult::Unreadable
+        }
     }
+}
+
+/// Read at most `limit` bytes from `reader` and scan them; anything larger
+/// is refused without being decoded.
+fn scan_reader(reader: impl Read, limit: u64) -> ScanResult {
+    let mut bytes = Vec::new();
+    if reader
+        .take(limit.saturating_add(1))
+        .read_to_end(&mut bytes)
+        .is_err()
+        || bytes.len() as u64 > limit
+    {
+        return ScanResult::Unreadable;
+    }
+    scan_bytes(&bytes)
+}
+
+/// Read and scan an image file. Blocking: call from a worker thread.
+pub fn scan_file(path: &Path) -> ScanResult {
+    let Ok(file) = std::fs::File::open(path) else {
+        return ScanResult::Unreadable;
+    };
+    match file.metadata() {
+        Ok(metadata) if metadata.len() <= MAX_IMAGE_FILE_BYTES => {
+            scan_reader(file, MAX_IMAGE_FILE_BYTES)
+        }
+        _ => ScanResult::Unreadable,
+    }
+}
+
+/// Run `scan` on a worker thread and hand the result to `done` on the GTK
+/// thread.
+fn scan_in_background<F>(scan: F, done: Done)
+where
+    F: FnOnce() -> ScanResult + Send + 'static,
+{
+    run_background_task(scan, move |result| done(result));
 }
 
 pub fn message_for(result: &ScanResult) -> &'static str {
@@ -83,6 +153,9 @@ pub fn message_for(result: &ScanResult) -> &'static str {
         }
         ScanResult::NotFound => tr!(
             "No QR code was found. Make sure the whole code is visible and not too small."
+        ),
+        ScanResult::Unreadable => tr!(
+            "This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 MB."
         ),
     }
 }
@@ -144,11 +217,11 @@ fn open_image(anchor: &gtk::Button, done: Done) {
     let parent = anchor.root().and_then(|r| r.downcast::<gtk::Window>().ok());
     dialog.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
         let Ok(file) = result else { return };
-        let Some(path) = file.path() else { return };
-        match std::fs::read(&path) {
-            Ok(bytes) => done(scan_bytes(&bytes)),
-            Err(_) => done(ScanResult::NotFound),
-        }
+        let Some(path) = file.path() else {
+            done(ScanResult::Unreadable);
+            return;
+        };
+        scan_in_background(move || scan_file(&path), done);
     });
 }
 
@@ -159,11 +232,19 @@ fn paste_image(done: Done) {
     display
         .clipboard()
         .read_texture_async(None::<&gio::Cancellable>, move |result| {
-            let scan = match result {
-                Ok(Some(texture)) => scan_bytes(&texture.save_to_png_bytes()),
-                _ => ScanResult::NotFound,
+            let texture = match result {
+                Ok(Some(texture)) => texture,
+                Ok(None) => return done(ScanResult::NotFound),
+                Err(_) => return done(ScanResult::NotFound),
             };
-            done(scan);
+            let too_big = |side: i32| u32::try_from(side).map_or(true, |s| s > MAX_IMAGE_DIMENSION);
+            if too_big(texture.width()) || too_big(texture.height()) {
+                return done(ScanResult::Unreadable);
+            }
+            // The texture lives on the GTK side; only its encoded bytes go to
+            // the worker thread.
+            let bytes = texture.save_to_png_bytes().to_vec();
+            scan_in_background(move || scan_bytes(&bytes), done);
         });
 }
 
@@ -236,17 +317,20 @@ fn capture_screen(anchor: &gtk::Button, done: Done) {
                     done(ScanResult::NotFound);
                     return;
                 };
-                let scan = std::fs::read(&path)
-                    .map(|bytes| scan_bytes(&bytes))
-                    .unwrap_or(ScanResult::NotFound);
-                // The capture contains the secret: do not leave it behind.
-                if let Err(e) = std::fs::remove_file(&path) {
-                    log::warn!(
-                        "could not delete the screen capture {}: {e}",
-                        path.display()
-                    );
-                }
-                done(scan);
+                scan_in_background(
+                    move || {
+                        let scan = scan_file(&path);
+                        // The capture contains the secret: do not leave it behind.
+                        if let Err(e) = std::fs::remove_file(&path) {
+                            log::warn!(
+                                "could not delete the screen capture {}: {e}",
+                                path.display()
+                            );
+                        }
+                        scan
+                    },
+                    done.clone(),
+                );
             },
         );
         *subscription.borrow_mut() = Some(id);
@@ -339,5 +423,47 @@ mod tests {
             .write_to(&mut std::io::Cursor::new(&mut png), image::ImageFormat::Png)
             .unwrap();
         assert_eq!(scan_bytes(&png), ScanResult::NotFound);
+    }
+
+    fn png_of(width: u32, height: u32) -> Vec<u8> {
+        let mut png = Vec::new();
+        image::DynamicImage::new_luma8(width, height)
+            .write_to(&mut std::io::Cursor::new(&mut png), image::ImageFormat::Png)
+            .unwrap();
+        png
+    }
+
+    #[test]
+    fn oversized_dimensions_are_refused_before_decoding() {
+        // Tiny file, but the header claims more pixels than allowed.
+        assert!(decode_image_bytes(&png_of(MAX_IMAGE_DIMENSION + 1, 1)).is_err());
+        assert!(decode_image_bytes(&png_of(1, MAX_IMAGE_DIMENSION + 1)).is_err());
+        assert_eq!(
+            scan_bytes(&png_of(MAX_IMAGE_DIMENSION + 1, 1)),
+            ScanResult::Unreadable
+        );
+        assert_eq!(scan_bytes(&png_of(64, 64)), ScanResult::NotFound);
+    }
+
+    #[test]
+    fn unreadable_input_is_not_reported_as_missing_code() {
+        assert_eq!(scan_bytes(b"not an image"), ScanResult::Unreadable);
+        let png = png_of(64, 64);
+        assert_eq!(
+            scan_reader(std::io::Cursor::new(&png), png.len() as u64),
+            ScanResult::NotFound
+        );
+        assert_eq!(
+            scan_reader(std::io::Cursor::new(&png), png.len() as u64 - 1),
+            ScanResult::Unreadable
+        );
+        assert_eq!(
+            scan_file(Path::new("/nonexistent/ashypass-qr-test.png")),
+            ScanResult::Unreadable
+        );
+        assert_ne!(
+            message_for(&ScanResult::Unreadable),
+            message_for(&ScanResult::NotFound)
+        );
     }
 }
