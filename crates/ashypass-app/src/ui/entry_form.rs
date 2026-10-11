@@ -75,7 +75,12 @@ pub fn parse_totp_input(
         }
     } else {
         TotpInput {
-            secret: compact.to_ascii_uppercase(),
+            // Stored without the grouping dashes and `=` padding some sites
+            // show, so exports to other apps carry a plain key.
+            secret: compact
+                .replace('-', "")
+                .trim_end_matches('=')
+                .to_ascii_uppercase(),
             algorithm: algorithm.to_string(),
             digits,
             period,
@@ -1106,6 +1111,12 @@ mod tests {
         let parsed = parse_totp_input("jbsw y3dp ehpk 3pxp", "SHA1", 6, 30).unwrap();
         assert_eq!(parsed.secret, "JBSWY3DPEHPK3PXP");
         assert_eq!(parsed.digits, 6);
+    }
+
+    #[test]
+    fn grouped_and_padded_keys_are_accepted() {
+        let parsed = parse_totp_input("JBSW-Y3DP-EHPK-3PXP====", "SHA1", 6, 30).unwrap();
+        assert_eq!(parsed.secret, "JBSWY3DPEHPK3PXP");
     }
 
     #[test]

@@ -40,11 +40,13 @@ pub fn generate_totp(
     timestamp: u64,
 ) -> Result<String> {
     validate_parameters(digits, period)?;
+    // Sites show the key in groups ("ABCD-EFGH ...") and some keep the
+    // base32 `=` padding: neither is part of the key.
     let cleaned: String = base32_secret
         .chars()
-        .filter(|c| !c.is_whitespace())
+        .filter(|c| !c.is_whitespace() && *c != '-')
         .collect();
-    let upper = cleaned.to_ascii_uppercase();
+    let upper = cleaned.trim_end_matches('=').to_ascii_uppercase();
     let key = base32::decode(base32::Alphabet::Rfc4648 { padding: false }, &upper)
         .ok_or_else(|| Error::InvalidInput("invalid base32 secret".into()))?;
     if key.is_empty() {
