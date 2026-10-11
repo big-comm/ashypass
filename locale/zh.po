@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -213,6 +213,9 @@ msgstr "附件"
 msgid "Audit failed"
 msgstr "审计失败"
 
+msgid "Authentication was cancelled"
+msgstr "认证已取消"
+
 msgid "Auto-tune"
 msgstr "自动调优"
 
@@ -285,6 +288,9 @@ msgstr "Caps Lock 已开启"
 msgid "Capture from screen…"
 msgstr "从屏幕截取…"
 
+msgid "Change how the vault key is protected?"
+msgstr "要更改密码库密钥的保护方式吗？"
+
 msgid "Change master password"
 msgstr "更改主密码"
 
@@ -305,6 +311,12 @@ msgstr "检查我的密码"
 
 msgid "Check now"
 msgstr "立即检查"
+
+msgid "Check the server every"
+msgstr "检查服务器的间隔"
+
+msgid "Checking the drive…"
+msgstr "正在检查驱动器…"
 
 msgid "Choose a backup"
 msgstr "选择备份"
@@ -704,6 +716,9 @@ msgstr "加密驱动器"
 msgid "Encrypt KeePass export"
 msgstr "加密 KeePass 导出"
 
+msgid "Encrypt again"
+msgstr "重新加密"
+
 msgid "Encrypted as"
 msgstr "加密方式"
 
@@ -726,6 +741,9 @@ msgstr "加密清零（推荐——较慢但安全）"
 msgid ""
 "Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
 msgstr "加密会清除整个驱动器。解锁和锁定适用于 LUKS 驱动器。"
+
+msgid "Encrypting the vault again…"
+msgstr "正在重新加密密码库…"
 
 msgid "Encrypting…"
 msgstr "正在加密…"
@@ -770,11 +788,26 @@ msgid "Estimated strength"
 msgstr "预估强度"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"密码库中的所有内容将使用按上述开销派生的密钥重新加密。旧版 Ashy Pass 将无法用"
+"主密码打开密码库。需要重新设置 PIN。"
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "保险库中的所有内容都会使用新密码重新加密。之前创建的备份仍使用创建时的密码打"
 "开。"
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"密码库中的所有内容将使用标准开销重新加密，所有 Ashy Pass 3 版本都能打开。需要"
+"重新设置 PIN。"
 
 msgid "Everything is in sync"
 msgstr "一切同步正常"
@@ -948,11 +981,10 @@ msgstr "隐藏密码"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"更高的成本会减缓猜测攻击，也会让解锁变慢。自动调整会选择在此电脑上约需半秒的"
-"参数；这些参数将在下次设置或更改主密码时生效。"
+"更高的开销会减缓猜测攻击，也会让解锁变慢。自动调整会选择在这台计算机上约耗时"
+"半秒的数值。"
 
 msgid "History cleared"
 msgstr "历史记录已清除"
@@ -1006,6 +1038,9 @@ msgstr[0] "PIN 不正确。还剩 {} 次尝试机会。"
 msgid "Incorrect master password"
 msgstr "主密码错误"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "主密码不正确。未做任何更改。"
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "主密码不正确。未导出任何内容。"
 
@@ -1026,6 +1061,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "内部错误：未设置密码短语"
+
+msgid "Internal error: the drive was not checked"
+msgstr "内部错误：驱动器未经检查"
 
 msgid "It can be restored from Deleted items."
 msgstr "可以从“已删除项目”中恢复。"
@@ -1288,6 +1326,9 @@ msgstr "没有以前的密码"
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr "此版本不支持更改安全密钥或恢复短语。"
 
+msgid "No stable device link"
+msgstr "没有稳定的设备链接"
+
 msgid "No verification codes yet"
 msgstr "暂无验证码"
 
@@ -1317,6 +1358,9 @@ msgstr "无任何变更——Ashypass 与 Nextcloud 已保持一致。"
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "不会删除任何内容。已在保险库中的条目将被跳过。"
+
+msgid "Nothing was changed"
+msgstr "未做任何更改"
 
 msgid "Nothing was changed."
 msgstr "未做任何更改。"
@@ -1788,6 +1832,9 @@ msgstr "查看我的密码"
 msgid "Select an access"
 msgstr "选择一个条目"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr "每次编辑后很快发送更改，并定期检查服务器"
+
 msgid "Sending local changes"
 msgstr "正在发送本地更改"
 
@@ -1906,6 +1953,12 @@ msgstr "强度"
 msgid "Strong"
 msgstr "强"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"更能抵御对主密码的猜测。开启期间，旧版 Ashy Pass 无法用主密码打开密码库。"
+
 msgid "Style"
 msgstr "样式"
 
@@ -1914,6 +1967,9 @@ msgstr "摘要"
 
 msgid "Symbols (!@#$…)"
 msgstr "符号 (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "自动同步"
 
 msgid "Sync completed"
 msgstr "同步完成"
@@ -1935,6 +1991,9 @@ msgstr "同步失败"
 
 msgid "Sync now"
 msgstr "立即同步"
+
+msgid "Sync when the vault is unlocked"
+msgstr "解锁密码库时同步"
 
 msgid "Synchronization"
 msgstr "同步"
@@ -2158,6 +2217,13 @@ msgstr "这将删除整个条目：验证码、密码和备注。"
 msgid "This device generation:"
 msgstr "本设备版本："
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"此驱动器在 /dev/disk/by-id 中没有链接，因此 Ashy Pass 无法确保擦除时仍是同一"
+"个驱动器。无法在此加密。"
+
 msgid "This file can be read without a password"
 msgstr "此文件无需密码即可读取"
 
@@ -2351,6 +2417,9 @@ msgstr "使用 + 按钮创建一个。"
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "当网站要求两步验证时，使用这些验证码。"
 
+msgid "Use these costs for the vault key"
+msgstr "将这些开销用于密码库密钥"
+
 msgid "Use this password"
 msgstr "使用此密码"
 
@@ -2397,6 +2466,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "保管库已同步"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "密码库已重新加密。如果之前使用了 PIN，请重新设置。"
 
 msgid "Vault locked after a period of inactivity"
 msgstr "保险库因闲置一段时间而锁定"
@@ -2579,6 +2651,10 @@ msgstr "低"
 
 msgid "medium"
 msgstr "中"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "分钟"
 
 msgid "more"
 msgstr "个其他错误"

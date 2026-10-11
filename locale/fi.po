@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:28\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -229,6 +229,9 @@ msgstr "Liitteet"
 msgid "Audit failed"
 msgstr "Tarkistus epäonnistui"
 
+msgid "Authentication was cancelled"
+msgstr "Tunnistautuminen peruttiin"
+
 msgid "Auto-tune"
 msgstr "Automaattinen viritys"
 
@@ -301,6 +304,9 @@ msgstr "Caps Lock on päällä"
 msgid "Capture from screen…"
 msgstr "Kaappaa näytöltä…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Muutetaanko holviavaimen suojausta?"
+
 msgid "Change master password"
 msgstr "Vaihda pääsalasana"
 
@@ -321,6 +327,12 @@ msgstr "Tarkista salasanani"
 
 msgid "Check now"
 msgstr "Tarkista nyt"
+
+msgid "Check the server every"
+msgstr "Tarkista palvelin"
+
+msgid "Checking the drive…"
+msgstr "Tarkistetaan asemaa…"
 
 msgid "Choose a backup"
 msgstr "Valitse varmuuskopio"
@@ -725,6 +737,9 @@ msgstr "Salaa asema"
 msgid "Encrypt KeePass export"
 msgstr "Salaa KeePass-vienti"
 
+msgid "Encrypt again"
+msgstr "Salaa uudelleen"
+
 msgid "Encrypted as"
 msgstr "Salattuna"
 
@@ -750,6 +765,9 @@ msgid ""
 "Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
 msgstr ""
 "Salaaminen tyhjentää koko aseman. Avaus ja lukitus toimivat LUKS-asemilla."
+
+msgid "Encrypting the vault again…"
+msgstr "Salataan holvia uudelleen…"
 
 msgid "Encrypting…"
 msgstr "Salataan…"
@@ -794,11 +812,27 @@ msgid "Estimated strength"
 msgstr "Arvioitu vahvuus"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Koko holvi salataan uudelleen avaimella, joka johdetaan yllä olevilla "
+"kustannuksilla. Ashy Passin vanhemmat versiot eivät avaa holvia "
+"pääsalasanalla. PIN-koodi on asetettava uudelleen."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Kaikki holvissa salataan uudelleen uudella salasanalla. Aiemmin tehdyt "
 "varmuuskopiot avautuvat edelleen salasanalla, jolla ne tehtiin."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Koko holvi salataan uudelleen vakiokustannuksilla, jotka jokainen Ashy Pass "
+"3 -versio avaa. PIN-koodi on asetettava uudelleen."
 
 msgid "Everything is in sync"
 msgstr "Kaikki synkronissa"
@@ -979,13 +1013,11 @@ msgstr "Piilota salasana"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Suuremmat kustannukset hidastavat arvaushyökkäyksiä mutta myös avaamista. "
-"Automaattinen säätö valitsee arvot, joihin kuluu noin puoli sekuntia tällä "
-"tietokoneella; ne otetaan käyttöön, kun pääsalasana seuraavan kerran "
-"asetetaan tai vaihdetaan."
+"Suuremmat kustannukset hidastavat arvaushyökkäyksiä ja myös lukituksen "
+"avaamista. Automaattinen säätö valitsee arvot noin puolen sekunnin ajalle "
+"tällä tietokoneella."
 
 msgid "History cleared"
 msgstr "Historia tyhjennetty"
@@ -1042,6 +1074,9 @@ msgstr[1] "Väärä PIN-koodi. Yrityksiä jäljellä: {}."
 msgid "Incorrect master password"
 msgstr "Väärä pääsalasana"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Väärä pääsalasana. Mitään ei muutettu."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Väärä pääsalasana. Mitään ei viety."
 
@@ -1063,6 +1098,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Sisäinen virhe: salasanaa ei ole asetettu"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Sisäinen virhe: asemaa ei tarkistettu"
 
 msgid "It can be restored from Deleted items."
 msgstr "Sen voi palauttaa kohdasta Poistetut kohteet."
@@ -1340,6 +1378,9 @@ msgid "No security key or recovery phrase changes can be made in this version."
 msgstr ""
 "Tässä versiossa suojausavaimia tai varmuuskopiolauseita ei voi muuttaa."
 
+msgid "No stable device link"
+msgstr "Ei pysyvää laitelinkkiä"
+
 msgid "No verification codes yet"
 msgstr "Ei vielä vahvistuskoodeja"
 
@@ -1369,6 +1410,9 @@ msgstr "Mikään ei muuttunut — Ashy Pass ja Nextcloud olivat jo linjassa."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Mitään ei poisteta. Holvissa jo olevat merkinnät ohitetaan."
+
+msgid "Nothing was changed"
+msgstr "Mitään ei muutettu"
 
 msgid "Nothing was changed."
 msgstr "Mitään ei muutettu."
@@ -1855,6 +1899,11 @@ msgstr "Näytä salasanani"
 msgid "Select an access"
 msgstr "Valitse kirjautumistieto"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Lähettää muutokset pian jokaisen muokkauksen jälkeen ja tarkistaa palvelimen "
+"säännöllisesti"
+
 msgid "Sending local changes"
 msgstr "Lähetetään paikallisia muutoksia"
 
@@ -1975,6 +2024,13 @@ msgstr "Vahvuus"
 msgid "Strong"
 msgstr "Vahva"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Kestävämpi pääsalasanan arvailua vastaan. Kun tämä on käytössä, Ashy Passin "
+"vanhemmat versiot eivät voi avata holvia pääsalasanalla."
+
 msgid "Style"
 msgstr "Tyyli"
 
@@ -1983,6 +2039,9 @@ msgstr "Yhteenveto"
 
 msgid "Symbols (!@#$…)"
 msgstr "Erikoismerkit (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Synkronoi automaattisesti"
 
 msgid "Sync completed"
 msgstr "Synkronointi valmis"
@@ -2004,6 +2063,9 @@ msgstr "Synkronointi epäonnistui"
 
 msgid "Sync now"
 msgstr "Synkronoi nyt"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Synkronoi, kun holvin lukitus avataan"
 
 msgid "Synchronization"
 msgstr "Synkronointi"
@@ -2248,6 +2310,14 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Tämän laitteen sukupolvi:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Asemalla ei ole linkkiä hakemistossa /dev/disk/by-id, joten Ashy Pass ei voi "
+"varmistaa, että kyseessä on yhä sama asema sitä tyhjennettäessä. Sitä ei voi "
+"salata täällä."
+
 msgid "This file can be read without a password"
 msgstr "Tämän tiedoston voi lukea ilman salasanaa"
 
@@ -2454,6 +2524,9 @@ msgstr "Luo uusi +-painikkeella."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Käytä näitä koodeja, kun sivusto pyytää kaksivaiheista vahvistusta."
 
+msgid "Use these costs for the vault key"
+msgstr "Käytä näitä kustannuksia holviavaimelle"
+
 msgid "Use this password"
 msgstr "Käytä tätä salasanaa"
 
@@ -2504,6 +2577,10 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Tallelokero on jo synkronoitu"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Holvi salattu uudelleen. Aseta PIN-koodi uudelleen, jos käytit sellaista."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Holvi lukittiin käyttämättömyyden vuoksi"
@@ -2699,6 +2776,11 @@ msgstr "matala"
 
 msgid "medium"
 msgstr "keskitaso"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minuutin välein"
+msgstr[1] "minuutin välein"
 
 msgid "more"
 msgstr "lisää"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:31\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -230,6 +230,9 @@ msgstr "Privitci"
 msgid "Audit failed"
 msgstr "Audit nije uspio"
 
+msgid "Authentication was cancelled"
+msgstr "Provjera autentičnosti je otkazana"
+
 msgid "Auto-tune"
 msgstr "Automatsko podešavanje"
 
@@ -302,6 +305,9 @@ msgstr "Caps Lock je uključen"
 msgid "Capture from screen…"
 msgstr "Snimi sa zaslona…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Promijeniti zaštitu ključa trezora?"
+
 msgid "Change master password"
 msgstr "Promijeni glavnu lozinku"
 
@@ -322,6 +328,12 @@ msgstr "Provjeri moje lozinke"
 
 msgid "Check now"
 msgstr "Provjeri sada"
+
+msgid "Check the server every"
+msgstr "Provjeravaj poslužitelj svakih"
+
+msgid "Checking the drive…"
+msgstr "Provjera pogona…"
 
 msgid "Choose a backup"
 msgstr "Odaberi kopiju"
@@ -726,6 +738,9 @@ msgstr "Šifriraj pogon"
 msgid "Encrypt KeePass export"
 msgstr "Šifriraj KeePass izvoz"
 
+msgid "Encrypt again"
+msgstr "Ponovno šifriraj"
+
 msgid "Encrypted as"
 msgstr "Šifrirano kao"
 
@@ -753,6 +768,9 @@ msgid ""
 msgstr ""
 "Šifriranje briše cijeli pogon. Otključavanje i zaključavanje rade za LUKS "
 "pogone."
+
+msgid "Encrypting the vault again…"
+msgstr "Trezor se ponovno šifrira…"
 
 msgid "Encrypting…"
 msgstr "Enkriptiranje…"
@@ -797,11 +815,27 @@ msgid "Estimated strength"
 msgstr "Procijenjena jačina"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Cijeli sadržaj trezora ponovno se šifrira ključem izvedenim uz gore navedene "
+"troškove. Starije inačice Ashy Passa neće otvoriti trezor glavnom lozinkom. "
+"PIN će trebati ponovno postaviti."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Sve u trezoru ponovno se šifrira novom lozinkom. Ranije izrađene sigurnosne "
 "kopije i dalje se otvaraju lozinkom kojom su izrađene."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Cijeli sadržaj trezora ponovno se šifrira uz standardne troškove, koje "
+"otvara svaka inačica Ashy Passa 3. PIN će trebati ponovno postaviti."
 
 msgid "Everything is in sync"
 msgstr "Sve je usklađeno"
@@ -982,12 +1016,10 @@ msgstr "Sakrij lozinku"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
 "Veći troškovi usporavaju napade pogađanjem, ali i otključavanje. Automatsko "
-"podešavanje bira vrijednosti za otprilike pola sekunde na ovom računalu; "
-"primjenjuju se kada se glavna lozinka sljedeći put postavi ili promijeni."
+"podešavanje bira vrijednosti od otprilike pola sekunde na ovom računalu."
 
 msgid "History cleared"
 msgstr "Povijest očišćena"
@@ -1045,6 +1077,9 @@ msgstr[2] "Netočan PIN. Preostalo je {} pokušaja."
 msgid "Incorrect master password"
 msgstr "Neispravna glavna lozinka"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Pogrešna glavna lozinka. Ništa nije promijenjeno."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Netočna glavna lozinka. Ništa nije izvezeno."
 
@@ -1066,6 +1101,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Interna pogreška: nije postavljena lozinka"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Interna pogreška: pogon nije provjeren"
 
 msgid "It can be restored from Deleted items."
 msgstr "Može se vratiti iz Izbrisanih stavki."
@@ -1344,6 +1382,9 @@ msgid "No security key or recovery phrase changes can be made in this version."
 msgstr ""
 "U ovoj verziji nije moguće mijenjati sigurnosni ključ ni frazu za oporavak."
 
+msgid "No stable device link"
+msgstr "Nema stalne poveznice uređaja"
+
 msgid "No verification codes yet"
 msgstr "Još nema kodova za provjeru"
 
@@ -1374,6 +1415,9 @@ msgstr ""
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Ništa se ne uklanja. Unosi koji su već u trezoru preskaču se."
+
+msgid "Nothing was changed"
+msgstr "Ništa nije promijenjeno"
 
 msgid "Nothing was changed."
 msgstr "Ništa nije promijenjeno."
@@ -1860,6 +1904,11 @@ msgstr "Prikaži moje lozinke"
 msgid "Select an access"
 msgstr "Odaberite unos"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Šalje promjene ubrzo nakon svakog uređivanja i redovito provjerava "
+"poslužitelj"
+
 msgid "Sending local changes"
 msgstr "Slanje lokalnih promjena"
 
@@ -1980,6 +2029,13 @@ msgstr "Jačina"
 msgid "Strong"
 msgstr "Jaka"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Otpornije na pogađanje glavne lozinke. Dok je uključeno, starije inačice "
+"Ashy Passa ne mogu otvoriti trezor glavnom lozinkom."
+
 msgid "Style"
 msgstr "Stil"
 
@@ -1988,6 +2044,9 @@ msgstr "Sažetak"
 
 msgid "Symbols (!@#$…)"
 msgstr "Simboli (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Sinkroniziraj automatski"
 
 msgid "Sync completed"
 msgstr "Sinkronizacija dovršena"
@@ -2009,6 +2068,9 @@ msgstr "Sinkronizacija nije uspjela"
 
 msgid "Sync now"
 msgstr "Sinkroniziraj sada"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Sinkroniziraj pri otključavanju trezora"
 
 msgid "Synchronization"
 msgstr "Sinkronizacija"
@@ -2257,6 +2319,13 @@ msgstr "Ovo briše cijeli unos: kôd za provjeru, lozinku i bilješke."
 msgid "This device generation:"
 msgstr "Generacija ovog uređaja:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Ovaj pogon nema poveznicu u /dev/disk/by-id, pa Ashy Pass ne može provjeriti "
+"je li pri brisanju i dalje riječ o istom pogonu. Ovdje se ne može šifrirati."
+
 msgid "This file can be read without a password"
 msgstr "Ova se datoteka može pročitati bez lozinke"
 
@@ -2463,6 +2532,9 @@ msgstr "Upotrijebite gumb + da biste je stvorili."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Koristite ove kodove kada web-mjesto zatraži provjeru u dva koraka."
 
+msgid "Use these costs for the vault key"
+msgstr "Koristi ove troškove za ključ trezora"
+
 msgid "Use this password"
 msgstr "Koristi ovu lozinku"
 
@@ -2513,6 +2585,10 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Vault je već sinkroniziran"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Trezor je ponovno šifriran. Ponovno postavite PIN ako ste ga koristili."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Trezor zaključan nakon razdoblja neaktivnosti"
@@ -2710,6 +2786,12 @@ msgstr "niska"
 
 msgid "medium"
 msgstr "srednja"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "min"
+msgstr[1] "min"
+msgstr[2] "min"
 
 msgid "more"
 msgstr "više"

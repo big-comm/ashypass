@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:38\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -232,6 +232,9 @@ msgstr "Bijlagen"
 msgid "Audit failed"
 msgstr "Audit mislukt"
 
+msgid "Authentication was cancelled"
+msgstr "Authenticatie is geannuleerd"
+
 msgid "Auto-tune"
 msgstr "Automatisch afstemmen"
 
@@ -304,6 +307,9 @@ msgstr "Caps Lock staat aan"
 msgid "Capture from screen…"
 msgstr "Vastleggen van scherm…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Bescherming van de kluissleutel wijzigen?"
+
 msgid "Change master password"
 msgstr "Hoofdwachtwoord wijzigen"
 
@@ -324,6 +330,12 @@ msgstr "Mijn wachtwoorden controleren"
 
 msgid "Check now"
 msgstr "Nu controleren"
+
+msgid "Check the server every"
+msgstr "Server controleren elke"
+
+msgid "Checking the drive…"
+msgstr "Schijf wordt gecontroleerd…"
 
 msgid "Choose a backup"
 msgstr "Een back-up kiezen"
@@ -731,6 +743,9 @@ msgstr "Schijf versleutelen"
 msgid "Encrypt KeePass export"
 msgstr "Versleutel KeePass-export"
 
+msgid "Encrypt again"
+msgstr "Opnieuw versleutelen"
+
 msgid "Encrypted as"
 msgstr "Versleuteld als"
 
@@ -757,6 +772,9 @@ msgid ""
 msgstr ""
 "Versleutelen wist de hele schijf. Ontgrendelen en vergrendelen werken voor "
 "LUKS-schijven."
+
+msgid "Encrypting the vault again…"
+msgstr "Kluis wordt opnieuw versleuteld…"
 
 msgid "Encrypting…"
 msgstr "Bezig met versleutelen…"
@@ -801,12 +819,29 @@ msgid "Estimated strength"
 msgstr "Geschatte sterkte"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Alles in de kluis wordt opnieuw versleuteld met een sleutel die met de "
+"bovenstaande kosten wordt afgeleid. Oudere versies van Ashy Pass openen de "
+"kluis dan niet meer met het hoofdwachtwoord. De pincode moet opnieuw worden "
+"ingesteld."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Alles in de kluis wordt opnieuw versleuteld met het nieuwe wachtwoord. "
 "Eerder gemaakte back-ups openen nog steeds met het wachtwoord waarmee ze "
 "zijn gemaakt."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Alles in de kluis wordt opnieuw versleuteld met de standaardkosten, die elke "
+"versie van Ashy Pass 3 opent. De pincode moet opnieuw worden ingesteld."
 
 msgid "Everything is in sync"
 msgstr "Alles in sync"
@@ -988,13 +1023,11 @@ msgstr "Wachtwoord verbergen"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
 "Hogere kosten vertragen raadaanvallen, maar ook het ontgrendelen. "
 "Automatisch afstemmen kiest waarden van ongeveer een halve seconde op deze "
-"computer; ze gelden de volgende keer dat het hoofdwachtwoord wordt ingesteld "
-"of gewijzigd."
+"computer."
 
 msgid "History cleared"
 msgstr "Geschiedenis gewist"
@@ -1051,6 +1084,9 @@ msgstr[1] "Onjuiste pincode. Nog {} pogingen over."
 msgid "Incorrect master password"
 msgstr "Onjuist hoofdwachtwoord"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Onjuist hoofdwachtwoord. Er is niets gewijzigd."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Onjuist hoofdwachtwoord. Er is niets geëxporteerd."
 
@@ -1072,6 +1108,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Interne fout: geen wachtzin ingesteld"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Interne fout: de schijf is niet gecontroleerd"
 
 msgid "It can be restored from Deleted items."
 msgstr "Het kan worden teruggezet vanuit Verwijderde items."
@@ -1353,6 +1392,9 @@ msgstr ""
 "In deze versie kunnen geen beveiligingssleutels of herstelzinnen worden "
 "gewijzigd."
 
+msgid "No stable device link"
+msgstr "Geen stabiele apparaatkoppeling"
+
 msgid "No verification codes yet"
 msgstr "Nog geen verificatiecodes"
 
@@ -1384,6 +1426,9 @@ msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr ""
 "Er wordt niets verwijderd. Items die al in de kluis staan, worden "
 "overgeslagen."
+
+msgid "Nothing was changed"
+msgstr "Er is niets gewijzigd"
 
 msgid "Nothing was changed."
 msgstr "Er is niets gewijzigd."
@@ -1876,6 +1921,11 @@ msgstr "Mijn wachtwoorden bekijken"
 msgid "Select an access"
 msgstr "Selecteer een item"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Verstuurt wijzigingen kort na elke bewerking en controleert de server "
+"regelmatig"
+
 msgid "Sending local changes"
 msgstr "Lokale wijzigingen verzenden"
 
@@ -1997,6 +2047,14 @@ msgstr "Sterkte"
 msgid "Strong"
 msgstr "Sterk"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Beter bestand tegen het raden van het hoofdwachtwoord. Zolang dit aan staat, "
+"kunnen oudere versies van Ashy Pass de kluis niet openen met het "
+"hoofdwachtwoord."
+
 msgid "Style"
 msgstr "Stijl"
 
@@ -2005,6 +2063,9 @@ msgstr "Samenvatting"
 
 msgid "Symbols (!@#$…)"
 msgstr "Symbolen (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Automatisch synchroniseren"
 
 msgid "Sync completed"
 msgstr "Synchronisatie voltooid"
@@ -2026,6 +2087,9 @@ msgstr "Synchronisatie mislukt"
 
 msgid "Sync now"
 msgstr "Nu synchroniseren"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Synchroniseren bij het ontgrendelen van de kluis"
 
 msgid "Synchronization"
 msgstr "Synchronisatie"
@@ -2287,6 +2351,14 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Generatie van dit apparaat:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Deze schijf heeft geen koppeling in /dev/disk/by-id, dus Ashy Pass kan niet "
+"controleren of het bij het wissen nog dezelfde schijf is. Hij kan hier niet "
+"worden versleuteld."
+
 msgid "This file can be read without a password"
 msgstr "Dit bestand kan zonder wachtwoord worden gelezen"
 
@@ -2496,6 +2568,9 @@ msgstr "Gebruik de knop + om er een aan te maken."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Gebruik deze codes als een website om tweestapsverificatie vraagt."
 
+msgid "Use these costs for the vault key"
+msgstr "Deze kosten gebruiken voor de kluissleutel"
+
 msgid "Use this password"
 msgstr "Dit wachtwoord gebruiken"
 
@@ -2546,6 +2621,11 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Kluis al gesynchroniseerd"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Kluis opnieuw versleuteld. Stel de pincode opnieuw in als je er een "
+"gebruikte."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Kluis vergrendeld na een periode van inactiviteit"
@@ -2742,6 +2822,11 @@ msgstr "laag"
 
 msgid "medium"
 msgstr "gemiddeld"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minuut"
+msgstr[1] "minuten"
 
 msgid "more"
 msgstr "meer"

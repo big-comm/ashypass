@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:41\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Portuguese (Brazil) <pt-BR@li.org>\n"
@@ -231,6 +231,9 @@ msgstr "Anexos"
 msgid "Audit failed"
 msgstr "A verificação falhou"
 
+msgid "Authentication was cancelled"
+msgstr "A autenticação foi cancelada"
+
 msgid "Auto-tune"
 msgstr "Ajuste automático"
 
@@ -303,6 +306,9 @@ msgstr "Caps Lock está ativado"
 msgid "Capture from screen…"
 msgstr "Capturar da tela…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Mudar a proteção da chave do cofre?"
+
 msgid "Change master password"
 msgstr "Alterar senha principal"
 
@@ -323,6 +329,12 @@ msgstr "Verificar minhas senhas"
 
 msgid "Check now"
 msgstr "Verificar agora"
+
+msgid "Check the server every"
+msgstr "Verificar o servidor a cada"
+
+msgid "Checking the drive…"
+msgstr "Verificando o dispositivo…"
 
 msgid "Choose a backup"
 msgstr "Escolher uma cópia"
@@ -729,6 +741,9 @@ msgstr "Criptografar Unidade"
 msgid "Encrypt KeePass export"
 msgstr "Criptografar exportação do KeePass"
 
+msgid "Encrypt again"
+msgstr "Criptografar novamente"
+
 msgid "Encrypted as"
 msgstr "Criptografado como"
 
@@ -755,6 +770,9 @@ msgid ""
 msgstr ""
 "Criptografar apaga a unidade inteira. Desbloquear e bloquear funcionam em "
 "unidades LUKS."
+
+msgid "Encrypting the vault again…"
+msgstr "Criptografando o cofre novamente…"
 
 msgid "Encrypting…"
 msgstr "Criptografando…"
@@ -799,11 +817,27 @@ msgid "Estimated strength"
 msgstr "Força estimada"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Tudo no cofre é criptografado novamente com uma chave derivada usando os "
+"custos acima. Versões mais antigas do Ashy Pass não abrirão o cofre com a "
+"senha principal. O PIN precisará ser configurado de novo."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Tudo no cofre é criptografado de novo com a nova senha. Cópias de segurança "
 "feitas antes continuam abrindo com a senha usada quando foram feitas."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Tudo no cofre é criptografado novamente com os custos padrão, que todas as "
+"versões do Ashy Pass 3 abrem. O PIN precisará ser configurado de novo."
 
 msgid "Everything is in sync"
 msgstr "Tudo em sincronia"
@@ -984,13 +1018,11 @@ msgstr "Ocultar senha"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
 "Custos maiores atrasam ataques de adivinhação e também deixam o desbloqueio "
-"mais lento. O ajuste automático escolhe valores de cerca de meio segundo "
-"neste computador; eles valem na próxima vez que a senha principal for "
-"definida ou alterada."
+"mais lento. O ajuste automático escolhe valores para cerca de meio segundo "
+"neste computador."
 
 msgid "History cleared"
 msgstr "Histórico limpo"
@@ -1047,6 +1079,9 @@ msgstr[1] "PIN incorreto. Restam {} tentativas."
 msgid "Incorrect master password"
 msgstr "Senha principal incorreta"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Senha principal incorreta. Nada foi alterado."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Senha principal incorreta. Nada foi exportado."
 
@@ -1068,6 +1103,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Erro interno: nenhuma frase secreta definida"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Erro interno: o dispositivo não foi verificado"
 
 msgid "It can be restored from Deleted items."
 msgstr "Ele pode ser restaurado em Itens excluídos."
@@ -1346,6 +1384,9 @@ msgstr ""
 "Não é possível alterar a chave de segurança nem a frase de recuperação nesta "
 "versão."
 
+msgid "No stable device link"
+msgstr "Sem um caminho estável para o dispositivo"
+
 msgid "No verification codes yet"
 msgstr "Nenhum código de verificação ainda"
 
@@ -1375,6 +1416,9 @@ msgstr "Nada mudou — o Ashy Pass e o Nextcloud já estavam alinhados."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Nada é apagado. Acessos que já estão no cofre são ignorados."
+
+msgid "Nothing was changed"
+msgstr "Nada foi alterado"
 
 msgid "Nothing was changed."
 msgstr "Nada foi alterado."
@@ -1860,6 +1904,10 @@ msgstr "Ver minhas senhas"
 msgid "Select an access"
 msgstr "Selecione um acesso"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Envia as alterações logo após cada edição e verifica o servidor regularmente"
+
 msgid "Sending local changes"
 msgstr "Enviando alterações locais"
 
@@ -1980,6 +2028,14 @@ msgstr "Força"
 msgid "Strong"
 msgstr "Forte"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Mais resistente a tentativas de adivinhar a senha principal. Enquanto "
+"estiver ativado, versões mais antigas do Ashy Pass não conseguem abrir o "
+"cofre com a senha principal."
+
 msgid "Style"
 msgstr "Estilo"
 
@@ -1988,6 +2044,9 @@ msgstr "Resumo"
 
 msgid "Symbols (!@#$…)"
 msgstr "Símbolos (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Sincronizar automaticamente"
 
 msgid "Sync completed"
 msgstr "Sincronização concluída"
@@ -2009,6 +2068,9 @@ msgstr "Falha na sincronização"
 
 msgid "Sync now"
 msgstr "Sincronizar agora"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Sincronizar ao desbloquear o cofre"
 
 msgid "Synchronization"
 msgstr "Sincronização"
@@ -2254,6 +2316,14 @@ msgstr "Isto exclui o acesso inteiro: código de verificação, senha e notas."
 msgid "This device generation:"
 msgstr "Geração deste dispositivo:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Este dispositivo não tem um caminho em /dev/disk/by-id, então o Ashy Pass "
+"não consegue garantir que é o mesmo dispositivo na hora de apagá-lo. Ele não "
+"pode ser criptografado aqui."
+
 msgid "This file can be read without a password"
 msgstr "Este arquivo poderá ser lido sem senha"
 
@@ -2460,6 +2530,9 @@ msgstr "Use o botão + para criar uma."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Use estes códigos quando um site pedir a verificação em duas etapas."
 
+msgid "Use these costs for the vault key"
+msgstr "Usar estes custos na chave do cofre"
+
 msgid "Use this password"
 msgstr "Usar esta senha"
 
@@ -2510,6 +2583,10 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Cofre já sincronizado"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Cofre criptografado novamente. Configure o PIN de novo se você usava um."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Cofre bloqueado após um período de inatividade"
@@ -2705,6 +2782,11 @@ msgstr "baixa"
 
 msgid "medium"
 msgstr "média"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minuto"
+msgstr[1] "minutos"
 
 msgid "more"
 msgstr "a mais"

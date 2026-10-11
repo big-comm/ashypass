@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -225,6 +225,9 @@ msgstr "Viðhengi"
 msgid "Audit failed"
 msgstr "Úttekt mistókst"
 
+msgid "Authentication was cancelled"
+msgstr "Auðkenning var hætt"
+
 msgid "Auto-tune"
 msgstr "Sjálfvirk stilling"
 
@@ -297,6 +300,9 @@ msgstr "Caps Lock er virkt"
 msgid "Capture from screen…"
 msgstr "Taka af skjánum…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Breyta vernd hvelfingarlykilsins?"
+
 msgid "Change master password"
 msgstr "Breyta aðallykilorði"
 
@@ -317,6 +323,12 @@ msgstr "Athuga lykilorðin mín"
 
 msgid "Check now"
 msgstr "Athuga núna"
+
+msgid "Check the server every"
+msgstr "Athuga þjóninn á"
+
+msgid "Checking the drive…"
+msgstr "Athuga drifið…"
 
 msgid "Choose a backup"
 msgstr "Veldu öryggisafrit"
@@ -722,6 +734,9 @@ msgstr "Dulrita drif"
 msgid "Encrypt KeePass export"
 msgstr "Dulkóða KeePass útflutning"
 
+msgid "Encrypt again"
+msgstr "Dulrita aftur"
+
 msgid "Encrypted as"
 msgstr "Dulritað sem"
 
@@ -746,6 +761,9 @@ msgstr "Dulkóðað núll (mælt með — hægt en öruggt)"
 msgid ""
 "Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
 msgstr "Dulkóðun eyðir öllu drifinu. Aflæsing og læsing virka fyrir LUKS-drif."
+
+msgid "Encrypting the vault again…"
+msgstr "Dulrita hvelfinguna aftur…"
 
 msgid "Encrypting…"
 msgstr "Dulkóða…"
@@ -790,11 +808,27 @@ msgid "Estimated strength"
 msgstr "Áætlaður styrkur"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Allt í hvelfingunni er dulritað aftur með lykli sem leiddur er út með "
+"kostnaðinum hér að ofan. Eldri útgáfur af Ashy Pass opna ekki hvelfinguna "
+"með aðallykilorðinu. Setja þarf PIN-númerið upp aftur."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Allt í hvelfingunni er dulkóðað aftur með nýja lykilorðinu. Öryggisafrit sem "
 "gerð voru áður opnast áfram með lykilorðinu sem þau voru gerð með."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Allt í hvelfingunni er dulritað aftur með stöðluðum kostnaði sem allar "
+"útgáfur Ashy Pass 3 opna. Setja þarf PIN-númerið upp aftur."
 
 msgid "Everything is in sync"
 msgstr "Allt í samræmi"
@@ -974,12 +1008,10 @@ msgstr "Fela lykilorð"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Hærri kostnaður hægir á ágiskunarárásum en einnig á aflæsingu. Sjálfvirk "
-"stilling velur gildi sem taka um hálfa sekúndu á þessari tölvu; þau gilda "
-"næst þegar aðallykilorðið er sett eða því breytt."
+"Hærri kostnaður hægir á ágiskunarárásum en líka á aflæsingu. Sjálfvirk "
+"stilling velur gildi sem taka um hálfa sekúndu á þessari tölvu."
 
 msgid "History cleared"
 msgstr "Ferill hreinsaður"
@@ -1036,6 +1068,9 @@ msgstr[1] "Rangt PIN-númer. {} tilraunir eftir."
 msgid "Incorrect master password"
 msgstr "Rangt aðal lykilorð"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Rangt aðallykilorð. Engu var breytt."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Rangt aðallykilorð. Ekkert var flutt út."
 
@@ -1057,6 +1092,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Innri villa: ekkert lykilorð stillt"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Innri villa: drifið var ekki athugað"
 
 msgid "It can be restored from Deleted items."
 msgstr "Hægt er að endurheimta hana úr Eydd atriði."
@@ -1336,6 +1374,9 @@ msgstr ""
 "Ekki er hægt að breyta öryggislykli eða endurheimtarsetningu í þessari "
 "útgáfu."
 
+msgid "No stable device link"
+msgstr "Enginn stöðugur tækjatengill"
+
 msgid "No verification codes yet"
 msgstr "Engir staðfestingarkóðar enn"
 
@@ -1365,6 +1406,9 @@ msgstr "Ekkert breyttist — Ashy Pass og Nextcloud voru þegar í takt."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Engu er eytt. Færslum sem þegar eru í hvelfingunni er sleppt."
+
+msgid "Nothing was changed"
+msgstr "Engu var breytt"
 
 msgid "Nothing was changed."
 msgstr "Engu var breytt."
@@ -1851,6 +1895,10 @@ msgstr "Sjá lykilorðin mín"
 msgid "Select an access"
 msgstr "Veldu færslu"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Sendir breytingar skömmu eftir hverja breytingu og athugar þjóninn reglulega"
+
 msgid "Sending local changes"
 msgstr "Sendi staðværar breytingar"
 
@@ -1971,6 +2019,13 @@ msgstr "Styrkur"
 msgid "Strong"
 msgstr "Sterkur"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Sterkara gegn ágiskun aðallykilorðsins. Á meðan kveikt er á þessu geta eldri "
+"útgáfur af Ashy Pass ekki opnað hvelfinguna með aðallykilorðinu."
+
 msgid "Style"
 msgstr "Stíll"
 
@@ -1979,6 +2034,9 @@ msgstr "Samantekt"
 
 msgid "Symbols (!@#$…)"
 msgstr "Tákn (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Samstilla sjálfkrafa"
 
 msgid "Sync completed"
 msgstr "Samstillingu lokið"
@@ -2000,6 +2058,9 @@ msgstr "Samstilling mistókst"
 
 msgid "Sync now"
 msgstr "Samstilla núna"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Samstilla þegar hvelfingin er aflæst"
 
 msgid "Synchronization"
 msgstr "Samstilling"
@@ -2248,6 +2309,14 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Kynslóð þessa tækis:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Þetta drif hefur engan tengil í /dev/disk/by-id, svo Ashy Pass getur ekki "
+"tryggt að þetta sé enn sama drifið þegar því er eytt. Ekki er hægt að "
+"dulrita það hér."
+
 msgid "This file can be read without a password"
 msgstr "Þessa skrá er hægt að lesa án lykilorðs"
 
@@ -2451,6 +2520,9 @@ msgstr "Notaðu +-hnappinn til að búa til."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Notaðu þessa kóða þegar vefsvæði biður um tveggja þrepa staðfestingu."
 
+msgid "Use these costs for the vault key"
+msgstr "Nota þennan kostnað fyrir hvelfingarlykilinn"
+
 msgid "Use this password"
 msgstr "Nota þetta lykilorð"
 
@@ -2500,6 +2572,10 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Hvel þegar samstillt"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Hvelfingin var dulrituð aftur. Settu PIN-númerið upp aftur ef þú notaðir það."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Hvelfingu læst eftir tímabil án virkni"
@@ -2695,6 +2771,11 @@ msgstr "lítill"
 
 msgid "medium"
 msgstr "miðlungs"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "mínútu fresti"
+msgstr[1] "mínútna fresti"
 
 msgid "more"
 msgstr "til viðbótar"

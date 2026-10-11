@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:26\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -226,6 +226,9 @@ msgstr "Manused"
 msgid "Audit failed"
 msgstr "Audit ebaõnnestus"
 
+msgid "Authentication was cancelled"
+msgstr "Autentimine katkestati"
+
 msgid "Auto-tune"
 msgstr "Automaathäälestus"
 
@@ -298,6 +301,9 @@ msgstr "Caps Lock on sees"
 msgid "Capture from screen…"
 msgstr "Jäädvusta ekraanilt…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Kas muuta seifivõtme kaitset?"
+
 msgid "Change master password"
 msgstr "Muuda põhiparooli"
 
@@ -318,6 +324,12 @@ msgstr "Kontrolli minu paroole"
 
 msgid "Check now"
 msgstr "Kontrolli kohe"
+
+msgid "Check the server every"
+msgstr "Kontrolli serverit iga"
+
+msgid "Checking the drive…"
+msgstr "Draivi kontrollimine…"
 
 msgid "Choose a backup"
 msgstr "Vali varukoopia"
@@ -720,6 +732,9 @@ msgstr "Krüpteeri ketas"
 msgid "Encrypt KeePass export"
 msgstr "Krüpti KeePassi eksport"
 
+msgid "Encrypt again"
+msgstr "Krüpti uuesti"
+
 msgid "Encrypted as"
 msgstr "Krüptitud kujul"
 
@@ -747,6 +762,9 @@ msgid ""
 msgstr ""
 "Krüptimine kustutab kogu ketta. Avamine ja lukustamine toimivad LUKS-"
 "ketastega."
+
+msgid "Encrypting the vault again…"
+msgstr "Seifi uuesti krüptimine…"
 
 msgid "Encrypting…"
 msgstr "Krüpteerimine…"
@@ -791,11 +809,27 @@ msgid "Estimated strength"
 msgstr "Hinnanguline tugevus"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Kogu seif krüptitakse uuesti võtmega, mis tuletatakse ülaltoodud kuludega. "
+"Ashy Passi vanemad versioonid ei ava seifi ülemparooliga. PIN tuleb uuesti "
+"seadistada."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Kogu hoidla sisu krüptitakse uue parooliga uuesti. Varem tehtud varukoopiad "
 "avanevad endiselt parooliga, millega need tehti."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Kogu seif krüptitakse uuesti standardkuludega, mida avab iga Ashy Pass 3 "
+"versioon. PIN tuleb uuesti seadistada."
 
 msgid "Everything is in sync"
 msgstr "Kõik on sünkroonis"
@@ -975,12 +1009,11 @@ msgstr "Peida parool"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Suurem kulu aeglustab äraarvamisrünnakuid, aga ka avamist. Automaathäälestus "
-"valib väärtused, mis võtavad selles arvutis umbes pool sekundit; need "
-"rakenduvad järgmisel põhiparooli määramisel või muutmisel."
+"Suuremad kulud aeglustavad arvamisrünnakuid, aga ka lukust avamist. "
+"Automaatne häälestus valib väärtused, mis võtavad selles arvutis umbes pool "
+"sekundit."
 
 msgid "History cleared"
 msgstr "Ajalugu tühjendatud"
@@ -1037,6 +1070,9 @@ msgstr[1] "Vale PIN. Jäänud on {} katset."
 msgid "Incorrect master password"
 msgstr "Vale põhiparool"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Vale ülemparool. Midagi ei muudetud."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Vale põhiparool. Midagi ei eksporditud."
 
@@ -1057,6 +1093,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Sisemine viga: parooli pole määratud"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Sisemine viga: draivi ei kontrollitud"
 
 msgid "It can be restored from Deleted items."
 msgstr "Selle saab taastada kustutatud üksustest."
@@ -1331,6 +1370,9 @@ msgstr "Varasemaid paroole pole"
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr "Selles versioonis ei saa turvavõtit ega taastefraasi muuta."
 
+msgid "No stable device link"
+msgstr "Püsiv seadmelink puudub"
+
 msgid "No verification codes yet"
 msgstr "Kinnituskoode pole veel"
 
@@ -1360,6 +1402,9 @@ msgstr "Midagi ei muutunud — Ashy Pass ja Nextcloud olid juba vastavuses."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Midagi ei eemaldata. Hoidlas juba olevad kirjed jäetakse vahele."
+
+msgid "Nothing was changed"
+msgstr "Midagi ei muudetud"
 
 msgid "Nothing was changed."
 msgstr "Midagi ei muudetud."
@@ -1843,6 +1888,11 @@ msgstr "Kuva minu paroolid"
 msgid "Select an access"
 msgstr "Vali kirje"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Saadab muudatused varsti pärast iga muutmist ja kontrollib serverit "
+"regulaarselt"
+
 msgid "Sending local changes"
 msgstr "Kohalike muudatuste saatmine"
 
@@ -1961,6 +2011,13 @@ msgstr "Tugevus"
 msgid "Strong"
 msgstr "Tugev"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Vastupidavam ülemparooli arvamisele. Kuni see on sees, ei saa Ashy Passi "
+"vanemad versioonid seifi ülemparooliga avada."
+
 msgid "Style"
 msgstr "Stiil"
 
@@ -1969,6 +2026,9 @@ msgstr "Kokkuvõte"
 
 msgid "Symbols (!@#$…)"
 msgstr "Sümbolid (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Sünkrooni automaatselt"
 
 msgid "Sync completed"
 msgstr "Sünkroonimine lõpetatud"
@@ -1990,6 +2050,9 @@ msgstr "Sünkroonimine ebaõnnestus"
 
 msgid "Sync now"
 msgstr "Sünkrooni kohe"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Sünkrooni seifi lukust avamisel"
 
 msgid "Synchronization"
 msgstr "Sünkroonimine"
@@ -2231,6 +2294,14 @@ msgstr "See kustutab kogu kirje: kinnituskoodi, parooli ja märkmed."
 msgid "This device generation:"
 msgstr "Selle seade põlvkond:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Sellel draivil pole linki kaustas /dev/disk/by-id, seega ei saa Ashy Pass "
+"kustutamisel kindlaks teha, et see on endiselt sama draiv. Seda ei saa siin "
+"krüptida."
+
 msgid "This file can be read without a password"
 msgstr "Seda faili saab lugeda ilma paroolita"
 
@@ -2435,6 +2506,9 @@ msgstr "Loomiseks kasuta nuppu +."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Kasuta neid koode, kui sait küsib kaheastmelist kinnitamist."
 
+msgid "Use these costs for the vault key"
+msgstr "Kasuta neid kulusid seifivõtme jaoks"
+
 msgid "Use this password"
 msgstr "Kasuta seda parooli"
 
@@ -2484,6 +2558,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Vault on juba sünkroonitud"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "Seif krüptiti uuesti. Seadista PIN uuesti, kui seda kasutasid."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Hoidla lukustati pärast tegevusetust"
@@ -2678,6 +2755,11 @@ msgstr "madal"
 
 msgid "medium"
 msgstr "keskmine"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minuti järel"
+msgstr[1] "minuti järel"
 
 msgid "more"
 msgstr "lisaks"

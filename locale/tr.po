@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:47\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -232,6 +232,9 @@ msgstr "Ekler"
 msgid "Audit failed"
 msgstr "Denetim başarısız oldu"
 
+msgid "Authentication was cancelled"
+msgstr "Kimlik doğrulama iptal edildi"
+
 msgid "Auto-tune"
 msgstr "Otomatik ayar"
 
@@ -304,6 +307,9 @@ msgstr "Caps Lock açık"
 msgid "Capture from screen…"
 msgstr "Ekrandan yakala…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Kasa anahtarının koruması değiştirilsin mi?"
+
 msgid "Change master password"
 msgstr "Ana parolayı değiştir"
 
@@ -324,6 +330,12 @@ msgstr "Parolalarımı denetle"
 
 msgid "Check now"
 msgstr "Şimdi denetle"
+
+msgid "Check the server every"
+msgstr "Sunucuyu şu aralıkla denetle:"
+
+msgid "Checking the drive…"
+msgstr "Sürücü denetleniyor…"
 
 msgid "Choose a backup"
 msgstr "Bir yedek seçin"
@@ -727,6 +739,9 @@ msgstr "Sürücüyü Şifrele"
 msgid "Encrypt KeePass export"
 msgstr "KeePass dışa aktarımını şifrele"
 
+msgid "Encrypt again"
+msgstr "Yeniden şifrele"
+
 msgid "Encrypted as"
 msgstr "Şifrelenmiş olarak"
 
@@ -753,6 +768,9 @@ msgid ""
 msgstr ""
 "Şifreleme tüm sürücüyü siler. Kilit açma ve kilitleme LUKS sürücülerinde "
 "çalışır."
+
+msgid "Encrypting the vault again…"
+msgstr "Kasa yeniden şifreleniyor…"
 
 msgid "Encrypting…"
 msgstr "Şifreleniyor…"
@@ -797,11 +815,27 @@ msgid "Estimated strength"
 msgstr "Tahmini güç"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Kasadaki her şey, yukarıdaki maliyetlerle türetilen bir anahtarla yeniden "
+"şifrelenir. Ashy Pass’in eski sürümleri kasayı ana parolayla açamaz. PIN’in "
+"yeniden ayarlanması gerekir."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Kasadaki her şey yeni parolayla yeniden şifrelenir. Daha önce yapılan "
 "yedekler, yapıldıkları parolayla açılmaya devam eder."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Kasadaki her şey, Ashy Pass 3’ün her sürümünün açabildiği standart "
+"maliyetlerle yeniden şifrelenir. PIN’in yeniden ayarlanması gerekir."
 
 msgid "Everything is in sync"
 msgstr "Her şey uyum içinde"
@@ -983,13 +1017,11 @@ msgstr "Parolayı gizle"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Daha yüksek maliyetler tahmin saldırılarını yavaşlatır, ancak kilit açmayı "
-"da yavaşlatır. Otomatik ayar, bu bilgisayarda yaklaşık yarım saniye sürecek "
-"değerler seçer; bunlar ana parola bir sonraki ayarlanışında veya "
-"değiştirilişinde uygulanır."
+"Daha yüksek maliyetler tahmin saldırılarını yavaşlatır ama kilit açmayı da "
+"yavaşlatır. Otomatik ayar, bu bilgisayarda yaklaşık yarım saniyelik değerler "
+"seçer."
 
 msgid "History cleared"
 msgstr "Geçmiş temizlendi"
@@ -1046,6 +1078,9 @@ msgstr[1] "Yanlış PIN. {} deneme hakkı kaldı."
 msgid "Incorrect master password"
 msgstr "Yanlış ana parola"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Ana parola yanlış. Hiçbir şey değiştirilmedi."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Yanlış ana parola. Hiçbir şey dışa aktarılmadı."
 
@@ -1067,6 +1102,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Dahili hata: parola ayarlanmamış"
+
+msgid "Internal error: the drive was not checked"
+msgstr "İç hata: sürücü denetlenmedi"
 
 msgid "It can be restored from Deleted items."
 msgstr "Silinen öğelerden geri yüklenebilir."
@@ -1341,6 +1379,9 @@ msgstr "Önceki parola yok"
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr "Bu sürümde güvenlik anahtarı veya kurtarma ifadesi değiştirilemez."
 
+msgid "No stable device link"
+msgstr "Kalıcı aygıt bağlantısı yok"
+
 msgid "No verification codes yet"
 msgstr "Henüz doğrulama kodu yok"
 
@@ -1370,6 +1411,9 @@ msgstr "Hiçbir şey değişmedi — Ashy Pass ve Nextcloud zaten uyumluydu."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Hiçbir şey kaldırılmaz. Kasada zaten bulunan kayıtlar atlanır."
+
+msgid "Nothing was changed"
+msgstr "Hiçbir şey değiştirilmedi"
 
 msgid "Nothing was changed."
 msgstr "Hiçbir şey değiştirilmedi."
@@ -1859,6 +1903,11 @@ msgstr "Parolalarımı gör"
 msgid "Select an access"
 msgstr "Bir kayıt seçin"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Değişiklikleri her düzenlemeden kısa süre sonra gönderir ve sunucuyu düzenli "
+"olarak denetler"
+
 msgid "Sending local changes"
 msgstr "Yerel değişiklikler gönderiliyor"
 
@@ -1978,6 +2027,13 @@ msgstr "Güç"
 msgid "Strong"
 msgstr "Güçlü"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Ana parolanın tahmin edilmesine karşı daha dayanıklı. Bu açıkken Ashy "
+"Pass’in eski sürümleri kasayı ana parolayla açamaz."
+
 msgid "Style"
 msgstr "Stil"
 
@@ -1986,6 +2042,9 @@ msgstr "Özet"
 
 msgid "Symbols (!@#$…)"
 msgstr "Semboller (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Otomatik eşitle"
 
 msgid "Sync completed"
 msgstr "Eşitleme tamamlandı"
@@ -2007,6 +2066,9 @@ msgstr "Senkronizasyon başarısız"
 
 msgid "Sync now"
 msgstr "Şimdi senkronize et"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Kasa kilidi açılınca eşitle"
 
 msgid "Synchronization"
 msgstr "Eşitleme"
@@ -2245,6 +2307,13 @@ msgstr "Bu, kaydın tamamını siler: doğrulama kodu, parola ve notlar."
 msgid "This device generation:"
 msgstr "Bu cihaz nesli:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Bu sürücünün /dev/disk/by-id altında bağlantısı yok; bu yüzden Ashy Pass "
+"silerken hâlâ aynı sürücü olduğundan emin olamaz. Burada şifrelenemez."
+
 msgid "This file can be read without a password"
 msgstr "Bu dosya parola olmadan okunabilir"
 
@@ -2450,6 +2519,9 @@ msgstr "Oluşturmak için + düğmesini kullanın."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Bir site iki adımlı doğrulama istediğinde bu kodları kullanın."
 
+msgid "Use these costs for the vault key"
+msgstr "Kasa anahtarı için bu maliyetleri kullan"
+
 msgid "Use this password"
 msgstr "Bu parolayı kullan"
 
@@ -2499,6 +2571,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Kasa zaten senkronize"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "Kasa yeniden şifrelendi. Kullanıyorsanız PIN’i yeniden ayarlayın."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Kasa bir süre hareketsiz kaldıktan sonra kilitlendi"
@@ -2694,6 +2769,11 @@ msgstr "düşük"
 
 msgid "medium"
 msgstr "orta"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "dakikada bir"
+msgstr[1] "dakikada bir"
 
 msgid "more"
 msgstr "daha"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:45\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -228,6 +228,9 @@ msgstr "Prílohy"
 msgid "Audit failed"
 msgstr "Audit zlyhal"
 
+msgid "Authentication was cancelled"
+msgstr "Overenie bolo zrušené"
+
 msgid "Auto-tune"
 msgstr "Automatické ladenie"
 
@@ -300,6 +303,9 @@ msgstr "Caps Lock je zapnutý"
 msgid "Capture from screen…"
 msgstr "Zachytiť z obrazovky…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Zmeniť ochranu kľúča trezoru?"
+
 msgid "Change master password"
 msgstr "Zmeniť hlavné heslo"
 
@@ -320,6 +326,12 @@ msgstr "Skontrolovať moje heslá"
 
 msgid "Check now"
 msgstr "Skontrolovať teraz"
+
+msgid "Check the server every"
+msgstr "Kontrolovať server každých"
+
+msgid "Checking the drive…"
+msgstr "Kontroluje sa jednotka…"
 
 msgid "Choose a backup"
 msgstr "Vybrať zálohu"
@@ -724,6 +736,9 @@ msgstr "Zašifrovať disk"
 msgid "Encrypt KeePass export"
 msgstr "Zašifrovať export z KeePass"
 
+msgid "Encrypt again"
+msgstr "Znova zašifrovať"
+
 msgid "Encrypted as"
 msgstr "Zašifrované ako"
 
@@ -752,6 +767,9 @@ msgid ""
 msgstr ""
 "Šifrovanie vymaže celú jednotku. Odomknutie a uzamknutie fungujú pre "
 "jednotky LUKS."
+
+msgid "Encrypting the vault again…"
+msgstr "Trezor sa znova šifruje…"
 
 msgid "Encrypting…"
 msgstr "Šifruje sa…"
@@ -796,11 +814,27 @@ msgid "Estimated strength"
 msgstr "Odhadovaná sila"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Celý obsah trezoru sa znova zašifruje kľúčom odvodeným s vyššie uvedenými "
+"nákladmi. Staršie verzie Ashy Pass trezor hlavným heslom neotvoria. PIN bude "
+"potrebné nastaviť znova."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Všetko v trezore sa znova zašifruje novým heslom. Skôr vytvorené zálohy sa "
 "naďalej otvárajú heslom, s ktorým boli vytvorené."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Celý obsah trezoru sa znova zašifruje so štandardnými nákladmi, ktoré otvorí "
+"každá verzia Ashy Pass 3. PIN bude potrebné nastaviť znova."
 
 msgid "Everything is in sync"
 msgstr "Všetko v súlade"
@@ -982,12 +1016,10 @@ msgstr "Skryť heslo"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Vyššie náklady spomaľujú útoky hádaním a tiež spomaľujú odomykanie. "
-"Automatické nastavenie zvolí hodnoty na približne pol sekundy na tomto "
-"počítači; platia pri ďalšom nastavení alebo zmene hlavného hesla."
+"Vyššie náklady spomaľujú útoky hádaním, ale aj odomykanie. Automatické "
+"vyladenie zvolí hodnoty približne na pol sekundy na tomto počítači."
 
 msgid "History cleared"
 msgstr "História vymazaná"
@@ -1045,6 +1077,9 @@ msgstr[2] "Nesprávny PIN. Zostáva {} pokusov."
 msgid "Incorrect master password"
 msgstr "Nesprávne hlavné heslo"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Nesprávne hlavné heslo. Nič sa nezmenilo."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Nesprávne hlavné heslo. Nič sa neexportovalo."
 
@@ -1066,6 +1101,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Interná chyba: nie je nastavená žiadna prístupová fráza"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Vnútorná chyba: jednotka nebola skontrolovaná"
 
 msgid "It can be restored from Deleted items."
 msgstr "Možno ho obnoviť z Odstránených položiek."
@@ -1343,6 +1381,9 @@ msgid "No security key or recovery phrase changes can be made in this version."
 msgstr ""
 "V tejto verzii nie je možné meniť bezpečnostný kľúč ani frázu na obnovenie."
 
+msgid "No stable device link"
+msgstr "Chýba stály odkaz na zariadenie"
+
 msgid "No verification codes yet"
 msgstr "Zatiaľ žiadne overovacie kódy"
 
@@ -1372,6 +1413,9 @@ msgstr "Nič sa nezmenilo – Ashy Pass a Nextcloud už boli zosúladené."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Nič sa neodstráni. Prístupy, ktoré už sú v trezore, sa preskočia."
+
+msgid "Nothing was changed"
+msgstr "Nič sa nezmenilo"
 
 msgid "Nothing was changed."
 msgstr "Nič sa nezmenilo."
@@ -1855,6 +1899,9 @@ msgstr "Zobraziť moje heslá"
 msgid "Select an access"
 msgstr "Vyberte prístup"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr "Odosiela zmeny krátko po každej úprave a pravidelne kontroluje server"
+
 msgid "Sending local changes"
 msgstr "Odosielanie lokálnych zmien"
 
@@ -1974,6 +2021,13 @@ msgstr "Sila"
 msgid "Strong"
 msgstr "Silná"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Odolnejšie proti uhádnutiu hlavného hesla. Kým je zapnuté, staršie verzie "
+"Ashy Pass nemôžu trezor otvoriť hlavným heslom."
+
 msgid "Style"
 msgstr "Štýl"
 
@@ -1982,6 +2036,9 @@ msgstr "Súhrn"
 
 msgid "Symbols (!@#$…)"
 msgstr "Symboly (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Synchronizovať automaticky"
 
 msgid "Sync completed"
 msgstr "Synchronizácia dokončená"
@@ -2003,6 +2060,9 @@ msgstr "Synchronizácia zlyhala"
 
 msgid "Sync now"
 msgstr "Synchronizovať teraz"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Synchronizovať pri odomknutí trezoru"
 
 msgid "Synchronization"
 msgstr "Synchronizácia"
@@ -2255,6 +2315,13 @@ msgstr "Týmto sa odstráni celý prístup: overovací kód, heslo aj poznámky.
 msgid "This device generation:"
 msgstr "Generácia tohto zariadenia:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Táto jednotka nemá odkaz v /dev/disk/by-id, takže Ashy Pass nemôže overiť, "
+"že pri mazaní ide stále o tú istú jednotku. Tu ju nemožno zašifrovať."
+
 msgid "This file can be read without a password"
 msgstr "Tento súbor bude možné čítať bez hesla"
 
@@ -2459,6 +2526,9 @@ msgstr "Vytvorte ho tlačidlom +."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Tieto kódy použite, keď web požiada o dvojstupňové overenie."
 
+msgid "Use these costs for the vault key"
+msgstr "Použiť tieto náklady pre kľúč trezoru"
+
 msgid "Use this password"
 msgstr "Použiť toto heslo"
 
@@ -2508,6 +2578,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Trezor je už synchronizovaný"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "Trezor bol znova zašifrovaný. Ak ste používali PIN, nastavte ho znova."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Trezor uzamknutý po období nečinnosti"
@@ -2703,6 +2776,12 @@ msgstr "nízka"
 
 msgid "medium"
 msgstr "stredná"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "min"
+msgstr[1] "min"
+msgstr[2] "min"
 
 msgid "more"
 msgstr "navyše"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:43\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -233,6 +233,9 @@ msgstr "Atașamente"
 msgid "Audit failed"
 msgstr "Audit eșuat"
 
+msgid "Authentication was cancelled"
+msgstr "Autentificarea a fost anulată"
+
 msgid "Auto-tune"
 msgstr "Ajustare automată"
 
@@ -305,6 +308,9 @@ msgstr "Caps Lock este activat"
 msgid "Capture from screen…"
 msgstr "Capturează de pe ecran…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Schimbați protecția cheii seifului?"
+
 msgid "Change master password"
 msgstr "Schimbă parola principală"
 
@@ -325,6 +331,12 @@ msgstr "Verifică-mi parolele"
 
 msgid "Check now"
 msgstr "Verifică acum"
+
+msgid "Check the server every"
+msgstr "Verifică serverul la fiecare"
+
+msgid "Checking the drive…"
+msgstr "Se verifică unitatea…"
 
 msgid "Choose a backup"
 msgstr "Alege o copie de rezervă"
@@ -731,6 +743,9 @@ msgstr "Criptează unitatea"
 msgid "Encrypt KeePass export"
 msgstr "Criptați exportul KeePass"
 
+msgid "Encrypt again"
+msgstr "Criptează din nou"
+
 msgid "Encrypted as"
 msgstr "Criptat ca"
 
@@ -758,6 +773,9 @@ msgid ""
 msgstr ""
 "Criptarea șterge toată unitatea. Deblocarea și blocarea funcționează pentru "
 "unități LUKS."
+
+msgid "Encrypting the vault again…"
+msgstr "Se criptează din nou seiful…"
 
 msgid "Encrypting…"
 msgstr "Se criptează…"
@@ -802,11 +820,27 @@ msgid "Estimated strength"
 msgstr "Putere estimată"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Tot conținutul seifului este criptat din nou cu o cheie derivată folosind "
+"costurile de mai sus. Versiunile mai vechi Ashy Pass nu vor deschide seiful "
+"cu parola principală. PIN-ul trebuie configurat din nou."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Tot ce este în seif este criptat din nou cu noua parolă. Copiile de rezervă "
 "făcute anterior se deschid în continuare cu parola cu care au fost făcute."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Tot conținutul seifului este criptat din nou cu costurile standard, pe care "
+"le deschide orice versiune Ashy Pass 3. PIN-ul trebuie configurat din nou."
 
 msgid "Everything is in sync"
 msgstr "Totul în sincronie"
@@ -987,13 +1021,11 @@ msgstr "Ascunde parola"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
 "Costurile mai mari încetinesc atacurile de ghicire, dar și deblocarea. "
 "Reglarea automată alege valori de aproximativ o jumătate de secundă pe acest "
-"calculator; ele se aplică data viitoare când parola principală este setată "
-"sau schimbată."
+"calculator."
 
 msgid "History cleared"
 msgstr "Istoric șters"
@@ -1051,6 +1083,9 @@ msgstr[2] "PIN incorect. Au mai rămas {} de încercări."
 msgid "Incorrect master password"
 msgstr "Parolă principală incorectă"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Parolă principală incorectă. Nu s-a modificat nimic."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Parolă principală incorectă. Nu s-a exportat nimic."
 
@@ -1072,6 +1107,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Eroare internă: nicio frază de acces setată"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Eroare internă: unitatea nu a fost verificată"
 
 msgid "It can be restored from Deleted items."
 msgstr "Poate fi restaurat din Elemente șterse."
@@ -1354,6 +1392,9 @@ msgstr ""
 "În această versiune nu se pot modifica cheia de securitate sau fraza de "
 "recuperare."
 
+msgid "No stable device link"
+msgstr "Nicio legătură stabilă către dispozitiv"
+
 msgid "No verification codes yet"
 msgstr "Încă nu există coduri de verificare"
 
@@ -1383,6 +1424,9 @@ msgstr "Nimic nu s-a schimbat — Ashy Pass și Nextcloud erau deja aliniate."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Nu se elimină nimic. Intrările care sunt deja în seif sunt omise."
+
+msgid "Nothing was changed"
+msgstr "Nu s-a modificat nimic"
 
 msgid "Nothing was changed."
 msgstr "Nu s-a modificat nimic."
@@ -1872,6 +1916,11 @@ msgstr "Vezi parolele mele"
 msgid "Select an access"
 msgstr "Selectați o intrare"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Trimite modificările la scurt timp după fiecare editare și verifică regulat "
+"serverul"
+
 msgid "Sending local changes"
 msgstr "Se trimit modificările locale"
 
@@ -1993,6 +2042,13 @@ msgstr "Putere"
 msgid "Strong"
 msgstr "Puternică"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Mai rezistent la ghicirea parolei principale. Cât timp este activat, "
+"versiunile mai vechi Ashy Pass nu pot deschide seiful cu parola principală."
+
 msgid "Style"
 msgstr "Stil"
 
@@ -2001,6 +2057,9 @@ msgstr "Rezumat"
 
 msgid "Symbols (!@#$…)"
 msgstr "Simboluri (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Sincronizare automată"
 
 msgid "Sync completed"
 msgstr "Sincronizare finalizată"
@@ -2022,6 +2081,9 @@ msgstr "Sincronizare eșuată"
 
 msgid "Sync now"
 msgstr "Sincronizează acum"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Sincronizare la deblocarea seifului"
 
 msgid "Synchronization"
 msgstr "Sincronizare"
@@ -2281,6 +2343,14 @@ msgstr "Se șterge întreaga intrare: codul de verificare, parola și notițele.
 msgid "This device generation:"
 msgstr "Generația acestui dispozitiv:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Această unitate nu are o legătură în /dev/disk/by-id, așa că Ashy Pass nu se "
+"poate asigura că este aceeași unitate atunci când o șterge. Nu poate fi "
+"criptată aici."
+
 msgid "This file can be read without a password"
 msgstr "Acest fișier va putea fi citit fără parolă"
 
@@ -2486,6 +2556,9 @@ msgstr "Folosiți butonul + pentru a crea unul."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Folosiți aceste coduri când un site cere verificarea în doi pași."
 
+msgid "Use these costs for the vault key"
+msgstr "Folosește aceste costuri pentru cheia seifului"
+
 msgid "Use this password"
 msgstr "Folosește această parolă"
 
@@ -2536,6 +2609,11 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Seiful este deja sincronizat"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Seiful a fost criptat din nou. Configurați din nou PIN-ul dacă foloseați "
+"unul."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Seif blocat după o perioadă de inactivitate"
@@ -2733,6 +2811,12 @@ msgstr "scăzută"
 
 msgid "medium"
 msgstr "medie"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minut"
+msgstr[1] "minute"
+msgstr[2] "minute"
 
 msgid "more"
 msgstr "în plus"

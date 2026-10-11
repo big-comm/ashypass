@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:23\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -237,6 +237,9 @@ msgstr "Συνημμένα"
 msgid "Audit failed"
 msgstr "Ο έλεγχος απέτυχε"
 
+msgid "Authentication was cancelled"
+msgstr "Ο έλεγχος ταυτότητας ακυρώθηκε"
+
 msgid "Auto-tune"
 msgstr "Αυτόματη ρύθμιση"
 
@@ -309,6 +312,9 @@ msgstr "Το Caps Lock είναι ενεργό"
 msgid "Capture from screen…"
 msgstr "Λήψη από την οθόνη…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Αλλαγή της προστασίας του κλειδιού θησαυροφυλακίου;"
+
 msgid "Change master password"
 msgstr "Αλλαγή κύριου κωδικού πρόσβασης"
 
@@ -329,6 +335,12 @@ msgstr "Έλεγχος των κωδικών μου"
 
 msgid "Check now"
 msgstr "Έλεγχος τώρα"
+
+msgid "Check the server every"
+msgstr "Έλεγχος διακομιστή κάθε"
+
+msgid "Checking the drive…"
+msgstr "Έλεγχος μονάδας…"
 
 msgid "Choose a backup"
 msgstr "Επιλέξτε αντίγραφο ασφαλείας"
@@ -740,6 +752,9 @@ msgstr "Κρυπτογράφηση Μονάδας"
 msgid "Encrypt KeePass export"
 msgstr "Κρυπτογράφηση εξαγωγής KeePass"
 
+msgid "Encrypt again"
+msgstr "Νέα κρυπτογράφηση"
+
 msgid "Encrypted as"
 msgstr "Κρυπτογραφήθηκε ως"
 
@@ -768,6 +783,9 @@ msgid ""
 msgstr ""
 "Η κρυπτογράφηση διαγράφει ολόκληρη τη μονάδα. Το ξεκλείδωμα και το κλείδωμα "
 "λειτουργούν για μονάδες LUKS."
+
+msgid "Encrypting the vault again…"
+msgstr "Νέα κρυπτογράφηση του θησαυροφυλακίου…"
 
 msgid "Encrypting…"
 msgstr "Γίνεται κρυπτογράφηση…"
@@ -815,11 +833,27 @@ msgid "Estimated strength"
 msgstr "Εκτιμώμενη ισχύς"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Όλο το περιεχόμενο κρυπτογραφείται ξανά με κλειδί που προκύπτει από τα "
+"παραπάνω κόστη. Παλαιότερες εκδόσεις του Ashy Pass δεν θα ανοίγουν το "
+"θησαυροφυλάκιο με τον κύριο κωδικό. Το PIN πρέπει να ρυθμιστεί ξανά."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Όλο το θησαυροφυλάκιο κρυπτογραφείται ξανά με τον νέο κωδικό. Τα παλαιότερα "
 "αντίγραφα ασφαλείας ανοίγουν ακόμα με τον κωδικό με τον οποίο δημιουργήθηκαν."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Όλο το περιεχόμενο κρυπτογραφείται ξανά με τα τυπικά κόστη, που ανοίγει κάθε "
+"έκδοση του Ashy Pass 3. Το PIN πρέπει να ρυθμιστεί ξανά."
 
 msgid "Everything is in sync"
 msgstr "Όλα σε συγχρονισμό"
@@ -1005,13 +1039,11 @@ msgstr "Απόκρυψη κωδικού πρόσβασης"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Υψηλότερο κόστος επιβραδύνει τις επιθέσεις μαντέματος αλλά και το "
-"ξεκλείδωμα. Η αυτόματη ρύθμιση επιλέγει τιμές για περίπου μισό δευτερόλεπτο "
-"σε αυτόν τον υπολογιστή· εφαρμόζονται την επόμενη φορά που θα οριστεί ή θα "
-"αλλάξει ο κύριος κωδικός πρόσβασης."
+"Τα υψηλότερα κόστη επιβραδύνουν τις επιθέσεις μαντέματος αλλά και το "
+"ξεκλείδωμα. Ο αυτόματος συντονισμός επιλέγει τιμές για περίπου μισό "
+"δευτερόλεπτο σε αυτόν τον υπολογιστή."
 
 msgid "History cleared"
 msgstr "Το ιστορικό εκκαθαρίστηκε"
@@ -1068,6 +1100,9 @@ msgstr[1] "Λάθος PIN. Απομένουν {} προσπάθειες."
 msgid "Incorrect master password"
 msgstr "Λανθασμένος κύριος κωδικός πρόσβασης"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Λάθος κύριος κωδικός. Δεν άλλαξε τίποτα."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Λανθασμένος κύριος κωδικός πρόσβασης. Δεν εξήχθη τίποτα."
 
@@ -1090,6 +1125,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Εσωτερικό σφάλμα: δεν έχει οριστεί φράση πρόσβασης"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Εσωτερικό σφάλμα: η μονάδα δεν ελέγχθηκε"
 
 msgid "It can be restored from Deleted items."
 msgstr "Μπορεί να επαναφερθεί από τα Διαγραμμένα στοιχεία."
@@ -1379,6 +1417,9 @@ msgstr ""
 "Σε αυτήν την έκδοση δεν μπορούν να γίνουν αλλαγές στο κλειδί ασφαλείας ή στη "
 "φράση ανάκτησης."
 
+msgid "No stable device link"
+msgstr "Δεν υπάρχει σταθερός σύνδεσμος συσκευής"
+
 msgid "No verification codes yet"
 msgstr "Δεν υπάρχουν κωδικοί επαλήθευσης ακόμα"
 
@@ -1411,6 +1452,9 @@ msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr ""
 "Δεν αφαιρείται τίποτα. Οι καταχωρήσεις που υπάρχουν ήδη στο θησαυροφυλάκιο "
 "παραλείπονται."
+
+msgid "Nothing was changed"
+msgstr "Δεν άλλαξε τίποτα"
 
 msgid "Nothing was changed."
 msgstr "Δεν άλλαξε τίποτα."
@@ -1914,6 +1958,11 @@ msgstr "Προβολή των κωδικών μου"
 msgid "Select an access"
 msgstr "Επιλέξτε καταχώρηση"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Στέλνει τις αλλαγές λίγο μετά από κάθε επεξεργασία και ελέγχει τακτικά τον "
+"διακομιστή"
+
 msgid "Sending local changes"
 msgstr "Αποστολή τοπικών αλλαγών"
 
@@ -2036,6 +2085,14 @@ msgstr "Ισχύς"
 msgid "Strong"
 msgstr "Ισχυρή"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Πιο ανθεκτικό στο μάντεμα του κύριου κωδικού. Όσο είναι ενεργό, παλαιότερες "
+"εκδόσεις του Ashy Pass δεν μπορούν να ανοίξουν το θησαυροφυλάκιο με τον "
+"κύριο κωδικό."
+
 msgid "Style"
 msgstr "Στυλ"
 
@@ -2044,6 +2101,9 @@ msgstr "Σύνοψη"
 
 msgid "Symbols (!@#$…)"
 msgstr "Σύμβολα (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Αυτόματος συγχρονισμός"
 
 msgid "Sync completed"
 msgstr "Ο συγχρονισμός ολοκληρώθηκε"
@@ -2065,6 +2125,9 @@ msgstr "Ο συγχρονισμός απέτυχε"
 
 msgid "Sync now"
 msgstr "Συγχρονισμός τώρα"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Συγχρονισμός στο ξεκλείδωμα του θησαυροφυλακίου"
 
 msgid "Synchronization"
 msgstr "Συγχρονισμός"
@@ -2328,6 +2391,14 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Γενιά αυτής της συσκευής:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Αυτή η μονάδα δεν έχει σύνδεσμο στο /dev/disk/by-id, οπότε το Ashy Pass δεν "
+"μπορεί να βεβαιωθεί ότι είναι η ίδια μονάδα κατά τη διαγραφή. Δεν μπορεί να "
+"κρυπτογραφηθεί εδώ."
+
 msgid "This file can be read without a password"
 msgstr "Αυτό το αρχείο μπορεί να διαβαστεί χωρίς κωδικό πρόσβασης"
 
@@ -2542,6 +2613,9 @@ msgstr ""
 "Χρησιμοποιήστε αυτούς τους κωδικούς όταν ένας ιστότοπος ζητά επαλήθευση δύο "
 "βημάτων."
 
+msgid "Use these costs for the vault key"
+msgstr "Χρήση αυτών των κοστών για το κλειδί του θησαυροφυλακίου"
+
 msgid "Use this password"
 msgstr "Χρήση αυτού του κωδικού"
 
@@ -2592,6 +2666,11 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Το vault είναι ήδη συγχρονισμένο"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Το θησαυροφυλάκιο κρυπτογραφήθηκε ξανά. Ρυθμίστε ξανά το PIN αν "
+"χρησιμοποιούσατε."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Το θησαυροφυλάκιο κλείδωσε μετά από ένα διάστημα αδράνειας"
@@ -2790,6 +2869,11 @@ msgstr "χαμηλή"
 
 msgid "medium"
 msgstr "μέτρια"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "λεπτό"
+msgstr[1] "λεπτά"
 
 msgid "more"
 msgstr "επιπλέον"

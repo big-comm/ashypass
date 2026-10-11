@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:21\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Danish <da@li.org>\n"
@@ -227,6 +227,9 @@ msgstr "Vedhæftninger"
 msgid "Audit failed"
 msgstr "Revision mislykkedes"
 
+msgid "Authentication was cancelled"
+msgstr "Godkendelsen blev annulleret"
+
 msgid "Auto-tune"
 msgstr "Auto-tuning"
 
@@ -299,6 +302,9 @@ msgstr "Caps Lock er slået til"
 msgid "Capture from screen…"
 msgstr "Tag fra skærmen…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Skift beskyttelsen af boksens nøgle?"
+
 msgid "Change master password"
 msgstr "Skift hovedadgangskode"
 
@@ -319,6 +325,12 @@ msgstr "Tjek mine adgangskoder"
 
 msgid "Check now"
 msgstr "Tjek nu"
+
+msgid "Check the server every"
+msgstr "Tjek serveren hvert"
+
+msgid "Checking the drive…"
+msgstr "Kontrollerer drevet…"
 
 msgid "Choose a backup"
 msgstr "Vælg en sikkerhedskopi"
@@ -723,6 +735,9 @@ msgstr "Krypter drev"
 msgid "Encrypt KeePass export"
 msgstr "Krypter KeePass-eksport"
 
+msgid "Encrypt again"
+msgstr "Kryptér igen"
+
 msgid "Encrypted as"
 msgstr "Krypteret som"
 
@@ -748,6 +763,9 @@ msgid ""
 "Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
 msgstr ""
 "Kryptering sletter hele drevet. Oplåsning og låsning virker for LUKS-drev."
+
+msgid "Encrypting the vault again…"
+msgstr "Krypterer boksen igen…"
 
 msgid "Encrypting…"
 msgstr "Krypterer…"
@@ -793,11 +811,27 @@ msgid "Estimated strength"
 msgstr "Anslået styrke"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Alt i boksen krypteres igen med en nøgle, der udledes med omkostningerne "
+"ovenfor. Ældre versioner af Ashy Pass kan ikke åbne boksen med "
+"hovedadgangskoden. PIN-koden skal oprettes igen."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Alt i boksen krypteres igen med den nye adgangskode. Sikkerhedskopier lavet "
 "tidligere åbnes stadig med den adgangskode, de blev lavet med."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Alt i boksen krypteres igen med standardomkostningerne, som alle versioner "
+"af Ashy Pass 3 kan åbne. PIN-koden skal oprettes igen."
 
 msgid "Everything is in sync"
 msgstr "Alt i synkroni"
@@ -979,12 +1013,10 @@ msgstr "Skjul adgangskode"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Højere omkostninger gør gætteangreb langsommere, men også oplåsningen. "
-"Automatisk justering vælger værdier på omkring et halvt sekund på denne "
-"computer; de gælder næste gang hovedadgangskoden angives eller ændres."
+"Højere omkostninger bremser gætteangreb og gør også oplåsning langsommere. "
+"Autojustering vælger værdier på omkring et halvt sekund på denne computer."
 
 msgid "History cleared"
 msgstr "Historik ryddet"
@@ -1041,6 +1073,9 @@ msgstr[1] "Forkert PIN-kode. {} forsøg tilbage."
 msgid "Incorrect master password"
 msgstr "Forkert hovedadgangskode"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Forkert hovedadgangskode. Intet blev ændret."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Forkert hovedadgangskode. Intet blev eksporteret."
 
@@ -1062,6 +1097,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Intern fejl: ingen adgangssætning angivet"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Intern fejl: drevet blev ikke kontrolleret"
 
 msgid "It can be restored from Deleted items."
 msgstr "Det kan gendannes fra Slettede elementer."
@@ -1341,6 +1379,9 @@ msgstr ""
 "I denne version kan hverken sikkerhedsnøglen eller gendannelsessætningen "
 "ændres."
 
+msgid "No stable device link"
+msgstr "Intet stabilt enhedslink"
+
 msgid "No verification codes yet"
 msgstr "Ingen bekræftelseskoder endnu"
 
@@ -1370,6 +1411,9 @@ msgstr "Intet ændret — Ashy Pass og Nextcloud var allerede på linje."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Intet fjernes. Poster, der allerede er i boksen, springes over."
+
+msgid "Nothing was changed"
+msgstr "Intet blev ændret"
 
 msgid "Nothing was changed."
 msgstr "Intet blev ændret."
@@ -1856,6 +1900,10 @@ msgstr "Se mine adgangskoder"
 msgid "Select an access"
 msgstr "Vælg et login"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Sender ændringer kort efter hver redigering og tjekker serveren jævnligt"
+
 msgid "Sending local changes"
 msgstr "Sender lokale ændringer"
 
@@ -1975,6 +2023,13 @@ msgstr "Styrke"
 msgid "Strong"
 msgstr "Stærk"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Mere modstandsdygtig mod gæt på hovedadgangskoden. Så længe dette er slået "
+"til, kan ældre versioner af Ashy Pass ikke åbne boksen med hovedadgangskoden."
+
 msgid "Style"
 msgstr "Stil"
 
@@ -1983,6 +2038,9 @@ msgstr "Oversigt"
 
 msgid "Symbols (!@#$…)"
 msgstr "Symboler (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Synkronisér automatisk"
 
 msgid "Sync completed"
 msgstr "Synkronisering fuldført"
@@ -2004,6 +2062,9 @@ msgstr "Synkronisering mislykkedes"
 
 msgid "Sync now"
 msgstr "Synkroniser nu"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Synkronisér når boksen låses op"
 
 msgid "Synchronization"
 msgstr "Synkronisering"
@@ -2249,6 +2310,13 @@ msgstr "Dette sletter hele login: bekræftelseskode, adgangskode og noter."
 msgid "This device generation:"
 msgstr "Denne enheds generation:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Drevet har intet link i /dev/disk/by-id, så Ashy Pass kan ikke sikre sig, at "
+"det stadig er det samme drev, når det slettes. Det kan ikke krypteres her."
+
 msgid "This file can be read without a password"
 msgstr "Denne fil kan læses uden adgangskode"
 
@@ -2452,6 +2520,9 @@ msgstr "Brug knappen + for at oprette en."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Brug disse koder, når et websted beder om totrinsbekræftelse."
 
+msgid "Use these costs for the vault key"
+msgstr "Brug disse omkostninger til boksens nøgle"
+
 msgid "Use this password"
 msgstr "Brug denne adgangskode"
 
@@ -2502,6 +2573,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Vault allerede synkroniseret"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "Boksen er krypteret igen. Opret PIN-koden igen, hvis du brugte en."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Boksen blev låst efter en periode med inaktivitet"
@@ -2697,6 +2771,11 @@ msgstr "lav"
 
 msgid "medium"
 msgstr "middel"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minut"
+msgstr[1] "minutter"
 
 msgid "more"
 msgstr "mere"

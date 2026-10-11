@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: English\n"
@@ -230,6 +230,9 @@ msgstr "Attachments"
 msgid "Audit failed"
 msgstr "Audit failed"
 
+msgid "Authentication was cancelled"
+msgstr "Authentication was cancelled"
+
 msgid "Auto-tune"
 msgstr "Auto-tune"
 
@@ -305,6 +308,9 @@ msgstr "Caps Lock is on"
 msgid "Capture from screen…"
 msgstr "Capture from screen…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Change how the vault key is protected?"
+
 msgid "Change master password"
 msgstr "Change master password"
 
@@ -325,6 +331,12 @@ msgstr "Check my passwords"
 
 msgid "Check now"
 msgstr "Check now"
+
+msgid "Check the server every"
+msgstr "Check the server every"
+
+msgid "Checking the drive…"
+msgstr "Checking the drive…"
 
 msgid "Choose a backup"
 msgstr "Choose a backup"
@@ -733,6 +745,9 @@ msgstr "Encrypt Drive"
 msgid "Encrypt KeePass export"
 msgstr "Encrypt KeePass export"
 
+msgid "Encrypt again"
+msgstr "Encrypt again"
+
 msgid "Encrypted as"
 msgstr "Encrypted as"
 
@@ -757,6 +772,9 @@ msgid ""
 "Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
 msgstr ""
 "Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
+
+msgid "Encrypting the vault again…"
+msgstr "Encrypting the vault again…"
 
 msgid "Encrypting…"
 msgstr "Encrypting…"
@@ -801,11 +819,27 @@ msgid "Estimated strength"
 msgstr "Estimated strength"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
 
 msgid "Everything is in sync"
 msgstr "All in sync"
@@ -984,12 +1018,10 @@ msgstr "Hide password"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 
 msgid "History cleared"
 msgstr "History cleared"
@@ -1047,6 +1079,9 @@ msgstr[1] "Incorrect PIN. {} attempts left."
 msgid "Incorrect master password"
 msgstr "Incorrect master password"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Incorrect master password. Nothing was changed."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Incorrect master password. Nothing was exported."
 
@@ -1068,6 +1103,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Internal error: no passphrase set"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Internal error: the drive was not checked"
 
 msgid "It can be restored from Deleted items."
 msgstr "It can be restored from Deleted items."
@@ -1351,6 +1389,9 @@ msgid "No security key or recovery phrase changes can be made in this version."
 msgstr ""
 "No security key or recovery phrase changes can be made in this version."
 
+msgid "No stable device link"
+msgstr "No stable device link"
+
 msgid "No verification codes yet"
 msgstr "No verification codes yet"
 
@@ -1381,6 +1422,9 @@ msgstr "Nothing changed — Ashy Pass and Nextcloud were already aligned."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Nothing is removed. Entries already in the vault are skipped."
+
+msgid "Nothing was changed"
+msgstr "Nothing was changed"
 
 msgid "Nothing was changed."
 msgstr "Nothing was changed."
@@ -1884,6 +1928,9 @@ msgstr "See my passwords"
 msgid "Select an access"
 msgstr "Select an access"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr "Send changes shortly after each edit and check the server regularly"
+
 msgid "Sending local changes"
 msgstr "Sending local changes"
 
@@ -2013,6 +2060,13 @@ msgstr "Strength"
 msgid "Strong"
 msgstr "Strong"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+
 msgid "Style"
 msgstr "Style"
 
@@ -2021,6 +2075,9 @@ msgstr "Summary"
 
 msgid "Symbols (!@#$…)"
 msgstr "Symbols (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Sync automatically"
 
 msgid "Sync completed"
 msgstr "Sync completed"
@@ -2042,6 +2099,9 @@ msgstr "Sync failed"
 
 msgid "Sync now"
 msgstr "Sync now"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Sync when the vault is unlocked"
 
 msgid "Synchronization"
 msgstr "Synchronization"
@@ -2284,6 +2344,13 @@ msgstr "This deletes the whole access: verification code, password and notes."
 msgid "This device generation:"
 msgstr "This device generation:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+
 msgid "This file can be read without a password"
 msgstr "This file can be read without a password"
 
@@ -2489,6 +2556,9 @@ msgstr "Use the + button to create one."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Use these codes when a site asks for two-step verification."
 
+msgid "Use these costs for the vault key"
+msgstr "Use these costs for the vault key"
+
 msgid "Use this password"
 msgstr "Use this password"
 
@@ -2543,6 +2613,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Vault already in sync"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "Vault encrypted again. Set up the PIN again if you used one."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Vault locked after a period of inactivity"
@@ -2740,6 +2813,11 @@ msgstr "low"
 
 msgid "medium"
 msgstr "medium"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minute"
+msgstr[1] "minutes"
 
 msgid "more"
 msgstr "more"

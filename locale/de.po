@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:22\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: German <de@li.org>\n"
@@ -232,6 +232,9 @@ msgstr "Anhänge"
 msgid "Audit failed"
 msgstr "Prüfung fehlgeschlagen"
 
+msgid "Authentication was cancelled"
+msgstr "Die Authentifizierung wurde abgebrochen"
+
 msgid "Auto-tune"
 msgstr "Automatische Abstimmung"
 
@@ -304,6 +307,9 @@ msgstr "Caps Lock ist aktiviert"
 msgid "Capture from screen…"
 msgstr "Vom Bildschirm aufnehmen…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Schutz des Tresorschlüssels ändern?"
+
 msgid "Change master password"
 msgstr "Master-Passwort ändern"
 
@@ -324,6 +330,12 @@ msgstr "Meine Passwörter prüfen"
 
 msgid "Check now"
 msgstr "Jetzt prüfen"
+
+msgid "Check the server every"
+msgstr "Server prüfen alle"
+
+msgid "Checking the drive…"
+msgstr "Laufwerk wird geprüft …"
 
 msgid "Choose a backup"
 msgstr "Backup auswählen"
@@ -732,6 +744,9 @@ msgstr "Laufwerk verschlüsseln"
 msgid "Encrypt KeePass export"
 msgstr "KeePass-Export verschlüsseln"
 
+msgid "Encrypt again"
+msgstr "Neu verschlüsseln"
+
 msgid "Encrypted as"
 msgstr "Verschlüsselt als"
 
@@ -760,6 +775,9 @@ msgid ""
 msgstr ""
 "Verschlüsseln löscht das gesamte Laufwerk. Entsperren und Sperren "
 "funktionieren bei LUKS-Laufwerken."
+
+msgid "Encrypting the vault again…"
+msgstr "Tresor wird neu verschlüsselt …"
 
 msgid "Encrypting…"
 msgstr "Verschlüssele…"
@@ -807,12 +825,29 @@ msgid "Estimated strength"
 msgstr "Geschätzte Stärke"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Der gesamte Tresor wird mit einem Schlüssel neu verschlüsselt, der mit den "
+"obigen Kosten abgeleitet wird. Ältere Versionen von Ashy Pass öffnen den "
+"Tresor dann nicht mehr mit dem Master-Passwort. Die PIN muss neu "
+"eingerichtet werden."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Alles im Tresor wird mit dem neuen Passwort neu verschlüsselt. Frühere "
 "Backups lassen sich weiterhin mit dem Passwort öffnen, mit dem sie erstellt "
 "wurden."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Der gesamte Tresor wird mit den Standardkosten neu verschlüsselt, die jede "
+"Version von Ashy Pass 3 öffnet. Die PIN muss neu eingerichtet werden."
 
 msgid "Everything is in sync"
 msgstr "Alles synchron"
@@ -994,13 +1029,11 @@ msgstr "Passwort verbergen"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Höhere Kosten verlangsamen Rateangriffe, aber auch das Entsperren. Die "
-"automatische Abstimmung wählt Werte für etwa eine halbe Sekunde auf diesem "
-"Computer; sie gelten, wenn das Master-Passwort das nächste Mal festgelegt "
-"oder geändert wird."
+"Höhere Kosten bremsen Rateangriffe, verlangsamen aber auch das Entsperren. "
+"Die automatische Abstimmung wählt Werte für etwa eine halbe Sekunde auf "
+"diesem Computer."
 
 msgid "History cleared"
 msgstr "Verlauf gelöscht"
@@ -1057,6 +1090,9 @@ msgstr[1] "Falsche PIN. Noch {} Versuche."
 msgid "Incorrect master password"
 msgstr "Falsches Master-Passwort"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Falsches Master-Passwort. Es wurde nichts geändert."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Falsches Master-Passwort. Es wurde nichts exportiert."
 
@@ -1078,6 +1114,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Interner Fehler: keine Passphrase festgelegt"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Interner Fehler: Das Laufwerk wurde nicht geprüft"
 
 msgid "It can be restored from Deleted items."
 msgstr "Er kann aus Gelöschte Einträge wiederhergestellt werden."
@@ -1363,6 +1402,9 @@ msgstr ""
 "In dieser Version sind keine Änderungen an Sicherheitsschlüsseln oder "
 "Wiederherstellungsphrasen möglich."
 
+msgid "No stable device link"
+msgstr "Kein stabiler Geräteverweis"
+
 msgid "No verification codes yet"
 msgstr "Noch keine Bestätigungscodes"
 
@@ -1396,6 +1438,9 @@ msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr ""
 "Es wird nichts entfernt. Bereits im Tresor vorhandene Einträge werden "
 "übersprungen."
+
+msgid "Nothing was changed"
+msgstr "Es wurde nichts geändert"
 
 msgid "Nothing was changed."
 msgstr "Es wurde nichts geändert."
@@ -1898,6 +1943,10 @@ msgstr "Meine Passwörter anzeigen"
 msgid "Select an access"
 msgstr "Wählen Sie einen Eintrag"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Sendet Änderungen kurz nach jeder Bearbeitung und prüft den Server regelmäßig"
+
 msgid "Sending local changes"
 msgstr "Lokale Änderungen werden gesendet"
 
@@ -2019,6 +2068,14 @@ msgstr "Stärke"
 msgid "Strong"
 msgstr "Stark"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Widerstandsfähiger gegen das Erraten des Master-Passworts. Solange dies "
+"aktiv ist, können ältere Versionen von Ashy Pass den Tresor nicht mit dem "
+"Master-Passwort öffnen."
+
 msgid "Style"
 msgstr "Stil"
 
@@ -2027,6 +2084,9 @@ msgstr "Zusammenfassung"
 
 msgid "Symbols (!@#$…)"
 msgstr "Sonderzeichen (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Automatisch synchronisieren"
 
 msgid "Sync completed"
 msgstr "Synchronisierung abgeschlossen"
@@ -2048,6 +2108,9 @@ msgstr "Synchronisierung fehlgeschlagen"
 
 msgid "Sync now"
 msgstr "Jetzt synchronisieren"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Beim Entsperren des Tresors synchronisieren"
 
 msgid "Synchronization"
 msgstr "Synchronisierung"
@@ -2318,6 +2381,14 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Gerätegeneration:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Dieses Laufwerk hat keinen Verweis unter /dev/disk/by-id, daher kann Ashy "
+"Pass beim Löschen nicht sicherstellen, dass es noch dasselbe Laufwerk ist. "
+"Es kann hier nicht verschlüsselt werden."
+
 msgid "This file can be read without a password"
 msgstr "Diese Datei kann ohne Passwort gelesen werden"
 
@@ -2531,6 +2602,9 @@ msgstr ""
 "Verwenden Sie diese Codes, wenn eine Website nach der Zwei-Faktor-"
 "Bestätigung fragt."
 
+msgid "Use these costs for the vault key"
+msgstr "Diese Kosten für den Tresorschlüssel verwenden"
+
 msgid "Use this password"
 msgstr "Dieses Passwort verwenden"
 
@@ -2581,6 +2655,11 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Tresor bereits synchronisiert"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Tresor neu verschlüsselt. Richten Sie die PIN neu ein, falls Sie eine "
+"verwendet haben."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Tresor nach einer Zeit der Inaktivität gesperrt"
@@ -2780,6 +2859,11 @@ msgstr "niedrig"
 
 msgid "medium"
 msgstr "mittel"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "Minute"
+msgstr[1] "Minuten"
 
 msgid "more"
 msgstr "weitere"

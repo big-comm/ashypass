@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -232,6 +232,9 @@ msgstr "Mellékletek"
 msgid "Audit failed"
 msgstr "Ellenőrzés sikertelen"
 
+msgid "Authentication was cancelled"
+msgstr "A hitelesítés megszakadt"
+
 msgid "Auto-tune"
 msgstr "Automatikus hangolás"
 
@@ -304,6 +307,9 @@ msgstr "A Caps Lock be van kapcsolva"
 msgid "Capture from screen…"
 msgstr "Rögzítés a képernyőről…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Módosítja a széfkulcs védelmét?"
+
 msgid "Change master password"
 msgstr "Fő jelszó módosítása"
 
@@ -324,6 +330,12 @@ msgstr "Jelszavaim ellenőrzése"
 
 msgid "Check now"
 msgstr "Ellenőrzés most"
+
+msgid "Check the server every"
+msgstr "Kiszolgáló ellenőrzése"
+
+msgid "Checking the drive…"
+msgstr "A meghajtó ellenőrzése…"
 
 msgid "Choose a backup"
 msgstr "Mentés kiválasztása"
@@ -731,6 +743,9 @@ msgstr "Meghajtó titkosítása"
 msgid "Encrypt KeePass export"
 msgstr "KeePass exportálás titkosítása"
 
+msgid "Encrypt again"
+msgstr "Újratitkosítás"
+
 msgid "Encrypted as"
 msgstr "Titkosítva mint"
 
@@ -759,6 +774,9 @@ msgid ""
 msgstr ""
 "A titkosítás a teljes meghajtót törli. A feloldás és zárolás LUKS "
 "meghajtókon működik."
+
+msgid "Encrypting the vault again…"
+msgstr "A széf újratitkosítása…"
 
 msgid "Encrypting…"
 msgstr "Titkosítás folyamatban…"
@@ -803,11 +821,28 @@ msgid "Estimated strength"
 msgstr "Becsült erősség"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"A széf teljes tartalma újra titkosításra kerül egy, a fenti költségekkel "
+"származtatott kulccsal. Az Ashy Pass régebbi verziói nem nyitják meg a "
+"széfet a mesterjelszóval. A PIN-kódot újra be kell állítani."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "A tárban minden újra titkosításra kerül az új jelszóval. A korábban készült "
 "mentések továbbra is azzal a jelszóval nyílnak meg, amellyel készültek."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"A széf teljes tartalma újra titkosításra kerül a szabványos költségekkel, "
+"amelyeket az Ashy Pass 3 minden verziója megnyit. A PIN-kódot újra be kell "
+"állítani."
 
 msgid "Everything is in sync"
 msgstr "Minden szinkronban van"
@@ -990,13 +1025,11 @@ msgstr "Jelszó elrejtése"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"A magasabb költség lassítja a találgatásos támadásokat, de a feloldást is. "
-"Az automatikus hangolás kb. fél másodperces értékeket választ ezen a "
-"számítógépen; ezek a fő jelszó következő beállításakor vagy módosításakor "
-"lépnek életbe."
+"A nagyobb költségek lassítják a találgatásos támadásokat, de a feloldást is. "
+"Az automatikus hangolás nagyjából fél másodperces értékeket választ ezen a "
+"számítógépen."
 
 msgid "History cleared"
 msgstr "Előzmények törölve"
@@ -1053,6 +1086,9 @@ msgstr[1] "Hibás PIN. Még {} próbálkozás maradt."
 msgid "Incorrect master password"
 msgstr "Helytelen fő jelszó"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Hibás mesterjelszó. Semmi sem változott."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Hibás fő jelszó. Semmi sem lett exportálva."
 
@@ -1074,6 +1110,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Belső hiba: nincs beállítva jelszó"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Belső hiba: a meghajtó nem lett ellenőrizve"
 
 msgid "It can be restored from Deleted items."
 msgstr "Visszaállítható a Törölt elemek közül."
@@ -1353,6 +1392,9 @@ msgstr ""
 "Ebben a verzióban a biztonsági kulcsok és a biztonsági mentési kifejezések "
 "nem módosíthatók."
 
+msgid "No stable device link"
+msgstr "Nincs állandó eszközhivatkozás"
+
 msgid "No verification codes yet"
 msgstr "Még nincsenek ellenőrző kódok"
 
@@ -1383,6 +1425,9 @@ msgstr ""
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Semmi sem törlődik. A tárban már meglévő bejegyzések kimaradnak."
+
+msgid "Nothing was changed"
+msgstr "Semmi sem változott"
 
 msgid "Nothing was changed."
 msgstr "Semmi sem változott."
@@ -1878,6 +1923,11 @@ msgstr "Jelszavaim megtekintése"
 msgid "Select an access"
 msgstr "Válasszon egy bejegyzést"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"A módosításokat röviddel minden szerkesztés után elküldi, és rendszeresen "
+"ellenőrzi a kiszolgálót"
+
 msgid "Sending local changes"
 msgstr "Helyi módosítások küldése"
 
@@ -1998,6 +2048,13 @@ msgstr "Erősség"
 msgid "Strong"
 msgstr "Erős"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Erősebb a mesterjelszó kitalálásával szemben. Amíg be van kapcsolva, az Ashy "
+"Pass régebbi verziói nem tudják megnyitni a széfet a mesterjelszóval."
+
 msgid "Style"
 msgstr "Stílus"
 
@@ -2006,6 +2063,9 @@ msgstr "Összegzés"
 
 msgid "Symbols (!@#$…)"
 msgstr "Speciális karakterek (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Automatikus szinkronizálás"
 
 msgid "Sync completed"
 msgstr "Szinkronizálás befejeződött"
@@ -2027,6 +2087,9 @@ msgstr "Szinkronizálás sikertelen"
 
 msgid "Sync now"
 msgstr "Szinkronizálás most"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Szinkronizálás a széf feloldásakor"
 
 msgid "Synchronization"
 msgstr "Szinkronizálás"
@@ -2272,6 +2335,14 @@ msgstr "Ez a teljes bejegyzést törli: ellenőrző kódot, jelszót és jegyzet
 msgid "This device generation:"
 msgstr "Eszköz generációja:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Ennek a meghajtónak nincs hivatkozása a /dev/disk/by-id alatt, így az Ashy "
+"Pass nem tudja biztosítani, hogy törléskor is ugyanaz a meghajtó legyen. Itt "
+"nem titkosítható."
+
 msgid "This file can be read without a password"
 msgstr "Ez a fájl jelszó nélkül olvasható"
 
@@ -2475,6 +2546,9 @@ msgstr "Létrehozáshoz használja a + gombot."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Ezeket a kódokat használja, ha egy webhely kétlépcsős azonosítást kér."
 
+msgid "Use these costs for the vault key"
+msgstr "Ezen költségek használata a széfkulcshoz"
+
 msgid "Use this password"
 msgstr "Ennek a jelszónak a használata"
 
@@ -2525,6 +2599,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "A tár már szinkronizálva van"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "A széf újra titkosítva. Ha használt PIN-kódot, állítsa be újra."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "A tár zárolva egy inaktív időszak után"
@@ -2720,6 +2797,11 @@ msgstr "alacsony"
 
 msgid "medium"
 msgstr "közepes"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "percenként"
+msgstr[1] "percenként"
 
 msgid "more"
 msgstr "további"

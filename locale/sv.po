@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:46\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -227,6 +227,9 @@ msgstr "Bilagor"
 msgid "Audit failed"
 msgstr "Granskning misslyckades"
 
+msgid "Authentication was cancelled"
+msgstr "Autentiseringen avbröts"
+
 msgid "Auto-tune"
 msgstr "Autojustering"
 
@@ -299,6 +302,9 @@ msgstr "Caps Lock är på"
 msgid "Capture from screen…"
 msgstr "Fånga från skärmen…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Ändra skyddet av valvnyckeln?"
+
 msgid "Change master password"
 msgstr "Byt huvudlösenord"
 
@@ -319,6 +325,12 @@ msgstr "Kontrollera mina lösenord"
 
 msgid "Check now"
 msgstr "Kontrollera nu"
+
+msgid "Check the server every"
+msgstr "Kontrollera servern var"
+
+msgid "Checking the drive…"
+msgstr "Kontrollerar enheten…"
 
 msgid "Choose a backup"
 msgstr "Välj en säkerhetskopia"
@@ -723,6 +735,9 @@ msgstr "Kryptera enhet"
 msgid "Encrypt KeePass export"
 msgstr "Kryptera KeePass-export"
 
+msgid "Encrypt again"
+msgstr "Kryptera igen"
+
 msgid "Encrypted as"
 msgstr "Krypterad som"
 
@@ -749,6 +764,9 @@ msgid ""
 msgstr ""
 "Kryptering raderar hela enheten. Upplåsning och låsning fungerar för LUKS-"
 "enheter."
+
+msgid "Encrypting the vault again…"
+msgstr "Krypterar valvet igen…"
 
 msgid "Encrypting…"
 msgstr "Krypterar…"
@@ -793,11 +811,27 @@ msgid "Estimated strength"
 msgstr "Uppskattad styrka"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Allt i valvet krypteras igen med en nyckel som härleds med kostnaderna ovan. "
+"Äldre versioner av Ashy Pass kan inte öppna valvet med huvudlösenordet. PIN-"
+"koden måste ställas in igen."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Allt i valvet krypteras om med det nya lösenordet. Säkerhetskopior som "
 "gjorts tidigare öppnas fortfarande med lösenordet de skapades med."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Allt i valvet krypteras igen med standardkostnaderna, som alla versioner av "
+"Ashy Pass 3 kan öppna. PIN-koden måste ställas in igen."
 
 msgid "Everything is in sync"
 msgstr "Allt i synk"
@@ -979,12 +1013,11 @@ msgstr "Dölj lösenord"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Högre kostnader gör gissningsattacker långsammare men också upplåsningen. "
-"Automatisk justering väljer värden för ungefär en halv sekund på den här "
-"datorn; de gäller nästa gång huvudlösenordet anges eller byts."
+"Högre kostnader bromsar gissningsattacker och gör även upplåsningen "
+"långsammare. Autojustering väljer värden på ungefär en halv sekund på den "
+"här datorn."
 
 msgid "History cleared"
 msgstr "Historik rensad"
@@ -1041,6 +1074,9 @@ msgstr[1] "Fel PIN-kod. {} försök kvar."
 msgid "Incorrect master password"
 msgstr "Felaktigt huvudlösenord"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Fel huvudlösenord. Inget ändrades."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Fel huvudlösenord. Inget exporterades."
 
@@ -1062,6 +1098,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Internt fel: ingen lösenfras angiven"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Internt fel: enheten kontrollerades inte"
 
 msgid "It can be restored from Deleted items."
 msgstr "Den kan återställas från Borttagna objekt."
@@ -1340,6 +1379,9 @@ msgstr ""
 "I den här versionen går det inte att ändra säkerhetsnycklar eller "
 "säkerhetsfraser."
 
+msgid "No stable device link"
+msgstr "Ingen stabil enhetslänk"
+
 msgid "No verification codes yet"
 msgstr "Inga verifieringskoder än"
 
@@ -1369,6 +1411,9 @@ msgstr "Ingenting ändrades — Ashy Pass och Nextcloud var redan i linje."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Inget tas bort. Poster som redan finns i valvet hoppas över."
+
+msgid "Nothing was changed"
+msgstr "Inget ändrades"
 
 msgid "Nothing was changed."
 msgstr "Inget har ändrats."
@@ -1852,6 +1897,11 @@ msgstr "Visa mina lösenord"
 msgid "Select an access"
 msgstr "Välj en inloggning"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Skickar ändringar strax efter varje redigering och kontrollerar servern "
+"regelbundet"
+
 msgid "Sending local changes"
 msgstr "Skickar lokala ändringar"
 
@@ -1971,6 +2021,13 @@ msgstr "Styrka"
 msgid "Strong"
 msgstr "Starkt"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Bättre skydd mot gissning av huvudlösenordet. Så länge detta är på kan äldre "
+"versioner av Ashy Pass inte öppna valvet med huvudlösenordet."
+
 msgid "Style"
 msgstr "Stil"
 
@@ -1979,6 +2036,9 @@ msgstr "Sammanfattning"
 
 msgid "Symbols (!@#$…)"
 msgstr "Symboler (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Synkronisera automatiskt"
 
 msgid "Sync completed"
 msgstr "Synkronisering slutförd"
@@ -2000,6 +2060,9 @@ msgstr "Synkronisering misslyckades"
 
 msgid "Sync now"
 msgstr "Synkronisera nu"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Synkronisera när valvet låses upp"
 
 msgid "Synchronization"
 msgstr "Synkronisering"
@@ -2244,6 +2307,14 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Denna enhets generation:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Enheten har ingen länk i /dev/disk/by-id, så Ashy Pass kan inte säkerställa "
+"att det fortfarande är samma enhet när den raderas. Den kan inte krypteras "
+"här."
+
 msgid "This file can be read without a password"
 msgstr "Den här filen kan läsas utan lösenord"
 
@@ -2448,6 +2519,9 @@ msgstr "Använd knappen + för att skapa en."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Använd dessa koder när en webbplats ber om tvåstegsverifiering."
 
+msgid "Use these costs for the vault key"
+msgstr "Använd dessa kostnader för valvnyckeln"
+
 msgid "Use this password"
 msgstr "Använd detta lösenord"
 
@@ -2498,6 +2572,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Vault är redan synkroniserat"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "Valvet har krypterats igen. Ställ in PIN-koden igen om du använde en."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Valvet låstes efter en tids inaktivitet"
@@ -2692,6 +2769,11 @@ msgstr "låg"
 
 msgid "medium"
 msgstr "medel"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minut"
+msgstr[1] "minuter"
 
 msgid "more"
 msgstr "till"

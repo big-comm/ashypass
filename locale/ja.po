@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -228,6 +228,9 @@ msgstr "添付ファイル"
 msgid "Audit failed"
 msgstr "監査に失敗しました"
 
+msgid "Authentication was cancelled"
+msgstr "認証がキャンセルされました"
+
 msgid "Auto-tune"
 msgstr "自動調整"
 
@@ -300,6 +303,9 @@ msgstr "Caps Lock がオンです"
 msgid "Capture from screen…"
 msgstr "画面からキャプチャ…"
 
+msgid "Change how the vault key is protected?"
+msgstr "保管庫の鍵の保護方法を変更しますか？"
+
 msgid "Change master password"
 msgstr "マスターパスワードを変更"
 
@@ -320,6 +326,12 @@ msgstr "パスワードをチェック"
 
 msgid "Check now"
 msgstr "今すぐ確認"
+
+msgid "Check the server every"
+msgstr "サーバーの確認間隔"
+
+msgid "Checking the drive…"
+msgstr "ドライブを確認しています…"
 
 msgid "Choose a backup"
 msgstr "バックアップを選択"
@@ -725,6 +737,9 @@ msgstr "ドライブを暗号化"
 msgid "Encrypt KeePass export"
 msgstr "KeePassエクスポートを暗号化"
 
+msgid "Encrypt again"
+msgstr "再暗号化"
+
 msgid "Encrypted as"
 msgstr "暗号化形式"
 
@@ -753,6 +768,9 @@ msgid ""
 msgstr ""
 "暗号化するとドライブ全体が消去されます。ロック解除とロックは LUKS ドライブで"
 "使えます。"
+
+msgid "Encrypting the vault again…"
+msgstr "保管庫を再暗号化しています…"
 
 msgid "Encrypting…"
 msgstr "暗号化中…"
@@ -798,11 +816,27 @@ msgid "Estimated strength"
 msgstr "推定強度"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"保管庫のすべてが、上記のコストで導出した鍵で再暗号化されます。古いバージョン"
+"の Ashy Pass ではマスターパスワードで保管庫を開けなくなります。PIN は設定し直"
+"す必要があります。"
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "ボールト内のすべてが新しいパスワードで再暗号化されます。以前に作成したバック"
 "アップは、作成時のパスワードで引き続き開けます。"
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"保管庫のすべてが、Ashy Pass 3 のどのバージョンでも開ける標準コストで再暗号化"
+"されます。PIN は設定し直す必要があります。"
 
 msgid "Everything is in sync"
 msgstr "すべて同期済み"
@@ -982,12 +1016,10 @@ msgstr "パスワードを隠す"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
 "コストを高くすると推測攻撃を遅らせますが、ロック解除も遅くなります。自動調整"
-"では、このコンピューターで約 0.5 秒かかる値を選びます。値は次にマスターパス"
-"ワードを設定または変更したときに適用されます。"
+"はこのコンピューターで約 0.5 秒になる値を選びます。"
 
 msgid "History cleared"
 msgstr "履歴を消去しました"
@@ -1043,6 +1075,9 @@ msgstr[0] "PIN が正しくありません。残り {} 回です。"
 msgid "Incorrect master password"
 msgstr "マスターパスワードが間違っています"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "マスターパスワードが違います。何も変更されていません。"
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "マスターパスワードが正しくありません。何もエクスポートされていません。"
 
@@ -1063,6 +1098,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "内部エラー：パスフレーズが設定されていません"
+
+msgid "Internal error: the drive was not checked"
+msgstr "内部エラー: ドライブが確認されていません"
 
 msgid "It can be restored from Deleted items."
 msgstr "削除済みアイテムから復元できます。"
@@ -1340,6 +1378,9 @@ msgstr "以前のパスワードはありません"
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr "このバージョンでは、セキュリティキーや復旧フレーズを変更できません。"
 
+msgid "No stable device link"
+msgstr "安定したデバイスリンクがありません"
+
 msgid "No verification codes yet"
 msgstr "確認コードはまだありません"
 
@@ -1369,6 +1410,9 @@ msgstr "変更はありません — Ashy Pass と Nextcloud は既に同期さ�
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "何も削除されません。すでにボールトにあるエントリはスキップされます。"
+
+msgid "Nothing was changed"
+msgstr "何も変更されていません"
 
 msgid "Nothing was changed."
 msgstr "何も変更されていません。"
@@ -1855,6 +1899,9 @@ msgstr "マイパスワードを見る"
 msgid "Select an access"
 msgstr "エントリを選択してください"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr "編集のたびにすぐ変更を送信し、定期的にサーバーを確認します"
+
 msgid "Sending local changes"
 msgstr "ローカルの変更を送信中"
 
@@ -1976,6 +2023,13 @@ msgstr "強度"
 msgid "Strong"
 msgstr "強い"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"マスターパスワードの推測に対して強くなります。オンの間、古いバージョンの "
+"Ashy Pass ではマスターパスワードで保管庫を開けません。"
+
 msgid "Style"
 msgstr "スタイル"
 
@@ -1984,6 +2038,9 @@ msgstr "概要"
 
 msgid "Symbols (!@#$…)"
 msgstr "記号 (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "自動的に同期"
 
 msgid "Sync completed"
 msgstr "同期が完了しました"
@@ -2005,6 +2062,9 @@ msgstr "同期に失敗しました"
 
 msgid "Sync now"
 msgstr "今すぐ同期"
+
+msgid "Sync when the vault is unlocked"
+msgstr "保管庫のロック解除時に同期"
 
 msgid "Synchronization"
 msgstr "同期"
@@ -2250,6 +2310,13 @@ msgstr "エントリ全体 (確認コード、パスワード、メモ) を削�
 msgid "This device generation:"
 msgstr "このデバイスの世代:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"このドライブには /dev/disk/by-id のリンクがないため、Ashy Pass は消去時に同じ"
+"ドライブであることを確認できません。ここでは暗号化できません。"
+
 msgid "This file can be read without a password"
 msgstr "このファイルはパスワードなしで読めます"
 
@@ -2456,6 +2523,9 @@ msgstr "+ ボタンで作成できます。"
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "サイトで 2 段階認証を求められたら、これらのコードを使ってください。"
 
+msgid "Use these costs for the vault key"
+msgstr "このコストを保管庫の鍵に使用"
+
 msgid "Use this password"
 msgstr "このパスワードを使用"
 
@@ -2505,6 +2575,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "ボールトは既に同期されています"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "保管庫を再暗号化しました。PIN を使っていた場合は設定し直してください。"
 
 msgid "Vault locked after a period of inactivity"
 msgstr "一定時間操作がなかったため、ボールトをロックしました"
@@ -2699,6 +2772,10 @@ msgstr "低"
 
 msgid "medium"
 msgstr "中"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "分"
 
 msgid "more"
 msgstr "件追加"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:37\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -221,6 +221,9 @@ msgstr "첨부 파일"
 msgid "Audit failed"
 msgstr "감사 실패"
 
+msgid "Authentication was cancelled"
+msgstr "인증이 취소되었습니다"
+
 msgid "Auto-tune"
 msgstr "자동 조정"
 
@@ -293,6 +296,9 @@ msgstr "Caps Lock이 켜져 있습니다"
 msgid "Capture from screen…"
 msgstr "화면에서 캡처…"
 
+msgid "Change how the vault key is protected?"
+msgstr "보관함 키 보호 방식을 변경할까요?"
+
 msgid "Change master password"
 msgstr "마스터 비밀번호 변경"
 
@@ -313,6 +319,12 @@ msgstr "내 비밀번호 점검"
 
 msgid "Check now"
 msgstr "지금 확인"
+
+msgid "Check the server every"
+msgstr "서버 확인 간격"
+
+msgid "Checking the drive…"
+msgstr "드라이브 확인 중…"
 
 msgid "Choose a backup"
 msgstr "백업 선택"
@@ -715,6 +727,9 @@ msgstr "드라이브 암호화"
 msgid "Encrypt KeePass export"
 msgstr "KeePass 내보내기 암호화"
 
+msgid "Encrypt again"
+msgstr "다시 암호화"
+
 msgid "Encrypted as"
 msgstr "암호화됨:"
 
@@ -740,6 +755,9 @@ msgid ""
 msgstr ""
 "암호화하면 드라이브 전체가 지워집니다. 잠금 해제와 잠금은 LUKS 드라이브에서 "
 "작동합니다."
+
+msgid "Encrypting the vault again…"
+msgstr "보관함을 다시 암호화하는 중…"
 
 msgid "Encrypting…"
 msgstr "암호화 중…"
@@ -784,11 +802,27 @@ msgid "Estimated strength"
 msgstr "예상 강도"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"보관함의 모든 내용이 위의 비용으로 파생한 키로 다시 암호화됩니다. 이전 버전"
+"의 Ashy Pass는 마스터 비밀번호로 보관함을 열 수 없습니다. PIN을 다시 설정해"
+"야 합니다."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "보관함의 모든 내용이 새 비밀번호로 다시 암호화됩니다. 이전에 만든 백업은 만"
 "들 당시의 비밀번호로 계속 열립니다."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"보관함의 모든 내용이 모든 Ashy Pass 3 버전이 열 수 있는 표준 비용으로 다시 암"
+"호화됩니다. PIN을 다시 설정해야 합니다."
 
 msgid "Everything is in sync"
 msgstr "모두 일치합니다"
@@ -965,12 +999,10 @@ msgstr "비밀번호 숨기기"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
 "비용이 높을수록 추측 공격이 느려지지만 잠금 해제도 느려집니다. 자동 조정은 "
-"이 컴퓨터에서 약 0.5초가 걸리는 값을 고릅니다. 이 값은 다음에 마스터 비밀번호"
-"를 설정하거나 변경할 때 적용됩니다."
+"이 컴퓨터에서 약 0.5초가 걸리는 값을 고릅니다."
 
 msgid "History cleared"
 msgstr "기록이 지워졌습니다"
@@ -1026,6 +1058,9 @@ msgstr[0] "PIN이 올바르지 않습니다. {}번 남았습니다."
 msgid "Incorrect master password"
 msgstr "마스터 비밀번호가 올바르지 않습니다"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "마스터 비밀번호가 올바르지 않습니다. 변경된 내용이 없습니다."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "마스터 비밀번호가 올바르지 않습니다. 아무것도 내보내지 않았습니다."
 
@@ -1046,6 +1081,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "내부 오류: 암호가 설정되지 않음"
+
+msgid "Internal error: the drive was not checked"
+msgstr "내부 오류: 드라이브를 확인하지 않았습니다"
 
 msgid "It can be restored from Deleted items."
 msgstr "삭제된 항목에서 복원할 수 있습니다."
@@ -1318,6 +1356,9 @@ msgstr "이전 비밀번호 없음"
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr "이 버전에서는 보안 키 또는 복구 문구를 변경할 수 없습니다."
 
+msgid "No stable device link"
+msgstr "안정적인 장치 링크가 없음"
+
 msgid "No verification codes yet"
 msgstr "아직 인증 코드가 없습니다"
 
@@ -1347,6 +1388,9 @@ msgstr "변경 사항이 없습니다 — Ashy Pass와 Nextcloud가 이미 일�
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "아무것도 제거되지 않습니다. 이미 보관함에 있는 항목은 건너뜁니다."
+
+msgid "Nothing was changed"
+msgstr "변경된 내용이 없습니다"
 
 msgid "Nothing was changed."
 msgstr "변경된 내용이 없습니다."
@@ -1826,6 +1870,9 @@ msgstr "내 비밀번호 보기"
 msgid "Select an access"
 msgstr "항목을 선택하세요"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr "편집할 때마다 곧바로 변경 사항을 보내고 서버를 정기적으로 확인합니다"
+
 msgid "Sending local changes"
 msgstr "로컬 변경사항 전송 중"
 
@@ -1944,6 +1991,13 @@ msgstr "보안 강도"
 msgid "Strong"
 msgstr "강함"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"마스터 비밀번호 추측에 더 강합니다. 이 옵션이 켜져 있는 동안 이전 버전의 "
+"Ashy Pass는 마스터 비밀번호로 보관함을 열 수 없습니다."
+
 msgid "Style"
 msgstr "스타일"
 
@@ -1952,6 +2006,9 @@ msgstr "요약"
 
 msgid "Symbols (!@#$…)"
 msgstr "특수문자 (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "자동으로 동기화"
 
 msgid "Sync completed"
 msgstr "동기화 완료"
@@ -1973,6 +2030,9 @@ msgstr "동기화 실패"
 
 msgid "Sync now"
 msgstr "지금 동기화"
+
+msgid "Sync when the vault is unlocked"
+msgstr "보관함 잠금 해제 시 동기화"
 
 msgid "Synchronization"
 msgstr "동기화"
@@ -2207,6 +2267,13 @@ msgstr "항목 전체가 삭제됩니다: 인증 코드, 비밀번호, 메모."
 msgid "This device generation:"
 msgstr "이 기기 세대:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"이 드라이브에는 /dev/disk/by-id 링크가 없어서 Ashy Pass가 지울 때 같은 드라이"
+"브인지 확인할 수 없습니다. 여기서는 암호화할 수 없습니다."
+
 msgid "This file can be read without a password"
 msgstr "이 파일은 비밀번호 없이 읽을 수 있습니다"
 
@@ -2409,6 +2476,9 @@ msgstr "+ 버튼을 눌러 만드세요."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "사이트에서 2단계 인증을 요청할 때 이 코드를 사용하세요."
 
+msgid "Use these costs for the vault key"
+msgstr "이 비용을 보관함 키에 사용"
+
 msgid "Use this password"
 msgstr "이 비밀번호 사용"
 
@@ -2457,6 +2527,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "보관함이 이미 동기화됨"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "보관함을 다시 암호화했습니다. PIN을 사용했다면 다시 설정하세요."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "일정 시간 사용하지 않아 보관함이 잠겼습니다"
@@ -2649,6 +2722,10 @@ msgstr "낮음"
 
 msgid "medium"
 msgstr "보통"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "분"
 
 msgid "more"
 msgstr "더 있음"

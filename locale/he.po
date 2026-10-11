@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -216,6 +216,9 @@ msgstr "קבצים מצורפים"
 msgid "Audit failed"
 msgstr "הביקורת נכשלה"
 
+msgid "Authentication was cancelled"
+msgstr "האימות בוטל"
+
 msgid "Auto-tune"
 msgstr "כוונון אוטומטי"
 
@@ -288,6 +291,9 @@ msgstr "Caps Lock פעיל"
 msgid "Capture from screen…"
 msgstr "צילום מהמסך…"
 
+msgid "Change how the vault key is protected?"
+msgstr "לשנות את הגנת מפתח הכספת?"
+
 msgid "Change master password"
 msgstr "שינוי סיסמת האב"
 
@@ -308,6 +314,12 @@ msgstr "בדיקת הסיסמאות שלי"
 
 msgid "Check now"
 msgstr "לבדוק עכשיו"
+
+msgid "Check the server every"
+msgstr "לבדוק את השרת כל"
+
+msgid "Checking the drive…"
+msgstr "הכונן נבדק…"
 
 msgid "Choose a backup"
 msgstr "בחירת גיבוי"
@@ -707,6 +719,9 @@ msgstr "הצפן כונן"
 msgid "Encrypt KeePass export"
 msgstr "הצפן ייצוא KeePass"
 
+msgid "Encrypt again"
+msgstr "הצפנה מחדש"
+
 msgid "Encrypted as"
 msgstr "מוצפן כ-"
 
@@ -729,6 +744,9 @@ msgstr "אפס מוצפן (מומלץ — איטי אך מאובטח)"
 msgid ""
 "Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
 msgstr "הצפנה מוחקת את כל הכונן. ביטול נעילה ונעילה פועלים בכוננים מסוג LUKS."
+
+msgid "Encrypting the vault again…"
+msgstr "הכספת מוצפנת מחדש…"
 
 msgid "Encrypting…"
 msgstr "מצפין…"
@@ -773,11 +791,26 @@ msgid "Estimated strength"
 msgstr "חוזק משוער"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"כל התוכן בכספת מוצפן מחדש במפתח שנגזר בעלויות שלמעלה. גרסאות ישנות של Ashy "
+"Pass לא יפתחו את הכספת עם הססמה הראשית. יש להגדיר את קוד ה־PIN מחדש."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "כל מה שבכספת מוצפן מחדש עם הסיסמה החדשה. גיבויים שנוצרו קודם עדיין נפתחים עם "
 "הסיסמה שאיתה נוצרו."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"כל התוכן בכספת מוצפן מחדש בעלויות התקניות, שכל גרסה של Ashy Pass 3 פותחת. יש "
+"להגדיר את קוד ה־PIN מחדש."
 
 msgid "Everything is in sync"
 msgstr "הכל מסונכרן"
@@ -952,12 +985,10 @@ msgstr "הסתרת הסיסמה"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"עלויות גבוהות יותר מאטות מתקפות ניחוש וגם מאטות את ביטול הנעילה. הכוונון "
-"האוטומטי בוחר ערכים של כחצי שנייה במחשב זה; הם יחולו בפעם הבאה שסיסמת האב "
-"תוגדר או תשונה."
+"עלויות גבוהות יותר מאטות מתקפות ניחוש אך גם את שחרור הנעילה. הכוונון "
+"האוטומטי בוחר ערכים של כחצי שנייה במחשב זה."
 
 msgid "History cleared"
 msgstr "ההיסטוריה נוקתה"
@@ -1013,6 +1044,9 @@ msgstr[1] "PIN שגוי. נותרו {} ניסיונות."
 msgid "Incorrect master password"
 msgstr "סיסמת אב שגויה"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "הססמה הראשית שגויה. דבר לא שונה."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "סיסמת האב שגויה. דבר לא יוצא."
 
@@ -1033,6 +1067,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "שגיאה פנימית: לא הוגדרה סיסמה"
+
+msgid "Internal error: the drive was not checked"
+msgstr "שגיאה פנימית: הכונן לא נבדק"
 
 msgid "It can be restored from Deleted items."
 msgstr "ניתן לשחזר אותו מפריטים שנמחקו."
@@ -1302,6 +1339,9 @@ msgstr "אין סיסמאות קודמות"
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr "בגרסה זו לא ניתן לשנות את מפתח האבטחה או את ביטוי השחזור."
 
+msgid "No stable device link"
+msgstr "אין קישור יציב להתקן"
+
 msgid "No verification codes yet"
 msgstr "אין קודי אימות עדיין"
 
@@ -1331,6 +1371,9 @@ msgstr "שום דבר לא השתנה — Ashy Pass ו-Nextcloud כבר היו �
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "דבר לא נמחק. רשומות שכבר נמצאות בכספת ידולגו."
+
+msgid "Nothing was changed"
+msgstr "דבר לא שונה"
 
 msgid "Nothing was changed."
 msgstr "דבר לא שונה."
@@ -1807,6 +1850,9 @@ msgstr "הצגת הסיסמאות שלי"
 msgid "Select an access"
 msgstr "יש לבחור רשומה"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr "שולח שינויים זמן קצר אחרי כל עריכה ובודק את השרת באופן קבוע"
+
 msgid "Sending local changes"
 msgstr "שולח שינויים מקומיים"
 
@@ -1925,6 +1971,13 @@ msgstr "חוזק"
 msgid "Strong"
 msgstr "חזק"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"עמיד יותר בפני ניחוש הססמה הראשית. כל עוד האפשרות פעילה, גרסאות ישנות של "
+"Ashy Pass לא יכולות לפתוח את הכספת עם הססמה הראשית."
+
 msgid "Style"
 msgstr "סגנון"
 
@@ -1933,6 +1986,9 @@ msgstr "סיכום"
 
 msgid "Symbols (!@#$…)"
 msgstr "תווים מיוחדים (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "סנכרון אוטומטי"
 
 msgid "Sync completed"
 msgstr "הסנכרון הושלם"
@@ -1954,6 +2010,9 @@ msgstr "הסנכרון נכשל"
 
 msgid "Sync now"
 msgstr "סנכרן עכשיו"
+
+msgid "Sync when the vault is unlocked"
+msgstr "סנכרון בעת שחרור נעילת הכספת"
 
 msgid "Synchronization"
 msgstr "סנכרון"
@@ -2183,6 +2242,13 @@ msgstr "פעולה זו מוחקת את כל הרשומה: קוד אימות, ס
 msgid "This device generation:"
 msgstr "דור מכשיר זה:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"לכונן זה אין קישור ב־/dev/disk/by-id, ולכן Ashy Pass לא יכול לוודא שמדובר "
+"באותו כונן בעת המחיקה. לא ניתן להצפין אותו כאן."
+
 msgid "This file can be read without a password"
 msgstr "ניתן לקרוא קובץ זה ללא סיסמה"
 
@@ -2381,6 +2447,9 @@ msgstr "יש להשתמש בכפתור + כדי ליצור אחת."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "יש להשתמש בקודים אלה כשאתר מבקש אימות דו־שלבי."
 
+msgid "Use these costs for the vault key"
+msgstr "להשתמש בעלויות אלה למפתח הכספת"
+
 msgid "Use this password"
 msgstr "שימוש בסיסמה זו"
 
@@ -2429,6 +2498,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "הכספת כבר מסונכרנת"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "הכספת הוצפנה מחדש. הגדירו שוב את קוד ה־PIN אם השתמשתם בו."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "הכספת ננעלה לאחר פרק זמן של חוסר פעילות"
@@ -2621,6 +2693,11 @@ msgstr "נמוך"
 
 msgid "medium"
 msgstr "בינוני"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "דקות"
+msgstr[1] "דקות"
 
 msgid "more"
 msgstr "נוספות"

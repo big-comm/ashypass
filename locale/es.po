@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:25\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -231,6 +231,9 @@ msgstr "Archivos adjuntos"
 msgid "Audit failed"
 msgstr "Auditoría fallida"
 
+msgid "Authentication was cancelled"
+msgstr "Se canceló la autenticación"
+
 msgid "Auto-tune"
 msgstr "Ajuste automático"
 
@@ -303,6 +306,9 @@ msgstr "Caps Lock está activado"
 msgid "Capture from screen…"
 msgstr "Capturar de la pantalla…"
 
+msgid "Change how the vault key is protected?"
+msgstr "¿Cambiar la protección de la clave de la bóveda?"
+
 msgid "Change master password"
 msgstr "Cambiar contraseña maestra"
 
@@ -323,6 +329,12 @@ msgstr "Comprobar mis contraseñas"
 
 msgid "Check now"
 msgstr "Comprobar ahora"
+
+msgid "Check the server every"
+msgstr "Comprobar el servidor cada"
+
+msgid "Checking the drive…"
+msgstr "Comprobando la unidad…"
 
 msgid "Choose a backup"
 msgstr "Elegir una copia"
@@ -729,6 +741,9 @@ msgstr "Cifrar unidad"
 msgid "Encrypt KeePass export"
 msgstr "Cifrar exportación de KeePass"
 
+msgid "Encrypt again"
+msgstr "Cifrar de nuevo"
+
 msgid "Encrypted as"
 msgstr "Cifrado como"
 
@@ -755,6 +770,9 @@ msgid ""
 msgstr ""
 "Cifrar borra la unidad entera. Desbloquear y bloquear funcionan con unidades "
 "LUKS."
+
+msgid "Encrypting the vault again…"
+msgstr "Cifrando la bóveda de nuevo…"
 
 msgid "Encrypting…"
 msgstr "Cifrando…"
@@ -800,12 +818,29 @@ msgid "Estimated strength"
 msgstr "Fortaleza estimada"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Todo el contenido de la bóveda se cifra de nuevo con una clave derivada con "
+"los costes de arriba. Las versiones anteriores de Ashy Pass no abrirán la "
+"bóveda con la contraseña maestra. Habrá que configurar el PIN de nuevo."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Todo lo de la bóveda se vuelve a cifrar con la nueva contraseña. Las copias "
 "de seguridad anteriores se siguen abriendo con la contraseña con la que se "
 "hicieron."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Todo el contenido de la bóveda se cifra de nuevo con los costes estándar, "
+"que abren todas las versiones de Ashy Pass 3. Habrá que configurar el PIN de "
+"nuevo."
 
 msgid "Everything is in sync"
 msgstr "Todo en sincronía"
@@ -986,13 +1021,11 @@ msgstr "Ocultar contraseña"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Costes más altos ralentizan los ataques por adivinación y también el "
-"desbloqueo. El ajuste automático elige valores de aproximadamente medio "
-"segundo en este equipo; se aplican la próxima vez que se defina o cambie la "
-"contraseña maestra."
+"Los costes más altos frenan los ataques de adivinación y también ralentizan "
+"el desbloqueo. El ajuste automático elige valores de aproximadamente medio "
+"segundo en este equipo."
 
 msgid "History cleared"
 msgstr "Historial borrado"
@@ -1049,6 +1082,9 @@ msgstr[1] "PIN incorrecto. Quedan {} intentos."
 msgid "Incorrect master password"
 msgstr "Contraseña maestra incorrecta"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Contraseña maestra incorrecta. No se cambió nada."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Contraseña maestra incorrecta. No se ha exportado nada."
 
@@ -1070,6 +1106,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Error interno: no se ha establecido ninguna frase de contraseña"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Error interno: la unidad no se comprobó"
 
 msgid "It can be restored from Deleted items."
 msgstr "Se puede restaurar desde Elementos eliminados."
@@ -1351,6 +1390,9 @@ msgstr ""
 "En esta versión no se puede cambiar la clave de seguridad ni la frase de "
 "recuperación."
 
+msgid "No stable device link"
+msgstr "Sin enlace estable al dispositivo"
+
 msgid "No verification codes yet"
 msgstr "Aún no hay códigos de verificación"
 
@@ -1380,6 +1422,9 @@ msgstr "Nada cambió — Ashy Pass y Nextcloud ya estaban alineados."
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "No se elimina nada. Los accesos que ya están en la bóveda se omiten."
+
+msgid "Nothing was changed"
+msgstr "No se cambió nada"
 
 msgid "Nothing was changed."
 msgstr "No se ha cambiado nada."
@@ -1867,6 +1912,11 @@ msgstr "Ver mis contraseñas"
 msgid "Select an access"
 msgstr "Selecciona un acceso"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Envía los cambios poco después de cada edición y comprueba el servidor con "
+"regularidad"
+
 msgid "Sending local changes"
 msgstr "Enviando cambios locales"
 
@@ -1988,6 +2038,14 @@ msgstr "Fortaleza"
 msgid "Strong"
 msgstr "Fuerte"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Más resistente a los intentos de adivinar la contraseña maestra. Mientras "
+"esté activado, las versiones anteriores de Ashy Pass no pueden abrir la "
+"bóveda con la contraseña maestra."
+
 msgid "Style"
 msgstr "Estilo"
 
@@ -1996,6 +2054,9 @@ msgstr "Resumen"
 
 msgid "Symbols (!@#$…)"
 msgstr "Símbolos (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Sincronizar automáticamente"
 
 msgid "Sync completed"
 msgstr "Sincronización completada"
@@ -2017,6 +2078,9 @@ msgstr "Error de sincronización"
 
 msgid "Sync now"
 msgstr "Sincronizar ahora"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Sincronizar al desbloquear la bóveda"
 
 msgid "Synchronization"
 msgstr "Sincronización"
@@ -2272,6 +2336,14 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Generación de este dispositivo:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Esta unidad no tiene un enlace en /dev/disk/by-id, por lo que Ashy Pass no "
+"puede asegurarse de que sigue siendo la misma unidad al borrarla. No se "
+"puede cifrar aquí."
+
 msgid "This file can be read without a password"
 msgstr "Este archivo se podrá leer sin contraseña"
 
@@ -2480,6 +2552,9 @@ msgstr "Usa el botón + para crear una."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Usa estos códigos cuando un sitio pida la verificación en dos pasos."
 
+msgid "Use these costs for the vault key"
+msgstr "Usar estos costes para la clave de la bóveda"
+
 msgid "Use this password"
 msgstr "Usar esta contraseña"
 
@@ -2530,6 +2605,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Bóveda ya sincronizada"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "Bóveda cifrada de nuevo. Vuelva a configurar el PIN si usaba uno."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Bóveda bloqueada tras un periodo de inactividad"
@@ -2726,6 +2804,11 @@ msgstr "baja"
 
 msgid "medium"
 msgstr "media"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minuto"
+msgstr[1] "minutos"
 
 msgid "more"
 msgstr "más"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 20:59-0300\n"
+"POT-Creation-Date: 2026-10-10 21:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:48\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -227,6 +227,9 @@ msgstr "Вкладення"
 msgid "Audit failed"
 msgstr "Аудит не вдався"
 
+msgid "Authentication was cancelled"
+msgstr "Автентифікацію скасовано"
+
 msgid "Auto-tune"
 msgstr "Автоматичне налаштування"
 
@@ -299,6 +302,9 @@ msgstr "Увімкнено Caps Lock"
 msgid "Capture from screen…"
 msgstr "Зняти з екрана…"
 
+msgid "Change how the vault key is protected?"
+msgstr "Змінити захист ключа сховища?"
+
 msgid "Change master password"
 msgstr "Змінити головний пароль"
 
@@ -319,6 +325,12 @@ msgstr "Перевірити мої паролі"
 
 msgid "Check now"
 msgstr "Перевірити зараз"
+
+msgid "Check the server every"
+msgstr "Перевіряти сервер кожні"
+
+msgid "Checking the drive…"
+msgstr "Перевірка накопичувача…"
 
 msgid "Choose a backup"
 msgstr "Вибрати резервну копію"
@@ -724,6 +736,9 @@ msgstr "Зашифрувати диск"
 msgid "Encrypt KeePass export"
 msgstr "Зашифрувати експорт KeePass"
 
+msgid "Encrypt again"
+msgstr "Зашифрувати знову"
+
 msgid "Encrypted as"
 msgstr "Зашифровано як"
 
@@ -750,6 +765,9 @@ msgid ""
 msgstr ""
 "Шифрування стирає весь диск. Розблокування і блокування працюють для дисків "
 "LUKS."
+
+msgid "Encrypting the vault again…"
+msgstr "Повторне шифрування сховища…"
 
 msgid "Encrypting…"
 msgstr "Шифрування…"
@@ -794,11 +812,27 @@ msgid "Estimated strength"
 msgstr "Оцінка надійності"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Увесь вміст сховища буде знову зашифровано ключем, отриманим із наведеними "
+"вище витратами. Старіші версії Ashy Pass не відкриють сховище основним "
+"паролем. PIN-код доведеться налаштувати знову."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Усе у сховищі буде повторно зашифровано новим паролем. Раніше створені "
 "резервні копії й надалі відкриваються паролем, з яким їх створено."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Увесь вміст сховища буде знову зашифровано зі стандартними витратами, які "
+"відкриває будь-яка версія Ashy Pass 3. PIN-код доведеться налаштувати знову."
 
 msgid "Everything is in sync"
 msgstr "Все синхронізовано"
@@ -980,13 +1014,11 @@ msgstr "Сховати пароль"
 
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Вищі витрати сповільнюють атаки підбору, а також розблокування. "
-"Автоналаштування вибирає значення приблизно на пів секунди на цьому "
-"комп’ютері; вони застосуються під час наступного встановлення або зміни "
-"головного пароля."
+"Більші витрати сповільнюють атаки підбором, але й розблокування також. "
+"Автоналаштування обирає значення приблизно на пів секунди на цьому "
+"комп’ютері."
 
 msgid "History cleared"
 msgstr "Історію очищено"
@@ -1044,6 +1076,9 @@ msgstr[2] "Неправильний PIN. Залишилося {} спроб."
 msgid "Incorrect master password"
 msgstr "Неправильний майстер-пароль"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Неправильний основний пароль. Нічого не змінено."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Неправильний головний пароль. Нічого не експортовано."
 
@@ -1066,6 +1101,9 @@ msgstr ""
 
 msgid "Internal error: no passphrase set"
 msgstr "Внутрішня помилка: не встановлено парольну фразу"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Внутрішня помилка: накопичувач не перевірено"
 
 msgid "It can be restored from Deleted items."
 msgstr "Його можна відновити з видалених елементів."
@@ -1344,6 +1382,9 @@ msgstr "Попередніх паролів немає"
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr "У цій версії неможливо змінити ключ безпеки або фразу відновлення."
 
+msgid "No stable device link"
+msgstr "Немає сталого посилання на пристрій"
+
 msgid "No verification codes yet"
 msgstr "Кодів підтвердження ще немає"
 
@@ -1373,6 +1414,9 @@ msgstr "Нічого не змінилося — Ashy Pass і Nextcloud вже �
 
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Нічого не видаляється. Записи, які вже є у сховищі, пропускаються."
+
+msgid "Nothing was changed"
+msgstr "Нічого не змінено"
 
 msgid "Nothing was changed."
 msgstr "Нічого не змінено."
@@ -1860,6 +1904,11 @@ msgstr "Переглянути мої паролі"
 msgid "Select an access"
 msgstr "Виберіть запис"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Надсилає зміни невдовзі після кожного редагування і регулярно перевіряє "
+"сервер"
+
 msgid "Sending local changes"
 msgstr "Надсилання локальних змін"
 
@@ -1980,6 +2029,13 @@ msgstr "Надійність"
 msgid "Strong"
 msgstr "Надійна"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Краще захищає від підбору основного пароля. Поки параметр увімкнено, старіші "
+"версії Ashy Pass не зможуть відкрити сховище основним паролем."
+
 msgid "Style"
 msgstr "Стиль"
 
@@ -1988,6 +2044,9 @@ msgstr "Підсумок"
 
 msgid "Symbols (!@#$…)"
 msgstr "Символи (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Синхронізувати автоматично"
 
 msgid "Sync completed"
 msgstr "Синхронізацію завершено"
@@ -2009,6 +2068,9 @@ msgstr "Синхронізація не вдалася"
 
 msgid "Sync now"
 msgstr "Синхронізувати зараз"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Синхронізувати під час розблокування сховища"
 
 msgid "Synchronization"
 msgstr "Синхронізація"
@@ -2261,6 +2323,14 @@ msgstr "Буде видалено весь запис: код підтвердж
 msgid "This device generation:"
 msgstr "Покоління цього пристрою:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Цей накопичувач не має посилання в /dev/disk/by-id, тож Ashy Pass не може "
+"переконатися, що під час стирання це той самий накопичувач. Його не можна "
+"зашифрувати тут."
+
 msgid "This file can be read without a password"
 msgstr "Цей файл можна прочитати без пароля"
 
@@ -2467,6 +2537,9 @@ msgstr "Скористайтеся кнопкою +, щоб створити."
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Використовуйте ці коди, коли сайт просить двоетапну перевірку."
 
+msgid "Use these costs for the vault key"
+msgstr "Використовувати ці витрати для ключа сховища"
+
 msgid "Use this password"
 msgstr "Використати цей пароль"
 
@@ -2517,6 +2590,10 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Сховище вже синхронізовано"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Сховище знову зашифровано. Налаштуйте PIN-код ще раз, якщо користувалися ним."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Сховище заблоковано після періоду бездіяльності"
@@ -2713,6 +2790,12 @@ msgstr "низька"
 
 msgid "medium"
 msgstr "середня"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "хв"
+msgstr[1] "хв"
+msgstr[2] "хв"
 
 msgid "more"
 msgstr "додатково"
