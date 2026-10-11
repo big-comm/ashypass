@@ -281,24 +281,50 @@ const SCREEN_LOCK_TIMEOUT: Duration = Duration::from_secs(2);
 #[derive(Default)]
 struct ScreenLockProbe {
     connection: Option<zbus::blocking::Connection>,
-    /// Set once connecting failed or timed out: later requests skip the
-    /// probe instead of waiting again for a bus that is not there.
-    unavailable: bool,
+    /// When connecting or a call last failed. Until [`SCREEN_LOCK_RETRY`]
+    /// has passed, requests skip the probe instead of waiting again for a
+    /// bus that is not there; after that it is tried again.
+    failed_at: Option<Instant>,
 }
+
+/// How long to wait after a failed probe before trying the bus again.
+const SCREEN_LOCK_RETRY: Duration = Duration::from_secs(30);
 
 impl ScreenLockProbe {
     fn is_locked(&mut self) -> bool {
-        if self.unavailable {
+        if !self.should_probe(Instant::now()) {
             return false;
         }
         if self.connection.is_none() {
             self.connection = Self::connect();
-            self.unavailable = self.connection.is_none();
         }
-        self.connection
-            .as_ref()
-            .and_then(Self::locked_hint)
-            .unwrap_or(false)
+        let Some(connection) = &self.connection else {
+            self.failed_at = Some(Instant::now());
+            return false;
+        };
+        match Self::locked_hint(connection) {
+            Ok(locked) => {
+                self.failed_at = None;
+                locked
+            }
+            Err(HintError::Call) => {
+                // The connection may be dead (bus restarted, timed out):
+                // drop it and reconnect on the next probe after the backoff.
+                self.connection = None;
+                self.failed_at = Some(Instant::now());
+                false
+            }
+            Err(HintError::Reply) => {
+                self.failed_at = None;
+                false
+            }
+        }
+    }
+
+    /// Whether to query the bus now, given the last failure.
+    fn should_probe(&self, now: Instant) -> bool {
+        self.failed_at
+            .is_none_or(|failed| now.saturating_duration_since(failed) >= SCREEN_LOCK_RETRY)
     }
 
     fn connect() -> Option<zbus::blocking::Connection> {
@@ -314,7 +340,7 @@ impl ScreenLockProbe {
         receiver.recv_timeout(SCREEN_LOCK_TIMEOUT).ok()?.ok()
     }
 
-    fn locked_hint(connection: &zbus::blocking::Connection) -> Option<bool> {
+    fn locked_hint(connection: &zbus::blocking::Connection) -> Result<bool, HintError> {
         let reply = connection
             .call_method(
                 Some("org.freedesktop.login1"),
@@ -323,10 +349,21 @@ impl ScreenLockProbe {
                 "Get",
                 &("org.freedesktop.login1.Session", "LockedHint"),
             )
-            .ok()?;
-        let value: zbus::zvariant::OwnedValue = reply.body().deserialize().ok()?;
-        bool::try_from(value).ok()
+            .map_err(|_| HintError::Call)?;
+        let value: zbus::zvariant::OwnedValue =
+            reply.body().deserialize().map_err(|_| HintError::Reply)?;
+        bool::try_from(value).map_err(|_| HintError::Reply)
     }
+}
+
+/// Why `LockedHint` could not be read.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum HintError {
+    /// The call itself failed (timeout, bus gone, no session): back off and
+    /// reconnect.
+    Call,
+    /// logind answered with something unexpected.
+    Reply,
 }
 
 fn serve() -> Result<()> {
@@ -522,9 +559,25 @@ fn url_host(input: &str) -> Option<String> {
     }
 }
 
+/// Split `input` into the text before `://` and the rest, but only when that
+/// `://` comes before the first `/`, `?`, `#` or `\`: in
+/// `example.com/login?next=https://other.com` the `://` belongs to the query,
+/// and the string has no scheme.
+fn split_scheme(input: &str) -> (Option<&str>, &str) {
+    let Some(separator) = input.find("://") else {
+        return (None, input);
+    };
+    let path_start = input.find(['/', '?', '#', '\\']).unwrap_or(input.len());
+    if separator <= path_start {
+        (Some(&input[..separator]), &input[separator + 3..])
+    } else {
+        (None, input)
+    }
+}
+
 /// The `host[:port]` part of a URL, without scheme, userinfo or path.
 fn url_authority(input: &str) -> &str {
-    let no_scheme = input.split_once("://").map(|(_, r)| r).unwrap_or(input);
+    let (_, no_scheme) = split_scheme(input);
     // The authority ends at the first `/`, `?` or `#`. Missing `#` here let
     // `https://evil.com#@example.com` resolve to `example.com`.
     let authority_end = no_scheme
@@ -591,7 +644,7 @@ fn port_compatible(entry_url: &str, page_url: &str) -> bool {
 /// Lower-case scheme of `input` (`https`, `http`, …), or `None` when the
 /// string has no `scheme://` prefix (a bare host saved by the user).
 fn url_scheme(input: &str) -> Option<String> {
-    let (scheme, _) = input.trim().split_once("://")?;
+    let scheme = split_scheme(input.trim()).0?;
     let mut chars = scheme.chars();
     let valid = chars.next().is_some_and(|c| c.is_ascii_alphabetic())
         && chars.all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '-' | '.'));
@@ -601,17 +654,19 @@ fn url_scheme(input: &str) -> Option<String> {
 /// Whether an entry saved with `entry` scheme may be offered on a page loaded
 /// with `page` scheme.
 ///
-/// Downgrades are refused: a credential saved for `https://` (or saved as a
-/// bare host, which we treat as `https`) is never offered on an `http://`
-/// page, where a network attacker controls the content. An `http://` entry
-/// may be offered on the `https://` version of the site. Any other scheme
-/// must match exactly, and a page without a recognisable scheme only matches
-/// bare-host entries.
+/// Downgrades are refused: a credential saved for `https://` is never offered
+/// on an `http://` page, where a network attacker controls the content. An
+/// `http://` entry may be offered on the `https://` version of the site. A
+/// bare host saved without a scheme (`192.168.1.1`, `nas.local`) says
+/// nothing about it, so it matches both `http://` and `https://` pages (the
+/// port rule still limits it to their default ports unless it names one).
+/// Any other scheme must match exactly, and a page without a recognisable
+/// scheme only matches bare-host entries.
 fn scheme_compatible(entry: Option<&str>, page: Option<&str>) -> bool {
     match (entry, page) {
         (None, None) => true,
-        (None | Some("https"), Some(page)) => page == "https",
-        (Some("http"), Some(page)) => page == "http" || page == "https",
+        (Some("https"), Some(page)) => page == "https",
+        (None | Some("http"), Some(page)) => page == "http" || page == "https",
         (Some(entry), Some(page)) => entry == page,
         (Some(_), None) => false,
     }
@@ -1064,7 +1119,8 @@ mod tests {
         assert_eq!(url_scheme("1x://example.com"), None);
         // No downgrade.
         assert!(!scheme_compatible(Some("https"), Some("http")));
-        assert!(!scheme_compatible(None, Some("http")));
+        // A bare host carries no scheme to downgrade from.
+        assert!(scheme_compatible(None, Some("http")));
         // Same scheme or upgrade.
         assert!(scheme_compatible(Some("https"), Some("https")));
         assert!(scheme_compatible(None, Some("https")));
@@ -1088,7 +1144,7 @@ mod tests {
             "https://example.com",
             "http://example.com/"
         ));
-        assert!(!entry_matches_page("example.com", "http://example.com/"));
+        assert!(entry_matches_page("example.com", "http://example.com/"));
         assert!(entry_matches_page(
             "http://intranet.example.com",
             "http://intranet.example.com/"
@@ -1102,6 +1158,84 @@ mod tests {
             "https://evil.com#@example.com"
         ));
         assert!(!entry_matches_page("", "https://example.com"));
+    }
+
+    #[test]
+    fn bare_host_entries_match_http_and_https_on_default_ports() {
+        for entry in ["192.168.1.1", "nas.local"] {
+            for scheme in ["http", "https"] {
+                assert!(
+                    entry_matches_page(entry, &format!("{scheme}://{entry}/login")),
+                    "{entry} on {scheme}"
+                );
+            }
+            assert!(entry_matches_page(entry, &format!("http://{entry}:80/")));
+            assert!(entry_matches_page(entry, &format!("https://{entry}:443/")));
+            // Not on another port, and not on other schemes.
+            assert!(!entry_matches_page(entry, &format!("http://{entry}:8080/")));
+            assert!(!entry_matches_page(
+                entry,
+                &format!("https://{entry}:8443/")
+            ));
+            assert!(!entry_matches_page(entry, &format!("ftp://{entry}/")));
+        }
+        // A bare host with a port matches that port on either scheme.
+        assert!(entry_matches_page(
+            "nas.local:5000",
+            "http://nas.local:5000/"
+        ));
+        assert!(entry_matches_page(
+            "nas.local:5000",
+            "https://nas.local:5000/"
+        ));
+        assert!(!entry_matches_page("nas.local:5000", "http://nas.local/"));
+        // A different IP is still a different site.
+        assert!(!entry_matches_page("192.168.1.1", "http://192.168.1.2/"));
+        // An explicit https entry is still never offered over http.
+        assert!(!entry_matches_page(
+            "https://nas.local",
+            "http://nas.local/"
+        ));
+    }
+
+    #[test]
+    fn scheme_separator_inside_the_path_or_query_is_not_a_scheme() {
+        let entry = "example.com/login?next=https://other.com";
+        assert_eq!(split_scheme(entry), (None, entry));
+        assert_eq!(url_scheme(entry), None);
+        assert_eq!(url_authority(entry), "example.com");
+        assert_eq!(url_host(entry), Some("example.com".into()));
+        assert_eq!(url_port(entry), UrlPort::Default);
+        assert!(entry_matches_page(entry, "https://example.com/"));
+        assert!(!entry_matches_page(entry, "https://other.com/"));
+        for input in [
+            "example.com#https://other.com",
+            "example.com?x=ftp://other.com",
+        ] {
+            assert_eq!(url_host(input), Some("example.com".into()), "{input}");
+            assert_eq!(url_scheme(input), None, "{input}");
+        }
+        // A real scheme is still recognised.
+        assert_eq!(
+            split_scheme("https://example.com/a?b=http://c"),
+            (Some("https"), "example.com/a?b=http://c")
+        );
+        assert_eq!(
+            url_host("https://example.com/?next=https://other.com"),
+            Some("example.com".into())
+        );
+    }
+
+    #[test]
+    fn screen_lock_probe_retries_after_a_backoff() {
+        let start = Instant::now();
+        let mut probe = ScreenLockProbe::default();
+        assert!(probe.should_probe(start));
+        probe.failed_at = Some(start);
+        assert!(!probe.should_probe(start));
+        assert!(!probe.should_probe(start + SCREEN_LOCK_RETRY - Duration::from_secs(1)));
+        assert!(probe.should_probe(start + SCREEN_LOCK_RETRY));
+        assert!(probe.should_probe(start + SCREEN_LOCK_RETRY * 3));
     }
 
     #[test]

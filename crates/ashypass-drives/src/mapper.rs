@@ -16,12 +16,16 @@ const LABEL_FRAGMENT_MAX: usize = 40;
 
 /// Derive a dm-crypt mapper name from a user label. Constrains to
 /// `[A-Za-z0-9_-]` so it round-trips through `/dev/mapper/...`.
+///
+/// Names reserved for the wipe step (a drive labelled `wipe_tmp`) are never
+/// produced: such a label gets a `drive_` infix instead, so unlocking it can
+/// neither reuse nor collide with a wipe mapping.
 pub fn mapper_name_for(label: &str) -> String {
     let cleaned = sanitize(label, LABEL_FRAGMENT_MAX);
     if cleaned.is_empty() {
         return format!("{MAPPER_PREFIX}drive");
     }
-    format!("{MAPPER_PREFIX}{cleaned}")
+    unreserved(format!("{MAPPER_PREFIX}{cleaned}"))
 }
 
 /// Same as [`mapper_name_for`] plus a device-specific `tag` (short UUID or
@@ -33,6 +37,17 @@ pub fn mapper_name_with_tag(label: &str, tag: &str) -> String {
         return base;
     }
     let mut name = format!("{base}_{tag}");
+    name.truncate(MAPPER_NAME_MAX_BYTES);
+    unreserved(name)
+}
+
+/// `name`, moved out of the wipe step's reserved namespace if needed.
+fn unreserved(name: String) -> String {
+    if !crate::wipe::is_wipe_mapper(&name) {
+        return name;
+    }
+    let rest = &name[MAPPER_PREFIX.len()..];
+    let mut name = format!("{MAPPER_PREFIX}drive_{rest}");
     name.truncate(MAPPER_NAME_MAX_BYTES);
     name
 }
@@ -167,6 +182,37 @@ mod tests {
         assert_eq!(mapper_name_for(""), "ashypass_drive");
         assert_eq!(mapper_name_for("vault-2026"), "ashypass_vault-2026");
         assert_eq!(mapper_name_for("Cofre ç"), "ashypass_Cofre__");
+    }
+
+    #[test]
+    fn derived_names_never_take_the_wipe_namespace() {
+        use crate::wipe::is_wipe_mapper;
+        assert_eq!(mapper_name_for("wipe_tmp"), "ashypass_drive_wipe_tmp");
+        assert_eq!(
+            mapper_name_for("wipe_tmp_sdb"),
+            "ashypass_drive_wipe_tmp_sdb"
+        );
+        assert_eq!(
+            mapper_name_with_tag("wipe_tmp", "sdb"),
+            "ashypass_drive_wipe_tmp_sdb"
+        );
+        // The tag cannot complete a reserved name either.
+        assert_eq!(
+            mapper_name_with_tag("wipe", "tmp"),
+            "ashypass_drive_wipe_tmp"
+        );
+        for label in ["wipe_tmp", "wipe tmp", "wipe_tmp_x", "wipe"] {
+            for name in [
+                mapper_name_for(label),
+                mapper_name_with_tag(label, "tmp"),
+                mapper_name_with_tag(label, "sdb"),
+            ] {
+                assert!(!is_wipe_mapper(&name), "{name}");
+                validate_mapper_name(&name).unwrap();
+            }
+        }
+        // Lookalikes are left alone.
+        assert_eq!(mapper_name_for("wipe_tmpfoo"), "ashypass_wipe_tmpfoo");
     }
 
     #[test]

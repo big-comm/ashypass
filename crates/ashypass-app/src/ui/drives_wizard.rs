@@ -1226,6 +1226,7 @@ mod tests {
             serial: serial.map(str::to_string),
             wwn: None,
             ptuuid: None,
+            diskseq: None,
             transport: Some("usb".into()),
             removable: true,
             hotplug: true,
@@ -1261,6 +1262,7 @@ mod tests {
             vendor: None,
             wwn: None,
             ptuuid: None,
+            diskseq: None,
             allow_destructive: allow,
             reasons: if allow {
                 Vec::new()

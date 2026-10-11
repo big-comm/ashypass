@@ -20,6 +20,9 @@ pub struct Drive {
     pub wwn: Option<String>,
     /// Partition table UUID (GPT disk GUID or MBR disk signature).
     pub ptuuid: Option<String>,
+    /// Kernel disk sequence number from `/sys/block/<name>/diskseq` (Linux
+    /// 5.15 and later). A new attachment of the device gets a new number.
+    pub diskseq: Option<u64>,
     pub transport: Option<String>,
     pub removable: bool,
     pub hotplug: bool,
@@ -162,7 +165,23 @@ pub fn list_all() -> Result<Vec<Drive>> {
         });
     }
 
-    parse_lsblk(&output.stdout)
+    let mut drives = parse_lsblk(&output.stdout)?;
+    for drive in &mut drives {
+        drive.diskseq = read_diskseq(std::path::Path::new("/sys/block"), &drive.name);
+    }
+    Ok(drives)
+}
+
+/// `<sys_block>/<name>/diskseq`, when the kernel exposes it.
+fn read_diskseq(sys_block: &std::path::Path, name: &str) -> Option<u64> {
+    if name.is_empty() || name.contains(['/', '\0']) || name == ".." || name == "." {
+        return None;
+    }
+    std::fs::read_to_string(sys_block.join(name).join("diskseq"))
+        .ok()?
+        .trim()
+        .parse()
+        .ok()
 }
 
 /// Parse `lsblk -J -b -o LSBLK_COLUMNS` output into disks. Pure — no I/O —
@@ -202,6 +221,7 @@ pub fn parse_lsblk(json: &[u8]) -> Result<Vec<Drive>> {
             serial: clean(node.serial),
             wwn: clean(node.wwn),
             ptuuid: clean(node.ptuuid),
+            diskseq: None,
             transport: clean(node.tran),
             removable: node.rm.unwrap_or(false),
             hotplug: node.hotplug.unwrap_or(false),
@@ -320,6 +340,19 @@ mod tests {
 
     fn drives() -> Vec<Drive> {
         parse_lsblk(FIXTURE.as_bytes()).unwrap()
+    }
+
+    #[test]
+    fn reads_the_disk_sequence_number_from_sysfs() {
+        let sys = tempfile::tempdir().unwrap();
+        std::fs::create_dir_all(sys.path().join("sdb")).unwrap();
+        std::fs::write(sys.path().join("sdb/diskseq"), "27\n").unwrap();
+        assert_eq!(read_diskseq(sys.path(), "sdb"), Some(27));
+        // Older kernels: no attribute.
+        assert_eq!(read_diskseq(sys.path(), "sdc"), None);
+        assert_eq!(read_diskseq(sys.path(), "../sdb"), None);
+        // `lsblk` parsing alone never invents one.
+        assert!(drives().iter().all(|d| d.diskseq.is_none()));
     }
 
     #[test]
