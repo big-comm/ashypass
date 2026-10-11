@@ -127,7 +127,97 @@ pub(super) fn build_nextcloud_passwords_group(
     }
     group.add(&sync_row);
 
+    add_auto_sync_rows(&group, &state);
+
     group
+}
+
+/// Choices offered for the periodic sync, in minutes.
+const AUTO_SYNC_INTERVALS: [u32; 4] = [5, 15, 30, 60];
+
+/// "Sync automatically", its interval and "Sync when the vault is unlocked".
+/// Each change is saved at once and announced so the running scheduler
+/// picks it up.
+fn add_auto_sync_rows(group: &adw::PreferencesGroup, state: &SharedState) {
+    let current = state.settings();
+
+    let auto_row = adw::SwitchRow::builder()
+        .title(tr!("Sync automatically"))
+        .subtitle(tr!(
+            "Send changes shortly after each edit and check the server regularly"
+        ))
+        .active(current.nextcloud_auto_sync)
+        .build();
+
+    let labels: Vec<String> = AUTO_SYNC_INTERVALS
+        .iter()
+        .map(|minutes| format!("{minutes} {}", trn!("minute", "minutes", *minutes as usize)))
+        .collect();
+    let model = gtk::StringList::new(&labels.iter().map(String::as_str).collect::<Vec<_>>());
+    let interval_row = adw::ComboRow::builder()
+        .title(tr!("Check the server every"))
+        .model(&model)
+        .sensitive(current.nextcloud_auto_sync)
+        .build();
+    interval_row.set_selected(interval_index(current.nextcloud_auto_sync_interval_minutes));
+
+    let unlock_row = adw::SwitchRow::builder()
+        .title(tr!("Sync when the vault is unlocked"))
+        .active(current.nextcloud_sync_on_unlock)
+        .build();
+
+    {
+        let state = state.clone();
+        let interval_row = interval_row.clone();
+        auto_row.connect_active_notify(move |row| {
+            let value = row.is_active();
+            interval_row.set_sensitive(value);
+            save_sync_setting(&state, |s| s.nextcloud_auto_sync = value);
+        });
+    }
+    {
+        let state = state.clone();
+        interval_row.connect_selected_notify(move |row| {
+            let Some(minutes) = AUTO_SYNC_INTERVALS.get(row.selected() as usize).copied() else {
+                return;
+            };
+            save_sync_setting(&state, |s| s.nextcloud_auto_sync_interval_minutes = minutes);
+        });
+    }
+    {
+        let state = state.clone();
+        unlock_row.connect_active_notify(move |row| {
+            let value = row.is_active();
+            save_sync_setting(&state, |s| s.nextcloud_sync_on_unlock = value);
+        });
+    }
+
+    group.add(&auto_row);
+    group.add(&interval_row);
+    group.add(&unlock_row);
+}
+
+/// Row to show for a stored interval: the exact choice, else the closest
+/// longer one (the longest for anything above it).
+fn interval_index(minutes: u32) -> u32 {
+    AUTO_SYNC_INTERVALS
+        .iter()
+        .position(|choice| *choice >= minutes)
+        .unwrap_or(AUTO_SYNC_INTERVALS.len() - 1) as u32
+}
+
+fn save_sync_setting<F>(state: &SharedState, edit: F)
+where
+    F: FnOnce(&mut Settings),
+{
+    // Persist through the shared state: saving this page's snapshot would
+    // write back stale values changed on other pages.
+    if let Err(e) = state.update_settings(edit) {
+        log::warn!("could not save settings: {e}");
+    }
+    state
+        .events
+        .emit(crate::events::AppEvent::SyncSettingsChanged);
 }
 
 pub(super) fn show_nextcloud_dialog<F>(

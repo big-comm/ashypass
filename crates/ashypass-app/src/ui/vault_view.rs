@@ -679,6 +679,7 @@ fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) 
         let Some(inner) = weak.upgrade() else { return };
         match event {
             crate::events::AppEvent::VaultChanged
+            | crate::events::AppEvent::VaultChangedBySync
             | crate::events::AppEvent::SyncCompleted { .. }
                 if inner.can_show_vault_data() =>
             {
