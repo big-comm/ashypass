@@ -17,3 +17,8 @@ ashypass-core.workspace = true
 anyhow.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+zeroize.workspace = true
+# Public Suffix List (ICANN and private sections), compiled in: no network.
+psl = "2"
+# Already in the tree through secret-service; used to read logind's LockedHint.
+zbus = { version = "5", default-features = false, features = ["blocking-api", "tokio"] }
