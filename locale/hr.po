@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:31\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -658,6 +658,13 @@ msgstr "Trajno izbrisati?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Izbrišite izvezenu datoteku ako nije bila zaštićena lozinkom."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Izbrisati i ovdje stavke ({})?"
+msgstr[1] "Izbrisati i ovdje stavke ({})?"
+msgstr[2] "Izbrisati i ovdje stavke ({})?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1144,6 +1151,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Zadrži izbrisane unose (dana)"
 
+msgid "Keep them"
+msgstr "Zadrži ih"
+
 msgid "Keep using"
 msgstr "Nastavi koristiti"
 
@@ -1276,6 +1286,9 @@ msgstr "Više radnji"
 
 msgid "More options"
 msgstr "Više mogućnosti"
+
+msgid "Move to Deleted items"
+msgstr "Premjesti u Izbrisane stavke"
 
 msgid "Moved to Deleted items"
 msgstr "Premješteno u Izbrisane stavke"
@@ -2063,11 +2076,12 @@ msgstr "Sinkronizacija s problemima"
 msgid "Sync completed with warnings"
 msgstr "Sinkronizacija dovršena s upozorenjima"
 
-msgid "Sync conflict"
-msgstr "Sukob sinkronizacije"
-
 msgid "Sync conflict detected"
 msgstr "Otkriven sukob sinkronizacije"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Sukob sinkronizacije: poslužitelj ima noviju kopiju (generacija {})"
 
 msgid "Sync failed"
 msgstr "Sinkronizacija nije uspjela"
@@ -2301,6 +2315,17 @@ msgstr "Nema ničeg novog za uvoz."
 msgid "These options cannot produce a password."
 msgstr "Ove postavke ne mogu stvoriti lozinku."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Bile su sinkronizirane s Nextcloud Passwords i više nisu na poslužitelju. "
+"Ako ste ih ondje izbrisali, ovdje idu u Izbrisane stavke. Ako niste, "
+"poslužitelj je možda odgovorio samo djelomično: zadržite ih i sljedeća "
+"sinkronizacija pokušat će ponovno."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Ovaj PIN više ne odgovara trezoru. Ništa nije promijenjeno."
 
@@ -2345,11 +2370,20 @@ msgstr "Ova se datoteka može pročitati bez lozinke"
 msgid "This file could not be read"
 msgstr "Ovu datoteku nije moguće pročitati"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Datoteka je prevelika za privitak. Ograničenje je 64 MB."
+
 msgid "This folder already exists"
 msgstr "Ova mapa već postoji"
 
 msgid "This folder is empty"
 msgstr "Ova mapa je prazna"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Slika se ne može otvoriti. Upotrijebite PNG, JPEG ili WebP sliku do 20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

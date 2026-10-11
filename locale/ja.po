@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -657,6 +657,11 @@ msgstr ""
 "パスワードで保護されていない場合は、エクスポートしたファイルを削除してくださ"
 "い。"
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "ここでも {} 件の項目を削除しますか？"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1141,6 +1146,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "削除エントリの保持期間（日数）"
 
+msgid "Keep them"
+msgstr "残す"
+
 msgid "Keep using"
 msgstr "使い続ける"
 
@@ -1273,6 +1281,9 @@ msgstr "その他の操作"
 
 msgid "More options"
 msgstr "その他のオプション"
+
+msgid "Move to Deleted items"
+msgstr "削除済みアイテムへ移動"
 
 msgid "Moved to Deleted items"
 msgstr "削除済みアイテムに移動しました"
@@ -2057,11 +2068,12 @@ msgstr "同期に問題があります"
 msgid "Sync completed with warnings"
 msgstr "警告付きで同期が完了しました"
 
-msgid "Sync conflict"
-msgstr "同期の競合"
-
 msgid "Sync conflict detected"
 msgstr "同期の競合が検出されました"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "同期の競合: サーバーにより新しいコピーがあります (世代 {})"
 
 msgid "Sync failed"
 msgstr "同期に失敗しました"
@@ -2292,6 +2304,17 @@ msgstr "新しくインポートするものはありません。"
 msgid "These options cannot produce a password."
 msgstr "この設定ではパスワードを生成できません。"
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"これらは Nextcloud Passwords と同期されていましたが、サーバーにはもうありませ"
+"ん。サーバーで削除した場合は、ここでも削除済みアイテムに移動します。そうでな"
+"い場合はサーバーの応答が一部だけだった可能性があります。残しておけば次回の同"
+"期で再試行します。"
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "この PIN はもうボールトと一致しません。何も変更されていません。"
 
@@ -2336,11 +2359,21 @@ msgstr "このファイルはパスワードなしで読めます"
 msgid "This file could not be read"
 msgstr "このファイルを読み込めませんでした"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "このファイルは大きすぎて添付できません。上限は 64 MB です。"
+
 msgid "This folder already exists"
 msgstr "このフォルダはすでに存在します"
 
 msgid "This folder is empty"
 msgstr "このフォルダは空です"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"この画像を開けませんでした。20 MB までの PNG、JPEG、WebP 画像を使ってくださ"
+"い。"
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

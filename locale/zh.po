@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -637,6 +637,11 @@ msgstr "要永久删除吗？"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "如果导出文件没有密码保护，请将其删除。"
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "也要在这里删除 {} 个项目吗？"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1098,6 +1103,9 @@ msgstr "将保险库的受保护副本存放在安全的地方，并导入或导
 msgid "Keep deleted entries for (days)"
 msgstr "保留已删除条目的天数"
 
+msgid "Keep them"
+msgstr "保留"
+
 msgid "Keep using"
 msgstr "继续使用"
 
@@ -1226,6 +1234,9 @@ msgstr "更多操作"
 
 msgid "More options"
 msgstr "更多选项"
+
+msgid "Move to Deleted items"
+msgstr "移到已删除项目"
 
 msgid "Moved to Deleted items"
 msgstr "已移至“已删除项目”"
@@ -1986,11 +1997,12 @@ msgstr "同步出现问题"
 msgid "Sync completed with warnings"
 msgstr "同步完成，但有警告"
 
-msgid "Sync conflict"
-msgstr "同步冲突"
-
 msgid "Sync conflict detected"
 msgstr "检测到同步冲突"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "同步冲突：服务器上有更新的副本（第 {} 代）"
 
 msgid "Sync failed"
 msgstr "同步失败"
@@ -2199,6 +2211,16 @@ msgstr "没有可导入的新内容。"
 msgid "These options cannot produce a password."
 msgstr "这些选项无法生成密码。"
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"这些项目曾与 Nextcloud Passwords 同步，但已不在服务器上。如果是你在那里删除"
+"的，它们会在这里移到已删除项目。如果不是，服务器可能只返回了部分数据：请保留"
+"它们，下次同步会再次尝试。"
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "此 PIN 已与保险库不匹配。未做任何更改。"
 
@@ -2241,11 +2263,19 @@ msgstr "此文件无需密码即可读取"
 msgid "This file could not be read"
 msgstr "无法读取此文件"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "此文件太大，无法添加为附件。上限为 64 MB。"
+
 msgid "This folder already exists"
 msgstr "此文件夹已存在"
 
 msgid "This folder is empty"
 msgstr "此文件夹为空"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr "无法打开此图片。请使用不超过 20 MB 的 PNG、JPEG 或 WebP 图片。"
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:41\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Portuguese (Brazil) <pt-BR@li.org>\n"
@@ -659,6 +659,12 @@ msgstr "Excluir permanentemente?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Apague o arquivo exportado se ele não era protegido por senha."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Excluir {} item aqui também?"
+msgstr[1] "Excluir {} itens aqui também?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1146,6 +1152,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Manter entradas excluídas por (dias)"
 
+msgid "Keep them"
+msgstr "Manter"
+
 msgid "Keep using"
 msgstr "Continuar usando"
 
@@ -1277,6 +1286,9 @@ msgstr "Mais ações"
 
 msgid "More options"
 msgstr "Mais opções"
+
+msgid "Move to Deleted items"
+msgstr "Mover para Itens excluídos"
 
 msgid "Moved to Deleted items"
 msgstr "Movido para Itens excluídos"
@@ -2063,11 +2075,13 @@ msgstr "Sincronização concluída com problemas"
 msgid "Sync completed with warnings"
 msgstr "Sincronização concluída com avisos"
 
-msgid "Sync conflict"
-msgstr "Conflito de sincronização"
-
 msgid "Sync conflict detected"
 msgstr "Conflito de sincronização detectado"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr ""
+"Conflito de sincronização: o servidor tem uma cópia mais nova (geração {})"
 
 msgid "Sync failed"
 msgstr "Falha na sincronização"
@@ -2298,6 +2312,17 @@ msgstr "Não há nada novo para importar."
 msgid "These options cannot produce a password."
 msgstr "Essas opções não conseguem gerar uma senha."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Eles estavam sincronizados com o Nextcloud Passwords e não estão mais no "
+"servidor. Se você os excluiu lá, eles vão para Itens excluídos aqui. Se não, "
+"o servidor pode ter respondido só em parte: mantenha-os e a próxima "
+"sincronização tenta de novo."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Este PIN não corresponde mais ao cofre. Nada foi alterado."
 
@@ -2343,11 +2368,21 @@ msgstr "Este arquivo poderá ser lido sem senha"
 msgid "This file could not be read"
 msgstr "Não foi possível ler este arquivo"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Este arquivo é grande demais para anexar. O limite é 64 MB."
+
 msgid "This folder already exists"
 msgstr "Esta pasta já existe"
 
 msgid "This folder is empty"
 msgstr "Esta pasta está vazia"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Não foi possível abrir esta imagem. Use uma imagem PNG, JPEG ou WebP de até "
+"20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

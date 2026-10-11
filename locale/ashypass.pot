@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -629,6 +629,12 @@ msgstr ""
 msgid "Delete the export file if it was not protected by a password."
 msgstr ""
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1068,6 +1074,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr ""
 
+msgid "Keep them"
+msgstr ""
+
 msgid "Keep using"
 msgstr ""
 
@@ -1188,6 +1197,9 @@ msgid "More actions"
 msgstr ""
 
 msgid "More options"
+msgstr ""
+
+msgid "Move to Deleted items"
 msgstr ""
 
 msgid "Moved to Deleted items"
@@ -1939,10 +1951,11 @@ msgstr ""
 msgid "Sync completed with warnings"
 msgstr ""
 
-msgid "Sync conflict"
+msgid "Sync conflict detected"
 msgstr ""
 
-msgid "Sync conflict detected"
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
 msgstr ""
 
 msgid "Sync failed"
@@ -2148,6 +2161,13 @@ msgstr ""
 msgid "These options cannot produce a password."
 msgstr ""
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr ""
 
@@ -2188,10 +2208,18 @@ msgstr ""
 msgid "This file could not be read"
 msgstr ""
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr ""
+
 msgid "This folder already exists"
 msgstr ""
 
 msgid "This folder is empty"
+msgstr ""
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
 msgstr ""
 
 msgid ""

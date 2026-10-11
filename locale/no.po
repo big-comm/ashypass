@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:39\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -655,6 +655,12 @@ msgstr "Slette permanent?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Slett eksportfilen hvis den ikke var beskyttet med passord."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Slette {} element her også?"
+msgstr[1] "Slette {} elementer her også?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1141,6 +1147,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Behold slettede oppføringer i (dager)"
 
+msgid "Keep them"
+msgstr "Behold dem"
+
 msgid "Keep using"
 msgstr "Fortsett"
 
@@ -1272,6 +1281,9 @@ msgstr "Flere handlinger"
 
 msgid "More options"
 msgstr "Flere alternativer"
+
+msgid "Move to Deleted items"
+msgstr "Flytt til Slettede elementer"
 
 msgid "Moved to Deleted items"
 msgstr "Flyttet til Slettede elementer"
@@ -2055,11 +2067,12 @@ msgstr "Synkroniseringsproblemer"
 msgid "Sync completed with warnings"
 msgstr "Synkronisering fullført med advarsler"
 
-msgid "Sync conflict"
-msgstr "Synkroniseringskonflikt"
-
 msgid "Sync conflict detected"
 msgstr "Synkroniseringskonflikt oppdaget"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Synkroniseringskonflikt: serveren har en nyere kopi (generasjon {})"
 
 msgid "Sync failed"
 msgstr "Synkronisering mislyktes"
@@ -2291,6 +2304,17 @@ msgstr "Det er ingenting nytt å importere."
 msgid "These options cannot produce a password."
 msgstr "Disse innstillingene kan ikke lage et passord."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"De var synkronisert med Nextcloud Passwords og finnes ikke lenger på "
+"serveren. Hvis du slettet dem der, flyttes de til Slettede elementer her. "
+"Hvis ikke, kan serveren ha svart bare delvis: behold dem, så prøver neste "
+"synkronisering igjen."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Denne PIN-koden passer ikke lenger til hvelvet. Ingenting ble endret."
 
@@ -2336,11 +2360,21 @@ msgstr "Denne filen kan leses uten passord"
 msgid "This file could not be read"
 msgstr "Denne filen kunne ikke leses"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Filen er for stor til å legges ved. Grensen er 64 MB."
+
 msgid "This folder already exists"
 msgstr "Denne mappen finnes allerede"
 
 msgid "This folder is empty"
 msgstr "Denne mappen er tom"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Bildet kunne ikke åpnes. Bruk et PNG-, JPEG- eller WebP-bilde på opptil 20 "
+"MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

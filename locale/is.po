@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -653,6 +653,12 @@ msgstr "Eyða varanlega?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Eyddu útflutningsskránni ef hún var ekki varin með lykilorði."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Eyða {} færslu hér líka?"
+msgstr[1] "Eyða {} færslum hér líka?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1135,6 +1141,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Geyma eyddar færslur í (daga)"
 
+msgid "Keep them"
+msgstr "Halda þeim"
+
 msgid "Keep using"
 msgstr "Halda áfram"
 
@@ -1266,6 +1275,9 @@ msgstr "Fleiri aðgerðir"
 
 msgid "More options"
 msgstr "Fleiri valkostir"
+
+msgid "Move to Deleted items"
+msgstr "Færa í Eyddar færslur"
 
 msgid "Moved to Deleted items"
 msgstr "Fært í Eydd atriði"
@@ -2053,11 +2065,12 @@ msgstr "Samstillingarvandamál"
 msgid "Sync completed with warnings"
 msgstr "Samstillingu lokið með viðvörunum"
 
-msgid "Sync conflict"
-msgstr "Samstillingarárekstur"
-
 msgid "Sync conflict detected"
 msgstr "Samstillingarárekstur greindur"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Samstillingarárekstur: þjónninn er með nýrra afrit (kynslóð {})"
 
 msgid "Sync failed"
 msgstr "Samstilling mistókst"
@@ -2290,6 +2303,16 @@ msgstr "Það er ekkert nýtt til að flytja inn."
 msgid "These options cannot produce a password."
 msgstr "Þessir valkostir geta ekki búið til lykilorð."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Þær voru samstilltar við Nextcloud Passwords og eru ekki lengur á þjóninum. "
+"Ef þú eyddir þeim þar fara þær í Eyddar færslur hér. Ef ekki gæti þjónninn "
+"hafa svarað aðeins að hluta: haltu þeim og næsta samstilling reynir aftur."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Þetta PIN-númer passar ekki lengur við hvelfinguna. Engu var breytt."
 
@@ -2336,11 +2359,21 @@ msgstr "Þessa skrá er hægt að lesa án lykilorðs"
 msgid "This file could not be read"
 msgstr "Ekki tókst að lesa þessa skrá"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Þessi skrá er of stór til að hengja við. Hámarkið er 64 MB."
+
 msgid "This folder already exists"
 msgstr "Þessi mappa er þegar til"
 
 msgid "This folder is empty"
 msgstr "Þessi mappa er tóm"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Ekki tókst að opna myndina. Notaðu PNG-, JPEG- eða WebP-mynd sem er að "
+"hámarki 20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

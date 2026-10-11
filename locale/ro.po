@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:43\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -661,6 +661,13 @@ msgstr "Ștergeți definitiv?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Ștergeți fișierul exportat dacă nu era protejat cu parolă."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Ștergeți și aici elementele ({})?"
+msgstr[1] "Ștergeți și aici elementele ({})?"
+msgstr[2] "Ștergeți și aici elementele ({})?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1150,6 +1157,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Păstrează intrările șterse pentru (zile)"
 
+msgid "Keep them"
+msgstr "Păstrează-le"
+
 msgid "Keep using"
 msgstr "Continuă"
 
@@ -1284,6 +1294,9 @@ msgstr "Mai multe acțiuni"
 
 msgid "More options"
 msgstr "Mai multe opțiuni"
+
+msgid "Move to Deleted items"
+msgstr "Mută în Elemente șterse"
 
 msgid "Moved to Deleted items"
 msgstr "Mutat în Elemente șterse"
@@ -2076,11 +2089,12 @@ msgstr "Sincronizare cu probleme"
 msgid "Sync completed with warnings"
 msgstr "Sincronizare finalizată cu avertismente"
 
-msgid "Sync conflict"
-msgstr "Conflict de sincronizare"
-
 msgid "Sync conflict detected"
 msgstr "Conflict de sincronizare detectat"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Conflict de sincronizare: serverul are o copie mai nouă (generația {})"
 
 msgid "Sync failed"
 msgstr "Sincronizare eșuată"
@@ -2325,6 +2339,17 @@ msgstr "Nu există nimic nou de importat."
 msgid "These options cannot produce a password."
 msgstr "Aceste opțiuni nu pot genera o parolă."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Erau sincronizate cu Nextcloud Passwords și nu mai sunt pe server. Dacă le-"
+"ați șters acolo, aici ajung în Elemente șterse. Dacă nu, serverul poate a "
+"răspuns doar parțial: păstrați-le și următoarea sincronizare va încerca din "
+"nou."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Acest PIN nu mai corespunde seifului. Nu s-a modificat nimic."
 
@@ -2370,11 +2395,21 @@ msgstr "Acest fișier va putea fi citit fără parolă"
 msgid "This file could not be read"
 msgstr "Acest fișier nu a putut fi citit"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Acest fișier este prea mare pentru a fi atașat. Limita este de 64 MB."
+
 msgid "This folder already exists"
 msgstr "Acest dosar există deja"
 
 msgid "This folder is empty"
 msgstr "Acest dosar este gol"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Imaginea nu a putut fi deschisă. Folosiți o imagine PNG, JPEG sau WebP de "
+"cel mult 20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

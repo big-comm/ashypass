@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:37\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -648,6 +648,11 @@ msgstr "영구적으로 삭제할까요?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "비밀번호로 보호되지 않았다면 내보낸 파일을 삭제하세요."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "여기서도 항목 {}개를 삭제할까요?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1124,6 +1129,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "삭제된 항목 보관 기간 (일)"
 
+msgid "Keep them"
+msgstr "유지"
+
 msgid "Keep using"
 msgstr "계속 사용"
 
@@ -1253,6 +1261,9 @@ msgstr "추가 작업"
 
 msgid "More options"
 msgstr "추가 옵션"
+
+msgid "Move to Deleted items"
+msgstr "삭제된 항목으로 이동"
 
 msgid "Moved to Deleted items"
 msgstr "삭제된 항목으로 이동함"
@@ -2025,11 +2036,12 @@ msgstr "동기화에 문제가 있습니다"
 msgid "Sync completed with warnings"
 msgstr "경고와 함께 동기화 완료"
 
-msgid "Sync conflict"
-msgstr "동기화 충돌"
-
 msgid "Sync conflict detected"
 msgstr "동기화 충돌이 감지됨"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "동기화 충돌: 서버에 더 새로운 사본이 있습니다 (세대 {})"
 
 msgid "Sync failed"
 msgstr "동기화 실패"
@@ -2248,6 +2260,16 @@ msgstr "새로 가져올 항목이 없습니다."
 msgid "These options cannot produce a password."
 msgstr "이 옵션으로는 비밀번호를 생성할 수 없습니다."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Nextcloud Passwords와 동기화되던 항목이 서버에서 사라졌습니다. 서버에서 삭제"
+"했다면 여기서도 삭제된 항목으로 이동합니다. 그렇지 않다면 서버가 일부만 응답"
+"했을 수 있습니다. 유지하면 다음 동기화에서 다시 시도합니다."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr ""
 "이 PIN은 더 이상 보관함과 일치하지 않습니다. 아무것도 변경되지 않았습니다."
@@ -2293,11 +2315,21 @@ msgstr "이 파일은 비밀번호 없이 읽을 수 있습니다"
 msgid "This file could not be read"
 msgstr "이 파일을 읽을 수 없습니다"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "이 파일은 첨부하기에 너무 큽니다. 한도는 64MB입니다."
+
 msgid "This folder already exists"
 msgstr "이미 있는 폴더입니다"
 
 msgid "This folder is empty"
 msgstr "이 폴더는 비어 있습니다"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"이 이미지를 열 수 없습니다. 20MB 이하의 PNG, JPEG 또는 WebP 이미지를 사용하세"
+"요."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:45\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -655,6 +655,13 @@ msgstr "Odstrániť natrvalo?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Ak exportný súbor nebol chránený heslom, odstráňte ho."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Odstrániť aj tu položky ({})?"
+msgstr[1] "Odstrániť aj tu položky ({})?"
+msgstr[2] "Odstrániť aj tu položky ({})?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1144,6 +1151,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Ponechať vymazané položky (v dňoch)"
 
+msgid "Keep them"
+msgstr "Ponechať"
+
 msgid "Keep using"
 msgstr "Pokračovať"
 
@@ -1274,6 +1284,9 @@ msgstr "Ďalšie akcie"
 
 msgid "More options"
 msgstr "Ďalšie možnosti"
+
+msgid "Move to Deleted items"
+msgstr "Presunúť do Odstránených položiek"
 
 msgid "Moved to Deleted items"
 msgstr "Presunuté do Odstránených položiek"
@@ -2055,11 +2068,12 @@ msgstr "Synchronizácia s problémami"
 msgid "Sync completed with warnings"
 msgstr "Synchronizácia dokončená s upozorneniami"
 
-msgid "Sync conflict"
-msgstr "Konflikt synchronizácie"
-
 msgid "Sync conflict detected"
 msgstr "Zistený konflikt synchronizácie"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Konflikt synchronizácie: server má novšiu kópiu (generácia {})"
 
 msgid "Sync failed"
 msgstr "Synchronizácia zlyhala"
@@ -2297,6 +2311,17 @@ msgstr "Nie je čo nové importovať."
 msgid "These options cannot produce a password."
 msgstr "S týmito možnosťami nemožno vytvoriť heslo."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Boli synchronizované s Nextcloud Passwords a na serveri už nie sú. Ak ste "
+"ich tam odstránili, tu sa presunú do Odstránených položiek. Ak nie, server "
+"možno odpovedal len čiastočne: ponechajte ich a ďalšia synchronizácia to "
+"skúsi znova."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Tento PIN už k trezoru nepatrí. Nič sa nezmenilo."
 
@@ -2341,11 +2366,21 @@ msgstr "Tento súbor bude možné čítať bez hesla"
 msgid "This file could not be read"
 msgstr "Tento súbor sa nepodarilo prečítať"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Tento súbor je príliš veľký na priloženie. Limit je 64 MB."
+
 msgid "This folder already exists"
 msgstr "Tento priečinok už existuje"
 
 msgid "This folder is empty"
 msgstr "Tento priečinok je prázdny"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Obrázok sa nepodarilo otvoriť. Použite obrázok PNG, JPEG alebo WebP s "
+"veľkosťou do 20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

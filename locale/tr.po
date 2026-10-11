@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:47\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -659,6 +659,12 @@ msgstr "Kalıcı olarak silinsin mi?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Parolayla korunmuyorsa dışa aktarma dosyasını silin."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "{} öge burada da silinsin mi?"
+msgstr[1] "{} öge burada da silinsin mi?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1145,6 +1151,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Silinen girişleri sakla (gün)"
 
+msgid "Keep them"
+msgstr "Sakla"
+
 msgid "Keep using"
 msgstr "Kullanmaya devam et"
 
@@ -1275,6 +1284,9 @@ msgstr "Diğer eylemler"
 
 msgid "More options"
 msgstr "Diğer seçenekler"
+
+msgid "Move to Deleted items"
+msgstr "Silinen ögelere taşı"
 
 msgid "Moved to Deleted items"
 msgstr "Silinen öğelere taşındı"
@@ -2061,11 +2073,12 @@ msgstr "Senkronizasyon sorunlu"
 msgid "Sync completed with warnings"
 msgstr "Senkronizasyon uyarılarla tamamlandı"
 
-msgid "Sync conflict"
-msgstr "Senkronizasyon çakışması"
-
 msgid "Sync conflict detected"
 msgstr "Senkronizasyon çakışması algılandı"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Eşitleme çakışması: sunucuda daha yeni bir kopya var (nesil {})"
 
 msgid "Sync failed"
 msgstr "Senkronizasyon başarısız"
@@ -2289,6 +2302,17 @@ msgstr "İçe aktarılacak yeni bir şey yok."
 msgid "These options cannot produce a password."
 msgstr "Bu seçeneklerle parola oluşturulamaz."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Bunlar Nextcloud Passwords ile eşitlenmişti ve artık sunucuda yok. Onları "
+"orada sildiyseniz burada Silinen ögelere taşınırlar. Silmediyseniz sunucu "
+"yalnızca kısmen yanıt vermiş olabilir: saklayın, sonraki eşitleme yeniden "
+"dener."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Bu PIN artık kasayla eşleşmiyor. Hiçbir şey değişmedi."
 
@@ -2333,11 +2357,21 @@ msgstr "Bu dosya parola olmadan okunabilir"
 msgid "This file could not be read"
 msgstr "Bu dosya okunamadı"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Bu dosya eklemek için çok büyük. Sınır 64 MB."
+
 msgid "This folder already exists"
 msgstr "Bu klasör zaten var"
 
 msgid "This folder is empty"
 msgstr "Bu klasör boş"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Bu görüntü açılamadı. En fazla 20 MB boyutunda PNG, JPEG veya WebP görüntü "
+"kullanın."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:44\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -658,6 +658,13 @@ msgstr "Удалить навсегда?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Удалите файл экспорта, если он не был защищён паролем."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Удалить и здесь записи ({})?"
+msgstr[1] "Удалить и здесь записи ({})?"
+msgstr[2] "Удалить и здесь записи ({})?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1147,6 +1154,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Хранить удаленные записи (дней)"
 
+msgid "Keep them"
+msgstr "Оставить"
+
 msgid "Keep using"
 msgstr "Продолжить работу"
 
@@ -1277,6 +1287,9 @@ msgstr "Другие действия"
 
 msgid "More options"
 msgstr "Другие параметры"
+
+msgid "Move to Deleted items"
+msgstr "Переместить в удалённые"
 
 msgid "Moved to Deleted items"
 msgstr "Перемещено в «Удалённые»"
@@ -2065,11 +2078,12 @@ msgstr "Проблемы с синхронизацией"
 msgid "Sync completed with warnings"
 msgstr "Синхронизация завершена с предупреждениями"
 
-msgid "Sync conflict"
-msgstr "Конфликт синхронизации"
-
 msgid "Sync conflict detected"
 msgstr "Обнаружен конфликт синхронизации"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Конфликт синхронизации: на сервере более новая копия (поколение {})"
 
 msgid "Sync failed"
 msgstr "Ошибка синхронизации"
@@ -2308,6 +2322,17 @@ msgstr "Нет ничего нового для импорта."
 msgid "These options cannot produce a password."
 msgstr "С этими параметрами невозможно создать пароль."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Они были синхронизированы с Nextcloud Passwords и больше не находятся на "
+"сервере. Если вы удалили их там, здесь они попадут в удалённые. Если нет, "
+"сервер мог ответить лишь частично: оставьте их, и следующая синхронизация "
+"попробует снова."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Этот PIN больше не подходит к хранилищу. Ничего не изменено."
 
@@ -2353,11 +2378,21 @@ msgstr "Этот файл можно прочитать без пароля"
 msgid "This file could not be read"
 msgstr "Не удалось прочитать этот файл"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Файл слишком большой для вложения. Ограничение — 64 МБ."
+
 msgid "This folder already exists"
 msgstr "Такая папка уже существует"
 
 msgid "This folder is empty"
 msgstr "Эта папка пуста"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Не удалось открыть изображение. Используйте изображение PNG, JPEG или WebP "
+"размером до 20 МБ."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

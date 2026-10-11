@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:26\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -652,6 +652,12 @@ msgstr "Kas kustutada jäädavalt?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Kustuta ekspordifail, kui see polnud parooliga kaitstud."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Kas kustutada {} kirje ka siin?"
+msgstr[1] "Kas kustutada {} kirjet ka siin?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1136,6 +1142,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Säilita kustutatud kirjeid (päeva)"
 
+msgid "Keep them"
+msgstr "Jäta alles"
+
 msgid "Keep using"
 msgstr "Jätka kasutamist"
 
@@ -1266,6 +1275,9 @@ msgstr "Rohkem toiminguid"
 
 msgid "More options"
 msgstr "Rohkem valikuid"
+
+msgid "Move to Deleted items"
+msgstr "Teisalda kustutatute hulka"
 
 msgid "Moved to Deleted items"
 msgstr "Teisaldatud kustutatud üksustesse"
@@ -2045,11 +2057,12 @@ msgstr "Sync probleemidega"
 msgid "Sync completed with warnings"
 msgstr "Sünkroonimine lõpetatud hoiatusega"
 
-msgid "Sync conflict"
-msgstr "Sünkroonimise konflikt"
-
 msgid "Sync conflict detected"
 msgstr "Tuvastati sünkroonimise konflikt"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Sünkroonimise konflikt: serveris on uuem koopia (põlvkond {})"
 
 msgid "Sync failed"
 msgstr "Sünkroonimine ebaõnnestus"
@@ -2275,6 +2288,17 @@ msgstr "Uut importimiseks pole."
 msgid "These options cannot produce a password."
 msgstr "Nende valikutega ei saa parooli luua."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Need olid sünkroonitud Nextcloud Passwordsiga ega ole enam serveris. Kui "
+"kustutasid need seal, liiguvad need siin kustutatute hulka. Kui mitte, võis "
+"server vastata vaid osaliselt: jäta need alles ja järgmine sünkroonimine "
+"proovib uuesti."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "See PIN-kood ei sobi enam hoidlaga. Midagi ei muudetud."
 
@@ -2320,11 +2344,20 @@ msgstr "Seda faili saab lugeda ilma paroolita"
 msgid "This file could not be read"
 msgstr "Seda faili ei õnnestunud lugeda"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "See fail on manustamiseks liiga suur. Piirang on 64 MB."
+
 msgid "This folder already exists"
 msgstr "See kaust on juba olemas"
 
 msgid "This folder is empty"
 msgstr "See kaust on tühi"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Pilti ei saanud avada. Kasuta kuni 20 MB suurust PNG-, JPEG- või WebP-pilti."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

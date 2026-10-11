@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -640,6 +640,12 @@ msgstr "למחוק לצמיתות?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "יש למחוק את קובץ הייצוא אם לא היה מוגן בסיסמה."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "למחוק גם כאן פריטים ({})?"
+msgstr[1] "למחוק גם כאן פריטים ({})?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1108,6 +1114,9 @@ msgstr "שמירת עותק מוגן של הכספת במקום בטוח, והע
 msgid "Keep deleted entries for (days)"
 msgstr "שמור ערכים שנמחקו למשך (ימים)"
 
+msgid "Keep them"
+msgstr "לשמור אותם"
+
 msgid "Keep using"
 msgstr "להמשיך להשתמש"
 
@@ -1237,6 +1246,9 @@ msgstr "פעולות נוספות"
 
 msgid "More options"
 msgstr "אפשרויות נוספות"
+
+msgid "Move to Deleted items"
+msgstr "להעביר לפריטים שנמחקו"
 
 msgid "Moved to Deleted items"
 msgstr "הועבר לפריטים שנמחקו"
@@ -2005,11 +2017,12 @@ msgstr "בעיות בסנכרון"
 msgid "Sync completed with warnings"
 msgstr "הסנכרון הושלם עם אזהרות"
 
-msgid "Sync conflict"
-msgstr "התנגשות סנכרון"
-
 msgid "Sync conflict detected"
 msgstr "התגלתה התנגשות סנכרון"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "התנגשות סנכרון: בשרת יש עותק חדש יותר (דור {})"
 
 msgid "Sync failed"
 msgstr "הסנכרון נכשל"
@@ -2224,6 +2237,16 @@ msgstr "אין שום דבר חדש לייבא."
 msgid "These options cannot produce a password."
 msgstr "אפשרויות אלה אינן יכולות ליצור סיסמה."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"הם היו מסונכרנים עם Nextcloud Passwords וכבר אינם בשרת. אם מחקתם אותם שם, הם "
+"יועברו כאן לפריטים שנמחקו. אם לא, ייתכן שהשרת ענה רק חלקית: שמרו אותם "
+"והסנכרון הבא ינסה שוב."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "ה־PIN הזה כבר אינו תואם את הכספת. דבר לא שונה."
 
@@ -2268,11 +2291,19 @@ msgstr "ניתן לקרוא קובץ זה ללא סיסמה"
 msgid "This file could not be read"
 msgstr "לא ניתן היה לקרוא קובץ זה"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "הקובץ גדול מדי לצירוף. המגבלה היא 64 MB."
+
 msgid "This folder already exists"
 msgstr "תיקייה זו כבר קיימת"
 
 msgid "This folder is empty"
 msgstr "תיקייה זו ריקה"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr "לא ניתן לפתוח את התמונה. השתמשו בתמונת PNG, JPEG או WebP של עד 20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

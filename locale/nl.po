@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:38\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -661,6 +661,12 @@ msgid "Delete the export file if it was not protected by a password."
 msgstr ""
 "Verwijder het exportbestand als het niet met een wachtwoord was beveiligd."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "{} item hier ook verwijderen?"
+msgstr[1] "{} items hier ook verwijderen?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1151,6 +1157,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Verwijderde items bewaren (dagen)"
 
+msgid "Keep them"
+msgstr "Behouden"
+
 msgid "Keep using"
 msgstr "Doorgaan"
 
@@ -1285,6 +1294,9 @@ msgstr "Meer acties"
 
 msgid "More options"
 msgstr "Meer opties"
+
+msgid "Move to Deleted items"
+msgstr "Naar Verwijderde items verplaatsen"
 
 msgid "Moved to Deleted items"
 msgstr "Verplaatst naar Verwijderde items"
@@ -2082,11 +2094,13 @@ msgstr "Sync-problemen"
 msgid "Sync completed with warnings"
 msgstr "Synchronisatie voltooid met waarschuwingen"
 
-msgid "Sync conflict"
-msgstr "Synchronisatieconflict"
-
 msgid "Sync conflict detected"
 msgstr "Synchronisatieconflict gedetecteerd"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr ""
+"Synchronisatieconflict: de server heeft een nieuwere kopie (generatie {})"
 
 msgid "Sync failed"
 msgstr "Synchronisatie mislukt"
@@ -2331,6 +2345,17 @@ msgstr "Er is niets nieuws om te importeren."
 msgid "These options cannot produce a password."
 msgstr "Met deze opties kan geen wachtwoord worden gemaakt."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Ze werden gesynchroniseerd met Nextcloud Passwords en staan niet meer op de "
+"server. Als je ze daar hebt verwijderd, gaan ze hier naar Verwijderde items. "
+"Zo niet, dan heeft de server misschien maar gedeeltelijk geantwoord: behoud "
+"ze, de volgende synchronisatie probeert het opnieuw."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Deze pincode past niet meer bij de kluis. Er is niets gewijzigd."
 
@@ -2378,11 +2403,21 @@ msgstr "Dit bestand kan zonder wachtwoord worden gelezen"
 msgid "This file could not be read"
 msgstr "Dit bestand kon niet worden gelezen"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Dit bestand is te groot om bij te voegen. De limiet is 64 MB."
+
 msgid "This folder already exists"
 msgstr "Deze map bestaat al"
 
 msgid "This folder is empty"
 msgstr "Deze map is leeg"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Deze afbeelding kon niet worden geopend. Gebruik een PNG-, JPEG- of WebP-"
+"afbeelding van maximaal 20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

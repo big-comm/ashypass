@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:28\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -656,6 +656,12 @@ msgstr "Poistetaanko pysyvästi?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Poista vientitiedosto, jos sitä ei ollut suojattu salasanalla."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Poistetaanko {} kohde myös täältä?"
+msgstr[1] "Poistetaanko {} kohdetta myös täältä?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1141,6 +1147,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Säilytä poistetut merkinnät (päivää)"
 
+msgid "Keep them"
+msgstr "Säilytä"
+
 msgid "Keep using"
 msgstr "Jatka käyttöä"
 
@@ -1272,6 +1281,9 @@ msgstr "Lisää toimintoja"
 
 msgid "More options"
 msgstr "Lisää valintoja"
+
+msgid "Move to Deleted items"
+msgstr "Siirrä Poistettuihin"
 
 msgid "Moved to Deleted items"
 msgstr "Siirretty kohtaan Poistetut kohteet"
@@ -2058,11 +2070,12 @@ msgstr "Synkronointi epäonnistui"
 msgid "Sync completed with warnings"
 msgstr "Synkronointi valmis varoituksin"
 
-msgid "Sync conflict"
-msgstr "Synkronointikonflikti"
-
 msgid "Sync conflict detected"
 msgstr "Synkronointikonflikti havaittu"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Synkronointiristiriita: palvelimella on uudempi kopio (sukupolvi {})"
 
 msgid "Sync failed"
 msgstr "Synkronointi epäonnistui"
@@ -2290,6 +2303,17 @@ msgstr "Ei mitään uutta tuotavaa."
 msgid "These options cannot produce a password."
 msgstr "Näillä valinnoilla ei voi luoda salasanaa."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Ne oli synkronoitu Nextcloud Passwordsin kanssa, eikä niitä ole enää "
+"palvelimella. Jos poistit ne siellä, ne siirtyvät täällä Poistettuihin. Jos "
+"et, palvelin on ehkä vastannut vain osittain: säilytä ne, niin seuraava "
+"synkronointi yrittää uudelleen."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Tämä PIN-koodi ei enää vastaa holvia. Mitään ei muutettu."
 
@@ -2337,11 +2361,20 @@ msgstr "Tämän tiedoston voi lukea ilman salasanaa"
 msgid "This file could not be read"
 msgstr "Tätä tiedostoa ei voitu lukea"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Tiedosto on liian suuri liitettäväksi. Raja on 64 Mt."
+
 msgid "This folder already exists"
 msgstr "Tämä kansio on jo olemassa"
 
 msgid "This folder is empty"
 msgstr "Tämä kansio on tyhjä"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Kuvaa ei voitu avata. Käytä enintään 20 Mt:n PNG-, JPEG- tai WebP-kuvaa."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

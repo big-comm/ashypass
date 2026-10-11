@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -661,6 +661,12 @@ msgstr "Végleges törlés?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Törölje az exportfájlt, ha nem volt jelszóval védve."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Itt is törli a(z) {} elemet?"
+msgstr[1] "Itt is törli a(z) {} elemet?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1153,6 +1159,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Törölt bejegyzések megőrzése (napokban)"
 
+msgid "Keep them"
+msgstr "Megtartás"
+
 msgid "Keep using"
 msgstr "Használat folytatása"
 
@@ -1283,6 +1292,9 @@ msgstr "További műveletek"
 
 msgid "More options"
 msgstr "További lehetőségek"
+
+msgid "Move to Deleted items"
+msgstr "Áthelyezés a Törölt elemek közé"
 
 msgid "Moved to Deleted items"
 msgstr "Áthelyezve a Törölt elemek közé"
@@ -2082,11 +2094,13 @@ msgstr "Szinkronizálási hiba"
 msgid "Sync completed with warnings"
 msgstr "Szinkronizálás figyelmeztetésekkel befejezve"
 
-msgid "Sync conflict"
-msgstr "Szinkronizálási ütközés"
-
 msgid "Sync conflict detected"
 msgstr "Szinkronizálási ütközés észlelve"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr ""
+"Szinkronizálási ütközés: a kiszolgálón újabb másolat van ({}. generáció)"
 
 msgid "Sync failed"
 msgstr "Szinkronizálás sikertelen"
@@ -2317,6 +2331,17 @@ msgstr "Nincs új importálnivaló."
 msgid "These options cannot produce a password."
 msgstr "Ezekkel a beállításokkal nem hozható létre jelszó."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Ezek szinkronizálva voltak a Nextcloud Passwords szolgáltatással, és már "
+"nincsenek a kiszolgálón. Ha ott törölte őket, itt a Törölt elemek közé "
+"kerülnek. Ha nem, a kiszolgáló talán csak részben válaszolt: tartsa meg "
+"őket, és a következő szinkronizálás újra próbálkozik."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Ez a PIN már nem illik a tárhoz. Semmi sem változott."
 
@@ -2362,11 +2387,21 @@ msgstr "Ez a fájl jelszó nélkül olvasható"
 msgid "This file could not be read"
 msgstr "Ezt a fájlt nem sikerült beolvasni"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Ez a fájl túl nagy a csatoláshoz. A korlát 64 MB."
+
 msgid "This folder already exists"
 msgstr "Ez a mappa már létezik"
 
 msgid "This folder is empty"
 msgstr "Ez a mappa üres"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"A kép nem nyitható meg. Használjon legfeljebb 20 MB-os PNG, JPEG vagy WebP "
+"képet."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "

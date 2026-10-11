@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 23:02-0300\n"
+"POT-Creation-Date: 2026-10-11 15:31-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: English\n"
@@ -664,6 +664,12 @@ msgstr "Delete permanently?"
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Delete the export file if it was not protected by a password."
 
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Delete {} entry here too?"
+msgstr[1] "Delete {} entries here too?"
+
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
 "removed on next app start. Set 0 to bypass the trash."
@@ -1146,6 +1152,9 @@ msgstr ""
 msgid "Keep deleted entries for (days)"
 msgstr "Keep deleted entries for (days)"
 
+msgid "Keep them"
+msgstr "Keep them"
+
 msgid "Keep using"
 msgstr "Keep using"
 
@@ -1284,6 +1293,9 @@ msgstr "More actions"
 
 msgid "More options"
 msgstr "More options"
+
+msgid "Move to Deleted items"
+msgstr "Move to Deleted items"
 
 msgid "Moved to Deleted items"
 msgstr "Moved to Deleted items"
@@ -2094,11 +2106,12 @@ msgstr "Sync with issues"
 msgid "Sync completed with warnings"
 msgstr "Sync completed with warnings"
 
-msgid "Sync conflict"
-msgstr "Sync conflict"
-
 msgid "Sync conflict detected"
 msgstr "Sync conflict detected"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Sync conflict: the server has a newer copy (generation {})"
 
 msgid "Sync failed"
 msgstr "Sync failed"
@@ -2326,6 +2339,17 @@ msgstr "There is nothing new to import."
 msgid "These options cannot produce a password."
 msgstr "These options cannot produce a password."
 
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "This PIN no longer matches the vault. Nothing was changed."
 
@@ -2370,11 +2394,21 @@ msgstr "This file can be read without a password"
 msgid "This file could not be read"
 msgstr "This file could not be read"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "This file is too large to attach. The limit is 64 MB."
+
 msgid "This folder already exists"
 msgstr "This folder already exists"
 
 msgid "This folder is empty"
 msgstr "This folder is empty"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "
