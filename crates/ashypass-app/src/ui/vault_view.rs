@@ -158,6 +158,9 @@ struct Inner {
     synced_ids: RefCell<Option<Rc<HashSet<i64>>>>,
     show_badges: Cell<bool>,
     show_favicons: Cell<bool>,
+    /// Badges, favicons or the synced set changed: every row must re-bind
+    /// on the next filter, not only the entries that changed.
+    rebind_all: Cell<bool>,
     search_reload_id: RefCell<Option<glib::SourceId>>,
     event_reload_id: RefCell<Option<glib::SourceId>>,
 
@@ -165,6 +168,9 @@ struct Inner {
     details_toolbar: adw::ToolbarView,
     details_placeholder: gtk::Widget,
     open_id: Cell<Option<i64>>,
+    /// `(updated_at, favorite)` of the entry the details show, to skip a
+    /// rebuild (which re-hides a revealed password) when nothing changed.
+    open_stamp: Cell<Option<(i64, bool)>>,
     details_timer: RefCell<Option<glib::SourceId>>,
 
     on_import: RefCell<Option<Callback>>,
@@ -335,12 +341,14 @@ impl VaultView {
             synced_ids: RefCell::new(None),
             show_badges: Cell::new(false),
             show_favicons: Cell::new(true),
+            rebind_all: Cell::new(false),
             search_reload_id: RefCell::new(None),
             event_reload_id: RefCell::new(None),
             details_page,
             details_toolbar,
             details_placeholder: placeholder_widget,
             open_id: Cell::new(None),
+            open_stamp: Cell::new(None),
             details_timer: RefCell::new(None),
             on_import: RefCell::new(None),
             on_trash: RefCell::new(None),
@@ -839,6 +847,11 @@ impl Inner {
             return;
         }
         let settings = self.state.settings();
+        let look_before = (
+            self.show_favicons.get(),
+            self.show_badges.get(),
+            self.synced_ids.borrow().clone(),
+        );
         self.show_favicons.set(settings.show_favicons);
         if settings.compact_vault_list {
             self.list_view.add_css_class("ashy-compact");
@@ -859,6 +872,14 @@ impl Inner {
             }
         };
         self.update_sync_state(&cache, settings.show_sync_badges);
+        let look_after = (
+            self.show_favicons.get(),
+            self.show_badges.get(),
+            self.synced_ids.borrow().clone(),
+        );
+        if look_before != look_after {
+            self.rebind_all.set(true);
+        }
         self.rebuild_folder_menu(&cache.categories);
         // A folder that no longer exists cannot stay selected.
         let stale = matches!(&*self.folder_filter.borrow(), FolderFilter::Named(name) if !cache.categories.contains(name));
@@ -870,11 +891,10 @@ impl Inner {
         self.apply_filter();
         // Keep the open details in step with the data (edited, deleted…).
         if let Some(id) = self.open_id.get() {
-            let still_there = cache.entries.iter().any(|e| e.id == id);
-            if still_there {
-                self.render_details(id);
-            } else {
-                self.close_details();
+            match cache.entries.iter().find(|e| e.id == id) {
+                Some(e) if self.open_stamp.get() == Some((e.updated_at, e.favorite)) => {}
+                Some(_) => self.render_details(id),
+                None => self.close_details(),
             }
         }
     }
@@ -1011,32 +1031,34 @@ impl Inner {
         let favorites_only = self.favorites_toggle.is_active();
         let entries = cache.filtered(search.as_deref(), &folder, favorites_only);
 
-        // Replacing the model scrolls the list back to the top. Skip it when
-        // the same entries are already shown in the same order.
-        let unchanged = self.store.n_items() as usize == entries.len()
-            && entries.iter().enumerate().all(|(i, e)| {
-                self.store
-                    .item(i as u32)
-                    .and_then(|o| o.downcast::<glib::BoxedAnyObject>().ok())
-                    .is_some_and(|b| Rc::ptr_eq(&b.borrow::<Rc<PasswordEntry>>(), e))
-            });
-        if !unchanged {
-            // Same number of rows: a refresh of the same entries (a favorite,
-            // an edit, a sync), so keep the user's place in the list.
-            let refresh = self.store.n_items() as usize == entries.len();
-            let adjustment = self.list_view.vadjustment();
-            let position = adjustment.as_ref().map(|a| a.value()).unwrap_or(0.0);
+        // Patch only the rows that changed: replacing the whole model
+        // scrolls back to the top, re-creates every row (losing keyboard
+        // focus) and decodes every favicon again.
+        let old: Vec<Rc<PasswordEntry>> = (0..self.store.n_items())
+            .filter_map(|i| self.store.item(i))
+            .filter_map(|o| o.downcast::<glib::BoxedAnyObject>().ok())
+            .map(|b| b.borrow::<Rc<PasswordEntry>>().clone())
+            .collect();
+        if self.rebind_all.replace(false) {
             let items: Vec<glib::Object> = entries
                 .iter()
                 .map(|e| glib::BoxedAnyObject::new(e.clone()).upcast())
                 .collect();
+            let adjustment = self.list_view.vadjustment();
+            let position = adjustment.as_ref().map(|a| a.value()).unwrap_or(0.0);
             self.store.splice(0, self.store.n_items(), &items);
-            if let (true, Some(adjustment)) = (refresh, adjustment) {
+            if let Some(adjustment) = adjustment {
                 glib::idle_add_local_once(move || {
                     let max = (adjustment.upper() - adjustment.page_size()).max(0.0);
                     adjustment.set_value(position.min(max));
                 });
             }
+        } else if let Some((at, removed, added)) = list_patch(&old, &entries) {
+            let items: Vec<glib::Object> = added
+                .iter()
+                .map(|e| glib::BoxedAnyObject::new(e.clone()).upcast())
+                .collect();
+            self.store.splice(at as u32, removed as u32, &items);
         }
 
         let shown = entries.len();
@@ -1202,9 +1224,11 @@ impl Inner {
                 prefill_folder: None,
                 on_saved: Some(Box::new(move |id| {
                     if let Some(inner) = weak.upgrade() {
+                        // Details first: the reload then sees them current
+                        // and does not build them a second time.
                         inner.invalidate_caches();
-                        inner.reload();
                         inner.render_details(id);
+                        inner.reload();
                     }
                 })),
             },
@@ -1514,6 +1538,7 @@ impl Inner {
 
     fn close_details(&self) {
         self.stop_details_timer();
+        self.open_stamp.set(None);
         if let Some(previous) = self.open_id.take() {
             self.refresh_rows(&[previous]);
         }
@@ -1572,6 +1597,8 @@ impl Inner {
             ids.extend(previous);
             self.refresh_rows(&ids);
         }
+        self.open_stamp
+            .set(Some((entry.updated_at, entry.favorite)));
         self.details_page.set_title(&entry.title);
         let content = build_details(self, &entry);
         self.details_toolbar.set_content(Some(&content));
@@ -2098,6 +2125,41 @@ fn password_search_text(entry: &PasswordEntry) -> String {
 /// A fixed-width mask that does not reveal the length. Long passwords keep
 /// their last three characters as a hint to tell versions apart; short ones
 /// (PINs) show nothing, since three characters would give most of it away.
+/// The entries the list shows look the same (same row, same content).
+fn same_row(a: &PasswordEntry, b: &PasswordEntry) -> bool {
+    a.id == b.id
+        && a.title == b.title
+        && a.username == b.username
+        && a.url == b.url
+        && a.favorite == b.favorite
+        && a.category == b.category
+        && a.has_totp == b.has_totp
+        && a.updated_at == b.updated_at
+}
+
+/// The smallest single splice turning `old` into `new`: keep the common
+/// head and tail, replace what is between. `None` when nothing changed.
+fn list_patch<'a>(
+    old: &[Rc<PasswordEntry>],
+    new: &'a [Rc<PasswordEntry>],
+) -> Option<(usize, usize, &'a [Rc<PasswordEntry>])> {
+    let head = old
+        .iter()
+        .zip(new)
+        .take_while(|(a, b)| same_row(a, b))
+        .count();
+    if head == old.len() && head == new.len() {
+        return None;
+    }
+    let tail = old[head..]
+        .iter()
+        .rev()
+        .zip(new[head..].iter().rev())
+        .take_while(|(a, b)| same_row(a, b))
+        .count();
+    Some((head, old.len() - head - tail, &new[head..new.len() - tail]))
+}
+
 fn mask_password(s: &str) -> String {
     const MASK: &str = "••••••••";
     let len = s.chars().count();
@@ -2266,6 +2328,45 @@ mod tests {
     fn blank_category_counts_as_no_folder() {
         assert!(FolderFilter::NoFolder.matches(Some("  ")));
         assert!(!FolderFilter::NoFolder.matches(Some("Work")));
+    }
+
+    fn row(id: i64, title: &str) -> Rc<PasswordEntry> {
+        Rc::new(PasswordEntry {
+            id,
+            title: title.into(),
+            username: None,
+            url: None,
+            password: None,
+            notes: None,
+            totp_secret: None,
+            totp_algorithm: "SHA1".into(),
+            totp_digits: 6,
+            totp_period: 30,
+            has_totp: false,
+            category: None,
+            favorite: false,
+            created_at: 0,
+            updated_at: 0,
+            last_accessed: None,
+        })
+    }
+
+    #[test]
+    fn list_patch_touches_only_changed_rows() {
+        let old = vec![row(1, "a"), row(2, "b"), row(3, "c")];
+        // Fresh objects with the same content: nothing to do.
+        let same = vec![row(1, "a"), row(2, "b"), row(3, "c")];
+        assert!(list_patch(&old, &same).is_none());
+        // One edited row in the middle.
+        let edited = vec![row(1, "a"), row(2, "B"), row(3, "c")];
+        let (at, removed, added) = list_patch(&old, &edited).unwrap();
+        assert_eq!((at, removed, added.len()), (1, 1, 1));
+        // A row removed at the end, one inserted at the start.
+        let (at, removed, added) = list_patch(&old, &old[..2]).unwrap();
+        assert_eq!((at, removed, added.len()), (2, 1, 0));
+        let inserted = vec![row(0, "0"), row(1, "a"), row(2, "b"), row(3, "c")];
+        let (at, removed, added) = list_patch(&old, &inserted).unwrap();
+        assert_eq!((at, removed, added.len()), (0, 0, 1));
     }
 
     #[test]

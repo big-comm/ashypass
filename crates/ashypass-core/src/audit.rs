@@ -75,11 +75,14 @@ pub fn run(vault: &Vault, opts: AuditOptions) -> Result<Report> {
     }
 
     let now = chrono::Utc::now().timestamp();
-    let mut dup_groups: HashMap<String, Vec<i64>> = HashMap::new();
+    // Keyed by a digest, so the map does not hold a second plaintext copy
+    // of every password.
+    let mut dup_groups: HashMap<[u8; 32], Vec<i64>> = HashMap::new();
     for e in &decrypted {
         if let Some(p) = e.password.as_deref() {
             if !p.is_empty() {
-                dup_groups.entry(p.to_string()).or_default().push(e.id);
+                let digest: [u8; 32] = <sha2::Sha256 as sha2::Digest>::digest(p.as_bytes()).into();
+                dup_groups.entry(digest).or_default().push(e.id);
             }
         }
     }

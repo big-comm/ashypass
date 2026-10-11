@@ -19,7 +19,7 @@ use adw::prelude::*;
 use ashypass_core::db::vault::{NewEntry, PasswordEntry, UpdateEntry};
 use ashypass_core::totp::{generate_totp, Algorithm};
 use gtk::{gio, glib};
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use zeroize::Zeroizing;
 
@@ -39,6 +39,9 @@ struct Inner {
     empty: EmptyState,
     rows: RefCell<Vec<RowData>>,
     timer_id: RefCell<Option<glib::SourceId>>,
+    scrolled: gtk::ScrolledWindow,
+    /// Second of the last code update.
+    last_tick: Cell<Option<u64>>,
 }
 
 struct RowData {
@@ -49,6 +52,9 @@ struct RowData {
     algorithm: Algorithm,
     digits: u8,
     period: u32,
+    /// Time step of the code on screen: the HMAC runs once per period, not
+    /// on every tick.
+    shown_step: Cell<Option<u64>>,
 }
 
 impl TotpView {
@@ -128,6 +134,8 @@ impl TotpView {
             empty,
             rows: RefCell::new(Vec::new()),
             timer_id: RefCell::new(None),
+            scrolled: scrolled.clone(),
+            last_tick: Cell::new(None),
         });
 
         {
@@ -271,6 +279,10 @@ impl Inner {
                 .collect()
         };
 
+        // Rebuilding the rows must not throw the reader back to the top.
+        let scroll = self.scrolled.vadjustment();
+        let position = scroll.value();
+        let scroll = Some(scroll);
         self.rows.borrow_mut().clear();
         self.list_box.remove_all();
 
@@ -298,9 +310,18 @@ impl Inner {
             let row = self.build_row(&entry, secret, large, favicons);
             self.list_box.append(&row);
         }
+        self.last_tick.set(None);
         self.update_codes();
+        if let Some(adjustment) = scroll {
+            glib::idle_add_local_once(move || {
+                let max = (adjustment.upper() - adjustment.page_size()).max(0.0);
+                adjustment.set_value(position.min(max));
+            });
+        }
         let weak = Rc::downgrade(self);
-        let id = glib::timeout_add_seconds_local(1, move || {
+        // Half a second, so a new code shows at most half a second late
+        // (a one-second timer has an arbitrary phase).
+        let id = glib::timeout_add_local(std::time::Duration::from_millis(500), move || {
             let Some(inner) = weak.upgrade() else {
                 return glib::ControlFlow::Break;
             };
@@ -373,10 +394,9 @@ impl Inner {
         }
         content.append(&text);
 
-        let code_label = gtk::Label::builder()
-            .valign(gtk::Align::Center)
-            .selectable(true)
-            .build();
+        // Not selectable: Ctrl+C on the label would skip the clipboard
+        // auto-clear that the Copy button applies.
+        let code_label = gtk::Label::builder().valign(gtk::Align::Center).build();
         code_label.add_css_class("ashy-code");
         code_label.add_css_class("monospace");
         if large {
@@ -481,23 +501,26 @@ impl Inner {
             algorithm: Algorithm::parse(&entry.totp_algorithm).unwrap_or(Algorithm::Sha1),
             digits: entry.totp_digits,
             period: entry.totp_period.max(1),
+            shown_step: Cell::new(None),
         });
         row
     }
 
     fn update_codes(&self) {
         let now = chrono::Utc::now().timestamp().max(0) as u64;
+        // The timer ticks twice a second; work only when the second changed.
+        if self.last_tick.replace(Some(now)) == Some(now) {
+            return;
+        }
         for rd in self.rows.borrow().iter() {
             let period = rd.period as u64;
             let remaining = period - (now % period);
-            match generate_totp(&rd.secret, rd.algorithm, rd.digits, rd.period, now) {
-                Ok(code) => {
-                    let grouped = group_code(&code);
-                    if rd.code_label.label() != grouped {
-                        rd.code_label.set_label(&grouped);
-                    }
+            let step = now / period;
+            if rd.shown_step.replace(Some(step)) != Some(step) {
+                match generate_totp(&rd.secret, rd.algorithm, rd.digits, rd.period, now) {
+                    Ok(code) => rd.code_label.set_label(&group_code(&code)),
+                    Err(_) => rd.code_label.set_label("—"),
                 }
-                Err(_) => rd.code_label.set_label("—"),
             }
             rd.progress.set_value(remaining as f64 / period as f64);
             rd.countdown_label.set_label(&format!("{remaining} s"));

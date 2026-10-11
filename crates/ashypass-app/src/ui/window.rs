@@ -664,6 +664,7 @@ impl MainWindowInner {
         self.backups_view.on_locked();
         self.unlock_view.on_locked();
         self.generator_view.panel.regenerate();
+        crate::favicons::clear_cache();
         self.lock_button.set_visible(false);
         if requires_vault(self.current.get()) {
             self.pending_page.set(Some(self.current.get()));

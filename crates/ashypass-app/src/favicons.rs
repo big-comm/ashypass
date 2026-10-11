@@ -5,8 +5,8 @@
 //! lands. Falls back to a generic icon on failure.
 
 use ashypass_core::favicons;
-use gtk::glib;
 use gtk::prelude::*;
+use gtk::{gdk, glib};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -14,6 +14,17 @@ use std::sync::{mpsc, Arc, LazyLock, Mutex};
 
 const FALLBACK_ICON: &str = "dialog-password-symbolic";
 const FETCH_WORKERS: usize = 4;
+/// A host whose icon could not be fetched is tried again after this long
+/// (the network may have been down), not only after a restart.
+const RETRY_MISSING: std::time::Duration = std::time::Duration::from_secs(10 * 60);
+
+/// Decoded once per host: rows re-bind on every scroll, and decoding the
+/// file each time is wasted work on the main thread.
+#[derive(Clone)]
+enum Cached {
+    Icon(gdk::Texture),
+    Missing(std::time::Instant),
+}
 
 struct FetchRequest {
     host: String,
@@ -43,7 +54,7 @@ static FETCHER: LazyLock<mpsc::Sender<FetchRequest>> = LazyLock::new(|| {
 });
 
 thread_local! {
-    static CACHE: RefCell<HashMap<String, Option<PathBuf>>> = RefCell::new(HashMap::new());
+    static CACHE: RefCell<HashMap<String, Cached>> = RefCell::new(HashMap::new());
     /// Images waiting for a host's icon. Every image that asks while a fetch
     /// is in flight is served when it lands, not just the first one.
     static WAITERS: RefCell<HashMap<String, Vec<glib::WeakRef<gtk::Image>>>> =
@@ -67,19 +78,25 @@ pub fn apply(image: &gtk::Image, url: Option<&str>, pixel: i32) {
     };
     image.set_widget_name(&tag_for(&host));
 
-    if let Some(cached) = CACHE.with(|cache| cache.borrow().get(&host).cloned()) {
-        match cached {
-            Some(path) => image.set_from_file(Some(&path)),
-            None => image.set_icon_name(Some(FALLBACK_ICON)),
+    match CACHE.with(|cache| cache.borrow().get(&host).cloned()) {
+        Some(Cached::Icon(texture)) => {
+            image.set_paintable(Some(&texture));
+            return;
         }
-        return;
+        Some(Cached::Missing(at)) if at.elapsed() < RETRY_MISSING => {
+            image.set_icon_name(Some(FALLBACK_ICON));
+            return;
+        }
+        _ => {}
     }
 
-    if let Some(path) = favicons::lookup(&host) {
+    if let Some(texture) = favicons::lookup(&host).and_then(|path| load(&path)) {
         CACHE.with(|cache| {
-            cache.borrow_mut().insert(host, Some(path.clone()));
+            cache
+                .borrow_mut()
+                .insert(host, Cached::Icon(texture.clone()));
         });
-        image.set_from_file(Some(&path));
+        image.set_paintable(Some(&texture));
         return;
     }
 
@@ -114,20 +131,39 @@ pub fn apply(image: &gtk::Image, url: Option<&str>, pixel: i32) {
             Err(mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
             Err(mpsc::TryRecvError::Disconnected) => None,
         };
+        let texture = path_opt.as_deref().and_then(load);
         CACHE.with(|cache| {
-            cache.borrow_mut().insert(host.clone(), path_opt.clone());
+            cache.borrow_mut().insert(
+                host.clone(),
+                match &texture {
+                    Some(texture) => Cached::Icon(texture.clone()),
+                    None => Cached::Missing(std::time::Instant::now()),
+                },
+            );
         });
         let waiting = WAITERS.with(|waiters| waiters.borrow_mut().remove(&host));
-        if let Some(path) = path_opt {
+        if let Some(texture) = texture {
             let tag = tag_for(&host);
             for image in waiting.into_iter().flatten() {
                 if let Some(image) = image.upgrade() {
                     if image.widget_name() == tag {
-                        image.set_from_file(Some(&path));
+                        image.set_paintable(Some(&texture));
                     }
                 }
             }
         }
         glib::ControlFlow::Break
     });
+}
+
+fn load(path: &std::path::Path) -> Option<gdk::Texture> {
+    gdk::Texture::from_filename(path)
+        .map_err(|e| log::debug!("favicon {} not loadable: {e}", path.display()))
+        .ok()
+}
+
+/// Forget which sites were looked up (host names say what is in the vault).
+/// Called when the vault locks.
+pub fn clear_cache() {
+    CACHE.with(|cache| cache.borrow_mut().clear());
 }
