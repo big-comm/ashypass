@@ -1,0 +1,244 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Vul aanmeldgegevens in en kopieer ze vanuit Ashy Pass, de wachtwoordbeheerder voor Linux.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Verbinden met Ashy Pass…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass is niet verbonden",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Installeer Ashy Pass en verbind deze browser via Ashy Pass → Instellingen → Browser.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "De browserextensie staat uit",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Zet de browserextensie aan via Ashy Pass → Instellingen → Browser.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "Nog geen kluis",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "Maak eerst uw kluis aan in Ashy Pass.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "Er is iets misgegaan",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "Opnieuw proberen",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "Uw kluis is vergrendeld",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "Hoofdwachtwoord",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "Ontgrendelen",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "Ontgrendelen…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "Verkeerd hoofdwachtwoord.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "Te veel pogingen. Wacht even en probeer het opnieuw.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "Alle items doorzoeken",
+    "description": "Label and placeholder of the search field."
+  },
+  "siteEntriesHeading": {
+    "message": "Aanmeldgegevens voor deze site",
+    "description": "Heading of the list of entries that match the current site."
+  },
+  "searchResultsHeading": {
+    "message": "Zoekresultaten",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "Geen aanmeldgegevens opgeslagen voor deze site.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "Geen items gevonden.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "Invullen werkt alleen op webpagina's.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "Geen gebruikersnaam",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "Naamloos",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "Invullen",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "Gebruiker kopiëren",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "Wachtwoord kopiëren",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "Code kopiëren",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "$TITLE$ invullen op deze pagina",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "Gebruikersnaam van $TITLE$ kopiëren",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "Wachtwoord van $TITLE$ kopiëren",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "Verificatiecode van $TITLE$ kopiëren",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "Gebruikersnaam gekopieerd",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "Wachtwoord gekopieerd",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "Code gekopieerd",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "Ingevuld",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "Geen aanmeldformulier gevonden op deze pagina",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "Kopiëren naar het klembord mislukt",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "Wachtwoord genereren",
+    "description": "Button that generates a new password and copies it."
+  },
+  "generatedLabel": {
+    "message": "Gegenereerd wachtwoord",
+    "description": "Label of the box that shows the generated password."
+  },
+  "generatedCopied": {
+    "message": "Nieuw wachtwoord gekopieerd",
+    "description": "Short confirmation after a password was generated and copied."
+  },
+  "revealPassword": {
+    "message": "Wachtwoord tonen",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "Wachtwoord verbergen",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "Vergrendelen",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "Kluis vergrendeld",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass heeft niet op tijd geantwoord.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "De verbinding met Ashy Pass is verbroken.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "Deze aanmeldgegevens horen niet bij deze site.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "Dit item bestaat niet meer.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "Dit item heeft geen verificatiecode.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "Deze pagina staat invullen niet toe.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass meldde: $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  }
+}

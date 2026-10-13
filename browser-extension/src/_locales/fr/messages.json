@@ -1,0 +1,244 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Remplissez et copiez vos identifiants depuis Ashy Pass, le gestionnaire de mots de passe pour Linux.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Connexion à Ashy Pass…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass n’est pas connecté",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Installez Ashy Pass et connectez ce navigateur dans Ashy Pass → Paramètres → Navigateur.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "L’extension du navigateur est désactivée",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Activez l’extension du navigateur dans Ashy Pass → Paramètres → Navigateur.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "Aucun coffre pour l’instant",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "Créez d’abord votre coffre dans Ashy Pass.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "Une erreur s’est produite",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "Réessayer",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "Votre coffre est verrouillé",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "Mot de passe maître",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "Déverrouiller",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "Déverrouillage…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "Mot de passe maître incorrect.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "Trop de tentatives. Patientez un instant et réessayez.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "Rechercher dans toutes les entrées",
+    "description": "Label and placeholder of the search field."
+  },
+  "siteEntriesHeading": {
+    "message": "Identifiants pour ce site",
+    "description": "Heading of the list of entries that match the current site."
+  },
+  "searchResultsHeading": {
+    "message": "Résultats de la recherche",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "Aucun identifiant enregistré pour ce site.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "Aucune entrée trouvée.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "Le remplissage ne fonctionne que sur les pages web.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "Aucun nom d’utilisateur",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "Sans titre",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "Remplir",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "Copier l’utilisateur",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "Copier le mot de passe",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "Copier le code",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "Remplir $TITLE$ sur cette page",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "Copier le nom d’utilisateur de $TITLE$",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "Copier le mot de passe de $TITLE$",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "Copier le code de vérification de $TITLE$",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "Nom d’utilisateur copié",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "Mot de passe copié",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "Code copié",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "Rempli",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "Aucun formulaire de connexion trouvé sur cette page",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "Impossible de copier dans le presse-papiers",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "Générer un mot de passe",
+    "description": "Button that generates a new password and copies it."
+  },
+  "generatedLabel": {
+    "message": "Mot de passe généré",
+    "description": "Label of the box that shows the generated password."
+  },
+  "generatedCopied": {
+    "message": "Nouveau mot de passe copié",
+    "description": "Short confirmation after a password was generated and copied."
+  },
+  "revealPassword": {
+    "message": "Afficher le mot de passe",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "Masquer le mot de passe",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "Verrouiller",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "Coffre verrouillé",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass n’a pas répondu à temps.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "La connexion à Ashy Pass a été perdue.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "Cet identifiant n’appartient pas à ce site.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "Cette entrée n’existe plus.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "Cette entrée n’a pas de code de vérification.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "Cette page n’autorise pas le remplissage.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass a signalé : $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  }
+}

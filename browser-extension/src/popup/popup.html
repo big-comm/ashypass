@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="color-scheme" content="light dark">
+    <title data-i18n="extName">Ashy Pass</title>
+    <link rel="stylesheet" href="popup.css">
+    <script type="module" src="popup.js"></script>
+  </head>
+  <body>
+    <header class="headerbar">
+      <img class="app-icon" src="../icons/icon-48.png" alt="" width="20" height="20">
+      <div class="titles">
+        <h1 class="title" data-i18n="extName">Ashy Pass</h1>
+        <p class="subtitle" id="site-host" hidden></p>
+      </div>
+    </header>
+
+    <main>
+      <section id="view-loading" class="view status-page" aria-busy="true">
+        <div class="spinner" aria-hidden="true"></div>
+        <p data-i18n="loading">Connecting to Ashy Pass…</p>
+      </section>
+
+      <section id="view-message" class="view status-page" hidden aria-labelledby="message-title">
+        <h2 id="message-title"></h2>
+        <p id="message-body" class="dim"></p>
+        <button type="button" id="retry" class="pill" data-i18n="retryButton">Try again</button>
+      </section>
+
+      <section id="view-locked" class="view" hidden aria-labelledby="locked-title">
+        <h2 id="locked-title" class="section-title" data-i18n="lockedTitle">Your vault is locked</h2>
+        <form id="unlock-form" class="card form-card" novalidate>
+          <label for="master-password" data-i18n="masterPasswordLabel">Master password</label>
+          <input type="password" id="master-password" name="master-password"
+                 autocomplete="current-password" spellcheck="false" required
+                 aria-describedby="unlock-error">
+          <p id="unlock-error" class="error" role="alert"></p>
+          <button type="submit" id="unlock" class="suggested" data-i18n="unlockButton">Unlock</button>
+        </form>
+      </section>
+
+      <section id="view-unlocked" class="view" hidden>
+        <div class="search">
+          <label for="search" class="visually-hidden" data-i18n="searchLabel">Search all entries</label>
+          <input type="search" id="search" autocomplete="off" spellcheck="false"
+                 data-i18n-placeholder="searchLabel">
+        </div>
+
+        <h2 id="list-heading" class="section-title"></h2>
+        <ul id="entry-list" class="boxed-list" aria-labelledby="list-heading" hidden></ul>
+        <p id="list-empty" class="dim empty" hidden></p>
+
+        <div id="generated" class="card generated" hidden>
+          <span id="generated-label" class="caption" data-i18n="generatedLabel">Generated password</span>
+          <div class="generated-row">
+            <output id="generated-value" class="mono" aria-labelledby="generated-label"></output>
+            <button type="button" id="reveal" class="flat small" aria-pressed="false"
+                    aria-controls="generated-value" data-i18n="revealPassword">Show password</button>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <button type="button" id="generate" class="pill" data-i18n="generateButton">Generate password</button>
+          <button type="button" id="lock" class="pill" data-i18n="lockButton">Lock</button>
+        </footer>
+      </section>
+    </main>
+
+    <div id="status" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>

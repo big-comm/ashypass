@@ -1,0 +1,244 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Заполняйте и копируйте учётные данные из Ashy Pass — менеджера паролей для Linux.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Подключение к Ashy Pass…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass не подключён",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Установите Ashy Pass и подключите этот браузер в Ashy Pass → Настройки → Браузер.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "Расширение для браузера отключено",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Включите расширение для браузера в Ashy Pass → Настройки → Браузер.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "Хранилища пока нет",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "Сначала создайте хранилище в Ashy Pass.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "Что-то пошло не так",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "Повторить",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "Хранилище заблокировано",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "Мастер-пароль",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "Разблокировать",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "Разблокировка…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "Неверный мастер-пароль.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "Слишком много попыток. Подождите немного и повторите.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "Поиск по всем записям",
+    "description": "Label and placeholder of the search field."
+  },
+  "siteEntriesHeading": {
+    "message": "Учётные данные для этого сайта",
+    "description": "Heading of the list of entries that match the current site."
+  },
+  "searchResultsHeading": {
+    "message": "Результаты поиска",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "Для этого сайта нет сохранённых учётных данных.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "Записи не найдены.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "Заполнение работает только на веб-страницах.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "Без имени пользователя",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "Без названия",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "Заполнить",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "Копировать логин",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "Копировать пароль",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "Копировать код",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "Заполнить $TITLE$ на этой странице",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "Копировать имя пользователя для $TITLE$",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "Копировать пароль для $TITLE$",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "Копировать код подтверждения для $TITLE$",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "Имя пользователя скопировано",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "Пароль скопирован",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "Код скопирован",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "Заполнено",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "На этой странице нет формы входа",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "Не удалось скопировать в буфер обмена",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "Сгенерировать пароль",
+    "description": "Button that generates a new password and copies it."
+  },
+  "generatedLabel": {
+    "message": "Сгенерированный пароль",
+    "description": "Label of the box that shows the generated password."
+  },
+  "generatedCopied": {
+    "message": "Новый пароль скопирован",
+    "description": "Short confirmation after a password was generated and copied."
+  },
+  "revealPassword": {
+    "message": "Показать пароль",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "Скрыть пароль",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "Заблокировать",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "Хранилище заблокировано",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass не ответил вовремя.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "Соединение с Ashy Pass потеряно.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "Эти учётные данные не относятся к этому сайту.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "Эта запись больше не существует.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "У этой записи нет кода подтверждения.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "Эта страница не разрешает заполнение.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ошибка Ashy Pass: $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  }
+}

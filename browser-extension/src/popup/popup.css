@@ -1,0 +1,390 @@
+/* Ashy Pass popup — libadwaita-like look, follows the system light/dark theme. */
+
+:root {
+  color-scheme: light dark;
+  --accent: #3584e4;
+  --accent-fg: #ffffff;
+  --accent-text: #1c71d8;
+  --window-bg: #fafafb;
+  --window-fg: rgba(0, 0, 6, 0.8);
+  --card-bg: #ffffff;
+  --card-shade: rgba(0, 0, 6, 0.07);
+  --border: rgba(0, 0, 6, 0.12);
+  --dim: rgba(0, 0, 6, 0.55);
+  --button-bg: rgba(0, 0, 6, 0.08);
+  --button-hover: rgba(0, 0, 6, 0.12);
+  --button-active: rgba(0, 0, 6, 0.2);
+  --entry-bg: rgba(0, 0, 6, 0.06);
+  --error: #c01c28;
+  --error-fg: #ffffff;
+  --toast-bg: rgba(30, 30, 30, 0.95);
+  --toast-fg: #ffffff;
+  --focus: rgba(53, 132, 228, 0.5);
+  --radius-card: 12px;
+  --radius-button: 6px;
+  font: 14px/1.4 Cantarell, "Adwaita Sans", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent-text: #78aeed;
+    --window-bg: #222226;
+    --window-fg: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.08);
+    --card-shade: rgba(0, 0, 6, 0.36);
+    --border: rgba(255, 255, 255, 0.15);
+    --dim: rgba(255, 255, 255, 0.6);
+    --button-bg: rgba(255, 255, 255, 0.1);
+    --button-hover: rgba(255, 255, 255, 0.15);
+    --button-active: rgba(255, 255, 255, 0.3);
+    --entry-bg: rgba(255, 255, 255, 0.1);
+    --error: #ff7b63;
+    --error-fg: #222226;
+    --toast-bg: rgba(250, 250, 251, 0.95);
+    --toast-fg: #222226;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--window-bg);
+  color: var(--window-fg);
+}
+
+body {
+  width: 360px;
+  min-height: 160px;
+  max-height: 580px;
+  overflow-y: auto;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.dim {
+  color: var(--dim);
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+
+.headerbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--window-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.titles {
+  min-width: 0;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+main {
+  padding: 12px;
+}
+
+/* ── Status pages ───────────────────────────────────────────────────────── */
+
+.status-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 8px;
+  text-align: center;
+}
+
+.status-page h2 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--button-bg);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 3s;
+  }
+}
+
+.section-title {
+  margin: 4px 4px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dim);
+}
+
+/* ── Cards, lists ───────────────────────────────────────────────────────── */
+
+.card,
+.boxed-list {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  box-shadow: 0 0 0 1px var(--card-shade), 0 1px 3px 1px var(--card-shade);
+}
+
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+}
+
+.form-card label {
+  font-weight: 600;
+}
+
+.boxed-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.row + .row {
+  border-top: 1px solid var(--border);
+}
+
+.row-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.row-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row-subtitle {
+  font-size: 12px;
+  color: var(--dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.empty {
+  margin: 0 4px 12px;
+}
+
+/* ── Controls ───────────────────────────────────────────────────────────── */
+
+input[type="password"],
+input[type="search"] {
+  width: 100%;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: var(--radius-button);
+  background: var(--entry-bg);
+  color: inherit;
+  font: inherit;
+}
+
+input:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.search {
+  margin-bottom: 12px;
+}
+
+button {
+  min-height: 32px;
+  padding: 5px 14px;
+  border: none;
+  border-radius: var(--radius-button);
+  background: var(--button-bg);
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--button-hover);
+}
+
+button:active {
+  background: var(--button-active);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button.pill {
+  border-radius: 999px;
+}
+
+button.small {
+  min-height: 26px;
+  padding: 3px 10px;
+  font-size: 12px;
+}
+
+button.suggested {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+button.suggested:hover {
+  background: color-mix(in srgb, var(--accent), white 10%);
+}
+
+button.suggested:active {
+  background: color-mix(in srgb, var(--accent), black 15%);
+}
+
+button.flat {
+  background: transparent;
+  color: var(--accent-text);
+}
+
+button.flat:hover {
+  background: var(--button-bg);
+}
+
+.error {
+  min-height: 1.4em;
+  color: var(--error);
+  font-size: 13px;
+}
+
+.error:empty {
+  min-height: 0;
+}
+
+/* ── Generated password ─────────────────────────────────────────────────── */
+
+.generated {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.caption {
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.generated-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mono {
+  flex: 1;
+  min-width: 0;
+  font-family: "Adwaita Mono", "Source Code Pro", ui-monospace, monospace;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* ── Toast ──────────────────────────────────────────────────────────────── */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  max-width: 320px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--toast-bg);
+  color: var(--toast-fg);
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+}
+
+.toast.visible {
+  opacity: 1;
+}
+
+.toast.error-toast {
+  background: var(--error);
+  color: var(--error-fg);
+}

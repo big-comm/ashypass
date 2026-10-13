@@ -1,0 +1,244 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Fylltu út og afritaðu innskráningar úr Ashy Pass, lykilorðastjóranum fyrir Linux.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Tengist Ashy Pass…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass er ekki tengt",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Settu upp Ashy Pass og tengdu þennan vafra í Ashy Pass → Stillingar → Vafri.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "Slökkt er á vafraviðbótinni",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Kveiktu á vafraviðbótinni í Ashy Pass → Stillingar → Vafri.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "Engin hvelfing enn",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "Búðu fyrst til hvelfinguna þína í Ashy Pass.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "Eitthvað fór úrskeiðis",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "Reyna aftur",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "Hvelfingin þín er læst",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "Aðallykilorð",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "Opna",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "Opnar…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "Rangt aðallykilorð.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "Of margar tilraunir. Bíddu aðeins og reyndu aftur.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "Leita í öllum færslum",
+    "description": "Label and placeholder of the search field."
+  },
+  "siteEntriesHeading": {
+    "message": "Innskráningar fyrir þennan vef",
+    "description": "Heading of the list of entries that match the current site."
+  },
+  "searchResultsHeading": {
+    "message": "Leitarniðurstöður",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "Engar innskráningar vistaðar fyrir þennan vef.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "Engar færslur fundust.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "Útfylling virkar aðeins á vefsíðum.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "Ekkert notandanafn",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "Án titils",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "Fylla út",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "Afrita notanda",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "Afrita lykilorð",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "Afrita kóða",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "Fylla út $TITLE$ á þessari síðu",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "Afrita notandanafn fyrir $TITLE$",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "Afrita lykilorð fyrir $TITLE$",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "Afrita staðfestingarkóða fyrir $TITLE$",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "Notandanafn afritað",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "Lykilorð afritað",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "Kóði afritaður",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "Fyllt út",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "Ekkert innskráningareyðublað fannst á þessari síðu",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "Ekki tókst að afrita á klippispjaldið",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "Útbúa lykilorð",
+    "description": "Button that generates a new password and copies it."
+  },
+  "generatedLabel": {
+    "message": "Útbúið lykilorð",
+    "description": "Label of the box that shows the generated password."
+  },
+  "generatedCopied": {
+    "message": "Nýtt lykilorð afritað",
+    "description": "Short confirmation after a password was generated and copied."
+  },
+  "revealPassword": {
+    "message": "Sýna lykilorð",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "Fela lykilorð",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "Læsa",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "Hvelfingu læst",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass svaraði ekki í tæka tíð.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "Tengingin við Ashy Pass rofnaði.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "Þessi innskráning tilheyrir ekki þessum vef.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "Þessi færsla er ekki lengur til.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "Þessi færsla er ekki með staðfestingarkóða.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "Þessi síða leyfir ekki útfyllingu.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass tilkynnti: $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  }
+}

@@ -1,0 +1,244 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Ispunjavajte i kopirajte podatke za prijavu iz aplikacije Ashy Pass, upravitelja lozinki za Linux.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Povezivanje s aplikacijom Ashy Pass…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass nije povezan",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Instalirajte Ashy Pass i povežite ovaj preglednik u Ashy Pass → Postavke → Preglednik.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "Proširenje preglednika je isključeno",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Uključite proširenje preglednika u Ashy Pass → Postavke → Preglednik.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "Još nema trezora",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "Najprije stvorite svoj trezor u aplikaciji Ashy Pass.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "Nešto je pošlo po zlu",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "Pokušaj ponovno",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "Vaš trezor je zaključan",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "Glavna lozinka",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "Otključaj",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "Otključavanje…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "Pogrešna glavna lozinka.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "Previše pokušaja. Pričekajte trenutak i pokušajte ponovno.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "Pretraži sve unose",
+    "description": "Label and placeholder of the search field."
+  },
+  "siteEntriesHeading": {
+    "message": "Prijave za ovu stranicu",
+    "description": "Heading of the list of entries that match the current site."
+  },
+  "searchResultsHeading": {
+    "message": "Rezultati pretrage",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "Za ovu stranicu nema spremljenih prijava.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "Nije pronađen nijedan unos.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "Ispunjavanje radi samo na web-stranicama.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "Nema korisničkog imena",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "Bez naslova",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "Ispuni",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "Kopiraj korisnika",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "Kopiraj lozinku",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "Kopiraj kôd",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "Ispuni $TITLE$ na ovoj stranici",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "Kopiraj korisničko ime za $TITLE$",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "Kopiraj lozinku za $TITLE$",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "Kopiraj kôd za provjeru unosa $TITLE$",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "Korisničko ime kopirano",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "Lozinka kopirana",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "Kôd kopiran",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "Ispunjeno",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "Na ovoj stranici nije pronađen obrazac za prijavu",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "Kopiranje u međuspremnik nije uspjelo",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "Generiraj lozinku",
+    "description": "Button that generates a new password and copies it."
+  },
+  "generatedLabel": {
+    "message": "Generirana lozinka",
+    "description": "Label of the box that shows the generated password."
+  },
+  "generatedCopied": {
+    "message": "Nova lozinka kopirana",
+    "description": "Short confirmation after a password was generated and copied."
+  },
+  "revealPassword": {
+    "message": "Prikaži lozinku",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "Sakrij lozinku",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "Zaključaj",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "Trezor zaključan",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass nije odgovorio na vrijeme.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "Veza s aplikacijom Ashy Pass je prekinuta.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "Ova prijava ne pripada ovoj stranici.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "Ovaj unos više ne postoji.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "Ovaj unos nema kôd za provjeru.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "Ova stranica ne dopušta ispunjavanje.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass je javio: $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  }
+}

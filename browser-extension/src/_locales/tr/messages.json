@@ -1,0 +1,244 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Linux için parola yöneticisi Ashy Pass'teki oturum açma bilgilerini doldurun ve kopyalayın.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Ashy Pass'e bağlanılıyor…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass bağlı değil",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Ashy Pass'i kurun ve bu tarayıcıyı Ashy Pass → Ayarlar → Tarayıcı bölümünden bağlayın.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "Tarayıcı eklentisi kapalı",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Tarayıcı eklentisini Ashy Pass → Ayarlar → Tarayıcı bölümünden açın.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "Henüz kasa yok",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "Önce Ashy Pass'te kasanızı oluşturun.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "Bir şeyler ters gitti",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "Yeniden dene",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "Kasanız kilitli",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "Ana parola",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "Kilidi Aç",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "Kilit açılıyor…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "Ana parola yanlış.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "Çok fazla deneme. Biraz bekleyip yeniden deneyin.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "Tüm girişlerde ara",
+    "description": "Label and placeholder of the search field."
+  },
+  "siteEntriesHeading": {
+    "message": "Bu sitenin oturum açma bilgileri",
+    "description": "Heading of the list of entries that match the current site."
+  },
+  "searchResultsHeading": {
+    "message": "Arama sonuçları",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "Bu site için kayıtlı oturum açma bilgisi yok.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "Giriş bulunamadı.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "Doldurma yalnızca web sayfalarında çalışır.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "Kullanıcı adı yok",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "Başlıksız",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "Doldur",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "Adı kopyala",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "Parolayı kopyala",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "Kodu kopyala",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "Bu sayfada $TITLE$ bilgilerini doldur",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "$TITLE$ kullanıcı adını kopyala",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "$TITLE$ parolasını kopyala",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "$TITLE$ doğrulama kodunu kopyala",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "Kullanıcı adı kopyalandı",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "Parola kopyalandı",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "Kod kopyalandı",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "Dolduruldu",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "Bu sayfada oturum açma formu bulunamadı",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "Panoya kopyalanamadı",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "Parola oluştur",
+    "description": "Button that generates a new password and copies it."
+  },
+  "generatedLabel": {
+    "message": "Oluşturulan parola",
+    "description": "Label of the box that shows the generated password."
+  },
+  "generatedCopied": {
+    "message": "Yeni parola kopyalandı",
+    "description": "Short confirmation after a password was generated and copied."
+  },
+  "revealPassword": {
+    "message": "Parolayı göster",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "Parolayı gizle",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "Kilitle",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "Kasa kilitlendi",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass zamanında yanıt vermedi.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "Ashy Pass ile bağlantı koptu.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "Bu oturum açma bilgisi bu siteye ait değil.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "Bu giriş artık mevcut değil.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "Bu girişin doğrulama kodu yok.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "Bu sayfa doldurmaya izin vermiyor.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass bildirdi: $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  }
+}
