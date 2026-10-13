@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:31\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -141,9 +141,6 @@ msgid ""
 msgstr ""
 "Drugi je uređaj prenio noviju snimku otkad se ovaj uređaj zadnji put "
 "sinkronizirao. Prijenosom sada bi se udaljene promjene učinile siročadi."
-
-msgid "Answer requests from the installed extension"
-msgstr "Odgovaraj na zahtjeve instaliranog proširenja"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -477,8 +474,21 @@ msgstr "Potvrdite glavnu lozinku za izvoz podataka."
 msgid "Conflicts"
 msgstr "Sukobi"
 
-msgid "Connecting the extension"
-msgstr "Povezivanje proširenja"
+msgid "Connect"
+msgstr "Poveži"
+
+msgid "Connect browsers"
+msgstr "Poveži preglednike"
+
+msgid "Connect your browsers"
+msgstr "Povežite svoje preglednike"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Povezani preglednici: {}. Ponovno ih pokrenite ako su otvoreni."
+msgstr[1] "Povezani preglednici: {}. Ponovno ih pokrenite ako su otvoreni."
+msgstr[2] "Povezani preglednici: {}. Ponovno ih pokrenite ako su otvoreni."
 
 msgid "Continue"
 msgstr "Nastavi"
@@ -518,6 +528,9 @@ msgstr "Nije moguće promijeniti favorit"
 
 msgid "Could not clear the history"
 msgstr "Nije moguće očistiti povijest"
+
+msgid "Could not connect the browsers"
+msgstr "Preglednici se nisu mogli povezati"
 
 msgid "Could not create the folder"
 msgstr "Nije moguće stvoriti mapu"
@@ -916,6 +929,15 @@ msgstr "Datoteke se šifriraju i pohranjuju unutar trezora."
 msgid "Filesystem"
 msgstr "Datotečni sustav"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Ispunjavajte i kopirajte lozinke u Chromeu, Braveu, Edgeu, Vivaldiju, "
+"Firefoxu i LibreWolfu. Proširenje ništa ne sprema: svaki put pita Ashy Pass "
+"i ispunjava stranicu tek nakon vašeg klika."
+
 msgid "Fill in all three fields."
 msgstr "Ispunite sva tri polja."
 
@@ -968,6 +990,9 @@ msgstr ""
 "Za Nextcloud, osnovni URL izgleda poput https://cloud.example.com/remote.php/"
 "dav/files/KORISNIČKO_IME"
 
+msgid "For the browsers installed for this user"
+msgstr "Za preglednike ovog korisnika"
+
 msgid "Forgot the master password"
 msgstr "Zaboravljena glavna lozinka"
 
@@ -1001,6 +1026,12 @@ msgstr "Generiraj lozinku"
 
 msgid "Generated password"
 msgstr "Generirana lozinka"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Preuzmi proširenje za Chrome, Brave, Edge i Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Preuzmi proširenje za Firefox"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "Dajte ovom unosu naziv, na primjer web-mjesto ili aplikaciju."
@@ -1101,13 +1132,6 @@ msgstr ""
 "Umetnite svoj FIDO2 token (Yubikey, Nitrokey, itd.) i autorizirajte na "
 "uređaju kada se to zatraži. Vaša trenutna lozinka je potrebna za "
 "autorizaciju novog ključnog utora."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Instalirajte proširenje u Chrome ili Firefox, a zatim registrirajte ovo "
-"računalo naredbom:  ashypass-native-host --install <id-proširenja>"
 
 msgid "Internal error: no passphrase set"
 msgstr "Interna pogreška: nije postavljena lozinka"
@@ -1400,6 +1424,11 @@ msgstr ""
 
 msgid "No stable device link"
 msgstr "Nema stalne poveznice uređaja"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Nije pronađen podržani preglednik. Jednom otvorite preglednik i pokušajte "
+"ponovno."
 
 msgid "No verification codes yet"
 msgstr "Još nema kodova za provjeru"
@@ -1827,6 +1856,13 @@ msgstr "Zadržavanje"
 msgid "Run"
 msgstr "Pokreni"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Učinite to jednom nakon instaliranja preglednika kako bi pronašao Ashy Pass. "
+"Dodaje se samo mala datoteka u mapu postavki svakog preglednika."
+
 msgid "Running audit..."
 msgstr "Pokretanje provjere..."
 
@@ -2166,6 +2202,9 @@ msgstr "Unos se premješta u Izbrisane stavke, gdje se može vratiti tijekom"
 msgid "The backup was not created"
 msgstr "Sigurnosna kopija nije izrađena"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Poveznica preglednika za Ashy Pass nije instalirana"
+
 msgid "The copy could not be downloaded"
 msgstr "Kopiju nije moguće preuzeti"
 
@@ -2178,6 +2217,16 @@ msgstr[2] "Kopija je provjerena i sadrži {} unosa."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Trenutna glavna lozinka nije točna. Ništa nije promijenjeno."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Proširenje traži glavnu lozinku i drži trezor otvorenim samo do automatskog "
+"zaključavanja. Ako je uključeno „Automatski otvori pri prijavi”, otvara bez "
+"pitanja. Zaključavanje zaslona također ga zaključava kada je ta opcija "
+"uključena."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2530,6 +2579,9 @@ msgid "Unlocked by another application. Lock it from your file manager."
 msgstr ""
 "Otključala ga je druga aplikacija. Zaključajte ga iz upravitelja datoteka."
 
+msgid "Unlocking"
+msgstr "Otključavanje"
+
 msgid "Unlocking…"
 msgstr "Otključavanje…"
 
@@ -2706,15 +2758,8 @@ msgstr ""
 "Kada web-mjesto nudi provjeru u dva koraka, ovdje dodajte njegov ključ za "
 "postavljanje da biste dobivali kodove."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Kada je uključeno, proširenje preglednika Ashy Pass može čitati unose iz "
-"trezora otključavanjem putem privjeska ključeva sustava, čak i dok je ovaj "
-"prozor zaključan. Ključ se ponovno odbacuje nakon isteka vremena automatskog "
-"zaključavanja."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Kada je isključeno, proširenje ne vidi ništa iz trezora"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Odakle želite prenijeti svoje lozinke?"

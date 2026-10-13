@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:19\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -142,9 +142,6 @@ msgstr ""
 "Друго устройство е качило по-нова моментна снимка, откакто това устройство "
 "последно се синхронизира. Качването сега би оставило отдалечените промени "
 "без наследник."
-
-msgid "Answer requests from the installed extension"
-msgstr "Отговаряне на заявки от инсталираното разширение"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -478,8 +475,20 @@ msgstr "Потвърдете главната си парола, за да ек�
 msgid "Conflicts"
 msgstr "Конфликти"
 
-msgid "Connecting the extension"
-msgstr "Свързване на разширението"
+msgid "Connect"
+msgstr "Свързване"
+
+msgid "Connect browsers"
+msgstr "Свързване на браузъри"
+
+msgid "Connect your browsers"
+msgstr "Свържете браузърите си"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Свързан с {} браузър. Рестартирайте го, ако е отворен."
+msgstr[1] "Свързан с {} браузъра. Рестартирайте ги, ако са отворени."
 
 msgid "Continue"
 msgstr "Продължи"
@@ -519,6 +528,9 @@ msgstr "Любимото не може да бъде променено"
 
 msgid "Could not clear the history"
 msgstr "Историята не може да бъде изчистена"
+
+msgid "Could not connect the browsers"
+msgstr "Браузърите не могат да бъдат свързани"
 
 msgid "Could not create the folder"
 msgstr "Папката не може да бъде създадена"
@@ -917,6 +929,15 @@ msgstr "Файловете се шифроват и съхраняват в хр
 msgid "Filesystem"
 msgstr "Файлова система"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Попълвайте и копирайте паролите си в Chrome, Brave, Edge, Vivaldi, Firefox и "
+"LibreWolf. Разширението не пази нищо: пита Ashy Pass всеки път и попълва "
+"страница само след ваше щракване."
+
 msgid "Fill in all three fields."
 msgstr "Попълнете и трите полета."
 
@@ -969,6 +990,9 @@ msgstr ""
 "За Nextcloud, основният URL изглежда като https://cloud.example.com/"
 "remote.php/dav/files/USERNAME"
 
+msgid "For the browsers installed for this user"
+msgstr "За браузърите, инсталирани за този потребител"
+
 msgid "Forgot the master password"
 msgstr "Забравена главна парола"
 
@@ -1002,6 +1026,12 @@ msgstr "Генериране на парола"
 
 msgid "Generated password"
 msgstr "Генерирана парола"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Изтегляне на разширението за Chrome, Brave, Edge и Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Изтегляне на разширението за Firefox"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "Дайте име на записа, например сайта или приложението."
@@ -1103,13 +1133,6 @@ msgstr ""
 "Поставете вашия FIDO2 токен (Yubikey, Nitrokey и др.) и го упълномощете на "
 "устройството, когато бъдете подканени. Вашата текуща парола е необходима за "
 "упълномощаване на новия ключов слот."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Инсталирайте разширението в Chrome или Firefox, след това регистрирайте този "
-"компютър с:  ashypass-native-host --install <id-на-разширението>"
 
 msgid "Internal error: no passphrase set"
 msgstr "Вътрешна грешка: няма зададена парола"
@@ -1401,6 +1424,10 @@ msgstr ""
 
 msgid "No stable device link"
 msgstr "Няма постоянна връзка към устройството"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Не е намерен поддържан браузър. Отворете браузъра веднъж и опитайте отново."
 
 msgid "No verification codes yet"
 msgstr "Все още няма кодове за потвърждение"
@@ -1829,6 +1856,13 @@ msgstr "Задържане"
 msgid "Run"
 msgstr "Старт"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Направете го веднъж след инсталиране на браузър, за да намери Ashy Pass. "
+"Добавя се само малък файл в папката с настройки на всеки браузър."
+
 msgid "Running audit..."
 msgstr "Извършване на одит..."
 
@@ -2171,6 +2205,9 @@ msgstr ""
 msgid "The backup was not created"
 msgstr "Резервното копие не е създадено"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Връзката на Ashy Pass с браузъра не е инсталирана"
+
 msgid "The copy could not be downloaded"
 msgstr "Копието не може да бъде изтеглено"
 
@@ -2182,6 +2219,16 @@ msgstr[1] "Копието е проверено и съдържа {} запис�
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Текущата главна парола е грешна. Нищо не е променено."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Разширението иска главната парола и държи трезора отворен само до "
+"автоматичното заключване. Ако „Автоматично отваряне при влизане“ е включено, "
+"отваря без да пита. Заключването на екрана също го заключва, когато тази "
+"опция е включена."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2536,6 +2583,9 @@ msgstr "Отключено на"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "Отключено от друго приложение. Заключете го от файловия мениджър."
 
+msgid "Unlocking"
+msgstr "Отключване"
+
 msgid "Unlocking…"
 msgstr "Отключване…"
 
@@ -2713,15 +2763,8 @@ msgstr ""
 "Когато сайт предлага двустъпкова проверка, добавете ключа му за настройка "
 "тук, за да получавате кодовете."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Когато е включено, разширението за браузър на Ashy Pass може да чете "
-"записите в хранилището, като отключва чрез системния ключодържател, дори "
-"когато този прозорец е заключен. Ключът се изхвърля отново след времето за "
-"автоматично заключване."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Когато е изключено, разширението не вижда нищо от трезора"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Откъде искате да пренесете паролите си?"

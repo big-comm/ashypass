@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -132,9 +132,6 @@ msgid ""
 msgstr ""
 "מכשיר אחר העלה תמונת מצב חדשה יותר מאז הסנכרון האחרון של מכשיר זה. העלאה כעת "
 "תגרום לשינויים מרוחקים להישאר יתומים."
-
-msgid "Answer requests from the installed extension"
-msgstr "מענה לבקשות מההרחבה המותקנת"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -460,8 +457,20 @@ msgstr "יש לאשר את סיסמת האב כדי לייצא את הנתוני
 msgid "Conflicts"
 msgstr "התנגשויות"
 
-msgid "Connecting the extension"
-msgstr "חיבור ההרחבה"
+msgid "Connect"
+msgstr "חיבור"
+
+msgid "Connect browsers"
+msgstr "חיבור דפדפנים"
+
+msgid "Connect your browsers"
+msgstr "חברו את הדפדפנים שלכם"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "חוברו דפדפנים: {}. הפעילו אותם מחדש אם הם פתוחים."
+msgstr[1] "חוברו דפדפנים: {}. הפעילו אותם מחדש אם הם פתוחים."
 
 msgid "Continue"
 msgstr "המשך"
@@ -501,6 +510,9 @@ msgstr "לא ניתן לשנות את המועדף"
 
 msgid "Could not clear the history"
 msgstr "לא ניתן לנקות את ההיסטוריה"
+
+msgid "Could not connect the browsers"
+msgstr "לא ניתן לחבר את הדפדפנים"
 
 msgid "Could not create the folder"
 msgstr "לא ניתן ליצור את התיקייה"
@@ -889,6 +901,15 @@ msgstr "הקבצים מוצפנים ונשמרים בתוך הכספת."
 msgid "Filesystem"
 msgstr "מערכת קבצים"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"מלאו והעתיקו את הססמאות שלכם ב־Chrome, Brave, Edge, Vivaldi, Firefox "
+"ו־LibreWolf. ההרחבה אינה שומרת דבר: היא שואלת את Ashy Pass בכל פעם וממלאת דף "
+"רק אחרי שלחצתם."
+
 msgid "Fill in all three fields."
 msgstr "יש למלא את שלושת השדות."
 
@@ -938,6 +959,9 @@ msgstr ""
 "עבור Nextcloud, כתובת הבסיס נראית כך: https://cloud.example.com/remote.php/"
 "dav/files/שם_משתמש"
 
+msgid "For the browsers installed for this user"
+msgstr "לדפדפנים המותקנים עבור משתמש זה"
+
 msgid "Forgot the master password"
 msgstr "שכחתי את סיסמת האב"
 
@@ -970,6 +994,12 @@ msgstr "יצירת סיסמה"
 
 msgid "Generated password"
 msgstr "סיסמה שנוצרה"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "קבלת ההרחבה ל־Chrome, Brave, Edge ו־Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "קבלת ההרחבה ל־Firefox"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "יש לתת שם לרשומה, למשל שם האתר או היישום."
@@ -1066,13 +1096,6 @@ msgid ""
 msgstr ""
 "הכנס את אסימון ה-FIDO2 שלך (Yubikey, Nitrokey וכו') ואשר במכשיר כשתתבקש. "
 "נדרש ביטוי הסיסמה הנוכחי שלך כדי לאשר את חריץ המפתח החדש."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"יש להתקין את ההרחבה ב־Chrome או ב־Firefox, ולאחר מכן לרשום מחשב זה עם:  "
-"ashypass-native-host --install <מזהה-ההרחבה>"
 
 msgid "Internal error: no passphrase set"
 msgstr "שגיאה פנימית: לא הוגדרה סיסמה"
@@ -1356,6 +1379,9 @@ msgstr "בגרסה זו לא ניתן לשנות את מפתח האבטחה או
 
 msgid "No stable device link"
 msgstr "אין קישור יציב להתקן"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr "לא נמצא דפדפן נתמך. פתחו את הדפדפן פעם אחת ונסו שוב."
 
 msgid "No verification codes yet"
 msgstr "אין קודי אימות עדיין"
@@ -1772,6 +1798,13 @@ msgstr "שמירה"
 msgid "Run"
 msgstr "הפעל"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"עשו זאת פעם אחת אחרי התקנת דפדפן, כדי שימצא את Ashy Pass. רק קובץ קטן נוסף "
+"לתיקיית ההגדרות של כל דפדפן."
+
 msgid "Running audit..."
 msgstr "מריץ ביקורת..."
 
@@ -2106,6 +2139,9 @@ msgstr "הרשומה עוברת לפריטים שנמחקו, שם ניתן לש�
 msgid "The backup was not created"
 msgstr "הגיבוי לא נוצר"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "מחבר הדפדפן של Ashy Pass אינו מותקן"
+
 msgid "The copy could not be downloaded"
 msgstr "לא ניתן היה להוריד את העותק"
 
@@ -2117,6 +2153,15 @@ msgstr[1] "העותק נבדק ומכיל {} רשומות."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "סיסמת האב הנוכחית שגויה. דבר לא שונה."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"ההרחבה מבקשת את הססמה הראשית ומשאירה את הכספת פתוחה רק עד הנעילה האוטומטית. "
+"אם „פתיחה אוטומטית בכניסה” מופעלת, היא נפתחת בלי לשאול. נעילת המסך נועלת "
+"אותה גם, כשהאפשרות מופעלת."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2442,6 +2487,9 @@ msgstr "בוטלה נעילה ב-"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "הנעילה בוטלה על ידי יישום אחר. יש לנעול אותו ממנהל הקבצים."
 
+msgid "Unlocking"
+msgstr "שחרור נעילה"
+
 msgid "Unlocking…"
 msgstr "מבטל נעילה…"
 
@@ -2613,14 +2661,8 @@ msgstr ""
 "כשאתר מציע אימות דו־שלבי, יש להוסיף כאן את מפתח ההגדרה שלו כדי לקבל את "
 "הקודים."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"כשהאפשרות פעילה, הרחבת הדפדפן של Ashy Pass יכולה לקרוא רשומות מהכספת על ידי "
-"ביטול נעילה ממחזיק המפתחות של המערכת, גם כשחלון זה נעול. המפתח מושלך שוב "
-"לאחר זמן הנעילה האוטומטית."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "כשכבוי, ההרחבה לא רואה דבר מהכספת"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "מאיפה להביא את הסיסמאות שלך?"

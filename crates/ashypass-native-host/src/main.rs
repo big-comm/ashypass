@@ -9,27 +9,17 @@
 //! [u32 length, little-endian] [UTF-8 JSON payload]
 //! ```
 //!
-//! Messages are JSON objects with a `cmd` field. Supported commands:
-//!
-//! | cmd        | request fields              | response                        |
-//! |------------|------------------------------|----------------------------------|
-//! | `ping`     | —                            | `{ok, version}`                  |
-//! | `list`     | `query?`                     | `{ok, entries: [Summary]}`       |
-//! | `search`   | `query`                      | `{ok, entries: [Summary]}`       |
-//! | `match_url`| `url`                        | `{ok, entries: [Summary]}`       |
-//! | `get`      | `id`                         | `{ok, entry: Full}`              |
-//! | `generate` | `length?, kind?`             | `{ok, password}`                 |
-//!
-//! On error, every response is `{ok: false, error: string}`.
+//! Messages are JSON objects with a `cmd` field and an optional `rid` that
+//! the response echoes. The full protocol (commands, fields, error codes) is
+//! in `browser-extension/PROTOCOL.md`.
 //!
 //! ## Unlock policy
 //!
-//! There is no TTY — the host is launched by the browser. We therefore only
-//! attempt to unlock the vault via the Secret Service keyring item that the
-//! GUI populates (`ashypass_core::keyring::load_master`). If keyring unlock
-//! fails (no item, wrong master, or D-Bus unavailable), we reply with
-//! `{ok: false, error: "vault locked — open the desktop app to unlock"}`
-//! and the extension surfaces that to the user.
+//! There is no TTY — the host is launched by the browser. The vault opens
+//! either with the master password the user types in the extension
+//! (`unlock`), or by itself when the GUI stored the master password in the
+//! Secret Service keyring ("Open automatically at login"). Wrong passwords
+//! pause `unlock` for a while after a few attempts.
 //!
 //! Unlocking is *lazy and expiring*, mirroring the desktop auto-lock:
 //!
@@ -40,16 +30,18 @@
 //! - After `lock_timeout` seconds without a vault-touching request the key is
 //!   dropped again, so a long-lived browser process does not hold the vault
 //!   key in memory all day.
-//! - The `browser_integration` setting gates everything: when the user turns
-//!   it off, vault commands are refused without consulting the keyring.
+//! - The `browser_extension` setting (off by default) gates everything:
+//!   while it is off, vault commands are refused without consulting the
+//!   keyring.
 //! - With `lock_on_screen_lock` on, vault commands are refused (and the key
 //!   dropped) while logind reports the session's screen as locked.
 //!
 //! ## Installing the manifest
 //!
-//! Run `ashypass-native-host --install` once after building. That writes the
-//! Chrome / Firefox manifest files pointing at the current binary into the
-//! per-user directories where each browser expects them.
+//! The package installs system-wide manifests (Firefox, Chrome, Chromium,
+//! Edge). `ashypass-native-host --install` (Settings → Browser → Connect
+//! browsers) writes per-user manifests for every installed browser, which
+//! also covers Brave, Vivaldi, LibreWolf and Waterfox.
 
 use anyhow::{anyhow, bail, Context, Result};
 use ashypass_core::db::vault::{PasswordEntry, Vault};
@@ -62,6 +54,11 @@ use std::io::{Read, Write};
 use std::time::{Duration, Instant};
 
 const EXTENSION_NAME: &str = "com.bigcommunity.ashypass";
+/// Firefox id of the extension (`browser_specific_settings.gecko.id`).
+const FIREFOX_EXTENSION_ID: &str = "ashypass@big-comm.github.io";
+/// Chrome-family ids allowed to connect: the development build (fixed by the
+/// `key` in its manifest). Add the Chrome Web Store id here once published.
+const CHROME_EXTENSION_IDS: &[&str] = &["opelfkfheadglgamfephkfejfpcnlbck"];
 const VERSION: &str = ashypass_core::config::APP_VERSION;
 /// Maximum incoming payload accepted. Mirrors the Chrome limit (~1 MiB),
 /// guarding against a runaway extension stream.
@@ -76,7 +73,11 @@ fn main() {
     // when the binary is invoked from a terminal rather than by the browser
     // wire protocol.
     let args: Vec<String> = std::env::args().skip(1).collect();
-    if let Some(first) = args.first().map(|s| s.as_str()) {
+    if let Some(first) = args
+        .first()
+        .map(|s| s.as_str())
+        .filter(|a| is_cli_command(a))
+    {
         match first {
             "--install" => {
                 if let Err(e) = install_manifests(&args[1..]) {
@@ -86,19 +87,26 @@ fn main() {
                 return;
             }
             "--print-manifest" => {
-                let allowed = args.get(1).cloned().unwrap_or_default();
-                println!("{}", manifest_chrome(&current_exe_path_str(), &allowed));
+                // --print-manifest <chrome|firefox> [host path]: for packaging
+                // the system-wide manifests.
+                let path = args.get(2).cloned().unwrap_or_else(current_exe_path_str);
+                match args.get(1).map(String::as_str) {
+                    Some("chrome") => print!("{}", manifest_chrome(&path, &default_chrome_ids())),
+                    Some("firefox") => {
+                        print!("{}", manifest_firefox(&path, &default_firefox_ids()))
+                    }
+                    _ => {
+                        eprintln!("usage: --print-manifest <chrome|firefox> [host path]");
+                        std::process::exit(2);
+                    }
+                }
                 return;
             }
             "--help" | "-h" => {
                 print_help();
                 return;
             }
-            _ => {
-                eprintln!("unknown argument: {first}\n");
-                print_help();
-                std::process::exit(2);
-            }
+            _ => unreachable!("is_cli_command"),
         }
     }
 
@@ -115,22 +123,33 @@ fn main() {
     }
 }
 
+/// Terminal commands. Anything else is what a browser passes when it starts
+/// the host — Chrome the caller's origin (`chrome-extension://…/`), Firefox
+/// the manifest path and the extension id — and means: serve.
+fn is_cli_command(arg: &str) -> bool {
+    matches!(arg, "--install" | "--print-manifest" | "--help" | "-h")
+}
+
 fn print_help() {
     println!("ashypass-native-host {VERSION}");
     println!();
     println!("Browser native messaging host for the Ashy Pass extension.");
     println!();
     println!("Usage:");
-    println!("  ashypass-native-host                    # browser wire mode (stdin/stdout)");
-    println!("  ashypass-native-host --install <ext-id>... # write manifests into Chrome/Firefox profile dirs");
-    println!(
-        "  ashypass-native-host --print-manifest <ext-id>  # print Chrome-style manifest to stdout"
-    );
-    println!();
-    println!(
-        "Extension id is the Chrome/Firefox extension id that's allowed to talk to this host."
-    );
-    println!("You can pass multiple ids to allow several builds (dev, beta, prod).");
+    println!("  ashypass-native-host                         # browser wire mode (stdin/stdout)");
+    println!("  ashypass-native-host --install [--chrome-id ID]... [--firefox-id ID]...");
+    println!("        write the host manifests for this user into every installed browser");
+    println!("        (built-in extension ids are always included)");
+    println!("  ashypass-native-host --print-manifest <chrome|firefox> [host path]");
+    println!("        print a manifest, e.g. for system-wide packaging");
+}
+
+fn default_chrome_ids() -> Vec<String> {
+    CHROME_EXTENSION_IDS.iter().map(|s| s.to_string()).collect()
+}
+
+fn default_firefox_ids() -> Vec<String> {
+    vec![FIREFOX_EXTENSION_ID.to_string()]
 }
 
 // ---------------------------------------------------------------------------
@@ -141,6 +160,11 @@ fn print_help() {
 #[serde(tag = "cmd", rename_all = "snake_case")]
 enum Request {
     Ping,
+    Status,
+    Unlock {
+        password: Secret,
+    },
+    Lock,
     List {
         query: Option<String>,
     },
@@ -150,13 +174,74 @@ enum Request {
     MatchUrl {
         url: String,
     },
+    Fill {
+        id: i64,
+        url: String,
+    },
     Get {
+        id: i64,
+    },
+    Totp {
         id: i64,
     },
     Generate {
         length: Option<usize>,
         kind: Option<String>,
     },
+}
+
+/// A password received from the extension: wiped from memory when dropped
+/// and never printed by `Debug`.
+#[derive(Deserialize)]
+#[serde(transparent)]
+struct Secret(String);
+
+impl Drop for Secret {
+    fn drop(&mut self) {
+        zeroize::Zeroize::zeroize(&mut self.0);
+    }
+}
+
+impl std::fmt::Debug for Secret {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("Secret(<redacted>)")
+    }
+}
+
+/// Version of the request/response format (see browser-extension/PROTOCOL.md).
+const PROTOCOL_VERSION: u32 = 2;
+
+/// Machine-readable error kinds, so the extension can show its own
+/// translated messages.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ErrorCode {
+    Disabled,
+    NoVault,
+    Locked,
+    BadPassword,
+    RateLimited,
+    NotFound,
+    NoMatch,
+    NoTotp,
+    Invalid,
+    Internal,
+}
+
+impl ErrorCode {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Disabled => "disabled",
+            Self::NoVault => "no_vault",
+            Self::Locked => "locked",
+            Self::BadPassword => "bad_password",
+            Self::RateLimited => "rate_limited",
+            Self::NotFound => "not_found",
+            Self::NoMatch => "no_match",
+            Self::NoTotp => "no_totp",
+            Self::Invalid => "invalid",
+            Self::Internal => "internal",
+        }
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -169,14 +254,15 @@ struct EntrySummary {
     has_totp: bool,
 }
 
-#[derive(Debug, Serialize)]
+/// What `get` returns. Notes are not sent: the extension has no use for
+/// them, and they often hold recovery codes.
+#[derive(Serialize)]
 struct EntryFull {
     id: i64,
     title: String,
     username: Option<String>,
     url: Option<String>,
     password: Option<String>,
-    notes: Option<String>,
     has_totp: bool,
     category: Option<String>,
 }
@@ -194,23 +280,59 @@ impl From<&PasswordEntry> for EntrySummary {
     }
 }
 
+/// Wrong master passwords accepted in a row before `unlock` pauses.
+const UNLOCK_ATTEMPTS: u32 = 5;
+/// How long `unlock` refuses after too many wrong passwords.
+const UNLOCK_PAUSE: Duration = Duration::from_secs(30);
+
 /// Vault handle plus the expiring-unlock bookkeeping described in the module
 /// docs. `last_used` is the timestamp of the last request that needed the key.
+///
+/// Settings and the keyring are reached through the two functions below,
+/// so tests run against a throwaway vault without touching the user's real
+/// configuration or keyring.
 struct HostSession {
     vault: Vault,
     last_used: Option<Instant>,
     screen_lock: ScreenLockProbe,
+    load_settings: fn() -> Settings,
+    keyring_master: fn() -> Option<zeroize::Zeroizing<String>>,
+    failed_unlocks: u32,
+    paused_until: Option<Instant>,
+}
+
+fn keyring_master_password() -> Option<zeroize::Zeroizing<String>> {
+    match ashypass_core::keyring::load_master() {
+        Ok(Some(master)) => Some(zeroize::Zeroizing::new(master)),
+        _ => None,
+    }
 }
 
 impl HostSession {
     fn open() -> Result<Self> {
         let db_path = ashypass_core::config::database_path();
         let vault = Vault::open(&db_path).context("opening vault")?;
-        Ok(Self {
+        Ok(Self::with_vault(
+            vault,
+            Settings::load,
+            keyring_master_password,
+        ))
+    }
+
+    fn with_vault(
+        vault: Vault,
+        load_settings: fn() -> Settings,
+        keyring_master: fn() -> Option<zeroize::Zeroizing<String>>,
+    ) -> Self {
+        Self {
             vault,
             last_used: None,
             screen_lock: ScreenLockProbe::default(),
-        })
+            load_settings,
+            keyring_master,
+            failed_unlocks: 0,
+            paused_until: None,
+        }
     }
 
     /// Idle window before the key is dropped. Follows the desktop auto-lock
@@ -220,13 +342,17 @@ impl HostSession {
         Duration::from_secs(settings.lock_timeout.max(30))
     }
 
-    /// True when the vault is usable for this request. Drops an expired key
-    /// first, then unlocks from the keyring on demand.
-    fn ensure_unlocked(&mut self) -> bool {
-        let settings = Settings::load();
-        if !settings.browser_integration {
+    /// Why vault data cannot be served right now, if it cannot. Applies the
+    /// policy first (integration switch, screen lock, idle expiry), then
+    /// tries the keyring copy of the master password.
+    fn access(&mut self) -> std::result::Result<(), ErrorCode> {
+        let settings = (self.load_settings)();
+        if !settings.browser_extension {
             self.relock();
-            return false;
+            return Err(ErrorCode::Disabled);
+        }
+        if !self.vault.has_master_password().unwrap_or(false) {
+            return Err(ErrorCode::NoVault);
         }
 
         // Mirror the desktop "lock when the screen locks" policy. The host
@@ -234,7 +360,7 @@ impl HostSession {
         // each vault request instead; sleep is covered by the idle timeout.
         if settings.lock_on_screen_lock && self.screen_lock.is_locked() {
             self.relock();
-            return false;
+            return Err(ErrorCode::Locked);
         }
 
         if let Some(last) = self.last_used {
@@ -244,27 +370,110 @@ impl HostSession {
         }
 
         if !self.vault.is_unlocked() && !self.unlock_from_keyring() {
-            return false;
+            return Err(ErrorCode::Locked);
         }
 
         self.last_used = Some(Instant::now());
-        true
+        Ok(())
     }
 
     fn unlock_from_keyring(&mut self) -> bool {
-        if !self.vault.has_master_password().unwrap_or(false) {
-            return false;
-        }
-        let Ok(Some(master)) = ashypass_core::keyring::load_master() else {
+        let Some(master) = (self.keyring_master)() else {
             return false;
         };
-        let master = zeroize::Zeroizing::new(master);
         self.vault.unlock(&master).is_ok()
+    }
+
+    /// Unlock with a master password typed in the extension.
+    fn unlock_with_password(&mut self, password: &str) -> std::result::Result<(), ErrorCode> {
+        let settings = (self.load_settings)();
+        if !settings.browser_extension {
+            return Err(ErrorCode::Disabled);
+        }
+        if !self.vault.has_master_password().unwrap_or(false) {
+            return Err(ErrorCode::NoVault);
+        }
+        if let Some(until) = self.paused_until {
+            if Instant::now() < until {
+                return Err(ErrorCode::RateLimited);
+            }
+            self.paused_until = None;
+            self.failed_unlocks = 0;
+        }
+        match self.vault.unlock(password) {
+            Ok(()) => {
+                self.failed_unlocks = 0;
+                self.last_used = Some(Instant::now());
+                Ok(())
+            }
+            Err(ashypass_core::Error::InvalidMasterPassword) => {
+                self.failed_unlocks += 1;
+                if self.failed_unlocks >= UNLOCK_ATTEMPTS {
+                    self.paused_until = Some(Instant::now() + UNLOCK_PAUSE);
+                }
+                Err(ErrorCode::BadPassword)
+            }
+            Err(_) => Err(ErrorCode::Internal),
+        }
     }
 
     fn relock(&mut self) {
         self.vault.full_lock();
         self.last_used = None;
+    }
+
+    /// Answer one request.
+    fn respond(&mut self, request: Request) -> serde_json::Value {
+        use serde_json::json;
+        // Ping, status and generate never need the key, so they must not
+        // trigger a keyring unlock either.
+        match request {
+            Request::Ping => {
+                return json!({"ok": true, "version": VERSION, "protocol": PROTOCOL_VERSION})
+            }
+            Request::Status => {
+                let settings = (self.load_settings)();
+                return json!({
+                    "ok": true,
+                    "enabled": settings.browser_extension,
+                    "has_vault": self.vault.has_master_password().unwrap_or(false),
+                    "unlocked": settings.browser_extension && self.access().is_ok(),
+                });
+            }
+            Request::Generate { length, kind } => {
+                return match handle_generate(&length, &kind) {
+                    Ok(pw) => json!({"ok": true, "password": pw}),
+                    Err(e) => error_response(ErrorCode::Invalid, &e.to_string()),
+                }
+            }
+            Request::Lock => {
+                self.relock();
+                return json!({"ok": true});
+            }
+            Request::Unlock { password } => {
+                return match self.unlock_with_password(&password.0) {
+                    Ok(()) => json!({"ok": true}),
+                    Err(code) => error_for(code),
+                }
+            }
+            _ => {}
+        }
+        if let Err(code) = self.access() {
+            return error_for(code);
+        }
+        match request {
+            Request::List { query } => handle_list(&self.vault, query.as_deref()),
+            Request::Search { query } => handle_list(&self.vault, Some(&query)),
+            Request::MatchUrl { url } => handle_match_url(&self.vault, &url),
+            Request::Fill { id, url } => handle_fill(&self.vault, id, &url),
+            Request::Get { id } => handle_get(&self.vault, id),
+            Request::Totp { id } => handle_totp(&self.vault, id),
+            Request::Ping
+            | Request::Status
+            | Request::Generate { .. }
+            | Request::Lock
+            | Request::Unlock { .. } => unreachable!("answered above"),
+        }
     }
 }
 
@@ -372,36 +581,36 @@ fn serve() -> Result<()> {
     let mut input = stdin.lock();
 
     loop {
-        let req = match read_message::<Request>(&mut input)? {
-            Incoming::Message(req) => req,
+        let raw = match read_message::<serde_json::Value>(&mut input)? {
+            Incoming::Message(raw) => raw,
             Incoming::Eof => return Ok(()), // EOF: browser closed the port.
             Incoming::Malformed(e) => {
                 // The frame was consumed in full, so the stream is still in
                 // sync: report and keep serving.
-                write_error(&format!("malformed request: {e}"))?;
+                write_message(&error_response(
+                    ErrorCode::Invalid,
+                    &format!("malformed request: {e}"),
+                ))?;
                 continue;
             }
         };
-
-        // Ping and generate work even when locked — they don't touch the
-        // vault contents, so they must not trigger an unlock either.
-        let resp = match &req {
-            Request::Ping => serde_json::json!({"ok": true, "version": VERSION}),
-            Request::Generate { length, kind } => match handle_generate(length, kind) {
-                Ok(pw) => serde_json::json!({"ok": true, "password": pw}),
-                Err(e) => error_response(&e.to_string()),
-            },
-            _ if !session.ensure_unlocked() => error_response(
-                "vault locked — open the desktop app, enable browser integration, and store the master password in the system keyring",
-            ),
-            Request::List { query } => handle_list(&session.vault, query.as_deref()),
-            Request::Search { query } => handle_list(&session.vault, Some(query)),
-            Request::MatchUrl { url } => handle_match_url(&session.vault, url),
-            Request::Get { id } => handle_get(&session.vault, *id),
-        };
-
-        write_message(&resp)?;
+        let response = answer(&mut session, raw);
+        write_message(&response)?;
     }
+}
+
+/// Decode one request (keeping its `rid`), answer it, and tag the response
+/// with the same `rid` so the extension can match replies to requests.
+fn answer(session: &mut HostSession, raw: serde_json::Value) -> serde_json::Value {
+    let rid = raw.get("rid").filter(|r| r.is_number()).cloned();
+    let mut response = match serde_json::from_value::<Request>(raw) {
+        Ok(request) => session.respond(request),
+        Err(e) => error_response(ErrorCode::Invalid, &format!("malformed request: {e}")),
+    };
+    if let (Some(rid), Some(object)) = (rid, response.as_object_mut()) {
+        object.insert("rid".into(), rid);
+    }
+    response
 }
 
 fn handle_list(vault: &Vault, query: Option<&str>) -> serde_json::Value {
@@ -410,7 +619,7 @@ fn handle_list(vault: &Vault, query: Option<&str>) -> serde_json::Value {
             let summaries: Vec<EntrySummary> = entries.iter().map(EntrySummary::from).collect();
             serde_json::json!({"ok": true, "entries": summaries})
         }
-        Err(e) => error_response(&e.to_string()),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
     }
 }
 
@@ -427,7 +636,7 @@ fn handle_match_url(vault: &Vault, url: &str) -> serde_json::Value {
                 .collect();
             serde_json::json!({"ok": true, "entries": matches})
         }
-        Err(e) => error_response(&e.to_string()),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
     }
 }
 
@@ -442,15 +651,71 @@ fn handle_get(vault: &Vault, id: i64) -> serde_json::Value {
                 username: e.username,
                 url: e.url,
                 password: e.password,
-                notes: e.notes,
                 has_totp: e.has_totp,
                 category: e.category,
             };
             serde_json::json!({"ok": true, "entry": full})
         }
-        Ok(None) => error_response("entry not found"),
-        Err(e) => error_response(&e.to_string()),
+        Ok(None) => error_for(ErrorCode::NotFound),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
     }
+}
+
+/// Credentials for filling the page at `url`, only when the entry belongs
+/// to that site: a page can never obtain another site's password, even if
+/// the extension were asked to.
+fn handle_fill(vault: &Vault, id: i64, url: &str) -> serde_json::Value {
+    match vault.get_without_touch(id) {
+        Ok(Some(e)) => {
+            let belongs = e
+                .url
+                .as_deref()
+                .is_some_and(|entry_url| entry_matches_page(entry_url, url));
+            if !belongs {
+                return error_for(ErrorCode::NoMatch);
+            }
+            serde_json::json!({
+                "ok": true,
+                "username": e.username.unwrap_or_default(),
+                "password": e.password.unwrap_or_default(),
+            })
+        }
+        Ok(None) => error_for(ErrorCode::NotFound),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+/// The current verification code of an entry.
+fn handle_totp(vault: &Vault, id: i64) -> serde_json::Value {
+    let entry = match vault.get_without_touch(id) {
+        Ok(Some(e)) => e,
+        Ok(None) => return error_for(ErrorCode::NotFound),
+        Err(e) => return error_response(ErrorCode::Internal, &e.to_string()),
+    };
+    let Some(secret) = entry.totp_secret.filter(|s| !s.is_empty()) else {
+        return error_for(ErrorCode::NoTotp);
+    };
+    let secret = zeroize::Zeroizing::new(secret);
+    let algorithm = ashypass_core::totp::Algorithm::parse(&entry.totp_algorithm)
+        .unwrap_or(ashypass_core::totp::Algorithm::Sha1);
+    let period = entry.totp_period.max(1);
+    let now = chrono_now_secs();
+    match ashypass_core::totp::generate_totp(&secret, algorithm, entry.totp_digits, period, now) {
+        Ok(code) => serde_json::json!({
+            "ok": true,
+            "code": code,
+            "remaining": ashypass_core::totp::remaining_seconds(period, now),
+            "period": period,
+        }),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+fn chrono_now_secs() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0)
 }
 
 fn handle_generate(length: &Option<usize>, kind: &Option<String>) -> Result<String> {
@@ -470,12 +735,27 @@ fn handle_generate(length: &Option<usize>, kind: &Option<String>) -> Result<Stri
     }
 }
 
-fn error_response(msg: &str) -> serde_json::Value {
-    serde_json::json!({"ok": false, "error": msg})
+fn error_response(code: ErrorCode, msg: &str) -> serde_json::Value {
+    serde_json::json!({"ok": false, "error": msg, "code": code.as_str()})
 }
 
-fn write_error(msg: &str) -> Result<()> {
-    write_message(&error_response(msg))
+/// The standard English text for `code`.
+fn error_for(code: ErrorCode) -> serde_json::Value {
+    let message = match code {
+        ErrorCode::Disabled => {
+            "browser integration is off — turn it on in Ashy Pass → Settings → Browser"
+        }
+        ErrorCode::NoVault => "no vault yet — create it in Ashy Pass first",
+        ErrorCode::Locked => "vault locked — enter the master password",
+        ErrorCode::BadPassword => "wrong master password",
+        ErrorCode::RateLimited => "too many wrong passwords — wait 30 seconds and try again",
+        ErrorCode::NotFound => "entry not found",
+        ErrorCode::NoMatch => "this entry does not belong to the page",
+        ErrorCode::NoTotp => "this entry has no verification code",
+        ErrorCode::Invalid => "invalid request",
+        ErrorCode::Internal => "internal error",
+    };
+    error_response(code, message)
 }
 
 /// Outcome of reading one native-messaging frame.
@@ -743,12 +1023,12 @@ fn current_exe_path_str() -> String {
         .unwrap_or_else(|| "/usr/bin/ashypass-native-host".to_string())
 }
 
-fn manifest_chrome(exe_path: &str, allowed_extensions: &str) -> String {
-    // `allowed_origins` for Chromium-family, comma-separated chrome-extension://
-    // URIs. The caller passes the bare extension IDs and we wrap them.
+fn manifest_chrome(exe_path: &str, allowed_extensions: &[String]) -> String {
+    // `allowed_origins` for Chromium-family: chrome-extension:// URIs. The
+    // caller passes the bare extension ids and we wrap them.
     let origins: Vec<String> = allowed_extensions
-        .split(',')
-        .map(str::trim)
+        .iter()
+        .map(|s| s.trim())
         .filter(|s| !s.is_empty())
         .map(|s| format!("chrome-extension://{s}/"))
         .collect();
@@ -780,22 +1060,52 @@ fn render_manifest(exe_path: &str, allow_key: &str, allowed: Vec<String>) -> Str
     out
 }
 
-fn install_manifests(extension_ids: &[String]) -> Result<()> {
-    if extension_ids.is_empty() {
-        bail!("at least one extension id is required");
+/// Extension ids from `--install` arguments, on top of the built-in ones.
+/// Bare ids (the old form) are allowed for both browser families.
+fn parse_install_args(args: &[String]) -> Result<(Vec<String>, Vec<String>)> {
+    let mut chrome = default_chrome_ids();
+    let mut firefox = default_firefox_ids();
+    let mut iter = args.iter();
+    while let Some(arg) = iter.next() {
+        match arg.as_str() {
+            "--chrome-id" => chrome.push(
+                iter.next()
+                    .ok_or_else(|| anyhow!("--chrome-id needs a value"))?
+                    .clone(),
+            ),
+            "--firefox-id" => firefox.push(
+                iter.next()
+                    .ok_or_else(|| anyhow!("--firefox-id needs a value"))?
+                    .clone(),
+            ),
+            other if other.starts_with("--") => bail!("unknown option: {other}"),
+            id => {
+                chrome.push(id.to_string());
+                firefox.push(id.to_string());
+            }
+        }
     }
+    for ids in [&mut chrome, &mut firefox] {
+        ids.retain(|id| !id.trim().is_empty());
+        ids.sort();
+        ids.dedup();
+    }
+    Ok((chrome, firefox))
+}
+
+fn install_manifests(args: &[String]) -> Result<()> {
+    let (chrome_ids, firefox_ids) = parse_install_args(args)?;
     let exe = current_exe_path_str();
-    let chrome = manifest_chrome(&exe, &extension_ids.join(","));
-    let firefox = manifest_firefox(&exe, extension_ids);
+    let chrome = manifest_chrome(&exe, &chrome_ids);
+    let firefox = manifest_firefox(&exe, &firefox_ids);
 
     let home = std::env::var_os("HOME")
         .map(std::path::PathBuf::from)
         .ok_or_else(|| anyhow!("HOME not set"))?;
 
-    // Chromium-family per-user host manifest directories. Chrome, Chromium,
-    // Brave, Edge, Vivaldi each look in their own directory; install to all
-    // of them that exist so the user doesn't have to think about which fork
-    // they're running.
+    // Per-user host manifest directories. Each browser looks in its own;
+    // install into every one whose browser is set up for this user, so the
+    // user does not have to know which fork they run.
     let chrome_targets = [
         home.join(".config/google-chrome/NativeMessagingHosts"),
         home.join(".config/chromium/NativeMessagingHosts"),
@@ -803,25 +1113,24 @@ fn install_manifests(extension_ids: &[String]) -> Result<()> {
         home.join(".config/microsoft-edge/NativeMessagingHosts"),
         home.join(".config/vivaldi/NativeMessagingHosts"),
     ];
-    let firefox_target = home.join(".mozilla/native-messaging-hosts");
+    let firefox_targets = [
+        home.join(".mozilla/native-messaging-hosts"),
+        home.join(".librewolf/native-messaging-hosts"),
+        home.join(".waterfox/native-messaging-hosts"),
+    ];
 
     let mut written = 0;
-    for dir in &chrome_targets {
-        if let Some(parent) = dir.parent() {
-            if !parent.exists() {
-                continue; // Browser not installed for this user — skip.
-            }
+    let targets = chrome_targets
+        .iter()
+        .map(|dir| (dir, &chrome))
+        .chain(firefox_targets.iter().map(|dir| (dir, &firefox)));
+    for (dir, manifest) in targets {
+        if !dir.parent().is_some_and(|parent| parent.exists()) {
+            continue; // Browser not set up for this user — skip.
         }
         std::fs::create_dir_all(dir)?;
         let path = dir.join(format!("{EXTENSION_NAME}.json"));
-        std::fs::write(&path, chrome.as_bytes())?;
-        println!("wrote {}", path.display());
-        written += 1;
-    }
-    if firefox_target.parent().map(|p| p.exists()).unwrap_or(false) {
-        std::fs::create_dir_all(&firefox_target)?;
-        let path = firefox_target.join(format!("{EXTENSION_NAME}.json"));
-        std::fs::write(&path, firefox.as_bytes())?;
+        std::fs::write(&path, manifest.as_bytes())?;
         println!("wrote {}", path.display());
         written += 1;
     }
@@ -830,13 +1139,9 @@ fn install_manifests(extension_ids: &[String]) -> Result<()> {
             "no supported browser config directories found under {}",
             home.display()
         );
-        println!("install Chrome/Chromium/Brave/Edge/Vivaldi or Firefox first, then re-run.");
+        println!("open Chrome, Chromium, Brave, Edge, Vivaldi, Firefox, LibreWolf or Waterfox once, then re-run.");
     } else {
         println!("\n{written} manifest file(s) installed.");
-        println!(
-            "The browser will now allow extension(s) {:?} to spawn this binary.",
-            extension_ids
-        );
     }
     Ok(())
 }
@@ -920,8 +1225,11 @@ mod tests {
 
     #[test]
     fn manifest_chrome_lists_origins() {
-        let m: serde_json::Value =
-            serde_json::from_str(&manifest_chrome("/bin/host", "abc, def,")).unwrap();
+        let m: serde_json::Value = serde_json::from_str(&manifest_chrome(
+            "/bin/host",
+            &["abc".into(), " def".into(), "".into()],
+        ))
+        .unwrap();
         assert_eq!(m["name"], EXTENSION_NAME);
         assert_eq!(m["path"], "/bin/host");
         assert_eq!(m["type"], "stdio");
@@ -948,7 +1256,7 @@ mod tests {
     fn manifest_escapes_hostile_input() {
         let path = r#"/opt/we"ird\path"#;
         let m: serde_json::Value =
-            serde_json::from_str(&manifest_chrome(path, r#"x"]}{"evil":["#)).unwrap();
+            serde_json::from_str(&manifest_chrome(path, &[r#"x"]}{"evil":["#.into()])).unwrap();
         assert_eq!(m["path"], path);
         assert_eq!(m["allowed_origins"].as_array().unwrap().len(), 1);
         assert!(m.get("evil").is_none());
@@ -1308,5 +1616,215 @@ mod tests {
             read_message::<Request>(&mut input).unwrap(),
             Incoming::Malformed(_)
         ));
+    }
+
+    // --- Protocol, against a throwaway vault (never the real settings or
+    // keyring).
+
+    const MASTER: &str = "correct horse battery";
+
+    fn enabled() -> Settings {
+        Settings {
+            browser_extension: true,
+            lock_on_screen_lock: false,
+            ..Settings::default()
+        }
+    }
+
+    fn disabled() -> Settings {
+        Settings {
+            browser_extension: false,
+            ..Settings::default()
+        }
+    }
+
+    fn no_keyring() -> Option<zeroize::Zeroizing<String>> {
+        None
+    }
+
+    fn session_with(settings: fn() -> Settings) -> (tempfile::TempDir, HostSession, i64, i64) {
+        let dir = tempfile::tempdir().unwrap();
+        let mut vault = Vault::open(dir.path().join("vault.db")).unwrap();
+        vault.set_master_password(MASTER).unwrap();
+        let mail = vault
+            .add(ashypass_core::db::vault::NewEntry {
+                title: "Mail".into(),
+                username: Some("ana".into()),
+                password: "mail-secret".into(),
+                url: Some("https://mail.example.com/login".into()),
+                notes: Some("recovery codes".into()),
+                totp_secret: Some("JBSWY3DPEHPK3PXP".into()),
+                ..Default::default()
+            })
+            .unwrap();
+        let bank = vault
+            .add(ashypass_core::db::vault::NewEntry {
+                title: "Bank".into(),
+                password: "bank-secret".into(),
+                url: Some("https://bank.example.org".into()),
+                ..Default::default()
+            })
+            .unwrap();
+        vault.full_lock();
+        (
+            dir,
+            HostSession::with_vault(vault, settings, no_keyring),
+            mail,
+            bank,
+        )
+    }
+
+    fn call(session: &mut HostSession, request: serde_json::Value) -> serde_json::Value {
+        answer(session, request)
+    }
+
+    #[test]
+    fn locked_until_the_master_password_is_sent() {
+        let (_dir, mut s, _, _) = session_with(enabled);
+        let status = call(&mut s, serde_json::json!({"cmd": "status"}));
+        assert_eq!(status["enabled"], true);
+        assert_eq!(status["has_vault"], true);
+        assert_eq!(status["unlocked"], false);
+        let listed = call(&mut s, serde_json::json!({"cmd": "list"}));
+        assert_eq!(listed["code"], "locked");
+        let wrong = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": "nope"}),
+        );
+        assert_eq!(wrong["code"], "bad_password");
+        let right = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        assert_eq!(right["ok"], true);
+        let listed = call(&mut s, serde_json::json!({"cmd": "list"}));
+        assert_eq!(listed["entries"].as_array().unwrap().len(), 2);
+        let locked = call(&mut s, serde_json::json!({"cmd": "lock"}));
+        assert_eq!(locked["ok"], true);
+        let listed = call(&mut s, serde_json::json!({"cmd": "list"}));
+        assert_eq!(listed["code"], "locked");
+    }
+
+    #[test]
+    fn repeated_wrong_passwords_pause_unlocking() {
+        let (_dir, mut s, _, _) = session_with(enabled);
+        for _ in 0..UNLOCK_ATTEMPTS {
+            let r = call(
+                &mut s,
+                serde_json::json!({"cmd": "unlock", "password": "x"}),
+            );
+            assert_eq!(r["code"], "bad_password");
+        }
+        // Even the right password waits now.
+        let r = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        assert_eq!(r["code"], "rate_limited");
+    }
+
+    #[test]
+    fn disabled_integration_refuses_everything_but_ping() {
+        let (_dir, mut s, _, _) = session_with(disabled);
+        assert_eq!(
+            call(&mut s, serde_json::json!({"cmd": "ping"}))["protocol"],
+            2
+        );
+        let r = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        assert_eq!(r["code"], "disabled");
+        let r = call(&mut s, serde_json::json!({"cmd": "list"}));
+        assert_eq!(r["code"], "disabled");
+    }
+
+    #[test]
+    fn fill_only_answers_for_the_entry_site() {
+        let (_dir, mut s, mail, bank) = session_with(enabled);
+        call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        let page = "https://mail.example.com/inbox";
+        let matched = call(&mut s, serde_json::json!({"cmd": "match_url", "url": page}));
+        let ids: Vec<i64> = matched["entries"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|e| e["id"].as_i64().unwrap())
+            .collect();
+        assert_eq!(ids, vec![mail]);
+        let fill = call(
+            &mut s,
+            serde_json::json!({"cmd": "fill", "id": mail, "url": page}),
+        );
+        assert_eq!(fill["username"], "ana");
+        assert_eq!(fill["password"], "mail-secret");
+        // Another site's password is never handed to this page.
+        let other = call(
+            &mut s,
+            serde_json::json!({"cmd": "fill", "id": bank, "url": page}),
+        );
+        assert_eq!(other["code"], "no_match");
+        assert!(other.get("password").is_none());
+    }
+
+    #[test]
+    fn get_leaves_notes_out_and_totp_gives_a_code() {
+        let (_dir, mut s, mail, bank) = session_with(enabled);
+        call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        let got = call(&mut s, serde_json::json!({"cmd": "get", "id": mail}));
+        assert_eq!(got["entry"]["password"], "mail-secret");
+        assert!(got["entry"].get("notes").is_none());
+        let code = call(&mut s, serde_json::json!({"cmd": "totp", "id": mail}));
+        assert_eq!(code["code"].as_str().unwrap().len(), 6);
+        assert!(code["remaining"].as_u64().unwrap() <= 30);
+        let none = call(&mut s, serde_json::json!({"cmd": "totp", "id": bank}));
+        assert_eq!(none["code"], "no_totp");
+        let missing = call(&mut s, serde_json::json!({"cmd": "get", "id": 9999}));
+        assert_eq!(missing["code"], "not_found");
+    }
+
+    #[test]
+    fn responses_carry_the_request_id() {
+        let (_dir, mut s, _, _) = session_with(enabled);
+        let r = call(&mut s, serde_json::json!({"cmd": "ping", "rid": 41}));
+        assert_eq!(r["rid"], 41);
+        let r = call(&mut s, serde_json::json!({"cmd": "nonsense", "rid": 42}));
+        assert_eq!(r["rid"], 42);
+        assert_eq!(r["code"], "invalid");
+    }
+
+    #[test]
+    fn install_arguments_keep_the_built_in_ids() {
+        let (chrome, firefox) = parse_install_args(&[
+            "--chrome-id".into(),
+            "storeid".into(),
+            "--firefox-id".into(),
+            "other@example.org".into(),
+        ])
+        .unwrap();
+        assert!(chrome.contains(&"storeid".to_string()));
+        assert!(chrome.contains(&CHROME_EXTENSION_IDS[0].to_string()));
+        assert!(firefox.contains(&FIREFOX_EXTENSION_ID.to_string()));
+        assert!(firefox.contains(&"other@example.org".to_string()));
+        assert!(parse_install_args(&["--chrome-id".into()]).is_err());
+    }
+
+    #[test]
+    fn browser_launch_arguments_are_not_cli_commands() {
+        // What Chrome and Firefox pass as argv[1]: none of them is a CLI mode.
+        for arg in [
+            "chrome-extension://opelfkfheadglgamfephkfejfpcnlbck/",
+            "/usr/lib/mozilla/native-messaging-hosts/com.bigcommunity.ashypass.json",
+            "ashypass@big-comm.github.io",
+        ] {
+            assert!(!is_cli_command(arg), "{arg}");
+        }
+        assert!(is_cli_command("--install"));
     }
 }

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:43\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -144,9 +144,6 @@ msgstr ""
 "Un alt dispozitiv a încărcat un instantaneu mai nou de la ultima "
 "sincronizare a acestui dispozitiv. Încărcarea acum ar orfana modificările de "
 "la distanță."
-
-msgid "Answer requests from the installed extension"
-msgstr "Răspunde la cererile extensiei instalate"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -481,8 +478,21 @@ msgstr "Confirmați parola principală pentru a exporta datele."
 msgid "Conflicts"
 msgstr "Conflicte"
 
-msgid "Connecting the extension"
-msgstr "Conectarea extensiei"
+msgid "Connect"
+msgstr "Conectează"
+
+msgid "Connect browsers"
+msgstr "Conectează browserele"
+
+msgid "Connect your browsers"
+msgstr "Conectați-vă browserele"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Conectat la browsere ({}). Reporniți-le dacă sunt deschise."
+msgstr[1] "Conectat la browsere ({}). Reporniți-le dacă sunt deschise."
+msgstr[2] "Conectat la browsere ({}). Reporniți-le dacă sunt deschise."
 
 msgid "Continue"
 msgstr "Continuă"
@@ -522,6 +532,9 @@ msgstr "Nu s-a putut modifica favoritul"
 
 msgid "Could not clear the history"
 msgstr "Nu s-a putut goli istoricul"
+
+msgid "Could not connect the browsers"
+msgstr "Browserele nu au putut fi conectate"
 
 msgid "Could not create the folder"
 msgstr "Nu s-a putut crea dosarul"
@@ -921,6 +934,15 @@ msgstr "Fișierele sunt criptate și stocate în seif."
 msgid "Filesystem"
 msgstr "Sistem de fișiere"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Completați și copiați parolele în Chrome, Brave, Edge, Vivaldi, Firefox și "
+"LibreWolf. Extensia nu păstrează nimic: întreabă Ashy Pass de fiecare dată "
+"și completează o pagină doar după ce dați clic."
+
 msgid "Fill in all three fields."
 msgstr "Completați toate cele trei câmpuri."
 
@@ -972,6 +994,9 @@ msgstr ""
 "Pentru Nextcloud, URL-ul de bază arată ca https://cloud.example.com/"
 "remote.php/dav/files/NUME_UTILIZATOR"
 
+msgid "For the browsers installed for this user"
+msgstr "Pentru browserele instalate pentru acest utilizator"
+
 msgid "Forgot the master password"
 msgstr "Am uitat parola principală"
 
@@ -1005,6 +1030,12 @@ msgstr "Generează parolă"
 
 msgid "Generated password"
 msgstr "Parolă generată"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Obțineți extensia pentru Chrome, Brave, Edge și Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Obțineți extensia pentru Firefox"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "Dați un nume acestei intrări, de exemplu site-ul sau aplicația."
@@ -1107,13 +1138,6 @@ msgstr ""
 "Introduceți tokenul FIDO2 (Yubikey, Nitrokey, etc.) și autorizați pe "
 "dispozitiv când vi se solicită. Fraza de acces curentă este necesară pentru "
 "a autoriza noul slot cheie."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Instalați extensia în Chrome sau Firefox, apoi înregistrați acest calculator "
-"cu:  ashypass-native-host --install <id-extensie>"
 
 msgid "Internal error: no passphrase set"
 msgstr "Eroare internă: nicio frază de acces setată"
@@ -1410,6 +1434,11 @@ msgstr ""
 
 msgid "No stable device link"
 msgstr "Nicio legătură stabilă către dispozitiv"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Nu a fost găsit niciun browser compatibil. Deschideți browserul o dată și "
+"încercați din nou."
 
 msgid "No verification codes yet"
 msgstr "Încă nu există coduri de verificare"
@@ -1839,6 +1868,13 @@ msgstr "Păstrare"
 msgid "Run"
 msgstr "Rulează"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Faceți asta o dată după instalarea unui browser, ca să găsească Ashy Pass. "
+"Adaugă doar un fișier mic în dosarul de setări al fiecărui browser."
+
 msgid "Running audit..."
 msgstr "Se execută auditul..."
 
@@ -2184,6 +2220,9 @@ msgstr ""
 msgid "The backup was not created"
 msgstr "Copia de rezervă nu a fost creată"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Conectorul de browser Ashy Pass nu este instalat"
+
 msgid "The copy could not be downloaded"
 msgstr "Copia nu a putut fi descărcată"
 
@@ -2196,6 +2235,16 @@ msgstr[2] "Copia a fost verificată și are {} de intrări."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Parola principală actuală este incorectă. Nu s-a modificat nimic."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Extensia cere parola principală și ține seiful deschis doar până la blocarea "
+"automată. Dacă „Deschide automat la autentificare” este activat, îl deschide "
+"fără să întrebe. Blocarea ecranului îl blochează și pe el, când opțiunea "
+"este activată."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2555,6 +2604,9 @@ msgstr "Deblocat la"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "Deblocată de altă aplicație. Blocați-o din managerul de fișiere."
 
+msgid "Unlocking"
+msgstr "Deblocare"
+
 msgid "Unlocking…"
 msgstr "Deblocare…"
 
@@ -2732,15 +2784,8 @@ msgstr ""
 "Când un site oferă verificare în doi pași, adăugați aici cheia de "
 "configurare pentru a primi codurile."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Când este activat, extensia de navigator Ashy Pass poate citi intrări din "
-"seif deblocând prin portcheiul sistemului, chiar dacă această fereastră este "
-"blocată. Cheia este eliminată din nou din memorie după intervalul de blocare "
-"automată."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Când este dezactivat, extensia nu vede nimic din seif"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "De unde doriți să vă aduceți parolele?"

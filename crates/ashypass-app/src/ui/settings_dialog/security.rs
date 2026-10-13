@@ -1240,36 +1240,6 @@ fn legacy_backup_group(state: &SharedState, toast: &Toaster) -> Option<adw::Pref
     Some(group)
 }
 
-#[allow(dead_code)] // Restored when a browser extension is published.
-pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState) {
-    let group = adw::PreferencesGroup::builder()
-        .title(tr!("Browser extension"))
-        .description(tr!(
-            "When on, the Ashy Pass browser extension can read vault entries by unlocking from the system keyring, even while this window is locked. The key is dropped again after the auto-lock delay."
-        ))
-        .build();
-    let row = adw::SwitchRow::builder()
-        .title(tr!("Allow the browser extension"))
-        .subtitle(tr!("Answer requests from the installed extension"))
-        .active(state.settings().browser_integration)
-        .build();
-    row.connect_active_notify(move |row| {
-        let active = row.is_active();
-        if let Err(e) = state.update_settings(|s| s.browser_integration = active) {
-            log::warn!("could not save settings: {e}");
-        }
-    });
-    group.add(&row);
-    page.add(&group);
-    let how = adw::PreferencesGroup::builder()
-        .title(tr!("Connecting the extension"))
-        .description(glib::markup_escape_text(tr!(
-            "Install the extension in Chrome or Firefox, then register this computer with:  ashypass-native-host --install <extension-id>"
-        )).as_str())
-        .build();
-    page.add(&how);
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

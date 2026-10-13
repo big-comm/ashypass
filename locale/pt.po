@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: Portuguese\n"
@@ -148,9 +148,6 @@ msgstr ""
 "Outro dispositivo enviou um instantâneo mais recente desde a última "
 "sincronização deste dispositivo. Enviar agora descartaria as alterações "
 "remotas."
-
-msgid "Answer requests from the installed extension"
-msgstr "Responder aos pedidos da extensão instalada"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -492,8 +489,20 @@ msgstr "Confirme a sua palavra-passe principal para exportar os seus dados."
 msgid "Conflicts"
 msgstr "Conflitos"
 
-msgid "Connecting the extension"
-msgstr "Ligar a extensão"
+msgid "Connect"
+msgstr "Ligar"
+
+msgid "Connect browsers"
+msgstr "Ligar navegadores"
+
+msgid "Connect your browsers"
+msgstr "Ligue os seus navegadores"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Ligado a {} navegador. Reinicie-o se estiver aberto."
+msgstr[1] "Ligado a {} navegadores. Reinicie-os se estiverem abertos."
 
 msgid "Continue"
 msgstr "Continuar"
@@ -533,6 +542,9 @@ msgstr "Não foi possível alterar o favorito"
 
 msgid "Could not clear the history"
 msgstr "Não foi possível limpar o histórico"
+
+msgid "Could not connect the browsers"
+msgstr "Não foi possível ligar os navegadores"
 
 msgid "Could not create the folder"
 msgstr "Não foi possível criar a pasta"
@@ -939,6 +951,15 @@ msgstr "Os ficheiros são encriptados e guardados dentro do cofre."
 msgid "Filesystem"
 msgstr "Sistema de ficheiros"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Preencha e copie as suas palavras-passe no Chrome, Brave, Edge, Vivaldi, "
+"Firefox e LibreWolf. A extensão não guarda nada: pergunta ao Ashy Pass de "
+"cada vez e só preenche uma página depois de clicar."
+
 msgid "Fill in all three fields."
 msgstr "Preencha os três campos."
 
@@ -991,6 +1012,9 @@ msgstr ""
 "Para o Nextcloud, o URL base é semelhante a https://cloud.example.com/"
 "remote.php/dav/files/UTILIZADOR"
 
+msgid "For the browsers installed for this user"
+msgstr "Para os navegadores instalados para este utilizador"
+
 msgid "Forgot the master password"
 msgstr "Esqueci-me da palavra-passe principal"
 
@@ -1024,6 +1048,12 @@ msgstr "Gerar palavra-passe"
 
 msgid "Generated password"
 msgstr "Palavra-passe gerada"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Obter a extensão para Chrome, Brave, Edge e Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Obter a extensão para Firefox"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "Dê um nome a este acesso, por exemplo o site ou a aplicação."
@@ -1126,13 +1156,6 @@ msgstr ""
 "Insira o seu token FIDO2 (Yubikey, Nitrokey, etc.) e autorize no dispositivo "
 "quando lhe for pedido. A sua frase-passe atual é necessária para autorizar a "
 "nova ranhura de chave."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Instale a extensão no Chrome ou no Firefox e registe este computador com:  "
-"ashypass-native-host --install <id-da-extensão>"
 
 msgid "Internal error: no passphrase set"
 msgstr "Erro interno: nenhuma frase-passe definida"
@@ -1439,6 +1462,11 @@ msgstr ""
 
 msgid "No stable device link"
 msgstr "Sem ligação estável ao dispositivo"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Não foi encontrado nenhum navegador compatível. Abra o navegador uma vez e "
+"tente de novo."
 
 msgid "No verification codes yet"
 msgstr "Ainda não há códigos de verificação"
@@ -1890,6 +1918,14 @@ msgstr "Retenção"
 msgid "Run"
 msgstr "Executar"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Faça isto uma vez depois de instalar um navegador, para que encontre o Ashy "
+"Pass. Apenas acrescenta um pequeno ficheiro à pasta de definições de cada "
+"navegador."
+
 msgid "Running audit..."
 msgstr "A verificar..."
 
@@ -2245,6 +2281,9 @@ msgstr "O acesso passa para Itens eliminados, onde pode ser restaurado durante"
 msgid "The backup was not created"
 msgstr "A cópia de segurança não foi criada"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "O conector de navegador do Ashy Pass não está instalado"
+
 msgid "The copy could not be downloaded"
 msgstr "Não foi possível transferir a cópia"
 
@@ -2256,6 +2295,16 @@ msgstr[1] "A cópia foi verificada e tem {} acessos."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "A palavra-passe principal atual está incorreta. Nada foi alterado."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"A extensão pede a palavra-passe principal e mantém o cofre aberto só até ao "
+"bloqueio automático. Se “Abrir automaticamente ao iniciar sessão” estiver "
+"ativo, abre sem perguntar. Bloquear o ecrã também o bloqueia, quando essa "
+"opção está ativa."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2614,6 +2663,9 @@ msgstr "Desbloqueado às"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "Desbloqueada por outra aplicação. Bloqueie-a no gestor de ficheiros."
 
+msgid "Unlocking"
+msgstr "Desbloqueio"
+
 msgid "Unlocking…"
 msgstr "A desbloquear…"
 
@@ -2794,15 +2846,8 @@ msgstr ""
 "Quando um site oferecer verificação em dois passos, adicione aqui a chave de "
 "configuração para receber os códigos."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Quando ativado, a extensão do Ashy Pass no navegador pode ler acessos do "
-"cofre desbloqueando através do porta-chaves do sistema, mesmo com esta "
-"janela bloqueada. A chave é descartada de novo após o tempo de bloqueio "
-"automático."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Quando desligado, a extensão não vê nada do cofre"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "De onde quer trazer as suas palavras-passe?"

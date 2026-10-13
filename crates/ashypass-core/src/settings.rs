@@ -47,10 +47,11 @@ pub struct Settings {
     /// `/favicon.ico`. Off by default: the query string carries the hostname,
     /// so enabling it discloses part of the vault's contents to a third party.
     pub favicon_third_party_fallback: bool,
-    /// Allow the browser native-messaging host to unlock the vault from the
-    /// system keyring and answer extension queries. Off disables browser
-    /// integration without having to remove the host manifests.
-    pub browser_integration: bool,
+    /// Let the browser extension reach the vault through the native host.
+    /// Off by default. (Named differently from the old `browser_extension`,
+    /// which defaulted to on before the extension existed and is saved as
+    /// `true` in most settings files: the new name makes it a real opt-in.)
+    pub browser_extension: bool,
     pub show_sync_badges: bool,
     pub compact_vault_list: bool,
     pub large_totp_codes: bool,
@@ -137,7 +138,7 @@ impl Default for Settings {
         Self {
             show_favicons: true,
             favicon_third_party_fallback: false,
-            browser_integration: true,
+            browser_extension: false,
             show_sync_badges: true,
             compact_vault_list: false,
             large_totp_codes: true,
@@ -414,5 +415,13 @@ mod tests {
         let settings = Settings::load_from(&path);
         assert_eq!(settings.lock_timeout, 24 * 3600);
         assert_eq!(settings.clipboard_clear, 24 * 3600);
+    }
+
+    #[test]
+    fn the_old_browser_switch_does_not_turn_the_extension_on() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("settings.json");
+        std::fs::write(&path, r#"{"browser_integration": true}"#).unwrap();
+        assert!(!Settings::load_from(&path).browser_extension);
     }
 }

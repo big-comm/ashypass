@@ -18,6 +18,7 @@ use std::rc::Rc;
 
 mod appearance;
 mod audit;
+mod browser;
 mod cloud;
 mod import_export;
 mod nextcloud;
@@ -30,6 +31,7 @@ mod two_factor;
 pub(crate) use appearance::apply_color_scheme;
 use appearance::*;
 use audit::*;
+use browser::*;
 use cloud::*;
 use import_export::*;
 use nextcloud::*;
@@ -109,9 +111,11 @@ pub fn present(
         dialog_slot.clone(),
     );
 
-    // No "Browser" page yet: the native-messaging host exists, but there is
-    // no published extension to connect to it. `populate_browser` is kept
-    // for when there is one.
+    let browser = adw::PreferencesPage::builder()
+        .title(tr!("Browser"))
+        .icon_name("web-browser-symbolic")
+        .build();
+    populate_browser(&browser, state.clone(), toast.clone());
 
     let appearance = adw::PreferencesPage::builder()
         .title(tr!("Appearance"))
@@ -121,6 +125,7 @@ pub fn present(
 
     dialog.add(&protection);
     dialog.add(&sync);
+    dialog.add(&browser);
     dialog.add(&appearance);
 
     state.track_sensitive_dialog(&dialog);

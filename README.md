@@ -76,6 +76,12 @@ Nothing leaves your machine unless you turn on a sync or backup service. The vau
 - **WebDAV / Nextcloud Files** — encrypted copies with generation-aware conflict detection.
 - **Google Drive** — encrypted copies over REST with OAuth 2.0 PKCE; tokens are stored in the system keyring.
 
+### Browser extension
+- **Chrome, Brave, Edge, Vivaldi, Firefox and LibreWolf** — fill and copy logins, copy verification codes and generate passwords from the browser toolbar (`Ctrl+Shift+L`).
+- **Off until you turn it on** in *Settings → Browser*. The extension stores nothing: it asks the app each time, unlocks with your master password (or the keyring, if you chose that), and locks again with the desktop auto-lock.
+- **Fills only the site the login belongs to**, and only after a click — a page can never obtain another site's password. Matching uses the Public Suffix List and the port.
+- Source and build instructions: [`browser-extension/`](browser-extension/README.md); protocol: [`PROTOCOL.md`](browser-extension/PROTOCOL.md).
+
 ### More
 - **External drives** (*Tools → External drives*): list removable drives and encrypt them with LUKS2 through a polkit-protected helper, with the device identity checked before any destructive step.
 - **Command line:** `ashypass-cli` shares the vault and keyring with the desktop app.
@@ -84,7 +90,7 @@ Nothing leaves your machine unless you turn on a sync or backup service. The vau
 
 ## Not available yet
 
-- **Browser extension.** The native-messaging host is in place, but there is no published extension yet, so the option is hidden in Settings.
+- **Browser extension in the stores.** The extension is complete and can be loaded unpacked; it is not yet published on the Chrome Web Store and Firefox Add-ons.
 - **Security keys (FIDO2) for the vault.** Kept out of the interface until registration and verification are fully implemented. External drives can already use FIDO2 keyslots.
 
 ## Requirements
@@ -171,9 +177,10 @@ crates/
 ├── ashypass-core           Library without GTK: crypto, vault, importers, sync, backup
 ├── ashypass-app            GTK4 / libadwaita desktop application
 ├── ashypass-cli            Terminal companion
-├── ashypass-native-host    Native-messaging host for a future browser extension
+├── ashypass-native-host    Native-messaging host used by the browser extension
 ├── ashypass-drives         LUKS2 detection and encryption pipeline
 └── ashypass-drives-helper  Privileged helper started through polkit
+browser-extension/          Chrome and Firefox extension (plain JavaScript)
 locale/                     Translations (.po) and template
 pkgbuild/                   Arch Linux package
 ```

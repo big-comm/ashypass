@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:21\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Danish <da@li.org>\n"
@@ -140,9 +140,6 @@ msgid ""
 msgstr ""
 "En anden enhed har uploadet et nyere snapshot, siden denne enhed sidst "
 "synkroniserede. Upload nu vil gøre fjernændringerne forældreløse."
-
-msgid "Answer requests from the installed extension"
-msgstr "Besvar anmodninger fra den installerede udvidelse"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -474,8 +471,20 @@ msgstr "Bekræft din hovedadgangskode for at eksportere dine data."
 msgid "Conflicts"
 msgstr "Konflikter"
 
-msgid "Connecting the extension"
-msgstr "Tilslutning af udvidelsen"
+msgid "Connect"
+msgstr "Forbind"
+
+msgid "Connect browsers"
+msgstr "Forbind browsere"
+
+msgid "Connect your browsers"
+msgstr "Forbind dine browsere"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Forbundet til {} browser. Genstart den, hvis den er åben."
+msgstr[1] "Forbundet til {} browsere. Genstart dem, hvis de er åbne."
 
 msgid "Continue"
 msgstr "Fortsæt"
@@ -515,6 +524,9 @@ msgstr "Kunne ikke ændre favoritten"
 
 msgid "Could not clear the history"
 msgstr "Kunne ikke rydde historikken"
+
+msgid "Could not connect the browsers"
+msgstr "Browserne kunne ikke forbindes"
 
 msgid "Could not create the folder"
 msgstr "Kunne ikke oprette mappen"
@@ -911,6 +923,15 @@ msgstr "Filerne krypteres og gemmes i boksen."
 msgid "Filesystem"
 msgstr "Filsystem"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Udfyld og kopiér dine adgangskoder i Chrome, Brave, Edge, Vivaldi, Firefox "
+"og LibreWolf. Udvidelsen gemmer intet: den spørger Ashy Pass hver gang og "
+"udfylder kun en side, efter du klikker."
+
 msgid "Fill in all three fields."
 msgstr "Udfyld alle tre felter."
 
@@ -963,6 +984,9 @@ msgstr ""
 "For Nextcloud ser basis-URL’en sådan ud: https://cloud.example.com/"
 "remote.php/dav/files/BRUGERNAVN"
 
+msgid "For the browsers installed for this user"
+msgstr "For browserne installeret til denne bruger"
+
 msgid "Forgot the master password"
 msgstr "Glemt hovedadgangskoden"
 
@@ -996,6 +1020,12 @@ msgstr "Generér adgangskode"
 
 msgid "Generated password"
 msgstr "Genereret adgangskode"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Hent udvidelsen til Chrome, Brave, Edge og Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Hent udvidelsen til Firefox"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "Giv dette login et navn, for eksempel webstedet eller appen."
@@ -1096,13 +1126,6 @@ msgstr ""
 "Indsæt din FIDO2-nøgle (Yubikey, Nitrokey osv.) og godkend på enheden, når "
 "du bliver bedt om det. Din nuværende adgangssætning er påkrævet for at "
 "godkende den nye nøgleplads."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Installér udvidelsen i Chrome eller Firefox, og registrér derefter denne "
-"computer med:  ashypass-native-host --install <udvidelses-id>"
 
 msgid "Internal error: no passphrase set"
 msgstr "Intern fejl: ingen adgangssætning angivet"
@@ -1396,6 +1419,10 @@ msgstr ""
 
 msgid "No stable device link"
 msgstr "Intet stabilt enhedslink"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Ingen understøttet browser blev fundet. Åbn browseren én gang, og prøv igen."
 
 msgid "No verification codes yet"
 msgstr "Ingen bekræftelseskoder endnu"
@@ -1822,6 +1849,13 @@ msgstr "Opbevaring"
 msgid "Run"
 msgstr "Kør"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Gør dette én gang efter installation af en browser, så den kan finde Ashy "
+"Pass. Der tilføjes kun en lille fil i hver browsers indstillingsmappe."
+
 msgid "Running audit..."
 msgstr "Kører revision..."
 
@@ -2161,6 +2195,9 @@ msgstr "Login flyttes til Slettede elementer, hvor det kan gendannes i"
 msgid "The backup was not created"
 msgstr "Sikkerhedskopien blev ikke oprettet"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Ashy Pass’ browserforbindelse er ikke installeret"
+
 msgid "The copy could not be downloaded"
 msgstr "Kopien kunne ikke hentes"
 
@@ -2172,6 +2209,16 @@ msgstr[1] "Kopien er kontrolleret og indeholder {} poster."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Den nuværende hovedadgangskode er forkert. Intet blev ændret."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Udvidelsen beder om din hovedadgangskode og holder kun boksen åben indtil "
+"den automatiske låsning. Er “Åbn automatisk ved login” slået til, åbner den "
+"uden at spørge. At låse skærmen låser den også, når den indstilling er slået "
+"til."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2518,6 +2565,9 @@ msgstr "Låst op kl."
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "Låst op af et andet program. Lås det fra din filhåndtering."
 
+msgid "Unlocking"
+msgstr "Oplåsning"
+
 msgid "Unlocking…"
 msgstr "Låser op…"
 
@@ -2693,14 +2743,8 @@ msgstr ""
 "Når et websted tilbyder totrinsbekræftelse, så tilføj dets opsætningsnøgle "
 "her for at få koderne."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Når dette er slået til, kan Ashy Pass-browserudvidelsen læse poster i boksen "
-"ved at låse op via systemets nøglering, selv mens dette vindue er låst. "
-"Nøglen slippes igen efter tiden for automatisk låsning."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Når den er slået fra, kan udvidelsen ikke se noget i boksen"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Hvor vil du hente dine adgangskoder fra?"

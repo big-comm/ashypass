@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -143,9 +143,6 @@ msgstr ""
 "Egy másik eszköz feltöltött egy újabb pillanatképet, mióta ez az eszköz "
 "utoljára szinkronizált. A mostani feltöltéssel a távoli módosítások "
 "elárvulnának."
-
-msgid "Answer requests from the installed extension"
-msgstr "Válasz a telepített bővítmény kéréseire"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -480,8 +477,20 @@ msgstr "Az adatok exportálásához erősítse meg a fő jelszavát."
 msgid "Conflicts"
 msgstr "Ütközések"
 
-msgid "Connecting the extension"
-msgstr "A bővítmény csatlakoztatása"
+msgid "Connect"
+msgstr "Csatlakoztatás"
+
+msgid "Connect browsers"
+msgstr "Böngészők csatlakoztatása"
+
+msgid "Connect your browsers"
+msgstr "Csatlakoztassa böngészőit"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "{} böngésző csatlakoztatva. Indítsa újra, ha nyitva van."
+msgstr[1] "{} böngésző csatlakoztatva. Indítsa újra őket, ha nyitva vannak."
 
 msgid "Continue"
 msgstr "Folytatás"
@@ -521,6 +530,9 @@ msgstr "Nem sikerült módosítani a kedvencet"
 
 msgid "Could not clear the history"
 msgstr "Nem sikerült törölni az előzményeket"
+
+msgid "Could not connect the browsers"
+msgstr "A böngészők nem csatlakoztathatók"
 
 msgid "Could not create the folder"
 msgstr "Nem sikerült létrehozni a mappát"
@@ -922,6 +934,15 @@ msgstr "A fájlok titkosítva, a tárban tárolódnak."
 msgid "Filesystem"
 msgstr "Fájlrendszer"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Töltse ki és másolja jelszavait Chrome, Brave, Edge, Vivaldi, Firefox és "
+"LibreWolf böngészőben. A bővítmény semmit sem tárol: minden alkalommal az "
+"Ashy Passtól kérdez, és csak az Ön kattintása után tölt ki egy oldalt."
+
 msgid "Fill in all three fields."
 msgstr "Töltse ki mindhárom mezőt."
 
@@ -974,6 +995,9 @@ msgstr ""
 "Nextcloud esetén az alap URL így néz ki: https://cloud.example.com/"
 "remote.php/dav/files/FELHASZNÁLÓNÉV"
 
+msgid "For the browsers installed for this user"
+msgstr "Az ehhez a felhasználóhoz telepített böngészőkhöz"
+
 msgid "Forgot the master password"
 msgstr "Elfelejtett fő jelszó"
 
@@ -1007,6 +1031,12 @@ msgstr "Jelszó generálása"
 
 msgid "Generated password"
 msgstr "Generált jelszó"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "A bővítmény beszerzése Chrome, Brave, Edge és Vivaldi böngészőhöz"
+
+msgid "Get the extension for Firefox"
+msgstr "A bővítmény beszerzése Firefoxhoz"
 
 msgid "Give this access a name, for example the site or app."
 msgstr ""
@@ -1109,13 +1139,6 @@ msgstr ""
 "Helyezze be a FIDO2 tokenjét (Yubikey, Nitrokey stb.), és hagyja jóvá a "
 "műveletet az eszközön, amikor a rendszer kéri. Az új kulcstartó "
 "engedélyezéséhez meg kell adnia a jelenlegi jelszavát."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Telepítse a bővítményt Chrome-ba vagy Firefoxba, majd regisztrálja ezt a "
-"számítógépet ezzel:  ashypass-native-host --install <bővítményazonosító>"
 
 msgid "Internal error: no passphrase set"
 msgstr "Belső hiba: nincs beállítva jelszó"
@@ -1409,6 +1432,11 @@ msgstr ""
 
 msgid "No stable device link"
 msgstr "Nincs állandó eszközhivatkozás"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Nem található támogatott böngésző. Nyissa meg egyszer a böngészőt, majd "
+"próbálja újra."
 
 msgid "No verification codes yet"
 msgstr "Még nincsenek ellenőrző kódok"
@@ -1844,6 +1872,13 @@ msgstr "Megőrzés"
 msgid "Run"
 msgstr "Futtatás"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Egy böngésző telepítése után futtassa egyszer, hogy megtalálja az Ashy "
+"Passt. Csak egy kis fájlt helyez el minden böngésző beállítási mappájában."
+
 msgid "Running audit..."
 msgstr "Audit futtatása..."
 
@@ -2188,6 +2223,9 @@ msgstr ""
 msgid "The backup was not created"
 msgstr "A biztonsági mentés nem jött létre"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Az Ashy Pass böngészőcsatlakozója nincs telepítve"
+
 msgid "The copy could not be downloaded"
 msgstr "Nem sikerült letölteni a másolatot"
 
@@ -2199,6 +2237,16 @@ msgstr[1] "A másolat ellenőrizve, {} bejegyzést tartalmaz."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "A jelenlegi fő jelszó hibás. Semmi sem változott."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"A bővítmény a mesterjelszót kéri, és csak az automatikus zárolásig tartja "
+"nyitva a széfet. Ha az „Automatikus megnyitás bejelentkezéskor” be van "
+"kapcsolva, kérdés nélkül nyitja meg. A képernyő zárolása is zárolja, ha ez a "
+"beállítás be van kapcsolva."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2545,6 +2593,9 @@ msgstr "Feloldva ekkor:"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "Egy másik alkalmazás oldotta fel. Zárolja a fájlkezelőből."
 
+msgid "Unlocking"
+msgstr "Feloldás"
+
 msgid "Unlocking…"
 msgstr "Feloldás…"
 
@@ -2720,14 +2771,8 @@ msgstr ""
 "Ha egy webhely kétlépcsős azonosítást kínál, itt adja meg a beállítási "
 "kulcsát a kódok megkapásához."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Bekapcsolva az Ashy Pass böngészőbővítmény a rendszer kulcstartójából "
-"feloldva olvashatja a tár bejegyzéseit, még akkor is, ha ez az ablak zárolva "
-"van. A kulcs az automatikus zárolási idő után ismét törlődik."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Kikapcsolva a bővítmény semmit sem lát a széfből"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Honnan szeretné áthozni a jelszavait?"

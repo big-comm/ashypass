@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -132,9 +132,6 @@ msgid ""
 msgstr ""
 "自本设备上次同步以来，另一台设备已上传了更新的快照。现在上传将导致远程更改被"
 "孤立。"
-
-msgid "Answer requests from the installed extension"
-msgstr "响应已安装扩展的请求"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -457,8 +454,19 @@ msgstr "请确认主密码以导出数据。"
 msgid "Conflicts"
 msgstr "冲突"
 
-msgid "Connecting the extension"
-msgstr "连接扩展"
+msgid "Connect"
+msgstr "连接"
+
+msgid "Connect browsers"
+msgstr "连接浏览器"
+
+msgid "Connect your browsers"
+msgstr "连接您的浏览器"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "已连接 {} 个浏览器。如果它们已打开，请重新启动。"
 
 msgid "Continue"
 msgstr "继续"
@@ -498,6 +506,9 @@ msgstr "无法更改收藏"
 
 msgid "Could not clear the history"
 msgstr "无法清除历史记录"
+
+msgid "Could not connect the browsers"
+msgstr "无法连接浏览器"
 
 msgid "Could not create the folder"
 msgstr "无法创建文件夹"
@@ -885,6 +896,14 @@ msgstr "文件会被加密并存储在保险库中。"
 msgid "Filesystem"
 msgstr "文件系统"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"在 Chrome、Brave、Edge、Vivaldi、Firefox 和 LibreWolf 中填写和复制密码。扩展"
+"不保存任何内容：每次都向 Ashy Pass 询问，并且只在您点击后才填写页面。"
+
 msgid "Fill in all three fields."
 msgstr "请填写全部三个字段。"
 
@@ -934,6 +953,9 @@ msgstr ""
 "对于 Nextcloud，基础地址格式为 https://cloud.example.com/remote.php/dav/"
 "files/用户名"
 
+msgid "For the browsers installed for this user"
+msgstr "适用于此用户安装的浏览器"
+
 msgid "Forgot the master password"
 msgstr "忘记主密码"
 
@@ -965,6 +987,12 @@ msgstr "生成密码"
 
 msgid "Generated password"
 msgstr "已生成的密码"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "获取适用于 Chrome、Brave、Edge 和 Vivaldi 的扩展"
+
+msgid "Get the extension for Firefox"
+msgstr "获取适用于 Firefox 的扩展"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "为此条目命名，例如网站或应用名称。"
@@ -1059,13 +1087,6 @@ msgid ""
 msgstr ""
 "插入您的 FIDO2 令牌（Yubikey、Nitrokey 等），并在提示时在设备上授权。需要您当"
 "前的密码短语来授权新的密钥槽。"
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"在 Chrome 或 Firefox 中安装扩展，然后使用以下命令注册此电脑：  ashypass-"
-"native-host --install <扩展ID>"
 
 msgid "Internal error: no passphrase set"
 msgstr "内部错误：未设置密码短语"
@@ -1342,6 +1363,9 @@ msgstr "此版本不支持更改安全密钥或恢复短语。"
 
 msgid "No stable device link"
 msgstr "没有稳定的设备链接"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr "未找到受支持的浏览器。请先打开一次浏览器，然后重试。"
 
 msgid "No verification codes yet"
 msgstr "暂无验证码"
@@ -1753,6 +1777,13 @@ msgstr "保留期限"
 msgid "Run"
 msgstr "运行"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"安装浏览器后运行一次，以便它能找到 Ashy Pass。只会在每个浏览器的设置文件夹中"
+"添加一个小文件。"
+
 msgid "Running audit..."
 msgstr "正在运行审计..."
 
@@ -2084,6 +2115,9 @@ msgstr "该条目将移至“已删除项目”，在以下时间内可恢复：
 msgid "The backup was not created"
 msgstr "未创建备份"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "未安装 Ashy Pass 浏览器连接器"
+
 msgid "The copy could not be downloaded"
 msgstr "无法下载副本"
 
@@ -2094,6 +2128,14 @@ msgstr[0] "副本已校验，包含 {} 个条目。"
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "当前主密码不正确。未做任何更改。"
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"扩展会要求输入主密码，并且只在自动锁定前保持密码库打开。如果开启了“登录时自动"
+"打开”，则无需询问即可打开。开启该选项时，锁定屏幕也会将其锁定。"
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2410,6 +2452,9 @@ msgstr "解锁于"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "已被其他应用解锁。请从文件管理器中锁定。"
 
+msgid "Unlocking"
+msgstr "解锁"
+
 msgid "Unlocking…"
 msgstr "正在解锁…"
 
@@ -2576,13 +2621,8 @@ msgid ""
 "codes."
 msgstr "当网站提供两步验证时，在此添加其设置密钥以获取验证码。"
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"开启后，即使此窗口已锁定，Ashy Pass 浏览器扩展也可以通过系统密钥环解锁来读取"
-"保险库条目。自动锁定延迟过后，密钥将再次被丢弃。"
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "关闭时，扩展无法看到密码库中的任何内容"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "你想从哪里导入密码？"

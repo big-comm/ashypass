@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:47\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -144,9 +144,6 @@ msgstr ""
 "Bu cihazın son senkronizasyonundan bu yana başka bir cihaz daha yeni bir "
 "anlık görüntü yükledi. Şimdi yüklemek, uzaktaki değişikliklerin sahipsiz "
 "kalmasına neden olur."
-
-msgid "Answer requests from the installed extension"
-msgstr "Kurulu eklentiden gelen isteklere yanıt ver"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -479,8 +476,20 @@ msgstr "Verilerinizi dışa aktarmak için ana parolanızı onaylayın."
 msgid "Conflicts"
 msgstr "Çakışmalar"
 
-msgid "Connecting the extension"
-msgstr "Eklentiyi bağlama"
+msgid "Connect"
+msgstr "Bağla"
+
+msgid "Connect browsers"
+msgstr "Tarayıcıları bağla"
+
+msgid "Connect your browsers"
+msgstr "Tarayıcılarınızı bağlayın"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "{} tarayıcıya bağlandı. Açıksa yeniden başlatın."
+msgstr[1] "{} tarayıcıya bağlandı. Açıksa yeniden başlatın."
 
 msgid "Continue"
 msgstr "Devam Et"
@@ -520,6 +529,9 @@ msgstr "Favori değiştirilemedi"
 
 msgid "Could not clear the history"
 msgstr "Geçmiş temizlenemedi"
+
+msgid "Could not connect the browsers"
+msgstr "Tarayıcılar bağlanamadı"
 
 msgid "Could not create the folder"
 msgstr "Klasör oluşturulamadı"
@@ -915,6 +927,15 @@ msgstr "Dosyalar şifrelenir ve kasanın içinde saklanır."
 msgid "Filesystem"
 msgstr "Dosya sistemi"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Parolalarınızı Chrome, Brave, Edge, Vivaldi, Firefox ve LibreWolf’ta "
+"doldurun ve kopyalayın. Uzantı hiçbir şey saklamaz: her seferinde Ashy "
+"Pass’e sorar ve bir sayfayı yalnızca siz tıkladıktan sonra doldurur."
+
 msgid "Fill in all three fields."
 msgstr "Üç alanın hepsini doldurun."
 
@@ -967,6 +988,9 @@ msgstr ""
 "Nextcloud için temel URL şuna benzer: https://cloud.example.com/remote.php/"
 "dav/files/KULLANICIADI"
 
+msgid "For the browsers installed for this user"
+msgstr "Bu kullanıcı için kurulu tarayıcılar için"
+
 msgid "Forgot the master password"
 msgstr "Ana parolamı unuttum"
 
@@ -1000,6 +1024,12 @@ msgstr "Parola oluştur"
 
 msgid "Generated password"
 msgstr "Oluşturulan parola"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Uzantıyı Chrome, Brave, Edge ve Vivaldi için edinin"
+
+msgid "Get the extension for Firefox"
+msgstr "Uzantıyı Firefox için edinin"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "Bu kayda bir ad verin, örneğin sitenin veya uygulamanın adı."
@@ -1101,13 +1131,6 @@ msgstr ""
 "FIDO2 belirtecinizi (Yubikey, Nitrokey vb.) takın ve istendiğinde cihazda "
 "yetkilendirme yapın. Yeni anahtar yuvasını yetkilendirmek için mevcut parola "
 "ifadeniz gereklidir."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Eklentiyi Chrome veya Firefox'a kurun, ardından bu bilgisayarı şu komutla "
-"kaydedin:  ashypass-native-host --install <eklenti-kimliği>"
 
 msgid "Internal error: no passphrase set"
 msgstr "Dahili hata: parola ayarlanmamış"
@@ -1396,6 +1419,11 @@ msgstr "Bu sürümde güvenlik anahtarı veya kurtarma ifadesi değiştirilemez.
 
 msgid "No stable device link"
 msgstr "Kalıcı aygıt bağlantısı yok"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Desteklenen bir tarayıcı bulunamadı. Tarayıcınızı bir kez açıp yeniden "
+"deneyin."
 
 msgid "No verification codes yet"
 msgstr "Henüz doğrulama kodu yok"
@@ -1825,6 +1853,13 @@ msgstr "Saklama süresi"
 msgid "Run"
 msgstr "Çalıştır"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Bir tarayıcı kurduktan sonra bunu bir kez yapın, böylece Ashy Pass’i "
+"bulabilir. Yalnızca her tarayıcının ayar klasörüne küçük bir dosya ekler."
+
 msgid "Running audit..."
 msgstr "Denetim çalıştırılıyor..."
 
@@ -2164,6 +2199,9 @@ msgstr "Kayıt Silinen öğelere taşınır ve şu süre boyunca geri yüklenebi
 msgid "The backup was not created"
 msgstr "Yedek oluşturulmadı"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Ashy Pass tarayıcı bağlayıcısı kurulu değil"
+
 msgid "The copy could not be downloaded"
 msgstr "Kopya indirilemedi"
 
@@ -2175,6 +2213,15 @@ msgstr[1] "Kopya denetlendi ve {} kayıt içeriyor."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Mevcut ana parola yanlış. Hiçbir şey değiştirilmedi."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Uzantı ana parolanızı ister ve kasayı yalnızca otomatik kilitlenmeye kadar "
+"açık tutar. “Oturum açarken otomatik aç” açıksa sormadan açar. Bu seçenek "
+"açıksa ekranı kilitlemek de onu kilitler."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2517,6 +2564,9 @@ msgid "Unlocked by another application. Lock it from your file manager."
 msgstr ""
 "Başka bir uygulama tarafından kilidi açıldı. Dosya yöneticinizden kilitleyin."
 
+msgid "Unlocking"
+msgstr "Kilit açma"
+
 msgid "Unlocking…"
 msgstr "Kilidi açılıyor…"
 
@@ -2691,14 +2741,8 @@ msgstr ""
 "Bir site iki adımlı doğrulama sunduğunda, kodları almak için kurulum "
 "anahtarını buraya ekleyin."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Açık olduğunda Ashy Pass tarayıcı eklentisi, bu pencere kilitliyken bile "
-"sistem anahtarlığından kilidi açarak kasa kayıtlarını okuyabilir. Anahtar, "
-"otomatik kilit süresinden sonra yeniden bırakılır."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Kapalıyken uzantı kasadaki hiçbir şeyi göremez"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Parolalarınızı nereden getirmek istiyorsunuz?"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:23\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -145,9 +145,6 @@ msgstr ""
 "Μια άλλη συσκευή μεταφόρτωσε ένα νεότερο στιγμιότυπο από τότε που "
 "συγχρονίστηκε τελευταία φορά αυτή η συσκευή. Η μεταφόρτωση τώρα θα "
 "απομονώσει τις απομακρυσμένες αλλαγές."
-
-msgid "Answer requests from the installed extension"
-msgstr "Απάντηση σε αιτήματα από την εγκατεστημένη επέκταση"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -489,8 +486,21 @@ msgstr ""
 msgid "Conflicts"
 msgstr "Συγκρούσεις"
 
-msgid "Connecting the extension"
-msgstr "Σύνδεση της επέκτασης"
+msgid "Connect"
+msgstr "Σύνδεση"
+
+msgid "Connect browsers"
+msgstr "Σύνδεση φυλλομετρητών"
+
+msgid "Connect your browsers"
+msgstr "Συνδέστε τους φυλλομετρητές σας"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Συνδέθηκε με {} φυλλομετρητή. Επανεκκινήστε τον αν είναι ανοιχτός."
+msgstr[1] ""
+"Συνδέθηκε με {} φυλλομετρητές. Επανεκκινήστε τους αν είναι ανοιχτοί."
 
 msgid "Continue"
 msgstr "Συνέχεια"
@@ -530,6 +540,9 @@ msgstr "Δεν ήταν δυνατή η αλλαγή του αγαπημένου
 
 msgid "Could not clear the history"
 msgstr "Δεν ήταν δυνατή η εκκαθάριση του ιστορικού"
+
+msgid "Could not connect the browsers"
+msgstr "Δεν ήταν δυνατή η σύνδεση των φυλλομετρητών"
 
 msgid "Could not create the folder"
 msgstr "Δεν ήταν δυνατή η δημιουργία του φακέλου"
@@ -935,6 +948,15 @@ msgstr "Τα αρχεία κρυπτογραφούνται και αποθηκε
 msgid "Filesystem"
 msgstr "Σύστημα αρχείων"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Συμπληρώστε και αντιγράψτε τους κωδικούς σας σε Chrome, Brave, Edge, "
+"Vivaldi, Firefox και LibreWolf. Η επέκταση δεν αποθηκεύει τίποτα: ρωτά το "
+"Ashy Pass κάθε φορά και συμπληρώνει μια σελίδα μόνο αφού κάνετε κλικ."
+
 msgid "Fill in all three fields."
 msgstr "Συμπληρώστε και τα τρία πεδία."
 
@@ -987,6 +1009,9 @@ msgstr ""
 "Για το Nextcloud, η βασική URL μοιάζει με https://cloud.example.com/"
 "remote.php/dav/files/USERNAME"
 
+msgid "For the browsers installed for this user"
+msgstr "Για τους φυλλομετρητές αυτού του χρήστη"
+
 msgid "Forgot the master password"
 msgstr "Ξέχασα τον κύριο κωδικό πρόσβασης"
 
@@ -1020,6 +1045,12 @@ msgstr "Δημιουργία κωδικού πρόσβασης"
 
 msgid "Generated password"
 msgstr "Κωδικός που δημιουργήθηκε"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Λήψη της επέκτασης για Chrome, Brave, Edge και Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Λήψη της επέκτασης για Firefox"
 
 msgid "Give this access a name, for example the site or app."
 msgstr ""
@@ -1123,14 +1154,6 @@ msgstr ""
 "Τοποθετήστε το διακριτικό FIDO2 (Yubikey, Nitrokey, κ.λπ.) και "
 "εξουσιοδοτήστε στη συσκευή όταν σας ζητηθεί. Απαιτείται η τρέχουσα φράση "
 "πρόσβασής σας για την εξουσιοδότηση της νέας υποδοχής κλειδιού."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Εγκαταστήστε την επέκταση στο Chrome ή στο Firefox και μετά καταχωρήστε "
-"αυτόν τον υπολογιστή με:  ashypass-native-host --install <αναγνωριστικό-"
-"επέκτασης>"
 
 msgid "Internal error: no passphrase set"
 msgstr "Εσωτερικό σφάλμα: δεν έχει οριστεί φράση πρόσβασης"
@@ -1434,6 +1457,11 @@ msgstr ""
 
 msgid "No stable device link"
 msgstr "Δεν υπάρχει σταθερός σύνδεσμος συσκευής"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Δεν βρέθηκε υποστηριζόμενος φυλλομετρητής. Ανοίξτε τον φυλλομετρητή μία φορά "
+"και δοκιμάστε ξανά."
 
 msgid "No verification codes yet"
 msgstr "Δεν υπάρχουν κωδικοί επαλήθευσης ακόμα"
@@ -1877,6 +1905,14 @@ msgstr "Διατήρηση"
 msgid "Run"
 msgstr "Εκτέλεση"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Κάντε το μία φορά μετά την εγκατάσταση ενός φυλλομετρητή, ώστε να βρίσκει το "
+"Ashy Pass. Προσθέτει μόνο ένα μικρό αρχείο στον φάκελο ρυθμίσεων κάθε "
+"φυλλομετρητή."
+
 msgid "Running audit..."
 msgstr "Εκτέλεση ελέγχου..."
 
@@ -2228,6 +2264,9 @@ msgstr ""
 msgid "The backup was not created"
 msgstr "Το αντίγραφο ασφαλείας δεν δημιουργήθηκε"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Η σύνδεση φυλλομετρητή του Ashy Pass δεν είναι εγκατεστημένη"
+
 msgid "The copy could not be downloaded"
 msgstr "Δεν ήταν δυνατή η λήψη του αντιγράφου"
 
@@ -2240,6 +2279,16 @@ msgstr[1] "Το αντίγραφο ελέγχθηκε και έχει {} κατ�
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr ""
 "Ο τρέχων κύριος κωδικός πρόσβασης είναι λανθασμένος. Δεν άλλαξε τίποτα."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Η επέκταση ζητά τον κύριο κωδικό και κρατά το θησαυροφυλάκιο ανοιχτό μόνο "
+"μέχρι το αυτόματο κλείδωμα. Αν είναι ενεργό το «Αυτόματο άνοιγμα στη "
+"σύνδεση», ανοίγει χωρίς ερώτηση. Το κλείδωμα της οθόνης το κλειδώνει επίσης, "
+"όταν η επιλογή είναι ενεργή."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2609,6 +2658,9 @@ msgid "Unlocked by another application. Lock it from your file manager."
 msgstr ""
 "Ξεκλειδώθηκε από άλλη εφαρμογή. Κλειδώστε το από τη διαχείριση αρχείων."
 
+msgid "Unlocking"
+msgstr "Ξεκλείδωμα"
+
 msgid "Unlocking…"
 msgstr "Ξεκλείδωμα…"
 
@@ -2788,15 +2840,9 @@ msgstr ""
 "Όταν ένας ιστότοπος προσφέρει επαλήθευση δύο βημάτων, προσθέστε εδώ το "
 "κλειδί ρύθμισης για να λαμβάνετε τους κωδικούς."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
+msgid "When off, the extension cannot see anything in the vault"
 msgstr ""
-"Όταν είναι ενεργό, η επέκταση του Ashy Pass για το πρόγραμμα περιήγησης "
-"μπορεί να διαβάζει καταχωρήσεις του θησαυροφυλακίου ξεκλειδώνοντας από τη "
-"συλλογή κλειδιών του συστήματος, ακόμα κι όταν αυτό το παράθυρο είναι "
-"κλειδωμένο. Το κλειδί απορρίπτεται ξανά μετά τον χρόνο αυτόματου κλειδώματος."
+"Όταν είναι ανενεργό, η επέκταση δεν βλέπει τίποτα από το θησαυροφυλάκιο"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Από πού θέλετε να φέρετε τους κωδικούς σας;"

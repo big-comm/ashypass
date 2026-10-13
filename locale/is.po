@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -138,9 +138,6 @@ msgid ""
 msgstr ""
 "Annað tæki hlaðið upp nýrri skyndimynd síðan þetta tæki samstillti síðast. "
 "Ef hlaðið er upp núna verða fjartengdu breytingarnar munaðarlausar."
-
-msgid "Answer requests from the installed extension"
-msgstr "Svara beiðnum frá uppsettu viðbótinni"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -472,8 +469,20 @@ msgstr "Staðfestu aðallykilorðið til að flytja út gögnin þín."
 msgid "Conflicts"
 msgstr "Árekstrar"
 
-msgid "Connecting the extension"
-msgstr "Tenging viðbótarinnar"
+msgid "Connect"
+msgstr "Tengja"
+
+msgid "Connect browsers"
+msgstr "Tengja vafra"
+
+msgid "Connect your browsers"
+msgstr "Tengdu vafrana þína"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Tengt við {} vafra. Endurræstu hann ef hann er opinn."
+msgstr[1] "Tengt við {} vafra. Endurræstu þá ef þeir eru opnir."
 
 msgid "Continue"
 msgstr "Halda áfram"
@@ -513,6 +522,9 @@ msgstr "Ekki tókst að breyta eftirlætinu"
 
 msgid "Could not clear the history"
 msgstr "Ekki tókst að hreinsa ferilinn"
+
+msgid "Could not connect the browsers"
+msgstr "Ekki tókst að tengja vafrana"
 
 msgid "Could not create the folder"
 msgstr "Ekki tókst að búa til möppuna"
@@ -908,6 +920,15 @@ msgstr "Skrárnar eru dulkóðaðar og geymdar í hvelfingunni."
 msgid "Filesystem"
 msgstr "Skráarkerfi"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Fylltu út og afritaðu lykilorðin þín í Chrome, Brave, Edge, Vivaldi, Firefox "
+"og LibreWolf. Viðbótin geymir ekkert: hún spyr Ashy Pass í hvert skipti og "
+"fyllir síðu aðeins út eftir að þú smellir."
+
 msgid "Fill in all three fields."
 msgstr "Fylltu út alla þrjá reitina."
 
@@ -959,6 +980,9 @@ msgstr ""
 "Fyrir Nextcloud lítur grunnslóðin svona út: https://cloud.example.com/"
 "remote.php/dav/files/NOTANDANAFN"
 
+msgid "For the browsers installed for this user"
+msgstr "Fyrir vafra sem eru settir upp fyrir þennan notanda"
+
 msgid "Forgot the master password"
 msgstr "Gleymt aðallykilorð"
 
@@ -992,6 +1016,12 @@ msgstr "Útbúa lykilorð"
 
 msgid "Generated password"
 msgstr "Útbúið lykilorð"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Sækja viðbótina fyrir Chrome, Brave, Edge og Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Sækja viðbótina fyrir Firefox"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "Gefðu þessari færslu heiti, til dæmis vefsvæðið eða forritið."
@@ -1091,13 +1121,6 @@ msgstr ""
 "Settu FIDO2 táknið þitt (Yubikey, Nitrokey o.s.frv.) í tækið og staðfestu á "
 "tækinu þegar beðið er um það. Núverandi lykilorðaseta er nauðsynleg til að "
 "heimila nýja lykilsætið."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Settu viðbótina upp í Chrome eða Firefox og skráðu svo þessa tölvu með:  "
-"ashypass-native-host --install <auðkenni-viðbótar>"
 
 msgid "Internal error: no passphrase set"
 msgstr "Innri villa: ekkert lykilorð stillt"
@@ -1391,6 +1414,10 @@ msgstr ""
 
 msgid "No stable device link"
 msgstr "Enginn stöðugur tækjatengill"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Enginn studdur vafri fannst. Opnaðu vafrann einu sinni og reyndu aftur."
 
 msgid "No verification codes yet"
 msgstr "Engir staðfestingarkóðar enn"
@@ -1815,6 +1842,13 @@ msgstr "Geymslutími"
 msgid "Run"
 msgstr "Keyra"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Gerðu þetta einu sinni eftir að þú setur upp vafra, svo hann finni Ashy "
+"Pass. Það bætir aðeins lítilli skrá í stillingamöppu hvers vafra."
+
 msgid "Running audit..."
 msgstr "Keyri úttekt..."
 
@@ -2157,6 +2191,9 @@ msgstr "Færslan fer í Eydd atriði, þar sem hægt er að endurheimta hana í"
 msgid "The backup was not created"
 msgstr "Öryggisafritið var ekki búið til"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Vafratenging Ashy Pass er ekki uppsett"
+
 msgid "The copy could not be downloaded"
 msgstr "Ekki tókst að sækja afritið"
 
@@ -2168,6 +2205,16 @@ msgstr[1] "Afritið var yfirfarið og inniheldur {} færslur."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Núverandi aðallykilorð er rangt. Engu var breytt."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Viðbótin biður um aðallykilorðið og heldur hvelfingunni opinni aðeins fram "
+"að sjálfvirkri læsingu. Ef „Opna sjálfkrafa við innskráningu“ er virkt opnar "
+"hún án þess að spyrja. Að læsa skjánum læsir henni líka, þegar sá valkostur "
+"er virkur."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2517,6 +2564,9 @@ msgstr "Opnað kl."
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "Aflæst af öðru forriti. Læstu því úr skráastjóranum."
 
+msgid "Unlocking"
+msgstr "Aflæsing"
+
 msgid "Unlocking…"
 msgstr "Opnar…"
 
@@ -2691,15 +2741,8 @@ msgstr ""
 "Þegar vefsvæði býður upp á tveggja þrepa staðfestingu skaltu bæta "
 "uppsetningarlykli þess við hér til að fá kóðana."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Þegar kveikt er á þessu getur vafraviðbót Ashy Pass lesið færslur "
-"hvelfingarinnar með því að aflæsa í gegnum lyklakippu kerfisins, jafnvel "
-"meðan þessi gluggi er læstur. Lyklinum er sleppt aftur eftir biðtíma "
-"sjálfvirkrar læsingar."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Þegar slökkt er á þessu sér viðbótin ekkert í hvelfingunni"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Hvaðan viltu sækja lykilorðin þín?"

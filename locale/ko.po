@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:37\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -136,9 +136,6 @@ msgid ""
 msgstr ""
 "이 기기가 마지막으로 동기화된 이후 다른 기기에서 더 최신 스냅샷을 업로드했습"
 "니다. 지금 업로드하면 원격 변경 사항이 고립됩니다."
-
-msgid "Answer requests from the installed extension"
-msgstr "설치된 확장의 요청에 응답"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -468,8 +465,19 @@ msgstr "데이터를 내보내려면 마스터 비밀번호를 확인하세요."
 msgid "Conflicts"
 msgstr "충돌"
 
-msgid "Connecting the extension"
-msgstr "확장 연결"
+msgid "Connect"
+msgstr "연결"
+
+msgid "Connect browsers"
+msgstr "브라우저 연결"
+
+msgid "Connect your browsers"
+msgstr "브라우저 연결하기"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "브라우저 {}개에 연결했습니다. 열려 있다면 다시 시작하세요."
 
 msgid "Continue"
 msgstr "계속"
@@ -509,6 +517,9 @@ msgstr "즐겨찾기를 변경할 수 없습니다"
 
 msgid "Could not clear the history"
 msgstr "기록을 지울 수 없습니다"
+
+msgid "Could not connect the browsers"
+msgstr "브라우저를 연결할 수 없습니다"
 
 msgid "Could not create the folder"
 msgstr "폴더를 만들 수 없습니다"
@@ -901,6 +912,15 @@ msgstr "파일은 암호화되어 보관함 안에 저장됩니다."
 msgid "Filesystem"
 msgstr "파일 시스템"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Chrome, Brave, Edge, Vivaldi, Firefox, LibreWolf에서 비밀번호를 채우고 복사하"
+"세요. 확장 프로그램은 아무것도 저장하지 않으며, 매번 Ashy Pass에 요청하고 클"
+"릭한 뒤에만 페이지를 채웁니다."
+
 msgid "Fill in all three fields."
 msgstr "세 칸을 모두 입력하세요."
 
@@ -951,6 +971,9 @@ msgstr ""
 "Nextcloud의 경우 기본 URL은 https://cloud.example.com/remote.php/dav/files/"
 "USERNAME 형식입니다"
 
+msgid "For the browsers installed for this user"
+msgstr "이 사용자에게 설치된 브라우저용"
+
 msgid "Forgot the master password"
 msgstr "마스터 비밀번호를 잊음"
 
@@ -983,6 +1006,12 @@ msgstr "비밀번호 생성"
 
 msgid "Generated password"
 msgstr "생성된 비밀번호"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome, Brave, Edge, Vivaldi용 확장 프로그램 받기"
+
+msgid "Get the extension for Firefox"
+msgstr "Firefox용 확장 프로그램 받기"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "이 항목에 이름을 지정하세요. 예: 사이트나 앱 이름."
@@ -1079,13 +1108,6 @@ msgid ""
 msgstr ""
 "FIDO2 토큰(Yubikey, Nitrokey 등)을 삽입하고, 메시지가 표시되면 장치에서 인증"
 "하세요. 새 키슬롯을 승인하려면 현재 암호문구가 필요합니다."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Chrome이나 Firefox에 확장을 설치한 다음 이 컴퓨터를 등록하세요:  ashypass-"
-"native-host --install <확장-ID>"
 
 msgid "Internal error: no passphrase set"
 msgstr "내부 오류: 암호가 설정되지 않음"
@@ -1372,6 +1394,11 @@ msgstr "이 버전에서는 보안 키 또는 복구 문구를 변경할 수 없
 
 msgid "No stable device link"
 msgstr "안정적인 장치 링크가 없음"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"지원되는 브라우저를 찾지 못했습니다. 브라우저를 한 번 연 다음 다시 시도하세"
+"요."
 
 msgid "No verification codes yet"
 msgstr "아직 인증 코드가 없습니다"
@@ -1791,6 +1818,13 @@ msgstr "보관 기간"
 msgid "Run"
 msgstr "실행"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"브라우저를 설치한 뒤 한 번 실행하면 Ashy Pass를 찾을 수 있습니다. 각 브라우저"
+"의 설정 폴더에 작은 파일 하나만 추가됩니다."
+
 msgid "Running audit..."
 msgstr "감사 실행 중..."
 
@@ -2125,6 +2159,9 @@ msgstr "항목은 삭제된 항목으로 이동하며 다음 기간 동안 복�
 msgid "The backup was not created"
 msgstr "백업이 생성되지 않았습니다"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Ashy Pass 브라우저 연결 도구가 설치되어 있지 않습니다"
+
 msgid "The copy could not be downloaded"
 msgstr "백업을 내려받을 수 없습니다"
 
@@ -2135,6 +2172,15 @@ msgstr[0] "백업을 확인했으며 항목이 {}개 있습니다."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "현재 마스터 비밀번호가 올바르지 않습니다. 변경된 내용은 없습니다."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"확장 프로그램은 마스터 비밀번호를 묻고 자동 잠금 때까지만 보관함을 열어 둡니"
+"다. \"로그인 시 자동으로 열기\"가 켜져 있으면 묻지 않고 엽니다. 해당 옵션이 "
+"켜져 있으면 화면을 잠글 때도 잠깁니다."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2472,6 +2518,9 @@ msgstr "잠금 해제 시간"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "다른 애플리케이션이 잠금을 해제했습니다. 파일 관리자에서 잠그세요."
 
+msgid "Unlocking"
+msgstr "잠금 해제"
+
 msgid "Unlocking…"
 msgstr "잠금 해제 중…"
 
@@ -2644,14 +2693,8 @@ msgid ""
 msgstr ""
 "사이트에서 2단계 인증을 제공하면 여기에 설정 키를 추가해 코드를 받으세요."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"켜면 이 창이 잠겨 있어도 Ashy Pass 브라우저 확장이 시스템 키링으로 잠금을 해"
-"제하여 보관함 항목을 읽을 수 있습니다. 키는 자동 잠금 시간이 지나면 다시 폐기"
-"됩니다."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "끄면 확장 프로그램은 보관함의 어떤 것도 볼 수 없습니다"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "어디에서 비밀번호를 가져올까요?"

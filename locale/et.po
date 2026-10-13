@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 15:31-0300\n"
+"POT-Creation-Date: 2026-10-13 15:06-0300\n"
 "PO-Revision-Date: 2026-05-12 19:26\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -139,9 +139,6 @@ msgid ""
 msgstr ""
 "Teine seade laadis üles uuema hetktõmmise alates sellest, kui see seade "
 "viimati sünkroonis. Nüüd üleslaadimine jätaks kaugmuudatused orvuks."
-
-msgid "Answer requests from the installed extension"
-msgstr "Vasta paigaldatud laienduse päringutele"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -472,8 +469,20 @@ msgstr "Andmete eksportimiseks kinnita oma põhiparool."
 msgid "Conflicts"
 msgstr "Konfliktid"
 
-msgid "Connecting the extension"
-msgstr "Laienduse ühendamine"
+msgid "Connect"
+msgstr "Ühenda"
+
+msgid "Connect browsers"
+msgstr "Ühenda brauserid"
+
+msgid "Connect your browsers"
+msgstr "Ühenda oma brauserid"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Ühendatud {} brauseriga. Taaskäivita see, kui see on avatud."
+msgstr[1] "Ühendatud {} brauseriga. Taaskäivita need, kui need on avatud."
 
 msgid "Continue"
 msgstr "Jätka"
@@ -513,6 +522,9 @@ msgstr "Lemmikut ei õnnestunud muuta"
 
 msgid "Could not clear the history"
 msgstr "Ajalugu ei õnnestunud tühjendada"
+
+msgid "Could not connect the browsers"
+msgstr "Brausereid ei õnnestunud ühendada"
 
 msgid "Could not create the folder"
 msgstr "Kausta ei õnnestunud luua"
@@ -909,6 +921,15 @@ msgstr "Failid krüptitakse ja salvestatakse hoidlasse."
 msgid "Filesystem"
 msgstr "Failisüsteem"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Täida ja kopeeri oma paroole Chrome’is, Brave’is, Edge’is, Vivaldis, "
+"Firefoxis ja LibreWolfis. Laiendus ei salvesta midagi: see küsib iga kord "
+"Ashy Passilt ja täidab lehe alles pärast sinu klõpsu."
+
 msgid "Fill in all three fields."
 msgstr "Täida kõik kolm välja."
 
@@ -959,6 +980,9 @@ msgstr ""
 "Nextcloudi puhul näeb baas-URL välja selline: https://cloud.example.com/"
 "remote.php/dav/files/KASUTAJANIMI"
 
+msgid "For the browsers installed for this user"
+msgstr "Selle kasutaja brauseritele"
+
 msgid "Forgot the master password"
 msgstr "Unustasin põhiparooli"
 
@@ -992,6 +1016,12 @@ msgstr "Loo parool"
 
 msgid "Generated password"
 msgstr "Loodud parool"
+
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Hangi laiendus Chrome’ile, Brave’ile, Edge’ile ja Vivaldile"
+
+msgid "Get the extension for Firefox"
+msgstr "Hangi laiendus Firefoxile"
 
 msgid "Give this access a name, for example the site or app."
 msgstr "Anna kirjele nimi, näiteks saidi või rakenduse nimi."
@@ -1092,13 +1122,6 @@ msgid ""
 msgstr ""
 "Sisesta oma FIDO2 võti (Yubikey, Nitrokey jne) ja kinnita seadmel, kui seda "
 "küsitakse. Uue pesa kinnitamiseks on vaja sinu praegust paroolifraasi."
-
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Paigalda laiendus Chrome’i või Firefoxi ja registreeri see arvuti käsuga:  "
-"ashypass-native-host --install <laienduse-id>"
 
 msgid "Internal error: no passphrase set"
 msgstr "Sisemine viga: parooli pole määratud"
@@ -1387,6 +1410,9 @@ msgstr "Selles versioonis ei saa turvavõtit ega taastefraasi muuta."
 
 msgid "No stable device link"
 msgstr "Püsiv seadmelink puudub"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr "Toetatud brauserit ei leitud. Ava brauser üks kord ja proovi uuesti."
 
 msgid "No verification codes yet"
 msgstr "Kinnituskoode pole veel"
@@ -1810,6 +1836,13 @@ msgstr "Säilitamine"
 msgid "Run"
 msgstr "Käivita"
 
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Tee seda üks kord pärast brauseri paigaldamist, et see leiaks Ashy Passi. "
+"See lisab vaid väikese faili iga brauseri seadete kausta."
+
 msgid "Running audit..."
 msgstr "Audit käivitub..."
 
@@ -2146,6 +2179,9 @@ msgstr "Kirje liigub kustutatud üksustesse, kus seda saab taastada veel"
 msgid "The backup was not created"
 msgstr "Varukoopiat ei loodud"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Ashy Passi brauseriühendus pole paigaldatud"
+
 msgid "The copy could not be downloaded"
 msgstr "Koopiat ei õnnestunud alla laadida"
 
@@ -2157,6 +2193,15 @@ msgstr[1] "Koopia kontrolliti ja selles on {} kirjet."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Praegune põhiparool on vale. Midagi ei muudetud."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Laiendus küsib ülemparooli ja hoiab seifi avatuna vaid automaatse "
+"lukustuseni. Kui „Ava sisselogimisel automaatselt“ on sees, avab see "
+"küsimata. Ekraani lukustamine lukustab ka selle, kui see valik on sees."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2502,6 +2547,9 @@ msgstr "Avatud kell"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "Avatud teise rakenduse poolt. Lukusta see oma failihaldurist."
 
+msgid "Unlocking"
+msgstr "Lukust avamine"
+
 msgid "Unlocking…"
 msgstr "Avamine…"
 
@@ -2675,14 +2723,8 @@ msgstr ""
 "Kui sait pakub kaheastmelist kinnitamist, lisa koodide saamiseks selle "
 "seadistusvõti siia."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Kui see on sees, saab Ashy Passi brauserilaiendus lugeda hoidla kirjeid "
-"süsteemi võtmerõnga abil avades, isegi kui see aken on lukus. Võti "
-"unustatakse pärast automaatse lukustuse viivitust uuesti."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Kui see on väljas, ei näe laiendus seifist midagi"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Kust soovid oma paroolid tuua?"
