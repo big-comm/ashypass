@@ -698,129 +698,71 @@ impl Inner {
             }
         }
 
-        let Some((prefs, from_keyring)) = self.persistent_record() else {
+        let Some(stored) = self.persistent_record() else {
             self.set_busy(false);
             self.pin_unusable();
             return;
         };
         let worker_pin = pin.clone();
-        let worker_prefs = prefs.clone();
+        let worker_prefs = stored.prefs.clone();
         let weak = Rc::downgrade(self);
         crate::ui::settings_dialog::run_background_task(
             move || ashypass_core::db::derive_quick_unlock_key(&worker_pin, &worker_prefs),
             move |derived| {
                 let Some(inner) = weak.upgrade() else { return };
                 inner.set_busy(false);
-                match derived {
-                    Ok((key, upgraded)) => {
-                        let installed =
-                            inner.state.vault.borrow_mut().install_quick_unlock_key(key);
-                        match installed {
-                            Ok(()) => inner.after_pin_success(&prefs, from_keyring, upgraded),
-                            Err(ashypass_core::Error::KeyMismatch) => inner.pin_stale(),
-                            Err(e) => {
-                                log::warn!("quick unlock failed: {e}");
-                                inner.pin_unusable();
-                            }
-                        }
+                // The same rules as the browser host: see core quick_unlock.
+                let state = inner.state.clone();
+                let mut update = |change: &dyn Fn(&mut ashypass_core::settings::Settings)| {
+                    if let Err(error) = state.update_settings(change) {
+                        log::warn!("could not update quick-unlock settings: {error}");
                     }
-                    Err(ashypass_core::Error::InvalidMasterPassword) => {
+                };
+                let outcome = ashypass_core::quick_unlock::finish_pin_attempt(
+                    &mut inner.state.vault.borrow_mut(),
+                    stored,
+                    derived,
+                    &mut update,
+                );
+                use ashypass_core::quick_unlock::PinOutcome;
+                match outcome {
+                    PinOutcome::Unlocked => inner.finish_unlock(),
+                    PinOutcome::Wrong { remaining } => {
                         inner.secret_entry.set_text("");
-                        // Persisted PIN state has no rate limit of its own, so
-                        // count wrong attempts and destroy it at the limit.
-                        let remaining = inner.record_failed_pin_attempt(prefs);
-                        if remaining == 0 {
-                            inner.prefer_password.set(true);
-                            inner.refresh();
-                            inner.show_error(tr!(
-                                "Too many incorrect PINs. Quick unlock was turned off — use your master password."
-                            ));
-                        } else {
-                            inner.show_error(
-                                &trn!(
-                                    "Incorrect PIN. {} attempt left.",
-                                    "Incorrect PIN. {} attempts left.",
-                                    remaining as usize
-                                )
-                                .replace("{}", &remaining.to_string()),
-                            );
-                        }
+                        inner.show_error(
+                            &trn!(
+                                "Incorrect PIN. {} attempt left.",
+                                "Incorrect PIN. {} attempts left.",
+                                remaining as usize
+                            )
+                            .replace("{}", &remaining.to_string()),
+                        );
                         inner.focus();
                     }
-                    Err(e) => {
-                        log::warn!("quick unlock failed: {e}");
-                        inner.pin_unusable();
+                    PinOutcome::TurnedOff => {
+                        inner.secret_entry.set_text("");
+                        inner.prefer_password.set(true);
+                        inner.refresh();
+                        inner.show_error(tr!(
+                            "Too many incorrect PINs. Quick unlock was turned off — use your master password."
+                        ));
+                        inner.focus();
                     }
+                    PinOutcome::Stale => inner.pin_stale(),
+                    PinOutcome::Unusable => inner.pin_unusable(),
                 }
             },
         );
     }
 
-    /// The persisted PIN record and whether it came from the keyring (as
-    /// opposed to the legacy settings file).
-    fn persistent_record(&self) -> Option<(ashypass_core::settings::QuickUnlockPrefs, bool)> {
-        let keyring = ashypass_core::keyring::load_quick_unlock()
-            .map_err(|error| log::warn!("quick-unlock keyring read failed: {error}"))
-            .ok()
-            .flatten()
-            .filter(|p| p.is_configured());
-        if let Some(prefs) = keyring {
-            return Some((prefs, true));
-        }
-        self.state
-            .settings()
-            .quick_unlock
-            .clone()
-            .filter(|p| p.is_configured())
-            .map(|p| (p, false))
-    }
-
-    fn after_pin_success(
-        &self,
-        used: &ashypass_core::settings::QuickUnlockPrefs,
-        from_keyring: bool,
-        upgraded: Option<ashypass_core::settings::QuickUnlockPrefs>,
-    ) {
-        // Save the record in its current format (without the old PIN hash)
-        // and in the keyring, and reset the failure counter.
-        let to_store = match upgraded {
-            Some(new) => Some(new),
-            None if used.failed_attempts > 0 || !from_keyring => {
-                let mut reset = used.clone();
-                reset.failed_attempts = 0;
-                Some(reset)
-            }
-            None => None,
-        };
-        if let Some(record) = to_store {
-            match ashypass_core::keyring::store_quick_unlock(&record) {
-                Ok(()) => {
-                    if !from_keyring {
-                        if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
-                            log::warn!("could not clear migrated quick-unlock settings: {error}");
-                        }
-                    }
-                }
-                Err(error) => {
-                    log::warn!("could not store quick-unlock state in the keyring: {error}");
-                    if !from_keyring {
-                        if let Err(error) = self
-                            .state
-                            .update_settings(|s| s.quick_unlock = Some(record))
-                        {
-                            log::warn!("could not update quick-unlock settings: {error}");
-                        }
-                    }
-                }
-            }
-        }
-        self.finish_unlock();
+    /// The persisted PIN record (keyring, or the legacy settings file).
+    fn persistent_record(&self) -> Option<ashypass_core::quick_unlock::StoredPin> {
+        ashypass_core::quick_unlock::stored_pin(&self.state.settings())
     }
 
     /// The saved PIN opens a key that no longer matches this vault (master
-    /// password changed elsewhere, vault restored). Forget it.
+    /// password changed elsewhere, vault restored). It was already forgotten.
     fn pin_stale(&self) {
-        self.forget_pin();
         self.prefer_password.set(true);
         self.refresh();
         self.show_error(tr!(
@@ -835,54 +777,6 @@ impl Inner {
         self.show_error(tr!(
             "The PIN could not be used on this computer. Use your master password."
         ));
-    }
-
-    fn forget_pin(&self) {
-        self.state.vault.borrow_mut().disable_quick_unlock();
-        if let Err(error) = ashypass_core::keyring::delete_quick_unlock() {
-            log::warn!("could not clear quick-unlock keyring item: {error}");
-        }
-        if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
-            log::warn!("could not clear quick-unlock settings: {error}");
-        }
-    }
-
-    /// Persist one more failed PIN attempt and return how many remain. At zero
-    /// the persisted quick-unlock state is wiped from both the keyring and the
-    /// legacy settings file, so the master password is the only way back in.
-    fn record_failed_pin_attempt(
-        &self,
-        mut prefs: ashypass_core::settings::QuickUnlockPrefs,
-    ) -> u32 {
-        use ashypass_core::settings::QUICK_UNLOCK_MAX_ATTEMPTS;
-
-        prefs.failed_attempts = prefs.failed_attempts.saturating_add(1);
-        let remaining = QUICK_UNLOCK_MAX_ATTEMPTS.saturating_sub(prefs.failed_attempts);
-
-        if remaining == 0 {
-            self.state.vault.borrow_mut().disable_quick_unlock();
-            if let Err(error) = ashypass_core::keyring::delete_quick_unlock() {
-                log::warn!("could not clear quick-unlock keyring item: {error}");
-            }
-            if let Err(error) = self.state.update_settings(|s| s.quick_unlock = None) {
-                log::warn!("could not clear quick-unlock settings: {error}");
-            }
-            return 0;
-        }
-
-        // Best effort: if the counter cannot be persisted we still refuse this
-        // attempt, we just cannot enforce the budget across restarts.
-        if let Err(error) = ashypass_core::keyring::store_quick_unlock(&prefs) {
-            log::warn!("could not record failed PIN attempt: {error}");
-            let stored = prefs.clone();
-            if let Err(error) = self
-                .state
-                .update_settings(|s| s.quick_unlock = Some(stored))
-            {
-                log::warn!("could not record failed PIN attempt in settings: {error}");
-            }
-        }
-        remaining
     }
 
     fn try_keyring_unlock(&self) -> bool {

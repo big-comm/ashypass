@@ -161,33 +161,48 @@ fn default_firefox_ids() -> Vec<String> {
 enum Request {
     Ping,
     Status,
-    Unlock {
-        password: Secret,
-    },
+    Unlock { password: Secret },
+    UnlockPin { pin: Secret },
     Lock,
-    List {
-        query: Option<String>,
-    },
-    Search {
-        query: String,
-    },
-    MatchUrl {
-        url: String,
-    },
-    Fill {
-        id: i64,
-        url: String,
-    },
-    Get {
-        id: i64,
-    },
-    Totp {
-        id: i64,
-    },
-    Generate {
-        length: Option<usize>,
-        kind: Option<String>,
-    },
+    List { query: Option<String> },
+    Search { query: String },
+    MatchUrl { url: String },
+    Fill { id: i64, url: String },
+    Get { id: i64 },
+    Totp { id: i64 },
+    Generate(GenerateOptions),
+    Folders,
+    Favicons { hosts: Vec<String> },
+    Add(NewLogin),
+    ToggleFavorite { id: i64 },
+    OpenApp,
+}
+
+/// Options for `generate`. Every field is optional; the defaults match the
+/// desktop generator.
+#[derive(Debug, Default, Deserialize)]
+struct GenerateOptions {
+    kind: Option<String>,
+    length: Option<usize>,
+    words: Option<usize>,
+    separator: Option<String>,
+    capitalize: Option<bool>,
+    number: Option<bool>,
+    uppercase: Option<bool>,
+    lowercase: Option<bool>,
+    digits: Option<bool>,
+    symbols: Option<bool>,
+    avoid_ambiguous: Option<bool>,
+}
+
+/// A login saved from the browser.
+#[derive(Debug, Deserialize)]
+struct NewLogin {
+    title: String,
+    username: Option<String>,
+    password: Secret,
+    url: Option<String>,
+    category: Option<String>,
 }
 
 /// A password received from the extension: wiped from memory when dropped
@@ -209,7 +224,7 @@ impl std::fmt::Debug for Secret {
 }
 
 /// Version of the request/response format (see browser-extension/PROTOCOL.md).
-const PROTOCOL_VERSION: u32 = 2;
+const PROTOCOL_VERSION: u32 = 3;
 
 /// Machine-readable error kinds, so the extension can show its own
 /// translated messages.
@@ -219,6 +234,9 @@ enum ErrorCode {
     NoVault,
     Locked,
     BadPassword,
+    BadPin,
+    PinDisabled,
+    PinUnavailable,
     RateLimited,
     NotFound,
     NoMatch,
@@ -234,6 +252,9 @@ impl ErrorCode {
             Self::NoVault => "no_vault",
             Self::Locked => "locked",
             Self::BadPassword => "bad_password",
+            Self::BadPin => "bad_pin",
+            Self::PinDisabled => "pin_disabled",
+            Self::PinUnavailable => "pin_unavailable",
             Self::RateLimited => "rate_limited",
             Self::NotFound => "not_found",
             Self::NoMatch => "no_match",
@@ -252,6 +273,7 @@ struct EntrySummary {
     url: Option<String>,
     category: Option<String>,
     has_totp: bool,
+    favorite: bool,
 }
 
 /// What `get` returns. Notes are not sent: the extension has no use for
@@ -265,6 +287,7 @@ struct EntryFull {
     password: Option<String>,
     has_totp: bool,
     category: Option<String>,
+    favorite: bool,
 }
 
 impl From<&PasswordEntry> for EntrySummary {
@@ -276,6 +299,7 @@ impl From<&PasswordEntry> for EntrySummary {
             url: e.url.clone(),
             category: e.category.clone(),
             has_totp: e.has_totp,
+            favorite: e.favorite,
         }
     }
 }
@@ -297,8 +321,23 @@ struct HostSession {
     screen_lock: ScreenLockProbe,
     load_settings: fn() -> Settings,
     keyring_master: fn() -> Option<zeroize::Zeroizing<String>>,
+    stored_pin: fn(&Settings) -> Option<ashypass_core::quick_unlock::StoredPin>,
+    save_settings: SaveSettings,
     failed_unlocks: u32,
     paused_until: Option<Instant>,
+}
+
+/// Writes a change to the settings file.
+type SaveSettings = fn(&dyn Fn(&mut Settings));
+
+/// Apply a change to the settings file (the PIN record of older versions
+/// lives there).
+fn save_settings_file(change: &dyn Fn(&mut Settings)) {
+    let mut settings = Settings::load();
+    change(&mut settings);
+    if let Err(error) = settings.save() {
+        log::warn!("could not save settings: {error}");
+    }
 }
 
 fn keyring_master_password() -> Option<zeroize::Zeroizing<String>> {
@@ -312,13 +351,14 @@ impl HostSession {
     fn open() -> Result<Self> {
         let db_path = ashypass_core::config::database_path();
         let vault = Vault::open(&db_path).context("opening vault")?;
-        Ok(Self::with_vault(
-            vault,
-            Settings::load,
-            keyring_master_password,
-        ))
+        let mut session = Self::with_vault(vault, Settings::load, keyring_master_password);
+        session.stored_pin = ashypass_core::quick_unlock::stored_pin;
+        session.save_settings = save_settings_file;
+        Ok(session)
     }
 
+    /// A session with no PIN record and no settings writes; `open` swaps in
+    /// the real keyring and settings file.
     fn with_vault(
         vault: Vault,
         load_settings: fn() -> Settings,
@@ -330,6 +370,8 @@ impl HostSession {
             screen_lock: ScreenLockProbe::default(),
             load_settings,
             keyring_master,
+            stored_pin: |_| None,
+            save_settings: |_| {},
             failed_unlocks: 0,
             paused_until: None,
         }
@@ -417,6 +459,40 @@ impl HostSession {
         }
     }
 
+    /// Unlock with the PIN set up in Ashy Pass, under the same rules as the
+    /// desktop app (attempts counted in the stored record, turned off at the
+    /// limit): see `ashypass_core::quick_unlock`.
+    fn unlock_with_pin(&mut self, pin: &str) -> std::result::Result<(), (ErrorCode, Option<u32>)> {
+        let settings = (self.load_settings)();
+        if !settings.browser_extension {
+            return Err((ErrorCode::Disabled, None));
+        }
+        if !self.vault.has_master_password().unwrap_or(false) {
+            return Err((ErrorCode::NoVault, None));
+        }
+        let Some(stored) = (self.stored_pin)(&settings) else {
+            return Err((ErrorCode::PinUnavailable, None));
+        };
+        let derived = ashypass_core::db::derive_quick_unlock_key(pin, &stored.prefs);
+        let save = self.save_settings;
+        let mut update = |change: &dyn Fn(&mut Settings)| save(change);
+        use ashypass_core::quick_unlock::PinOutcome;
+        match ashypass_core::quick_unlock::finish_pin_attempt(
+            &mut self.vault,
+            stored,
+            derived,
+            &mut update,
+        ) {
+            PinOutcome::Unlocked => {
+                self.last_used = Some(Instant::now());
+                Ok(())
+            }
+            PinOutcome::Wrong { remaining } => Err((ErrorCode::BadPin, Some(remaining))),
+            PinOutcome::TurnedOff | PinOutcome::Stale => Err((ErrorCode::PinDisabled, None)),
+            PinOutcome::Unusable => Err((ErrorCode::PinUnavailable, None)),
+        }
+    }
+
     fn relock(&mut self) {
         self.vault.full_lock();
         self.last_used = None;
@@ -438,12 +514,27 @@ impl HostSession {
                     "enabled": settings.browser_extension,
                     "has_vault": self.vault.has_master_password().unwrap_or(false),
                     "unlocked": settings.browser_extension && self.access().is_ok(),
+                    "pin_available": settings.browser_extension
+                        && (self.stored_pin)(&settings).is_some(),
                 });
             }
-            Request::Generate { length, kind } => {
-                return match handle_generate(&length, &kind) {
+            Request::Generate(options) => {
+                return match handle_generate(&options) {
                     Ok(pw) => json!({"ok": true, "password": pw}),
                     Err(e) => error_response(ErrorCode::Invalid, &e.to_string()),
+                }
+            }
+            Request::OpenApp => return handle_open_app(),
+            Request::UnlockPin { pin } => {
+                return match self.unlock_with_pin(&pin.0) {
+                    Ok(()) => json!({"ok": true}),
+                    Err((code, remaining)) => {
+                        let mut reply = error_for(code);
+                        if let Some(remaining) = remaining {
+                            reply["attempts_left"] = json!(remaining);
+                        }
+                        reply
+                    }
                 }
             }
             Request::Lock => {
@@ -468,11 +559,24 @@ impl HostSession {
             Request::Fill { id, url } => handle_fill(&self.vault, id, &url),
             Request::Get { id } => handle_get(&self.vault, id),
             Request::Totp { id } => handle_totp(&self.vault, id),
+            Request::Folders => match self.vault.categories() {
+                Ok(folders) => json!({"ok": true, "folders": folders}),
+                Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+            },
+            Request::Favicons { hosts } => handle_favicons(&hosts),
+            Request::Add(login) => handle_add(&self.vault, login),
+            Request::ToggleFavorite { id } => match self.vault.toggle_favorite(id) {
+                Ok(Some(favorite)) => json!({"ok": true, "favorite": favorite}),
+                Ok(None) => error_for(ErrorCode::NotFound),
+                Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+            },
             Request::Ping
             | Request::Status
-            | Request::Generate { .. }
+            | Request::Generate(_)
+            | Request::OpenApp
             | Request::Lock
-            | Request::Unlock { .. } => unreachable!("answered above"),
+            | Request::Unlock { .. }
+            | Request::UnlockPin { .. } => unreachable!("answered above"),
         }
     }
 }
@@ -653,6 +757,7 @@ fn handle_get(vault: &Vault, id: i64) -> serde_json::Value {
                 password: e.password,
                 has_totp: e.has_totp,
                 category: e.category,
+                favorite: e.favorite,
             };
             serde_json::json!({"ok": true, "entry": full})
         }
@@ -718,20 +823,151 @@ fn chrono_now_secs() -> u64 {
         .unwrap_or(0)
 }
 
-fn handle_generate(length: &Option<usize>, kind: &Option<String>) -> Result<String> {
-    match kind.as_deref() {
-        Some("passphrase") => Ok(generate_passphrase(6, "-", true, true)),
+/// Bounds that keep a request from asking for absurd values.
+const PASSWORD_MAX_LENGTH: usize = 128;
+const WORDS_MIN: usize = 3;
+const WORDS_MAX: usize = 12;
+
+fn handle_generate(options: &GenerateOptions) -> Result<String> {
+    match options.kind.as_deref() {
+        Some("passphrase") => {
+            let separator: String = options
+                .separator
+                .as_deref()
+                .unwrap_or("-")
+                .chars()
+                .take(3)
+                .collect();
+            Ok(generate_passphrase(
+                options.words.unwrap_or(6).clamp(WORDS_MIN, WORDS_MAX),
+                &separator,
+                options.capitalize.unwrap_or(true),
+                options.number.unwrap_or(true),
+            ))
+        }
         Some("pin") => Ok(generate_pin(
-            length.unwrap_or(6).clamp(PIN_MIN_LENGTH, PIN_MAX_LENGTH),
+            options
+                .length
+                .unwrap_or(6)
+                .clamp(PIN_MIN_LENGTH, PIN_MAX_LENGTH),
         )),
         Some("password") | None => {
+            let defaults = PasswordConfig::default();
             let cfg = PasswordConfig {
-                length: length.unwrap_or(PasswordConfig::default().length),
-                ..Default::default()
+                length: options
+                    .length
+                    .unwrap_or(defaults.length)
+                    .min(PASSWORD_MAX_LENGTH),
+                use_uppercase: options.uppercase.unwrap_or(defaults.use_uppercase),
+                use_lowercase: options.lowercase.unwrap_or(defaults.use_lowercase),
+                use_digits: options.digits.unwrap_or(defaults.use_digits),
+                use_symbols: options.symbols.unwrap_or(defaults.use_symbols),
+                exclude_ambiguous: options
+                    .avoid_ambiguous
+                    .unwrap_or(defaults.exclude_ambiguous),
+                ..defaults
             };
             generate_password(&cfg).map_err(|e| anyhow!("{e}"))
         }
         Some(other) => bail!("unknown generate kind: {other}"),
+    }
+}
+
+/// Most icons answered by one `favicons` request.
+const FAVICONS_PER_REQUEST: usize = 40;
+/// Larger cached files are skipped (keeps replies far below the 1 MiB limit).
+const FAVICON_MAX_BYTES: u64 = 24 * 1024;
+
+/// Whether `host` is a plain host name, so it cannot reach outside the icon
+/// cache when turned into a file name.
+fn is_plain_host(host: &str) -> bool {
+    !host.is_empty()
+        && host.len() <= 253
+        && !host.starts_with('.')
+        && !host.contains("..")
+        && host
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '-')
+}
+
+/// Site icons from the desktop app's cache, as data URLs. Never fetches
+/// anything: sites the app has not shown yet simply have no icon.
+fn handle_favicons(hosts: &[String]) -> serde_json::Value {
+    use base64::Engine as _;
+    let mut icons = serde_json::Map::new();
+    for host in hosts.iter().take(FAVICONS_PER_REQUEST) {
+        if !is_plain_host(host) {
+            continue;
+        }
+        let Some(path) = ashypass_core::favicons::lookup(host) else {
+            continue;
+        };
+        if !std::fs::metadata(&path).is_ok_and(|m| m.len() <= FAVICON_MAX_BYTES) {
+            continue;
+        }
+        let Ok(bytes) = std::fs::read(&path) else {
+            continue;
+        };
+        let mime = if bytes.starts_with(&[0, 0, 1, 0]) {
+            "image/x-icon"
+        } else {
+            "image/png"
+        };
+        icons.insert(
+            host.clone(),
+            serde_json::Value::String(format!(
+                "data:{mime};base64,{}",
+                base64::engine::general_purpose::STANDARD.encode(&bytes)
+            )),
+        );
+    }
+    serde_json::json!({"ok": true, "icons": icons})
+}
+
+/// Save a login created in the browser.
+fn handle_add(vault: &Vault, login: NewLogin) -> serde_json::Value {
+    let title = login.title.trim().to_string();
+    if title.is_empty() || login.password.0.is_empty() {
+        return error_response(ErrorCode::Invalid, "a name and a password are required");
+    }
+    let clean = |value: Option<String>| {
+        value
+            .map(|v| v.trim().to_string())
+            .filter(|v| !v.is_empty())
+    };
+    let entry = ashypass_core::db::vault::NewEntry {
+        title,
+        username: clean(login.username),
+        password: login.password.0.clone(),
+        url: clean(login.url),
+        category: clean(login.category),
+        ..Default::default()
+    };
+    match vault.add(entry) {
+        Ok(id) => serde_json::json!({"ok": true, "id": id}),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+/// Bring up the desktop app (a second launch just presents the open window).
+fn handle_open_app() -> serde_json::Value {
+    let candidates = [
+        std::env::current_exe()
+            .ok()
+            .and_then(|exe| exe.parent().map(|dir| dir.join("ashypass"))),
+        Some(std::path::PathBuf::from("/usr/bin/ashypass")),
+    ];
+    let Some(app) = candidates.into_iter().flatten().find(|p| p.is_file()) else {
+        return error_response(ErrorCode::Internal, "the Ashy Pass app was not found");
+    };
+    match std::process::Command::new(app)
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+    {
+        Ok(_) => serde_json::json!({"ok": true}),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
     }
 }
 
@@ -748,6 +984,9 @@ fn error_for(code: ErrorCode) -> serde_json::Value {
         ErrorCode::NoVault => "no vault yet — create it in Ashy Pass first",
         ErrorCode::Locked => "vault locked — enter the master password",
         ErrorCode::BadPassword => "wrong master password",
+        ErrorCode::BadPin => "wrong PIN",
+        ErrorCode::PinDisabled => "the PIN was turned off — use the master password",
+        ErrorCode::PinUnavailable => "no PIN is set up on this computer",
         ErrorCode::RateLimited => "too many wrong passwords — wait 30 seconds and try again",
         ErrorCode::NotFound => "entry not found",
         ErrorCode::NoMatch => "this entry does not belong to the page",
@@ -1113,19 +1352,37 @@ fn install_manifests(args: &[String]) -> Result<()> {
         home.join(".config/microsoft-edge/NativeMessagingHosts"),
         home.join(".config/vivaldi/NativeMessagingHosts"),
     ];
-    let firefox_targets = [
-        home.join(".mozilla/native-messaging-hosts"),
-        home.join(".librewolf/native-messaging-hosts"),
-        home.join(".waterfox/native-messaging-hosts"),
-    ];
+    // Firefox-family browsers read user manifests from ~/.<name>/ even when
+    // they keep the profile in the XDG folder (~/.config/<name>), as recent
+    // Firefox does; ~/.mozilla may then not exist yet. Checked with Firefox
+    // 157: ~/.config/mozilla/native-messaging-hosts is not read.
+    let config = std::env::var_os("XDG_CONFIG_HOME")
+        .map(std::path::PathBuf::from)
+        .filter(|p| p.is_absolute())
+        .unwrap_or_else(|| home.join(".config"));
+    let firefox_family: Vec<(std::path::PathBuf, bool)> = [
+        (".mozilla", "mozilla"),
+        (".librewolf", "librewolf"),
+        (".waterfox", "waterfox"),
+    ]
+    .iter()
+    .map(|(legacy, xdg)| {
+        let installed = home.join(legacy).exists() || config.join(xdg).exists();
+        (home.join(legacy).join("native-messaging-hosts"), installed)
+    })
+    .collect();
 
     let mut written = 0;
     let targets = chrome_targets
         .iter()
-        .map(|dir| (dir, &chrome))
-        .chain(firefox_targets.iter().map(|dir| (dir, &firefox)));
-    for (dir, manifest) in targets {
-        if !dir.parent().is_some_and(|parent| parent.exists()) {
+        .map(|dir| (dir, &chrome, dir.parent().is_some_and(|p| p.exists())))
+        .chain(
+            firefox_family
+                .iter()
+                .map(|(dir, installed)| (dir, &firefox, *installed)),
+        );
+    for (dir, manifest, installed) in targets {
+        if !installed {
             continue; // Browser not set up for this user — skip.
         }
         std::fs::create_dir_all(dir)?;
@@ -1548,11 +1805,26 @@ mod tests {
 
     #[test]
     fn pin_length_is_clamped() {
-        let pin = handle_generate(&Some(10_000_000), &Some("pin".into())).unwrap();
+        let pin = handle_generate(&GenerateOptions {
+            kind: Some("pin".into()),
+            length: Some(10_000_000),
+            ..Default::default()
+        })
+        .unwrap();
         assert_eq!(pin.len(), PIN_MAX_LENGTH);
-        let pin = handle_generate(&Some(0), &Some("pin".into())).unwrap();
+        let pin = handle_generate(&GenerateOptions {
+            kind: Some("pin".into()),
+            length: Some(0),
+            ..Default::default()
+        })
+        .unwrap();
         assert_eq!(pin.len(), PIN_MIN_LENGTH);
-        let pin = handle_generate(&None, &Some("pin".into())).unwrap();
+        let pin = handle_generate(&GenerateOptions {
+            kind: Some("pin".into()),
+            length: None,
+            ..Default::default()
+        })
+        .unwrap();
         assert_eq!(pin.len(), 6);
         assert!(pin.chars().all(|c| c.is_ascii_digit()));
     }
@@ -1728,7 +2000,7 @@ mod tests {
         let (_dir, mut s, _, _) = session_with(disabled);
         assert_eq!(
             call(&mut s, serde_json::json!({"cmd": "ping"}))["protocol"],
-            2
+            PROTOCOL_VERSION
         );
         let r = call(
             &mut s,
@@ -1826,5 +2098,99 @@ mod tests {
             assert!(!is_cli_command(arg), "{arg}");
         }
         assert!(is_cli_command("--install"));
+    }
+
+    #[test]
+    fn protocol_3_commands() {
+        let (_dir, mut s, mail, _) = session_with(enabled);
+        let status = call(&mut s, serde_json::json!({"cmd": "status"}));
+        assert_eq!(status["pin_available"], false);
+        let pin = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock_pin", "pin": "1234"}),
+        );
+        assert_eq!(pin["code"], "pin_unavailable");
+        call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+
+        let added = call(
+            &mut s,
+            serde_json::json!({"cmd": "add", "title": "Shop", "username": "ana",
+                "password": "s3cret!", "url": "https://shop.example.net", "category": "Personal"}),
+        );
+        let id = added["id"].as_i64().unwrap();
+        let fill = call(
+            &mut s,
+            serde_json::json!({"cmd": "fill", "id": id, "url": "https://shop.example.net/login"}),
+        );
+        assert_eq!(fill["password"], "s3cret!");
+        let empty = call(
+            &mut s,
+            serde_json::json!({"cmd": "add", "title": " ", "password": "x"}),
+        );
+        assert_eq!(empty["code"], "invalid");
+
+        let folders = call(&mut s, serde_json::json!({"cmd": "folders"}));
+        assert!(folders["folders"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|f| f == "Personal"));
+
+        let fav = call(
+            &mut s,
+            serde_json::json!({"cmd": "toggle_favorite", "id": mail}),
+        );
+        assert_eq!(fav["favorite"], true);
+        let listed = call(&mut s, serde_json::json!({"cmd": "list"}));
+        let mail_row = listed["entries"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|e| e["id"] == mail)
+            .unwrap()
+            .clone();
+        assert_eq!(mail_row["favorite"], true);
+
+        let words = call(
+            &mut s,
+            serde_json::json!({"cmd": "generate", "kind": "passphrase", "words": 4, "separator": ".", "number": false}),
+        );
+        assert_eq!(words["password"].as_str().unwrap().split('.').count(), 4);
+        let digits_only = call(
+            &mut s,
+            serde_json::json!({"cmd": "generate", "length": 30, "uppercase": false,
+                "lowercase": false, "symbols": false, "digits": true}),
+        );
+        let value = digits_only["password"].as_str().unwrap();
+        assert_eq!(value.len(), 30);
+        assert!(value.chars().all(|c| c.is_ascii_digit()));
+        let huge = call(
+            &mut s,
+            serde_json::json!({"cmd": "generate", "length": 100000}),
+        );
+        assert_eq!(
+            huge["password"].as_str().unwrap().len(),
+            PASSWORD_MAX_LENGTH
+        );
+    }
+
+    #[test]
+    fn favicon_hosts_cannot_leave_the_cache() {
+        assert!(is_plain_host("github.com"));
+        assert!(is_plain_host("mail.example-site.org"));
+        for bad in [
+            "",
+            "../etc/passwd",
+            "a/b",
+            ".hidden",
+            "a..b",
+            "x y",
+            "host\\x",
+        ] {
+            assert!(!is_plain_host(bad), "{bad}");
+        }
     }
 }
