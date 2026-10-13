@@ -1,7 +1,7 @@
 // Runs the real injected function against a tiny fake DOM.
 import { test, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { fillCredentials } from "../src/lib/fill.js";
+import { fillCredentials, fillPasswordFields } from "../src/lib/fill.js";
 
 const ORIGIN = "https://example.com";
 
@@ -216,4 +216,59 @@ test("is self-contained (safe to serialise for executeScript)", () => {
   const rebuilt = new Function(`return (${source});`)();
   globalThis.document = makeDoc([{ type: "text", name: "user" }, { type: "password" }]);
   assert.equal(rebuilt("alice", "s3cret", ORIGIN), 2);
+});
+
+// ── fillPasswordFields (generator "Fill on this page") ──────────────────────
+
+function runPassword(specs, { pass = "G3n!", origin = ORIGIN, active = null } = {}) {
+  const doc = makeDoc(specs);
+  if (active !== null) doc.activeElement = doc.inputs[active];
+  globalThis.document = doc;
+  return { count: fillPasswordFields(pass, origin), doc, inputs: doc.inputs };
+}
+
+test("fillPasswordFields fills new + confirm password of one form, never the username", () => {
+  const form = {};
+  const { count, inputs, doc } = runPassword([
+    { type: "text", name: "user", form },
+    { type: "password", name: "new", form },
+    { type: "password", name: "confirm", form },
+  ]);
+  assert.equal(count, 2);
+  assert.equal(inputs[0].value, "");
+  assert.equal(inputs[1].value, "G3n!");
+  assert.equal(inputs[2].value, "G3n!");
+  assert.equal(doc.activeElement, inputs[1]);
+});
+
+test("fillPasswordFields prefers the form of the focused password field", () => {
+  const login = {};
+  const signup = {};
+  const { count, inputs } = runPassword(
+    [
+      { type: "password", form: login },
+      { type: "password", form: signup },
+      { type: "password", form: signup },
+    ],
+    { active: 2 },
+  );
+  assert.equal(count, 2);
+  assert.equal(inputs[0].value, "");
+  assert.equal(inputs[1].value, "G3n!");
+});
+
+test("fillPasswordFields refuses other origins, hidden fields and empty values", () => {
+  assert.equal(runPassword([{ type: "password" }], { origin: "https://evil.example" }).count, 0);
+  assert.equal(runPassword([{ type: "password", visible: false }]).count, 0);
+  assert.equal(runPassword([{ type: "password" }], { pass: "" }).count, 0);
+  assert.equal(runPassword([]).count, 0);
+});
+
+test("fillPasswordFields is self-contained", () => {
+  const source = fillPasswordFields.toString();
+  assert.ok(source.startsWith("function fillPasswordFields("));
+  assert.doesNotMatch(source, /\bimport\b|\brequire\(|\bapi\.|\bchrome\.|\bbrowser\./);
+  const rebuilt = new Function(`return (${source});`)();
+  globalThis.document = makeDoc([{ type: "password" }]);
+  assert.equal(rebuilt("x", ORIGIN), 1);
 });

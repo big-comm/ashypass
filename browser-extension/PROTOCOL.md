@@ -1,4 +1,4 @@
-# Ashy Pass browser protocol (version 2)
+# Ashy Pass browser protocol (version 3)
 
 The extension talks to `ashypass-native-host` through native messaging
 (`runtime.connectNative("com.bigcommunity.ashypass")`). Each message is a JSON
@@ -11,9 +11,10 @@ into the response, so one long-lived port can have several requests in flight.
 
 | cmd         | fields                         | success response                                   |
 |-------------|--------------------------------|----------------------------------------------------|
-| `ping`      | —                              | `{ok, version, protocol: 2}`                       |
-| `status`    | —                              | `{ok, enabled, has_vault, unlocked}`               |
+| `ping`      | —                              | `{ok, version, protocol: 3}`                       |
+| `status`    | —                              | `{ok, enabled, has_vault, unlocked, pin_available}`|
 | `unlock`    | `password`                     | `{ok}`                                             |
+| `unlock_pin`| `pin`                          | `{ok}`; wrong PIN: `bad_pin` with `attempts_left`  |
 | `lock`      | —                              | `{ok}`                                             |
 | `match_url` | `url`                          | `{ok, entries: [Summary]}`                         |
 | `search`    | `query`                        | `{ok, entries: [Summary]}`                         |
@@ -21,11 +22,24 @@ into the response, so one long-lived port can have several requests in flight.
 | `fill`      | `id`, `url`                    | `{ok, username, password}`                         |
 | `get`       | `id`                           | `{ok, entry: Entry}`                               |
 | `totp`      | `id`                           | `{ok, code, remaining, period}`                    |
-| `generate`  | `kind?` (`password`, `passphrase`, `pin`), `length?` | `{ok, password}`         |
+| `generate`  | see below                      | `{ok, password}`                                   |
+| `folders`   | —                              | `{ok, folders: [string]}`                          |
+| `favicons`  | `hosts: [string]` (≤ 40)       | `{ok, icons: {host: "data:image/…;base64,…"}}`     |
+| `add`       | `title`, `password`, `username?`, `url?`, `category?` | `{ok, id}`                  |
+| `toggle_favorite` | `id`                     | `{ok, favorite}`                                   |
+| `open_app`  | —                              | `{ok}` (brings up the desktop app)                 |
 
-`Summary`: `{id, title, username, url, category, has_totp}`
+`generate` fields (all optional): `kind` (`password` default, `passphrase`,
+`pin`), `length` (password ≤ 128, PIN 4–64), `uppercase`, `lowercase`,
+`digits`, `symbols`, `avoid_ambiguous` (password), `words` (3–12),
+`separator` (≤ 3 chars), `capitalize`, `number` (passphrase).
 
-`Entry`: `{id, title, username, url, password, category, has_totp}` (no notes)
+`favicons` only reads the icons the desktop app already cached; hosts without
+one are absent from `icons`. It never fetches anything.
+
+`Summary`: `{id, title, username, url, category, has_totp, favorite}`
+
+`Entry`: `{id, title, username, url, password, category, has_totp, favorite}` (no notes)
 
 `fill` only answers when the entry belongs to the site at `url` (same rules
 as `match_url`); otherwise it fails with `no_match`. The extension must use
@@ -41,6 +55,9 @@ as `match_url`); otherwise it fails with `no_match`. The extension must use
 | `no_vault`     | No vault has been created yet.                                  |
 | `locked`       | The vault is locked: ask for the master password (`unlock`).    |
 | `bad_password` | Wrong master password.                                          |
+| `bad_pin`      | Wrong PIN; `attempts_left` tells how many remain.               |
+| `pin_disabled` | Too many wrong PINs (or the PIN no longer matches the vault): it was turned off; use the master password. |
+| `pin_unavailable` | No PIN is set up on this computer.                           |
 | `rate_limited` | Too many wrong passwords; wait and try again.                   |
 | `not_found`    | No entry with that id.                                          |
 | `no_match`     | `fill` for an entry that does not belong to the page.           |
@@ -52,7 +69,10 @@ as `match_url`); otherwise it fails with `no_match`. The extension must use
 
 The host unlocks the vault by itself when the master password is stored in
 the system keyring (Settings → Protection → Open automatically at login).
-Otherwise the extension asks for the master password and sends `unlock`.
+Otherwise the extension asks for the PIN set up in Ashy Pass (`unlock_pin`,
+when `status.pin_available`) or the master password (`unlock`). The PIN
+follows the desktop rules: wrong attempts are counted in the stored record
+and the PIN is turned off after 5.
 The key stays in the host process only: it is dropped after the auto-lock
 delay without requests, when the screen locks (if that option is on), when
 `lock` is sent, or when the port closes.

@@ -71,10 +71,6 @@
     "message": "Hľadať vo všetkých položkách",
     "description": "Label and placeholder of the search field."
   },
-  "siteEntriesHeading": {
-    "message": "Prihlasovacie údaje pre tento web",
-    "description": "Heading of the list of entries that match the current site."
-  },
   "searchResultsHeading": {
     "message": "Výsledky hľadania",
     "description": "Heading of the list of search results."
@@ -183,14 +179,6 @@
     "message": "Vygenerovať heslo",
     "description": "Button that generates a new password and copies it."
   },
-  "generatedLabel": {
-    "message": "Vygenerované heslo",
-    "description": "Label of the box that shows the generated password."
-  },
-  "generatedCopied": {
-    "message": "Nové heslo skopírované",
-    "description": "Short confirmation after a password was generated and copied."
-  },
   "revealPassword": {
     "message": "Zobraziť heslo",
     "description": "Button that reveals the generated password."
@@ -240,5 +228,421 @@
         "example": "Malformed request"
       }
     }
+  },
+  "backButton": {
+    "message": "Späť",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Pridať",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Otvoriť Ashy Pass",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Trezor",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Generátor",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Nastavenia",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Sekcie",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "PIN",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Odomknúť PIN-om",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Použiť hlavné heslo",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Použiť PIN",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "Nesprávny PIN.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "Nesprávny PIN. Zostávajúce pokusy: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "PIN bol po príliš veľa chybných pokusoch vypnutý. Použite hlavné heslo.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "Na tomto počítači nie je nastavený žiadny PIN. Použite hlavné heslo.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Zobrazovať návrhy v prihlasovacích poliach?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass dokáže zobraziť vaše prihlasovacie údaje priamo pod poľami pre používateľské meno a heslo na weboch.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Teraz nie",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Zapnúť",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Priečinok",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Typ",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Všetky položky",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "S overovacími kódmi",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Obľúbené",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Všetky priečinky",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Bez priečinka",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Návrhy na automatické vyplnenie",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Obľúbené",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Všetky položky",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Položky",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Týmto filtrom nezodpovedajú žiadne položky.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "Váš trezor je prázdny.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Zobraziť podrobnosti položky $TITLE$",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Otvoriť web položky $TITLE$",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "Ďalšie možnosti pre $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Pridať do obľúbených",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Odstrániť z obľúbených",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Otvoriť web",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Kopírovať adresu webu",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Zobraziť podrobnosti",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Adresa webu skopírovaná",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Pridané do obľúbených",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Odstránené z obľúbených",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Podrobnosti položky",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Používateľské meno",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Heslo",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Overovací kód",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Web",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Priečinok",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Názov",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Nové prihlásenie",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Zrušiť",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Uložiť",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Zadajte názov.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Zadajte heslo.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Uložené",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Heslo vygenerované",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass nemohol prijať túto požiadavku.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Vygenerovať znova",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Kopírovať",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Typ generovanej hodnoty",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Heslo",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Prístupová fráza",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "PIN",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Dĺžka",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Veľké písmená (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Malé písmená (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Číslice (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Symboly (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Vyhnúť sa podobným znakom",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Slová",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Oddeľovač slov",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "Veľké začiatočné písmená",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Pridať číslo",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Ponechajte aspoň jeden typ znakov.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Vyplniť na tejto stránke",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "Na tejto stránke sa nenašlo pole pre heslo",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Trezor",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Zamknúť teraz",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Automatické vypĺňanie",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Zobrazovať návrhy v prihlasovacích poliach",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Vyžaduje prístup k navštíveným webom. Stránka vaše prihlasovacie údaje nikdy nevidí; nič sa nevyplní, kým si položku nevyberiete.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "Návrhy sú zapnuté. Obnovte otvorené stránky, aby ste ich videli.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "Povolenie nebolo udelené.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Klávesová skratka",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutHint": {
+    "message": "Otvorí toto okno. Môžete ju zmeniť v nastaveniach skratiek rozšírení v prehliadači.",
+    "description": "Explains the keyboard shortcut."
+  },
+  "shortcutNotSet": {
+    "message": "Nenastavené",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "O aplikácii",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Verzia",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Pomocník",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Súkromie",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Návrhy Ashy Pass",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Zobraziť návrhy Ashy Pass",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass je zamknutý",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Pre tento web nie sú žiadne prihlásenia",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Pridať prihlásenie",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "Pokračujte kliknutím na ikonu Ashy Pass na paneli nástrojov.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Platnosť tejto ponuky vypršala. Kliknite znova do poľa.",
+    "description": "Shown when the suggestions menu can no longer be used."
   }
 }

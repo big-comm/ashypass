@@ -71,10 +71,6 @@
     "message": "חיפוש בכל הרשומות",
     "description": "Label and placeholder of the search field."
   },
-  "siteEntriesHeading": {
-    "message": "פרטי כניסה לאתר הזה",
-    "description": "Heading of the list of entries that match the current site."
-  },
   "searchResultsHeading": {
     "message": "תוצאות חיפוש",
     "description": "Heading of the list of search results."
@@ -183,14 +179,6 @@
     "message": "יצירת סיסמה",
     "description": "Button that generates a new password and copies it."
   },
-  "generatedLabel": {
-    "message": "סיסמה שנוצרה",
-    "description": "Label of the box that shows the generated password."
-  },
-  "generatedCopied": {
-    "message": "הסיסמה החדשה הועתקה",
-    "description": "Short confirmation after a password was generated and copied."
-  },
   "revealPassword": {
     "message": "הצגת הסיסמה",
     "description": "Button that reveals the generated password."
@@ -240,5 +228,421 @@
         "example": "Malformed request"
       }
     }
+  },
+  "backButton": {
+    "message": "חזרה",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "הוספה",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "פתיחת Ashy Pass",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "כספת",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "מחולל",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "הגדרות",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "מקטעים",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "קוד PIN",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "פתיחה עם PIN",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "שימוש בסיסמת האב במקום",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "שימוש ב־PIN במקום",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "קוד ה־PIN שגוי.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "קוד ה־PIN שגוי. ניסיונות שנותרו: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "קוד ה־PIN כובה אחרי יותר מדי ניסיונות שגויים. יש להשתמש בסיסמת האב.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "לא הוגדר קוד PIN במחשב הזה. יש להשתמש בסיסמת האב.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "להציג הצעות בתוך שדות הכניסה?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass יכול להציג את פרטי הכניסה שלך ממש מתחת לשדות שם המשתמש והסיסמה באתרים.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "לא עכשיו",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "הפעלה",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "תיקייה",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "סוג",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "כל הפריטים",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "פרטי כניסה עם קוד אימות",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "מועדפים",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "כל התיקיות",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "ללא תיקייה",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "הצעות למילוי אוטומטי",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "מועדפים",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "כל הפריטים",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "פריטים",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "אין פריטים שתואמים למסננים האלה.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "הכספת שלך ריקה.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "הצגת הפרטים של $TITLE$",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "פתיחת האתר של $TITLE$",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "אפשרויות נוספות עבור $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "הוספה למועדפים",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "הסרה מהמועדפים",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "פתיחת האתר",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "העתקת כתובת האתר",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "הצגת פרטים",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "כתובת האתר הועתקה",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "נוסף למועדפים",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "הוסר מהמועדפים",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "פרטי הפריט",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "שם משתמש",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "סיסמה",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "קוד אימות",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "אתר",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "תיקייה",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "שם",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "פרטי כניסה חדשים",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "ביטול",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "שמירה",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "יש להזין שם.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "יש להזין סיסמה.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "נשמר",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "הסיסמה נוצרה",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass לא יכול לקבל את הבקשה הזו.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "יצירה מחדש",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "העתקה",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "סוג הערך ליצירה",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "סיסמה",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "צירוף סיסמה",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "קוד PIN",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "אורך",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "אותיות גדולות (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "אותיות קטנות (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "ספרות (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "סמלים (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "הימנעות מתווים דומים",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "מילים",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "מפריד מילים",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "אות ראשונה גדולה",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "הוספת מספר",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "יש להשאיר לפחות סוג תווים אחד.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "מילוי בדף הזה",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "לא נמצא שדה סיסמה בדף הזה",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "כספת",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "נעילה עכשיו",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "מילוי אוטומטי",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "הצגת הצעות בשדות הכניסה",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "נדרשת גישה לאתרים שמבקרים בהם. הדף אף פעם לא רואה את פרטי הכניסה שלך; שום דבר לא ממולא עד שבוחרים פריט.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "ההצעות מופעלות. יש לרענן את הדפים הפתוחים כדי לראות אותן.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "ההרשאה לא ניתנה.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "קיצור מקשים",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutHint": {
+    "message": "פותח את החלון הזה. אפשר לשנות אותו בהגדרות קיצורי ההרחבות של הדפדפן.",
+    "description": "Explains the keyboard shortcut."
+  },
+  "shortcutNotSet": {
+    "message": "לא הוגדר",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "על אודות",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "גרסה",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "עזרה",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "פרטיות",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "הצעות של Ashy Pass",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "הצגת הצעות של Ashy Pass",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass נעול",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "אין פרטי כניסה לאתר הזה",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "הוספת פרטי כניסה",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "יש ללחוץ על הסמל של Ashy Pass בסרגל הכלים כדי להמשיך.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "התפריט הזה פג תוקף. יש ללחוץ שוב על השדה.",
+    "description": "Shown when the suggestions menu can no longer be used."
   }
 }

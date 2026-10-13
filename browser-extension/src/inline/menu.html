@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="color-scheme" content="light dark">
+    <title data-i18n="inlineMenuTitle">Ashy Pass suggestions</title>
+    <link rel="stylesheet" href="menu.css">
+    <script type="module" src="menu.js"></script>
+  </head>
+  <body>
+    <div class="menu">
+      <header class="menu-header">
+        <img src="../icons/icon-32.png" alt="" width="16" height="16">
+        <span class="menu-title" data-i18n="extName">Ashy Pass</span>
+        <span id="menu-host" class="menu-host"></span>
+      </header>
+
+      <div id="state-loading" class="state" aria-busy="true">
+        <div class="spinner" aria-hidden="true"></div>
+      </div>
+
+      <ul id="menu-list" class="menu-list" hidden data-i18n-aria-label="autofillSuggestions"></ul>
+
+      <div id="state-message" class="state" hidden>
+        <p id="message-text" role="status"></p>
+        <button type="button" id="message-action" class="pill suggested small" hidden></button>
+      </div>
+
+      <footer id="menu-footer" class="menu-footer" hidden>
+        <button type="button" id="menu-add" class="footer-button"><span data-icon="plus" data-icon-size="16"></span><span data-i18n="addLoginButton">Add login</span></button>
+      </footer>
+    </div>
+  </body>
+</html>

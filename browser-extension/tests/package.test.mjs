@@ -15,7 +15,8 @@ const LOCALES = [
   "bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "he", "hr", "hu", "is", "it",
   "ja", "ko", "nl", "no", "pl", "pt_BR", "pt_PT", "ro", "ru", "sk", "sv", "tr", "uk", "zh_CN",
 ];
-const PERMISSIONS = ["nativeMessaging", "activeTab", "scripting", "clipboardWrite"];
+const PERMISSIONS = ["nativeMessaging", "activeTab", "scripting", "clipboardWrite", "storage"];
+const WEB = ["http://*/*", "https://*/*"];
 
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -55,9 +56,15 @@ function checkCommon(m, label) {
   assert.match(m.name, /^__MSG_\w+__$/, label);
   assert.match(m.description, /^__MSG_\w+__$/, label);
   assert.deepEqual(m.permissions, PERMISSIONS, label);
-  assert.equal(m.host_permissions, undefined, label);
+  // Site access at install (like other password managers): the inline
+  // suggestions work right away; Settings can still turn them off.
+  assert.deepEqual(m.host_permissions, WEB, label);
   assert.equal(m.optional_permissions, undefined, label);
+  assert.equal(m.optional_host_permissions, undefined, label);
   assert.equal(m.content_scripts, undefined, label);
+  assert.equal(m.web_accessible_resources.length, 1, label);
+  assert.deepEqual(m.web_accessible_resources[0].resources, ["inline/menu.html", "icons/icon-48.png"], label);
+  assert.deepEqual(m.web_accessible_resources[0].matches, WEB, label);
   assert.equal(m.key, undefined, `${label}: key is added by build.py for chrome-dev only`);
   assert.equal(m.action.default_popup, "popup/popup.html", label);
   assert.equal(m.commands._execute_action.suggested_key.default, "Ctrl+Shift+L", label);
@@ -71,6 +78,8 @@ function checkCommon(m, label) {
     ...Object.values(m.icons),
     ...Object.values(m.action.default_icon),
     ...(m.background.scripts ?? [m.background.service_worker]),
+    ...m.web_accessible_resources[0].resources,
+    "inline/content.js",
   ];
   for (const f of files) assert.ok(existsSync(path.join(SRC, f)), `${label}: ${f} missing`);
   for (const size of ["16", "32", "48", "96", "128"]) assert.ok(m.icons[size], `${label}: icon ${size}`);
@@ -84,6 +93,9 @@ test("Chrome manifest", () => {
   assert.equal(m.background.scripts, undefined);
   assert.equal(m.minimum_chrome_version, "116");
   assert.equal(m.browser_specific_settings, undefined);
+  // No use_dynamic_url: with it the content script and the menu frame see
+  // different origins in Chrome and the token hand-off is refused.
+  assert.equal(m.web_accessible_resources[0].use_dynamic_url, undefined);
 });
 
 test("Firefox manifest", () => {
@@ -96,6 +108,7 @@ test("Firefox manifest", () => {
     strict_min_version: "140.0",
     data_collection_permissions: { required: ["none"] },
   });
+  assert.equal(m.web_accessible_resources[0].use_dynamic_url, undefined);
 });
 
 test("VERSION and the development key", () => {
@@ -103,6 +116,14 @@ test("VERSION and the development key", () => {
   const key = readFileSync(path.join(ROOT, "chrome-dev-key.pub"), "utf8").trim();
   assert.match(key, /^[A-Za-z0-9+/]+={0,2}$/);
 });
+
+// Words that are the same in several languages (product name, "PIN",
+// "Generator", "Website", "Password", "Privacy", …). Everything else must be translated.
+const SAME_AS_ENGLISH = new Set([
+  "extName", "pinLabel", "kindPin", "tabGenerator", "typeFilterLabel", "versionLabel", "websiteLabel",
+  "nameLabel", "kindPassphrase", "kindPassword", "passwordLabel", "sectionsLabel", "tabVault",
+  "settingsVaultHeading", "privacyLink", "helpLink", "filteredHeading", "folderFilterLabel", "folderLabel",
+]);
 
 const tokens = (s) => [...s.matchAll(/\$([A-Za-z0-9_@]+)\$/g)].map((m) => m[1].toLowerCase()).sort();
 
@@ -126,24 +147,47 @@ test("every locale exists and has exactly the keys of en, with consistent placeh
       // A "$" that is not part of a $NAME$ token or "$$" breaks the i18n API.
       const stray = message.replace(/\$[A-Za-z0-9_@]+\$/g, "").replace(/\$\$/g, "");
       assert.ok(!stray.includes("$"), `${loc}.${key}: stray $`);
-      if (message !== en[key].message) translated += 1;
+      if (loc !== "en" && message === en[key].message) {
+        assert.ok(SAME_AS_ENGLISH.has(key), `${loc}.${key} is not translated`);
+      } else {
+        translated += 1;
+      }
     }
-    if (loc !== "en") {
-      // Everything but the product name must be translated.
-      assert.ok(translated >= enKeys.length - 1, `${loc}: only ${translated}/${enKeys.length} translated`);
-    }
+    if (loc !== "en") assert.ok(translated >= enKeys.length - 10, `${loc}: only ${translated}/${enKeys.length} translated`);
   }
 });
 
-test("every data-i18n key used by the popup exists", () => {
+const UI_FILES = ["popup/popup.html", "popup/popup.js", "inline/menu.html", "inline/menu.js", "inline/content.js"];
+
+test("every i18n key used by the UI exists, and every en key is used", () => {
   const en = readJson(path.join(SRC, "_locales/en/messages.json"));
-  const html = readFileSync(path.join(SRC, "popup/popup.html"), "utf8");
-  const js = readFileSync(path.join(SRC, "popup/popup.js"), "utf8");
-  const used = new Set([
-    ...[...html.matchAll(/data-i18n(?:-placeholder)?="(\w+)"/g)].map((m) => m[1]),
-    ...[...js.matchAll(/\bt\("(\w+)"/g)].map((m) => m[1]),
-  ]);
+  const used = new Set();
+  for (const file of UI_FILES) {
+    const text = readFileSync(path.join(SRC, file), "utf8");
+    for (const m of text.matchAll(/data-i18n(?:-placeholder|-title|-aria-label)?="(\w+)"/g)) used.add(m[1]);
+    for (const m of text.matchAll(/\b(?:t|i18n)\("(\w+)"/g)) used.add(m[1]);
+  }
   for (const key of used) assert.ok(en[key], `missing message ${key}`);
+
+  // Keys may also be referenced indirectly (lookup tables, manifests).
+  const corpus = [
+    ...UI_FILES.map((f) => readFileSync(path.join(SRC, f), "utf8")),
+    readFileSync(path.join(ROOT, "manifest.chrome.json"), "utf8"),
+  ].join("\n");
+  for (const key of Object.keys(en)) {
+    assert.ok(corpus.includes(`"${key}"`) || corpus.includes(`__MSG_${key}__`), `unused message ${key}`);
+  }
+});
+
+test("the content script is a self-contained classic script that gets no secrets", () => {
+  const text = readFileSync(path.join(SRC, "inline/content.js"), "utf8");
+  assert.doesNotMatch(text, /^\s*(import|export)\b/m);
+  assert.match(text, /attachShadow\(\{ mode: "closed" \}\)/);
+  // It only ever asks the background for an opening token.
+  const types = [...text.matchAll(/sendMessage|send\(\{ type: "(\w+)"/g)].map((m) => m[1]).filter(Boolean);
+  assert.deepEqual([...new Set(types)], ["inlineOpen"]);
+  // Messages from the menu frame are checked by source and origin.
+  assert.match(text, /ev\.source !== frame\.contentWindow \|\| ev\.origin !== MENU_ORIGIN/);
 });
 
 test("build.py produces clean dev trees and store zips", () => {

@@ -71,10 +71,6 @@
     "message": "Търсене във всички записи",
     "description": "Label and placeholder of the search field."
   },
-  "siteEntriesHeading": {
-    "message": "Данни за вход за този сайт",
-    "description": "Heading of the list of entries that match the current site."
-  },
   "searchResultsHeading": {
     "message": "Резултати от търсенето",
     "description": "Heading of the list of search results."
@@ -183,14 +179,6 @@
     "message": "Генериране на парола",
     "description": "Button that generates a new password and copies it."
   },
-  "generatedLabel": {
-    "message": "Генерирана парола",
-    "description": "Label of the box that shows the generated password."
-  },
-  "generatedCopied": {
-    "message": "Новата парола е копирана",
-    "description": "Short confirmation after a password was generated and copied."
-  },
   "revealPassword": {
     "message": "Показване на паролата",
     "description": "Button that reveals the generated password."
@@ -240,5 +228,421 @@
         "example": "Malformed request"
       }
     }
+  },
+  "backButton": {
+    "message": "Назад",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Добавяне",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Отваряне на Ashy Pass",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Хранилище",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Генератор",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Настройки",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Раздели",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "ПИН",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Отключване с ПИН",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Използване на главна парола",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Използване на ПИН",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "Грешен ПИН.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "Грешен ПИН. Оставащи опити: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "ПИН кодът беше изключен след твърде много грешни опити. Използвайте главната си парола.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "На този компютър няма зададен ПИН. Използвайте главната си парола.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Показване на предложения в полетата за вход?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass може да показва данните ви за вход точно под полетата за потребителско име и парола в сайтовете.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Не сега",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Включване",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Папка",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Вид",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Всички записи",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "С кодове за потвърждение",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Любими",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Всички папки",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Без папка",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Предложения за автоматично попълване",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Любими",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Всички записи",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Записи",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Няма записи, отговарящи на тези филтри.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "Хранилището ви е празно.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Показване на подробностите за $TITLE$",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Отваряне на сайта на $TITLE$",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "Още опции за $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Добавяне в любими",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Премахване от любими",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Отваряне на сайта",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Копиране на адреса на сайта",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Подробности",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Адресът на сайта е копиран",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Добавено в любими",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Премахнато от любими",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Подробности за записа",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Потребителско име",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Парола",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Код за потвърждение",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Уебсайт",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Папка",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Име",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Нов запис",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Отказ",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Запазване",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Въведете име.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Въведете парола.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Запазено",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Паролата е генерирана",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass не можа да приеме тази заявка.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Генериране отново",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Копиране",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Вид на стойността за генериране",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Парола",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Парола фраза",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "ПИН",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Дължина",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Главни букви (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Малки букви (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Цифри (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Символи (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Избягване на сходни знаци",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Думи",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Разделител на думите",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "С главна буква",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Добавяне на число",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Оставете поне един вид знаци.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Попълване на тази страница",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "На тази страница няма поле за парола",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Хранилище",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Заключване сега",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Автоматично попълване",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Показване на предложения в полетата за вход",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Изисква достъп до сайтовете, които посещавате. Страницата никога не вижда данните ви за вход; нищо не се попълва, докато не изберете запис.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "Предложенията са включени. Презаредете отворените страници, за да ги видите.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "Разрешението не беше дадено.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Клавишна комбинация",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutHint": {
+    "message": "Отваря този прозорец. Можете да я промените в настройките за клавишни комбинации на разширенията в браузъра.",
+    "description": "Explains the keyboard shortcut."
+  },
+  "shortcutNotSet": {
+    "message": "Не е зададена",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "Относно",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Версия",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Помощ",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Поверителност",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Предложения от Ashy Pass",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Показване на предложения от Ashy Pass",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass е заключен",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Няма данни за вход за този сайт",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Добавяне на запис",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "Щракнете върху иконата на Ashy Pass в лентата с инструменти, за да продължите.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Това меню е изтекло. Щракнете отново в полето.",
+    "description": "Shown when the suggestions menu can no longer be used."
   }
 }

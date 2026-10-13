@@ -71,10 +71,6 @@
     "message": "すべてのエントリーを検索",
     "description": "Label and placeholder of the search field."
   },
-  "siteEntriesHeading": {
-    "message": "このサイトのログイン",
-    "description": "Heading of the list of entries that match the current site."
-  },
   "searchResultsHeading": {
     "message": "検索結果",
     "description": "Heading of the list of search results."
@@ -183,14 +179,6 @@
     "message": "パスワードを生成",
     "description": "Button that generates a new password and copies it."
   },
-  "generatedLabel": {
-    "message": "生成されたパスワード",
-    "description": "Label of the box that shows the generated password."
-  },
-  "generatedCopied": {
-    "message": "新しいパスワードをコピーしました",
-    "description": "Short confirmation after a password was generated and copied."
-  },
   "revealPassword": {
     "message": "パスワードを表示",
     "description": "Button that reveals the generated password."
@@ -240,5 +228,421 @@
         "example": "Malformed request"
       }
     }
+  },
+  "backButton": {
+    "message": "戻る",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "追加",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Ashy Pass を開く",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "ボールト",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "生成",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "設定",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "セクション",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "PIN",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "PIN でロック解除",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "マスターパスワードを使用",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "PIN を使用",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "PIN が間違っています。",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "PIN が間違っています。残りの試行回数: $COUNT$。",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "誤った試行が多すぎたため、PIN はオフになりました。マスターパスワードを使用してください。",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "このコンピューターには PIN が設定されていません。マスターパスワードを使用してください。",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "ログイン欄に候補を表示しますか？",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass は、ウェブサイトのユーザー名欄とパスワード欄のすぐ下にログインを一覧表示できます。",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "後で",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "有効にする",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "フォルダー",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "種類",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "すべての項目",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "確認コードのあるログイン",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "お気に入り",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "すべてのフォルダー",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "フォルダーなし",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "自動入力の候補",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "お気に入り",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "すべての項目",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "項目",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "このフィルターに一致する項目はありません。",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "ボールトは空です。",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "$TITLE$ の詳細を表示",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "$TITLE$ のウェブサイトを開く",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "$TITLE$ のその他のオプション",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "お気に入りに追加",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "お気に入りから削除",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "ウェブサイトを開く",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "ウェブサイトのアドレスをコピー",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "詳細を表示",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "ウェブサイトのアドレスをコピーしました",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "お気に入りに追加しました",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "お気に入りから削除しました",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "項目の詳細",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "ユーザー名",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "パスワード",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "確認コード",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "ウェブサイト",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "フォルダー",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "名前",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "新しいログイン",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "キャンセル",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "保存",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "名前を入力してください。",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "パスワードを入力してください。",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "保存しました",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "パスワードを生成しました",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass はこのリクエストを受け付けられませんでした。",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "再生成",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "コピー",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "生成する値の種類",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "パスワード",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "パスフレーズ",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "PIN",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "長さ",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "大文字 (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "小文字 (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "数字 (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "記号 (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "紛らわしい文字を避ける",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "単語数",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "単語の区切り文字",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "先頭を大文字にする",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "数字を含める",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "少なくとも 1 種類の文字を残してください。",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "このページに入力",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "このページにパスワード欄が見つかりません",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "ボールト",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "今すぐロック",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "自動入力",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "ログイン欄に候補を表示",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "アクセスするウェブサイトへの権限が必要です。ページからログインが見えることはなく、選択するまで何も入力されません。",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "候補がオンになりました。表示するには開いているページを再読み込みしてください。",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "権限が許可されませんでした。",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "キーボードショートカット",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutHint": {
+    "message": "このウィンドウを開きます。ブラウザーの拡張機能ショートカット設定で変更できます。",
+    "description": "Explains the keyboard shortcut."
+  },
+  "shortcutNotSet": {
+    "message": "未設定",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "情報",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "バージョン",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "ヘルプ",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "プライバシー",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Ashy Pass の候補",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Ashy Pass の候補を表示",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass はロックされています",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "このサイトのログインはありません",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "ログインを追加",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "続けるには、ツールバーの Ashy Pass アイコンをクリックしてください。",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "このメニューは期限切れです。もう一度入力欄をクリックしてください。",
+    "description": "Shown when the suggestions menu can no longer be used."
   }
 }

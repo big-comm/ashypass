@@ -71,10 +71,6 @@
     "message": "Hae kaikista merkinnöistä",
     "description": "Label and placeholder of the search field."
   },
-  "siteEntriesHeading": {
-    "message": "Tämän sivuston kirjautumistiedot",
-    "description": "Heading of the list of entries that match the current site."
-  },
   "searchResultsHeading": {
     "message": "Hakutulokset",
     "description": "Heading of the list of search results."
@@ -183,14 +179,6 @@
     "message": "Luo salasana",
     "description": "Button that generates a new password and copies it."
   },
-  "generatedLabel": {
-    "message": "Luotu salasana",
-    "description": "Label of the box that shows the generated password."
-  },
-  "generatedCopied": {
-    "message": "Uusi salasana kopioitu",
-    "description": "Short confirmation after a password was generated and copied."
-  },
   "revealPassword": {
     "message": "Näytä salasana",
     "description": "Button that reveals the generated password."
@@ -240,5 +228,421 @@
         "example": "Malformed request"
       }
     }
+  },
+  "backButton": {
+    "message": "Takaisin",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Lisää",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Avaa Ashy Pass",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Holvi",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Generaattori",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Asetukset",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Osiot",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "PIN-koodi",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Avaa PIN-koodilla",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Käytä pääsalasanaa",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Käytä PIN-koodia",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "Väärä PIN-koodi.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "Väärä PIN-koodi. Yrityksiä jäljellä: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "PIN-koodi poistettiin käytöstä liian monen väärän yrityksen jälkeen. Käytä pääsalasanaasi.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "Tälle tietokoneelle ei ole määritetty PIN-koodia. Käytä pääsalasanaasi.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Näytetäänkö ehdotukset kirjautumiskentissä?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass voi näyttää kirjautumistietosi suoraan verkkosivustojen käyttäjätunnus- ja salasanakenttien alla.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Ei nyt",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Ota käyttöön",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Kansio",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Tyyppi",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Kaikki merkinnät",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "Kirjautumistiedot, joissa on koodi",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Suosikit",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Kaikki kansiot",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Ei kansiota",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Automaattisen täytön ehdotukset",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Suosikit",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Kaikki merkinnät",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Merkinnät",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Mikään merkintä ei vastaa näitä suodattimia.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "Holvisi on tyhjä.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Näytä kohteen $TITLE$ tiedot",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Avaa kohteen $TITLE$ verkkosivusto",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "Lisää vaihtoehtoja kohteelle $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Lisää suosikkeihin",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Poista suosikeista",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Avaa sivusto",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Kopioi sivuston osoite",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Näytä tiedot",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Sivuston osoite kopioitu",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Lisätty suosikkeihin",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Poistettu suosikeista",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Merkinnän tiedot",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Käyttäjätunnus",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Salasana",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Vahvistuskoodi",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Verkkosivusto",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Kansio",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Nimi",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Uusi kirjautumistieto",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Peruuta",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Tallenna",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Anna nimi.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Anna salasana.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Tallennettu",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Salasana luotu",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass ei voinut hyväksyä tätä pyyntöä.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Luo uusi",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Kopioi",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Luotavan arvon tyyppi",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Salasana",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Salalause",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "PIN-koodi",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Pituus",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Isot kirjaimet (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Pienet kirjaimet (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Numerot (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Erikoismerkit (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Vältä samannäköisiä merkkejä",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Sanat",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Sanojen erotin",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "Isot alkukirjaimet",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Lisää numero",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Pidä vähintään yksi merkkityyppi.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Täytä tälle sivulle",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "Tältä sivulta ei löytynyt salasanakenttää",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Holvi",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Lukitse nyt",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Automaattinen täyttö",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Näytä ehdotukset kirjautumiskentissä",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Vaatii pääsyn vierailemillesi sivustoille. Sivu ei koskaan näe kirjautumistietojasi; mitään ei täytetä ennen kuin valitset jonkin.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "Ehdotukset ovat käytössä. Lataa avoimet sivut uudelleen nähdäksesi ne.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "Lupaa ei myönnetty.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Pikanäppäin",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutHint": {
+    "message": "Avaa tämän ikkunan. Voit vaihtaa sen selaimen laajennusten pikanäppäinasetuksista.",
+    "description": "Explains the keyboard shortcut."
+  },
+  "shortcutNotSet": {
+    "message": "Ei asetettu",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "Tietoja",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Versio",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Ohje",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Yksityisyys",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Ashy Passin ehdotukset",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Näytä Ashy Passin ehdotukset",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass on lukittu",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Ei kirjautumistietoja tälle sivustolle",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Lisää kirjautumistieto",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "Jatka napsauttamalla Ashy Passin kuvaketta työkalupalkissa.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Tämä valikko on vanhentunut. Napsauta kenttää uudelleen.",
+    "description": "Shown when the suggestions menu can no longer be used."
   }
 }

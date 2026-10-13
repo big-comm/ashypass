@@ -1,7 +1,25 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  ALLOWED_TYPES,
   ExtError,
+  FaviconBatcher,
+  InlineTokens,
+  NO_FOLDER,
+  avatarFor,
+  cleanSeparator,
+  faviconHost,
+  filterEntries,
+  generatorRequest,
+  hasActiveFilter,
+  normalizeGeneratorOptions,
+  openableUrl,
+  sanitizeFolders,
+  sanitizeHosts,
+  sanitizeIcons,
+  sanitizeNewEntry,
+  senderKind,
+  totpFraction,
   RequestTracker,
   classifyDisconnect,
   countFilled,
@@ -71,8 +89,8 @@ test("sanitizeEntries keeps only Summary fields and drops entries without id", (
     null,
   ]);
   assert.deepEqual(out, [
-    { id: "a1", title: "GitHub", username: "me", url: "https://github.com", category: "login", has_totp: true },
-    { id: 7, title: "", username: "", url: "", category: "", has_totp: false },
+    { id: "a1", title: "GitHub", username: "me", url: "https://github.com", category: "login", has_totp: true, favorite: false },
+    { id: 7, title: "", username: "", url: "", category: "", has_totp: false, favorite: false },
   ]);
   assert.deepEqual(sanitizeEntries(undefined), []);
 });
@@ -242,4 +260,229 @@ test("RequestTracker default timers work with a receiver-checking setTimeout", a
     globalThis.setTimeout = realSet;
     globalThis.clearTimeout = realClear;
   }
+});
+
+// ── Protocol 3 helpers ──────────────────────────────────────────────────────
+
+test("sanitizeEntries keeps favorite as a boolean", () => {
+  const [e] = sanitizeEntries([{ id: 1, favorite: "yes", has_totp: 1 }]);
+  assert.equal(e.favorite, false);
+  assert.equal(e.has_totp, false);
+  assert.equal(sanitizeEntries([{ id: 1, favorite: true }])[0].favorite, true);
+});
+
+test("ExtError carries attempts_left into the error result", async () => {
+  const tracker = new RequestTracker({ setTimer: () => 1, clearTimer: () => {} });
+  const { rid, promise } = tracker.create("unlock_pin", { pin: "1" });
+  tracker.settle({ rid, ok: false, code: "bad_pin", error: "Wrong PIN", attempts_left: 2 });
+  const err = await promise.catch((e) => e);
+  assert.deepEqual(toErrorResult(err), { ok: false, code: "bad_pin", error: "Wrong PIN", attempts_left: 2 });
+  assert.equal(toErrorResult(new ExtError("bad_pin", "x", { attemptsLeft: "2" })).attempts_left, undefined);
+});
+
+const ENTRIES = [
+  { id: 1, category: "Work", has_totp: true, favorite: false },
+  { id: 2, category: "", has_totp: false, favorite: true },
+  { id: 3, category: "Home", has_totp: true, favorite: true },
+  { id: 4, category: "Work", has_totp: false, favorite: false },
+];
+const ids = (list) => list.map((e) => e.id);
+
+test("filterEntries applies folder and type filters", () => {
+  assert.deepEqual(ids(filterEntries(ENTRIES)), [1, 2, 3, 4]);
+  assert.deepEqual(ids(filterEntries(ENTRIES, { folder: "Work" })), [1, 4]);
+  assert.deepEqual(ids(filterEntries(ENTRIES, { folder: NO_FOLDER })), [2]);
+  assert.deepEqual(ids(filterEntries(ENTRIES, { type: "totp" })), [1, 3]);
+  assert.deepEqual(ids(filterEntries(ENTRIES, { type: "favorites" })), [2, 3]);
+  assert.deepEqual(ids(filterEntries(ENTRIES, { folder: "Work", type: "totp" })), [1]);
+  assert.deepEqual(filterEntries(null), []);
+  assert.equal(hasActiveFilter({ folder: "", type: "all" }), false);
+  assert.equal(hasActiveFilter({ folder: NO_FOLDER, type: "all" }), true);
+  assert.equal(hasActiveFilter({ folder: "", type: "favorites" }), true);
+});
+
+test("sanitizeFolders dedupes, trims and sorts", () => {
+  assert.deepEqual(sanitizeFolders(["b", " a ", "", null, "b", 3]), ["a", "b"]);
+  assert.deepEqual(sanitizeFolders("x"), []);
+});
+
+test("faviconHost and openableUrl accept only http(s), bare domains as https", () => {
+  assert.equal(faviconHost("https://WWW.GitHub.com/login"), "www.github.com");
+  assert.equal(faviconHost("github.com"), "github.com");
+  assert.equal(faviconHost("javascript:alert(1)"), "");
+  assert.equal(faviconHost("file:///etc/passwd"), "");
+  assert.equal(faviconHost(""), "");
+  assert.equal(openableUrl("example.com/x"), "https://example.com/x");
+  assert.equal(openableUrl("http://example.com/"), "http://example.com/");
+  assert.equal(openableUrl("javascript:alert(1)"), "");
+  assert.equal(openableUrl("data:text/html,hi"), "");
+  assert.equal(openableUrl("chrome://settings"), "");
+});
+
+test("sanitizeHosts and sanitizeIcons", () => {
+  const hosts = sanitizeHosts(["A.example", "a.example", "bad host", "x/y", 5, ...Array.from({ length: 50 }, (_, i) => `h${i}.example`)]);
+  assert.equal(hosts.length, 40);
+  assert.equal(hosts[0], "a.example");
+  assert.ok(!hosts.includes("bad host"));
+  const icons = sanitizeIcons(
+    {
+      "a.example": "data:image/png;base64,iVBORw0KGgo=",
+      "b.example": "data:text/html;base64,PHNjcmlwdD4=",
+      "c.example": "data:image/svg+xml;base64,PHN2Zz4=",
+      "other.example": "data:image/png;base64,AAAA",
+    },
+    ["a.example", "b.example", "c.example"],
+  );
+  assert.deepEqual(Object.keys(icons), ["a.example", "c.example"]);
+  assert.deepEqual(sanitizeIcons(null, ["a"]), {});
+});
+
+test("FaviconBatcher batches at most 40 hosts, dedupes and caches", async () => {
+  const calls = [];
+  const timers = [];
+  const batcher = new FaviconBatcher(
+    async (hosts) => {
+      calls.push(hosts);
+      return Object.fromEntries(hosts.filter((h) => h.startsWith("h1")).map((h) => [h, `icon:${h}`]));
+    },
+    { setTimer: (fn) => timers.push(fn) },
+  );
+  const hosts = Array.from({ length: 95 }, (_, i) => `h${i}.example`);
+  const promises = [...hosts, "h1.example", "h2.example"].map((h) => batcher.get(h));
+  assert.equal(timers.length, 1, "one flush scheduled");
+  await timers[0]();
+  assert.deepEqual(calls.map((c) => c.length), [40, 40, 15]);
+  const results = await Promise.all(promises);
+  assert.equal(results[1], "icon:h1.example");
+  assert.equal(results[2], null);
+  assert.equal(results[95], "icon:h1.example");
+  // Cached: no new request.
+  assert.equal(await batcher.get("h1.example"), "icon:h1.example");
+  assert.equal(calls.length, 3);
+  assert.equal(await batcher.get(""), null);
+});
+
+test("FaviconBatcher resolves null when a batch fails", async () => {
+  const timers = [];
+  const batcher = new FaviconBatcher(async () => {
+    throw new Error("boom");
+  }, { setTimer: (fn) => timers.push(fn) });
+  const p = batcher.get("a.example");
+  await timers[0]();
+  assert.equal(await p, null);
+});
+
+test("avatarFor gives a letter and a stable colour", () => {
+  assert.equal(avatarFor("github").letter, "G");
+  assert.equal(avatarFor("").letter, "?");
+  assert.equal(avatarFor("ação").color, avatarFor("ação").color);
+});
+
+test("normalizeGeneratorOptions clamps and keeps at least one class", () => {
+  const o = normalizeGeneratorOptions({
+    kind: "evil",
+    password: { length: 500, uppercase: false, lowercase: false, digits: false, symbols: false },
+    passphrase: { words: 1, separator: "\u0000ab\ncd" },
+    pin: { length: "99" },
+  });
+  assert.equal(o.kind, "password");
+  assert.equal(o.password.length, 64);
+  assert.equal(o.password.lowercase, true);
+  assert.equal(o.passphrase.words, 3);
+  assert.equal(o.passphrase.separator, "abc");
+  assert.equal(o.pin.length, 12);
+  assert.deepEqual(normalizeGeneratorOptions(null).password.length, 20);
+  assert.equal(normalizeGeneratorOptions({ password: { length: 3 } }).password.length, 8);
+  assert.equal(cleanSeparator("🙂🙂🙂🙂"), "🙂🙂🙂");
+});
+
+test("generatorRequest maps each kind to the protocol fields", () => {
+  assert.deepEqual(generatorRequest({ kind: "password", password: { length: 16, symbols: false, avoidAmbiguous: true } }), {
+    kind: "password",
+    length: 16,
+    uppercase: true,
+    lowercase: true,
+    digits: true,
+    symbols: false,
+    avoid_ambiguous: true,
+  });
+  assert.deepEqual(generatorRequest({ kind: "passphrase", passphrase: { words: 6, separator: ".", capitalize: false, number: true } }), {
+    kind: "passphrase",
+    words: 6,
+    separator: ".",
+    capitalize: false,
+    number: true,
+  });
+  assert.deepEqual(generatorRequest({ kind: "pin", pin: { length: 2 } }), { kind: "pin", length: 4 });
+  assert.equal(generatorRequest(undefined).kind, "password");
+});
+
+test("sanitizeNewEntry", () => {
+  assert.deepEqual(sanitizeNewEntry({ title: " T ", password: " p ", username: " u ", url: "", category: "" }), {
+    title: "T",
+    password: " p ",
+    username: "u",
+  });
+  assert.throws(() => sanitizeNewEntry({ title: "", password: "p" }), /Missing name/);
+  assert.throws(() => sanitizeNewEntry({ title: "t", password: "" }), /Missing password/);
+  assert.throws(() => sanitizeNewEntry({ title: "t".repeat(513), password: "p" }), /too long/);
+});
+
+test("totpFraction", () => {
+  assert.equal(totpFraction(15, 30), 0.5);
+  assert.equal(totpFraction(40, 30), 1);
+  assert.equal(totpFraction(5, 0), 0);
+  assert.equal(totpFraction(Number.NaN, 30), 0);
+});
+
+test("senderKind tells popup, menu frame, content script and strangers apart", () => {
+  const id = "abc";
+  const base = "chrome-extension://abc/";
+  assert.equal(senderKind({ id, url: `${base}popup/popup.html` }, id, base), "page");
+  assert.equal(senderKind({ id, url: `${base}inline/menu.html`, tab: { id: 1 } }, id, base), "menu");
+  // Chrome's per-session dynamic URL for web-accessible resources.
+  assert.equal(senderKind({ id, url: "chrome-extension://dynamic-uuid/inline/menu.html", tab: { id: 1 } }, id, base), "menu");
+  assert.equal(senderKind({ id, url: "chrome-extension://dynamic-uuid/popup/popup.html" }, id, base), null);
+  assert.equal(senderKind({ id, url: "https://site.example/", tab: { id: 1 } }, id, base), "content");
+  assert.equal(senderKind({ id, url: "https://site.example/" }, id, base), null);
+  assert.equal(senderKind({ id, url: "file:///x", tab: { id: 1 } }, id, base), null);
+  assert.equal(senderKind({ id: "other", url: `${base}popup/popup.html` }, id, base), null);
+  assert.equal(senderKind(null, id, base), null);
+  assert.deepEqual([...ALLOWED_TYPES.content], ["inlineOpen"]);
+  assert.ok(!ALLOWED_TYPES.menu.has("copy") && !ALLOWED_TYPES.menu.has("reveal"));
+});
+
+test("InlineTokens: bound to tab and menu frame, single use, expire", () => {
+  let now = 1000;
+  let n = 0;
+  const tokens = new InlineTokens({ ttlMs: 100, now: () => now, random: () => (n++).toString(16).padStart(32, "0") });
+  const t1 = tokens.issue({ tabId: 1, frameId: 3, origin: "https://a.example" });
+  assert.equal(tokens.claim("not-a-token", { tabId: 1, menuFrameId: 5 }), null);
+  assert.equal(tokens.claim(t1, { tabId: 2, menuFrameId: 5 }), null, "other tab");
+  assert.deepEqual(tokens.claim(t1, { tabId: 1, menuFrameId: 5 }), { tabId: 1, frameId: 3, origin: "https://a.example" });
+  assert.equal(tokens.claim(t1, { tabId: 1, menuFrameId: 6 }), null, "other menu frame");
+  assert.ok(tokens.consume(t1, { tabId: 1, menuFrameId: 5 }));
+  assert.equal(tokens.consume(t1, { tabId: 1, menuFrameId: 5 }), null, "single use");
+
+  const t2 = tokens.issue({ tabId: 1, frameId: 3, origin: "https://a.example" });
+  now += 100;
+  assert.equal(tokens.claim(t2, { tabId: 1, menuFrameId: 5 }), null, "expired");
+  assert.equal(tokens.size, 0);
+
+  // A new token for the same frame replaces the old one; closing the tab drops them.
+  const t3 = tokens.issue({ tabId: 1, frameId: 3, origin: "o" });
+  const t4 = tokens.issue({ tabId: 1, frameId: 3, origin: "o" });
+  assert.equal(tokens.claim(t3, { tabId: 1 }), null);
+  tokens.issue({ tabId: 2, frameId: 0, origin: "o" });
+  tokens.revokeTab(1);
+  assert.equal(tokens.claim(t4, { tabId: 1 }), null);
+  assert.equal(tokens.size, 1);
+});
+
+test("InlineTokens default random tokens are 128-bit hex", () => {
+  const tokens = new InlineTokens();
+  const a = tokens.issue({ tabId: 1, frameId: 0, origin: "o" });
+  const b = tokens.issue({ tabId: 1, frameId: 1, origin: "o" });
+  assert.match(a, /^[0-9a-f]{32}$/);
+  assert.notEqual(a, b);
 });

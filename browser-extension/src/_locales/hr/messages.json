@@ -71,10 +71,6 @@
     "message": "Pretraži sve unose",
     "description": "Label and placeholder of the search field."
   },
-  "siteEntriesHeading": {
-    "message": "Prijave za ovu stranicu",
-    "description": "Heading of the list of entries that match the current site."
-  },
   "searchResultsHeading": {
     "message": "Rezultati pretrage",
     "description": "Heading of the list of search results."
@@ -183,14 +179,6 @@
     "message": "Generiraj lozinku",
     "description": "Button that generates a new password and copies it."
   },
-  "generatedLabel": {
-    "message": "Generirana lozinka",
-    "description": "Label of the box that shows the generated password."
-  },
-  "generatedCopied": {
-    "message": "Nova lozinka kopirana",
-    "description": "Short confirmation after a password was generated and copied."
-  },
   "revealPassword": {
     "message": "Prikaži lozinku",
     "description": "Button that reveals the generated password."
@@ -240,5 +228,421 @@
         "example": "Malformed request"
       }
     }
+  },
+  "backButton": {
+    "message": "Natrag",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Dodaj",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Otvori Ashy Pass",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Trezor",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Generator",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Postavke",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Odjeljci",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "PIN",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Otključaj PIN-om",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Koristi glavnu lozinku",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Koristi PIN",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "Netočan PIN.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "Netočan PIN. Preostalo pokušaja: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "PIN je isključen nakon previše pogrešnih pokušaja. Koristite glavnu lozinku.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "Na ovom računalu nije postavljen PIN. Koristite glavnu lozinku.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Prikazivati prijedloge u poljima za prijavu?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass može prikazati vaše prijave odmah ispod polja za korisničko ime i lozinku na web-stranicama.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Ne sada",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Uključi",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Mapa",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Vrsta",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Svi unosi",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "Prijave s kôdovima",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Favoriti",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Sve mape",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Bez mape",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Prijedlozi za automatsko ispunjavanje",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Favoriti",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Svi unosi",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Unosi",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Nijedan unos ne odgovara ovim filtrima.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "Vaš trezor je prazan.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Prikaži pojedinosti unosa $TITLE$",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Otvori web-stranicu unosa $TITLE$",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "Više mogućnosti za $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Dodaj u favorite",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Ukloni iz favorita",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Otvori web-stranicu",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Kopiraj adresu web-stranice",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Prikaži pojedinosti",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Adresa web-stranice kopirana",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Dodano u favorite",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Uklonjeno iz favorita",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Pojedinosti unosa",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Korisničko ime",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Lozinka",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Kôd za provjeru",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Web-stranica",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Mapa",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Naziv",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Nova prijava",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Odustani",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Spremi",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Unesite naziv.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Unesite lozinku.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Spremljeno",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Lozinka generirana",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass nije mogao prihvatiti ovaj zahtjev.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Generiraj ponovno",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Kopiraj",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Vrsta vrijednosti za generiranje",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Lozinka",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Pristupna fraza",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "PIN",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Duljina",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Velika slova (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Mala slova (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Brojke (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Simboli (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Izbjegavaj slične znakove",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Riječi",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Razdjelnik riječi",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "Veliko početno slovo",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Dodaj broj",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Ostavite barem jednu vrstu znakova.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Ispuni na ovoj stranici",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "Na ovoj stranici nema polja za lozinku",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Trezor",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Zaključaj sada",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Automatsko ispunjavanje",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Prikazuj prijedloge u poljima za prijavu",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Potreban je pristup web-stranicama koje posjećujete. Stranica nikad ne vidi vaše prijave; ništa se ne ispunjava dok ne odaberete unos.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "Prijedlozi su uključeni. Ponovno učitajte otvorene stranice da biste ih vidjeli.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "Dopuštenje nije odobreno.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Tipkovni prečac",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutHint": {
+    "message": "Otvara ovaj prozor. Možete ga promijeniti u postavkama prečaca proširenja u pregledniku.",
+    "description": "Explains the keyboard shortcut."
+  },
+  "shortcutNotSet": {
+    "message": "Nije postavljeno",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "O programu",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Verzija",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Pomoć",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Privatnost",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Ashy Pass prijedlozi",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Prikaži Ashy Pass prijedloge",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass je zaključan",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Nema prijava za ovu stranicu",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Dodaj prijavu",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "Za nastavak kliknite ikonu Ashy Pass na alatnoj traci.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Ovaj je izbornik istekao. Ponovno kliknite polje.",
+    "description": "Shown when the suggestions menu can no longer be used."
   }
 }

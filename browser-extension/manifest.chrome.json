@@ -14,7 +14,17 @@
     "96": "icons/icon-96.png",
     "128": "icons/icon-128.png"
   },
-  "permissions": ["nativeMessaging", "activeTab", "scripting", "clipboardWrite"],
+  "permissions": [
+    "nativeMessaging",
+    "activeTab",
+    "scripting",
+    "clipboardWrite",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -34,5 +44,17 @@
         "default": "Ctrl+Shift+L"
       }
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "inline/menu.html",
+        "icons/icon-48.png"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ]
 }

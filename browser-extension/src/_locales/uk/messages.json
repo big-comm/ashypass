@@ -71,10 +71,6 @@
     "message": "Пошук у всіх записах",
     "description": "Label and placeholder of the search field."
   },
-  "siteEntriesHeading": {
-    "message": "Облікові дані для цього сайту",
-    "description": "Heading of the list of entries that match the current site."
-  },
   "searchResultsHeading": {
     "message": "Результати пошуку",
     "description": "Heading of the list of search results."
@@ -183,14 +179,6 @@
     "message": "Згенерувати пароль",
     "description": "Button that generates a new password and copies it."
   },
-  "generatedLabel": {
-    "message": "Згенерований пароль",
-    "description": "Label of the box that shows the generated password."
-  },
-  "generatedCopied": {
-    "message": "Новий пароль скопійовано",
-    "description": "Short confirmation after a password was generated and copied."
-  },
   "revealPassword": {
     "message": "Показати пароль",
     "description": "Button that reveals the generated password."
@@ -240,5 +228,421 @@
         "example": "Malformed request"
       }
     }
+  },
+  "backButton": {
+    "message": "Назад",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Додати",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Відкрити Ashy Pass",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Сховище",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Генератор",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Налаштування",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Розділи",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "PIN-код",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Розблокувати PIN-кодом",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Використати майстер-пароль",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Використати PIN-код",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "Неправильний PIN-код.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "Неправильний PIN-код. Залишилося спроб: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "PIN-код вимкнено після надто багатьох невдалих спроб. Використайте майстер-пароль.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "На цьому комп'ютері PIN-код не налаштовано. Використайте майстер-пароль.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Показувати підказки в полях входу?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass може показувати ваші облікові дані просто під полями імені користувача та пароля на сайтах.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Не зараз",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Увімкнути",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Тека",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Тип",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Усі записи",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "З кодами підтвердження",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Обране",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Усі теки",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Без теки",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Пропозиції автозаповнення",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Обране",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Усі записи",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Записи",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Немає записів, що відповідають фільтрам.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "Ваше сховище порожнє.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Показати відомості про $TITLE$",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Відкрити сайт $TITLE$",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "Інші дії для $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Додати до обраного",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Вилучити з обраного",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Відкрити сайт",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Копіювати адресу сайту",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Докладніше",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Адресу сайту скопійовано",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Додано до обраного",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Вилучено з обраного",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Відомості про запис",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Ім'я користувача",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Пароль",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Код підтвердження",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Сайт",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Тека",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Назва",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Новий запис",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Скасувати",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Зберегти",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Введіть назву.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Введіть пароль.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Збережено",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Пароль згенеровано",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass не зміг прийняти цей запит.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Згенерувати знову",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Копіювати",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Тип значення для генерування",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Пароль",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Парольна фраза",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "PIN-код",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Довжина",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Великі літери (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Малі літери (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Цифри (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Символи (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Уникати схожих символів",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Слова",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Роздільник слів",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "З великої літери",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Додати число",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Залиште хоча б один тип символів.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Заповнити на цій сторінці",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "На цій сторінці немає поля пароля",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Сховище",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Заблокувати зараз",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Автозаповнення",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Показувати підказки в полях входу",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Потрібен доступ до сайтів, які ви відвідуєте. Сторінка ніколи не бачить ваших облікових даних; нічого не заповнюється, доки ви не виберете запис.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "Підказки увімкнено. Перезавантажте відкриті сторінки, щоб їх побачити.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "Дозвіл не надано.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Сполучення клавіш",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutHint": {
+    "message": "Відкриває це вікно. Його можна змінити в налаштуваннях сполучень клавіш для розширень браузера.",
+    "description": "Explains the keyboard shortcut."
+  },
+  "shortcutNotSet": {
+    "message": "Не задано",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "Про програму",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Версія",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Довідка",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Конфіденційність",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Підказки Ashy Pass",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Показати підказки Ashy Pass",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass заблоковано",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Немає облікових даних для цього сайту",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Додати запис",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "Натисніть значок Ashy Pass на панелі інструментів, щоб продовжити.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Термін дії цього меню минув. Натисніть на поле ще раз.",
+    "description": "Shown when the suggestions menu can no longer be used."
   }
 }

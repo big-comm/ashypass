@@ -11,7 +11,9 @@
       "id": "ashypass@big-comm.github.io",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
-        "required": ["none"]
+        "required": [
+          "none"
+        ]
       }
     }
   },
@@ -22,9 +24,21 @@
     "96": "icons/icon-96.png",
     "128": "icons/icon-128.png"
   },
-  "permissions": ["nativeMessaging", "activeTab", "scripting", "clipboardWrite"],
+  "permissions": [
+    "nativeMessaging",
+    "activeTab",
+    "scripting",
+    "clipboardWrite",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "background.js"
+    ],
     "type": "module"
   },
   "action": {
@@ -42,5 +56,17 @@
         "default": "Ctrl+Shift+L"
       }
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "inline/menu.html",
+        "icons/icon-48.png"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ]
 }

@@ -71,10 +71,6 @@
     "message": "Keresés az összes bejegyzésben",
     "description": "Label and placeholder of the search field."
   },
-  "siteEntriesHeading": {
-    "message": "Bejelentkezések ehhez a webhelyhez",
-    "description": "Heading of the list of entries that match the current site."
-  },
   "searchResultsHeading": {
     "message": "Keresési találatok",
     "description": "Heading of the list of search results."
@@ -183,14 +179,6 @@
     "message": "Jelszó generálása",
     "description": "Button that generates a new password and copies it."
   },
-  "generatedLabel": {
-    "message": "Generált jelszó",
-    "description": "Label of the box that shows the generated password."
-  },
-  "generatedCopied": {
-    "message": "Új jelszó másolva",
-    "description": "Short confirmation after a password was generated and copied."
-  },
   "revealPassword": {
     "message": "Jelszó megjelenítése",
     "description": "Button that reveals the generated password."
@@ -240,5 +228,421 @@
         "example": "Malformed request"
       }
     }
+  },
+  "backButton": {
+    "message": "Vissza",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Hozzáadás",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Ashy Pass megnyitása",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Tár",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Generátor",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Beállítások",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Szakaszok",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "PIN-kód",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Feloldás PIN-kóddal",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Inkább a fő jelszó használata",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Inkább a PIN-kód használata",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "Hibás PIN-kód.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "Hibás PIN-kód. Hátralévő próbálkozások: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "A PIN-kód túl sok hibás próbálkozás után kikapcsolt. Használja a fő jelszavát.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "Ezen a számítógépen nincs beállítva PIN-kód. Használja a fő jelszavát.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Megjelenjenek a javaslatok a bejelentkezési mezőkben?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Az Ashy Pass közvetlenül a webhelyek felhasználónév- és jelszómezői alatt listázhatja a bejelentkezéseit.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Most nem",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Engedélyezés",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Mappa",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Típus",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Minden elem",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "Kóddal rendelkező bejelentkezések",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Kedvencek",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Minden mappa",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Nincs mappa",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Automatikus kitöltési javaslatok",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Kedvencek",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Minden elem",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Elemek",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Egy elem sem felel meg ezeknek a szűrőknek.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "A tár üres.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Részletek megjelenítése: $TITLE$",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Webhely megnyitása: $TITLE$",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "További lehetőségek: $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Hozzáadás a kedvencekhez",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Eltávolítás a kedvencek közül",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Webhely megnyitása",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Webcím másolása",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Részletek megtekintése",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Webcím másolva",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Hozzáadva a kedvencekhez",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Eltávolítva a kedvencek közül",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Elem részletei",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Felhasználónév",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Jelszó",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Ellenőrző kód",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Webhely",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Mappa",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Név",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Új bejelentkezés",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Mégse",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Mentés",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Adjon meg egy nevet.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Adjon meg egy jelszót.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Mentve",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Jelszó generálva",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Az Ashy Pass nem tudta elfogadni ezt a kérést.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Újragenerálás",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Másolás",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Generálandó érték típusa",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Jelszó",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Jelmondat",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "PIN-kód",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Hossz",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Nagybetűk (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Kisbetűk (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Számok (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Szimbólumok (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Kétértelmű karakterek kerülése",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Szavak",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Szóelválasztó",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "Nagy kezdőbetű",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Szám hozzáadása",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Legalább egy karaktertípust tartson meg.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Kitöltés ezen az oldalon",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "Ezen az oldalon nem található jelszómező",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Tár",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Zárolás most",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Automatikus kitöltés",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Javaslatok megjelenítése a bejelentkezési mezőkben",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Hozzáférést igényel a meglátogatott webhelyekhez. Az oldal soha nem látja a bejelentkezéseit; semmi sem töltődik ki, amíg nem választ egyet.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "A javaslatok be vannak kapcsolva. A megjelenítésükhöz töltse újra a megnyitott oldalakat.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "Az engedély nem lett megadva.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Billentyűparancs",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutHint": {
+    "message": "Megnyitja ezt az ablakot. A böngésző bővítmény-billentyűparancsainak beállításaiban módosíthatja.",
+    "description": "Explains the keyboard shortcut."
+  },
+  "shortcutNotSet": {
+    "message": "Nincs beállítva",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "Névjegy",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Verzió",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Súgó",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Adatvédelem",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Ashy Pass-javaslatok",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Ashy Pass-javaslatok megjelenítése",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Az Ashy Pass zárolva van",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Nincs bejelentkezés ehhez a webhelyhez",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Bejelentkezés hozzáadása",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "A folytatáshoz kattintson az Ashy Pass ikonjára az eszköztáron.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Ez a menü lejárt. Kattintson újra a mezőre.",
+    "description": "Shown when the suggestions menu can no longer be used."
   }
 }

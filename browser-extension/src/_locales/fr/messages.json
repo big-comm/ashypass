@@ -71,10 +71,6 @@
     "message": "Rechercher dans toutes les entrées",
     "description": "Label and placeholder of the search field."
   },
-  "siteEntriesHeading": {
-    "message": "Identifiants pour ce site",
-    "description": "Heading of the list of entries that match the current site."
-  },
   "searchResultsHeading": {
     "message": "Résultats de la recherche",
     "description": "Heading of the list of search results."
@@ -183,14 +179,6 @@
     "message": "Générer un mot de passe",
     "description": "Button that generates a new password and copies it."
   },
-  "generatedLabel": {
-    "message": "Mot de passe généré",
-    "description": "Label of the box that shows the generated password."
-  },
-  "generatedCopied": {
-    "message": "Nouveau mot de passe copié",
-    "description": "Short confirmation after a password was generated and copied."
-  },
   "revealPassword": {
     "message": "Afficher le mot de passe",
     "description": "Button that reveals the generated password."
@@ -240,5 +228,421 @@
         "example": "Malformed request"
       }
     }
+  },
+  "backButton": {
+    "message": "Retour",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Ajouter",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Ouvrir Ashy Pass",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Coffre",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Générateur",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Paramètres",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Sections",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "Code PIN",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Déverrouiller avec le code PIN",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Utiliser plutôt le mot de passe maître",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Utiliser plutôt le code PIN",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "Code PIN incorrect.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "Code PIN incorrect. Tentatives restantes : $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "Le code PIN a été désactivé après trop de tentatives erronées. Utilisez votre mot de passe maître.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "Aucun code PIN n’est configuré sur cet ordinateur. Utilisez votre mot de passe maître.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Afficher des suggestions dans les champs de connexion ?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass peut lister vos identifiants juste sous les champs nom d’utilisateur et mot de passe des sites web.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Pas maintenant",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Activer",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Dossier",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Type",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Tous les éléments",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "Identifiants avec codes",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Favoris",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Tous les dossiers",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Aucun dossier",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Suggestions de remplissage",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Favoris",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Tous les éléments",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Éléments",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Aucun élément ne correspond à ces filtres.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "Votre coffre est vide.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Afficher les détails de $TITLE$",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Ouvrir le site web de $TITLE$",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "Plus d’options pour $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Ajouter aux favoris",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Retirer des favoris",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Ouvrir le site web",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Copier l’adresse du site",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Voir les détails",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Adresse du site copiée",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Ajouté aux favoris",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Retiré des favoris",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Détails de l’élément",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Nom d’utilisateur",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Mot de passe",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Code de vérification",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Site web",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Dossier",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Nom",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Nouvel identifiant",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Annuler",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Enregistrer",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Saisissez un nom.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Saisissez un mot de passe.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Enregistré",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Mot de passe généré",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass n’a pas pu accepter cette demande.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Régénérer",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Copier",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Type de valeur à générer",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Mot de passe",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Phrase secrète",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "Code PIN",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Longueur",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Majuscules (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Minuscules (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Chiffres (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Symboles (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Éviter les caractères ambigus",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Mots",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Séparateur de mots",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "Majuscule initiale",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Inclure un chiffre",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Gardez au moins un type de caractère.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Remplir sur cette page",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "Aucun champ de mot de passe trouvé sur cette page",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Coffre",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Verrouiller maintenant",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Remplissage automatique",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Afficher des suggestions dans les champs de connexion",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Nécessite l’accès aux sites web que vous visitez. La page ne voit jamais vos identifiants ; rien n’est rempli tant que vous n’en choisissez pas un.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "Suggestions activées. Rechargez les pages ouvertes pour les voir.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "L’autorisation n’a pas été accordée.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Raccourci clavier",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutHint": {
+    "message": "Ouvre cette fenêtre. Vous pouvez le modifier dans les paramètres des raccourcis d’extensions du navigateur.",
+    "description": "Explains the keyboard shortcut."
+  },
+  "shortcutNotSet": {
+    "message": "Non défini",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "À propos",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Version",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Aide",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Confidentialité",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Suggestions d’Ashy Pass",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Afficher les suggestions d’Ashy Pass",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass est verrouillé",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Aucun identifiant pour ce site",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Ajouter un identifiant",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "Cliquez sur l’icône Ashy Pass dans la barre d’outils pour continuer.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Ce menu a expiré. Cliquez à nouveau sur le champ.",
+    "description": "Shown when the suggestions menu can no longer be used."
   }
 }
