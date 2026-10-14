@@ -161,20 +161,48 @@ fn default_firefox_ids() -> Vec<String> {
 enum Request {
     Ping,
     Status,
-    Unlock { password: Secret },
-    UnlockPin { pin: Secret },
+    Unlock {
+        password: Secret,
+    },
+    UnlockPin {
+        pin: Secret,
+    },
     Lock,
-    List { query: Option<String> },
-    Search { query: String },
-    MatchUrl { url: String },
-    Fill { id: i64, url: String },
-    Get { id: i64 },
-    Totp { id: i64 },
+    List {
+        query: Option<String>,
+    },
+    Search {
+        query: String,
+    },
+    MatchUrl {
+        url: String,
+    },
+    Fill {
+        id: i64,
+        url: String,
+    },
+    Get {
+        id: i64,
+        /// Also send the notes (only the edit form asks for them).
+        #[serde(default)]
+        notes: bool,
+    },
+    Totp {
+        id: i64,
+    },
     Generate(GenerateOptions),
     Folders,
-    Favicons { hosts: Vec<String> },
+    Favicons {
+        hosts: Vec<String>,
+    },
     Add(NewLogin),
-    ToggleFavorite { id: i64 },
+    Update(EditedLogin),
+    Delete {
+        id: i64,
+    },
+    ToggleFavorite {
+        id: i64,
+    },
     OpenApp,
 }
 
@@ -203,6 +231,24 @@ struct NewLogin {
     password: Secret,
     url: Option<String>,
     category: Option<String>,
+    notes: Option<String>,
+}
+
+/// A login edited in the browser. Every editable field is sent: an absent
+/// username, address or folder clears it. `notes` is kept when absent and
+/// replaced when present (blank clears it). `updated_at` is the value `get`
+/// returned, so an edit made meanwhile (desktop app, sync) is never
+/// overwritten.
+#[derive(Debug, Deserialize)]
+struct EditedLogin {
+    id: i64,
+    updated_at: i64,
+    title: String,
+    username: Option<String>,
+    password: Secret,
+    url: Option<String>,
+    category: Option<String>,
+    notes: Option<String>,
 }
 
 /// A password received from the extension: wiped from memory when dropped
@@ -224,7 +270,7 @@ impl std::fmt::Debug for Secret {
 }
 
 /// Version of the request/response format (see browser-extension/PROTOCOL.md).
-const PROTOCOL_VERSION: u32 = 3;
+const PROTOCOL_VERSION: u32 = 4;
 
 /// Machine-readable error kinds, so the extension can show its own
 /// translated messages.
@@ -241,6 +287,7 @@ enum ErrorCode {
     NotFound,
     NoMatch,
     NoTotp,
+    Changed,
     Invalid,
     Internal,
 }
@@ -259,6 +306,7 @@ impl ErrorCode {
             Self::NotFound => "not_found",
             Self::NoMatch => "no_match",
             Self::NoTotp => "no_totp",
+            Self::Changed => "changed",
             Self::Invalid => "invalid",
             Self::Internal => "internal",
         }
@@ -276,8 +324,8 @@ struct EntrySummary {
     favorite: bool,
 }
 
-/// What `get` returns. Notes are not sent: the extension has no use for
-/// them, and they often hold recovery codes.
+/// What `get` returns. Notes often hold recovery codes, so they are only
+/// sent when asked for (the edit form), never for copying or filling.
 #[derive(Serialize)]
 struct EntryFull {
     id: i64,
@@ -288,6 +336,9 @@ struct EntryFull {
     has_totp: bool,
     category: Option<String>,
     favorite: bool,
+    updated_at: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    notes: Option<String>,
 }
 
 impl From<&PasswordEntry> for EntrySummary {
@@ -557,7 +608,7 @@ impl HostSession {
             Request::Search { query } => handle_list(&self.vault, Some(&query)),
             Request::MatchUrl { url } => handle_match_url(&self.vault, &url),
             Request::Fill { id, url } => handle_fill(&self.vault, id, &url),
-            Request::Get { id } => handle_get(&self.vault, id),
+            Request::Get { id, notes } => handle_get(&self.vault, id, notes),
             Request::Totp { id } => handle_totp(&self.vault, id),
             Request::Folders => match self.vault.categories() {
                 Ok(folders) => json!({"ok": true, "folders": folders}),
@@ -565,6 +616,8 @@ impl HostSession {
             },
             Request::Favicons { hosts } => handle_favicons(&hosts),
             Request::Add(login) => handle_add(&self.vault, login),
+            Request::Update(login) => handle_update(&self.vault, login),
+            Request::Delete { id } => handle_delete(&self.vault, id),
             Request::ToggleFavorite { id } => match self.vault.toggle_favorite(id) {
                 Ok(Some(favorite)) => json!({"ok": true, "favorite": favorite}),
                 Ok(None) => error_for(ErrorCode::NotFound),
@@ -744,7 +797,7 @@ fn handle_match_url(vault: &Vault, url: &str) -> serde_json::Value {
     }
 }
 
-fn handle_get(vault: &Vault, id: i64) -> serde_json::Value {
+fn handle_get(vault: &Vault, id: i64, with_notes: bool) -> serde_json::Value {
     // Browser reads must not bump `last_accessed`: that would write to the
     // vault on every autofill and skew the desktop app's "recently used".
     match vault.get_without_touch(id) {
@@ -758,6 +811,12 @@ fn handle_get(vault: &Vault, id: i64) -> serde_json::Value {
                 has_totp: e.has_totp,
                 category: e.category,
                 favorite: e.favorite,
+                updated_at: e.updated_at,
+                notes: if with_notes {
+                    Some(e.notes.unwrap_or_default())
+                } else {
+                    None
+                },
             };
             serde_json::json!({"ok": true, "entry": full})
         }
@@ -941,10 +1000,92 @@ fn handle_add(vault: &Vault, login: NewLogin) -> serde_json::Value {
         password: login.password.0.clone(),
         url: clean(login.url),
         category: clean(login.category),
+        notes: login.notes.filter(|n| !n.trim().is_empty()),
         ..Default::default()
     };
     match vault.add(entry) {
         Ok(id) => serde_json::json!({"ok": true, "id": id}),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+/// A trimmed optional field: blank means none.
+fn clean_field(value: Option<String>) -> Option<String> {
+    value
+        .map(|v| v.trim().to_string())
+        .filter(|v| !v.is_empty())
+}
+
+/// Save a login edited in the browser. Only the fields that differ are
+/// written, so an unchanged password adds no history entry.
+fn handle_update(vault: &Vault, login: EditedLogin) -> serde_json::Value {
+    let title = login.title.trim().to_string();
+    if title.is_empty() || login.password.0.is_empty() {
+        return error_response(ErrorCode::Invalid, "a name and a password are required");
+    }
+    let current = match vault.get_without_touch(login.id) {
+        Ok(Some(e)) => e,
+        Ok(None) => return error_for(ErrorCode::NotFound),
+        Err(e) => return error_response(ErrorCode::Internal, &e.to_string()),
+    };
+    if current.updated_at != login.updated_at {
+        return error_for(ErrorCode::Changed);
+    }
+    let username = clean_field(login.username);
+    let url = clean_field(login.url);
+    let category = clean_field(login.category);
+    let mut change = ashypass_core::db::vault::UpdateEntry::default();
+    if title != current.title {
+        change.title = Some(title);
+    }
+    if username != clean_field(current.username.clone()) {
+        change.username = Some(username.unwrap_or_default());
+    }
+    if current.password.as_deref() != Some(login.password.0.as_str()) {
+        change.password = Some(login.password.0.clone());
+    }
+    if url != clean_field(current.url.clone()) {
+        change.url = Some(url);
+    }
+    if category != clean_field(current.category.clone()) {
+        change.category = Some(category);
+    }
+    // Notes keep their own spacing; only an all-blank text means none.
+    if let Some(notes) = login.notes {
+        let notes = Some(notes).filter(|n| !n.trim().is_empty());
+        if notes != current.notes.clone().filter(|n| !n.is_empty()) {
+            change.notes = Some(notes);
+        }
+    }
+    let unchanged = change.title.is_none()
+        && change.username.is_none()
+        && change.password.is_none()
+        && change.url.is_none()
+        && change.category.is_none()
+        && change.notes.is_none();
+    if unchanged {
+        return serde_json::json!({"ok": true, "id": login.id});
+    }
+    match vault.update_if_unchanged(login.id, login.updated_at, change) {
+        Ok(Some(_)) => serde_json::json!({"ok": true, "id": login.id}),
+        // Changed or deleted between the read above and the write.
+        Ok(None) => match vault.get_without_touch(login.id) {
+            Ok(Some(_)) => error_for(ErrorCode::Changed),
+            Ok(None) => error_for(ErrorCode::NotFound),
+            Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+        },
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+/// Delete a login the way the desktop app does: to the trash when it is on
+/// (Settings → Protection), for good otherwise. A synced login is also
+/// deleted from Nextcloud on the next sync.
+fn handle_delete(vault: &Vault, id: i64) -> serde_json::Value {
+    let trashed = ashypass_core::settings::Settings::load().trash_retention_days > 0;
+    match vault.delete(id) {
+        Ok(true) => serde_json::json!({"ok": true, "trashed": trashed}),
+        Ok(false) => error_for(ErrorCode::NotFound),
         Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
     }
 }
@@ -991,6 +1132,7 @@ fn error_for(code: ErrorCode) -> serde_json::Value {
         ErrorCode::NotFound => "entry not found",
         ErrorCode::NoMatch => "this entry does not belong to the page",
         ErrorCode::NoTotp => "this entry has no verification code",
+        ErrorCode::Changed => "the entry was changed meanwhile — open it again",
         ErrorCode::Invalid => "invalid request",
         ErrorCode::Internal => "internal error",
     };
@@ -1846,7 +1988,10 @@ mod tests {
         ));
         assert!(matches!(
             read_message::<Request>(&mut input).unwrap(),
-            Incoming::Message(Request::Get { id: 7 })
+            Incoming::Message(Request::Get {
+                id: 7,
+                notes: false
+            })
         ));
         assert!(matches!(
             read_message::<Request>(&mut input).unwrap(),
@@ -2175,6 +2320,128 @@ mod tests {
             huge["password"].as_str().unwrap().len(),
             PASSWORD_MAX_LENGTH
         );
+    }
+
+    #[test]
+    fn protocol_4_update_and_delete() {
+        let (_dir, mut s, mail, bank) = session_with(enabled);
+        call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        let get = |s: &mut HostSession, id: i64| {
+            call(s, serde_json::json!({"cmd": "get", "id": id}))["entry"].clone()
+        };
+        let before = get(&mut s, mail);
+        let stamp = before["updated_at"].as_i64().unwrap();
+        let old_password = before["password"].as_str().unwrap().to_string();
+
+        // Changing only the folder keeps the password out of the history.
+        let moved = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": stamp,
+                "title": before["title"], "username": before["username"],
+                "password": old_password, "url": before["url"], "category": "Work"}),
+        );
+        assert_eq!(moved["ok"], true, "{moved}");
+        assert!(s.vault.password_history(mail).unwrap().is_empty());
+
+        // A stale `updated_at` (an edit made meanwhile) is refused.
+        let after_move = get(&mut s, mail);
+        assert_eq!(after_move["category"], "Work");
+        let stale = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": stamp - 10,
+                "title": "Other", "password": "x"}),
+        );
+        assert_eq!(stale["code"], "changed");
+        assert_eq!(get(&mut s, mail)["title"], after_move["title"]);
+
+        // A full edit: a new password goes to the history, absent fields clear.
+        let stamp = after_move["updated_at"].as_i64().unwrap();
+        let edited = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": stamp,
+                "title": "  Mail (work) ", "password": "n3w-pass"}),
+        );
+        assert_eq!(edited["ok"], true, "{edited}");
+        let now = get(&mut s, mail);
+        assert_eq!(now["title"], "Mail (work)");
+        assert_eq!(now["password"], "n3w-pass");
+        assert!(now["username"].is_null() || now["username"] == "");
+        assert!(now["url"].is_null());
+        assert!(now["category"].is_null());
+        assert_eq!(s.vault.password_history(mail).unwrap().len(), 1);
+
+        let blank = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail,
+                "updated_at": now["updated_at"], "title": " ", "password": "x"}),
+        );
+        assert_eq!(blank["code"], "invalid");
+        let gone = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": 9999, "updated_at": 0,
+                "title": "x", "password": "x"}),
+        );
+        assert_eq!(gone["code"], "not_found");
+
+        // Notes: only sent when asked for; absent keeps them, blank clears.
+        assert!(now.get("notes").is_none());
+        let with_notes = |s: &mut HostSession| {
+            call(
+                s,
+                serde_json::json!({"cmd": "get", "id": mail, "notes": true}),
+            )["entry"]
+                .clone()
+        };
+        let noted = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": now["updated_at"],
+                "title": "Mail (work)", "password": "n3w-pass", "notes": "Recovery:\n  1234-5678"}),
+        );
+        assert_eq!(noted["ok"], true, "{noted}");
+        let read = with_notes(&mut s);
+        assert_eq!(read["notes"], "Recovery:\n  1234-5678");
+        let kept = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": read["updated_at"],
+                "title": "Mail", "password": "n3w-pass"}),
+        );
+        assert_eq!(kept["ok"], true, "{kept}");
+        let read = with_notes(&mut s);
+        assert_eq!(read["notes"], "Recovery:\n  1234-5678");
+        call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": read["updated_at"],
+                "title": "Mail", "password": "n3w-pass", "notes": "  "}),
+        );
+        assert_eq!(with_notes(&mut s)["notes"], "");
+        let added = call(
+            &mut s,
+            serde_json::json!({"cmd": "add", "title": "Noted", "password": "x", "notes": "hello"}),
+        );
+        let added_notes = call(
+            &mut s,
+            serde_json::json!({"cmd": "get", "id": added["id"], "notes": true}),
+        );
+        assert_eq!(added_notes["entry"]["notes"], "hello");
+
+        let deleted = call(&mut s, serde_json::json!({"cmd": "delete", "id": bank}));
+        assert_eq!(deleted["ok"], true, "{deleted}");
+        assert!(deleted["trashed"].is_boolean());
+        assert_eq!(get_code(&mut s, bank), "not_found");
+        let again = call(&mut s, serde_json::json!({"cmd": "delete", "id": bank}));
+        assert_eq!(again["code"], "not_found");
+
+        // Both need an unlocked vault.
+        call(&mut s, serde_json::json!({"cmd": "lock"}));
+        let locked = call(&mut s, serde_json::json!({"cmd": "delete", "id": mail}));
+        assert_eq!(locked["code"], "locked");
+    }
+
+    fn get_code(s: &mut HostSession, id: i64) -> serde_json::Value {
+        call(s, serde_json::json!({"cmd": "get", "id": id}))["code"].clone()
     }
 
     #[test]
