@@ -17,7 +17,7 @@ export const INLINE_MATCHES = Object.freeze(["http://*/*", "https://*/*"]);
 export const INLINE_MENU_PATH = "/inline/menu.html";
 export const INLINE_TOKEN_TTL_MS = 5 * 60_000;
 /** Client-side length limits for `add` (the host may enforce its own). */
-export const FIELD_LIMITS = Object.freeze({ title: 512, username: 512, password: 4096, url: 2048, category: 256 });
+export const FIELD_LIMITS = Object.freeze({ title: 512, username: 512, password: 4096, url: 2048, category: 256, notes: 65536 });
 
 /** Error carrying a protocol/extension error code (see PROTOCOL.md). */
 export class ExtError extends Error {
@@ -400,7 +400,8 @@ export function avatarFor(title) {
   return { letter, color: AVATAR_COLORS[hash % AVATAR_COLORS.length] };
 }
 
-/** Fields for `add`, trimmed and limited. Throws ExtError("invalid") without title or password. */
+/** Fields for `add` and `update`, trimmed (notes keep their spacing) and
+ * limited. Throws ExtError("invalid") without title or password. */
 export function sanitizeNewEntry(msg) {
   const str = (v, max, trim = true) => {
     if (typeof v !== "string") return "";
@@ -412,13 +413,15 @@ export function sanitizeNewEntry(msg) {
   const password = str(msg?.password, FIELD_LIMITS.password, false);
   const url = str(msg?.url, FIELD_LIMITS.url);
   const category = str(msg?.category, FIELD_LIMITS.category);
-  if ([title, username, password, url, category].includes(null)) throw new ExtError("invalid", "A field is too long.");
+  const notes = str(msg?.notes, FIELD_LIMITS.notes, false);
+  if ([title, username, password, url, category, notes].includes(null)) throw new ExtError("invalid", "A field is too long.");
   if (title === "") throw new ExtError("invalid", "Missing name.");
   if (password === "") throw new ExtError("invalid", "Missing password.");
   const fields = { title, password };
   if (username !== "") fields.username = username;
   if (url !== "") fields.url = url;
   if (category !== "") fields.category = category;
+  if (notes.trim() !== "") fields.notes = notes;
   return fields;
 }
 

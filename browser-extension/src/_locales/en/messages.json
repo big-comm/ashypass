@@ -593,10 +593,6 @@
     "message": "Keyboard shortcut",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Opens this window. You can change it in the browser's extension shortcut settings.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Not set",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "This menu has expired. Click the field again.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Turn off the browser's password manager"
+  },
+  "browserPmHint": {
+    "message": "Its own list appears over the page and covers Ashy Pass suggestions. When it is off, Ashy Pass opens as soon as you click a login field."
+  },
+  "browserPmOffToast": {
+    "message": "The browser's password manager is off"
+  },
+  "browserPmOnToast": {
+    "message": "The browser's password manager is back on"
+  },
+  "shortcutOpens": {
+    "message": "Opens this window."
+  },
+  "shortcutChange": {
+    "message": "Change"
+  },
+  "shortcutRecord": {
+    "message": "Press the new key combination…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl or Alt, optionally Shift, and a letter or number. Esc cancels."
+  },
+  "shortcutReset": {
+    "message": "Default"
+  },
+  "shortcutSaved": {
+    "message": "Shortcut saved"
+  },
+  "shortcutInvalid": {
+    "message": "That combination cannot be used. Try Ctrl or Alt with a letter."
+  },
+  "shortcutOpenFailed": {
+    "message": "Could not open the browser's shortcut settings."
+  },
+  "editButton": {
+    "message": "Edit"
+  },
+  "deleteButton": {
+    "message": "Delete"
+  },
+  "deleteConfirmTitle": {
+    "message": "Delete “$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "If the trash is on in Ashy Pass, you can restore it from there. Synced devices delete it too."
+  },
+  "editLoginTitle": {
+    "message": "Edit login"
+  },
+  "movedToTrash": {
+    "message": "Moved to the Ashy Pass trash"
+  },
+  "loginDeleted": {
+    "message": "Login deleted"
+  },
+  "errorChanged": {
+    "message": "This login was changed in Ashy Pass meanwhile. Open it again to see the latest version."
+  },
+  "errorHostOutdated": {
+    "message": "Update Ashy Pass on this computer to use this."
+  },
+  "notesLabel": {
+    "message": "Notes"
   }
 }

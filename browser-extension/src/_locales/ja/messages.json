@@ -593,10 +593,6 @@
     "message": "キーボードショートカット",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "このウィンドウを開きます。ブラウザーの拡張機能ショートカット設定で変更できます。",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "未設定",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "このメニューは期限切れです。もう一度入力欄をクリックしてください。",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "ブラウザーのパスワードマネージャーをオフにする"
+  },
+  "browserPmHint": {
+    "message": "ブラウザー独自のリストがページの上に表示され、Ashy Pass の候補を覆ってしまいます。オフにすると、ログイン欄をクリックした時点で Ashy Pass が開きます。"
+  },
+  "browserPmOffToast": {
+    "message": "ブラウザーのパスワードマネージャーをオフにしました"
+  },
+  "browserPmOnToast": {
+    "message": "ブラウザーのパスワードマネージャーを再びオンにしました"
+  },
+  "shortcutOpens": {
+    "message": "このウィンドウを開きます。"
+  },
+  "shortcutChange": {
+    "message": "変更"
+  },
+  "shortcutRecord": {
+    "message": "新しいキーの組み合わせを押してください…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl または Alt (必要なら Shift) と英字か数字。Esc でキャンセル。"
+  },
+  "shortcutReset": {
+    "message": "既定値"
+  },
+  "shortcutSaved": {
+    "message": "ショートカットを保存しました"
+  },
+  "shortcutInvalid": {
+    "message": "その組み合わせは使えません。Ctrl または Alt と英字を試してください。"
+  },
+  "shortcutOpenFailed": {
+    "message": "ブラウザーのショートカット設定を開けませんでした。"
+  },
+  "editButton": {
+    "message": "編集"
+  },
+  "deleteButton": {
+    "message": "削除"
+  },
+  "deleteConfirmTitle": {
+    "message": "「$TITLE$」を削除しますか?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Ashy Pass でゴミ箱がオンなら、そこから復元できます。同期しているデバイスからも削除されます。"
+  },
+  "editLoginTitle": {
+    "message": "ログインを編集"
+  },
+  "movedToTrash": {
+    "message": "Ashy Pass のゴミ箱に移動しました"
+  },
+  "loginDeleted": {
+    "message": "ログインを削除しました"
+  },
+  "errorChanged": {
+    "message": "このログインはその間に Ashy Pass で変更されました。最新の内容を見るにはもう一度開いてください。"
+  },
+  "errorHostOutdated": {
+    "message": "これを使うには、このコンピューターの Ashy Pass を更新してください。"
+  },
+  "notesLabel": {
+    "message": "メモ"
   }
 }

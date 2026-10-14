@@ -593,10 +593,6 @@
     "message": "Tastaturgenvej",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Åbner dette vindue. Du kan ændre den i browserens indstillinger for udvidelsesgenveje.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Ikke angivet",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Denne menu er udløbet. Klik på feltet igen.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Slå browserens adgangskodeadministrator fra"
+  },
+  "browserPmHint": {
+    "message": "Dens egen liste vises oven på siden og dækker Ashy Pass’ forslag. Når den er slået fra, åbner Ashy Pass, så snart du klikker i et loginfelt."
+  },
+  "browserPmOffToast": {
+    "message": "Browserens adgangskodeadministrator er slået fra"
+  },
+  "browserPmOnToast": {
+    "message": "Browserens adgangskodeadministrator er slået til igen"
+  },
+  "shortcutOpens": {
+    "message": "Åbner dette vindue."
+  },
+  "shortcutChange": {
+    "message": "Skift"
+  },
+  "shortcutRecord": {
+    "message": "Tryk på den nye tastekombination…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl eller Alt, eventuelt Shift, og et bogstav eller tal. Esc annullerer."
+  },
+  "shortcutReset": {
+    "message": "Standard"
+  },
+  "shortcutSaved": {
+    "message": "Genvej gemt"
+  },
+  "shortcutInvalid": {
+    "message": "Den kombination kan ikke bruges. Prøv Ctrl eller Alt med et bogstav."
+  },
+  "shortcutOpenFailed": {
+    "message": "Browserens indstillinger for genveje kunne ikke åbnes."
+  },
+  "editButton": {
+    "message": "Rediger"
+  },
+  "deleteButton": {
+    "message": "Slet"
+  },
+  "deleteConfirmTitle": {
+    "message": "Slet “$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Hvis papirkurven er slået til i Ashy Pass, kan du gendanne det derfra. Synkroniserede enheder sletter det også."
+  },
+  "editLoginTitle": {
+    "message": "Rediger login"
+  },
+  "movedToTrash": {
+    "message": "Flyttet til Ashy Pass’ papirkurv"
+  },
+  "loginDeleted": {
+    "message": "Login slettet"
+  },
+  "errorChanged": {
+    "message": "Dette login blev ændret i Ashy Pass i mellemtiden. Åbn det igen for at se den nyeste version."
+  },
+  "errorHostOutdated": {
+    "message": "Opdater Ashy Pass på denne computer for at bruge dette."
+  },
+  "notesLabel": {
+    "message": "Noter"
   }
 }

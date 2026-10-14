@@ -593,10 +593,6 @@
     "message": "Клавишна комбинация",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Отваря този прозорец. Можете да я промените в настройките за клавишни комбинации на разширенията в браузъра.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Не е зададена",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Това меню е изтекло. Щракнете отново в полето.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Изключване на мениджъра на пароли на браузъра"
+  },
+  "browserPmHint": {
+    "message": "Собственият му списък се появява над страницата и закрива предложенията на Ashy Pass. Когато е изключен, Ashy Pass се отваря веднага щом щракнете в поле за вход."
+  },
+  "browserPmOffToast": {
+    "message": "Мениджърът на пароли на браузъра е изключен"
+  },
+  "browserPmOnToast": {
+    "message": "Мениджърът на пароли на браузъра е включен отново"
+  },
+  "shortcutOpens": {
+    "message": "Отваря този прозорец."
+  },
+  "shortcutChange": {
+    "message": "Промяна"
+  },
+  "shortcutRecord": {
+    "message": "Натиснете новата комбинация от клавиши…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl или Alt, по желание Shift, и буква или цифра. Esc отказва."
+  },
+  "shortcutReset": {
+    "message": "По подразбиране"
+  },
+  "shortcutSaved": {
+    "message": "Клавишната комбинация е запазена"
+  },
+  "shortcutInvalid": {
+    "message": "Тази комбинация не може да се използва. Опитайте Ctrl или Alt с буква."
+  },
+  "shortcutOpenFailed": {
+    "message": "Настройките за клавишни комбинации на браузъра не можаха да бъдат отворени."
+  },
+  "editButton": {
+    "message": "Редактиране"
+  },
+  "deleteButton": {
+    "message": "Изтриване"
+  },
+  "deleteConfirmTitle": {
+    "message": "Изтриване на „$TITLE$“?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Ако кошчето е включено в Ashy Pass, можете да го възстановите оттам. Синхронизираните устройства също го изтриват."
+  },
+  "editLoginTitle": {
+    "message": "Редактиране на вход"
+  },
+  "movedToTrash": {
+    "message": "Преместено в кошчето на Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Входът е изтрит"
+  },
+  "errorChanged": {
+    "message": "Този вход междувременно е променен в Ashy Pass. Отворете го отново, за да видите най-новата версия."
+  },
+  "errorHostOutdated": {
+    "message": "Обновете Ashy Pass на този компютър, за да използвате това."
+  },
+  "notesLabel": {
+    "message": "Бележки"
   }
 }

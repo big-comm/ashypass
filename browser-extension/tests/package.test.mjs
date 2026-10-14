@@ -59,7 +59,8 @@ function checkCommon(m, label) {
   // Site access at install (like other password managers): the inline
   // suggestions work right away; Settings can still turn them off.
   assert.deepEqual(m.host_permissions, WEB, label);
-  assert.equal(m.optional_permissions, undefined, label);
+  // Only to turn off the browser's own password manager, asked from Settings.
+  assert.deepEqual(m.optional_permissions, ["privacy"], label);
   assert.equal(m.optional_host_permissions, undefined, label);
   assert.equal(m.content_scripts, undefined, label);
   assert.equal(m.web_accessible_resources.length, 1, label);
@@ -67,7 +68,7 @@ function checkCommon(m, label) {
   assert.deepEqual(m.web_accessible_resources[0].matches, WEB, label);
   assert.equal(m.key, undefined, `${label}: key is added by build.py for chrome-dev only`);
   assert.equal(m.action.default_popup, "popup/popup.html", label);
-  assert.equal(m.commands._execute_action.suggested_key.default, "Ctrl+Shift+L", label);
+  assert.equal(m.commands._execute_action.suggested_key.default, "Alt+Shift+L", label);
   const en = readJson(path.join(SRC, "_locales/en/messages.json"));
   for (const field of [m.name, m.description, m.action.default_title]) {
     const key = /^__MSG_(\w+)__$/.exec(field)?.[1];
@@ -122,7 +123,7 @@ test("VERSION and the development key", () => {
 const SAME_AS_ENGLISH = new Set([
   "extName", "pinLabel", "kindPin", "tabGenerator", "typeFilterLabel", "versionLabel", "websiteLabel",
   "nameLabel", "kindPassphrase", "kindPassword", "passwordLabel", "sectionsLabel", "tabVault",
-  "settingsVaultHeading", "privacyLink", "helpLink", "filteredHeading", "folderFilterLabel", "folderLabel",
+  "settingsVaultHeading", "privacyLink", "helpLink", "filteredHeading", "folderFilterLabel", "folderLabel", "notesLabel",
 ]);
 
 const tokens = (s) => [...s.matchAll(/\$([A-Za-z0-9_@]+)\$/g)].map((m) => m[1].toLowerCase()).sort();

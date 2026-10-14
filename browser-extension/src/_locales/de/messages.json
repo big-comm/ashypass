@@ -593,10 +593,6 @@
     "message": "Tastenkürzel",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Öffnet dieses Fenster. Sie können es in den Tastenkürzel-Einstellungen für Erweiterungen des Browsers ändern.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Nicht festgelegt",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Dieses Menü ist abgelaufen. Klicken Sie erneut auf das Feld.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Passwortmanager des Browsers ausschalten"
+  },
+  "browserPmHint": {
+    "message": "Seine eigene Liste erscheint über der Seite und verdeckt die Vorschläge von Ashy Pass. Ist er aus, öffnet sich Ashy Pass, sobald Sie in ein Anmeldefeld klicken."
+  },
+  "browserPmOffToast": {
+    "message": "Der Passwortmanager des Browsers ist aus"
+  },
+  "browserPmOnToast": {
+    "message": "Der Passwortmanager des Browsers ist wieder an"
+  },
+  "shortcutOpens": {
+    "message": "Öffnet dieses Fenster."
+  },
+  "shortcutChange": {
+    "message": "Ändern"
+  },
+  "shortcutRecord": {
+    "message": "Drücken Sie die neue Tastenkombination …"
+  },
+  "shortcutRecordHint": {
+    "message": "Strg oder Alt, optional Umschalt, und ein Buchstabe oder eine Ziffer. Esc bricht ab."
+  },
+  "shortcutReset": {
+    "message": "Standard"
+  },
+  "shortcutSaved": {
+    "message": "Tastenkürzel gespeichert"
+  },
+  "shortcutInvalid": {
+    "message": "Diese Kombination kann nicht verwendet werden. Versuchen Sie Strg oder Alt mit einem Buchstaben."
+  },
+  "shortcutOpenFailed": {
+    "message": "Die Tastenkürzel-Einstellungen des Browsers konnten nicht geöffnet werden."
+  },
+  "editButton": {
+    "message": "Bearbeiten"
+  },
+  "deleteButton": {
+    "message": "Löschen"
+  },
+  "deleteConfirmTitle": {
+    "message": "„$TITLE$“ löschen?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Wenn der Papierkorb in Ashy Pass aktiviert ist, können Sie ihn dort wiederherstellen. Synchronisierte Geräte löschen ihn ebenfalls."
+  },
+  "editLoginTitle": {
+    "message": "Zugangsdaten bearbeiten"
+  },
+  "movedToTrash": {
+    "message": "In den Papierkorb von Ashy Pass verschoben"
+  },
+  "loginDeleted": {
+    "message": "Zugangsdaten gelöscht"
+  },
+  "errorChanged": {
+    "message": "Diese Zugangsdaten wurden inzwischen in Ashy Pass geändert. Öffnen Sie sie erneut, um die neueste Version zu sehen."
+  },
+  "errorHostOutdated": {
+    "message": "Aktualisieren Sie Ashy Pass auf diesem Computer, um dies zu nutzen."
+  },
+  "notesLabel": {
+    "message": "Notizen"
   }
 }

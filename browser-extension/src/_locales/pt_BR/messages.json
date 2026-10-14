@@ -593,10 +593,6 @@
     "message": "Atalho de teclado",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Abre esta janela. Você pode alterá-lo nas configurações de atalhos de extensões do navegador.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Não definido",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Este menu expirou. Clique no campo novamente.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Desativar o gerenciador de senhas do navegador"
+  },
+  "browserPmHint": {
+    "message": "A lista dele aparece por cima da página e cobre as sugestões do Ashy Pass. Desativado, o Ashy Pass abre assim que você clica num campo de login."
+  },
+  "browserPmOffToast": {
+    "message": "O gerenciador de senhas do navegador foi desativado"
+  },
+  "browserPmOnToast": {
+    "message": "O gerenciador de senhas do navegador foi reativado"
+  },
+  "shortcutOpens": {
+    "message": "Abre esta janela."
+  },
+  "shortcutChange": {
+    "message": "Alterar"
+  },
+  "shortcutRecord": {
+    "message": "Pressione a nova combinação de teclas…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl ou Alt, com ou sem Shift, e uma letra ou número. Esc cancela."
+  },
+  "shortcutReset": {
+    "message": "Padrão"
+  },
+  "shortcutSaved": {
+    "message": "Atalho salvo"
+  },
+  "shortcutInvalid": {
+    "message": "Essa combinação não pode ser usada. Tente Ctrl ou Alt com uma letra."
+  },
+  "shortcutOpenFailed": {
+    "message": "Não foi possível abrir as configurações de atalhos do navegador."
+  },
+  "editButton": {
+    "message": "Editar"
+  },
+  "deleteButton": {
+    "message": "Excluir"
+  },
+  "deleteConfirmTitle": {
+    "message": "Excluir “$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Se a lixeira estiver ativada no Ashy Pass, você pode restaurar por lá. Dispositivos sincronizados também excluem."
+  },
+  "editLoginTitle": {
+    "message": "Editar login"
+  },
+  "movedToTrash": {
+    "message": "Movido para a lixeira do Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Login excluído"
+  },
+  "errorChanged": {
+    "message": "Este login foi alterado no Ashy Pass enquanto isso. Abra de novo para ver a versão mais recente."
+  },
+  "errorHostOutdated": {
+    "message": "Atualize o Ashy Pass neste computador para usar isso."
+  },
+  "notesLabel": {
+    "message": "Notas"
   }
 }

@@ -593,10 +593,6 @@
     "message": "Pikanäppäin",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Avaa tämän ikkunan. Voit vaihtaa sen selaimen laajennusten pikanäppäinasetuksista.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Ei asetettu",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Tämä valikko on vanhentunut. Napsauta kenttää uudelleen.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Poista selaimen salasanojen hallinta käytöstä"
+  },
+  "browserPmHint": {
+    "message": "Sen oma luettelo näkyy sivun päällä ja peittää Ashy Passin ehdotukset. Kun se on pois, Ashy Pass avautuu heti, kun napsautat kirjautumiskenttää."
+  },
+  "browserPmOffToast": {
+    "message": "Selaimen salasanojen hallinta on pois käytöstä"
+  },
+  "browserPmOnToast": {
+    "message": "Selaimen salasanojen hallinta on taas käytössä"
+  },
+  "shortcutOpens": {
+    "message": "Avaa tämän ikkunan."
+  },
+  "shortcutChange": {
+    "message": "Muuta"
+  },
+  "shortcutRecord": {
+    "message": "Paina uutta näppäinyhdistelmää…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl tai Alt, halutessasi Vaihto, ja kirjain tai numero. Esc peruuttaa."
+  },
+  "shortcutReset": {
+    "message": "Oletus"
+  },
+  "shortcutSaved": {
+    "message": "Pikanäppäin tallennettu"
+  },
+  "shortcutInvalid": {
+    "message": "Tätä yhdistelmää ei voi käyttää. Kokeile Ctrl- tai Alt-näppäintä ja kirjainta."
+  },
+  "shortcutOpenFailed": {
+    "message": "Selaimen pikanäppäinasetuksia ei voitu avata."
+  },
+  "editButton": {
+    "message": "Muokkaa"
+  },
+  "deleteButton": {
+    "message": "Poista"
+  },
+  "deleteConfirmTitle": {
+    "message": "Poistetaanko ”$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Jos roskakori on käytössä Ashy Passissa, voit palauttaa sen sieltä. Synkronoidut laitteet poistavat sen myös."
+  },
+  "editLoginTitle": {
+    "message": "Muokkaa kirjautumistietoa"
+  },
+  "movedToTrash": {
+    "message": "Siirretty Ashy Passin roskakoriin"
+  },
+  "loginDeleted": {
+    "message": "Kirjautumistieto poistettu"
+  },
+  "errorChanged": {
+    "message": "Tätä kirjautumistietoa muutettiin sillä välin Ashy Passissa. Avaa se uudelleen nähdäksesi uusimman version."
+  },
+  "errorHostOutdated": {
+    "message": "Päivitä Ashy Pass tällä tietokoneella käyttääksesi tätä."
+  },
+  "notesLabel": {
+    "message": "Muistiinpanot"
   }
 }

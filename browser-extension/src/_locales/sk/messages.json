@@ -593,10 +593,6 @@
     "message": "Klávesová skratka",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Otvorí toto okno. Môžete ju zmeniť v nastaveniach skratiek rozšírení v prehliadači.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Nenastavené",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Platnosť tejto ponuky vypršala. Kliknite znova do poľa.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Vypnúť správcu hesiel prehliadača"
+  },
+  "browserPmHint": {
+    "message": "Jeho vlastný zoznam sa zobrazuje nad stránkou a zakrýva návrhy Ashy Pass. Keď je vypnutý, Ashy Pass sa otvorí hneď po kliknutí do prihlasovacieho poľa."
+  },
+  "browserPmOffToast": {
+    "message": "Správca hesiel prehliadača je vypnutý"
+  },
+  "browserPmOnToast": {
+    "message": "Správca hesiel prehliadača je znova zapnutý"
+  },
+  "shortcutOpens": {
+    "message": "Otvorí toto okno."
+  },
+  "shortcutChange": {
+    "message": "Zmeniť"
+  },
+  "shortcutRecord": {
+    "message": "Stlačte novú kombináciu klávesov…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl alebo Alt, prípadne Shift, a písmeno alebo číslicu. Esc zruší."
+  },
+  "shortcutReset": {
+    "message": "Predvolené"
+  },
+  "shortcutSaved": {
+    "message": "Klávesová skratka uložená"
+  },
+  "shortcutInvalid": {
+    "message": "Túto kombináciu nemožno použiť. Skúste Ctrl alebo Alt s písmenom."
+  },
+  "shortcutOpenFailed": {
+    "message": "Nastavenia klávesových skratiek prehliadača sa nepodarilo otvoriť."
+  },
+  "editButton": {
+    "message": "Upraviť"
+  },
+  "deleteButton": {
+    "message": "Odstrániť"
+  },
+  "deleteConfirmTitle": {
+    "message": "Odstrániť „$TITLE$“?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Ak je v Ashy Pass zapnutý kôš, môžete ho odtiaľ obnoviť. Synchronizované zariadenia ho tiež odstránia."
+  },
+  "editLoginTitle": {
+    "message": "Upraviť prihlásenie"
+  },
+  "movedToTrash": {
+    "message": "Presunuté do koša Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Prihlásenie odstránené"
+  },
+  "errorChanged": {
+    "message": "Toto prihlásenie bolo medzitým zmenené v Ashy Pass. Otvorte ho znova a uvidíte najnovšiu verziu."
+  },
+  "errorHostOutdated": {
+    "message": "Na použitie aktualizujte Ashy Pass na tomto počítači."
+  },
+  "notesLabel": {
+    "message": "Poznámky"
   }
 }

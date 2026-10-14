@@ -593,10 +593,6 @@
     "message": "Skrót klawiszowy",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Otwiera to okno. Możesz go zmienić w ustawieniach skrótów rozszerzeń przeglądarki.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Nie ustawiono",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "To menu wygasło. Kliknij pole ponownie.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Wyłącz menedżer haseł przeglądarki"
+  },
+  "browserPmHint": {
+    "message": "Jego własna lista pojawia się nad stroną i zasłania podpowiedzi Ashy Pass. Gdy jest wyłączony, Ashy Pass otwiera się od razu po kliknięciu pola logowania."
+  },
+  "browserPmOffToast": {
+    "message": "Menedżer haseł przeglądarki jest wyłączony"
+  },
+  "browserPmOnToast": {
+    "message": "Menedżer haseł przeglądarki jest znów włączony"
+  },
+  "shortcutOpens": {
+    "message": "Otwiera to okno."
+  },
+  "shortcutChange": {
+    "message": "Zmień"
+  },
+  "shortcutRecord": {
+    "message": "Naciśnij nową kombinację klawiszy…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl lub Alt, opcjonalnie Shift, oraz litera lub cyfra. Esc anuluje."
+  },
+  "shortcutReset": {
+    "message": "Domyślny"
+  },
+  "shortcutSaved": {
+    "message": "Skrót zapisany"
+  },
+  "shortcutInvalid": {
+    "message": "Tej kombinacji nie można użyć. Spróbuj Ctrl lub Alt z literą."
+  },
+  "shortcutOpenFailed": {
+    "message": "Nie można otworzyć ustawień skrótów przeglądarki."
+  },
+  "editButton": {
+    "message": "Edytuj"
+  },
+  "deleteButton": {
+    "message": "Usuń"
+  },
+  "deleteConfirmTitle": {
+    "message": "Usunąć „$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Jeśli kosz jest włączony w Ashy Pass, możesz go stamtąd przywrócić. Zsynchronizowane urządzenia również go usuną."
+  },
+  "editLoginTitle": {
+    "message": "Edytuj dane logowania"
+  },
+  "movedToTrash": {
+    "message": "Przeniesiono do kosza Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Dane logowania usunięte"
+  },
+  "errorChanged": {
+    "message": "Te dane logowania zostały w międzyczasie zmienione w Ashy Pass. Otwórz je ponownie, aby zobaczyć najnowszą wersję."
+  },
+  "errorHostOutdated": {
+    "message": "Zaktualizuj Ashy Pass na tym komputerze, aby z tego korzystać."
+  },
+  "notesLabel": {
+    "message": "Notatki"
   }
 }

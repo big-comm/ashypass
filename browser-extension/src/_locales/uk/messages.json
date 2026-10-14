@@ -593,10 +593,6 @@
     "message": "Сполучення клавіш",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Відкриває це вікно. Його можна змінити в налаштуваннях сполучень клавіш для розширень браузера.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Не задано",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Термін дії цього меню минув. Натисніть на поле ще раз.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Вимкнути менеджер паролів браузера"
+  },
+  "browserPmHint": {
+    "message": "Його власний список з’являється поверх сторінки й закриває підказки Ashy Pass. Коли його вимкнено, Ashy Pass відкривається одразу після натискання на поле входу."
+  },
+  "browserPmOffToast": {
+    "message": "Менеджер паролів браузера вимкнено"
+  },
+  "browserPmOnToast": {
+    "message": "Менеджер паролів браузера знову ввімкнено"
+  },
+  "shortcutOpens": {
+    "message": "Відкриває це вікно."
+  },
+  "shortcutChange": {
+    "message": "Змінити"
+  },
+  "shortcutRecord": {
+    "message": "Натисніть нове поєднання клавіш…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl або Alt, за бажанням Shift, і літера чи цифра. Esc — скасувати."
+  },
+  "shortcutReset": {
+    "message": "Типово"
+  },
+  "shortcutSaved": {
+    "message": "Поєднання клавіш збережено"
+  },
+  "shortcutInvalid": {
+    "message": "Це поєднання не можна використати. Спробуйте Ctrl або Alt з літерою."
+  },
+  "shortcutOpenFailed": {
+    "message": "Не вдалося відкрити налаштування поєднань клавіш браузера."
+  },
+  "editButton": {
+    "message": "Змінити"
+  },
+  "deleteButton": {
+    "message": "Видалити"
+  },
+  "deleteConfirmTitle": {
+    "message": "Видалити «$TITLE$»?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Якщо в Ashy Pass увімкнено смітник, її можна відновити звідти. Синхронізовані пристрої також її видалять."
+  },
+  "editLoginTitle": {
+    "message": "Змінити вхід"
+  },
+  "movedToTrash": {
+    "message": "Переміщено до смітника Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Вхід видалено"
+  },
+  "errorChanged": {
+    "message": "Цей вхід тим часом змінили в Ashy Pass. Відкрийте його знову, щоб побачити найновішу версію."
+  },
+  "errorHostOutdated": {
+    "message": "Оновіть Ashy Pass на цьому комп’ютері, щоб скористатися цим."
+  },
+  "notesLabel": {
+    "message": "Нотатки"
   }
 }

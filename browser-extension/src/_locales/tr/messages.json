@@ -593,10 +593,6 @@
     "message": "Klavye kısayolu",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Bu pencereyi açar. Tarayıcının eklenti kısayolu ayarlarından değiştirebilirsiniz.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Ayarlanmadı",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Bu menünün süresi doldu. Alana yeniden tıklayın.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Tarayıcının parola yöneticisini kapat"
+  },
+  "browserPmHint": {
+    "message": "Kendi listesi sayfanın üzerinde görünür ve Ashy Pass önerilerini kapatır. Kapalıyken Ashy Pass, bir oturum açma alanına tıkladığınız anda açılır."
+  },
+  "browserPmOffToast": {
+    "message": "Tarayıcının parola yöneticisi kapatıldı"
+  },
+  "browserPmOnToast": {
+    "message": "Tarayıcının parola yöneticisi yeniden açıldı"
+  },
+  "shortcutOpens": {
+    "message": "Bu pencereyi açar."
+  },
+  "shortcutChange": {
+    "message": "Değiştir"
+  },
+  "shortcutRecord": {
+    "message": "Yeni tuş birleşimine basın…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl veya Alt, isteğe bağlı Shift ve bir harf ya da rakam. Esc iptal eder."
+  },
+  "shortcutReset": {
+    "message": "Varsayılan"
+  },
+  "shortcutSaved": {
+    "message": "Kısayol kaydedildi"
+  },
+  "shortcutInvalid": {
+    "message": "Bu birleşim kullanılamaz. Bir harfle Ctrl veya Alt deneyin."
+  },
+  "shortcutOpenFailed": {
+    "message": "Tarayıcının kısayol ayarları açılamadı."
+  },
+  "editButton": {
+    "message": "Düzenle"
+  },
+  "deleteButton": {
+    "message": "Sil"
+  },
+  "deleteConfirmTitle": {
+    "message": "“$TITLE$” silinsin mi?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Ashy Pass’te çöp kutusu açıksa oradan geri yükleyebilirsiniz. Eşitlenen cihazlar da siler."
+  },
+  "editLoginTitle": {
+    "message": "Girişi düzenle"
+  },
+  "movedToTrash": {
+    "message": "Ashy Pass çöp kutusuna taşındı"
+  },
+  "loginDeleted": {
+    "message": "Giriş silindi"
+  },
+  "errorChanged": {
+    "message": "Bu giriş bu arada Ashy Pass’te değiştirildi. En son sürümü görmek için yeniden açın."
+  },
+  "errorHostOutdated": {
+    "message": "Bunu kullanmak için bu bilgisayardaki Ashy Pass’i güncelleyin."
+  },
+  "notesLabel": {
+    "message": "Notlar"
   }
 }

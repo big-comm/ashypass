@@ -593,10 +593,6 @@
     "message": "Atalho de teclado",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Abre esta janela. Pode alterá-lo nas definições de atalhos de extensões do navegador.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Não definido",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Este menu expirou. Clique novamente no campo.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Desativar o gestor de palavras-passe do navegador"
+  },
+  "browserPmHint": {
+    "message": "A lista dele aparece por cima da página e tapa as sugestões do Ashy Pass. Desativado, o Ashy Pass abre logo que clica num campo de início de sessão."
+  },
+  "browserPmOffToast": {
+    "message": "O gestor de palavras-passe do navegador foi desativado"
+  },
+  "browserPmOnToast": {
+    "message": "O gestor de palavras-passe do navegador foi reativado"
+  },
+  "shortcutOpens": {
+    "message": "Abre esta janela."
+  },
+  "shortcutChange": {
+    "message": "Alterar"
+  },
+  "shortcutRecord": {
+    "message": "Prima a nova combinação de teclas…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl ou Alt, com ou sem Shift, e uma letra ou número. Esc cancela."
+  },
+  "shortcutReset": {
+    "message": "Predefinição"
+  },
+  "shortcutSaved": {
+    "message": "Atalho guardado"
+  },
+  "shortcutInvalid": {
+    "message": "Essa combinação não pode ser usada. Experimente Ctrl ou Alt com uma letra."
+  },
+  "shortcutOpenFailed": {
+    "message": "Não foi possível abrir as definições de atalhos do navegador."
+  },
+  "editButton": {
+    "message": "Editar"
+  },
+  "deleteButton": {
+    "message": "Eliminar"
+  },
+  "deleteConfirmTitle": {
+    "message": "Eliminar “$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Se o lixo estiver ativado no Ashy Pass, pode restaurá-lo a partir daí. Os dispositivos sincronizados também o eliminam."
+  },
+  "editLoginTitle": {
+    "message": "Editar início de sessão"
+  },
+  "movedToTrash": {
+    "message": "Movido para o lixo do Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Início de sessão eliminado"
+  },
+  "errorChanged": {
+    "message": "Este início de sessão foi alterado no Ashy Pass entretanto. Abra-o novamente para ver a versão mais recente."
+  },
+  "errorHostOutdated": {
+    "message": "Atualize o Ashy Pass neste computador para usar isto."
+  },
+  "notesLabel": {
+    "message": "Notas"
   }
 }

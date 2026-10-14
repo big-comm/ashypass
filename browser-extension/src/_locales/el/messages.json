@@ -593,10 +593,6 @@
     "message": "Συντόμευση πληκτρολογίου",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Ανοίγει αυτό το παράθυρο. Μπορείτε να την αλλάξετε στις ρυθμίσεις συντομεύσεων επεκτάσεων του προγράμματος περιήγησης.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Δεν έχει οριστεί",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Αυτό το μενού έληξε. Κάντε ξανά κλικ στο πεδίο.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Απενεργοποίηση της διαχείρισης κωδικών του φυλλομετρητή"
+  },
+  "browserPmHint": {
+    "message": "Η δική της λίστα εμφανίζεται πάνω από τη σελίδα και καλύπτει τις προτάσεις του Ashy Pass. Όταν είναι ανενεργή, το Ashy Pass ανοίγει μόλις κάνετε κλικ σε πεδίο σύνδεσης."
+  },
+  "browserPmOffToast": {
+    "message": "Η διαχείριση κωδικών του φυλλομετρητή απενεργοποιήθηκε"
+  },
+  "browserPmOnToast": {
+    "message": "Η διαχείριση κωδικών του φυλλομετρητή ενεργοποιήθηκε ξανά"
+  },
+  "shortcutOpens": {
+    "message": "Ανοίγει αυτό το παράθυρο."
+  },
+  "shortcutChange": {
+    "message": "Αλλαγή"
+  },
+  "shortcutRecord": {
+    "message": "Πατήστε τον νέο συνδυασμό πλήκτρων…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl ή Alt, προαιρετικά Shift, και ένα γράμμα ή αριθμό. Το Esc ακυρώνει."
+  },
+  "shortcutReset": {
+    "message": "Προεπιλογή"
+  },
+  "shortcutSaved": {
+    "message": "Η συντόμευση αποθηκεύτηκε"
+  },
+  "shortcutInvalid": {
+    "message": "Αυτός ο συνδυασμός δεν μπορεί να χρησιμοποιηθεί. Δοκιμάστε Ctrl ή Alt με ένα γράμμα."
+  },
+  "shortcutOpenFailed": {
+    "message": "Δεν ήταν δυνατό το άνοιγμα των ρυθμίσεων συντομεύσεων του φυλλομετρητή."
+  },
+  "editButton": {
+    "message": "Επεξεργασία"
+  },
+  "deleteButton": {
+    "message": "Διαγραφή"
+  },
+  "deleteConfirmTitle": {
+    "message": "Διαγραφή του «$TITLE$»;",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Αν ο κάδος είναι ενεργός στο Ashy Pass, μπορείτε να το επαναφέρετε από εκεί. Οι συγχρονισμένες συσκευές το διαγράφουν επίσης."
+  },
+  "editLoginTitle": {
+    "message": "Επεξεργασία σύνδεσης"
+  },
+  "movedToTrash": {
+    "message": "Μετακινήθηκε στον κάδο του Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Η σύνδεση διαγράφηκε"
+  },
+  "errorChanged": {
+    "message": "Αυτή η σύνδεση άλλαξε στο μεταξύ στο Ashy Pass. Ανοίξτε την ξανά για να δείτε την πιο πρόσφατη έκδοση."
+  },
+  "errorHostOutdated": {
+    "message": "Ενημερώστε το Ashy Pass σε αυτόν τον υπολογιστή για να το χρησιμοποιήσετε."
+  },
+  "notesLabel": {
+    "message": "Σημειώσεις"
   }
 }

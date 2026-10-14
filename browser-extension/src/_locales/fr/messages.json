@@ -593,10 +593,6 @@
     "message": "Raccourci clavier",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Ouvre cette fenêtre. Vous pouvez le modifier dans les paramètres des raccourcis d’extensions du navigateur.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Non défini",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Ce menu a expiré. Cliquez à nouveau sur le champ.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Désactiver le gestionnaire de mots de passe du navigateur"
+  },
+  "browserPmHint": {
+    "message": "Sa propre liste s’affiche par-dessus la page et masque les suggestions d’Ashy Pass. Désactivé, Ashy Pass s’ouvre dès que vous cliquez dans un champ de connexion."
+  },
+  "browserPmOffToast": {
+    "message": "Le gestionnaire de mots de passe du navigateur est désactivé"
+  },
+  "browserPmOnToast": {
+    "message": "Le gestionnaire de mots de passe du navigateur est réactivé"
+  },
+  "shortcutOpens": {
+    "message": "Ouvre cette fenêtre."
+  },
+  "shortcutChange": {
+    "message": "Modifier"
+  },
+  "shortcutRecord": {
+    "message": "Appuyez sur la nouvelle combinaison de touches…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl ou Alt, avec ou sans Maj, et une lettre ou un chiffre. Échap annule."
+  },
+  "shortcutReset": {
+    "message": "Par défaut"
+  },
+  "shortcutSaved": {
+    "message": "Raccourci enregistré"
+  },
+  "shortcutInvalid": {
+    "message": "Cette combinaison ne peut pas être utilisée. Essayez Ctrl ou Alt avec une lettre."
+  },
+  "shortcutOpenFailed": {
+    "message": "Impossible d’ouvrir les paramètres de raccourcis du navigateur."
+  },
+  "editButton": {
+    "message": "Modifier"
+  },
+  "deleteButton": {
+    "message": "Supprimer"
+  },
+  "deleteConfirmTitle": {
+    "message": "Supprimer « $TITLE$ » ?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Si la corbeille est activée dans Ashy Pass, vous pouvez le restaurer depuis celle-ci. Les appareils synchronisés le suppriment aussi."
+  },
+  "editLoginTitle": {
+    "message": "Modifier l’identifiant"
+  },
+  "movedToTrash": {
+    "message": "Déplacé dans la corbeille d’Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Identifiant supprimé"
+  },
+  "errorChanged": {
+    "message": "Cet identifiant a été modifié dans Ashy Pass entre-temps. Ouvrez-le à nouveau pour voir la dernière version."
+  },
+  "errorHostOutdated": {
+    "message": "Mettez à jour Ashy Pass sur cet ordinateur pour utiliser ceci."
+  },
+  "notesLabel": {
+    "message": "Notes"
   }
 }

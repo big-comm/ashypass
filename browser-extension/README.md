@@ -10,17 +10,21 @@ Ashy Pass desktop app and forgets the answer once it has been used.
 
 ## Features
 
-- **Popup** (Ctrl+Shift+L or the toolbar button), with three tabs at the bottom:
+- **Popup** (Alt+Shift+L or the toolbar button), with three tabs at the bottom:
   - **Vault**: search (as you type), Folder and Type filters (all items,
     logins with codes, favorites), and the sections *Autofill suggestions*
     (logins for the current site, with a *Fill* button), *Favorites* and
     *All items*. Each row shows the site icon cached by the desktop app (or a
     coloured letter), the title and the username, plus buttons to open the
     website, copy the username, the password or the verification code, and a
-    ⋮ menu (favorite, copy website address, details). The details view shows
-    the username, the password (hidden until you ask), the website, the folder
-    and the live verification code with its countdown. *Add* saves a new login
-    for the current site.
+    ⋮ menu (favorite, copy website address, details, edit, delete). The
+    details view shows the username, the password (hidden until you ask), the
+    website, the folder and the live verification code with its countdown,
+    with *Edit* and *Delete* below. *Add* saves a new login for the current
+    site. *Edit* changes the name, username, password, website, folder and
+    notes (verification codes stay as they are); it refuses to overwrite a login that
+    was changed in the desktop app meanwhile. *Delete* asks first and follows
+    the desktop app: to the trash when it is on, synced deletions included.
   - **Generator**: password, passphrase or PIN, with the usual options
     (length, character types, words, separator…). The options (never the
     values) are remembered. *Fill on this page* puts the generated password
@@ -123,7 +127,7 @@ The suite covers the following:
 The id is fixed (`ashypass@big-comm.github.io`), so the host accepts the
 temporary add-on too. A temporary add-on is removed when Firefox restarts.
 
-Use **Ctrl+Shift+L** or the toolbar button to open the popup.
+Use **Alt+Shift+L** or the toolbar button to open the popup.
 
 ## Extension ids
 

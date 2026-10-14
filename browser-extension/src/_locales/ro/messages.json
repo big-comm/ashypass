@@ -593,10 +593,6 @@
     "message": "Comandă rapidă de la tastatură",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Deschide această fereastră. O puteți schimba în setările comenzilor rapide pentru extensii ale navigatorului.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Nesetată",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Acest meniu a expirat. Faceți din nou clic pe câmp.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Dezactivează managerul de parole al browserului"
+  },
+  "browserPmHint": {
+    "message": "Lista lui apare peste pagină și acoperă sugestiile Ashy Pass. Când este dezactivat, Ashy Pass se deschide imediat ce dați clic într-un câmp de autentificare."
+  },
+  "browserPmOffToast": {
+    "message": "Managerul de parole al browserului este dezactivat"
+  },
+  "browserPmOnToast": {
+    "message": "Managerul de parole al browserului este din nou activ"
+  },
+  "shortcutOpens": {
+    "message": "Deschide această fereastră."
+  },
+  "shortcutChange": {
+    "message": "Schimbă"
+  },
+  "shortcutRecord": {
+    "message": "Apăsați noua combinație de taste…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl sau Alt, opțional Shift, și o literă sau o cifră. Esc anulează."
+  },
+  "shortcutReset": {
+    "message": "Implicit"
+  },
+  "shortcutSaved": {
+    "message": "Comanda rapidă a fost salvată"
+  },
+  "shortcutInvalid": {
+    "message": "Această combinație nu poate fi folosită. Încercați Ctrl sau Alt cu o literă."
+  },
+  "shortcutOpenFailed": {
+    "message": "Setările pentru comenzi rapide ale browserului nu au putut fi deschise."
+  },
+  "editButton": {
+    "message": "Editează"
+  },
+  "deleteButton": {
+    "message": "Șterge"
+  },
+  "deleteConfirmTitle": {
+    "message": "Ștergeți „$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Dacă coșul de gunoi este activat în Ashy Pass, îl puteți restaura de acolo. Dispozitivele sincronizate îl șterg și ele."
+  },
+  "editLoginTitle": {
+    "message": "Editează autentificarea"
+  },
+  "movedToTrash": {
+    "message": "Mutat în coșul de gunoi Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Autentificare ștearsă"
+  },
+  "errorChanged": {
+    "message": "Această autentificare a fost modificată între timp în Ashy Pass. Deschideți-o din nou pentru a vedea cea mai recentă versiune."
+  },
+  "errorHostOutdated": {
+    "message": "Actualizați Ashy Pass pe acest computer pentru a folosi asta."
+  },
+  "notesLabel": {
+    "message": "Note"
   }
 }

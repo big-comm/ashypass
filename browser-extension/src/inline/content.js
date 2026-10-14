@@ -59,6 +59,23 @@
   let mutationTimer = null;
   let rafPending = false;
   let openSeq = 0;
+  // The browser's own password manager draws its list over the page, right
+  // where our menu goes. While it is on, focusing a field only shows our icon
+  // and the menu opens from the icon; once Ashy Pass turned it off
+  // (Settings), the menu opens on the field like other password managers.
+  let openOnFocus = false;
+  try {
+    Promise.resolve(api.storage.local.get("browserPmOff"))
+      .then((stored) => {
+        openOnFocus = stored?.browserPmOff === true;
+      })
+      .catch(() => {});
+    api.storage.onChanged.addListener((changes, area) => {
+      if (area === "local" && "browserPmOff" in changes) openOnFocus = changes.browserPmOff.newValue === true;
+    });
+  } catch {
+    // No storage: keep the icon-only behaviour.
+  }
   const badges = new Map(); // login field -> its icon button
   let badgeHost = null;
   let badgeShadow = null;
@@ -488,7 +505,7 @@
       if (disabled || isOurs(ev)) return;
       const el = targetOf(ev);
       if (el === field) return;
-      if (isLoginField(el)) attach(el, { open: true });
+      if (isLoginField(el)) attach(el, { open: openOnFocus });
       else if (field) detach();
     },
     true,
@@ -516,7 +533,7 @@
       if (el === field) {
         // A click on the field reopens a menu closed with Escape.
         suppressed = null;
-        if (!frame) openMenu();
+        if (!frame && openOnFocus) openMenu();
         return;
       }
       // Focus was in the menu (not in the field): the whole UI goes away.

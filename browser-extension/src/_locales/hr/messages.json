@@ -593,10 +593,6 @@
     "message": "Tipkovni prečac",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Otvara ovaj prozor. Možete ga promijeniti u postavkama prečaca proširenja u pregledniku.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Nije postavljeno",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Ovaj je izbornik istekao. Ponovno kliknite polje.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Isključi upravitelj lozinki preglednika"
+  },
+  "browserPmHint": {
+    "message": "Njegov vlastiti popis pojavljuje se preko stranice i prekriva prijedloge Ashy Passa. Kad je isključen, Ashy Pass se otvara čim kliknete u polje za prijavu."
+  },
+  "browserPmOffToast": {
+    "message": "Upravitelj lozinki preglednika je isključen"
+  },
+  "browserPmOnToast": {
+    "message": "Upravitelj lozinki preglednika ponovno je uključen"
+  },
+  "shortcutOpens": {
+    "message": "Otvara ovaj prozor."
+  },
+  "shortcutChange": {
+    "message": "Promijeni"
+  },
+  "shortcutRecord": {
+    "message": "Pritisnite novu kombinaciju tipki…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl ili Alt, po želji Shift, i slovo ili broj. Esc odustaje."
+  },
+  "shortcutReset": {
+    "message": "Zadano"
+  },
+  "shortcutSaved": {
+    "message": "Prečac je spremljen"
+  },
+  "shortcutInvalid": {
+    "message": "Ta se kombinacija ne može koristiti. Pokušajte Ctrl ili Alt sa slovom."
+  },
+  "shortcutOpenFailed": {
+    "message": "Postavke prečaca preglednika nisu se mogle otvoriti."
+  },
+  "editButton": {
+    "message": "Uredi"
+  },
+  "deleteButton": {
+    "message": "Izbriši"
+  },
+  "deleteConfirmTitle": {
+    "message": "Izbrisati „$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Ako je smeće uključeno u Ashy Passu, možete ga vratiti odande. Sinkronizirani uređaji ga također brišu."
+  },
+  "editLoginTitle": {
+    "message": "Uredi prijavu"
+  },
+  "movedToTrash": {
+    "message": "Premješteno u smeće Ashy Passa"
+  },
+  "loginDeleted": {
+    "message": "Prijava izbrisana"
+  },
+  "errorChanged": {
+    "message": "Ova je prijava u međuvremenu promijenjena u Ashy Passu. Otvorite je ponovno da biste vidjeli najnoviju verziju."
+  },
+  "errorHostOutdated": {
+    "message": "Ažurirajte Ashy Pass na ovom računalu da biste ovo koristili."
+  },
+  "notesLabel": {
+    "message": "Bilješke"
   }
 }

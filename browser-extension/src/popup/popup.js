@@ -65,6 +65,8 @@ const state = {
   allList: [],
   allRendered: 0,
   detail: null,
+  // The entry being edited in the login form, or null when adding.
+  editing: null,
   gen: { options: normalizeGeneratorOptions(null), value: "", seq: 0 },
 };
 
@@ -147,6 +149,8 @@ const ERROR_MESSAGES = {
   pin_disabled: "pinDisabledNote",
   permission_denied: "permissionDenied",
   invalid: "errorInvalid",
+  changed: "errorChanged",
+  host_outdated: "errorHostOutdated",
 };
 
 function errorText(reply) {
@@ -699,6 +703,13 @@ function openRowMenu(entry, anchor, { suggestion = false } = {}) {
   if (suggestion && openableUrl(entry.url)) items.push(menuItem(t("openWebsiteButton"), () => openTab(entry.url)));
   if (entry.url) items.push(menuItem(t("copyWebsiteButton"), () => copyText(entry.url, t("websiteCopied"))));
   items.push(menuItem(t("viewDetailsButton"), () => openDetails(entry)));
+  items.push(menuItem(t("editButton"), () => openEdit(entry)));
+  items.push(
+    menuItem(t("deleteButton"), () => {
+      openDetails(entry);
+      onDeleteAsk();
+    }),
+  );
   menu.replaceChildren(...items);
   menu.hidden = false;
   rowMenuAnchor = anchor;
@@ -832,6 +843,7 @@ function openDetails(entry) {
   if (entry.has_totp) loadTotp();
 
   $("details-fill").hidden = !(state.fillable && state.matchIds.has(entry.id));
+  $("delete-confirm").hidden = true;
   renderFavoriteButton();
   $("back").focus();
 }
@@ -939,7 +951,71 @@ async function loadTotp() {
   }, 1000);
 }
 
-// ── Add ─────────────────────────────────────────────────────────────────────
+// ── Delete ──────────────────────────────────────────────────────────────────
+
+function onDeleteAsk() {
+  const d = state.detail;
+  if (!d) return;
+  $("delete-confirm-title").textContent = t("deleteConfirmTitle", [d.entry.title || t("untitled")]);
+  $("delete-confirm").hidden = false;
+  $("delete-confirm").scrollIntoView({ block: "nearest" });
+  $("delete-cancel").focus();
+}
+
+function onDeleteCancel() {
+  $("delete-confirm").hidden = true;
+  $("details-delete").focus();
+}
+
+function onDeleteConfirm() {
+  const d = state.detail;
+  if (!d) return;
+  return withBusy($("delete-confirm-button"), async () => {
+    const reply = await send("delete", { id: d.entry.id });
+    if (!reply.ok) {
+      if (!handleFailure(reply)) $("delete-confirm").hidden = true;
+      return;
+    }
+    toast(reply.trashed ? t("movedToTrash") : t("loginDeleted"));
+    await reloadVaultTab();
+  });
+}
+
+/** Back to the Vault tab with a fresh list (after a change). */
+async function reloadVaultTab() {
+  state.vaultLoaded = false;
+  state.tab = "vault";
+  setTabbar(true);
+  await loadVault();
+}
+
+// ── Add and edit ────────────────────────────────────────────────────────────
+
+/** The login form, filled with the entry's current fields. */
+function openEdit(entry) {
+  return withBusy($("details-edit"), async () => {
+    const reply = await send("editable", { id: entry.id });
+    if (!reply.ok) {
+      handleFailure(reply);
+      return;
+    }
+    const e = reply.entry;
+    showView("view-add");
+    setHeader({ title: t("editLoginTitle"), back: true, lock: true });
+    resetAddForm();
+    state.editing = { entry, updatedAt: e.updatedAt };
+    $("add-title").value = e.title;
+    $("add-username").value = e.username;
+    $("add-password").value = e.password;
+    e.password = "";
+    $("add-url").value = e.url;
+    $("add-folder").value = e.category;
+    $("add-notes").value = e.notes;
+    e.notes = "";
+    $("add-folder-list").replaceChildren(...state.folders.map((name) => option(name, name)));
+    $("add-title").focus();
+  });
+}
 
 function openAdd() {
   showView("view-add");
@@ -952,6 +1028,7 @@ function openAdd() {
 }
 
 function resetAddForm() {
+  state.editing = null;
   $("add-form").reset();
   $("add-password").type = "password";
   $("add-error").textContent = "";
@@ -999,14 +1076,20 @@ async function onAddSubmit(event) {
     return;
   }
   $("add-error").textContent = "";
+  const editing = state.editing;
   await withBusy($("add-save"), async () => {
-    const reply = await send("add", {
+    const fields = {
       title,
       username: $("add-username").value,
       password,
       url: $("add-url").value,
       category: $("add-folder").value,
-    });
+      notes: $("add-notes").value,
+    };
+    const reply = editing
+      ? await send("update", { ...fields, id: editing.entry.id, updatedAt: editing.updatedAt })
+      : await send("add", fields);
+    fields.password = "";
     if (!reply.ok) {
       if (reply.code === "locked" || ["not_installed", "disabled", "no_vault"].includes(reply.code)) {
         handleFailure(reply);
@@ -1017,17 +1100,16 @@ async function onAddSubmit(event) {
     }
     resetAddForm();
     toast(t("saved"));
-    state.vaultLoaded = false;
-    state.tab = "vault";
-    setTabbar(true);
-    await loadVault();
-    const added = reply.id !== null ? state.all.find((e) => e.id === reply.id) : null;
-    if (added) openDetails(added);
+    await reloadVaultTab();
+    const id = editing ? editing.entry.id : reply.id;
+    const saved = id !== null ? state.all.find((e) => e.id === id) : null;
+    if (saved) openDetails(saved);
   });
 }
 
 function onBack() {
-  if (state.view === "view-details" || state.view === "view-add") showTab("vault");
+  if (state.view === "view-add" && state.editing) openDetails(state.editing.entry);
+  else if (state.view === "view-details" || state.view === "view-add") showTab("vault");
 }
 
 // ── Generator ───────────────────────────────────────────────────────────────
@@ -1198,13 +1280,9 @@ async function showSettings() {
   const reply = await send("inlineState");
   state.inlineEnabled = reply.ok && reply.enabled === true;
   $("settings-inline").checked = state.inlineEnabled;
-  try {
-    const commands = (await api.commands?.getAll?.()) ?? [];
-    const action = commands.find((c) => c.name === "_execute_action");
-    $("settings-shortcut").textContent = action?.shortcut || t("shortcutNotSet");
-  } catch {
-    // Keep the default text.
-  }
+  const pm = await send("browserPmState");
+  $("settings-browser-pm").checked = pm.ok && pm.off === true;
+  await refreshShortcut();
 }
 
 /**
@@ -1253,6 +1331,135 @@ async function onInlineToggle(event) {
   state.inlineEnabled = !reply.ok;
   $("settings-inline").checked = state.inlineEnabled;
   if (!reply.ok) toast(errorText(reply), { error: true });
+}
+
+/**
+ * Turns the browser's own password manager off or back on. The `privacy`
+ * permission is requested straight from the click (before any await).
+ */
+function onBrowserPmToggle(event) {
+  const off = event.target.checked;
+  let granted = Promise.resolve(true);
+  if (off) {
+    try {
+      granted = Promise.resolve(api.permissions.request({ permissions: ["privacy"] }));
+    } catch (err) {
+      granted = Promise.reject(err);
+    }
+  }
+  return granted
+    .then(async (ok) => {
+      if (!ok) {
+        toast(t("permissionDenied"), { error: true });
+        return false;
+      }
+      const reply = await send("browserPmSet", { off });
+      if (!reply.ok) {
+        toast(errorText(reply), { error: true });
+        return !off;
+      }
+      toast(t(off ? "browserPmOffToast" : "browserPmOnToast"));
+      return off;
+    })
+    .catch(() => {
+      toast(t("permissionDenied"), { error: true });
+      return !off;
+    })
+    .then((nowOff) => {
+      $("settings-browser-pm").checked = nowOff;
+    });
+}
+
+// ── Keyboard shortcut ───────────────────────────────────────────────────────
+
+const SHORTCUT_COMMAND = "_execute_action";
+// Firefox lets an extension change its own shortcut; Chromium browsers only
+// from their own shortcuts page.
+const canUpdateShortcut = typeof api.commands?.update === "function";
+let recording = null;
+
+async function refreshShortcut() {
+  try {
+    const commands = (await api.commands?.getAll?.()) ?? [];
+    const action = commands.find((c) => c.name === SHORTCUT_COMMAND);
+    $("settings-shortcut").textContent = action?.shortcut || t("shortcutNotSet");
+  } catch {
+    $("settings-shortcut").textContent = t("shortcutNotSet");
+  }
+}
+
+/** "Ctrl+Shift+L" from a keydown, or null when it is not a valid shortcut. */
+function shortcutFromEvent(ev) {
+  if (!ev.ctrlKey && !ev.altKey) return null;
+  let key = null;
+  if (/^Key[A-Z]$/.test(ev.code)) key = ev.code.slice(3);
+  else if (/^Digit[0-9]$/.test(ev.code)) key = ev.code.slice(5);
+  else if (/^F([1-9]|1[0-2])$/.test(ev.code)) key = ev.code;
+  if (key === null) return null;
+  const parts = [];
+  if (ev.ctrlKey) parts.push("Ctrl");
+  if (ev.altKey) parts.push("Alt");
+  if (ev.shiftKey) parts.push("Shift");
+  parts.push(key);
+  return parts.join("+");
+}
+
+function stopRecording() {
+  if (recording) window.removeEventListener("keydown", recording, true);
+  recording = null;
+  $("shortcut-recorder").hidden = true;
+}
+
+async function onShortcutChange() {
+  if (!canUpdateShortcut) {
+    try {
+      // Brave, Edge and Vivaldi open their own page for this address too.
+      await api.tabs.create({ url: "chrome://extensions/shortcuts" });
+      window.close();
+    } catch {
+      toast(t("shortcutOpenFailed"), { error: true });
+    }
+    return;
+  }
+  if (recording) {
+    stopRecording();
+    return;
+  }
+  $("shortcut-recorder").hidden = false;
+  recording = async (ev) => {
+    if (["Control", "Alt", "Shift", "Meta"].includes(ev.key)) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (ev.key === "Escape") {
+      stopRecording();
+      return;
+    }
+    const shortcut = shortcutFromEvent(ev);
+    if (!shortcut) {
+      toast(t("shortcutInvalid"), { error: true });
+      return;
+    }
+    stopRecording();
+    try {
+      await api.commands.update({ name: SHORTCUT_COMMAND, shortcut });
+      toast(t("shortcutSaved"));
+    } catch {
+      toast(t("shortcutInvalid"), { error: true });
+    }
+    await refreshShortcut();
+  };
+  window.addEventListener("keydown", recording, true);
+}
+
+async function onShortcutReset() {
+  stopRecording();
+  try {
+    await api.commands.reset(SHORTCUT_COMMAND);
+    toast(t("shortcutSaved"));
+  } catch {
+    toast(t("shortcutInvalid"), { error: true });
+  }
+  await refreshShortcut();
 }
 
 function onHintEnable() {
@@ -1359,6 +1566,10 @@ async function init() {
 
   // Add
   $("add-form").addEventListener("submit", onAddSubmit);
+  $("details-edit").addEventListener("click", () => state.detail && openEdit(state.detail.entry));
+  $("details-delete").addEventListener("click", onDeleteAsk);
+  $("delete-cancel").addEventListener("click", onDeleteCancel);
+  $("delete-confirm-button").addEventListener("click", onDeleteConfirm);
   $("add-cancel").addEventListener("click", onBack);
   $("add-reveal").addEventListener("click", onAddReveal);
   $("add-generate").addEventListener("click", onAddGenerate);
@@ -1382,6 +1593,9 @@ async function init() {
   $("settings-lock").addEventListener("click", onLock);
   $("settings-open-app").addEventListener("click", onOpenApp);
   $("settings-inline").addEventListener("change", onInlineToggle);
+  $("settings-browser-pm").addEventListener("change", onBrowserPmToggle);
+  $("settings-shortcut-change").addEventListener("click", onShortcutChange);
+  $("settings-shortcut-reset").addEventListener("click", onShortcutReset);
   $("settings-help").addEventListener("click", () => openTab(HELP_URL));
   $("settings-privacy").addEventListener("click", () => openTab(PRIVACY_URL));
 

@@ -593,10 +593,6 @@
     "message": "Сочетание клавиш",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Открывает это окно. Его можно изменить в настройках сочетаний клавиш для расширений браузера.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Не задано",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Это меню устарело. Нажмите на поле ещё раз.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Отключить менеджер паролей браузера"
+  },
+  "browserPmHint": {
+    "message": "Его собственный список появляется поверх страницы и закрывает подсказки Ashy Pass. Когда он отключён, Ashy Pass открывается сразу при нажатии на поле входа."
+  },
+  "browserPmOffToast": {
+    "message": "Менеджер паролей браузера отключён"
+  },
+  "browserPmOnToast": {
+    "message": "Менеджер паролей браузера снова включён"
+  },
+  "shortcutOpens": {
+    "message": "Открывает это окно."
+  },
+  "shortcutChange": {
+    "message": "Изменить"
+  },
+  "shortcutRecord": {
+    "message": "Нажмите новое сочетание клавиш…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl или Alt, при желании Shift, и буква или цифра. Esc — отмена."
+  },
+  "shortcutReset": {
+    "message": "По умолчанию"
+  },
+  "shortcutSaved": {
+    "message": "Сочетание клавиш сохранено"
+  },
+  "shortcutInvalid": {
+    "message": "Это сочетание нельзя использовать. Попробуйте Ctrl или Alt с буквой."
+  },
+  "shortcutOpenFailed": {
+    "message": "Не удалось открыть настройки сочетаний клавиш браузера."
+  },
+  "editButton": {
+    "message": "Изменить"
+  },
+  "deleteButton": {
+    "message": "Удалить"
+  },
+  "deleteConfirmTitle": {
+    "message": "Удалить «$TITLE$»?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Если в Ashy Pass включена корзина, её можно восстановить оттуда. Синхронизированные устройства тоже удалят её."
+  },
+  "editLoginTitle": {
+    "message": "Изменить вход"
+  },
+  "movedToTrash": {
+    "message": "Перемещено в корзину Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Вход удалён"
+  },
+  "errorChanged": {
+    "message": "Этот вход тем временем был изменён в Ashy Pass. Откройте его снова, чтобы увидеть последнюю версию."
+  },
+  "errorHostOutdated": {
+    "message": "Обновите Ashy Pass на этом компьютере, чтобы использовать эту функцию."
+  },
+  "notesLabel": {
+    "message": "Заметки"
   }
 }

@@ -593,10 +593,6 @@
     "message": "Hurtigtast",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Åpner dette vinduet. Du kan endre den i nettleserens innstillinger for hurtigtaster for utvidelser.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Ikke angitt",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Denne menyen har utløpt. Klikk på feltet igjen.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Slå av nettleserens passordbehandler"
+  },
+  "browserPmHint": {
+    "message": "Dens egen liste vises over siden og dekker forslagene fra Ashy Pass. Når den er av, åpnes Ashy Pass så snart du klikker i et innloggingsfelt."
+  },
+  "browserPmOffToast": {
+    "message": "Nettleserens passordbehandler er slått av"
+  },
+  "browserPmOnToast": {
+    "message": "Nettleserens passordbehandler er slått på igjen"
+  },
+  "shortcutOpens": {
+    "message": "Åpner dette vinduet."
+  },
+  "shortcutChange": {
+    "message": "Endre"
+  },
+  "shortcutRecord": {
+    "message": "Trykk den nye tastekombinasjonen …"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl eller Alt, eventuelt Shift, og en bokstav eller et tall. Esc avbryter."
+  },
+  "shortcutReset": {
+    "message": "Standard"
+  },
+  "shortcutSaved": {
+    "message": "Snarvei lagret"
+  },
+  "shortcutInvalid": {
+    "message": "Den kombinasjonen kan ikke brukes. Prøv Ctrl eller Alt med en bokstav."
+  },
+  "shortcutOpenFailed": {
+    "message": "Kunne ikke åpne nettleserens innstillinger for snarveier."
+  },
+  "editButton": {
+    "message": "Rediger"
+  },
+  "deleteButton": {
+    "message": "Slett"
+  },
+  "deleteConfirmTitle": {
+    "message": "Slette «$TITLE$»?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Hvis papirkurven er slått på i Ashy Pass, kan du gjenopprette den derfra. Synkroniserte enheter sletter den også."
+  },
+  "editLoginTitle": {
+    "message": "Rediger pålogging"
+  },
+  "movedToTrash": {
+    "message": "Flyttet til papirkurven i Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Pålogging slettet"
+  },
+  "errorChanged": {
+    "message": "Denne påloggingen ble endret i Ashy Pass i mellomtiden. Åpne den igjen for å se den nyeste versjonen."
+  },
+  "errorHostOutdated": {
+    "message": "Oppdater Ashy Pass på denne datamaskinen for å bruke dette."
+  },
+  "notesLabel": {
+    "message": "Notater"
   }
 }

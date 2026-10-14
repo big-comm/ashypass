@@ -77,7 +77,7 @@ Nothing leaves your machine unless you turn on a sync or backup service. The vau
 - **Google Drive** — encrypted copies over REST with OAuth 2.0 PKCE; tokens are stored in the system keyring.
 
 ### Browser extension
-- **Chrome, Brave, Edge, Vivaldi, Firefox and LibreWolf** — fill and copy logins, copy verification codes and generate passwords from the browser toolbar (`Ctrl+Shift+L`).
+- **Chrome, Brave, Edge, Vivaldi, Firefox and LibreWolf** — fill and copy logins, copy verification codes, generate passwords, and add, edit (notes included) or delete logins from the browser toolbar (`Alt+Shift+L`).
 - **Off until you turn it on** in *Settings → Browser*. The extension stores nothing: it asks the app each time, unlocks with your master password (or the keyring, if you chose that), and locks again with the desktop auto-lock.
 - **Fills only the site the login belongs to**, and only after a click — a page can never obtain another site's password. Matching uses the Public Suffix List and the port.
 - Source and build instructions: [`browser-extension/`](browser-extension/README.md); protocol: [`PROTOCOL.md`](browser-extension/PROTOCOL.md).

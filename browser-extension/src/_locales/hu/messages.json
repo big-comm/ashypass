@@ -593,10 +593,6 @@
     "message": "Billentyűparancs",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Megnyitja ezt az ablakot. A böngésző bővítmény-billentyűparancsainak beállításaiban módosíthatja.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Nincs beállítva",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Ez a menü lejárt. Kattintson újra a mezőre.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "A böngésző jelszókezelőjének kikapcsolása"
+  },
+  "browserPmHint": {
+    "message": "A saját listája az oldal fölött jelenik meg, és eltakarja az Ashy Pass javaslatait. Kikapcsolva az Ashy Pass azonnal megnyílik, ha egy bejelentkezési mezőbe kattint."
+  },
+  "browserPmOffToast": {
+    "message": "A böngésző jelszókezelője ki van kapcsolva"
+  },
+  "browserPmOnToast": {
+    "message": "A böngésző jelszókezelője újra be van kapcsolva"
+  },
+  "shortcutOpens": {
+    "message": "Megnyitja ezt az ablakot."
+  },
+  "shortcutChange": {
+    "message": "Módosítás"
+  },
+  "shortcutRecord": {
+    "message": "Nyomja le az új billentyűkombinációt…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl vagy Alt, igény szerint Shift, és egy betű vagy szám. Az Esc megszakítja."
+  },
+  "shortcutReset": {
+    "message": "Alapértelmezett"
+  },
+  "shortcutSaved": {
+    "message": "Billentyűparancs mentve"
+  },
+  "shortcutInvalid": {
+    "message": "Ez a kombináció nem használható. Próbálja a Ctrl vagy Alt billentyűt egy betűvel."
+  },
+  "shortcutOpenFailed": {
+    "message": "Nem sikerült megnyitni a böngésző billentyűparancs-beállításait."
+  },
+  "editButton": {
+    "message": "Szerkesztés"
+  },
+  "deleteButton": {
+    "message": "Törlés"
+  },
+  "deleteConfirmTitle": {
+    "message": "Törli ezt: „$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Ha a kuka be van kapcsolva az Ashy Passban, onnan visszaállíthatja. A szinkronizált eszközök is törlik."
+  },
+  "editLoginTitle": {
+    "message": "Bejelentkezés szerkesztése"
+  },
+  "movedToTrash": {
+    "message": "Áthelyezve az Ashy Pass kukájába"
+  },
+  "loginDeleted": {
+    "message": "Bejelentkezés törölve"
+  },
+  "errorChanged": {
+    "message": "Ezt a bejelentkezést közben módosították az Ashy Passban. Nyissa meg újra a legfrissebb változathoz."
+  },
+  "errorHostOutdated": {
+    "message": "A használatához frissítse az Ashy Passt ezen a számítógépen."
+  },
+  "notesLabel": {
+    "message": "Jegyzetek"
   }
 }

@@ -82,6 +82,19 @@ async function host(cmd, fields = {}) {
   return promise;
 }
 
+/** Like `host`, but a host that does not know `cmd` (older than the
+ * extension) fails with `host_outdated` instead of `invalid`. */
+async function hostOrOutdated(cmd, fields) {
+  try {
+    return await host(cmd, fields);
+  } catch (err) {
+    if (err?.code === "invalid" && /unknown variant/.test(String(err.message))) {
+      throw new ExtError("host_outdated", "Ashy Pass is too old for this.");
+    }
+    throw err;
+  }
+}
+
 // ── Shared steps ────────────────────────────────────────────────────────────
 
 async function tabUrl(tabId) {
@@ -168,6 +181,18 @@ function serial(fn) {
 }
 
 const INLINE_OFF_KEY = "inlineOff";
+// Set when this extension turned the browser's password manager off; the
+// content script then opens the menu as soon as a login field is focused.
+const BROWSER_PM_OFF_KEY = "browserPmOff";
+
+async function passwordSavingSetting() {
+  try {
+    const granted = await api.permissions.contains({ permissions: ["privacy"] });
+    return granted === true ? (api.privacy?.services?.passwordSavingEnabled ?? null) : null;
+  } catch {
+    return null;
+  }
+}
 
 async function inlineTurnedOff() {
   try {
@@ -410,6 +435,55 @@ const handlers = {
     }
   },
 
+  /** The fields of one entry for the edit form, with the stamp `update` needs. */
+  async editable(msg) {
+    const id = requireId(msg);
+    const reply = await hostOrOutdated("get", { id, notes: true });
+    const e = reply.entry ?? {};
+    const text = (v) => (typeof v === "string" ? v : "");
+    try {
+      // Hosts older than protocol 4 send no stamp and cannot edit.
+      if (!Number.isSafeInteger(e.updated_at)) throw new ExtError("host_outdated", "Ashy Pass is too old to edit logins.");
+      return {
+        ok: true,
+        entry: {
+          id,
+          title: text(e.title),
+          username: text(e.username),
+          password: text(e.password),
+          url: text(e.url),
+          category: text(e.category),
+          notes: text(e.notes),
+          updatedAt: e.updated_at,
+        },
+      };
+    } finally {
+      e.password = "";
+      e.notes = "";
+    }
+  },
+
+  async update(msg) {
+    const id = requireId(msg);
+    if (!Number.isSafeInteger(msg.updatedAt)) throw new ExtError("invalid", "Missing entry stamp.");
+    const fields = sanitizeNewEntry(msg);
+    msg.password = "";
+    // The form always sends the notes: blank clears them.
+    if (typeof msg.notes === "string" && !("notes" in fields)) fields.notes = "";
+    try {
+      await hostOrOutdated("update", { ...fields, id, updated_at: msg.updatedAt });
+      return { ok: true };
+    } finally {
+      fields.password = "";
+    }
+  },
+
+  async delete(msg) {
+    const id = requireId(msg);
+    const reply = await hostOrOutdated("delete", { id });
+    return { ok: true, trashed: reply.trashed === true };
+  },
+
   async toggleFavorite(msg) {
     const id = requireId(msg);
     const reply = await host("toggle_favorite", { id });
@@ -438,6 +512,34 @@ const handlers = {
     await api.storage.local.set({ [INLINE_OFF_KEY]: true });
     await syncInline();
     return { ok: true, enabled: false };
+  },
+
+  /**
+   * The browser's own password manager. Its suggestions are drawn by the
+   * browser over the page and cannot be hidden by an extension; the
+   * `privacy` API (optional permission) can turn it off, as other password
+   * managers offer. Our menu then opens straight on the field.
+   */
+  async browserPmState() {
+    const setting = await passwordSavingSetting();
+    if (!setting) return { ok: true, granted: false, off: false };
+    const detail = await setting.get({});
+    return {
+      ok: true,
+      granted: true,
+      off: detail?.value === false,
+      controllable: /controll(ed|able)_by_this_extension/.test(String(detail?.levelOfControl ?? "")),
+    };
+  },
+
+  async browserPmSet(msg) {
+    const setting = await passwordSavingSetting();
+    if (!setting) throw new ExtError("permission_denied", "Permission not granted.");
+    const off = msg.off === true;
+    if (off) await setting.set({ value: false });
+    else await setting.clear({});
+    await api.storage.local.set({ [BROWSER_PM_OFF_KEY]: off });
+    return { ok: true, off };
   },
 
   async takePendingView(msg) {

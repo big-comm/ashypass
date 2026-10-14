@@ -593,10 +593,6 @@
     "message": "Kiirklahv",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Avab selle akna. Saad seda muuta brauseri laienduste kiirklahvide seadetes.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Määramata",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "See menüü on aegunud. Klõpsa uuesti väljal.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Lülita brauseri paroolihaldur välja"
+  },
+  "browserPmHint": {
+    "message": "Selle enda loend ilmub lehe peale ja katab Ashy Passi soovitused. Kui see on väljas, avaneb Ashy Pass kohe, kui klõpsad sisselogimisväljal."
+  },
+  "browserPmOffToast": {
+    "message": "Brauseri paroolihaldur on välja lülitatud"
+  },
+  "browserPmOnToast": {
+    "message": "Brauseri paroolihaldur on taas sisse lülitatud"
+  },
+  "shortcutOpens": {
+    "message": "Avab selle akna."
+  },
+  "shortcutChange": {
+    "message": "Muuda"
+  },
+  "shortcutRecord": {
+    "message": "Vajuta uut klahvikombinatsiooni…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl või Alt, soovi korral Shift, ja täht või number. Esc tühistab."
+  },
+  "shortcutReset": {
+    "message": "Vaikimisi"
+  },
+  "shortcutSaved": {
+    "message": "Kiirklahv salvestati"
+  },
+  "shortcutInvalid": {
+    "message": "Seda kombinatsiooni ei saa kasutada. Proovi Ctrl või Alt koos tähega."
+  },
+  "shortcutOpenFailed": {
+    "message": "Brauseri kiirklahvide seadeid ei saanud avada."
+  },
+  "editButton": {
+    "message": "Muuda"
+  },
+  "deleteButton": {
+    "message": "Kustuta"
+  },
+  "deleteConfirmTitle": {
+    "message": "Kas kustutada „$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Kui prügikast on Ashy Passis sisse lülitatud, saad selle sealt taastada. Sünkroonitud seadmed kustutavad selle samuti."
+  },
+  "editLoginTitle": {
+    "message": "Muuda sisselogimist"
+  },
+  "movedToTrash": {
+    "message": "Teisaldati Ashy Passi prügikasti"
+  },
+  "loginDeleted": {
+    "message": "Sisselogimine kustutati"
+  },
+  "errorChanged": {
+    "message": "Seda sisselogimist muudeti vahepeal Ashy Passis. Ava see uuesti, et näha uusimat versiooni."
+  },
+  "errorHostOutdated": {
+    "message": "Selle kasutamiseks uuenda selles arvutis Ashy Passi."
+  },
+  "notesLabel": {
+    "message": "Märkmed"
   }
 }

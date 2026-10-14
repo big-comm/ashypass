@@ -165,6 +165,20 @@
           </div>
 
           <button type="button" id="details-fill" class="suggested wide with-icon" hidden><span data-icon="fill" data-icon-size="16"></span><span data-i18n="fillButton">Fill</span></button>
+
+          <div class="details-actions">
+            <button type="button" id="details-edit" class="pill with-icon"><span data-icon="edit" data-icon-size="16"></span><span data-i18n="editButton">Edit</span></button>
+            <button type="button" id="details-delete" class="pill destructive-text with-icon"><span data-icon="trash" data-icon-size="16"></span><span data-i18n="deleteButton">Delete</span></button>
+          </div>
+
+          <div id="delete-confirm" class="card confirm-card" role="alertdialog" aria-labelledby="delete-confirm-title" aria-describedby="delete-confirm-hint" hidden>
+            <p id="delete-confirm-title" class="confirm-title"></p>
+            <p id="delete-confirm-hint" class="dim small-text" data-i18n="deleteConfirmHint">If the trash is on in Ashy Pass, you can restore it from there. Synced devices delete it too.</p>
+            <div class="form-actions">
+              <button type="button" id="delete-cancel" class="pill" data-i18n="cancelButton">Cancel</button>
+              <button type="button" id="delete-confirm-button" class="pill destructive" data-i18n="deleteButton">Delete</button>
+            </div>
+          </div>
         </section>
 
         <!-- New login -->
@@ -189,6 +203,9 @@
             <label for="add-folder" data-i18n="folderLabel">Folder</label>
             <input type="text" id="add-folder" list="add-folder-list" autocomplete="off" maxlength="256" data-i18n-placeholder="noFolder">
             <datalist id="add-folder-list"></datalist>
+
+            <label for="add-notes" data-i18n="notesLabel">Notes</label>
+            <textarea id="add-notes" rows="3" spellcheck="false" maxlength="65536"></textarea>
 
             <p id="add-error" class="error" role="alert"></p>
             <div class="form-actions">
@@ -269,13 +286,28 @@
               </span>
               <input type="checkbox" role="switch" id="settings-inline" class="switch">
             </label>
+            <label class="list-row switch-row">
+              <span class="row-text">
+                <span data-i18n="browserPmLabel">Turn off the browser's password manager</span>
+                <span class="dim small-text" data-i18n="browserPmHint">Its own list appears over the page and covers Ashy Pass suggestions. When it is off, Ashy Pass opens as soon as you click a login field.</span>
+              </span>
+              <input type="checkbox" role="switch" id="settings-browser-pm" class="switch">
+            </label>
             <div class="list-row static">
               <span data-icon="keyboard"></span>
               <span class="row-text">
                 <span data-i18n="shortcutLabel">Keyboard shortcut</span>
-                <span class="dim small-text" data-i18n="shortcutHint">Opens this window. Change it in the browser's extension shortcuts settings.</span>
+                <span class="dim small-text" data-i18n="shortcutOpens">Opens this window.</span>
               </span>
-              <kbd id="settings-shortcut">Ctrl+Shift+L</kbd>
+              <kbd id="settings-shortcut">Alt+Shift+L</kbd>
+              <button type="button" id="settings-shortcut-change" class="pill" data-i18n="shortcutChange">Change</button>
+            </div>
+            <div class="list-row static" id="shortcut-recorder" hidden>
+              <span class="row-text">
+                <span data-i18n="shortcutRecord">Press the new key combination…</span>
+                <span class="dim small-text" data-i18n="shortcutRecordHint">Ctrl or Alt, optionally Shift, and a letter or number. Esc cancels.</span>
+              </span>
+              <button type="button" id="settings-shortcut-reset" class="pill" data-i18n="shortcutReset">Default</button>
             </div>
           </div>
 

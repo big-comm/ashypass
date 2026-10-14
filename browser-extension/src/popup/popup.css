@@ -171,6 +171,7 @@ input[type="search"],
 input[type="text"],
 input[type="url"],
 input[type="number"],
+textarea,
 select {
   width: 100%;
   min-height: 34px;
@@ -184,6 +185,13 @@ select {
 
 select {
   cursor: pointer;
+}
+
+textarea {
+  min-height: 72px;
+  max-height: 200px;
+  resize: vertical;
+  line-height: 1.4;
 }
 
 select option {
@@ -573,6 +581,37 @@ select option {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.details-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.confirm-card {
+  margin-top: 12px;
+  padding: 12px 14px;
+}
+
+.confirm-title {
+  margin: 0 0 4px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+button.destructive {
+  background: var(--error);
+  color: var(--error-fg);
+}
+
+button.destructive:hover {
+  background: color-mix(in srgb, var(--error), white 10%);
+}
+
+button.destructive-text {
+  color: var(--error);
 }
 
 .form-actions {

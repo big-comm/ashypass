@@ -593,10 +593,6 @@
     "message": "Scorciatoia da tastiera",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Apre questa finestra. Puoi cambiarla nelle impostazioni delle scorciatoie delle estensioni del browser.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Non impostata",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Questo menu è scaduto. Fai di nuovo clic sul campo.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Disattiva il gestore di password del browser"
+  },
+  "browserPmHint": {
+    "message": "Il suo elenco appare sopra la pagina e copre i suggerimenti di Ashy Pass. Se disattivato, Ashy Pass si apre appena fai clic su un campo di accesso."
+  },
+  "browserPmOffToast": {
+    "message": "Il gestore di password del browser è disattivato"
+  },
+  "browserPmOnToast": {
+    "message": "Il gestore di password del browser è di nuovo attivo"
+  },
+  "shortcutOpens": {
+    "message": "Apre questa finestra."
+  },
+  "shortcutChange": {
+    "message": "Cambia"
+  },
+  "shortcutRecord": {
+    "message": "Premi la nuova combinazione di tasti…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl o Alt, con o senza Maiusc, e una lettera o un numero. Esc annulla."
+  },
+  "shortcutReset": {
+    "message": "Predefinita"
+  },
+  "shortcutSaved": {
+    "message": "Scorciatoia salvata"
+  },
+  "shortcutInvalid": {
+    "message": "Questa combinazione non si può usare. Prova Ctrl o Alt con una lettera."
+  },
+  "shortcutOpenFailed": {
+    "message": "Impossibile aprire le impostazioni delle scorciatoie del browser."
+  },
+  "editButton": {
+    "message": "Modifica"
+  },
+  "deleteButton": {
+    "message": "Elimina"
+  },
+  "deleteConfirmTitle": {
+    "message": "Eliminare «$TITLE$»?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Se il cestino è attivo in Ashy Pass, puoi ripristinarlo da lì. Anche i dispositivi sincronizzati lo eliminano."
+  },
+  "editLoginTitle": {
+    "message": "Modifica accesso"
+  },
+  "movedToTrash": {
+    "message": "Spostato nel cestino di Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Accesso eliminato"
+  },
+  "errorChanged": {
+    "message": "Questo accesso è stato modificato in Ashy Pass nel frattempo. Riaprilo per vedere la versione più recente."
+  },
+  "errorHostOutdated": {
+    "message": "Aggiorna Ashy Pass su questo computer per usare questa funzione."
+  },
+  "notesLabel": {
+    "message": "Note"
   }
 }

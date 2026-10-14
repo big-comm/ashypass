@@ -593,10 +593,6 @@
     "message": "Kortkommando",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "Öppnar det här fönstret. Du kan ändra det i webbläsarens inställningar för tilläggens kortkommandon.",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "Inte inställt",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "Den här menyn har gått ut. Klicka på fältet igen.",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Stäng av webbläsarens lösenordshanterare"
+  },
+  "browserPmHint": {
+    "message": "Dess egen lista visas ovanpå sidan och täcker Ashy Pass förslag. När den är av öppnas Ashy Pass så fort du klickar i ett inloggningsfält."
+  },
+  "browserPmOffToast": {
+    "message": "Webbläsarens lösenordshanterare är avstängd"
+  },
+  "browserPmOnToast": {
+    "message": "Webbläsarens lösenordshanterare är på igen"
+  },
+  "shortcutOpens": {
+    "message": "Öppnar det här fönstret."
+  },
+  "shortcutChange": {
+    "message": "Ändra"
+  },
+  "shortcutRecord": {
+    "message": "Tryck på den nya tangentkombinationen …"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl eller Alt, eventuellt Skift, och en bokstav eller siffra. Esc avbryter."
+  },
+  "shortcutReset": {
+    "message": "Standard"
+  },
+  "shortcutSaved": {
+    "message": "Kortkommando sparat"
+  },
+  "shortcutInvalid": {
+    "message": "Den kombinationen kan inte användas. Prova Ctrl eller Alt med en bokstav."
+  },
+  "shortcutOpenFailed": {
+    "message": "Det gick inte att öppna webbläsarens inställningar för kortkommandon."
+  },
+  "editButton": {
+    "message": "Redigera"
+  },
+  "deleteButton": {
+    "message": "Ta bort"
+  },
+  "deleteConfirmTitle": {
+    "message": "Ta bort ”$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Om papperskorgen är på i Ashy Pass kan du återställa den därifrån. Synkroniserade enheter tar också bort den."
+  },
+  "editLoginTitle": {
+    "message": "Redigera inloggning"
+  },
+  "movedToTrash": {
+    "message": "Flyttad till papperskorgen i Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Inloggning borttagen"
+  },
+  "errorChanged": {
+    "message": "Den här inloggningen ändrades i Ashy Pass under tiden. Öppna den igen för att se den senaste versionen."
+  },
+  "errorHostOutdated": {
+    "message": "Uppdatera Ashy Pass på den här datorn för att använda detta."
+  },
+  "notesLabel": {
+    "message": "Anteckningar"
   }
 }

@@ -358,6 +358,60 @@ test("add validates and forwards only the documented fields", async () => {
   assert.equal((await send({ type: "add", title: "x", password: "" })).code, "invalid");
 });
 
+test("editable, update and delete", async () => {
+  world.posted = [];
+  world.respond = (m) => {
+    if (m.cmd === "get") {
+      return { ok: true, entry: { id: 7, title: "Mail", username: null, url: "https://mail.example", password: "pw", category: null, notes: "Codes:\n 1 2", updated_at: 1700 } };
+    }
+    if (m.cmd === "update") return { ok: true, id: 7 };
+    if (m.cmd === "delete") return { ok: true, trashed: true };
+    return null;
+  };
+  assert.deepEqual(await send({ type: "editable", id: 7 }), {
+    ok: true,
+    entry: { id: 7, title: "Mail", username: "", password: "pw", url: "https://mail.example", category: "", notes: "Codes:\n 1 2", updatedAt: 1700 },
+  });
+  // Only the edit form reads the notes.
+  assert.deepEqual(world.posted.find((m) => m.cmd === "get").notes, true);
+
+  world.posted = [];
+  const updated = await send({ type: "update", id: 7, updatedAt: 1700, title: " Mail ", password: "new", username: "", url: "", category: "Work" });
+  assert.deepEqual(updated, { ok: true });
+  const { rid, ...posted } = world.posted[0];
+  assert.ok(Number.isInteger(rid));
+  assert.deepEqual(posted, { cmd: "update", title: "Mail", password: "new", category: "Work", id: 7, updated_at: 1700 });
+
+  // Notes keep their spacing; blank notes from the form clear them.
+  world.posted = [];
+  await send({ type: "update", id: 7, updatedAt: 1700, title: "Mail", password: "pw", notes: "  line 1\nline 2 " });
+  assert.equal(world.posted[0].notes, "  line 1\nline 2 ");
+  world.posted = [];
+  await send({ type: "update", id: 7, updatedAt: 1700, title: "Mail", password: "pw", notes: " \n " });
+  assert.equal(world.posted[0].notes, "");
+  assert.equal((await send({ type: "update", id: 7, updatedAt: 1700, title: "Mail", password: "pw", notes: "x".repeat(65537) })).code, "invalid");
+  assert.equal((await send({ type: "update", id: 7, title: "x", password: "y" })).code, "invalid");
+  assert.equal((await send({ type: "update", id: 7, updatedAt: 1700, title: "x", password: "" })).code, "invalid");
+
+  assert.deepEqual(await send({ type: "delete", id: 7 }), { ok: true, trashed: true });
+  assert.equal((await send({ type: "delete" })).code, "invalid");
+
+  // The host's own errors pass through.
+  world.respond = (m) => ({ ok: false, code: m.cmd === "update" ? "changed" : "not_found", error: "x" });
+  assert.equal((await send({ type: "update", id: 7, updatedAt: 1, title: "x", password: "y" })).code, "changed");
+  assert.equal((await send({ type: "delete", id: 7 })).code, "not_found");
+});
+
+test("an older host that cannot edit reports host_outdated", async () => {
+  world.respond = (m) => {
+    if (m.cmd === "get") return { ok: true, entry: { id: 7, title: "Mail", password: "pw" } };
+    return { ok: false, code: "invalid", error: `malformed request: unknown variant \`${m.cmd}\`, expected one of \`ping\`` };
+  };
+  assert.equal((await send({ type: "editable", id: 7 })).code, "host_outdated");
+  assert.equal((await send({ type: "delete", id: 7 })).code, "host_outdated");
+  assert.equal((await send({ type: "update", id: 7, updatedAt: 1, title: "x", password: "y" })).code, "host_outdated");
+});
+
 test("generate maps the generator options", async () => {
   world.posted = [];
   world.respond = () => ({ ok: true, password: "x" });

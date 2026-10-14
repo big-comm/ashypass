@@ -593,10 +593,6 @@
     "message": "键盘快捷键",
     "description": "Settings row that shows the shortcut that opens the extension."
   },
-  "shortcutHint": {
-    "message": "打开此窗口。您可以在浏览器的扩展快捷键设置中更改。",
-    "description": "Explains the keyboard shortcut."
-  },
   "shortcutNotSet": {
     "message": "未设置",
     "description": "Shown when no keyboard shortcut is set."
@@ -644,5 +640,77 @@
   "inlineExpired": {
     "message": "此菜单已过期。请再次点击该字段。",
     "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "关闭浏览器的密码管理器"
+  },
+  "browserPmHint": {
+    "message": "浏览器自己的列表会显示在页面上方，遮住 Ashy Pass 的建议。关闭后，点击登录框时会立即打开 Ashy Pass。"
+  },
+  "browserPmOffToast": {
+    "message": "已关闭浏览器的密码管理器"
+  },
+  "browserPmOnToast": {
+    "message": "已重新开启浏览器的密码管理器"
+  },
+  "shortcutOpens": {
+    "message": "打开此窗口。"
+  },
+  "shortcutChange": {
+    "message": "更改"
+  },
+  "shortcutRecord": {
+    "message": "请按下新的组合键…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl 或 Alt，可加 Shift，再加一个字母或数字。按 Esc 取消。"
+  },
+  "shortcutReset": {
+    "message": "默认"
+  },
+  "shortcutSaved": {
+    "message": "快捷键已保存"
+  },
+  "shortcutInvalid": {
+    "message": "无法使用该组合。请尝试 Ctrl 或 Alt 加一个字母。"
+  },
+  "shortcutOpenFailed": {
+    "message": "无法打开浏览器的快捷键设置。"
+  },
+  "editButton": {
+    "message": "编辑"
+  },
+  "deleteButton": {
+    "message": "删除"
+  },
+  "deleteConfirmTitle": {
+    "message": "删除“$TITLE$”？",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "如果 Ashy Pass 中启用了回收站，可以从那里恢复。已同步的设备也会删除它。"
+  },
+  "editLoginTitle": {
+    "message": "编辑登录信息"
+  },
+  "movedToTrash": {
+    "message": "已移至 Ashy Pass 回收站"
+  },
+  "loginDeleted": {
+    "message": "登录信息已删除"
+  },
+  "errorChanged": {
+    "message": "此登录信息在此期间已在 Ashy Pass 中更改。请重新打开以查看最新版本。"
+  },
+  "errorHostOutdated": {
+    "message": "请更新此电脑上的 Ashy Pass 以使用此功能。"
+  },
+  "notesLabel": {
+    "message": "备注"
   }
 }
