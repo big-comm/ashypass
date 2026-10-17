@@ -615,6 +615,9 @@ pub fn present(
                     .update(
                         id,
                         UpdateEntry {
+                            // Keep the type and fields the desktop does not edit yet.
+                            item_type: None,
+                            extra: None,
                             title: Some(title),
                             username: Some(username.unwrap_or_default()),
                             password: Some(password.to_string()),
@@ -640,6 +643,8 @@ pub fn present(
                     })
             } else {
                 state.vault.borrow().add(NewEntry {
+                    item_type: None,
+                    extra: None,
                     title,
                     username,
                     password: password.to_string(),

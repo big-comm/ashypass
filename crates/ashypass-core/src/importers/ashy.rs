@@ -38,6 +38,12 @@ const MAX_EXPORT_BYTES: u64 = 1024 * 1024 * 1024;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExportEntry {
+    /// Absent in files from before item types: a login.
+    #[serde(default = "default_item_type", skip_serializing_if = "is_login")]
+    pub item_type: String,
+    /// Fields of cards and identities, extra websites (JSON).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub extra: Option<String>,
     pub title: String,
     pub username: Option<String>,
     pub url: Option<String>,
@@ -52,6 +58,14 @@ pub struct ExportEntry {
     pub favorite: bool,
     #[serde(default)]
     pub tags: Vec<String>,
+}
+
+fn default_item_type() -> String {
+    crate::db::vault::ITEM_LOGIN.to_string()
+}
+
+fn is_login(item_type: &str) -> bool {
+    item_type == crate::db::vault::ITEM_LOGIN
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -96,6 +110,8 @@ fn derive_key(
 
 fn entry_from(entry: PasswordEntry, tags: Vec<String>) -> ExportEntry {
     ExportEntry {
+        item_type: entry.item_type,
+        extra: entry.extra,
         title: entry.title,
         username: entry.username,
         url: entry.url,
@@ -109,6 +125,48 @@ fn entry_from(entry: PasswordEntry, tags: Vec<String>) -> ExportEntry {
         favorite: entry.favorite,
         tags,
     }
+}
+
+/// Export only `ids` (to share them): the same encrypted format, without
+/// the database snapshot, so the receiver imports exactly these entries.
+/// Returns how many were written.
+pub fn export_entries(
+    vault: &Vault,
+    ids: &[i64],
+    path: impl AsRef<Path>,
+    export_password: &str,
+) -> Result<usize> {
+    if export_password.is_empty() {
+        return Err(Error::InvalidInput("export password is empty".into()));
+    }
+    let mut entries = Vec::with_capacity(ids.len());
+    for id in ids {
+        if let Some(full) = vault.get_without_touch(*id)? {
+            entries.push(entry_from(full, vault.tags_of(*id)?));
+        }
+    }
+    if entries.is_empty() {
+        return Err(Error::InvalidInput("nothing to export".into()));
+    }
+    let doc = ExportDocument {
+        version: 2,
+        created_at: chrono::Utc::now().timestamp(),
+        folders: Vec::new(),
+        database_snapshot: None,
+        entries,
+    };
+    let entry_count = doc.entries.len();
+    let plaintext = Zeroizing::new(serde_json::to_vec(&doc)?);
+    drop(doc);
+    let output = encrypt_document(
+        &plaintext,
+        export_password,
+        ARGON2_T,
+        ARGON2_M_KIB,
+        ARGON2_P,
+    )?;
+    write_private_replacing(path.as_ref(), &output)?;
+    Ok(entry_count)
 }
 
 pub fn export_vault(vault: &Vault, path: impl AsRef<Path>, export_password: &str) -> Result<usize> {
@@ -243,6 +301,8 @@ fn document_to_import(document: ExportDocument) -> ParsedImport {
     for entry in document.entries {
         out.push(ImportCandidate {
             entry: NewEntry {
+                item_type: Some(entry.item_type),
+                extra: entry.extra,
                 title: entry.title,
                 username: entry.username,
                 url: entry.url,

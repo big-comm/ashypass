@@ -468,6 +468,8 @@ fn dev_seed(state: &SharedState) {
     ];
     for (title, user, url, folder, totp, favorite) in samples {
         let id = vault.add(NewEntry {
+            item_type: None,
+            extra: None,
             title: title.to_string(),
             username: Some(user.to_string()),
             password: ashypass_core::generator::generate_password(

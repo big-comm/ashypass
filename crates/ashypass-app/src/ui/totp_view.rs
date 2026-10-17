@@ -605,6 +605,9 @@ impl Inner {
                 return;
             }
             let change = UpdateEntry {
+                // Keep the type and fields the desktop does not edit yet.
+                item_type: None,
+                extra: None,
                 title: None,
                 username: None,
                 password: None,
@@ -959,6 +962,8 @@ impl Inner {
                     .vault
                     .borrow()
                     .add(NewEntry {
+                        item_type: None,
+                        extra: None,
                         title,
                         username: user,
                         password: String::new(),
@@ -982,6 +987,9 @@ impl Inner {
                     .update(
                         target.id,
                         UpdateEntry {
+                            // Keep the type and fields the desktop does not edit yet.
+                            item_type: None,
+                            extra: None,
                             title: None,
                             username: None,
                             password: None,

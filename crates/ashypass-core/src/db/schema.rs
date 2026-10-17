@@ -293,6 +293,13 @@ pub const LEGACY_COLUMN_ALTERS: &[&str] = &[
     "ALTER TABLE passwords ADD COLUMN totp_period INTEGER DEFAULT 30",
     "ALTER TABLE passwords ADD COLUMN category TEXT",
     "ALTER TABLE passwords ADD COLUMN favorite INTEGER DEFAULT 0",
+    // Item types (cards, identities, secure notes) and their encrypted
+    // fields. The trash tables exist only on the second pass of setup
+    // (`add_missing_columns`), where these succeed.
+    "ALTER TABLE passwords ADD COLUMN item_type TEXT NOT NULL DEFAULT 'login'",
+    "ALTER TABLE passwords ADD COLUMN extra_encrypted BLOB",
+    "ALTER TABLE passwords_trash ADD COLUMN item_type TEXT",
+    "ALTER TABLE passwords_trash ADD COLUMN extra_encrypted BLOB",
 ];
 
 const SEED_SYNC_META: &str =

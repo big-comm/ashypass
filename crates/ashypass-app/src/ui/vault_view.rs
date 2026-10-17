@@ -2237,6 +2237,8 @@ mod tests {
         favorite: bool,
     ) -> PasswordEntry {
         PasswordEntry {
+            item_type: ashypass_core::db::vault::ITEM_LOGIN.into(),
+            extra: None,
             id,
             title: title.to_string(),
             username: username.map(str::to_string),
@@ -2343,6 +2345,8 @@ mod tests {
 
     fn row(id: i64, title: &str) -> Rc<PasswordEntry> {
         Rc::new(PasswordEntry {
+            item_type: ashypass_core::db::vault::ITEM_LOGIN.into(),
+            extra: None,
             id,
             title: title.into(),
             username: None,

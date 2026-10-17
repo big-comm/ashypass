@@ -66,7 +66,13 @@ impl Report {
 }
 
 pub fn run(vault: &Vault, opts: AuditOptions) -> Result<Report> {
-    let summaries = vault.list(None)?;
+    // Only logins have passwords to audit: cards, identities and secure
+    // notes would all count as "weak" and "without two-factor".
+    let summaries: Vec<PasswordEntry> = vault
+        .list(None)?
+        .into_iter()
+        .filter(|e| e.item_type == crate::db::vault::ITEM_LOGIN)
+        .collect();
     let mut decrypted: Vec<PasswordEntry> = Vec::with_capacity(summaries.len());
     for s in &summaries {
         if let Some(e) = vault.get_without_touch(s.id)? {

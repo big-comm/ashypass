@@ -286,6 +286,8 @@ mod tests {
 
     fn add(v: &Vault, title: &str, category: Option<&str>) -> i64 {
         v.add(NewEntry {
+            item_type: None,
+            extra: None,
             title: title.into(),
             username: None,
             password: "pw".into(),

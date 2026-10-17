@@ -76,8 +76,37 @@ pub struct Vault {
     listeners: Rc<RefCell<Vec<ChangeListener>>>,
 }
 
+/// What an entry holds. Older vaults only have logins; the other kinds keep
+/// their fields in `extra` (encrypted JSON).
+pub const ITEM_LOGIN: &str = "login";
+pub const ITEM_CARD: &str = "card";
+pub const ITEM_IDENTITY: &str = "identity";
+pub const ITEM_NOTE: &str = "note";
+/// A passkey (WebAuthn credential); its private key lives in `extra`.
+pub const ITEM_PASSKEY: &str = "passkey";
+const ITEM_TYPES: &[&str] = &[
+    ITEM_LOGIN,
+    ITEM_CARD,
+    ITEM_IDENTITY,
+    ITEM_NOTE,
+    ITEM_PASSKEY,
+];
+
+fn checked_item_type(item_type: &str) -> Result<&str> {
+    ITEM_TYPES
+        .iter()
+        .find(|t| **t == item_type)
+        .copied()
+        .ok_or_else(|| Error::InvalidInput(format!("unknown item type: {item_type}")))
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct NewEntry {
+    /// `ITEM_LOGIN` when `None`.
+    pub item_type: Option<String>,
+    /// Encrypted JSON the apps use for the fields of cards and identities and
+    /// for extra websites (see the mobile app); opaque to the core.
+    pub extra: Option<String>,
     pub title: String,
     pub username: Option<String>,
     pub password: String,
@@ -92,6 +121,9 @@ pub struct NewEntry {
 
 #[derive(Debug, Clone, Default)]
 pub struct UpdateEntry {
+    pub item_type: Option<String>,
+    /// `Some(None)` clears it.
+    pub extra: Option<Option<String>>,
     pub title: Option<String>,
     pub username: Option<String>,
     pub password: Option<String>,
@@ -157,6 +189,10 @@ pub struct TrashedEntry {
 #[derive(Debug, Clone)]
 pub struct PasswordEntry {
     pub id: i64,
+    /// `ITEM_LOGIN`, `ITEM_CARD`, `ITEM_IDENTITY` or `ITEM_NOTE`.
+    pub item_type: String,
+    /// Decrypted only by `get()`; `None` in summaries.
+    pub extra: Option<String>,
     pub title: String,
     pub username: Option<String>,
     pub url: Option<String>,
@@ -943,6 +979,13 @@ impl Vault {
         {
             crate::totp::generate_totp(secret, algorithm, totp_digits, totp_period, 0)?;
         }
+        let item_type = checked_item_type(entry.item_type.as_deref().unwrap_or(ITEM_LOGIN))?;
+        let extra = entry
+            .extra
+            .as_deref()
+            .filter(|s| !s.is_empty())
+            .map(|s| self.encrypt(s))
+            .transpose()?;
         let ts = chrono::Utc::now().timestamp();
         let pw = self.encrypt(&entry.password)?;
         let notes = entry
@@ -961,8 +1004,8 @@ impl Vault {
         self.conn.execute(
             "INSERT INTO passwords (title, username, password_encrypted, notes_encrypted, url,
                 totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
-                category, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                category, created_at, updated_at, item_type, extra_encrypted)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             params![
                 entry.title,
                 entry.username,
@@ -976,6 +1019,8 @@ impl Vault {
                 entry.category,
                 ts,
                 ts,
+                item_type,
+                extra,
             ],
         )?;
         let id = self.conn.last_insert_rowid();
@@ -994,7 +1039,7 @@ impl Vault {
     ) -> Result<Vec<PasswordEntry>> {
         let base = "SELECT id, title, username, url,
                            totp_secret_encrypted IS NOT NULL, totp_algorithm, totp_digits, totp_period,
-                           category, favorite, created_at, updated_at, last_accessed
+                           category, favorite, created_at, updated_at, last_accessed, item_type
                     FROM passwords";
 
         let mut clauses: Vec<&str> = Vec::new();
@@ -1040,7 +1085,7 @@ impl Vault {
     ) -> Result<Vec<PasswordEntry>> {
         let base = "SELECT p.id, p.title, p.username, p.url,
                            p.totp_secret_encrypted IS NOT NULL, p.totp_algorithm, p.totp_digits, p.totp_period,
-                           p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed
+                           p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed, p.item_type
                     FROM passwords_fts
                     JOIN passwords p ON p.id = passwords_fts.rowid
                     WHERE passwords_fts MATCH ?";
@@ -1085,7 +1130,8 @@ impl Vault {
         let mut stmt = self.conn.prepare_cached(
             "SELECT id, title, username, password_encrypted, notes_encrypted, url,
                     totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
-                    category, favorite, created_at, updated_at, last_accessed
+                    category, favorite, created_at, updated_at, last_accessed,
+                    item_type, extra_encrypted
              FROM passwords WHERE id = ?",
         )?;
         let mut rows = stmt.query(params![id])?;
@@ -1096,9 +1142,14 @@ impl Vault {
         let pw_blob: Vec<u8> = row.get(3)?;
         let notes_blob: Option<Vec<u8>> = row.get(4)?;
         let totp_blob: Option<Vec<u8>> = row.get(6)?;
+        let extra_blob: Option<Vec<u8>> = row.get(16)?;
 
         let entry = PasswordEntry {
             id: row.get(0)?,
+            item_type: row
+                .get::<_, Option<String>>(15)?
+                .unwrap_or_else(|| ITEM_LOGIN.into()),
+            extra: extra_blob.as_ref().map(|b| self.decrypt(b)).transpose()?,
             title: row.get(1)?,
             username: row.get(2)?,
             password: Some(self.decrypt(&pw_blob)?),
@@ -1268,6 +1319,17 @@ impl Vault {
             sets.push("totp_period = ?");
             vals.push((p as i64).into());
         }
+        if let Some(t) = change.item_type {
+            sets.push("item_type = ?");
+            vals.push(checked_item_type(&t)?.to_string().into());
+        }
+        if let Some(x) = change.extra {
+            sets.push("extra_encrypted = ?");
+            vals.push(match x {
+                Some(s) if !s.is_empty() => self.encrypt(&s)?.into(),
+                _ => Value::Null,
+            });
+        }
         if let Some(c) = change.category {
             sets.push("category = ?");
             vals.push(match c {
@@ -1354,10 +1416,12 @@ impl Vault {
             "INSERT INTO passwords_trash (
                 original_id, title, username, password_encrypted, notes_encrypted,
                 url, totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
-                category, favorite, created_at, updated_at, deleted_at)
+                category, favorite, created_at, updated_at, deleted_at,
+                item_type, extra_encrypted)
              SELECT id, title, username, password_encrypted, notes_encrypted,
                     url, totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
-                    category, favorite, created_at, updated_at, ?
+                    category, favorite, created_at, updated_at, ?,
+                    item_type, extra_encrypted
              FROM passwords WHERE id = ?",
             params![now, id],
         )?;
@@ -1513,6 +1577,13 @@ impl Vault {
             ],
         )?;
         let new_id = tx.last_insert_rowid();
+        tx.execute(
+            "UPDATE passwords
+                SET item_type = COALESCE((SELECT item_type FROM passwords_trash WHERE id = ?1), 'login'),
+                    extra_encrypted = (SELECT extra_encrypted FROM passwords_trash WHERE id = ?1)
+              WHERE id = ?2",
+            params![trash_id, new_id],
+        )?;
         tx.execute(
             "INSERT INTO passwords_history (entry_id, password_encrypted, changed_at)
              SELECT ?, password_encrypted, changed_at
@@ -1770,7 +1841,7 @@ impl Vault {
         let mut stmt = self.conn.prepare_cached(
             "SELECT p.id, p.title, p.username, p.url,
                     p.totp_secret_encrypted IS NOT NULL, p.totp_algorithm, p.totp_digits, p.totp_period,
-                    p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed
+                    p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed, p.item_type
              FROM passwords p
              JOIN entry_tags et ON et.entry_id = p.id
              WHERE et.tag_id = ?
@@ -1998,6 +2069,17 @@ impl Vault {
             "password_encrypted",
         )?;
         let attachments = collect_encrypted_blobs(&tx, "attachments", "id", "ciphertext")?;
+        // Cards, identities and extra websites: forgetting these here would
+        // leave them unreadable after the master password changes.
+        let extras = collect_optional_blobs(&tx, "passwords", "extra_encrypted")?;
+        let trash_extras = collect_optional_blobs(&tx, "passwords_trash", "extra_encrypted")?;
+        for (table, rows) in [("passwords", extras), ("passwords_trash", trash_extras)] {
+            let sql = format!("UPDATE {table} SET extra_encrypted = ? WHERE id = ?");
+            let mut update = tx.prepare(&sql)?;
+            for (id, blob) in rows {
+                update.execute(params![reencrypt_blob(&old_key, &new_key, &blob)?, id])?;
+            }
+        }
         let trash_attachments = collect_encrypted_blobs(
             &tx,
             "attachments_trash",
@@ -2344,6 +2426,20 @@ fn collect_encrypted_blobs(
     Ok(rows)
 }
 
+/// `(id, blob)` for the rows where the nullable `column` is set.
+fn collect_optional_blobs(
+    conn: &Connection,
+    table: &str,
+    column: &str,
+) -> Result<Vec<(i64, Vec<u8>)>> {
+    let sql = format!("SELECT id, {column} FROM {table} WHERE {column} IS NOT NULL");
+    let mut stmt = conn.prepare(&sql)?;
+    let rows = stmt
+        .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?
+        .collect::<rusqlite::Result<Vec<_>>>()?;
+    Ok(rows)
+}
+
 fn reencrypt_blob(old_key: &DerivedKey, new_key: &DerivedKey, blob: &[u8]) -> Result<Vec<u8>> {
     aes_gcm_v2::encrypt(new_key, &aes_gcm_v2::decrypt(old_key, blob)?)
 }
@@ -2379,6 +2475,10 @@ fn password_summary_from_row(r: &Row<'_>) -> rusqlite::Result<PasswordEntry> {
     let has_totp: bool = r.get(4)?;
     Ok(PasswordEntry {
         id: r.get(0)?,
+        item_type: r
+            .get::<_, Option<String>>(13)?
+            .unwrap_or_else(|| ITEM_LOGIN.into()),
+        extra: None,
         title: r.get(1)?,
         username: r.get(2)?,
         url: r.get(3)?,
@@ -3522,5 +3622,154 @@ impl Vault {
         )?;
         self.notify_change();
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod item_type_tests {
+    use super::*;
+
+    fn vault() -> (Vault, tempfile::TempDir) {
+        let dir = tempfile::tempdir().unwrap();
+        let mut v = Vault::open(dir.path().join("v.db")).unwrap();
+        v.set_master_password("correct horse battery").unwrap();
+        (v, dir)
+    }
+
+    const CARD: &str = r#"{"number":"4111111111111111","cvv":"123"}"#;
+
+    #[test]
+    fn item_types_and_extra_survive_edit_trash_and_rekey() {
+        let (mut v, _dir) = vault();
+        let card = v
+            .add(NewEntry {
+                item_type: Some(ITEM_CARD.into()),
+                extra: Some(CARD.into()),
+                title: "Visa".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        let login = v
+            .add(NewEntry {
+                title: "Mail".into(),
+                password: "pw".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        assert!(v
+            .add(NewEntry {
+                item_type: Some("spaceship".into()),
+                title: "x".into(),
+                ..Default::default()
+            })
+            .is_err());
+
+        let summaries = v.list(None).unwrap();
+        let summary = summaries.iter().find(|e| e.id == card).unwrap();
+        assert_eq!(summary.item_type, ITEM_CARD);
+        assert!(summary.extra.is_none(), "summaries never decrypt extra");
+        assert_eq!(
+            summaries.iter().find(|e| e.id == login).unwrap().item_type,
+            ITEM_LOGIN
+        );
+
+        // An edit that does not name them keeps type and fields.
+        v.update(
+            card,
+            UpdateEntry {
+                title: Some("Visa Gold".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        let got = v.get_without_touch(card).unwrap().unwrap();
+        assert_eq!(
+            (got.item_type.as_str(), got.extra.as_deref()),
+            (ITEM_CARD, Some(CARD))
+        );
+
+        // Trash and back.
+        v.delete(card).unwrap();
+        let trash = v.list_trash().unwrap();
+        let restored = v.restore_from_trash(trash[0].trash_id).unwrap().unwrap();
+        let got = v.get_without_touch(restored).unwrap().unwrap();
+        assert_eq!(
+            (got.item_type.as_str(), got.extra.as_deref()),
+            (ITEM_CARD, Some(CARD))
+        );
+
+        // A new master password re-encrypts the extra fields too.
+        v.change_master_password("correct horse battery", "a brand new master")
+            .unwrap();
+        v.lock();
+        v.unlock("a brand new master").unwrap();
+        let got = v.get_without_touch(restored).unwrap().unwrap();
+        assert_eq!(got.extra.as_deref(), Some(CARD));
+
+        // Clearing works.
+        v.update(
+            restored,
+            UpdateEntry {
+                extra: Some(None),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert!(v
+            .get_without_touch(restored)
+            .unwrap()
+            .unwrap()
+            .extra
+            .is_none());
+    }
+
+    #[test]
+    fn ashy_export_keeps_item_types() {
+        let (v, dir) = vault();
+        v.add(NewEntry {
+            item_type: Some(ITEM_IDENTITY.into()),
+            extra: Some(r#"{"name":"Ana"}"#.into()),
+            title: "Me".into(),
+            ..Default::default()
+        })
+        .unwrap();
+        let file = dir.path().join("x.ashy");
+        crate::importers::ashy::export_vault(&v, &file, "export-pass-1").unwrap();
+        let parsed = crate::importers::ashy::parse_file(&file, "export-pass-1").unwrap();
+        let entry = &parsed.candidates[0].entry;
+        assert_eq!(entry.item_type.as_deref(), Some(ITEM_IDENTITY));
+        assert_eq!(entry.extra.as_deref(), Some(r#"{"name":"Ana"}"#));
+    }
+
+    #[test]
+    fn sharing_exports_only_the_chosen_entries() {
+        let (v, dir) = vault();
+        let keep = v
+            .add(NewEntry {
+                title: "Shared".into(),
+                password: "pw1".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        v.add(NewEntry {
+            title: "Private".into(),
+            password: "pw2".into(),
+            ..Default::default()
+        })
+        .unwrap();
+        let file = dir.path().join("share.ashy");
+        assert_eq!(
+            crate::importers::ashy::export_entries(&v, &[keep], &file, "one-time-words").unwrap(),
+            1
+        );
+        let parsed = crate::importers::ashy::parse_file(&file, "one-time-words").unwrap();
+        let titles: Vec<_> = parsed
+            .candidates
+            .iter()
+            .map(|c| c.entry.title.as_str())
+            .collect();
+        assert_eq!(titles, vec!["Shared"]);
+        assert!(crate::importers::ashy::parse_file(&file, "wrong words").is_err());
+        assert!(crate::importers::ashy::export_entries(&v, &[], &file, "x").is_err());
     }
 }

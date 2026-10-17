@@ -306,7 +306,14 @@ where
 
     // 3. Walk the local inventory. Listed after the folder step, which may
     //    have renamed local folders.
-    let local_entries = vault.list(None)?;
+    // Nextcloud Passwords only holds passwords: cards, identities and secure
+    // notes stay on this device (they never get a mapping, so they are never
+    // pushed nor deleted by a sync).
+    let local_entries: Vec<PasswordEntry> = vault
+        .list(None)?
+        .into_iter()
+        .filter(|e| e.item_type == crate::db::vault::ITEM_LOGIN)
+        .collect();
     progress(NextcloudSyncProgress::new(
         NextcloudSyncPhase::SyncingLocal,
         0,
@@ -1345,6 +1352,8 @@ mod tests {
     fn local_entry(password: &str, category: Option<&str>) -> PasswordEntry {
         PasswordEntry {
             id: 1,
+            item_type: crate::db::vault::ITEM_LOGIN.into(),
+            extra: None,
             title: "Local".into(),
             username: None,
             url: None,
@@ -1651,6 +1660,8 @@ mod tests {
     fn passwordless_detects_blank_passwords() {
         let entry = crate::db::vault::PasswordEntry {
             id: 0,
+            item_type: crate::db::vault::ITEM_LOGIN.into(),
+            extra: None,
             title: String::new(),
             username: None,
             url: None,
