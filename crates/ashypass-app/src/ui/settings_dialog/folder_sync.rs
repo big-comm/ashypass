@@ -1,4 +1,4 @@
-//! `settings_dialog` — the end-to-end encrypted folder sync (every item
+//! Settings → Synchronization — the end-to-end encrypted folder sync (every item
 //! type, shared with Ashy Pass for Android). The scheduler is
 //! `crate::folder_sync`.
 

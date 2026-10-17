@@ -129,6 +129,14 @@ pub fn present(
     dialog.add(&browser);
     dialog.add(&appearance);
 
+    // Reading or changing settings is not idle time: hold off auto-lock
+    // while the dialog is open (capped in SessionManager). The lock warning
+    // would show behind the dialog, out of reach.
+    SessionManager::inhibit(&state.session);
+    {
+        let state = state.clone();
+        dialog.connect_closed(move |_| SessionManager::release(&state.session));
+    }
     state.track_sensitive_dialog(&dialog);
     dialog.present(Some(parent));
 }

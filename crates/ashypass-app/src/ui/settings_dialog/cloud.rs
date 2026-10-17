@@ -255,10 +255,6 @@ pub(super) fn populate_cloud(
 
     page.add(&group);
 
-    page.add(&super::folder_sync::build_folder_sync_group(
-        state.clone(),
-        toast.clone(),
-    ));
     page.add(&build_webdav_group(state.clone(), toast.clone()));
     let _ = (parent, dialog_slot);
 }
@@ -272,6 +268,10 @@ pub(super) fn populate_sync(
     parent: gtk::Widget,
     dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) {
+    page.add(&super::folder_sync::build_folder_sync_group(
+        state.clone(),
+        toast.clone(),
+    ));
     page.add(&build_nextcloud_passwords_group(
         state,
         toast,

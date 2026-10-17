@@ -519,6 +519,39 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
         inner.window.add_controller(click);
     }
 
+    // Scrolling and moving the pointer are use too (reading a long list or
+    // the settings). Throttled: they fire many times a second.
+    {
+        let last = Rc::new(std::cell::Cell::new(std::time::Instant::now()));
+        let touch = {
+            let weak = Rc::downgrade(inner);
+            move || {
+                if last.get().elapsed() < std::time::Duration::from_secs(2) {
+                    return;
+                }
+                last.set(std::time::Instant::now());
+                if let Some(inner) = weak.upgrade() {
+                    inner.on_user_activity();
+                }
+            }
+        };
+        let touch = Rc::new(touch);
+        let scroll = gtk::EventControllerScroll::new(gtk::EventControllerScrollFlags::BOTH_AXES);
+        scroll.set_propagation_phase(gtk::PropagationPhase::Capture);
+        {
+            let touch = touch.clone();
+            scroll.connect_scroll(move |_, _, _| {
+                touch();
+                glib::Propagation::Proceed
+            });
+        }
+        inner.window.add_controller(scroll);
+        let motion = gtk::EventControllerMotion::new();
+        motion.set_propagation_phase(gtk::PropagationPhase::Capture);
+        motion.connect_motion(move |_, _, _| touch());
+        inner.window.add_controller(motion);
+    }
+
     // ---- Actions and shortcuts ------------------------------------------
     let window = &inner.window;
     let add_action = |name: &str, accels: &[&str], run: WindowAction| {
