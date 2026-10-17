@@ -300,6 +300,22 @@ pub const LEGACY_COLUMN_ALTERS: &[&str] = &[
     "ALTER TABLE passwords ADD COLUMN extra_encrypted BLOB",
     "ALTER TABLE passwords_trash ADD COLUMN item_type TEXT",
     "ALTER TABLE passwords_trash ADD COLUMN extra_encrypted BLOB",
+    // A stable identity for each entry across devices (folder sync).
+    "ALTER TABLE passwords ADD COLUMN uid TEXT",
+    "ALTER TABLE passwords_trash ADD COLUMN uid TEXT",
+];
+
+/// Give every entry a `uid` (32 hex chars): the existing ones now, new ones
+/// as they are inserted, whatever code inserts them (older builds too).
+pub const ENTRY_UID_STATEMENTS: &[&str] = &[
+    "UPDATE passwords SET uid = lower(hex(randomblob(16))) WHERE uid IS NULL",
+    "UPDATE passwords_trash SET uid = lower(hex(randomblob(16))) WHERE uid IS NULL",
+    "CREATE UNIQUE INDEX IF NOT EXISTS idx_passwords_uid ON passwords(uid)",
+    "CREATE TRIGGER IF NOT EXISTS passwords_assign_uid AFTER INSERT ON passwords
+     WHEN NEW.uid IS NULL
+     BEGIN
+         UPDATE passwords SET uid = lower(hex(randomblob(16))) WHERE id = NEW.id;
+     END",
 ];
 
 const SEED_SYNC_META: &str =

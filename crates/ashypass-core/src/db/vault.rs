@@ -28,8 +28,11 @@ use zeroize::Zeroize;
 /// the system keyring and is wiped after a few wrong attempts.
 pub const MIN_QUICK_UNLOCK_PIN_LENGTH: usize = 4;
 
+#[path = "vault_folder_sync.rs"]
+mod folder_sync;
 #[path = "vault_folders.rs"]
 mod folders;
+pub use folder_sync::SyncItem;
 pub use folders::NextcloudFolderOp;
 
 type ChangeListener = Rc<dyn Fn() + 'static>;
@@ -1028,6 +1031,29 @@ impl Vault {
         Ok(id)
     }
 
+    /// The entry's identity across devices (folder sync); kept through the
+    /// trash.
+    pub fn uid_of(&self, id: i64) -> Result<Option<String>> {
+        Ok(self
+            .conn
+            .query_row("SELECT uid FROM passwords WHERE id = ?", params![id], |r| {
+                r.get(0)
+            })
+            .optional()?
+            .flatten())
+    }
+
+    pub fn id_by_uid(&self, uid: &str) -> Result<Option<i64>> {
+        Ok(self
+            .conn
+            .query_row(
+                "SELECT id FROM passwords WHERE uid = ?",
+                params![uid],
+                |r| r.get(0),
+            )
+            .optional()?)
+    }
+
     pub fn list(&self, search: Option<&str>) -> Result<Vec<PasswordEntry>> {
         self.list_filtered(search, None)
     }
@@ -1417,11 +1443,11 @@ impl Vault {
                 original_id, title, username, password_encrypted, notes_encrypted,
                 url, totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
                 category, favorite, created_at, updated_at, deleted_at,
-                item_type, extra_encrypted)
+                item_type, extra_encrypted, uid)
              SELECT id, title, username, password_encrypted, notes_encrypted,
                     url, totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
                     category, favorite, created_at, updated_at, ?,
-                    item_type, extra_encrypted
+                    item_type, extra_encrypted, uid
              FROM passwords WHERE id = ?",
             params![now, id],
         )?;
@@ -1580,7 +1606,8 @@ impl Vault {
         tx.execute(
             "UPDATE passwords
                 SET item_type = COALESCE((SELECT item_type FROM passwords_trash WHERE id = ?1), 'login'),
-                    extra_encrypted = (SELECT extra_encrypted FROM passwords_trash WHERE id = ?1)
+                    extra_encrypted = (SELECT extra_encrypted FROM passwords_trash WHERE id = ?1),
+                    uid = COALESCE((SELECT uid FROM passwords_trash WHERE id = ?1), uid)
               WHERE id = ?2",
             params![trash_id, new_id],
         )?;
@@ -2078,6 +2105,32 @@ impl Vault {
             let mut update = tx.prepare(&sql)?;
             for (id, blob) in rows {
                 update.execute(params![reencrypt_blob(&old_key, &new_key, &blob)?, id])?;
+            }
+        }
+        // The folder sync key kept in the vault (see `sync::folder`).
+        let has_folder_sync: bool = tx.query_row(
+            "SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'folder_sync_kv')",
+            [],
+            |r| r.get(0),
+        )?;
+        if has_folder_sync {
+            let sealed: Option<String> = tx
+                .query_row(
+                    "SELECT value FROM folder_sync_kv WHERE key = 'sync_key'",
+                    [],
+                    |r| r.get(0),
+                )
+                .optional()?;
+            if let Some(sealed) = sealed {
+                let blob = reencrypt_blob(
+                    &old_key,
+                    &new_key,
+                    &base64::engine::general_purpose::STANDARD.decode(sealed)?,
+                )?;
+                tx.execute(
+                    "UPDATE folder_sync_kv SET value = ? WHERE key = 'sync_key'",
+                    params![base64::engine::general_purpose::STANDARD.encode(blob)],
+                )?;
             }
         }
         let trash_attachments = collect_encrypted_blobs(
@@ -3739,6 +3792,34 @@ mod item_type_tests {
         let entry = &parsed.candidates[0].entry;
         assert_eq!(entry.item_type.as_deref(), Some(ITEM_IDENTITY));
         assert_eq!(entry.extra.as_deref(), Some(r#"{"name":"Ana"}"#));
+    }
+
+    #[test]
+    fn entries_keep_a_uid_through_the_trash() {
+        let (v, _dir) = vault();
+        let id = v
+            .add(NewEntry {
+                title: "A".into(),
+                password: "p".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        let other = v
+            .add(NewEntry {
+                title: "B".into(),
+                password: "p".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        let uid = v.uid_of(id).unwrap().unwrap();
+        assert_eq!(uid.len(), 32);
+        assert_ne!(Some(uid.clone()), v.uid_of(other).unwrap());
+        assert_eq!(v.id_by_uid(&uid).unwrap(), Some(id));
+        v.delete(id).unwrap();
+        assert_eq!(v.id_by_uid(&uid).unwrap(), None);
+        let trash = v.list_trash().unwrap();
+        let restored = v.restore_from_trash(trash[0].trash_id).unwrap().unwrap();
+        assert_eq!(v.uid_of(restored).unwrap(), Some(uid));
     }
 
     #[test]

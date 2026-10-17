@@ -62,6 +62,9 @@ pub fn add_missing_columns(conn: &Connection) -> Result<()> {
     crate::db::schema::add_legacy_columns(conn);
     conn.execute(crate::db::schema::CREATE_FOLDERS, [])?;
     conn.execute(crate::db::schema::CREATE_NEXTCLOUD_FOLDER_MAPPING, [])?;
+    for statement in crate::db::schema::ENTRY_UID_STATEMENTS {
+        conn.execute_batch(statement)?;
+    }
     Ok(())
 }
 
