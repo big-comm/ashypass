@@ -376,6 +376,7 @@ fn reset_master_page(
                             let _ = ashypass_core::keyring::delete_master();
                         }
                     }
+                    crate::folder_sync::rewrap(&state, &new);
                     toast.add_toast(
                         adw::Toast::builder().use_markup(false)
                             .title(if pin_kept {
@@ -551,6 +552,7 @@ fn change_master_page(
                                     let _ = ashypass_core::keyring::delete_master();
                                 }
                             }
+                            crate::folder_sync::rewrap(&state, &new);
                             toast.add_toast(
                                 adw::Toast::builder()
                                     .use_markup(false)

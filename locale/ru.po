@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:44\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -100,6 +100,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Адрес скопирован"
 
+msgid "Address, user and password are required"
+msgstr "Адрес, пользователь и пароль обязательны"
+
 msgid "Adjust length and characters"
 msgstr "Настроить длину и символы"
 
@@ -135,6 +138,15 @@ msgstr "Разрешить TRIM через зашифрованное отобр
 
 msgid "Allow the browser extension"
 msgstr "Разрешить расширение браузера"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Другое устройство удалило их из зашифрованной папки синхронизации. Если это "
+"были вы, они переместятся здесь в «Удалённые». Если нет, оставьте их: они "
+"будут снова отправлены в папку."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -321,6 +333,9 @@ msgstr "Меняйте, только если сайт указывает дру
 msgid "Changes saved to the vault"
 msgstr "Изменения сохранены в хранилище"
 
+msgid "Changes waiting to be sent"
+msgstr "Изменения ожидают отправки"
+
 msgid "Check known data breaches (online)"
 msgstr "Проверять известные утечки данных (онлайн)"
 
@@ -481,6 +496,12 @@ msgstr "Подключить"
 msgid "Connect browsers"
 msgstr "Подключить браузеры"
 
+msgid "Connect failed"
+msgstr "Не удалось подключиться"
+
+msgid "Connect the sync folder"
+msgstr "Подключить папку синхронизации"
+
 msgid "Connect your browsers"
 msgstr "Подключите браузеры"
 
@@ -490,6 +511,12 @@ msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Подключено браузеров: {}. Перезапустите их, если они открыты."
 msgstr[1] "Подключено браузеров: {}. Перезапустите их, если они открыты."
 msgstr[2] "Подключено браузеров: {}. Перезапустите их, если они открыты."
+
+msgid "Connected. Received:"
+msgstr "Подключено. Получено:"
+
+msgid "Connect…"
+msgstr "Подключить…"
 
 msgid "Continue"
 msgstr "Продолжить"
@@ -715,6 +742,15 @@ msgstr "Путь к устройству"
 msgid "Digits"
 msgstr "Цифры"
 
+msgid "Disconnect"
+msgstr "Отключить"
+
+msgid "Disconnect failed"
+msgstr "Не удалось отключить"
+
+msgid "Disconnect the sync folder?"
+msgstr "Отключить папку синхронизации?"
+
 msgid "Done"
 msgstr "Готово"
 
@@ -772,6 +808,12 @@ msgstr "Зашифровано как"
 msgid "Encrypted device"
 msgstr "Зашифрованное устройство"
 
+msgid "Encrypted folder sync"
+msgstr "Синхронизация зашифрованной папки"
+
+msgid "Encrypted folder sync failed"
+msgstr "Сбой синхронизации зашифрованной папки"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Загрузка зашифрованного снимка с обнаружением конфликтов"
 
@@ -813,6 +855,9 @@ msgstr "Введите метку."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Введите PIN, заданный на этом компьютере."
+
+msgid "Enter the master password"
+msgstr "Введите мастер-пароль"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Введите пароль или добавьте код подтверждения ниже."
@@ -1152,6 +1197,10 @@ msgstr ""
 "Он открывает хранилище на этом компьютере. Никто не сможет восстановить его "
 "за вас — даже Ashy Pass."
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr ""
+"Записи останутся здесь и в папке; при повторном подключении они объединятся"
+
 msgid "Its user, password and other details appear here."
 msgstr "Здесь отображаются пользователь, пароль и другие данные."
 
@@ -1245,6 +1294,9 @@ msgstr "Последняя резервная копия на этом комп�
 msgid "Last changed:"
 msgstr "Последнее изменение:"
 
+msgid "Last sync:"
+msgstr "Последняя синхронизация:"
+
 msgid "Launch the encryption wizard"
 msgstr "Запустить мастер шифрования"
 
@@ -1265,6 +1317,18 @@ msgstr "Заблокировать хранилище сейчас (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Блокировать при блокировке экрана или переходе в сон"
+
+msgid "Login name"
+msgstr "Логин"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"Логины, карты, личные данные, заметки и passkeys шифруются на этом "
+"компьютере перед отправкой и синхронизируются через папку в Nextcloud или на "
+"любом сервере WebDAV. Ashy Pass для Android использует ту же папку."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1382,6 +1446,12 @@ msgstr ""
 "Nextcloud Passwords требует заполненного поля пароля. Отредактируйте эти "
 "записи в Ashy Pass, добавив пароль, чтобы они были отправлены."
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Адрес Nextcloud или WebDAV, пользователь, пароль"
+
+msgid "Nextcloud server"
+msgstr "Сервер Nextcloud"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1440,6 +1510,9 @@ msgstr "Нет — быстро, но оставляет предыдущие д
 
 msgid "Not configured"
 msgstr "Не настроено"
+
+msgid "Not connected"
+msgstr "Не подключено"
 
 msgid "Not run yet"
 msgstr "Еще не запущено"
@@ -1505,6 +1578,9 @@ msgstr "ОК"
 
 msgid "Off"
 msgstr "Выкл."
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "Выкл.: другой сервер WebDAV с полным адресом"
 
 msgid "Old copy removed"
 msgstr "Старая копия удалена"
@@ -1990,6 +2066,9 @@ msgstr "URL сервера, имя пользователя, пароль при
 msgid "Server URL, username, app-password"
 msgstr "URL сервера, имя пользователя, пароль приложения"
 
+msgid "Server address"
+msgstr "Адрес сервера"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
@@ -2124,6 +2203,9 @@ msgstr "Конфликт синхронизации: на сервере бол�
 msgid "Sync failed"
 msgstr "Ошибка синхронизации"
 
+msgid "Sync folder disconnected"
+msgstr "Папка синхронизации отключена"
+
 msgid "Sync now"
 msgstr "Синхронизировать сейчас"
 
@@ -2159,6 +2241,9 @@ msgstr "Синхронизация..."
 
 msgid "Syncing folders"
 msgstr "Синхронизация папок"
+
+msgid "Syncing…"
+msgstr "Синхронизация…"
 
 msgid "Tags"
 msgstr "Теги"
@@ -2256,6 +2341,9 @@ msgid ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
 msgstr ""
 "Метка не может начинаться с «-» или содержать «/» и управляющие символы."
+
+msgid "The last sync failed"
+msgstr "Последняя синхронизация не удалась"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Мастер-пароль слишком короткий. Минимальная длина:"
@@ -2639,6 +2727,13 @@ msgstr "Использовать мастер-пароль"
 msgid "Use the + button to create one."
 msgstr "Создайте её кнопкой +."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Используйте один и тот же мастер-пароль на всех устройствах: он открывает "
+"ключ папки. Здесь его нужно ввести один раз, чтобы присоединиться."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Используйте эти коды, когда сайт запрашивает двухэтапную проверку."
 
@@ -2822,6 +2917,9 @@ msgstr "Запись заголовка LUKS2"
 msgid "Wrong master password"
 msgstr "Неверный мастер-пароль"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Неверный мастер-пароль. Папка принадлежит хранилищу с другим паролем."
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2838,6 +2936,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "Ваши записи по-прежнему доступны на этом компьютере."
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Ваши записи останутся на этом компьютере и в папке. Повторное подключение "
+"позже объединит их, а не продублирует."
 
 msgid "Your most used accesses can be here"
 msgstr "Здесь могут быть ваши самые используемые записи"
@@ -2938,6 +3043,9 @@ msgstr "вращающийся (HDD)"
 
 msgid "seen"
 msgstr "просмотрено"
+
+msgid "sent:"
+msgstr "отправлено:"
 
 msgid "solid-state"
 msgstr "твердотельный"

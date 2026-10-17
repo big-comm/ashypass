@@ -4,6 +4,7 @@ mod auto_sync;
 mod clipboard;
 mod events;
 mod favicons;
+mod folder_sync;
 mod session;
 mod session_watch;
 mod state;

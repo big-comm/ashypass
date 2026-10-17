@@ -89,6 +89,7 @@ struct MainWindowInner {
     generator_view: GeneratorView,
     backups_view: Rc<BackupsView>,
     auto_sync: crate::auto_sync::Handle,
+    folder_sync: crate::folder_sync::Handle,
 }
 
 impl MainWindow {
@@ -283,6 +284,7 @@ impl MainWindow {
         window.add_breakpoint(narrow);
 
         let auto_sync = crate::auto_sync::install(state.clone(), toast_overlay.clone());
+        let folder_sync = crate::folder_sync::install(state.clone(), toast_overlay.clone());
 
         let inner = Rc::new(MainWindowInner {
             state: state.clone(),
@@ -304,6 +306,7 @@ impl MainWindow {
             generator_view,
             backups_view,
             auto_sync,
+            folder_sync,
         });
 
         wire(&inner, app);
@@ -644,6 +647,7 @@ impl MainWindowInner {
         self.totp_view.on_unlocked();
         self.backups_view.on_unlocked();
         self.auto_sync.on_vault_unlocked();
+        self.folder_sync.on_vault_unlocked();
         let target = self.pending_page.take().unwrap_or(self.current.get());
         self.show_page(target);
         if let Some(password) = self.pending_password.borrow_mut().take() {

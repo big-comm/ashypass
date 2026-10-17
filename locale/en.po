@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: English\n"
@@ -99,6 +99,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Address copied"
 
+msgid "Address, user and password are required"
+msgstr "Address, user and password are required"
+
 msgid "Adjust length and characters"
 msgstr "Adjust length and characters"
 
@@ -135,6 +138,15 @@ msgstr "Allow TRIM through encrypted mapping"
 
 msgid "Allow the browser extension"
 msgstr "Allow the browser extension"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -323,6 +335,9 @@ msgstr "Change only if the site shows different values"
 msgid "Changes saved to the vault"
 msgstr "Changes saved to the vault"
 
+msgid "Changes waiting to be sent"
+msgstr "Changes waiting to be sent"
+
 msgid "Check known data breaches (online)"
 msgstr "Check known data breaches (online)"
 
@@ -484,6 +499,12 @@ msgstr "Connect"
 msgid "Connect browsers"
 msgstr "Connect browsers"
 
+msgid "Connect failed"
+msgstr "Connect failed"
+
+msgid "Connect the sync folder"
+msgstr "Connect the sync folder"
+
 msgid "Connect your browsers"
 msgstr "Connect your browsers"
 
@@ -492,6 +513,12 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Connected to {} browser. Restart it if it is open."
 msgstr[1] "Connected to {} browsers. Restart them if they are open."
+
+msgid "Connected. Received:"
+msgstr "Connected. Received:"
+
+msgid "Connect…"
+msgstr "Connect…"
 
 msgid "Continue"
 msgstr "Continue"
@@ -717,6 +744,15 @@ msgstr "Device path"
 msgid "Digits"
 msgstr "Digits"
 
+msgid "Disconnect"
+msgstr "Disconnect"
+
+msgid "Disconnect failed"
+msgstr "Disconnect failed"
+
+msgid "Disconnect the sync folder?"
+msgstr "Disconnect the sync folder?"
+
 msgid "Done"
 msgstr "Done"
 
@@ -775,6 +811,12 @@ msgstr "Encrypted as"
 msgid "Encrypted device"
 msgstr "Encrypted device"
 
+msgid "Encrypted folder sync"
+msgstr "Encrypted folder sync"
+
+msgid "Encrypted folder sync failed"
+msgstr "Encrypted folder sync failed"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Encrypted snapshot upload with conflict detection"
 
@@ -814,6 +856,9 @@ msgstr "Enter a label."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Enter the PIN set up on this computer."
+
+msgid "Enter the master password"
+msgstr "Enter the master password"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Enter the password, or add a verification code below."
@@ -1149,6 +1194,9 @@ msgstr ""
 "It opens the vault on this computer. Nobody can recover it for you — not "
 "even Ashy Pass."
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "Items stay here and in the folder; connecting again merges them"
+
 msgid "Its user, password and other details appear here."
 msgstr "Its user, password and other details appear here."
 
@@ -1241,6 +1289,9 @@ msgstr "Last backup made on this computer"
 msgid "Last changed:"
 msgstr "Last changed:"
 
+msgid "Last sync:"
+msgstr "Last sync:"
+
 msgid "Launch the encryption wizard"
 msgstr "Launch the encryption wizard"
 
@@ -1267,6 +1318,18 @@ msgstr "Lock the vault now (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Lock when the screen locks or the computer sleeps"
+
+msgid "Login name"
+msgstr "Login name"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1385,6 +1448,12 @@ msgstr ""
 "Nextcloud Passwords requires a password field to be filled. Edit these "
 "entries in Ashy Pass by adding a password so they can be sent."
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Nextcloud or WebDAV address, user, password"
+
+msgid "Nextcloud server"
+msgstr "Nextcloud server"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1442,6 +1511,9 @@ msgstr "None — quick, leaves prior data recoverable"
 
 msgid "Not configured"
 msgstr "Not configured"
+
+msgid "Not connected"
+msgstr "Not connected"
 
 msgid "Not run yet"
 msgstr "Not run yet"
@@ -1510,6 +1582,9 @@ msgstr "OK"
 
 msgid "Off"
 msgstr "Off"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "Off: another WebDAV server, with its full address"
 
 msgid "Old copy removed"
 msgstr "Old copy removed"
@@ -2011,6 +2086,9 @@ msgstr "Server URL, username, app password"
 msgid "Server URL, username, app-password"
 msgstr "Server URL, username, app-password"
 
+msgid "Server address"
+msgstr "Server address"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr "Server URL (e.g. cloud.example.com), username and an app password."
@@ -2150,6 +2228,9 @@ msgstr "Sync conflict: the server has a newer copy (generation {})"
 msgid "Sync failed"
 msgstr "Sync failed"
 
+msgid "Sync folder disconnected"
+msgstr "Sync folder disconnected"
+
 msgid "Sync now"
 msgstr "Sync now"
 
@@ -2185,6 +2266,9 @@ msgstr "Synchronizing..."
 
 msgid "Syncing folders"
 msgstr "Syncing folders"
+
+msgid "Syncing…"
+msgstr "Syncing…"
 
 msgid "Tags"
 msgstr "Tags"
@@ -2278,6 +2362,9 @@ msgid ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
 msgstr ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
+
+msgid "The last sync failed"
+msgstr "The last sync failed"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "The master password is too short. Minimum length:"
@@ -2649,6 +2736,13 @@ msgstr "Use master password"
 msgid "Use the + button to create one."
 msgstr "Use the + button to create one."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Use these codes when a site asks for two-step verification."
 
@@ -2837,6 +2931,9 @@ msgstr "Writing LUKS2 header"
 msgid "Wrong master password"
 msgstr "Wrong master password"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Wrong master password. The folder belongs to a vault with another one."
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2853,6 +2950,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "Your entries are still available on this computer."
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
 
 msgid "Your most used accesses can be here"
 msgstr "Your most used accesses can be here"
@@ -2948,6 +3052,9 @@ msgstr "rotational (HDD)"
 
 msgid "seen"
 msgstr "seen"
+
+msgid "sent:"
+msgstr "sent:"
 
 msgid "solid-state"
 msgstr "solid-state"

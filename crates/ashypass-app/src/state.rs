@@ -5,6 +5,7 @@ use ashypass_core::backup::{BackupService, WebdavService};
 use ashypass_core::config::settings_file;
 use ashypass_core::db::Vault;
 use ashypass_core::settings::Settings;
+use ashypass_core::sync::folder_account::FolderSyncAccount;
 use ashypass_core::sync::NextcloudPasswordsClient;
 use std::cell::RefCell;
 use std::fs;
@@ -42,6 +43,9 @@ pub struct AppState {
     /// acting on it would fail with a raw crypto error.
     sensitive_dialogs: RefCell<Vec<adw::Dialog>>,
     pub sync_status: std::cell::Cell<SyncStatus>,
+    /// The encrypted folder sync account (`None`: not connected).
+    pub folder_account: RefCell<Option<FolderSyncAccount>>,
+    pub folder_status: std::cell::Cell<SyncStatus>,
 }
 
 struct CachedSettings {
@@ -121,6 +125,8 @@ impl AppState {
             }),
             sensitive_dialogs: RefCell::new(Vec::new()),
             sync_status: std::cell::Cell::new(SyncStatus::Unknown),
+            folder_account: RefCell::new(FolderSyncAccount::load()),
+            folder_status: std::cell::Cell::new(SyncStatus::Unknown),
         })
     }
 
@@ -134,6 +140,13 @@ impl AppState {
     pub fn set_sync_status(&self, status: SyncStatus) {
         if self.sync_status.replace(status) != status {
             self.events.emit(crate::events::AppEvent::SyncStatusChanged);
+        }
+    }
+
+    pub fn set_folder_status(&self, status: SyncStatus) {
+        if self.folder_status.replace(status) != status {
+            self.events
+                .emit(crate::events::AppEvent::FolderSyncStatusChanged);
         }
     }
 

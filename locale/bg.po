@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:19\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -98,6 +98,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Адресът е копиран"
 
+msgid "Address, user and password are required"
+msgstr "Адресът, потребителят и паролата са задължителни"
+
 msgid "Adjust length and characters"
 msgstr "Дължина и знаци"
 
@@ -134,6 +137,15 @@ msgstr "Разрешаване на TRIM през криптираното ка�
 
 msgid "Allow the browser extension"
 msgstr "Разрешаване на разширението за браузър"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Друго устройство ги е изтрило от шифрованата папка за синхронизиране. Ако "
+"сте били вие, те се преместват тук в „Изтрити елементи“. Ако не, запазете "
+"ги: те се изпращат отново към папката."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -321,6 +333,9 @@ msgstr "Променяйте само ако сайтът показва дру�
 msgid "Changes saved to the vault"
 msgstr "Промените са запазени в хранилището"
 
+msgid "Changes waiting to be sent"
+msgstr "Промени, чакащи изпращане"
+
 msgid "Check known data breaches (online)"
 msgstr "Проверка в известни изтичания на данни (онлайн)"
 
@@ -481,6 +496,12 @@ msgstr "Свързване"
 msgid "Connect browsers"
 msgstr "Свързване на браузъри"
 
+msgid "Connect failed"
+msgstr "Свързването неуспешно"
+
+msgid "Connect the sync folder"
+msgstr "Свържете папката за синхронизиране"
+
 msgid "Connect your browsers"
 msgstr "Свържете браузърите си"
 
@@ -489,6 +510,12 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Свързан с {} браузър. Рестартирайте го, ако е отворен."
 msgstr[1] "Свързан с {} браузъра. Рестартирайте ги, ако са отворени."
+
+msgid "Connected. Received:"
+msgstr "Свързано. Получени:"
+
+msgid "Connect…"
+msgstr "Свързване…"
 
 msgid "Continue"
 msgstr "Продължи"
@@ -713,6 +740,15 @@ msgstr "Път до устройството"
 msgid "Digits"
 msgstr "Цифри"
 
+msgid "Disconnect"
+msgstr "Изключване"
+
+msgid "Disconnect failed"
+msgstr "Изключването неуспешно"
+
+msgid "Disconnect the sync folder?"
+msgstr "Да се изключи ли папката за синхронизиране?"
+
 msgid "Done"
 msgstr "Готово"
 
@@ -770,6 +806,12 @@ msgstr "Криптирано като"
 msgid "Encrypted device"
 msgstr "Шифровано устройство"
 
+msgid "Encrypted folder sync"
+msgstr "Шифровано синхронизиране на папка"
+
+msgid "Encrypted folder sync failed"
+msgstr "Шифрованото синхронизиране на папка неуспешно"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Качване на криптиран моментен снимка с откриване на конфликти"
 
@@ -811,6 +853,9 @@ msgstr "Въведете етикет."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Въведете PIN, зададен на този компютър."
+
+msgid "Enter the master password"
+msgstr "Въведете главната парола"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Въведете паролата или добавете код за потвърждение по-долу."
@@ -1150,6 +1195,9 @@ msgstr ""
 "Тя отваря хранилището на този компютър. Никой не може да я възстанови вместо "
 "вас — дори Ashy Pass."
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "Елементите остават тук и в папката; повторното свързване ги слива"
+
 msgid "Its user, password and other details appear here."
 msgstr "Тук се показват потребителят, паролата и другите подробности."
 
@@ -1244,6 +1292,9 @@ msgstr "Последно резервно копие на този компют�
 msgid "Last changed:"
 msgstr "Последна промяна:"
 
+msgid "Last sync:"
+msgstr "Последно синхронизиране:"
+
 msgid "Launch the encryption wizard"
 msgstr "Стартиране на съветника за криптиране"
 
@@ -1264,6 +1315,18 @@ msgstr "Заключване на хранилището сега (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Заключване при заключване на екрана или заспиване на компютъра"
+
+msgid "Login name"
+msgstr "Потребителско име"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"Данни за вход, карти, самоличности, бележки и ключове за достъп (passkeys), "
+"шифровани на този компютър, преди да го напуснат, чрез папка в Nextcloud или "
+"всеки WebDAV сървър. Ashy Pass за Android използва същата папка."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1379,6 +1442,12 @@ msgstr ""
 "Nextcloud Passwords изисква попълнено поле за парола. Редактирайте тези "
 "записи в Ashy Pass, като добавите парола, за да бъдат изпратени."
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Адрес на Nextcloud или WebDAV, потребител, парола"
+
+msgid "Nextcloud server"
+msgstr "Сървър Nextcloud"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1437,6 +1506,9 @@ msgstr "Без изтриване — бързо, но оставя предиш
 
 msgid "Not configured"
 msgstr "Не е конфигуриран"
+
+msgid "Not connected"
+msgstr "Не е свързано"
 
 msgid "Not run yet"
 msgstr "Все още не е стартиран"
@@ -1503,6 +1575,9 @@ msgstr "OK"
 
 msgid "Off"
 msgstr "Изключено"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "Изкл.: друг WebDAV сървър, с пълния му адрес"
 
 msgid "Old copy removed"
 msgstr "Старото копие е премахнато"
@@ -1987,6 +2062,9 @@ msgstr "URL на сървъра, потребителско име, парола
 msgid "Server URL, username, app-password"
 msgstr "URL на сървъра, потребителско име, парола за приложение"
 
+msgid "Server address"
+msgstr "Адрес на сървъра"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
@@ -2121,6 +2199,9 @@ msgstr "Конфликт при синхронизиране: сървърът �
 msgid "Sync failed"
 msgstr "Синхронизацията неуспешна"
 
+msgid "Sync folder disconnected"
+msgstr "Папката за синхронизиране е изключена"
+
 msgid "Sync now"
 msgstr "Синхронизирай сега"
 
@@ -2156,6 +2237,9 @@ msgstr "Синхронизиране..."
 
 msgid "Syncing folders"
 msgstr "Синхронизиране на папки"
+
+msgid "Syncing…"
+msgstr "Синхронизиране…"
 
 msgid "Tags"
 msgstr "Етикети"
@@ -2255,6 +2339,9 @@ msgid ""
 msgstr ""
 "Етикетът не може да започва с \"-\" или да съдържа \"/\" или управляващи "
 "знаци."
+
+msgid "The last sync failed"
+msgstr "Последното синхронизиране неуспешно"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Главната парола е твърде кратка. Минимална дължина:"
@@ -2632,6 +2719,13 @@ msgstr "С главната парола"
 msgid "Use the + button to create one."
 msgstr "Използвайте бутона +, за да създадете."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Използвайте една и съща главна парола на всички свои устройства: тя отключва "
+"ключа на папката. Въвеждате я веднъж тук, за да се присъедините."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Използвайте тези кодове, когато сайт поиска двустъпкова проверка."
 
@@ -2816,6 +2910,9 @@ msgstr "Записване на LUKS2 заглавка"
 msgid "Wrong master password"
 msgstr "Грешна главна парола"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Грешна главна парола. Папката принадлежи на хранилище с друга."
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2832,6 +2929,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "Записите ви все още са налични на този компютър."
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Елементите ви остават на този компютър и в папката. Повторното свързване по-"
+"късно ги слива, вместо да ги дублира."
 
 msgid "Your most used accesses can be here"
 msgstr "Тук могат да са най-използваните ви записи"
@@ -2927,6 +3031,9 @@ msgstr "въртящ се (HDD)"
 
 msgid "seen"
 msgstr "видяна"
+
+msgid "sent:"
+msgstr "изпратени:"
 
 msgid "solid-state"
 msgstr "твърдотелно"

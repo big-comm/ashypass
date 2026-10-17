@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -99,6 +99,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Cím másolva"
 
+msgid "Address, user and password are required"
+msgstr "A cím, a felhasználó és a jelszó megadása kötelező"
+
 msgid "Adjust length and characters"
 msgstr "Hossz és karakterek beállítása"
 
@@ -135,6 +138,15 @@ msgstr "TRIM engedélyezése titkosított leképezésen keresztül"
 
 msgid "Allow the browser extension"
 msgstr "Böngészőbővítmény engedélyezése"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Egy másik eszköz törölte őket a titkosított szinkronizálási mappából. Ha Ön "
+"volt, itt a Törölt elemek közé kerülnek. Ha nem, tartsa meg őket: újra "
+"elküldjük őket a mappába."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -322,6 +334,9 @@ msgstr "Csak akkor módosítsa, ha a webhely más értékeket mutat"
 msgid "Changes saved to the vault"
 msgstr "Módosítások mentve a tárba"
 
+msgid "Changes waiting to be sent"
+msgstr "Küldésre váró módosítások"
+
 msgid "Check known data breaches (online)"
 msgstr "Ismert adatszivárgások ellenőrzése (online)"
 
@@ -483,6 +498,12 @@ msgstr "Csatlakoztatás"
 msgid "Connect browsers"
 msgstr "Böngészők csatlakoztatása"
 
+msgid "Connect failed"
+msgstr "A csatlakozás sikertelen"
+
+msgid "Connect the sync folder"
+msgstr "Szinkronizálási mappa csatlakoztatása"
+
 msgid "Connect your browsers"
 msgstr "Csatlakoztassa böngészőit"
 
@@ -491,6 +512,12 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "{} böngésző csatlakoztatva. Indítsa újra, ha nyitva van."
 msgstr[1] "{} böngésző csatlakoztatva. Indítsa újra őket, ha nyitva vannak."
+
+msgid "Connected. Received:"
+msgstr "Csatlakoztatva. Fogadva:"
+
+msgid "Connect…"
+msgstr "Csatlakoztatás…"
 
 msgid "Continue"
 msgstr "Folytatás"
@@ -716,6 +743,15 @@ msgstr "Eszköz elérési útja"
 msgid "Digits"
 msgstr "Számjegyek"
 
+msgid "Disconnect"
+msgstr "Leválasztás"
+
+msgid "Disconnect failed"
+msgstr "A leválasztás sikertelen"
+
+msgid "Disconnect the sync folder?"
+msgstr "Leválasztja a szinkronizálási mappát?"
+
 msgid "Done"
 msgstr "Kész"
 
@@ -773,6 +809,12 @@ msgstr "Titkosítva mint"
 msgid "Encrypted device"
 msgstr "Titkosított eszköz"
 
+msgid "Encrypted folder sync"
+msgstr "Titkosított mappaszinkronizálás"
+
+msgid "Encrypted folder sync failed"
+msgstr "A titkosított mappaszinkronizálás sikertelen"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Titkosított pillanatkép feltöltése ütközésészleléssel"
 
@@ -816,6 +858,9 @@ msgstr "Adjon meg egy címkét."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Adja meg az ezen a számítógépen beállított PIN-t."
+
+msgid "Enter the master password"
+msgstr "Adja meg a fő jelszót"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Adja meg a jelszót, vagy adjon hozzá lent egy ellenőrző kódot."
@@ -1156,6 +1201,9 @@ msgstr ""
 "Ez nyitja meg a tárat ezen a számítógépen. Senki sem tudja visszaállítani "
 "Önnek — még az Ashy Pass sem."
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "Az elemek itt és a mappában maradnak; az újracsatlakozás egyesíti őket"
+
 msgid "Its user, password and other details appear here."
 msgstr "A felhasználó, a jelszó és a többi részlet itt jelenik meg."
 
@@ -1248,6 +1296,9 @@ msgstr "Utolsó biztonsági mentés ezen a számítógépen"
 msgid "Last changed:"
 msgstr "Utolsó módosítás:"
 
+msgid "Last sync:"
+msgstr "Utolsó szinkronizálás:"
+
 msgid "Launch the encryption wizard"
 msgstr "Titkosítási varázsló indítása"
 
@@ -1269,6 +1320,19 @@ msgstr "A tár zárolása most (Ctrl+L)"
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr ""
 "Zárolás a képernyő zárolásakor vagy a számítógép alvó állapotba lépésekor"
+
+msgid "Login name"
+msgstr "Bejelentkezési név"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"Bejelentkezések, kártyák, személyazonosságok, jegyzetek és passkey-ek, "
+"titkosítva ezen a számítógépen, mielőtt elhagynák azt, egy Nextcloudon vagy "
+"bármely WebDAV-kiszolgálón lévő mappán keresztül. Az Ashy Pass Androidra "
+"ugyanezt a mappát használja."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1386,6 +1450,12 @@ msgstr ""
 "a bejegyzéseket az Ashy Passban egy jelszó hozzáadásával, hogy elküldhetők "
 "legyenek."
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Nextcloud- vagy WebDAV-cím, felhasználó, jelszó"
+
+msgid "Nextcloud server"
+msgstr "Nextcloud-kiszolgáló"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1446,6 +1516,9 @@ msgstr "Nincs – gyors, de a korábbi adatok visszaállíthatók maradnak"
 
 msgid "Not configured"
 msgstr "Nincs konfigurálva"
+
+msgid "Not connected"
+msgstr "Nincs csatlakoztatva"
 
 msgid "Not run yet"
 msgstr "Még nem futott le"
@@ -1512,6 +1585,9 @@ msgstr "OK"
 
 msgid "Off"
 msgstr "Ki"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "Ki: másik WebDAV-kiszolgáló, teljes címmel"
 
 msgid "Old copy removed"
 msgstr "Régi másolat eltávolítva"
@@ -2006,6 +2082,9 @@ msgstr "Szerver URL, felhasználónév, alkalmazásjelszó"
 msgid "Server URL, username, app-password"
 msgstr "Szerver URL, felhasználónév, alkalmazás-jelszó"
 
+msgid "Server address"
+msgstr "Kiszolgáló címe"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
@@ -2140,6 +2219,9 @@ msgstr ""
 msgid "Sync failed"
 msgstr "Szinkronizálás sikertelen"
 
+msgid "Sync folder disconnected"
+msgstr "A szinkronizálási mappa leválasztva"
+
 msgid "Sync now"
 msgstr "Szinkronizálás most"
 
@@ -2175,6 +2257,9 @@ msgstr "Szinkronizálás..."
 
 msgid "Syncing folders"
 msgstr "Mappák szinkronizálása"
+
+msgid "Syncing…"
+msgstr "Szinkronizálás…"
 
 msgid "Tags"
 msgstr "Címkék"
@@ -2273,6 +2358,9 @@ msgid ""
 msgstr ""
 "A címke nem kezdődhet \"-\" jellel, és nem tartalmazhat \"/\" jelet vagy "
 "vezérlőkaraktereket."
+
+msgid "The last sync failed"
+msgstr "Az utolsó szinkronizálás sikertelen volt"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "A fő jelszó túl rövid. Minimális hossz:"
@@ -2642,6 +2730,13 @@ msgstr "Fő jelszó használata"
 msgid "Use the + button to create one."
 msgstr "Létrehozáshoz használja a + gombot."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Használja ugyanazt a fő jelszót minden eszközén: ez nyitja a mappa kulcsát. "
+"Itt egyszer kell megadnia a csatlakozáshoz."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Ezeket a kódokat használja, ha egy webhely kétlépcsős azonosítást kér."
 
@@ -2824,6 +2919,10 @@ msgstr "LUKS2 fejléc írása"
 msgid "Wrong master password"
 msgstr "Hibás mesterjelszó"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr ""
+"Hibás fő jelszó. A mappa egy másik jelszóval rendelkező tárhoz tartozik."
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2840,6 +2939,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "A bejegyzései továbbra is elérhetők ezen a számítógépen."
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Az elemei ezen a számítógépen és a mappában maradnak. A későbbi "
+"újracsatlakozás egyesíti őket a duplikálás helyett."
 
 msgid "Your most used accesses can be here"
 msgstr "Itt lehetnek a leggyakrabban használt bejegyzései"
@@ -2935,6 +3041,9 @@ msgstr "forgótárcsás (HDD)"
 
 msgid "seen"
 msgstr "látott"
+
+msgid "sent:"
+msgstr "elküldve:"
 
 msgid "solid-state"
 msgstr "szilárdtest"

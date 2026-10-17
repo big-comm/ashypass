@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:26\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -96,6 +96,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Aadress kopeeritud"
 
+msgid "Address, user and password are required"
+msgstr "Aadress, kasutaja ja parool on nõutavad"
+
 msgid "Adjust length and characters"
 msgstr "Muuda pikkust ja märke"
 
@@ -132,6 +135,15 @@ msgstr "Luba TRIM krüpteeritud kaardistuse kaudu"
 
 msgid "Allow the browser extension"
 msgstr "Luba brauserilaiendus"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Teine seade kustutas need krüptitud sünkroonimiskaustast. Kui see olid teie, "
+"liiguvad need siin kustutatud üksuste hulka. Kui mitte, siis hoidke need "
+"alles: need saadetakse kausta uuesti."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -316,6 +328,9 @@ msgstr "Muuda ainult siis, kui sait näitab teisi väärtusi"
 msgid "Changes saved to the vault"
 msgstr "Muudatused salvestati hoidlasse"
 
+msgid "Changes waiting to be sent"
+msgstr "Saatmist ootavad muudatused"
+
 msgid "Check known data breaches (online)"
 msgstr "Kontrolli teadaolevaid andmelekkeid (võrgus)"
 
@@ -475,6 +490,12 @@ msgstr "Ühenda"
 msgid "Connect browsers"
 msgstr "Ühenda brauserid"
 
+msgid "Connect failed"
+msgstr "Ühendamine ebaõnnestus"
+
+msgid "Connect the sync folder"
+msgstr "Ühenda sünkroonimiskaust"
+
 msgid "Connect your browsers"
 msgstr "Ühenda oma brauserid"
 
@@ -483,6 +504,12 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Ühendatud {} brauseriga. Taaskäivita see, kui see on avatud."
 msgstr[1] "Ühendatud {} brauseriga. Taaskäivita need, kui need on avatud."
+
+msgid "Connected. Received:"
+msgstr "Ühendatud. Vastu võetud:"
+
+msgid "Connect…"
+msgstr "Ühenda…"
 
 msgid "Continue"
 msgstr "Jätka"
@@ -705,6 +732,15 @@ msgstr "Seadme asukoht"
 msgid "Digits"
 msgstr "Numbrid"
 
+msgid "Disconnect"
+msgstr "Katkesta ühendus"
+
+msgid "Disconnect failed"
+msgstr "Ühenduse katkestamine ebaõnnestus"
+
+msgid "Disconnect the sync folder?"
+msgstr "Kas katkestada sünkroonimiskausta ühendus?"
+
 msgid "Done"
 msgstr "Valmis"
 
@@ -762,6 +798,12 @@ msgstr "Krüptitud kujul"
 msgid "Encrypted device"
 msgstr "Krüpteeritud seade"
 
+msgid "Encrypted folder sync"
+msgstr "Krüptitud kausta sünkroonimine"
+
+msgid "Encrypted folder sync failed"
+msgstr "Krüptitud kausta sünkroonimine ebaõnnestus"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Krüptitud hetktõmmise üleslaadimine konfliktituvastusega"
 
@@ -804,6 +846,9 @@ msgstr "Sisesta silt."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Sisesta selles arvutis seadistatud PIN."
+
+msgid "Enter the master password"
+msgstr "Sisestage peamine parool"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Sisesta parool või lisa allpool kinnituskood."
@@ -1139,6 +1184,9 @@ msgstr ""
 "See avab selles arvutis hoidla. Keegi ei saa seda sinu eest taastada — isegi "
 "mitte Ashy Pass."
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "Üksused jäävad siia ja kausta; uuesti ühendamine liidab need"
+
 msgid "Its user, password and other details appear here."
 msgstr "Selle kasutaja, parool ja muud üksikasjad kuvatakse siin."
 
@@ -1232,6 +1280,9 @@ msgstr "Viimane selles arvutis tehtud varukoopia"
 msgid "Last changed:"
 msgstr "Viimati muudetud:"
 
+msgid "Last sync:"
+msgstr "Viimane sünkroonimine:"
+
 msgid "Launch the encryption wizard"
 msgstr "Käivita krüpteerimisviisard"
 
@@ -1252,6 +1303,18 @@ msgstr "Lukusta hoidla kohe (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Lukusta, kui ekraan lukustub või arvuti läheb unerežiimi"
+
+msgid "Login name"
+msgstr "Sisselogimisnimi"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"Sisselogimised, kaardid, identiteedid, märkmed ja pääsuvõtmed (passkeys), "
+"krüptitud sellel arvutil enne lahkumist, kausta kaudu Nextcloudis või mis "
+"tahes WebDAV-serveris. Ashy Pass Androidile kasutab sama kausta."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1367,6 +1430,12 @@ msgstr ""
 "Nextcloud Passwords nõuab täidetud paroolivälja. Redigeeri neid kirjeid Ashy "
 "Passis, lisades parooli, et neid saaks saata."
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Nextcloudi või WebDAV-i aadress, kasutaja, parool"
+
+msgid "Nextcloud server"
+msgstr "Nextcloudi server"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1422,6 +1491,9 @@ msgstr "Mitte midagi – kiire, jätab varasemad andmed taastatavaks"
 
 msgid "Not configured"
 msgstr "Konfigureerimata"
+
+msgid "Not connected"
+msgstr "Ühendamata"
 
 msgid "Not run yet"
 msgstr "Pole veel käivitatud"
@@ -1486,6 +1558,9 @@ msgstr "OK"
 
 msgid "Off"
 msgstr "Väljas"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "Väljas: mõni muu WebDAV-server, täieliku aadressiga"
 
 msgid "Old copy removed"
 msgstr "Vana koopia eemaldatud"
@@ -1968,6 +2043,9 @@ msgstr "Serveri URL, kasutajanimi, rakenduse parool"
 msgid "Server URL, username, app-password"
 msgstr "Serveri URL, kasutajanimi, rakenduse parool"
 
+msgid "Server address"
+msgstr "Serveri aadress"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr "Serveri URL (nt cloud.example.com), kasutajanimi ja rakenduse parool."
@@ -2100,6 +2178,9 @@ msgstr "Sünkroonimise konflikt: serveris on uuem koopia (põlvkond {})"
 msgid "Sync failed"
 msgstr "Sünkroonimine ebaõnnestus"
 
+msgid "Sync folder disconnected"
+msgstr "Sünkroonimiskausta ühendus katkestatud"
+
 msgid "Sync now"
 msgstr "Sünkrooni kohe"
 
@@ -2135,6 +2216,9 @@ msgstr "Sünkroonimine..."
 
 msgid "Syncing folders"
 msgstr "Kaustade sünkroonimine"
+
+msgid "Syncing…"
+msgstr "Sünkroonin…"
 
 msgid "Tags"
 msgstr "Sildid"
@@ -2226,6 +2310,9 @@ msgid ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
 msgstr ""
 "Silt ei tohi alata märgiga \"-\" ega sisaldada märki \"/\" või juhtmärke."
+
+msgid "The last sync failed"
+msgstr "Viimane sünkroonimine ebaõnnestus"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Põhiparool on liiga lühike. Minimaalne pikkus:"
@@ -2596,6 +2683,13 @@ msgstr "Kasuta põhiparooli"
 msgid "Use the + button to create one."
 msgstr "Loomiseks kasuta nuppu +."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Kasutage kõigis oma seadmetes sama peamist parooli: see avab kausta võtme. "
+"Sisestate selle siin üks kord, et liituda."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Kasuta neid koode, kui sait küsib kaheastmelist kinnitamist."
 
@@ -2776,6 +2870,9 @@ msgstr "LUKS2 päise kirjutamine"
 msgid "Wrong master password"
 msgstr "Vale peaparool"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Vale peamine parool. Kaust kuulub varamule, millel on teine."
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2792,6 +2889,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "Sinu kirjed on selles arvutis endiselt saadaval."
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Teie üksused jäävad sellesse arvutisse ja kausta. Hilisem uuesti ühendamine "
+"liidab need dubleerimise asemel."
 
 msgid "Your most used accesses can be here"
 msgstr "Siin võivad olla sinu enimkasutatud kirjed"
@@ -2887,6 +2991,9 @@ msgstr "pöörlev (HDD)"
 
 msgid "seen"
 msgstr "nähtud"
+
+msgid "sent:"
+msgstr "saadetud:"
 
 msgid "solid-state"
 msgstr "pooljuhtketas"

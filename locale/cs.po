@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:20\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -97,6 +97,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Adresa zkopírována"
 
+msgid "Address, user and password are required"
+msgstr "Adresa, uživatel a heslo jsou povinné"
+
 msgid "Adjust length and characters"
 msgstr "Upravit délku a znaky"
 
@@ -132,6 +135,15 @@ msgstr "Povolit TRIM přes šifrované mapování"
 
 msgid "Allow the browser extension"
 msgstr "Povolit rozšíření prohlížeče"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Jiné zařízení je smazalo ze šifrované synchronizační složky. Pokud jste to "
+"byli vy, přesunou se zde do Smazaných položek. Pokud ne, ponechte je: budou "
+"znovu odeslány do složky."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -317,6 +329,9 @@ msgstr "Měňte jen tehdy, když web uvádí jiné hodnoty"
 msgid "Changes saved to the vault"
 msgstr "Změny uloženy do trezoru"
 
+msgid "Changes waiting to be sent"
+msgstr "Změny čekající na odeslání"
+
 msgid "Check known data breaches (online)"
 msgstr "Kontrolovat známé úniky dat (online)"
 
@@ -476,6 +491,12 @@ msgstr "Připojit"
 msgid "Connect browsers"
 msgstr "Připojit prohlížeče"
 
+msgid "Connect failed"
+msgstr "Připojení se nezdařilo"
+
+msgid "Connect the sync folder"
+msgstr "Připojit synchronizační složku"
+
 msgid "Connect your browsers"
 msgstr "Připojte své prohlížeče"
 
@@ -485,6 +506,12 @@ msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Připojeno prohlížečů: {}. Pokud jsou otevřené, restartujte je."
 msgstr[1] "Připojeno prohlížečů: {}. Pokud jsou otevřené, restartujte je."
 msgstr[2] "Připojeno prohlížečů: {}. Pokud jsou otevřené, restartujte je."
+
+msgid "Connected. Received:"
+msgstr "Připojeno. Přijato:"
+
+msgid "Connect…"
+msgstr "Připojit…"
 
 msgid "Continue"
 msgstr "Pokračovat"
@@ -708,6 +735,15 @@ msgstr "Cesta k zařízení"
 msgid "Digits"
 msgstr "Číslice"
 
+msgid "Disconnect"
+msgstr "Odpojit"
+
+msgid "Disconnect failed"
+msgstr "Odpojení se nezdařilo"
+
+msgid "Disconnect the sync folder?"
+msgstr "Odpojit synchronizační složku?"
+
 msgid "Done"
 msgstr "Hotovo"
 
@@ -765,6 +801,12 @@ msgstr "Zašifrováno jako"
 msgid "Encrypted device"
 msgstr "Zašifrované zařízení"
 
+msgid "Encrypted folder sync"
+msgstr "Šifrovaná synchronizace složky"
+
+msgid "Encrypted folder sync failed"
+msgstr "Šifrovaná synchronizace složky se nezdařila"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Nahrání šifrovaného snímku s detekcí konfliktů"
 
@@ -807,6 +849,9 @@ msgstr "Zadejte jmenovku."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Zadejte PIN nastavený na tomto počítači."
+
+msgid "Enter the master password"
+msgstr "Zadejte hlavní heslo"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Zadejte heslo nebo níže přidejte ověřovací kód."
@@ -1142,6 +1187,9 @@ msgid ""
 msgstr ""
 "Otevírá trezor na tomto počítači. Nikdo ho za vás neobnoví — ani Ashy Pass."
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "Položky zůstanou zde i ve složce; opětovné připojení je sloučí"
+
 msgid "Its user, password and other details appear here."
 msgstr "Zde se zobrazí uživatel, heslo a další podrobnosti."
 
@@ -1236,6 +1284,9 @@ msgstr "Poslední záloha vytvořená na tomto počítači"
 msgid "Last changed:"
 msgstr "Naposledy změněno:"
 
+msgid "Last sync:"
+msgstr "Poslední synchronizace:"
+
 msgid "Launch the encryption wizard"
 msgstr "Spustit průvodce šifrováním"
 
@@ -1256,6 +1307,18 @@ msgstr "Zamknout trezor nyní (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Zamknout při zamčení obrazovky nebo uspání počítače"
+
+msgid "Login name"
+msgstr "Přihlašovací jméno"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"Přihlašovací údaje, karty, identity, poznámky a passkeys, šifrované na tomto "
+"počítači dříve, než jej opustí, přes složku na Nextcloudu nebo na libovolném "
+"serveru WebDAV. Ashy Pass pro Android používá stejnou složku."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1373,6 +1436,12 @@ msgstr ""
 "Nextcloud Passwords vyžaduje vyplněné pole pro heslo. Upravte tyto položky v "
 "Ashy Pass přidáním hesla, aby mohly být odeslány."
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Adresa Nextcloudu nebo WebDAV, uživatel, heslo"
+
+msgid "Nextcloud server"
+msgstr "Server Nextcloud"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1430,6 +1499,9 @@ msgstr "Žádné — rychlé, ponechá předchozí data obnovitelná"
 
 msgid "Not configured"
 msgstr "Nenakonfigurováno"
+
+msgid "Not connected"
+msgstr "Nepřipojeno"
 
 msgid "Not run yet"
 msgstr "Zatím nespouštěno"
@@ -1494,6 +1566,9 @@ msgstr "OK"
 
 msgid "Off"
 msgstr "Vypnuto"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "Vypnuto: jiný server WebDAV s úplnou adresou"
 
 msgid "Old copy removed"
 msgstr "Stará kopie odebrána"
@@ -1973,6 +2048,9 @@ msgstr "URL serveru, uživatelské jméno, heslo aplikace"
 msgid "Server URL, username, app-password"
 msgstr "URL serveru, uživatelské jméno, heslo aplikace"
 
+msgid "Server address"
+msgstr "Adresa serveru"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
@@ -2106,6 +2184,9 @@ msgstr "Konflikt synchronizace: server má novější kopii (generace {})"
 msgid "Sync failed"
 msgstr "Synchronizace se nezdařila"
 
+msgid "Sync folder disconnected"
+msgstr "Synchronizační složka odpojena"
+
 msgid "Sync now"
 msgstr "Synchronizovat nyní"
 
@@ -2141,6 +2222,9 @@ msgstr "Synchronizace..."
 
 msgid "Syncing folders"
 msgstr "Synchronizace složek"
+
+msgid "Syncing…"
+msgstr "Synchronizace…"
 
 msgid "Tags"
 msgstr "Štítky"
@@ -2234,6 +2318,9 @@ msgid ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
 msgstr ""
 "Jmenovka nesmí začínat znakem \"-\" ani obsahovat \"/\" či řídicí znaky."
+
+msgid "The last sync failed"
+msgstr "Poslední synchronizace se nezdařila"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Hlavní heslo je příliš krátké. Minimální délka:"
@@ -2610,6 +2697,13 @@ msgstr "Použít hlavní heslo"
 msgid "Use the + button to create one."
 msgstr "Vytvořte ji tlačítkem +."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Používejte stejné hlavní heslo na všech svých zařízeních: otevírá klíč "
+"složky. Zde jej zadáte jednou, abyste se připojili."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Tyto kódy použijte, když web požaduje dvoufázové ověření."
 
@@ -2789,6 +2883,9 @@ msgstr "Zapisování hlavičky LUKS2"
 msgid "Wrong master password"
 msgstr "Nesprávné hlavní heslo"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Nesprávné hlavní heslo. Složka patří trezoru s jiným."
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2805,6 +2902,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "Vaše položky jsou na tomto počítači stále k dispozici."
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Vaše položky zůstanou na tomto počítači i ve složce. Pozdější opětovné "
+"připojení je sloučí místo duplikace."
 
 msgid "Your most used accesses can be here"
 msgstr "Zde mohou být vaše nejpoužívanější položky"
@@ -2905,6 +3009,9 @@ msgstr "rotační (HDD)"
 
 msgid "seen"
 msgstr "zobrazeno"
+
+msgid "sent:"
+msgstr "odesláno:"
 
 msgid "solid-state"
 msgstr "polovodičové"

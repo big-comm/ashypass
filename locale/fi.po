@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:28\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -97,6 +97,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Osoite kopioitu"
 
+msgid "Address, user and password are required"
+msgstr "Osoite, käyttäjä ja salasana vaaditaan"
+
 msgid "Adjust length and characters"
 msgstr "Säädä pituutta ja merkkejä"
 
@@ -133,6 +136,15 @@ msgstr "Salli TRIM salatun kartoituksen läpi"
 
 msgid "Allow the browser extension"
 msgstr "Salli selainlaajennus"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Toinen laite poisti ne salatusta synkronointikansiosta. Jos teit sen itse, "
+"ne siirretään tässä kohtaan Poistetut kohteet. Jos et, säilytä ne: ne "
+"lähetetään kansioon uudelleen."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -319,6 +331,9 @@ msgstr "Muuta vain, jos sivusto näyttää eri arvot"
 msgid "Changes saved to the vault"
 msgstr "Muutokset tallennettu holviin"
 
+msgid "Changes waiting to be sent"
+msgstr "Lähetystä odottavat muutokset"
+
 msgid "Check known data breaches (online)"
 msgstr "Tarkista tunnetut tietovuodot (verkossa)"
 
@@ -479,6 +494,12 @@ msgstr "Yhdistä"
 msgid "Connect browsers"
 msgstr "Yhdistä selaimet"
 
+msgid "Connect failed"
+msgstr "Yhdistäminen epäonnistui"
+
+msgid "Connect the sync folder"
+msgstr "Yhdistä synkronointikansio"
+
 msgid "Connect your browsers"
 msgstr "Yhdistä selaimesi"
 
@@ -487,6 +508,12 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Yhdistetty {} selaimeen. Käynnistä se uudelleen, jos se on auki."
 msgstr[1] "Yhdistetty {} selaimeen. Käynnistä ne uudelleen, jos ne ovat auki."
+
+msgid "Connected. Received:"
+msgstr "Yhdistetty. Vastaanotettu:"
+
+msgid "Connect…"
+msgstr "Yhdistä…"
 
 msgid "Continue"
 msgstr "Jatka"
@@ -710,6 +737,15 @@ msgstr "Laitepolku"
 msgid "Digits"
 msgstr "Numerot"
 
+msgid "Disconnect"
+msgstr "Katkaise yhteys"
+
+msgid "Disconnect failed"
+msgstr "Yhteyden katkaisu epäonnistui"
+
+msgid "Disconnect the sync folder?"
+msgstr "Katkaistaanko synkronointikansion yhteys?"
+
 msgid "Done"
 msgstr "Valmis"
 
@@ -767,6 +803,12 @@ msgstr "Salattuna"
 msgid "Encrypted device"
 msgstr "Salattu laite"
 
+msgid "Encrypted folder sync"
+msgstr "Salattu kansiosynkronointi"
+
+msgid "Encrypted folder sync failed"
+msgstr "Salattu kansiosynkronointi epäonnistui"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Salattu tilannevedoksen lähetys ristiriitojen tunnistuksella"
 
@@ -807,6 +849,9 @@ msgstr "Anna nimiö."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Anna tälle tietokoneelle asetettu PIN-koodi."
+
+msgid "Enter the master password"
+msgstr "Anna pääsalasana"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Anna salasana tai lisää vahvistuskoodi alle."
@@ -1144,6 +1189,10 @@ msgstr ""
 "Se avaa holvin tällä tietokoneella. Kukaan ei voi palauttaa sitä puolestasi "
 "— ei edes Ashy Pass."
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr ""
+"Kohteet säilyvät täällä ja kansiossa; uudelleenyhdistäminen yhdistää ne"
+
 msgid "Its user, password and other details appear here."
 msgstr "Sen käyttäjä, salasana ja muut tiedot näkyvät tässä."
 
@@ -1237,6 +1286,9 @@ msgstr "Viimeisin tällä tietokoneella tehty varmuuskopio"
 msgid "Last changed:"
 msgstr "Viimeksi muutettu:"
 
+msgid "Last sync:"
+msgstr "Viimeisin synkronointi:"
+
 msgid "Launch the encryption wizard"
 msgstr "Käynnistä salausvelho"
 
@@ -1257,6 +1309,19 @@ msgstr "Lukitse holvi nyt (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Lukitse, kun näyttö lukittuu tai tietokone menee lepotilaan"
+
+msgid "Login name"
+msgstr "Kirjautumisnimi"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"Kirjautumistiedot, kortit, henkilöllisyydet, muistiinpanot ja pääsyavaimet "
+"(passkeys), salattuina tällä tietokoneella ennen kuin ne lähtevät sieltä, "
+"Nextcloudin tai minkä tahansa WebDAV-palvelimen kansion kautta. Ashy Pass "
+"Androidille käyttää samaa kansiota."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1373,6 +1438,12 @@ msgstr ""
 "Nextcloud Passwords edellyttää täytettyä salasanakenttää. Muokkaa näitä "
 "merkintöjä Ashy Passissa lisäämällä salasana, jotta ne voidaan lähettää."
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Nextcloud- tai WebDAV-osoite, käyttäjä, salasana"
+
+msgid "Nextcloud server"
+msgstr "Nextcloud-palvelin"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1430,6 +1501,9 @@ msgstr "Ei mitään — nopea, jättää aiemmat tiedot palautettaviksi"
 
 msgid "Not configured"
 msgstr "Ei määritetty"
+
+msgid "Not connected"
+msgstr "Ei yhdistetty"
 
 msgid "Not run yet"
 msgstr "Ei vielä suoritettu"
@@ -1494,6 +1568,9 @@ msgstr "OK"
 
 msgid "Off"
 msgstr "Pois"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "Pois: toinen WebDAV-palvelin täydellä osoitteella"
 
 msgid "Old copy removed"
 msgstr "Vanha kopio poistettu"
@@ -1980,6 +2057,9 @@ msgstr "Palvelimen URL, käyttäjätunnus, sovellussalasana"
 msgid "Server URL, username, app-password"
 msgstr "Palvelimen URL, käyttäjätunnus, sovellussalasana"
 
+msgid "Server address"
+msgstr "Palvelimen osoite"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
@@ -2113,6 +2193,9 @@ msgstr "Synkronointiristiriita: palvelimella on uudempi kopio (sukupolvi {})"
 msgid "Sync failed"
 msgstr "Synkronointi epäonnistui"
 
+msgid "Sync folder disconnected"
+msgstr "Synkronointikansion yhteys katkaistu"
+
 msgid "Sync now"
 msgstr "Synkronoi nyt"
 
@@ -2148,6 +2231,9 @@ msgstr "Synkronoidaan..."
 
 msgid "Syncing folders"
 msgstr "Synkronoidaan kansioita"
+
+msgid "Syncing…"
+msgstr "Synkronoidaan…"
 
 msgid "Tags"
 msgstr "Tunnisteet"
@@ -2244,6 +2330,9 @@ msgid ""
 msgstr ""
 "Nimiö ei voi alkaa merkillä \"-\" eikä sisältää merkkiä \"/\" tai "
 "ohjausmerkkejä."
+
+msgid "The last sync failed"
+msgstr "Viimeisin synkronointi epäonnistui"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Pääsalasana on liian lyhyt. Vähimmäispituus:"
@@ -2616,6 +2705,13 @@ msgstr "Käytä pääsalasanaa"
 msgid "Use the + button to create one."
 msgstr "Luo uusi +-painikkeella."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Käytä samaa pääsalasanaa kaikilla laitteillasi: se avaa kansion avaimen. "
+"Kirjoitat sen kerran tähän liittyäksesi."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Käytä näitä koodeja, kun sivusto pyytää kaksivaiheista vahvistusta."
 
@@ -2799,6 +2895,9 @@ msgstr "Kirjoitetaan LUKS2-otsikkoa"
 msgid "Wrong master password"
 msgstr "Väärä pääsalasana"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Väärä pääsalasana. Kansio kuuluu holville, jolla on eri salasana."
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2815,6 +2914,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "Merkintäsi ovat yhä käytettävissä tällä tietokoneella."
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Kohteesi säilyvät tällä tietokoneella ja kansiossa. Myöhempi "
+"uudelleenyhdistäminen yhdistää ne päällekkäisyyksien sijaan."
 
 msgid "Your most used accesses can be here"
 msgstr "Eniten käyttämäsi kirjautumistiedot voivat olla tässä"
@@ -2910,6 +3016,9 @@ msgstr "pyörivä (HDD)"
 
 msgid "seen"
 msgstr "nähty"
+
+msgid "sent:"
+msgstr "lähetetty:"
 
 msgid "solid-state"
 msgstr "puolijohde"

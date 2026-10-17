@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:47\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -100,6 +100,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Adres kopyalandı"
 
+msgid "Address, user and password are required"
+msgstr "Adres, kullanıcı ve parola gereklidir"
+
 msgid "Adjust length and characters"
 msgstr "Uzunluğu ve karakterleri ayarla"
 
@@ -136,6 +139,15 @@ msgstr "Şifrelenmiş eşleme üzerinden TRIM'e izin ver"
 
 msgid "Allow the browser extension"
 msgstr "Tarayıcı eklentisine izin ver"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Başka bir cihaz bunları şifreli eşitleme klasöründen sildi. Bunu siz "
+"yaptıysanız burada Silinen öğeler'e taşınırlar. Yapmadıysanız bunları tutun: "
+"klasöre yeniden gönderilirler."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -322,6 +334,9 @@ msgstr "Yalnızca site farklı değerler gösteriyorsa değiştirin"
 msgid "Changes saved to the vault"
 msgstr "Değişiklikler kasaya kaydedildi"
 
+msgid "Changes waiting to be sent"
+msgstr "Gönderilmeyi bekleyen değişiklikler"
+
 msgid "Check known data breaches (online)"
 msgstr "Bilinen veri ihlallerini denetle (çevrimiçi)"
 
@@ -482,6 +497,12 @@ msgstr "Bağla"
 msgid "Connect browsers"
 msgstr "Tarayıcıları bağla"
 
+msgid "Connect failed"
+msgstr "Bağlanılamadı"
+
+msgid "Connect the sync folder"
+msgstr "Eşitleme klasörünü bağla"
+
 msgid "Connect your browsers"
 msgstr "Tarayıcılarınızı bağlayın"
 
@@ -490,6 +511,12 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "{} tarayıcıya bağlandı. Açıksa yeniden başlatın."
 msgstr[1] "{} tarayıcıya bağlandı. Açıksa yeniden başlatın."
+
+msgid "Connected. Received:"
+msgstr "Bağlandı. Alınan:"
+
+msgid "Connect…"
+msgstr "Bağlan…"
 
 msgid "Continue"
 msgstr "Devam Et"
@@ -712,6 +739,15 @@ msgstr "Aygıt yolu"
 msgid "Digits"
 msgstr "Basamak Sayısı"
 
+msgid "Disconnect"
+msgstr "Bağlantıyı kes"
+
+msgid "Disconnect failed"
+msgstr "Bağlantı kesilemedi"
+
+msgid "Disconnect the sync folder?"
+msgstr "Eşitleme klasörünün bağlantısı kesilsin mi?"
+
 msgid "Done"
 msgstr "Tamamlandı"
 
@@ -769,6 +805,12 @@ msgstr "Şifrelenmiş olarak"
 msgid "Encrypted device"
 msgstr "Şifrelenmiş cihaz"
 
+msgid "Encrypted folder sync"
+msgstr "Şifreli klasör eşitleme"
+
+msgid "Encrypted folder sync failed"
+msgstr "Şifreli klasör eşitleme başarısız oldu"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Çakışma algılama ile şifrelenmiş anlık görüntü yüklemesi"
 
@@ -810,6 +852,9 @@ msgstr "Bir etiket girin."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Bu bilgisayarda ayarlanan PIN'i girin."
+
+msgid "Enter the master password"
+msgstr "Ana parolayı girin"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Parolayı girin veya aşağıya bir doğrulama kodu ekleyin."
@@ -1148,6 +1193,9 @@ msgstr ""
 "Bu bilgisayardaki kasayı açar. Hiç kimse onu sizin için kurtaramaz — Ashy "
 "Pass bile."
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "Öğeler burada ve klasörde kalır; yeniden bağlanmak bunları birleştirir"
+
 msgid "Its user, password and other details appear here."
 msgstr "Kullanıcısı, parolası ve diğer ayrıntıları burada görünür."
 
@@ -1241,6 +1289,9 @@ msgstr "Bu bilgisayarda yapılan son yedek"
 msgid "Last changed:"
 msgstr "Son değişiklik:"
 
+msgid "Last sync:"
+msgstr "Son eşitleme:"
+
 msgid "Launch the encryption wizard"
 msgstr "Şifreleme sihirbazını başlat"
 
@@ -1261,6 +1312,19 @@ msgstr "Kasayı şimdi kilitle (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Ekran kilitlendiğinde veya bilgisayar uyuduğunda kilitle"
+
+msgid "Login name"
+msgstr "Oturum açma adı"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"Girişler, kartlar, kimlikler, notlar ve geçiş anahtarları, bu bilgisayardan "
+"çıkmadan önce şifrelenir ve Nextcloud'daki veya herhangi bir WebDAV "
+"sunucusundaki bir klasör aracılığıyla eşitlenir. Android için Ashy Pass aynı "
+"klasörü kullanır."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1375,6 +1439,12 @@ msgstr ""
 "Nextcloud Passwords, doldurulmuş bir şifre alanı gerektirir. Bu girişleri "
 "Ashy Pass'te düzenleyip bir şifre ekleyerek gönderilmelerini sağlayın."
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Nextcloud veya WebDAV adresi, kullanıcı, parola"
+
+msgid "Nextcloud server"
+msgstr "Nextcloud sunucusu"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1433,6 +1503,9 @@ msgstr "Yok — hızlı, önceki verileri kurtarılabilir bırakır"
 
 msgid "Not configured"
 msgstr "Yapılandırılmadı"
+
+msgid "Not connected"
+msgstr "Bağlı değil"
 
 msgid "Not run yet"
 msgstr "Henüz çalıştırılmadı"
@@ -1499,6 +1572,9 @@ msgstr "Tamam"
 
 msgid "Off"
 msgstr "Kapalı"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "Kapalı: tam adresiyle başka bir WebDAV sunucusu"
 
 msgid "Old copy removed"
 msgstr "Eski kopya kaldırıldı"
@@ -1985,6 +2061,9 @@ msgstr "Sunucu URL'si, kullanıcı adı, uygulama parolası"
 msgid "Server URL, username, app-password"
 msgstr "Sunucu URL'si, kullanıcı adı, uygulama şifresi"
 
+msgid "Server address"
+msgstr "Sunucu adresi"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
@@ -2118,6 +2197,9 @@ msgstr "Eşitleme çakışması: sunucuda daha yeni bir kopya var (nesil {})"
 msgid "Sync failed"
 msgstr "Senkronizasyon başarısız"
 
+msgid "Sync folder disconnected"
+msgstr "Eşitleme klasörünün bağlantısı kesildi"
+
 msgid "Sync now"
 msgstr "Şimdi senkronize et"
 
@@ -2153,6 +2235,9 @@ msgstr "Eşitleniyor..."
 
 msgid "Syncing folders"
 msgstr "Klasörler eşitleniyor"
+
+msgid "Syncing…"
+msgstr "Eşitleniyor…"
 
 msgid "Tags"
 msgstr "Etiketler"
@@ -2245,6 +2330,9 @@ msgstr ""
 msgid ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
 msgstr "Etiket \"-\" ile başlayamaz, \"/\" veya denetim karakterleri içeremez."
+
+msgid "The last sync failed"
+msgstr "Son eşitleme başarısız oldu"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Ana parola çok kısa. Asgari uzunluk:"
@@ -2613,6 +2701,13 @@ msgstr "Ana parolayı kullan"
 msgid "Use the + button to create one."
 msgstr "Oluşturmak için + düğmesini kullanın."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Tüm cihazlarınızda aynı ana parolayı kullanın: klasörün anahtarını açar. "
+"Katılmak için burada bir kez yazarsınız."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Bir site iki adımlı doğrulama istediğinde bu kodları kullanın."
 
@@ -2794,6 +2889,9 @@ msgstr "LUKS2 başlığı yazılıyor"
 msgid "Wrong master password"
 msgstr "Yanlış ana parola"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Yanlış ana parola. Klasör, başka bir parolası olan bir kasaya ait."
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2810,6 +2908,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "Kayıtlarınız bu bilgisayarda hâlâ kullanılabilir."
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Öğeleriniz bu bilgisayarda ve klasörde kalır. Daha sonra yeniden bağlanmak "
+"bunları çoğaltmak yerine birleştirir."
 
 msgid "Your most used accesses can be here"
 msgstr "En çok kullandığınız kayıtlar burada olabilir"
@@ -2905,6 +3010,9 @@ msgstr "döner (HDD)"
 
 msgid "seen"
 msgstr "görüldü"
+
+msgid "sent:"
+msgstr "gönderilen:"
 
 msgid "solid-state"
 msgstr "katı hal"

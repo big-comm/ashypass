@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -91,6 +91,9 @@ msgstr "添加条目仅适用于 .ashy 副本。对于 .db 副本，请选择“
 msgid "Address copied"
 msgstr "地址已复制"
 
+msgid "Address, user and password are required"
+msgstr "地址、用户和密码为必填项"
+
 msgid "Adjust length and characters"
 msgstr "调整长度和字符"
 
@@ -125,6 +128,14 @@ msgstr "允许通过加密映射使用TRIM"
 
 msgid "Allow the browser extension"
 msgstr "允许浏览器扩展"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"另一台设备已将它们从加密同步文件夹中删除。如果是您删除的，它们会移到此处的“已"
+"删除项目”。如果不是，请保留它们：它们会再次发送到文件夹。"
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -303,6 +314,9 @@ msgstr "仅当网站显示不同的值时才更改"
 msgid "Changes saved to the vault"
 msgstr "更改已保存到保险库"
 
+msgid "Changes waiting to be sent"
+msgstr "等待发送的更改"
+
 msgid "Check known data breaches (online)"
 msgstr "检查已知数据泄露（联网）"
 
@@ -460,6 +474,12 @@ msgstr "连接"
 msgid "Connect browsers"
 msgstr "连接浏览器"
 
+msgid "Connect failed"
+msgstr "连接失败"
+
+msgid "Connect the sync folder"
+msgstr "连接同步文件夹"
+
 msgid "Connect your browsers"
 msgstr "连接您的浏览器"
 
@@ -467,6 +487,12 @@ msgstr "连接您的浏览器"
 msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "已连接 {} 个浏览器。如果它们已打开，请重新启动。"
+
+msgid "Connected. Received:"
+msgstr "已连接。已接收："
+
+msgid "Connect…"
+msgstr "连接…"
 
 msgid "Continue"
 msgstr "继续"
@@ -687,6 +713,15 @@ msgstr "设备路径"
 msgid "Digits"
 msgstr "位数"
 
+msgid "Disconnect"
+msgstr "断开连接"
+
+msgid "Disconnect failed"
+msgstr "断开连接失败"
+
+msgid "Disconnect the sync folder?"
+msgstr "断开同步文件夹？"
+
 msgid "Done"
 msgstr "完成"
 
@@ -744,6 +779,12 @@ msgstr "加密方式"
 msgid "Encrypted device"
 msgstr "已加密设备"
 
+msgid "Encrypted folder sync"
+msgstr "加密文件夹同步"
+
+msgid "Encrypted folder sync failed"
+msgstr "加密文件夹同步失败"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "加密快照上传，支持冲突检测"
 
@@ -781,6 +822,9 @@ msgstr "请输入标签名。"
 
 msgid "Enter the PIN set up on this computer."
 msgstr "输入在此电脑上设置的 PIN。"
+
+msgid "Enter the master password"
+msgstr "请输入主密码"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "输入密码，或在下方添加验证码。"
@@ -1102,6 +1146,9 @@ msgid ""
 "even Ashy Pass."
 msgstr "它用于在此电脑上打开保险库。没有人能帮你找回它——Ashy Pass 也不能。"
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "项目会保留在此处和文件夹中；重新连接时会合并"
+
 msgid "Its user, password and other details appear here."
 msgstr "它的用户、密码和其他详细信息会显示在这里。"
 
@@ -1189,6 +1236,9 @@ msgstr "此电脑上的最近一次备份"
 msgid "Last changed:"
 msgstr "上次更改："
 
+msgid "Last sync:"
+msgstr "上次同步："
+
 msgid "Launch the encryption wizard"
 msgstr "启动加密向导"
 
@@ -1209,6 +1259,17 @@ msgstr "立即锁定保险库（Ctrl+L）"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "屏幕锁定或电脑休眠时锁定"
+
+msgid "Login name"
+msgstr "登录名"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"登录信息、银行卡、身份、笔记和通行密钥在离开此电脑前先加密，再通过 Nextcloud "
+"或任意 WebDAV 服务器上的文件夹同步。Android 版 Ashy Pass 使用同一个文件夹。"
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1321,6 +1382,12 @@ msgstr ""
 "Nextcloud Passwords 要求密码字段必须填写。请在 Ashy Pass 中编辑这些条目，添加"
 "密码后即可发送。"
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Nextcloud 或 WebDAV 地址、用户、密码"
+
+msgid "Nextcloud server"
+msgstr "Nextcloud 服务器"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr "未找到二维码。请确保整个二维码可见且不要太小。"
@@ -1375,6 +1442,9 @@ msgstr "无——快速，但会遗留可恢复的先前数据"
 
 msgid "Not configured"
 msgstr "未配置"
+
+msgid "Not connected"
+msgstr "未连接"
 
 msgid "Not run yet"
 msgstr "尚未运行"
@@ -1437,6 +1507,9 @@ msgstr "确定"
 
 msgid "Off"
 msgstr "关"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "关闭：使用另一台 WebDAV 服务器，需填写完整地址"
 
 msgid "Old copy removed"
 msgstr "旧副本已移除"
@@ -1907,6 +1980,9 @@ msgstr "服务器 URL、用户名、应用密码"
 msgid "Server URL, username, app-password"
 msgstr "服务器地址、用户名、应用密码"
 
+msgid "Server address"
+msgstr "服务器地址"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr "服务器地址（例如 cloud.example.com）、用户名和应用密码。"
@@ -2038,6 +2114,9 @@ msgstr "同步冲突：服务器上有更新的副本（第 {} 代）"
 msgid "Sync failed"
 msgstr "同步失败"
 
+msgid "Sync folder disconnected"
+msgstr "同步文件夹已断开连接"
+
 msgid "Sync now"
 msgstr "立即同步"
 
@@ -2072,6 +2151,9 @@ msgstr "正在同步..."
 
 msgid "Syncing folders"
 msgstr "正在同步文件夹"
+
+msgid "Syncing…"
+msgstr "正在同步…"
 
 msgid "Tags"
 msgstr "标签"
@@ -2156,6 +2238,9 @@ msgstr "导入已停止，所有更改均已撤销。保险库保持原样。"
 msgid ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
 msgstr "标签名不能以 \"-\" 开头，也不能包含 \"/\" 或控制字符。"
+
+msgid "The last sync failed"
+msgstr "上次同步失败"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "主密码太短。最小长度："
@@ -2500,6 +2585,13 @@ msgstr "使用主密码"
 msgid "Use the + button to create one."
 msgstr "使用 + 按钮创建一个。"
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"请在所有设备上使用相同的主密码：它用于打开文件夹的密钥。加入时只需在此输入一"
+"次。"
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "当网站要求两步验证时，使用这些验证码。"
 
@@ -2671,6 +2763,9 @@ msgstr "正在写入 LUKS2 头部"
 msgid "Wrong master password"
 msgstr "主密码错误"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "主密码错误。该文件夹属于使用另一个密码的保险库。"
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2683,6 +2778,11 @@ msgstr "恢复副本时需要此密码。可以使用你的主密码；Ashy Pass
 
 msgid "Your entries are still available on this computer."
 msgstr "你的条目在此电脑上仍然可用。"
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr "您的项目会保留在此电脑和文件夹中。稍后重新连接会合并而不是重复。"
 
 msgid "Your most used accesses can be here"
 msgstr "你最常用的条目可以放在这里"
@@ -2773,6 +2873,9 @@ msgstr "机械硬盘 (HDD)"
 
 msgid "seen"
 msgstr "已查看"
+
+msgid "sent:"
+msgstr "已发送："
 
 msgid "solid-state"
 msgstr "固态硬盘"

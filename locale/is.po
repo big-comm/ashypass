@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -96,6 +96,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Vistfang afritað"
 
+msgid "Address, user and password are required"
+msgstr "Heimilisfang, notandi og lykilorð eru nauðsynleg"
+
 msgid "Adjust length and characters"
 msgstr "Stilla lengd og stafi"
 
@@ -131,6 +134,15 @@ msgstr "Leyfa TRIM í gegnum dulkóðaða vörpun"
 
 msgid "Allow the browser extension"
 msgstr "Leyfa vafraviðbótina"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Annað tæki eyddi þeim úr dulkóðuðu samstillingarmöppunni. Ef það varst þú, "
+"færast þau hér í Eydd atriði. Ef ekki, haltu þeim: þau eru send aftur í "
+"möppuna."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -315,6 +327,9 @@ msgstr "Breyttu aðeins ef vefsvæðið sýnir önnur gildi"
 msgid "Changes saved to the vault"
 msgstr "Breytingar vistaðar í hvelfingunni"
 
+msgid "Changes waiting to be sent"
+msgstr "Breytingar bíða sendingar"
+
 msgid "Check known data breaches (online)"
 msgstr "Athuga þekkta gagnaleka (á netinu)"
 
@@ -475,6 +490,12 @@ msgstr "Tengja"
 msgid "Connect browsers"
 msgstr "Tengja vafra"
 
+msgid "Connect failed"
+msgstr "Tenging mistókst"
+
+msgid "Connect the sync folder"
+msgstr "Tengja samstillingarmöppuna"
+
 msgid "Connect your browsers"
 msgstr "Tengdu vafrana þína"
 
@@ -483,6 +504,12 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Tengt við {} vafra. Endurræstu hann ef hann er opinn."
 msgstr[1] "Tengt við {} vafra. Endurræstu þá ef þeir eru opnir."
+
+msgid "Connected. Received:"
+msgstr "Tengt. Móttekið:"
+
+msgid "Connect…"
+msgstr "Tengja…"
 
 msgid "Continue"
 msgstr "Halda áfram"
@@ -707,6 +734,15 @@ msgstr "Slóð tækis"
 msgid "Digits"
 msgstr "Tölustafir"
 
+msgid "Disconnect"
+msgstr "Aftengja"
+
+msgid "Disconnect failed"
+msgstr "Aftenging mistókst"
+
+msgid "Disconnect the sync folder?"
+msgstr "Aftengja samstillingarmöppuna?"
+
 msgid "Done"
 msgstr "Lokið"
 
@@ -764,6 +800,12 @@ msgstr "Dulritað sem"
 msgid "Encrypted device"
 msgstr "Dulkóðað tæki"
 
+msgid "Encrypted folder sync"
+msgstr "Dulkóðuð möppusamstilling"
+
+msgid "Encrypted folder sync failed"
+msgstr "Dulkóðuð möppusamstilling mistókst"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Dulkóðuð skyndimyndaupphleðsla með árekstrarskynjun"
 
@@ -803,6 +845,9 @@ msgstr "Sláðu inn heiti."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Sláðu inn PIN-númerið sem var sett upp á þessari tölvu."
+
+msgid "Enter the master password"
+msgstr "Sláðu inn aðallykilorðið"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Sláðu inn lykilorðið eða bættu við staðfestingarkóða hér fyrir neðan."
@@ -1138,6 +1183,9 @@ msgstr ""
 "Það opnar hvelfinguna á þessari tölvu. Enginn getur endurheimt það fyrir þig "
 "— ekki einu sinni Ashy Pass."
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "Atriðin haldast hér og í möppunni; ný tenging sameinar þau"
+
 msgid "Its user, password and other details appear here."
 msgstr "Notandi, lykilorð og aðrar upplýsingar hennar birtast hér."
 
@@ -1230,6 +1278,9 @@ msgstr "Síðasta öryggisafrit gert á þessari tölvu"
 msgid "Last changed:"
 msgstr "Síðast breytt:"
 
+msgid "Last sync:"
+msgstr "Síðasta samstilling:"
+
 msgid "Launch the encryption wizard"
 msgstr "Ræstu dulkóðunarleiðsögumanninn"
 
@@ -1250,6 +1301,18 @@ msgstr "Læsa hvelfingunni núna (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Læsa þegar skjárinn læsist eða tölvan fer í biðstöðu"
+
+msgid "Login name"
+msgstr "Innskráningarnafn"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"Innskráningar, kort, auðkenni, minnismiðar og passkeys, dulkóðuð á þessari "
+"tölvu áður en þau fara úr henni, í gegnum möppu á Nextcloud eða hvaða WebDAV-"
+"þjóni sem er. Ashy Pass fyrir Android notar sömu möppu."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1368,6 +1431,12 @@ msgstr ""
 "þessum færslum í Ashy Pass með því að bæta við lykilorði svo hægt sé að "
 "senda þær."
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Nextcloud- eða WebDAV-vistfang, notandi, lykilorð"
+
+msgid "Nextcloud server"
+msgstr "Nextcloud-þjónn"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1427,6 +1496,9 @@ msgstr "Ekkert — fljótt, skilur eftir fyrri gögn endurheimtanleg"
 
 msgid "Not configured"
 msgstr "Ekki stillt"
+
+msgid "Not connected"
+msgstr "Ekki tengt"
 
 msgid "Not run yet"
 msgstr "Ekki keyrt enn"
@@ -1491,6 +1563,9 @@ msgstr "Í lagi"
 
 msgid "Off"
 msgstr "Slökkt"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "Slökkt: annar WebDAV-þjónn, með fullu vistfangi"
 
 msgid "Old copy removed"
 msgstr "Gamla afritið fjarlægt"
@@ -1976,6 +2051,9 @@ msgstr "Vefslóð þjóns, notandanafn, forritslykilorð"
 msgid "Server URL, username, app-password"
 msgstr "Vefslóð þjóns, notandanafn, app-lykilorð"
 
+msgid "Server address"
+msgstr "Vistfang þjóns"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
@@ -2109,6 +2187,9 @@ msgstr "Samstillingarárekstur: þjónninn er með nýrra afrit (kynslóð {})"
 msgid "Sync failed"
 msgstr "Samstilling mistókst"
 
+msgid "Sync folder disconnected"
+msgstr "Samstillingarmappa aftengd"
+
 msgid "Sync now"
 msgstr "Samstilla núna"
 
@@ -2144,6 +2225,9 @@ msgstr "Samstilli..."
 
 msgid "Syncing folders"
 msgstr "Samstilli möppur"
+
+msgid "Syncing…"
+msgstr "Samstilli…"
 
 msgid "Tags"
 msgstr "Merki"
@@ -2241,6 +2325,9 @@ msgstr ""
 msgid ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
 msgstr "Heitið má ekki byrja á \"-\" né innihalda \"/\" eða stýristafi."
+
+msgid "The last sync failed"
+msgstr "Síðasta samstilling mistókst"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Aðallykilorðið er of stutt. Lágmarkslengd:"
@@ -2613,6 +2700,13 @@ msgstr "Nota aðallykilorð"
 msgid "Use the + button to create one."
 msgstr "Notaðu +-hnappinn til að búa til."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Notaðu sama aðallykilorð á öllum tækjunum þínum: það opnar lykil möppunnar. "
+"Þú slærð það inn einu sinni hér til að taka þátt."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Notaðu þessa kóða þegar vefsvæði biður um tveggja þrepa staðfestingu."
 
@@ -2794,6 +2888,9 @@ msgstr "Skrifa LUKS2 haus"
 msgid "Wrong master password"
 msgstr "Rangt aðallykilorð"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Rangt aðallykilorð. Mappan tilheyrir hvelfingu með öðru."
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2810,6 +2907,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "Færslurnar þínar eru enn aðgengilegar á þessari tölvu."
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Atriðin þín haldast á þessari tölvu og í möppunni. Ný tenging síðar sameinar "
+"þau í stað þess að afrita."
 
 msgid "Your most used accesses can be here"
 msgstr "Mest notuðu færslurnar þínar geta verið hér"
@@ -2905,6 +3009,9 @@ msgstr "snúnings (HDD)"
 
 msgid "seen"
 msgstr "séð"
+
+msgid "sent:"
+msgstr "sent:"
 
 msgid "solid-state"
 msgstr "solid-state"

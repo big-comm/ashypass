@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:29\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -99,6 +99,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Adresse copiée"
 
+msgid "Address, user and password are required"
+msgstr "L'adresse, l'utilisateur et le mot de passe sont requis"
+
 msgid "Adjust length and characters"
 msgstr "Ajuster la longueur et les caractères"
 
@@ -135,6 +138,15 @@ msgstr "Autoriser TRIM via le mappage chiffré"
 
 msgid "Allow the browser extension"
 msgstr "Autoriser l’extension du navigateur"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Un autre appareil les a supprimés du dossier de synchronisation chiffré. Si "
+"c'était vous, ils passent dans Éléments supprimés ici. Sinon, conservez-"
+"les : ils sont renvoyés au dossier."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -325,6 +337,9 @@ msgstr "À modifier uniquement si le site affiche d’autres valeurs"
 msgid "Changes saved to the vault"
 msgstr "Modifications enregistrées dans le coffre"
 
+msgid "Changes waiting to be sent"
+msgstr "Modifications en attente d'envoi"
+
 msgid "Check known data breaches (online)"
 msgstr "Vérifier les fuites de données connues (en ligne)"
 
@@ -488,6 +503,12 @@ msgstr "Connecter"
 msgid "Connect browsers"
 msgstr "Connecter les navigateurs"
 
+msgid "Connect failed"
+msgstr "Échec de la connexion"
+
+msgid "Connect the sync folder"
+msgstr "Connecter le dossier de synchronisation"
+
 msgid "Connect your browsers"
 msgstr "Connectez vos navigateurs"
 
@@ -496,6 +517,12 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Connecté à {} navigateur. Redémarrez-le s’il est ouvert."
 msgstr[1] "Connecté à {} navigateurs. Redémarrez-les s’ils sont ouverts."
+
+msgid "Connected. Received:"
+msgstr "Connecté. Reçus :"
+
+msgid "Connect…"
+msgstr "Connecter…"
 
 msgid "Continue"
 msgstr "Continuer"
@@ -721,6 +748,15 @@ msgstr "Chemin du périphérique"
 msgid "Digits"
 msgstr "Chiffres"
 
+msgid "Disconnect"
+msgstr "Déconnecter"
+
+msgid "Disconnect failed"
+msgstr "Échec de la déconnexion"
+
+msgid "Disconnect the sync folder?"
+msgstr "Déconnecter le dossier de synchronisation ?"
+
 msgid "Done"
 msgstr "Terminé"
 
@@ -778,6 +814,12 @@ msgstr "Chiffré en tant que"
 msgid "Encrypted device"
 msgstr "Appareil chiffré"
 
+msgid "Encrypted folder sync"
+msgstr "Synchronisation chiffrée de dossier"
+
+msgid "Encrypted folder sync failed"
+msgstr "Échec de la synchronisation chiffrée de dossier"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Envoi d'instantané chiffré avec détection de conflit"
 
@@ -819,6 +861,9 @@ msgstr "Saisissez un libellé."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Saisissez le PIN configuré sur cet ordinateur."
+
+msgid "Enter the master password"
+msgstr "Saisissez le mot de passe maître"
 
 msgid "Enter the password, or add a verification code below."
 msgstr ""
@@ -1161,6 +1206,11 @@ msgstr ""
 "Il ouvre le coffre sur cet ordinateur. Personne ne peut le récupérer pour "
 "vous — pas même Ashy Pass."
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr ""
+"Les éléments restent ici et dans le dossier ; une nouvelle connexion les "
+"fusionne"
+
 msgid "Its user, password and other details appear here."
 msgstr ""
 "Son utilisateur, son mot de passe et les autres détails s’affichent ici."
@@ -1257,6 +1307,9 @@ msgstr "Dernière sauvegarde effectuée sur cet ordinateur"
 msgid "Last changed:"
 msgstr "Dernière modification :"
 
+msgid "Last sync:"
+msgstr "Dernière synchronisation :"
+
 msgid "Launch the encryption wizard"
 msgstr "Lancer l'assistant de chiffrement"
 
@@ -1279,6 +1332,18 @@ msgid "Lock when the screen locks or the computer sleeps"
 msgstr ""
 "Verrouiller lorsque l’écran se verrouille ou que l’ordinateur se met en "
 "veille"
+
+msgid "Login name"
+msgstr "Nom d'utilisateur"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"Identifiants, cartes, identités, notes et clés d'accès, chiffrés sur cet "
+"ordinateur avant de le quitter, via un dossier sur Nextcloud ou n'importe "
+"quel serveur WebDAV. Ashy Pass pour Android utilise le même dossier."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1400,6 +1465,12 @@ msgstr ""
 "entrées dans Ashy Pass en ajoutant un mot de passe pour qu’elles soient "
 "envoyées."
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Adresse Nextcloud ou WebDAV, utilisateur, mot de passe"
+
+msgid "Nextcloud server"
+msgstr "Serveur Nextcloud"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1460,6 +1531,9 @@ msgstr "Aucun — rapide, laisse les données antérieures récupérables"
 
 msgid "Not configured"
 msgstr "Non configuré"
+
+msgid "Not connected"
+msgstr "Non connecté"
 
 msgid "Not run yet"
 msgstr "Pas encore exécuté"
@@ -1526,6 +1600,9 @@ msgstr "OK"
 
 msgid "Off"
 msgstr "Désactivé"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "Désactivé : un autre serveur WebDAV, avec son adresse complète"
 
 msgid "Old copy removed"
 msgstr "Ancienne copie supprimée"
@@ -2029,6 +2106,9 @@ msgstr "URL du serveur, nom d'utilisateur, mot de passe d'application"
 msgid "Server URL, username, app-password"
 msgstr "URL du serveur, nom d'utilisateur, mot de passe d'application"
 
+msgid "Server address"
+msgstr "Adresse du serveur"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
@@ -2166,6 +2246,9 @@ msgstr ""
 msgid "Sync failed"
 msgstr "Échec de la synchronisation"
 
+msgid "Sync folder disconnected"
+msgstr "Dossier de synchronisation déconnecté"
+
 msgid "Sync now"
 msgstr "Synchroniser maintenant"
 
@@ -2201,6 +2284,9 @@ msgstr "Synchronisation en cours..."
 
 msgid "Syncing folders"
 msgstr "Synchronisation des dossiers"
+
+msgid "Syncing…"
+msgstr "Synchronisation…"
 
 msgid "Tags"
 msgstr "Étiquettes"
@@ -2303,6 +2389,9 @@ msgid ""
 msgstr ""
 "Le libellé ne peut pas commencer par « - » ni contenir « / » ou des "
 "caractères de contrôle."
+
+msgid "The last sync failed"
+msgstr "La dernière synchronisation a échoué"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Le mot de passe maître est trop court. Longueur minimale :"
@@ -2693,6 +2782,13 @@ msgstr "Utiliser le mot de passe maître"
 msgid "Use the + button to create one."
 msgstr "Utilisez le bouton + pour en créer un."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Utilisez le même mot de passe maître sur tous vos appareils : il ouvre la "
+"clé du dossier. Vous le saisissez une fois ici, pour rejoindre."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr ""
 "Utilisez ces codes lorsqu’un site demande une validation en deux étapes."
@@ -2878,6 +2974,11 @@ msgstr "Écriture de l'en-tête LUKS2"
 msgid "Wrong master password"
 msgstr "Mot de passe principal incorrect"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr ""
+"Mot de passe maître incorrect. Le dossier appartient à un coffre avec un "
+"autre."
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2894,6 +2995,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "Vos entrées restent disponibles sur cet ordinateur."
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Vos éléments restent sur cet ordinateur et dans le dossier. Une nouvelle "
+"connexion plus tard les fusionne au lieu de les dupliquer."
 
 msgid "Your most used accesses can be here"
 msgstr "Vos entrées les plus utilisées peuvent apparaître ici"
@@ -2989,6 +3097,9 @@ msgstr "rotatif (HDD)"
 
 msgid "seen"
 msgstr "consulté"
+
+msgid "sent:"
+msgstr "envoyés :"
 
 msgid "solid-state"
 msgstr "SSD"

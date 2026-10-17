@@ -20,6 +20,7 @@ mod appearance;
 mod audit;
 mod browser;
 mod cloud;
+mod folder_sync;
 mod import_export;
 mod nextcloud;
 mod public_api;

@@ -59,6 +59,12 @@ pub enum AppEvent {
     SyncFailed(String),
     /// The Nextcloud Passwords sync state changed (see `AppState::sync_status`).
     SyncStatusChanged,
+    /// The encrypted sync folder was connected or disconnected in Settings.
+    FolderSyncChanged,
+    /// Settings asked for an encrypted folder sync now.
+    FolderSyncRequested,
+    /// The encrypted folder sync state changed (`AppState::folder_status`).
+    FolderSyncStatusChanged,
     /// A remote conflict was detected during a sync attempt.
     SyncConflict {
         local_generation: u64,

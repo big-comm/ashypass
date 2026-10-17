@@ -255,6 +255,10 @@ pub(super) fn populate_cloud(
 
     page.add(&group);
 
+    page.add(&super::folder_sync::build_folder_sync_group(
+        state.clone(),
+        toast.clone(),
+    ));
     page.add(&build_webdav_group(state.clone(), toast.clone()));
     let _ = (parent, dialog_slot);
 }

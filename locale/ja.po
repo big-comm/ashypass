@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 15:06-0300\n"
+"POT-Creation-Date: 2026-10-17 15:16-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -98,6 +98,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "アドレスをコピーしました"
 
+msgid "Address, user and password are required"
+msgstr "アドレス、ユーザー、パスワードは必須です"
+
 msgid "Adjust length and characters"
 msgstr "長さと文字を調整"
 
@@ -134,6 +137,15 @@ msgstr "暗号化マッピング経由でTRIMを許可"
 
 msgid "Allow the browser extension"
 msgstr "ブラウザー拡張機能を許可"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"別のデバイスが暗号化された同期フォルダからこれらを削除しました。あなたが削除"
+"した場合は、ここで「削除済みアイテム」に移動されます。そうでない場合は残して"
+"ください。フォルダに再送信されます。"
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -318,6 +330,9 @@ msgstr "サイトで異なる値が表示される場合のみ変更してくだ
 msgid "Changes saved to the vault"
 msgstr "変更をボールトに保存しました"
 
+msgid "Changes waiting to be sent"
+msgstr "送信待ちの変更"
+
 msgid "Check known data breaches (online)"
 msgstr "既知のデータ漏洩を確認 (オンライン)"
 
@@ -478,6 +493,12 @@ msgstr "接続"
 msgid "Connect browsers"
 msgstr "ブラウザーを接続"
 
+msgid "Connect failed"
+msgstr "接続に失敗しました"
+
+msgid "Connect the sync folder"
+msgstr "同期フォルダに接続"
+
 msgid "Connect your browsers"
 msgstr "ブラウザーを接続する"
 
@@ -486,6 +507,12 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] ""
 "{} 個のブラウザーに接続しました。開いている場合は再起動してください。"
+
+msgid "Connected. Received:"
+msgstr "接続しました。受信:"
+
+msgid "Connect…"
+msgstr "接続…"
 
 msgid "Continue"
 msgstr "続行"
@@ -709,6 +736,15 @@ msgstr "デバイスのパス"
 msgid "Digits"
 msgstr "桁数"
 
+msgid "Disconnect"
+msgstr "切断"
+
+msgid "Disconnect failed"
+msgstr "切断に失敗しました"
+
+msgid "Disconnect the sync folder?"
+msgstr "同期フォルダを切断しますか？"
+
 msgid "Done"
 msgstr "完了"
 
@@ -766,6 +802,12 @@ msgstr "暗号化形式"
 msgid "Encrypted device"
 msgstr "暗号化されたデバイス"
 
+msgid "Encrypted folder sync"
+msgstr "暗号化フォルダ同期"
+
+msgid "Encrypted folder sync failed"
+msgstr "暗号化フォルダ同期に失敗しました"
+
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "競合検出機能付きの暗号化スナップショットアップロード"
 
@@ -809,6 +851,9 @@ msgstr "ラベルを入力してください。"
 
 msgid "Enter the PIN set up on this computer."
 msgstr "このコンピューターで設定した PIN を入力してください。"
+
+msgid "Enter the master password"
+msgstr "マスターパスワードを入力してください"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "パスワードを入力するか、下で確認コードを追加してください。"
@@ -1143,6 +1188,9 @@ msgstr ""
 "このコンピューターでボールトを開くためのパスワードです。誰もあなたの代わりに"
 "復旧できません — Ashy Pass でさえも。"
 
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "アイテムはこことフォルダに残ります。再接続すると統合されます"
+
 msgid "Its user, password and other details appear here."
 msgstr "ユーザー、パスワード、その他の詳細がここに表示されます。"
 
@@ -1236,6 +1284,9 @@ msgstr "このコンピューターでの最新のバックアップ"
 msgid "Last changed:"
 msgstr "最終変更:"
 
+msgid "Last sync:"
+msgstr "最終同期:"
+
 msgid "Launch the encryption wizard"
 msgstr "暗号化ウィザードを起動"
 
@@ -1256,6 +1307,18 @@ msgstr "今すぐボールトをロック (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "画面のロック時またはスリープ時にロック"
+
+msgid "Login name"
+msgstr "ログイン名"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
+"Pass for Android uses the same folder."
+msgstr ""
+"ログイン、カード、ID、メモ、パスキーを、このコンピューターから送信する前に暗"
+"号化し、Nextcloud または任意の WebDAV サーバー上のフォルダ経由で同期します。"
+"Android 版 Ashy Pass も同じフォルダを使います。"
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1373,6 +1436,12 @@ msgstr ""
 "Nextcloud Passwordsにはパスワードフィールドの入力が必須です。これらのエントリ"
 "をAshy Passで編集し、パスワードを追加してから送信してください。"
 
+msgid "Nextcloud or WebDAV address, user, password"
+msgstr "Nextcloud または WebDAV のアドレス、ユーザー、パスワード"
+
+msgid "Nextcloud server"
+msgstr "Nextcloud サーバー"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1431,6 +1500,9 @@ msgstr "なし — 高速ですが、以前のデータが復元可能なまま�
 
 msgid "Not configured"
 msgstr "未設定"
+
+msgid "Not connected"
+msgstr "未接続"
 
 msgid "Not run yet"
 msgstr "未実行"
@@ -1497,6 +1569,9 @@ msgstr "OK"
 
 msgid "Off"
 msgstr "オフ"
+
+msgid "Off: another WebDAV server, with its full address"
+msgstr "オフ: 別の WebDAV サーバー（完全なアドレスを指定）"
 
 msgid "Old copy removed"
 msgstr "古いコピーを削除しました"
@@ -1980,6 +2055,9 @@ msgstr "サーバーURL、ユーザー名、アプリパスワード"
 msgid "Server URL, username, app-password"
 msgstr "サーバーURL、ユーザー名、アプリパスワード"
 
+msgid "Server address"
+msgstr "サーバーアドレス"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
@@ -2114,6 +2192,9 @@ msgstr "同期の競合: サーバーにより新しいコピーがあります 
 msgid "Sync failed"
 msgstr "同期に失敗しました"
 
+msgid "Sync folder disconnected"
+msgstr "同期フォルダを切断しました"
+
 msgid "Sync now"
 msgstr "今すぐ同期"
 
@@ -2149,6 +2230,9 @@ msgstr "同期中..."
 
 msgid "Syncing folders"
 msgstr "フォルダを同期中"
+
+msgid "Syncing…"
+msgstr "同期中…"
 
 msgid "Tags"
 msgstr "タグ"
@@ -2246,6 +2330,9 @@ msgid ""
 msgstr ""
 "ラベルは \"-\" で始めることはできず、\"/\" や制御文字を含めることもできませ"
 "ん。"
+
+msgid "The last sync failed"
+msgstr "前回の同期に失敗しました"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "マスターパスワードが短すぎます。最小の長さ:"
@@ -2617,6 +2704,13 @@ msgstr "マスターパスワードを使用"
 msgid "Use the + button to create one."
 msgstr "+ ボタンで作成できます。"
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"すべてのデバイスで同じマスターパスワードを使用してください。フォルダの鍵を開"
+"くために使われます。参加するために、ここで一度だけ入力します。"
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "サイトで 2 段階認証を求められたら、これらのコードを使ってください。"
 
@@ -2798,6 +2892,11 @@ msgstr "LUKS2ヘッダーを書き込み中"
 msgid "Wrong master password"
 msgstr "マスターパスワードが間違っています"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr ""
+"マスターパスワードが違います。このフォルダは別のパスワードのボールトのもので"
+"す。"
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2814,6 +2913,13 @@ msgstr ""
 
 msgid "Your entries are still available on this computer."
 msgstr "エントリはこのコンピューターで引き続き利用できます。"
+
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"アイテムはこのコンピューターとフォルダに残ります。後で再接続すると、重複せず"
+"に統合されます。"
 
 msgid "Your most used accesses can be here"
 msgstr "よく使うエントリをここに置けます"
@@ -2904,6 +3010,9 @@ msgstr "回転式（HDD）"
 
 msgid "seen"
 msgstr "表示済み"
+
+msgid "sent:"
+msgstr "送信:"
 
 msgid "solid-state"
 msgstr "ソリッドステート"
