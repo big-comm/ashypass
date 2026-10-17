@@ -9,6 +9,7 @@
 //! desktop keyring.
 
 use crate::backup::files::{check_content_length, write_stream_new, MAX_DOWNLOAD_BYTES};
+use crate::sync::nextcloud_passwords::error_chain;
 use crate::{Error, Result};
 use reqwest::blocking::Client;
 use reqwest::Method;
@@ -566,7 +567,7 @@ impl WebdavFolder {
             .header("Content-Type", "application/xml")
             .body(PROPFIND_BODY)
             .send()
-            .map_err(|e| Error::Other(format!("webdav probe: {e}")))?;
+            .map_err(|e| Error::Other(format!("webdav probe: {}", error_chain(&e))))?;
         match resp.status().as_u16() {
             401 | 403 => Err(Error::Other(
                 "WebDAV refused the user name or password (HTTP 401)".into(),
@@ -598,7 +599,7 @@ impl WebdavFolder {
             let resp = self
                 .request(Method::from_bytes(b"MKCOL").expect("valid method"), &url)?
                 .send()
-                .map_err(|e| Error::Other(format!("webdav mkcol: {e}")))?;
+                .map_err(|e| Error::Other(format!("webdav mkcol: {}", error_chain(&e))))?;
             let status = resp.status().as_u16();
             // 201 created, 405 already exists.
             if status != 201 && status != 405 {
@@ -621,7 +622,7 @@ impl crate::sync::folder::Remote for WebdavFolder {
             .header("Content-Type", "application/xml")
             .body(PROPFIND_BODY)
             .send()
-            .map_err(|e| Error::Other(format!("webdav propfind: {e}")))?;
+            .map_err(|e| Error::Other(format!("webdav propfind: {}", error_chain(&e))))?;
         let status = resp.status().as_u16();
         if status == 404 {
             return Ok(Vec::new());
@@ -646,7 +647,7 @@ impl crate::sync::folder::Remote for WebdavFolder {
             .request(Method::GET, &self.url_of(path))?
             .timeout(TRANSFER_TIMEOUT)
             .send()
-            .map_err(|e| Error::Other(format!("webdav get: {e}")))?;
+            .map_err(|e| Error::Other(format!("webdav get: {}", error_chain(&e))))?;
         let status = resp.status().as_u16();
         if status == 404 {
             return Ok(None);
@@ -676,7 +677,7 @@ impl crate::sync::folder::Remote for WebdavFolder {
             .timeout(TRANSFER_TIMEOUT)
             .body(data.to_vec())
             .send()
-            .map_err(|e| Error::Other(format!("webdav put: {e}")))?;
+            .map_err(|e| Error::Other(format!("webdav put: {}", error_chain(&e))))?;
         let status = resp.status().as_u16();
         if !(200..300).contains(&status) {
             return Err(Error::Other(format!("webdav put: HTTP {status}")));

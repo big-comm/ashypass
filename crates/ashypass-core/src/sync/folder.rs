@@ -242,6 +242,11 @@ fn sync_key(vault: &Vault, remote: &dyn Remote, master: Option<&str>) -> Result<
             forget(vault)?;
         }
         let master = master.ok_or(Error::InvalidMasterPassword)?;
+        // Other devices join with this password: a typo here would lock
+        // them out, so it must be this vault's master password.
+        if !argon2_kdf::verify_master(master, &vault.master_hash()?)? {
+            return Err(Error::InvalidMasterPassword);
+        }
         let key = cached.unwrap_or_else(|| {
             let mut key = Zeroizing::new([0u8; 32]);
             rand::rngs::OsRng.fill_bytes(key.as_mut());
@@ -809,6 +814,21 @@ mod tests {
         ));
         sync(&tablet, &folder, Some(NEW), opts()).unwrap();
         assert_eq!(titles(&tablet), ["Mail"]);
+    }
+
+    #[test]
+    fn creating_a_folder_needs_this_vaults_master_password() {
+        let dir = tempfile::tempdir().unwrap();
+        let folder = LocalFolder {
+            root: dir.path().join("cloud"),
+        };
+        let v = device(dir.path(), "v");
+        assert!(matches!(
+            sync(&v, &folder, Some("a typo"), FolderSyncOptions::default()),
+            Err(Error::InvalidMasterPassword)
+        ));
+        assert!(folder.get(HEADER).unwrap().is_none());
+        run(&v, &folder);
     }
 
     #[test]

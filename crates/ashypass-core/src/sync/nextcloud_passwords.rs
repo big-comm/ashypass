@@ -541,7 +541,7 @@ fn default_headers() -> HeaderMap {
 
 /// An error with its causes ("error sending request: … : dns error: …"):
 /// reqwest's own message hides the reason a connection failed.
-fn error_chain(error: &dyn std::error::Error) -> String {
+pub(crate) fn error_chain(error: &dyn std::error::Error) -> String {
     let mut text = error.to_string();
     let mut source = error.source();
     while let Some(cause) = source {
