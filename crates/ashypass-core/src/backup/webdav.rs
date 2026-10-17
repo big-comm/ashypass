@@ -232,8 +232,7 @@ impl WebdavService {
     }
 
     fn config_path() -> PathBuf {
-        let base = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-        base.join("ashypass").join("webdav.json")
+        crate::config::config_dir().join("webdav.json")
     }
 
     fn load_config() -> Option<WebdavConfig> {

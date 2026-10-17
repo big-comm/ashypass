@@ -174,7 +174,17 @@ impl NextcloudPasswordsClient {
     }
 
     /// Probe the server and persist the config on success.
-    pub fn login(&mut self, mut cfg: NcConfig) -> Result<()> {
+    pub fn login(&mut self, cfg: NcConfig) -> Result<()> {
+        let cfg = self.probe(cfg)?;
+        Self::save_config(&cfg)?;
+        self.config = Some(cfg);
+        Ok(())
+    }
+
+    /// Check the server and the credentials without saving anything, and
+    /// return the config with its normalised URL. For apps that keep the
+    /// app password in their own secret store (the mobile app).
+    pub fn probe(&self, mut cfg: NcConfig) -> Result<NcConfig> {
         cfg.base_url = crate::server_url::normalize_nextcloud(&cfg.base_url);
         validate_server_url(&cfg.base_url)?;
         if cfg.base_url.is_empty() || cfg.username.is_empty() || cfg.app_password.is_empty() {
@@ -185,15 +195,20 @@ impl NextcloudPasswordsClient {
         // Smoke test: list passwords with limit=0 isn't a thing, but
         // /password/list is cheap and returns 200 even on empty vaults.
         let probe = self.request_with_cfg(&cfg, "GET", "/password/list", None)?;
+        if probe.status == 401 {
+            return Err(Error::Other(
+                "nextcloud login failed: HTTP 401 — check the login name (not the email) \
+                 and use an app password from Settings → Security"
+                    .into(),
+            ));
+        }
         if probe.status >= 400 {
             return Err(Error::Other(format!(
                 "nextcloud login failed: HTTP {}",
                 probe.status
             )));
         }
-        Self::save_config(&cfg)?;
-        self.config = Some(cfg);
-        Ok(())
+        Ok(cfg)
     }
 
     pub fn logout(&mut self) -> Result<()> {
@@ -324,7 +339,7 @@ impl NextcloudPasswordsClient {
         }
         let mut resp = req
             .send()
-            .map_err(|e| Error::Other(format!("nextcloud {method} {path}: {e}")))?;
+            .map_err(|e| Error::Other(format!("nextcloud {method} {path}: {}", error_chain(&e))))?;
         let status = resp.status().as_u16();
         const MAX_RESPONSE_BYTES: u64 = 64 * 1024 * 1024;
         if resp
@@ -348,8 +363,7 @@ impl NextcloudPasswordsClient {
     }
 
     fn config_path() -> PathBuf {
-        let base = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-        base.join("ashypass").join("nextcloud_passwords.json")
+        crate::config::config_dir().join("nextcloud_passwords.json")
     }
 
     fn load_config() -> Option<NcConfig> {
@@ -523,6 +537,22 @@ fn default_headers() -> HeaderMap {
     // The Nextcloud Passwords API requires OCS-APIRequest on some endpoints.
     h.insert("OCS-APIRequest", HeaderValue::from_static("true"));
     h
+}
+
+/// An error with its causes ("error sending request: … : dns error: …"):
+/// reqwest's own message hides the reason a connection failed.
+fn error_chain(error: &dyn std::error::Error) -> String {
+    let mut text = error.to_string();
+    let mut source = error.source();
+    while let Some(cause) = source {
+        let cause_text = cause.to_string();
+        if !text.contains(&cause_text) {
+            text.push_str(": ");
+            text.push_str(&cause_text);
+        }
+        source = cause.source();
+    }
+    text
 }
 
 fn validate_server_url(value: &str) -> Result<()> {

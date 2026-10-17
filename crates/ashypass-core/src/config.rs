@@ -43,16 +43,47 @@ pub const WINDOW_DEFAULT_HEIGHT: i32 = 650;
 pub const WINDOW_MIN_WIDTH: i32 = 700;
 pub const WINDOW_MIN_HEIGHT: i32 = 570;
 
+/// Base folders set by an app that knows better than `dirs` (Android and
+/// iOS apps get theirs from the platform). Unset on the desktop.
+static BASE_DIRS: std::sync::OnceLock<BaseDirs> = std::sync::OnceLock::new();
+
+#[derive(Debug, Clone)]
+pub struct BaseDirs {
+    /// Settings and account configuration.
+    pub config: PathBuf,
+    /// The vault and other data.
+    pub data: PathBuf,
+}
+
+/// Use these folders instead of the XDG ones. Call once, before anything
+/// else touches the vault or the settings; later calls are ignored and
+/// return `false`.
+pub fn set_base_dirs(dirs: BaseDirs) -> bool {
+    BASE_DIRS.set(dirs).is_ok()
+}
+
+/// Base folder for settings (the `ashypass` folder lives inside it).
+pub fn config_base() -> PathBuf {
+    match BASE_DIRS.get() {
+        Some(base) => base.config.clone(),
+        None => dirs::config_dir().unwrap_or_else(|| PathBuf::from(".")),
+    }
+}
+
+/// Base folder for data (the `ashypass` folder lives inside it).
+pub fn data_base() -> PathBuf {
+    match BASE_DIRS.get() {
+        Some(base) => base.data.clone(),
+        None => dirs::data_dir().unwrap_or_else(|| PathBuf::from(".")),
+    }
+}
+
 pub fn config_dir() -> PathBuf {
-    dirs::config_dir()
-        .unwrap_or_else(|| PathBuf::from("."))
-        .join("ashypass")
+    config_base().join("ashypass")
 }
 
 pub fn data_dir() -> PathBuf {
-    dirs::data_dir()
-        .unwrap_or_else(|| PathBuf::from("."))
-        .join("ashypass")
+    data_base().join("ashypass")
 }
 
 pub fn database_path() -> PathBuf {

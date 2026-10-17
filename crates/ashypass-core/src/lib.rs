@@ -20,8 +20,13 @@ pub mod settings;
 pub mod strength;
 pub mod sync;
 pub mod totp;
+pub mod url_match;
 
 pub mod fido2;
+#[cfg(target_os = "linux")]
+pub mod keyring;
+#[cfg(not(target_os = "linux"))]
+#[path = "keyring_unavailable.rs"]
 pub mod keyring;
 
 pub use error::{Error, Result};
