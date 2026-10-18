@@ -381,9 +381,12 @@ struct KeyState {
     loaded: Option<Vec<Fingerprint>>,
 }
 
-/// Index of existing entries by (title, username, url).
+/// Index of existing entries by (title, username, url), and of their
+/// two-step verification secrets.
 struct DuplicateIndex {
     by_key: HashMap<Key, KeyState>,
+    /// Normalized TOTP secrets in the vault, read on first need.
+    secrets: Option<std::collections::HashSet<String>>,
 }
 
 fn key_of(title: &str, username: Option<&str>, url: Option<&str>) -> Key {
@@ -420,7 +423,23 @@ impl DuplicateIndex {
                 .ids
                 .push(summary.id);
         }
-        Ok(Self { by_key })
+        Ok(Self {
+            by_key,
+            secrets: None,
+        })
+    }
+
+    fn known_secrets(&mut self, vault: &Vault) -> Result<&mut std::collections::HashSet<String>> {
+        if self.secrets.is_none() {
+            let mut secrets = std::collections::HashSet::new();
+            for summary in vault.list(None)?.into_iter().filter(|e| e.has_totp) {
+                if let Some(secret) = vault.totp_secret(summary.id)? {
+                    secrets.insert(otp::normalize_secret(&secret));
+                }
+            }
+            self.secrets = Some(secrets);
+        }
+        Ok(self.secrets.as_mut().expect("loaded above"))
     }
 
     fn loaded_state(&mut self, vault: &Vault, key: &Key) -> Result<Option<&mut Vec<Fingerprint>>> {
@@ -454,6 +473,17 @@ impl DuplicateIndex {
             entry.url.as_deref(),
         );
         let candidate = fingerprint_of(entry);
+        // An authenticator item (a code without a password) whose secret is
+        // already in the vault adds nothing, whatever its name: Aegis calls
+        // it "GitHub", the login it belongs to may be "github.com".
+        // (Loaded for every item with a code, so later items of the same
+        // file are checked against it too.)
+        if !candidate.totp.is_empty() {
+            let known = self.known_secrets(vault)?.contains(&candidate.totp);
+            if known && candidate.password.is_empty() {
+                return Ok(Match::Exact);
+            }
+        }
         let Some(existing) = self.loaded_state(vault, &key)? else {
             return Ok(Match::New);
         };
@@ -481,11 +511,14 @@ impl DuplicateIndex {
             entry.username.as_deref(),
             entry.url.as_deref(),
         );
+        let fingerprint = fingerprint_of(entry);
+        if let Some(secrets) = self.secrets.as_mut() {
+            if !fingerprint.totp.is_empty() {
+                secrets.insert(fingerprint.totp.clone());
+            }
+        }
         let state = self.by_key.entry(key).or_default();
-        state
-            .loaded
-            .get_or_insert_with(Vec::new)
-            .push(fingerprint_of(entry));
+        state.loaded.get_or_insert_with(Vec::new).push(fingerprint);
     }
 }
 

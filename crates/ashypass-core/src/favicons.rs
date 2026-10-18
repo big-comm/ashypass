@@ -46,7 +46,17 @@ pub fn lookup(host: &str) -> Option<PathBuf> {
 }
 
 /// Fetch `host`'s favicon and store it under `favicons_dir()`. Blocking.
+/// The Google fallback follows `Settings::favicon_third_party_fallback`.
 pub fn fetch_blocking(host: &str) -> Result<PathBuf> {
+    fetch_blocking_with(
+        host,
+        crate::settings::Settings::load().favicon_third_party_fallback,
+    )
+}
+
+/// Like [`fetch_blocking`], with the Google fallback chosen by the caller
+/// (apps that keep their own settings).
+pub fn fetch_blocking_with(host: &str, third_party_fallback: bool) -> Result<PathBuf> {
     let path = cache_path(host);
     if path.exists() {
         return Ok(path);
@@ -66,7 +76,7 @@ pub fn fetch_blocking(host: &str) -> Result<PathBuf> {
     let mut candidates = vec![format!("https://{host}/favicon.ico")];
     // The third-party fallback sends the hostname to Google, i.e. leaks which
     // sites are in the vault. Opt-in only.
-    if crate::settings::Settings::load().favicon_third_party_fallback {
+    if third_party_fallback {
         candidates.push(format!(
             "https://www.google.com/s2/favicons?domain={host}&sz=64"
         ));

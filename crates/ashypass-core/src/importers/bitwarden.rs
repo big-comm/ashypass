@@ -313,7 +313,7 @@ mod tests {
                    "uris": [{"uri": "https://example.com"}, {"uri": "https://login.example.com"}]},
          "fields": [{"name": "PIN", "value": "1234", "type": 1}],
          "passwordHistory": [{"password": "old-pw", "lastUsedDate": "2024-01-02T03:04:05.000Z"}]},
-        {"type": 1, "name": "TOTP only", "login": {"totp": "JBSWY3DPEHPK3PXP"}},
+        {"type": 1, "name": "TOTP only", "login": {"totp": "KRSXG5CTMVRXEZLU"}},
         {"type": 1, "name": "Seven digits", "login": {"password": "p",
          "totp": "otpauth://totp/x?secret=JBSWY3DPEHPK3PXP&digits=7"}},
         {"type": 2, "name": "Secure note", "notes": "secret text"},
@@ -349,7 +349,7 @@ mod tests {
 
         let totp_only = &parsed.candidates[1].entry;
         assert!(totp_only.password.is_empty());
-        assert_eq!(totp_only.totp_secret.as_deref(), Some("JBSWY3DPEHPK3PXP"));
+        assert_eq!(totp_only.totp_secret.as_deref(), Some("KRSXG5CTMVRXEZLU"));
 
         let seven = &parsed.candidates[2].entry;
         assert!(seven.totp_secret.is_none());

@@ -41,11 +41,19 @@ pub const MAX_IMPORT_BINARY_BYTES: u64 = 512 * 1024 * 1024;
 pub enum ImportSource {
     Csv,
     Aegis,
+    /// An Aegis vault exported with encryption.
+    AegisEncrypted {
+        password: String,
+    },
     Andotp,
     Bitwarden,
     OnePassword,
-    KeePass { password: String },
-    Ashy { password: String },
+    KeePass {
+        password: String,
+    },
+    Ashy {
+        password: String,
+    },
 }
 
 /// Parse `path` without touching the vault. Feed the result to [`preview`]
@@ -55,6 +63,9 @@ pub fn parse_source(source: &ImportSource, path: impl AsRef<Path>) -> Result<Par
     match source {
         ImportSource::Csv => csv_io::parse_file(path),
         ImportSource::Aegis => aegis::parse_file(path),
+        ImportSource::AegisEncrypted { password } => {
+            aegis::parse_file_with_password(path, password)
+        }
         ImportSource::Andotp => andotp::parse_file(path),
         ImportSource::Bitwarden => bitwarden::parse_file(path),
         ImportSource::OnePassword => onepassword::parse_file(path),

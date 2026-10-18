@@ -43,6 +43,9 @@ zxcvbn.workspace = true
 psl = "2"
 zip.workspace = true
 keepass.workspace = true
+# Aegis encrypted vaults: its key derivation, and hex fields.
+scrypt = { version = "0.11", default-features = false }
+hex = "0.4"
 
 # The system keyring (Secret Service over D-Bus) only exists on the Linux
 # desktop; elsewhere `keyring` is a stub and the app keeps its own secrets.

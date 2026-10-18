@@ -209,6 +209,137 @@ mod percent_encoding {
     }
 }
 
+/// What a Google Authenticator export QR code (`otpauth-migration://offline
+/// ?data=…`) holds: its TOTP codes, and how many of its items cannot be
+/// used here (HOTP counters, MD5).
+#[derive(Debug, Default)]
+pub struct Migration {
+    pub codes: Vec<OtpAuth>,
+    pub unsupported: usize,
+}
+
+/// Read a Google Authenticator export QR code. Its payload is a small
+/// protobuf message (MigrationPayload), decoded by hand here.
+pub fn parse_migration(uri: &str) -> Result<Migration> {
+    let parsed =
+        url::Url::parse(uri.trim()).map_err(|e| Error::InvalidInput(format!("url: {e}")))?;
+    if parsed.scheme() != "otpauth-migration" {
+        return Err(Error::InvalidInput("not an otpauth-migration URI".into()));
+    }
+    let data = parsed
+        .query_pairs()
+        .find(|(k, _)| k == "data")
+        .map(|(_, v)| v.replace(' ', "+"))
+        .ok_or_else(|| Error::InvalidInput("missing data".into()))?;
+    use base64::Engine as _;
+    let trimmed = data.trim_end_matches('=');
+    let bytes = base64::engine::general_purpose::STANDARD_NO_PAD
+        .decode(trimmed)
+        .or_else(|_| base64::engine::general_purpose::URL_SAFE_NO_PAD.decode(trimmed))
+        .map_err(|_| Error::InvalidInput("invalid migration data".into()))?;
+    let bad = || Error::InvalidInput("invalid migration data".into());
+    let mut out = Migration::default();
+    for (field, value) in proto_fields(&bytes).ok_or_else(bad)? {
+        let (1, ProtoValue::Bytes(item)) = (field, value) else {
+            continue;
+        };
+        let mut secret = Vec::new();
+        let (mut name, mut issuer) = (String::new(), String::new());
+        let (mut algorithm, mut digits, mut kind) = (1u64, 1u64, 2u64);
+        for (field, value) in proto_fields(item).ok_or_else(bad)? {
+            match (field, value) {
+                (1, ProtoValue::Bytes(b)) => secret = b.to_vec(),
+                (2, ProtoValue::Bytes(b)) => name = String::from_utf8_lossy(b).into_owned(),
+                (3, ProtoValue::Bytes(b)) => issuer = String::from_utf8_lossy(b).into_owned(),
+                (4, ProtoValue::Varint(v)) => algorithm = v,
+                (5, ProtoValue::Varint(v)) => digits = v,
+                (6, ProtoValue::Varint(v)) => kind = v,
+                _ => {}
+            }
+        }
+        let algorithm = match algorithm {
+            0 | 1 => Some(Algorithm::Sha1),
+            2 => Some(Algorithm::Sha256),
+            3 => Some(Algorithm::Sha512),
+            _ => None, // MD5
+        };
+        let digits = match digits {
+            0 | 1 => Some(6u8),
+            2 => Some(8u8),
+            _ => None,
+        };
+        // Type 1 is HOTP (a counter); 0 (unspecified) and 2 are TOTP.
+        let (Some(algorithm), Some(digits), false, false) =
+            (algorithm, digits, kind == 1, secret.is_empty())
+        else {
+            out.unsupported += 1;
+            continue;
+        };
+        let secret = base32::encode(base32::Alphabet::Rfc4648 { padding: false }, &secret);
+        // "Issuer:account" labels carry the issuer twice.
+        let account = match name.split_once(':') {
+            Some((prefix, rest)) if issuer.is_empty() || prefix.trim() == issuer.trim() => {
+                if issuer.is_empty() {
+                    issuer = prefix.trim().to_string();
+                }
+                rest.trim().to_string()
+            }
+            _ => name.trim().to_string(),
+        };
+        out.codes.push(OtpAuth {
+            label: account,
+            issuer,
+            secret,
+            algorithm,
+            digits,
+            period: 30,
+        });
+    }
+    Ok(out)
+}
+
+enum ProtoValue<'a> {
+    Varint(u64),
+    Bytes(&'a [u8]),
+}
+
+fn proto_varint(buf: &[u8], at: &mut usize) -> Option<u64> {
+    let mut value = 0u64;
+    for shift in (0..64).step_by(7) {
+        let byte = *buf.get(*at)?;
+        *at += 1;
+        value |= u64::from(byte & 0x7f) << shift;
+        if byte & 0x80 == 0 {
+            return Some(value);
+        }
+    }
+    None
+}
+
+/// The (field number, value) pairs of a protobuf message; `None` when it
+/// is malformed. Fixed-width fields are skipped.
+fn proto_fields(buf: &[u8]) -> Option<Vec<(u64, ProtoValue<'_>)>> {
+    let mut at = 0;
+    let mut out = Vec::new();
+    while at < buf.len() {
+        let key = proto_varint(buf, &mut at)?;
+        let field = key >> 3;
+        match key & 7 {
+            0 => out.push((field, ProtoValue::Varint(proto_varint(buf, &mut at)?))),
+            2 => {
+                let len = usize::try_from(proto_varint(buf, &mut at)?).ok()?;
+                let end = at.checked_add(len)?;
+                out.push((field, ProtoValue::Bytes(buf.get(at..end)?)));
+                at = end;
+            }
+            1 => at = at.checked_add(8)?,
+            5 => at = at.checked_add(4)?,
+            _ => return None,
+        }
+    }
+    (at == buf.len()).then_some(out)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -359,5 +490,72 @@ mod tests {
         assert!(generate_totp("JBSWY3DPEHPK3PXP", Algorithm::Sha1, 6, 0, 0).is_err());
         assert_eq!(remaining_seconds(0, 123), 0);
         assert!(parse_otpauth("otpauth://totp/test?secret=JBSWY3DPEHPK3PXP&digits=nope").is_err());
+    }
+
+    #[test]
+    fn google_authenticator_exports_are_read() {
+        fn varint(mut v: u64, out: &mut Vec<u8>) {
+            while v >= 0x80 {
+                out.push((v as u8) | 0x80);
+                v >>= 7;
+            }
+            out.push(v as u8);
+        }
+        fn bytes(field: u64, b: &[u8], out: &mut Vec<u8>) {
+            varint(field << 3 | 2, out);
+            varint(b.len() as u64, out);
+            out.extend_from_slice(b);
+        }
+        fn number(field: u64, v: u64, out: &mut Vec<u8>) {
+            varint(field << 3, out);
+            varint(v, out);
+        }
+        let item = |secret: &[u8], name: &str, issuer: &str, algo: u64, digits: u64, kind: u64| {
+            let mut m = Vec::new();
+            bytes(1, secret, &mut m);
+            bytes(2, name.as_bytes(), &mut m);
+            bytes(3, issuer.as_bytes(), &mut m);
+            number(4, algo, &mut m);
+            number(5, digits, &mut m);
+            number(6, kind, &mut m);
+            m
+        };
+        let mut payload = Vec::new();
+        bytes(
+            1,
+            &item(b"Hello!\xde\xad\xbe\xef", "GitHub:ana", "GitHub", 1, 1, 2),
+            &mut payload,
+        );
+        bytes(
+            1,
+            &item(b"another key", "bob@x.com", "", 2, 2, 2),
+            &mut payload,
+        );
+        bytes(1, &item(b"counter", "c", "Bank", 1, 1, 1), &mut payload); // HOTP
+        number(2, 1, &mut payload); // version
+        use base64::Engine as _;
+        let data = base64::engine::general_purpose::STANDARD.encode(&payload);
+        let uri = format!(
+            "otpauth-migration://offline?data={}",
+            url::form_urlencoded::byte_serialize(data.as_bytes()).collect::<String>()
+        );
+        let m = parse_migration(&uri).unwrap();
+        assert_eq!((m.codes.len(), m.unsupported), (2, 1));
+        assert_eq!(
+            (m.codes[0].issuer.as_str(), m.codes[0].label.as_str()),
+            ("GitHub", "ana")
+        );
+        assert_eq!(m.codes[0].secret, "JBSWY3DPEHPK3PXP");
+        assert_eq!(
+            (m.codes[1].digits, m.codes[1].algorithm),
+            (8, Algorithm::Sha256)
+        );
+        assert_eq!(m.codes[1].label, "bob@x.com");
+        for code in &m.codes {
+            generate_totp(&code.secret, code.algorithm, code.digits, code.period, 0).unwrap();
+        }
+        assert!(parse_migration("otpauth-migration://offline?data=%%%").is_err());
+        let empty = parse_migration("otpauth-migration://offline?data=").unwrap();
+        assert!(empty.codes.is_empty());
     }
 }
