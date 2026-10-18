@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-18 00:17-0300\n"
+"POT-Creation-Date: 2026-10-18 19:39-0300\n"
 "PO-Revision-Date: 2026-05-12 19:44\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -135,6 +135,9 @@ msgid ""
 "destroyed."
 msgstr ""
 "Все разделы, файлы и сигнатуры файловых систем будут безвозвратно уничтожены."
+
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "Разрешить Ashy Pass в Dropbox"
 
 msgid "Allow TRIM through encrypted mapping"
 msgstr "Разрешить TRIM через зашифрованное отображение"
@@ -333,6 +336,9 @@ msgstr "Изменить мастер-пароль…"
 msgid "Change only if the site shows different values"
 msgstr "Меняйте, только если сайт указывает другие значения"
 
+msgid "Changed"
+msgstr "Изменено"
+
 msgid "Changes saved to the vault"
 msgstr "Изменения сохранены в хранилище"
 
@@ -388,6 +394,9 @@ msgstr "Выберите базу данных KeePass"
 msgid "Choose the andOTP export"
 msgstr "Выберите экспорт andOTP"
 
+msgid "Choose the folder"
+msgstr "Выберите папку"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr "Выбирайте эту папку при добавлении или изменении пароля."
 
@@ -435,6 +444,9 @@ msgstr "Закрытие отображения"
 
 msgid "Code copied"
 msgstr "Код скопирован"
+
+msgid "Code from Dropbox"
+msgstr "Код из Dropbox"
 
 msgid "Code settings"
 msgstr "Параметры кода"
@@ -563,6 +575,9 @@ msgstr "Не удалось добавить вложение"
 msgid "Could not change the favorite"
 msgstr "Не удалось изменить избранное"
 
+msgid "Could not check"
+msgstr "Не удалось проверить"
+
 msgid "Could not clear the history"
 msgstr "Не удалось очистить историю"
 
@@ -583,6 +598,9 @@ msgstr "Не удалось удалить"
 
 msgid "Could not lock the drive"
 msgstr "Не удалось заблокировать диск"
+
+msgid "Could not merge"
+msgstr "Не удалось объединить"
 
 msgid "Could not open the vault"
 msgstr "Не удалось открыть хранилище"
@@ -780,6 +798,9 @@ msgstr "Загрузка удаленных изменений"
 
 msgid "Drive locked"
 msgstr "Диск заблокирован"
+
+msgid "Duplicate items"
+msgstr "Дубликаты"
 
 msgid "Easier to type and remember."
 msgstr "Проще вводить и запоминать."
@@ -1004,6 +1025,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Заполните все три поля."
 
+msgid "Find duplicate items"
+msgstr "Найти дубликаты"
+
 msgid "Findings"
 msgstr "Результаты"
 
@@ -1027,6 +1051,9 @@ msgstr "Папка создана"
 
 msgid "Folder name"
 msgstr "Имя папки"
+
+msgid "Folder on this computer"
+msgstr "Папка на этом компьютере"
 
 msgid "Folder removed. Its passwords were kept."
 msgstr "Папка удалена. Её пароли сохранены."
@@ -1109,6 +1136,9 @@ msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive и WebDAV"
+
+msgid "Google account"
+msgstr "Аккаунт Google"
 
 msgid "Grape"
 msgstr "Виноград"
@@ -1359,6 +1389,18 @@ msgid "Login name"
 msgstr "Логин"
 
 msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"Входы на один и тот же сайт и аккаунт или записи с одним кодом "
+"подтверждения, оставшиеся после импорта или двух синхронизаций. При "
+"объединении одна запись сохраняется, в неё переносится то, что было только у "
+"остальных (код, заметки, другие сайты, группы; другие пароли попадают в её "
+"историю), а остальные перемещаются в Удалённые."
+
+msgid ""
 "Logins, cards, identities, notes and passkeys, encrypted on this computer "
 "before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
 "Pass for Android uses the same folder."
@@ -1397,6 +1439,15 @@ msgstr "Замеряет этот компьютер (около 5 секунд)
 
 msgid "Medium"
 msgstr "Средняя"
+
+msgid "Merge, keeping the selected one"
+msgstr "Объединить, сохранив выбранную"
+
+msgid "Merged"
+msgstr "Объединено"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "Объединено; остальные в Удалённых"
 
 msgid "Minimum length:"
 msgstr "Минимальная длина:"
@@ -1495,9 +1546,6 @@ msgstr ""
 msgid "Nextcloud or WebDAV address, user, password"
 msgstr "Адрес Nextcloud или WebDAV, пользователь, пароль"
 
-msgid "Nextcloud server"
-msgstr "Сервер Nextcloud"
-
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1514,6 +1562,9 @@ msgstr "Коды не найдены по запросу"
 
 msgid "No colors"
 msgstr "Без цветов"
+
+msgid "No duplicate items"
+msgstr "Дубликатов нет"
 
 msgid "No external drives detected"
 msgstr "Внешние диски не обнаружены"
@@ -1556,6 +1607,9 @@ msgstr "Кодов подтверждения пока нет"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "Нет — быстро, но оставляет предыдущие данные восстанавливаемыми"
+
+msgid "Not chosen"
+msgstr "Не выбрано"
 
 msgid "Not configured"
 msgstr "Не настроено"
@@ -1631,9 +1685,6 @@ msgstr "Океан"
 msgid "Off"
 msgstr "Выкл."
 
-msgid "Off: another WebDAV server, with its full address"
-msgstr "Выкл.: другой сервер WebDAV с полным адресом"
-
 msgid "Old copy removed"
 msgstr "Старая копия удалена"
 
@@ -1671,6 +1722,12 @@ msgstr "Нужно, только если у сайта особые требо�
 msgid "Only when some entries come from Nextcloud Passwords and others do not"
 msgstr "Только если часть записей из Nextcloud Passwords, а часть — нет"
 
+msgid "Open Dropbox"
+msgstr "Открыть Dropbox"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr "Откройте Dropbox, разрешите доступ Ashy Pass и вставьте показанный код"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr "Откройте пароль и отметьте звёздочку, чтобы быстрее его находить."
 
@@ -1694,6 +1751,9 @@ msgstr "Открыть сайт"
 
 msgid "Opening encrypted mapping"
 msgstr "Открытие зашифрованного отображения"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr "Открывает Dropbox в браузере; скопируйте показанный код"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Открывает браузер для согласия OAuth"
@@ -1723,6 +1783,9 @@ msgstr "Упорядочить папки…"
 
 msgid "Other CSV file"
 msgstr "Другой файл CSV"
+
+msgid "Other WebDAV server"
+msgstr "Другой WebDAV"
 
 msgid "Other apps"
 msgstr "Другие приложения"
@@ -2018,6 +2081,12 @@ msgstr "Проверки безопасности не пройдены"
 msgid "Safety checks passed"
 msgstr "Проверки безопасности пройдены"
 
+msgid "Same site and account"
+msgstr "Тот же сайт и аккаунт"
+
+msgid "Same verification code"
+msgstr "Тот же код подтверждения"
+
 msgid "Save"
 msgstr "Сохранить"
 
@@ -2136,6 +2205,9 @@ msgstr ""
 "URL сервера (например, cloud.example.com), имя пользователя и пароль "
 "приложения."
 
+msgid "Service"
+msgstr "Сервис"
+
 msgid "Set PIN"
 msgstr "Задать PIN"
 
@@ -2189,6 +2261,10 @@ msgstr "Не удалось выполнить вход"
 
 msgid "Sign in to Google"
 msgstr "Войти в Google"
+
+msgid "Sign in to Google Drive in Backups → Google Drive first"
+msgstr ""
+"Сначала войдите в Google Drive в разделе Резервные копии → Google Drive"
 
 msgid "Sign out"
 msgstr "Выйти"
@@ -2553,6 +2629,9 @@ msgstr "В этой записи нет пользователя"
 msgid "This access no longer exists"
 msgstr "Эта запись больше не существует"
 
+msgid "This build has no Dropbox app key"
+msgstr "В этой сборке нет ключа приложения Dropbox"
+
 msgid "This cannot be undone."
 msgstr "Это действие нельзя отменить."
 
@@ -2819,6 +2898,9 @@ msgstr "Пользователь"
 msgid "User copied"
 msgstr "Пользователь скопирован"
 
+msgid "User name"
+msgstr "Имя пользователя"
+
 msgid "User or e-mail (optional)"
 msgstr "Пользователь или эл. почта (необязательно)"
 
@@ -2833,6 +2915,9 @@ msgstr ""
 "Используется Have I Been Pwned. Отправляются только первые 5 символов хеша "
 "каждого пароля, но никогда сам пароль. Результаты хранятся на этом "
 "компьютере 7 дней."
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr "Использует ваш вход в Google Drive из раздела Резервные копии"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2911,6 +2996,9 @@ msgstr "Низкая"
 
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "Адрес WebDAV"
 
 msgid "WebDAV configured"
 msgstr "WebDAV настроен"
@@ -3031,6 +3119,9 @@ msgstr "выделено"
 
 msgid "breached"
 msgstr "скомпрометирован"
+
+msgid "different password"
+msgstr "другой пароль"
 
 msgid "duplicate"
 msgstr "дубликат"

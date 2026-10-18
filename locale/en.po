@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-18 00:17-0300\n"
+"POT-Creation-Date: 2026-10-18 19:39-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: English\n"
@@ -135,6 +135,9 @@ msgid ""
 msgstr ""
 "All partitions, files, and filesystem signatures will be permanently "
 "destroyed."
+
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "Allow Ashy Pass in Dropbox"
 
 msgid "Allow TRIM through encrypted mapping"
 msgstr "Allow TRIM through encrypted mapping"
@@ -335,6 +338,9 @@ msgstr "Change master password…"
 msgid "Change only if the site shows different values"
 msgstr "Change only if the site shows different values"
 
+msgid "Changed"
+msgstr "Changed"
+
 msgid "Changes saved to the vault"
 msgstr "Changes saved to the vault"
 
@@ -390,6 +396,9 @@ msgstr "Choose the KeePass database"
 msgid "Choose the andOTP export"
 msgstr "Choose the andOTP export"
 
+msgid "Choose the folder"
+msgstr "Choose the folder"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr "Choose this folder when adding or editing a password."
 
@@ -437,6 +446,9 @@ msgstr "Closing mapping"
 
 msgid "Code copied"
 msgstr "Code copied"
+
+msgid "Code from Dropbox"
+msgstr "Code from Dropbox"
 
 msgid "Code settings"
 msgstr "Code settings"
@@ -565,6 +577,9 @@ msgstr "Could not add the attachment"
 msgid "Could not change the favorite"
 msgstr "Could not change the favorite"
 
+msgid "Could not check"
+msgstr "Could not check"
+
 msgid "Could not clear the history"
 msgstr "Could not clear the history"
 
@@ -585,6 +600,9 @@ msgstr "Could not delete"
 
 msgid "Could not lock the drive"
 msgstr "Could not lock the drive"
+
+msgid "Could not merge"
+msgstr "Could not merge"
 
 msgid "Could not open the vault"
 msgstr "Could not open the vault"
@@ -782,6 +800,9 @@ msgstr "Downloading remote changes"
 
 msgid "Drive locked"
 msgstr "Drive locked"
+
+msgid "Duplicate items"
+msgstr "Duplicate items"
 
 msgid "Easier to type and remember."
 msgstr "Easier to type and remember."
@@ -1003,6 +1024,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Fill in all three fields."
 
+msgid "Find duplicate items"
+msgstr "Find duplicate items"
+
 msgid "Findings"
 msgstr "Findings"
 
@@ -1026,6 +1050,9 @@ msgstr "Folder created"
 
 msgid "Folder name"
 msgstr "Folder name"
+
+msgid "Folder on this computer"
+msgstr "Folder on this computer"
 
 msgid "Folder removed. Its passwords were kept."
 msgstr "Folder removed. Its passwords were kept."
@@ -1108,6 +1135,9 @@ msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive and WebDAV"
+
+msgid "Google account"
+msgstr "Google account"
 
 msgid "Grape"
 msgstr "Grape"
@@ -1360,6 +1390,17 @@ msgid "Login name"
 msgstr "Login name"
 
 msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+
+msgid ""
 "Logins, cards, identities, notes and passkeys, encrypted on this computer "
 "before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
 "Pass for Android uses the same folder."
@@ -1400,6 +1441,15 @@ msgstr "Measures this computer (about 5 seconds)"
 # File: usr/share/ashypass/core/generator.py, line: 170
 msgid "Medium"
 msgstr "Medium"
+
+msgid "Merge, keeping the selected one"
+msgstr "Merge, keeping the selected one"
+
+msgid "Merged"
+msgstr "Merged"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "Merged; the others are in Deleted items"
 
 msgid "Minimum length:"
 msgstr "Minimum length:"
@@ -1497,9 +1547,6 @@ msgstr ""
 msgid "Nextcloud or WebDAV address, user, password"
 msgstr "Nextcloud or WebDAV address, user, password"
 
-msgid "Nextcloud server"
-msgstr "Nextcloud server"
-
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1516,6 +1563,9 @@ msgstr "No codes found for"
 
 msgid "No colors"
 msgstr "No colors"
+
+msgid "No duplicate items"
+msgstr "No duplicate items"
 
 msgid "No external drives detected"
 msgstr "No external drives detected"
@@ -1557,6 +1607,9 @@ msgstr "No verification codes yet"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "None — quick, leaves prior data recoverable"
+
+msgid "Not chosen"
+msgstr "Not chosen"
 
 msgid "Not configured"
 msgstr "Not configured"
@@ -1635,9 +1688,6 @@ msgstr "Ocean"
 msgid "Off"
 msgstr "Off"
 
-msgid "Off: another WebDAV server, with its full address"
-msgstr "Off: another WebDAV server, with its full address"
-
 msgid "Old copy removed"
 msgstr "Old copy removed"
 
@@ -1674,6 +1724,12 @@ msgstr "Only needed when a site has specific rules"
 msgid "Only when some entries come from Nextcloud Passwords and others do not"
 msgstr "Only when some entries come from Nextcloud Passwords and others do not"
 
+msgid "Open Dropbox"
+msgstr "Open Dropbox"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr "Open Dropbox, allow Ashy Pass and paste the code it shows"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr "Open a password and mark the star to find it faster."
 
@@ -1697,6 +1753,9 @@ msgstr "Open website"
 
 msgid "Opening encrypted mapping"
 msgstr "Opening encrypted mapping"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr "Opens Dropbox in the browser; copy the code it shows"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Opens the browser for OAuth consent"
@@ -1725,6 +1784,9 @@ msgstr "Organize folders…"
 
 msgid "Other CSV file"
 msgstr "Other CSV file"
+
+msgid "Other WebDAV server"
+msgstr "Other WebDAV server"
 
 msgid "Other apps"
 msgstr "Other apps"
@@ -2034,6 +2096,12 @@ msgstr "Safety checks failed"
 msgid "Safety checks passed"
 msgstr "Safety checks passed"
 
+msgid "Same site and account"
+msgstr "Same site and account"
+
+msgid "Same verification code"
+msgstr "Same verification code"
+
 # File: usr/share/ashypass/ui/vault_view.py, line: 367
 msgid "Save"
 msgstr "Save"
@@ -2154,6 +2222,9 @@ msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr "Server URL (e.g. cloud.example.com), username and an app password."
 
+msgid "Service"
+msgstr "Service"
+
 msgid "Set PIN"
 msgstr "Set PIN"
 
@@ -2211,6 +2282,9 @@ msgstr "Sign in failed"
 
 msgid "Sign in to Google"
 msgstr "Sign in to Google"
+
+msgid "Sign in to Google Drive in Backups → Google Drive first"
+msgstr "Sign in to Google Drive in Backups → Google Drive first"
 
 msgid "Sign out"
 msgstr "Sign out"
@@ -2566,6 +2640,9 @@ msgstr "This access has no user"
 msgid "This access no longer exists"
 msgstr "This access no longer exists"
 
+msgid "This build has no Dropbox app key"
+msgstr "This build has no Dropbox app key"
+
 msgid "This cannot be undone."
 msgstr "This cannot be undone."
 
@@ -2828,6 +2905,9 @@ msgstr "User"
 msgid "User copied"
 msgstr "User copied"
 
+msgid "User name"
+msgstr "User name"
+
 msgid "User or e-mail (optional)"
 msgstr "User or e-mail (optional)"
 
@@ -2843,6 +2923,9 @@ msgstr ""
 "Uses Have I Been Pwned. Only the first 5 characters of a hash of each "
 "password are sent, never the password. Results are kept on this computer for "
 "7 days."
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr "Uses your Google Drive sign-in from Backups"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2925,6 +3008,9 @@ msgstr "Weak"
 
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "WebDAV address"
 
 msgid "WebDAV configured"
 msgstr "WebDAV configured"
@@ -3045,6 +3131,9 @@ msgstr "allocated"
 
 msgid "breached"
 msgstr "breached"
+
+msgid "different password"
+msgstr "different password"
 
 msgid "duplicate"
 msgstr "duplicate"

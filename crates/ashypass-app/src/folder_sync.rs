@@ -149,7 +149,7 @@ impl Inner {
         crate::ui::settings_dialog::run_background(
             move || -> ashypass_core::Result<FolderSyncReport> {
                 let vault = ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
-                folder::sync(&vault, &account.remote()?, None, options)
+                folder::sync(&vault, account.remote()?.as_ref(), None, options)
             },
             move |result| inner.finished(result),
         );
@@ -240,7 +240,7 @@ pub fn rewrap(state: &SharedState, new_master: &str) {
             let vault = ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
             folder::sync(
                 &vault,
-                &account.remote()?,
+                account.remote()?.as_ref(),
                 Some(&master),
                 FolderSyncOptions::default(),
             )

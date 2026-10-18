@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-18 00:17-0300\n"
+"POT-Creation-Date: 2026-10-18 19:39-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -125,6 +125,9 @@ msgid ""
 "All partitions, files, and filesystem signatures will be permanently "
 "destroyed."
 msgstr "כל המחיצות, הקבצים וחתימות מערכות הקבצים יושמדו לצמיתות."
+
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "אפשר ל-Ashy Pass ב-Dropbox"
 
 msgid "Allow TRIM through encrypted mapping"
 msgstr "אפשר TRIM דרך מיפוי מוצפן"
@@ -317,6 +320,9 @@ msgstr "שינוי סיסמת האב…"
 msgid "Change only if the site shows different values"
 msgstr "יש לשנות רק אם האתר מציג ערכים שונים"
 
+msgid "Changed"
+msgstr "שונה"
+
 msgid "Changes saved to the vault"
 msgstr "השינויים נשמרו בכספת"
 
@@ -370,6 +376,9 @@ msgstr "בחירת מסד הנתונים של KeePass"
 msgid "Choose the andOTP export"
 msgstr "בחירת הייצוא של andOTP"
 
+msgid "Choose the folder"
+msgstr "בחר את התיקייה"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr "ניתן לבחור תיקייה זו בעת הוספה או עריכה של סיסמה."
 
@@ -417,6 +426,9 @@ msgstr "סגירת מיפוי"
 
 msgid "Code copied"
 msgstr "הקוד הועתק"
+
+msgid "Code from Dropbox"
+msgstr "קוד מ-Dropbox"
 
 msgid "Code settings"
 msgstr "הגדרות הקוד"
@@ -543,6 +555,9 @@ msgstr "לא ניתן להוסיף את הקובץ המצורף"
 msgid "Could not change the favorite"
 msgstr "לא ניתן לשנות את המועדף"
 
+msgid "Could not check"
+msgstr "לא ניתן לבדוק"
+
 msgid "Could not clear the history"
 msgstr "לא ניתן לנקות את ההיסטוריה"
 
@@ -563,6 +578,9 @@ msgstr "לא ניתן למחוק"
 
 msgid "Could not lock the drive"
 msgstr "לא ניתן לנעול את הכונן"
+
+msgid "Could not merge"
+msgstr "לא ניתן למזג"
 
 msgid "Could not open the vault"
 msgstr "לא ניתן לפתוח את הכספת"
@@ -756,6 +774,9 @@ msgstr "מוריד שינויים מרוחקים"
 
 msgid "Drive locked"
 msgstr "הכונן ננעל"
+
+msgid "Duplicate items"
+msgstr "פריטים כפולים"
 
 msgid "Easier to type and remember."
 msgstr "קל יותר להקליד ולזכור."
@@ -972,6 +993,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "יש למלא את שלושת השדות."
 
+msgid "Find duplicate items"
+msgstr "חיפוש פריטים כפולים"
+
 msgid "Findings"
 msgstr "ממצאים"
 
@@ -994,6 +1018,9 @@ msgstr "התיקייה נוצרה"
 
 msgid "Folder name"
 msgstr "שם התיקייה"
+
+msgid "Folder on this computer"
+msgstr "תיקייה במחשב זה"
 
 msgid "Folder removed. Its passwords were kept."
 msgstr "התיקייה הוסרה. הסיסמאות שבה נשמרו."
@@ -1074,6 +1101,9 @@ msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive ו־WebDAV"
+
+msgid "Google account"
+msgstr "חשבון Google"
 
 msgid "Grape"
 msgstr "ענבים"
@@ -1315,6 +1345,17 @@ msgid "Login name"
 msgstr "שם כניסה"
 
 msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"כניסות לאותו אתר ולאותו חשבון, או פריטים עם אותו קוד אימות, שנותרו מייבוא או "
+"משני סנכרונים. המיזוג משאיר אחד, מוסיף אליו את מה שהיה רק אצל האחרים (קוד, "
+"הערות, אתרים נוספים, קבוצות; סיסמאות אחרות עוברות להיסטוריה שלו) ומעביר את "
+"האחרים אל פריטים שנמחקו."
+
+msgid ""
 "Logins, cards, identities, notes and passkeys, encrypted on this computer "
 "before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
 "Pass for Android uses the same folder."
@@ -1353,6 +1394,15 @@ msgstr "מודד את המחשב הזה (כ־5 שניות)"
 
 msgid "Medium"
 msgstr "בינוני"
+
+msgid "Merge, keeping the selected one"
+msgstr "מזג תוך שמירת הפריט שנבחר"
+
+msgid "Merged"
+msgstr "מוזג"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "מוזג; האחרים נמצאים ב״פריטים שנמחקו״"
 
 msgid "Minimum length:"
 msgstr "אורך מינימלי:"
@@ -1448,9 +1498,6 @@ msgstr ""
 msgid "Nextcloud or WebDAV address, user, password"
 msgstr "כתובת Nextcloud או WebDAV, משתמש, סיסמה"
 
-msgid "Nextcloud server"
-msgstr "שרת Nextcloud"
-
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr "לא נמצא קוד QR. יש לוודא שהקוד כולו גלוי ואינו קטן מדי."
@@ -1466,6 +1513,9 @@ msgstr "לא נמצאו קודים עבור"
 
 msgid "No colors"
 msgstr "ללא צבעים"
+
+msgid "No duplicate items"
+msgstr "אין פריטים כפולים"
 
 msgid "No external drives detected"
 msgstr "לא זוהו כוננים חיצוניים"
@@ -1505,6 +1555,9 @@ msgstr "אין קודי אימות עדיין"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "ללא — מהיר, משאיר נתונים קודמים ניתנים לשחזור"
+
+msgid "Not chosen"
+msgstr "לא נבחר"
 
 msgid "Not configured"
 msgstr "לא מוגדר"
@@ -1577,9 +1630,6 @@ msgstr "אוקיינוס"
 msgid "Off"
 msgstr "כבוי"
 
-msgid "Off: another WebDAV server, with its full address"
-msgstr "כבוי: שרת WebDAV אחר, עם הכתובת המלאה שלו"
-
 msgid "Old copy removed"
 msgstr "העותק הישן הוסר"
 
@@ -1615,6 +1665,12 @@ msgstr "נדרש רק כשלאתר יש כללים מיוחדים"
 msgid "Only when some entries come from Nextcloud Passwords and others do not"
 msgstr "רק כשחלק מהרשומות מגיעות מ־Nextcloud Passwords וחלק לא"
 
+msgid "Open Dropbox"
+msgstr "פתח את Dropbox"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr "פתח את Dropbox, אפשר את Ashy Pass והדבק את הקוד שמוצג"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr "יש לפתוח סיסמה ולסמן את הכוכב כדי למצוא אותה מהר יותר."
 
@@ -1638,6 +1694,9 @@ msgstr "פתיחת האתר"
 
 msgid "Opening encrypted mapping"
 msgstr "פתיחת מיפוי מוצפן"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr "פותח את Dropbox בדפדפן; העתק את הקוד שמוצג"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "פותח את הדפדפן לאישור OAuth"
@@ -1665,6 +1724,9 @@ msgstr "ארגון תיקיות…"
 
 msgid "Other CSV file"
 msgstr "קובץ CSV אחר"
+
+msgid "Other WebDAV server"
+msgstr "WebDAV אחר"
 
 msgid "Other apps"
 msgstr "יישומים אחרים"
@@ -1955,6 +2017,12 @@ msgstr "בדיקות הבטיחות נכשלו"
 msgid "Safety checks passed"
 msgstr "בדיקות הבטיחות עברו בהצלחה"
 
+msgid "Same site and account"
+msgstr "אותו אתר ואותו חשבון"
+
+msgid "Same verification code"
+msgstr "אותו קוד אימות"
+
 msgid "Save"
 msgstr "שמירה"
 
@@ -2070,6 +2138,9 @@ msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr "כתובת שרת (לדוגמה cloud.example.com), שם משתמש וסיסמת אפליקציה."
 
+msgid "Service"
+msgstr "שירות"
+
 msgid "Set PIN"
 msgstr "הגדרת PIN"
 
@@ -2123,6 +2194,9 @@ msgstr "התחברות נכשלה"
 
 msgid "Sign in to Google"
 msgstr "התחברות ל-Google"
+
+msgid "Sign in to Google Drive in Backups → Google Drive first"
+msgstr "התחבר תחילה ל-Google Drive בגיבויים ← Google Drive"
 
 msgid "Sign out"
 msgstr "התנתקות"
@@ -2461,6 +2535,9 @@ msgstr "לרשומה זו אין משתמש"
 msgid "This access no longer exists"
 msgstr "רשומה זו כבר לא קיימת"
 
+msgid "This build has no Dropbox app key"
+msgstr "בגרסה זו אין מפתח יישום של Dropbox"
+
 msgid "This cannot be undone."
 msgstr "לא ניתן לבטל פעולה זו."
 
@@ -2714,6 +2791,9 @@ msgstr "משתמש"
 msgid "User copied"
 msgstr "המשתמש הועתק"
 
+msgid "User name"
+msgstr "שם משתמש"
+
 msgid "User or e-mail (optional)"
 msgstr "משתמש או דוא״ל (רשות)"
 
@@ -2727,6 +2807,9 @@ msgid ""
 msgstr ""
 "משתמש ב־Have I Been Pwned. רק 5 התווים הראשונים של גיבוב של כל סיסמה נשלחים, "
 "לעולם לא הסיסמה עצמה. התוצאות נשמרות במחשב זה למשך 7 ימים."
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr "משתמש בהתחברות שלך ל-Google Drive מתוך גיבויים"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2801,6 +2884,9 @@ msgstr "חלש"
 
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "כתובת WebDAV"
 
 msgid "WebDAV configured"
 msgstr "WebDAV הוגדר"
@@ -2920,6 +3006,9 @@ msgstr "מוקצה"
 
 msgid "breached"
 msgstr "נפרץ"
+
+msgid "different password"
+msgstr "סיסמה שונה"
 
 msgid "duplicate"
 msgstr "כפול"

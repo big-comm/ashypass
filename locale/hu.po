@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-18 00:17-0300\n"
+"POT-Creation-Date: 2026-10-18 19:39-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -135,6 +135,9 @@ msgid ""
 "destroyed."
 msgstr ""
 "Az összes partíció, fájl és fájlrendszer-aláírás véglegesen megsemmisül."
+
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "Ashy Pass engedélyezése a Dropboxban"
 
 msgid "Allow TRIM through encrypted mapping"
 msgstr "TRIM engedélyezése titkosított leképezésen keresztül"
@@ -334,6 +337,9 @@ msgstr "Fő jelszó módosítása…"
 msgid "Change only if the site shows different values"
 msgstr "Csak akkor módosítsa, ha a webhely más értékeket mutat"
 
+msgid "Changed"
+msgstr "Módosítva"
+
 msgid "Changes saved to the vault"
 msgstr "Módosítások mentve a tárba"
 
@@ -389,6 +395,9 @@ msgstr "Válassza ki a KeePass adatbázist"
 msgid "Choose the andOTP export"
 msgstr "Válassza ki az andOTP exportot"
 
+msgid "Choose the folder"
+msgstr "Válassza ki a mappát"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr ""
 "Ezt a mappát jelszó hozzáadásakor vagy szerkesztésekor választhatja ki."
@@ -437,6 +446,9 @@ msgstr "Leképezés bezárása"
 
 msgid "Code copied"
 msgstr "Kód másolva"
+
+msgid "Code from Dropbox"
+msgstr "Dropbox-kód"
 
 msgid "Code settings"
 msgstr "Kódbeállítások"
@@ -564,6 +576,9 @@ msgstr "Nem sikerült hozzáadni a mellékletet"
 msgid "Could not change the favorite"
 msgstr "Nem sikerült módosítani a kedvencet"
 
+msgid "Could not check"
+msgstr "Az ellenőrzés nem sikerült"
+
 msgid "Could not clear the history"
 msgstr "Nem sikerült törölni az előzményeket"
 
@@ -584,6 +599,9 @@ msgstr "Nem sikerült a törlés"
 
 msgid "Could not lock the drive"
 msgstr "Nem sikerült zárolni a meghajtót"
+
+msgid "Could not merge"
+msgstr "Az egyesítés nem sikerült"
 
 msgid "Could not open the vault"
 msgstr "A széf nem nyitható meg"
@@ -781,6 +799,9 @@ msgstr "Távoli változtatások letöltése"
 
 msgid "Drive locked"
 msgstr "Meghajtó zárolva"
+
+msgid "Duplicate items"
+msgstr "Ismétlődő elemek"
 
 msgid "Easier to type and remember."
 msgstr "Könnyebb begépelni és megjegyezni."
@@ -1006,6 +1027,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Töltse ki mindhárom mezőt."
 
+msgid "Find duplicate items"
+msgstr "Ismétlődő elemek keresése"
+
 msgid "Findings"
 msgstr "Eredmények"
 
@@ -1029,6 +1053,9 @@ msgstr "Mappa létrehozva"
 
 msgid "Folder name"
 msgstr "Mappa neve"
+
+msgid "Folder on this computer"
+msgstr "Mappa ezen a számítógépen"
 
 msgid "Folder removed. Its passwords were kept."
 msgstr "Mappa eltávolítva. A benne lévő jelszavak megmaradtak."
@@ -1113,6 +1140,9 @@ msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive és WebDAV"
+
+msgid "Google account"
+msgstr "Google-fiók"
 
 msgid "Grape"
 msgstr "Szőlő"
@@ -1362,6 +1392,18 @@ msgid "Login name"
 msgstr "Bejelentkezési név"
 
 msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"Ugyanazon webhely és fiók bejelentkezései, vagy azonos ellenőrző kódú "
+"elemek, importálásból vagy két szinkronizálásból visszamaradva. Az egyesítés "
+"egyet megtart, beleviszi azt, ami csak a többiben volt meg (kód, jegyzetek, "
+"további webhelyek, csoportok; a többi jelszó az előzményei közé kerül), a "
+"többit pedig a Törölt elemek közé helyezi."
+
+msgid ""
 "Logins, cards, identities, notes and passkeys, encrypted on this computer "
 "before they leave, through a folder on Nextcloud or any WebDAV server. Ashy "
 "Pass for Android uses the same folder."
@@ -1401,6 +1443,15 @@ msgstr "Méri ezt a számítógépet (kb. 5 másodperc)"
 
 msgid "Medium"
 msgstr "Közepes"
+
+msgid "Merge, keeping the selected one"
+msgstr "Egyesítés, a kijelölt megtartásával"
+
+msgid "Merged"
+msgstr "Egyesítve"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "Egyesítve; a többi a Törölt elemek között van"
 
 msgid "Minimum length:"
 msgstr "Minimális hossz:"
@@ -1499,9 +1550,6 @@ msgstr ""
 msgid "Nextcloud or WebDAV address, user, password"
 msgstr "Nextcloud- vagy WebDAV-cím, felhasználó, jelszó"
 
-msgid "Nextcloud server"
-msgstr "Nextcloud-kiszolgáló"
-
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1519,6 +1567,9 @@ msgstr "Nincs találat kódra:"
 
 msgid "No colors"
 msgstr "Nincs szín"
+
+msgid "No duplicate items"
+msgstr "Nincsenek ismétlődő elemek"
 
 msgid "No external drives detected"
 msgstr "Nincs észlelve külső meghajtó"
@@ -1562,6 +1613,9 @@ msgstr "Még nincsenek ellenőrző kódok"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "Nincs – gyors, de a korábbi adatok visszaállíthatók maradnak"
+
+msgid "Not chosen"
+msgstr "Nincs kiválasztva"
 
 msgid "Not configured"
 msgstr "Nincs konfigurálva"
@@ -1638,9 +1692,6 @@ msgstr "Óceán"
 msgid "Off"
 msgstr "Ki"
 
-msgid "Off: another WebDAV server, with its full address"
-msgstr "Ki: másik WebDAV-kiszolgáló, teljes címmel"
-
 msgid "Old copy removed"
 msgstr "Régi másolat eltávolítva"
 
@@ -1680,6 +1731,14 @@ msgstr ""
 "Csak ha a bejegyzések egy része a Nextcloud Passwords szolgáltatásból "
 "származik, más része nem"
 
+msgid "Open Dropbox"
+msgstr "Dropbox megnyitása"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr ""
+"Nyissa meg a Dropboxot, engedélyezze az Ashy Pass alkalmazást, és illessze "
+"be a megjelenő kódot"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr ""
 "Nyisson meg egy jelszót, és jelölje meg csillaggal, hogy gyorsabban "
@@ -1705,6 +1764,9 @@ msgstr "Webhely megnyitása"
 
 msgid "Opening encrypted mapping"
 msgstr "Titkosított leképezés megnyitása"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr "Megnyitja a Dropboxot a böngészőben; másolja ki a megjelenő kódot"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Megnyitja a böngészőt az OAuth hozzájáruláshoz"
@@ -1734,6 +1796,9 @@ msgstr "Mappák rendezése…"
 
 msgid "Other CSV file"
 msgstr "Egyéb CSV fájl"
+
+msgid "Other WebDAV server"
+msgstr "Másik WebDAV"
 
 msgid "Other apps"
 msgstr "Egyéb alkalmazások"
@@ -2031,6 +2096,12 @@ msgstr "Biztonsági ellenőrzések sikertelenek"
 msgid "Safety checks passed"
 msgstr "Biztonsági ellenőrzések sikeresek"
 
+msgid "Same site and account"
+msgstr "Azonos webhely és fiók"
+
+msgid "Same verification code"
+msgstr "Azonos ellenőrző kód"
+
 msgid "Save"
 msgstr "Mentés"
 
@@ -2151,6 +2222,9 @@ msgid ""
 msgstr ""
 "Szerver URL (pl. cloud.example.com), felhasználónév és alkalmazásjelszó."
 
+msgid "Service"
+msgstr "Szolgáltatás"
+
 msgid "Set PIN"
 msgstr "PIN beállítása"
 
@@ -2204,6 +2278,11 @@ msgstr "Bejelentkezés sikertelen"
 
 msgid "Sign in to Google"
 msgstr "Bejelentkezés Google-lel"
+
+msgid "Sign in to Google Drive in Backups → Google Drive first"
+msgstr ""
+"Először jelentkezzen be a Google Drive-ba itt: Biztonsági mentések → Google "
+"Drive"
 
 msgid "Sign out"
 msgstr "Kijelentkezés"
@@ -2561,6 +2640,9 @@ msgstr "Ehhez a bejegyzéshez nincs felhasználó"
 msgid "This access no longer exists"
 msgstr "Ez a bejegyzés már nem létezik"
 
+msgid "This build has no Dropbox app key"
+msgstr "Ez a build nem tartalmaz Dropbox-alkalmazáskulcsot"
+
 msgid "This cannot be undone."
 msgstr "Ez nem vonható vissza."
 
@@ -2822,6 +2904,9 @@ msgstr "Felhasználó"
 msgid "User copied"
 msgstr "Felhasználó másolva"
 
+msgid "User name"
+msgstr "Felhasználónév"
+
 msgid "User or e-mail (optional)"
 msgstr "Felhasználó vagy e-mail (nem kötelező)"
 
@@ -2836,6 +2921,11 @@ msgstr ""
 "A Have I Been Pwned szolgáltatást használja. Minden jelszó hash-ének csak az "
 "első 5 karaktere kerül elküldésre, a jelszó soha. Az eredmények 7 napig ezen "
 "a számítógépen maradnak."
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr ""
+"A(z) Biztonsági mentések oldalon használt Google Drive-bejelentkezést "
+"használja"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2913,6 +3003,9 @@ msgstr "Gyenge"
 
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "WebDAV-cím"
 
 msgid "WebDAV configured"
 msgstr "WebDAV konfigurálva"
@@ -3034,6 +3127,9 @@ msgstr "lefoglalt"
 
 msgid "breached"
 msgstr "feltört"
+
+msgid "different password"
+msgstr "eltérő jelszó"
 
 msgid "duplicate"
 msgstr "duplikált"

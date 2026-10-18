@@ -150,6 +150,10 @@ fn confirm_disconnect(row: &adw::ActionRow, state: SharedState, toast: Toaster) 
 }
 
 fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: Toaster) {
+    use ashypass_core::sync::folder_account::{
+        PROVIDER_DROPBOX, PROVIDER_GOOGLE_DRIVE, PROVIDER_LOCAL, PROVIDER_WEBDAV,
+    };
+    use ashypass_core::sync::folder_cloud::{dropbox_app_key, DropboxAuth};
     if !state.vault.borrow().is_unlocked() {
         show_toast(&toast, tr!("Unlock the vault first"));
         return;
@@ -170,10 +174,19 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
     dialog.set_default_response(Some("connect"));
     dialog.set_response_appearance("connect", adw::ResponseAppearance::Suggested);
 
-    let nextcloud_row = adw::SwitchRow::builder()
-        .title(tr!("Nextcloud server"))
-        .subtitle(tr!("Off: another WebDAV server, with its full address"))
-        .active(true)
+    // Service: (id, name, nextcloud?)
+    let services: [(&str, &str, bool); 5] = [
+        (PROVIDER_WEBDAV, "Nextcloud", true),
+        (PROVIDER_WEBDAV, tr!("Other WebDAV server"), false),
+        (PROVIDER_DROPBOX, "Dropbox", false),
+        (PROVIDER_GOOGLE_DRIVE, "Google Drive", false),
+        (PROVIDER_LOCAL, tr!("Folder on this computer"), false),
+    ];
+    let service_row = adw::ComboRow::builder()
+        .title(tr!("Service"))
+        .model(&gtk::StringList::new(
+            &services.iter().map(|s| s.1).collect::<Vec<_>>(),
+        ))
         .build();
     let url_row = adw::EntryRow::builder()
         .title(tr!("Server address"))
@@ -182,8 +195,77 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
     let pass_row = adw::PasswordEntryRow::builder()
         .title(tr!("App password"))
         .build();
-    let folder_row = adw::EntryRow::builder()
+    // Dropbox: allow in the browser, paste the code Dropbox shows.
+    let dropbox_auth: Rc<RefCell<Option<DropboxAuth>>> = Rc::new(RefCell::new(None));
+    let dropbox_row = adw::ActionRow::builder()
+        .title(tr!("Allow Ashy Pass in Dropbox"))
+        .subtitle(tr!("Opens Dropbox in the browser; copy the code it shows"))
+        .build();
+    let dropbox_button = gtk::Button::builder()
+        .label(tr!("Open Dropbox"))
+        .valign(gtk::Align::Center)
+        .build();
+    dropbox_row.add_suffix(&dropbox_button);
+    let code_row = adw::EntryRow::builder()
+        .title(tr!("Code from Dropbox"))
+        .build();
+    {
+        let dropbox_auth = dropbox_auth.clone();
+        let toast = toast.clone();
+        dropbox_button.connect_clicked(move |button| {
+            let Some(key) = dropbox_app_key() else {
+                show_toast(&toast, tr!("This build has no Dropbox app key"));
+                return;
+            };
+            let auth = DropboxAuth::start(&key);
+            let launcher = gtk::UriLauncher::new(&auth.authorize_url());
+            let window = button.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+            launcher.launch(window.as_ref(), None::<&gio::Cancellable>, |_| {});
+            *dropbox_auth.borrow_mut() = Some(auth);
+        });
+    }
+    // Google Drive: the sign-in from Backups → Google Drive.
+    let google_row = adw::ActionRow::builder()
+        .title(tr!("Google account"))
+        .subtitle(if ashypass_core::backup::oauth::Token::load().is_some() {
+            tr!("Uses your Google Drive sign-in from Backups")
+        } else {
+            tr!("Sign in to Google Drive in Backups → Google Drive first")
+        })
+        .build();
+    // A local folder (synced by Syncthing, a cloud client…).
+    let local_path: Rc<RefCell<String>> = Rc::new(RefCell::new(String::new()));
+    let local_row = adw::ActionRow::builder()
         .title(tr!("Folder"))
+        .subtitle(tr!("Not chosen"))
+        .build();
+    let local_button = gtk::Button::builder()
+        .label(tr!("Choose…"))
+        .valign(gtk::Align::Center)
+        .build();
+    local_row.add_suffix(&local_button);
+    {
+        let local_path = local_path.clone();
+        let local_row = local_row.clone();
+        local_button.connect_clicked(move |button| {
+            let chooser = gtk::FileDialog::builder()
+                .title(tr!("Choose the folder"))
+                .modal(true)
+                .build();
+            let window = button.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+            let local_path = local_path.clone();
+            let local_row = local_row.clone();
+            chooser.select_folder(window.as_ref(), None::<&gio::Cancellable>, move |result| {
+                if let Some(path) = result.ok().and_then(|f| f.path()) {
+                    let text = path.display().to_string();
+                    local_row.set_subtitle(&text);
+                    *local_path.borrow_mut() = text;
+                }
+            });
+        });
+    }
+    let folder_row = adw::EntryRow::builder()
+        .title(tr!("Folder name"))
         .text("AshyPass Sync")
         .build();
     let master_row = adw::PasswordEntryRow::builder()
@@ -197,15 +279,57 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
         pass_row.set_text(&nc.app_password);
     }
 
+    let show_fields = {
+        let (url_row, user_row, pass_row) = (url_row.clone(), user_row.clone(), pass_row.clone());
+        let (dropbox_row, code_row, google_row, local_row) = (
+            dropbox_row.clone(),
+            code_row.clone(),
+            google_row.clone(),
+            local_row.clone(),
+        );
+        move |index: u32| {
+            let (provider, _, nextcloud) = services[index as usize];
+            let webdav = provider == PROVIDER_WEBDAV;
+            url_row.set_visible(webdav);
+            user_row.set_visible(webdav);
+            pass_row.set_visible(webdav);
+            url_row.set_title(if nextcloud {
+                tr!("Server address")
+            } else {
+                tr!("WebDAV address")
+            });
+            user_row.set_title(if nextcloud {
+                tr!("Login name")
+            } else {
+                tr!("User name")
+            });
+            pass_row.set_title(if nextcloud {
+                tr!("App password")
+            } else {
+                tr!("Password")
+            });
+            dropbox_row.set_visible(provider == PROVIDER_DROPBOX);
+            code_row.set_visible(provider == PROVIDER_DROPBOX);
+            google_row.set_visible(provider == PROVIDER_GOOGLE_DRIVE);
+            local_row.set_visible(provider == PROVIDER_LOCAL);
+        }
+    };
+    show_fields(0);
+    service_row.connect_selected_notify(move |row| show_fields(row.selected()));
+
     let list = gtk::ListBox::builder()
         .selection_mode(gtk::SelectionMode::None)
         .build();
     list.add_css_class("boxed-list");
     for row in [
-        nextcloud_row.upcast_ref::<gtk::Widget>(),
+        service_row.upcast_ref::<gtk::Widget>(),
         url_row.upcast_ref(),
         user_row.upcast_ref(),
         pass_row.upcast_ref(),
+        dropbox_row.upcast_ref(),
+        code_row.upcast_ref(),
+        google_row.upcast_ref(),
+        local_row.upcast_ref(),
         folder_row.upcast_ref(),
         master_row.upcast_ref(),
     ] {
@@ -214,17 +338,49 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
     dialog.set_extra_child(Some(&list));
 
     dialog.connect_response(Some("connect"), move |_, _| {
-        let account = FolderSyncAccount {
-            server_url: url_row.text().trim().to_string(),
-            nextcloud: nextcloud_row.is_active(),
-            user: user_row.text().trim().to_string(),
-            password: pass_row.text().to_string(),
+        let (provider, _, nextcloud) = services[service_row.selected() as usize];
+        let mut account = FolderSyncAccount {
+            provider: provider.to_string(),
+            nextcloud,
             folder: folder_row.text().trim().to_string(),
+            ..Default::default()
         };
-        if account.server_url.is_empty() || account.user.is_empty() || account.password.is_empty()
-        {
-            show_toast(&toast, tr!("Address, user and password are required"));
-            return;
+        // Dropbox signs in during the connection, with the pasted code.
+        let mut dropbox_code: Option<(DropboxAuth, String)> = None;
+        match provider {
+            PROVIDER_WEBDAV => {
+                account.server_url = url_row.text().trim().to_string();
+                account.user = user_row.text().trim().to_string();
+                account.password = pass_row.text().to_string();
+                if account.server_url.is_empty()
+                    || account.user.is_empty()
+                    || account.password.is_empty()
+                {
+                    show_toast(&toast, tr!("Address, user and password are required"));
+                    return;
+                }
+            }
+            PROVIDER_DROPBOX => {
+                let code = code_row.text().trim().to_string();
+                match dropbox_auth.borrow_mut().take() {
+                    Some(auth) if !code.is_empty() => dropbox_code = Some((auth, code)),
+                    _ => {
+                        show_toast(
+                            &toast,
+                            tr!("Open Dropbox, allow Ashy Pass and paste the code it shows"),
+                        );
+                        return;
+                    }
+                }
+            }
+            PROVIDER_LOCAL => {
+                account.server_url = local_path.borrow().clone();
+                if account.server_url.is_empty() {
+                    show_toast(&toast, tr!("Choose the folder"));
+                    return;
+                }
+            }
+            _ => {}
         }
         let master = needs_master.then(|| zeroize::Zeroizing::new(master_row.text().to_string()));
         if master.as_ref().is_some_and(|m| m.is_empty()) {
@@ -241,21 +397,29 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
         state.set_folder_status(SyncStatus::Running);
         let state = state.clone();
         let toast = toast.clone();
-        let worker_account = account.clone();
         run_background(
             move || -> ashypass_core::Result<_> {
-                let remote = worker_account.remote()?;
-                remote.probe()?;
+                if let Some((auth, code)) = dropbox_code {
+                    let tokens = auth.finish(&code)?;
+                    account.password = tokens.refresh_token.ok_or_else(|| {
+                        ashypass_core::Error::Other("Dropbox gave no refresh token".into())
+                    })?;
+                }
+                let shown = account.probe()?;
+                if !shown.is_empty() {
+                    account.user = shown;
+                }
                 let vault = ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
-                folder::sync(
+                let report = folder::sync(
                     &vault,
-                    &remote,
+                    account.remote()?.as_ref(),
                     master.as_deref().map(|m| m.as_str()),
                     FolderSyncOptions::default(),
-                )
+                )?;
+                Ok((account, report))
             },
             move |result| match result {
-                Ok(report) => {
+                Ok((account, report)) => {
                     if let Err(e) = account.save() {
                         log::warn!("could not save the sync folder account: {e}");
                     }
