@@ -161,6 +161,11 @@ pub(crate) fn analyse(
         }
     };
     toast_message(&toast, tr!("Reading the file…"));
+    let is_aegis = matches!(
+        source,
+        CoreSource::Aegis | CoreSource::AegisEncrypted { .. }
+    );
+    let retry_path = path.clone();
     run_background_task(
         move || -> ashypass_core::Result<(ParsedImport, ImportPreview)> {
             let vault = ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
@@ -173,6 +178,29 @@ pub(crate) fn analyse(
             // locked vault. Drop it; nothing was written.
             Ok(_) if !state.vault.borrow().is_unlocked() => {}
             Ok((parsed, preview)) => show_preview(state, toast, anchor, parsed, preview),
+            // An encrypted Aegis vault: ask for its password (again, after
+            // a wrong one) and read the same file once more.
+            Err(e)
+                if is_aegis && matches!(&e, ashypass_core::Error::InvalidMasterPassword)
+                    || matches!(&e, ashypass_core::Error::InvalidInput(m) if m == importers::aegis::NEEDS_PASSWORD) =>
+            {
+                let heading = if matches!(e, ashypass_core::Error::InvalidMasterPassword) {
+                    tr!("Wrong password. Password of the Aegis vault")
+                } else {
+                    tr!("Password of the Aegis vault")
+                };
+                ask_password(&anchor.clone(), heading, move |password| {
+                    analyse(
+                        state.clone(),
+                        toast.clone(),
+                        anchor.clone(),
+                        CoreSource::AegisEncrypted {
+                            password: password.to_string(),
+                        },
+                        retry_path.clone(),
+                    );
+                });
+            }
             Err(e) => {
                 let dialog = adw::AlertDialog::builder()
                     .heading(tr!("This file could not be read"))

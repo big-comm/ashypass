@@ -829,7 +829,7 @@ fn build_import_page(state: &SharedState, toast: &adw::ToastOverlay) -> adw::Nav
         (
             ImportSource::Aegis,
             "Aegis",
-            tr!("Verification codes (unencrypted JSON)"),
+            tr!("Verification codes (JSON, encrypted or not)"),
             "security-high-symbolic",
         ),
         (
