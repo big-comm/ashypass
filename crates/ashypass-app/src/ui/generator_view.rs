@@ -569,7 +569,11 @@ impl PanelInner {
             ),
             GeneratorKind::Pin => generate_pin(self.pin_length_row.value() as usize),
         };
-        self.password_label.set_label(&value);
+        // Digits and symbols in the chosen colours (Settings → Appearance).
+        match super::password_colors::markup(&value, &self.state.settings().password_colors) {
+            Some(markup) => self.password_label.set_markup(&markup),
+            None => self.password_label.set_label(&value),
+        }
         self.summary_label.set_label(&summary_for(
             self.kind.get(),
             &value,

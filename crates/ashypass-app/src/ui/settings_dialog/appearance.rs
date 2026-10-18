@@ -39,6 +39,37 @@ pub(super) fn populate_appearance(
         });
     }
     theme_group.add(&theme_row);
+
+    // Shown passwords: digits and symbols in colour (as in the extension).
+    let color_ids: Vec<&str> = std::iter::once("off")
+        .chain(crate::ui::password_colors::THEMES.iter().map(|t| t.0))
+        .collect();
+    let mut color_names = vec![tr!("No colors")];
+    color_names.extend(crate::ui::password_colors::theme_names());
+    let colors_row = adw::ComboRow::builder()
+        .title(tr!("Password colors"))
+        .subtitle(tr!("Digits and symbols in color, easier to read and type"))
+        .model(&gtk::StringList::new(&color_names))
+        .build();
+    let current = settings.borrow().password_colors.clone();
+    colors_row.set_selected(color_ids.iter().position(|v| *v == current).unwrap_or(1) as u32);
+    {
+        let settings = settings.clone();
+        let state = state.clone();
+        colors_row.connect_selected_notify(move |row| {
+            let value = color_ids
+                .get(row.selected() as usize)
+                .copied()
+                .unwrap_or("classic")
+                .to_string();
+            settings.borrow_mut().password_colors = value.clone();
+            if let Err(e) = state.update_settings(|s| s.password_colors = value) {
+                log::warn!("could not save settings: {e}");
+            }
+            state.events.emit(crate::events::AppEvent::DisplayChanged);
+        });
+    }
+    theme_group.add(&colors_row);
     page.add(&theme_group);
 
     let group = adw::PreferencesGroup::builder()

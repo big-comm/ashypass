@@ -42,6 +42,11 @@ struct Inner {
     scrolled: gtk::ScrolledWindow,
     /// Second of the last code update.
     last_tick: Cell<Option<u64>>,
+    /// Filter buttons, one per group (the items' tags, as in the Android
+    /// app and Aegis).
+    groups_bar: gtk::FlowBox,
+    /// The group shown (`None`: all).
+    group: RefCell<Option<String>>,
 }
 
 struct RowData {
@@ -86,6 +91,15 @@ impl TotpView {
                 "Use these codes when a site asks for two-step verification."
             )),
         ));
+
+        let groups_bar = gtk::FlowBox::builder()
+            .selection_mode(gtk::SelectionMode::None)
+            .column_spacing(6)
+            .row_spacing(6)
+            .max_children_per_line(30)
+            .visible(false)
+            .build();
+        content.append(&groups_bar);
 
         let list_box = gtk::ListBox::builder()
             .selection_mode(gtk::SelectionMode::None)
@@ -136,6 +150,8 @@ impl TotpView {
             timer_id: RefCell::new(None),
             scrolled: scrolled.clone(),
             last_tick: Cell::new(None),
+            groups_bar,
+            group: RefCell::new(None),
         });
 
         {
@@ -262,8 +278,22 @@ impl Inner {
             return;
         }
         let search = Some(self.search_entry.text().trim().to_string()).filter(|s| !s.is_empty());
+        let mut groups: Vec<String> = Vec::new();
         let entries: Vec<(PasswordEntry, Zeroizing<String>)> = {
             let vault = self.state.vault.borrow();
+            // Groups of every code (not only the searched ones), for the bar.
+            if let Ok(all) = vault.list(None) {
+                for e in all.iter().filter(|e| e.has_totp) {
+                    for tag in vault.tags_of(e.id).unwrap_or_default() {
+                        if !groups.iter().any(|g| g.eq_ignore_ascii_case(&tag)) {
+                            groups.push(tag);
+                        }
+                    }
+                }
+            }
+            groups.sort_by_key(|g| g.to_lowercase());
+            let shown_group = self.group.borrow().clone().filter(|g| groups.contains(g));
+            *self.group.borrow_mut() = shown_group.clone();
             let listed = match vault.list(search.as_deref()) {
                 Ok(v) => v,
                 Err(e) => {
@@ -274,6 +304,11 @@ impl Inner {
             listed
                 .into_iter()
                 .filter(|e| e.has_totp)
+                .filter(|e| {
+                    shown_group
+                        .as_ref()
+                        .is_none_or(|g| vault.tags_of(e.id).unwrap_or_default().contains(g))
+                })
                 .filter_map(|entry| match vault.totp_secret(entry.id) {
                     Ok(Some(secret)) => Some((entry, Zeroizing::new(secret))),
                     Ok(None) => None,
@@ -284,6 +319,8 @@ impl Inner {
                 })
                 .collect()
         };
+
+        self.fill_groups_bar(&groups);
 
         // Rebuilding the rows must not throw the reader back to the top.
         let scroll = self.scrolled.vadjustment();
@@ -339,6 +376,121 @@ impl Inner {
             glib::ControlFlow::Continue
         });
         *self.timer_id.borrow_mut() = Some(id);
+    }
+
+    /// One toggle per group, plus "All"; hidden when no code has a group.
+    fn fill_groups_bar(self: &Rc<Self>, groups: &[String]) {
+        while let Some(child) = self.groups_bar.first_child() {
+            self.groups_bar.remove(&child);
+        }
+        self.groups_bar.set_visible(!groups.is_empty());
+        if groups.is_empty() {
+            return;
+        }
+        let current = self.group.borrow().clone();
+        let mut first: Option<gtk::ToggleButton> = None;
+        for group in std::iter::once(None).chain(groups.iter().cloned().map(Some)) {
+            let button = gtk::ToggleButton::builder()
+                .label(group.as_deref().unwrap_or(tr!("All")))
+                .active(group == current)
+                .build();
+            button.add_css_class("pill");
+            button.add_css_class("ashy-group-chip");
+            match &first {
+                Some(f) => button.set_group(Some(f)),
+                None => first = Some(button.clone()),
+            }
+            let weak = Rc::downgrade(self);
+            button.connect_toggled(move |b| {
+                if !b.is_active() {
+                    return;
+                }
+                if let Some(inner) = weak.upgrade() {
+                    if *inner.group.borrow() != group {
+                        *inner.group.borrow_mut() = group.clone();
+                        // After the toggle signal: reload rebuilds this bar.
+                        let inner = inner.clone();
+                        glib::idle_add_local_once(move || inner.reload());
+                    }
+                }
+            });
+            self.groups_bar.append(&button);
+        }
+    }
+
+    /// Choose the groups of a code (the item's tags), or create one.
+    fn edit_groups(self: &Rc<Self>, id: i64) {
+        let (current, mut known) = {
+            let vault = self.state.vault.borrow();
+            let current = vault.tags_of(id).unwrap_or_default();
+            let mut known: Vec<String> = Vec::new();
+            for e in vault
+                .list(None)
+                .unwrap_or_default()
+                .iter()
+                .filter(|e| e.has_totp)
+            {
+                for tag in vault.tags_of(e.id).unwrap_or_default() {
+                    if !known.iter().any(|g| g.eq_ignore_ascii_case(&tag)) {
+                        known.push(tag);
+                    }
+                }
+            }
+            (current, known)
+        };
+        known.sort_by_key(|g| g.to_lowercase());
+        let dialog = adw::AlertDialog::builder()
+            .heading(tr!("Groups"))
+            .body(tr!("Group the codes as in Aegis. Groups are the item's tags: they sync to your other devices."))
+            .close_response("cancel")
+            .default_response("save")
+            .build();
+        dialog.add_response("cancel", tr!("Cancel"));
+        dialog.add_response("save", tr!("Save"));
+        dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
+        let list = gtk::ListBox::builder()
+            .selection_mode(gtk::SelectionMode::None)
+            .build();
+        list.add_css_class("boxed-list");
+        let mut checks: Vec<(String, gtk::CheckButton)> = Vec::new();
+        for group in known {
+            let check = gtk::CheckButton::builder()
+                .active(current.iter().any(|c| c.eq_ignore_ascii_case(&group)))
+                .valign(gtk::Align::Center)
+                .build();
+            let row = adw::ActionRow::builder()
+                .title(&group)
+                .activatable_widget(&check)
+                .build();
+            row.add_prefix(&check);
+            list.append(&row);
+            checks.push((group, check));
+        }
+        let new_row = adw::EntryRow::builder().title(tr!("New group")).build();
+        list.append(&new_row);
+        dialog.set_extra_child(Some(&list));
+        let weak = Rc::downgrade(self);
+        dialog.connect_response(Some("save"), move |_, _| {
+            let Some(inner) = weak.upgrade() else { return };
+            if !inner.can_show_vault_data() {
+                return;
+            }
+            let mut chosen: Vec<String> = checks
+                .iter()
+                .filter(|(_, c)| c.is_active())
+                .map(|(g, _)| g.clone())
+                .collect();
+            let new_group = new_row.text().trim().to_string();
+            if !new_group.is_empty() {
+                chosen.push(new_group);
+            }
+            let saved = inner.state.vault.borrow().set_tags(id, &chosen);
+            if let Err(e) = saved {
+                inner.toast(&format!("{}: {e}", tr!("Could not save")));
+            }
+        });
+        self.state.track_sensitive_dialog(&dialog);
+        dialog.present(Some(&self.root));
     }
 
     fn build_row(
@@ -463,6 +615,7 @@ impl Inner {
 
         let menu = gio::Menu::new();
         menu.append(Some(tr!("Edit access…")), Some("code.edit"));
+        menu.append(Some(tr!("Groups…")), Some("code.groups"));
         let danger = gio::Menu::new();
         danger.append(Some(tr!("Remove verification code…")), Some("code.remove"));
         danger.append(Some(tr!("Delete access…")), Some("code.delete"));
@@ -484,6 +637,7 @@ impl Inner {
         let group = gio::SimpleActionGroup::new();
         for (name, run) in [
             ("edit", Inner::edit_entry as fn(&Rc<Inner>, i64)),
+            ("groups", Inner::edit_groups as fn(&Rc<Inner>, i64)),
             ("remove", Inner::confirm_remove_code as fn(&Rc<Inner>, i64)),
             ("delete", Inner::confirm_delete as fn(&Rc<Inner>, i64)),
         ] {

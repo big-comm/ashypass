@@ -1833,12 +1833,20 @@ fn build_details(inner: &Rc<Inner>, entry: &PasswordEntry) -> gtk::Widget {
                         .and_then(|e| e.password)
                         .map(Zeroizing::new);
                     if let Some(value) = value {
-                        row.set_subtitle(&value);
+                        let theme = inner.state.settings().password_colors.clone();
+                        match crate::ui::password_colors::markup(&value, &theme) {
+                            Some(markup) => {
+                                row.set_use_markup(true);
+                                row.set_subtitle(&markup);
+                            }
+                            None => row.set_subtitle(&value),
+                        }
                         row.add_css_class("ashy-revealed");
                     }
                     button.set_icon_name("view-conceal-symbolic");
                     button.set_tooltip_text(Some(tr!("Hide password")));
                 } else {
+                    row.set_use_markup(false);
                     row.set_subtitle(&hidden_subtitle);
                     row.remove_css_class("ashy-revealed");
                     button.set_icon_name("view-reveal-symbolic");
