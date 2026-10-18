@@ -1730,8 +1730,20 @@ impl Vault {
 
     /// Set the tags for an entry to exactly the given list. Unknown tag names
     /// are created on the fly; tags removed from the list are dissociated but
-    /// stay in the catalog (call `prune_tags` to drop orphans).
+    /// stay in the catalog (call `prune_tags` to drop orphans). A change
+    /// counts as an edit of the entry (its `updated_at` moves), so syncs send
+    /// it.
     pub fn set_tags(&self, entry_id: i64, names: &[String]) -> Result<()> {
+        self.set_tags_inner(entry_id, names, true)
+    }
+
+    /// `set_tags` for the folder sync, which stamps the entry itself with
+    /// the other device's time.
+    pub(crate) fn set_tags_unstamped(&self, entry_id: i64, names: &[String]) -> Result<()> {
+        self.set_tags_inner(entry_id, names, false)
+    }
+
+    fn set_tags_inner(&self, entry_id: i64, names: &[String], stamp: bool) -> Result<()> {
         let mut normalized: Vec<String> = names
             .iter()
             .map(|s| s.trim().to_string())
@@ -1778,6 +1790,13 @@ impl Vault {
                 self.conn.execute(
                     "INSERT OR IGNORE INTO entry_tags (entry_id, tag_id) VALUES (?, ?)",
                     params![entry_id, tid],
+                )?;
+            }
+            if stamp {
+                self.conn.execute(
+                    "UPDATE passwords SET updated_at = MAX(CAST(strftime('%s','now') AS INTEGER), updated_at + 1)
+                     WHERE id = ?",
+                    params![entry_id],
                 )?;
             }
             Ok(true)
@@ -2997,7 +3016,11 @@ mod tests {
             .set_tags(id, &["work".into(), "Work".into(), " home ".into()])
             .unwrap();
         assert_eq!(vault.tags_of(id).unwrap(), vec!["home", "work"]);
-        assert_eq!(vault.entry_updated_at(id).unwrap(), updated_at);
+        // A tag change is an edit (syncs send it); the same tags are not.
+        let tagged_at = vault.entry_updated_at(id).unwrap();
+        assert!(tagged_at > updated_at);
+        vault.set_tags(id, &["home".into(), "work".into()]).unwrap();
+        assert_eq!(vault.entry_updated_at(id).unwrap(), tagged_at);
 
         // Inside an outer transaction that commits.
         vault

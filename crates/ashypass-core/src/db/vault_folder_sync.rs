@@ -174,7 +174,7 @@ impl Vault {
             }
         };
         tx.commit()?;
-        self.set_tags(id, &item.tags)?;
+        self.set_tags_unstamped(id, &item.tags)?;
         self.notify_change();
         Ok(())
     }

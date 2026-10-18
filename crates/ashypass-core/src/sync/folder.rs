@@ -832,6 +832,33 @@ mod tests {
     }
 
     #[test]
+    fn a_group_change_alone_syncs_without_echo() {
+        let dir = tempfile::tempdir().unwrap();
+        let folder = LocalFolder {
+            root: dir.path().join("cloud"),
+        };
+        let phone = device(dir.path(), "phone");
+        let desk = device(dir.path(), "desk");
+        let id = phone
+            .add(NewEntry {
+                title: "GitHub".into(),
+                totp_secret: Some("JBSWY3DPEHPK3PXP".into()),
+                ..Default::default()
+            })
+            .unwrap();
+        run(&phone, &folder);
+        run(&desk, &folder);
+        phone.set_tags(id, &["Work".into()]).unwrap();
+        assert_eq!(run(&phone, &folder).sent, 1);
+        assert_eq!(run(&desk, &folder).received, 1);
+        let desk_id = desk.list(None).unwrap()[0].id;
+        assert_eq!(desk.tags_of(desk_id).unwrap(), ["Work"]);
+        // Applying it does not make the desk send it back.
+        assert_eq!(run(&desk, &folder).sent, 0);
+        assert_eq!(run(&phone, &folder).received, 0);
+    }
+
+    #[test]
     fn two_factor_codes_travel_with_their_item() {
         let dir = tempfile::tempdir().unwrap();
         let folder = LocalFolder {

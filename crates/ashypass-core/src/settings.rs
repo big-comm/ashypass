@@ -85,6 +85,9 @@ pub struct Settings {
     /// Off by default: earlier versions did not mark copies, and many people
     /// rely on their clipboard history.
     pub clipboard_hide_from_history: bool,
+    /// Colour theme for shown passwords (digits and symbols stand out):
+    /// "classic", "ocean", … or "off". Same themes as the Android app.
+    pub password_colors: String,
 }
 
 /// Wrapping-KDF generation for `QuickUnlockPrefs::encrypted_key`.
@@ -155,6 +158,7 @@ impl Default for Settings {
             lock_on_screen_lock: true,
             color_scheme: "system".to_string(),
             clipboard_hide_from_history: false,
+            password_colors: "classic".to_string(),
         }
     }
 }

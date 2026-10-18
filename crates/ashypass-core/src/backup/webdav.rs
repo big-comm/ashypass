@@ -331,6 +331,8 @@ fn http_client() -> Result<&'static Client> {
     }
     let client = Client::builder()
         .timeout(Duration::from_secs(60))
+        // A dead route fails in seconds, not after the system's minutes.
+        .connect_timeout(Duration::from_secs(15))
         .redirect(redirect_policy())
         .build()
         .map_err(|e| Error::Other(format!("webdav http: {e}")))?;
@@ -533,6 +535,29 @@ fn extract_inner(block: &str, local: &str) -> Option<String> {
     Some(inner[..close_start].to_string())
 }
 
+/// One more try when a request could not reach the server (no route,
+/// connection refused or timed out): phones drop connections for a moment
+/// when they wake, change networks or leave the app.
+trait SendRetrying {
+    fn send_retrying(self) -> reqwest::Result<reqwest::blocking::Response>;
+}
+
+impl SendRetrying for reqwest::blocking::RequestBuilder {
+    fn send_retrying(self) -> reqwest::Result<reqwest::blocking::Response> {
+        let again = self.try_clone();
+        match self.send() {
+            Err(e) if e.is_connect() || e.is_timeout() => match again {
+                Some(again) => {
+                    std::thread::sleep(Duration::from_secs(2));
+                    again.send()
+                }
+                None => Err(e),
+            },
+            other => other,
+        }
+    }
+}
+
 /// Largest single file the encrypted folder sync reads into memory.
 const MAX_SYNC_FILE_BYTES: u64 = 64 * 1024 * 1024;
 
@@ -566,7 +591,7 @@ impl WebdavFolder {
             .header("Depth", "0")
             .header("Content-Type", "application/xml")
             .body(PROPFIND_BODY)
-            .send()
+            .send_retrying()
             .map_err(|e| Error::Other(format!("webdav probe: {}", error_chain(&e))))?;
         match resp.status().as_u16() {
             401 | 403 => Err(Error::Other(
@@ -598,7 +623,7 @@ impl WebdavFolder {
             let url = format!("{}/{}/", self.config.base_url, url_escape_path(&prefix));
             let resp = self
                 .request(Method::from_bytes(b"MKCOL").expect("valid method"), &url)?
-                .send()
+                .send_retrying()
                 .map_err(|e| Error::Other(format!("webdav mkcol: {}", error_chain(&e))))?;
             let status = resp.status().as_u16();
             // 201 created, 405 already exists.
@@ -621,7 +646,7 @@ impl crate::sync::folder::Remote for WebdavFolder {
             .header("Depth", "1")
             .header("Content-Type", "application/xml")
             .body(PROPFIND_BODY)
-            .send()
+            .send_retrying()
             .map_err(|e| Error::Other(format!("webdav propfind: {}", error_chain(&e))))?;
         let status = resp.status().as_u16();
         if status == 404 {
@@ -646,7 +671,7 @@ impl crate::sync::folder::Remote for WebdavFolder {
         let mut resp = self
             .request(Method::GET, &self.url_of(path))?
             .timeout(TRANSFER_TIMEOUT)
-            .send()
+            .send_retrying()
             .map_err(|e| Error::Other(format!("webdav get: {}", error_chain(&e))))?;
         let status = resp.status().as_u16();
         if status == 404 {
@@ -676,7 +701,7 @@ impl crate::sync::folder::Remote for WebdavFolder {
             .request(Method::PUT, &self.url_of(path))?
             .timeout(TRANSFER_TIMEOUT)
             .body(data.to_vec())
-            .send()
+            .send_retrying()
             .map_err(|e| Error::Other(format!("webdav put: {}", error_chain(&e))))?;
         let status = resp.status().as_u16();
         if !(200..300).contains(&status) {
