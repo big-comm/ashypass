@@ -6,6 +6,7 @@
 
 pub mod folder;
 pub mod folder_account;
+pub mod folder_cloud;
 pub mod nextcloud_engine;
 pub mod nextcloud_passwords;
 
