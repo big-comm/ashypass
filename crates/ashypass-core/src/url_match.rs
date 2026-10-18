@@ -156,7 +156,7 @@ pub fn entry_matches_page(entry_url: &str, page_url: &str) -> bool {
 /// (`github.io`, `myshopify.com`, `s3.amazonaws.com`, …). Returns `None` when
 /// `host` is itself a public suffix, an IP literal, or sits under a suffix the
 /// list does not know: such hosts only ever match exactly.
-fn registrable_domain(host: &str) -> Option<String> {
+pub(crate) fn registrable_domain(host: &str) -> Option<String> {
     // IP literals have no registrable domain; treating the last two octets as
     // one would make 192.168.1.10 and 10.0.1.10 "the same site".
     if host.parse::<std::net::IpAddr>().is_ok() || host.contains(':') {

@@ -9,6 +9,7 @@ pub mod backup;
 pub mod config;
 pub mod crypto;
 pub mod db;
+pub mod duplicates;
 pub mod error;
 pub mod favicons;
 pub mod generator;
