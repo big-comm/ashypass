@@ -15,6 +15,14 @@ if [[ "${EUID}" -eq 0 ]]; then
     exit 1
 fi
 
+# Local build secrets (the Google OAuth client secret), kept out of git.
+if [[ -f .env.build.local ]]; then
+    set -a
+    # shellcheck disable=SC1091
+    . ./.env.build.local
+    set +a
+fi
+
 echo "[1/4] Building release artifacts…"
 cargo build --release \
     --bin ashypass \

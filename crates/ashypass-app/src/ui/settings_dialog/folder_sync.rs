@@ -12,7 +12,7 @@ pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw
     let group = adw::PreferencesGroup::builder()
         .title(tr!("Encrypted folder sync"))
         .description(tr!(
-            "Logins, cards, identities, notes and passkeys, encrypted on this computer before they leave, through a folder on Nextcloud or any WebDAV server. Ashy Pass for Android uses the same folder."
+            "Logins, cards, identities, notes and passkeys, encrypted on this computer before they leave, through a folder on Nextcloud, WebDAV, Dropbox, Google Drive or this computer. Ashy Pass for Android uses the same folder."
         ))
         .build();
 
@@ -48,7 +48,9 @@ pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw
                 None => {
                     status_row.set_subtitle(tr!("Not connected"));
                     connect_row.set_title(tr!("Connect…"));
-                    connect_row.set_subtitle(tr!("Nextcloud or WebDAV address, user, password"));
+                    connect_row.set_subtitle(tr!(
+                        "Nextcloud, WebDAV, Dropbox, Google Drive or a local folder"
+                    ));
                     sync_row.set_sensitive(false);
                 }
                 Some(account) => {
@@ -68,7 +70,21 @@ pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw
                         SyncStatus::Failed { .. } => tr!("The last sync failed").to_string(),
                         SyncStatus::Unknown => String::new(),
                     };
-                    let place = format!("{} · {}", account.folder, account.user);
+                    let service = match account.provider() {
+                        ashypass_core::sync::folder_account::PROVIDER_DROPBOX => "Dropbox",
+                        ashypass_core::sync::folder_account::PROVIDER_GOOGLE_DRIVE => {
+                            "Google Drive"
+                        }
+                        ashypass_core::sync::folder_account::PROVIDER_LOCAL => {
+                            tr!("Folder on this computer")
+                        }
+                        _ => "WebDAV",
+                    };
+                    let place = [service, &account.folder, &account.user]
+                        .into_iter()
+                        .filter(|s| !s.is_empty())
+                        .collect::<Vec<_>>()
+                        .join(" · ");
                     status_row.set_subtitle(&if when.is_empty() {
                         place
                     } else {
@@ -230,9 +246,46 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
         .subtitle(if ashypass_core::backup::oauth::Token::load().is_some() {
             tr!("Uses your Google Drive sign-in from Backups")
         } else {
-            tr!("Sign in to Google Drive in Backups → Google Drive first")
+            tr!("Sign in to Google to use your Drive")
         })
         .build();
+    let google_button = gtk::Button::builder()
+        .label(tr!("Sign in to Google"))
+        .valign(gtk::Align::Center)
+        .visible(ashypass_core::backup::oauth::Token::load().is_none())
+        .build();
+    google_row.add_suffix(&google_button);
+    {
+        let toast = toast.clone();
+        let google_row = google_row.clone();
+        google_button.connect_clicked(move |button| {
+            let Some(creds) = ashypass_core::backup::ClientCredentials::load() else {
+                show_toast(&toast, tr!("This build has no Google sign-in configured"));
+                return;
+            };
+            button.set_sensitive(false);
+            let button = button.clone();
+            let toast = toast.clone();
+            let google_row = google_row.clone();
+            // Opens the browser; returns when Google sends the user back.
+            run_background(
+                move || ashypass_core::backup::oauth::login(&creds).map(|_| ()),
+                move |result| {
+                    button.set_sensitive(true);
+                    match result {
+                        Ok(()) => {
+                            button.set_visible(false);
+                            google_row
+                                .set_subtitle(tr!("Uses your Google Drive sign-in from Backups"));
+                        }
+                        Err(e) => {
+                            show_toast(&toast, &format!("{}: {e}", tr!("Google sign-in failed")))
+                        }
+                    }
+                },
+            );
+        });
+    }
     // A local folder (synced by Syncthing, a cloud client…).
     let local_path: Rc<RefCell<String>> = Rc::new(RefCell::new(String::new()));
     let local_row = adw::ActionRow::builder()
