@@ -12,7 +12,7 @@ pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw
     let group = adw::PreferencesGroup::builder()
         .title(tr!("Encrypted folder sync"))
         .description(tr!(
-            "Logins, cards, identities, notes and passkeys, encrypted on this computer before they leave, through a folder on Nextcloud, WebDAV, Dropbox, Google Drive or this computer. Ashy Pass for Android uses the same folder."
+            "Logins, cards, identities, notes and passkeys, encrypted on this computer before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or this computer. Ashy Pass for Android uses the same folder."
         ))
         .build();
 
@@ -49,7 +49,7 @@ pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw
                     status_row.set_subtitle(tr!("Not connected"));
                     connect_row.set_title(tr!("Connect…"));
                     connect_row.set_subtitle(tr!(
-                        "Nextcloud, WebDAV, Dropbox, Google Drive or a local folder"
+                        "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or a local folder"
                     ));
                     sync_row.set_sensitive(false);
                 }
@@ -78,6 +78,8 @@ pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw
                         ashypass_core::sync::folder_account::PROVIDER_LOCAL => {
                             tr!("Folder on this computer")
                         }
+                        _ if account.nextcloud => "Nextcloud",
+                        _ if account.is_pcloud() => "pCloud",
                         _ => "WebDAV",
                     };
                     let place = [service, &account.folder, &account.user]
@@ -167,7 +169,8 @@ fn confirm_disconnect(row: &adw::ActionRow, state: SharedState, toast: Toaster) 
 
 fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: Toaster) {
     use ashypass_core::sync::folder_account::{
-        PROVIDER_DROPBOX, PROVIDER_GOOGLE_DRIVE, PROVIDER_LOCAL, PROVIDER_WEBDAV,
+        PCLOUD_WEBDAV_EU, PCLOUD_WEBDAV_US, PROVIDER_DROPBOX, PROVIDER_GOOGLE_DRIVE,
+        PROVIDER_LOCAL, PROVIDER_WEBDAV,
     };
     use ashypass_core::sync::folder_cloud::{dropbox_app_key, DropboxAuth};
     if !state.vault.borrow().is_unlocked() {
@@ -190,13 +193,35 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
     dialog.set_default_response(Some("connect"));
     dialog.set_response_appearance("connect", adw::ResponseAppearance::Suggested);
 
-    // Service: (id, name, nextcloud?)
-    let services: [(&str, &str, bool); 5] = [
-        (PROVIDER_WEBDAV, "Nextcloud", true),
-        (PROVIDER_WEBDAV, tr!("Other WebDAV server"), false),
-        (PROVIDER_DROPBOX, "Dropbox", false),
-        (PROVIDER_GOOGLE_DRIVE, "Google Drive", false),
-        (PROVIDER_LOCAL, tr!("Folder on this computer"), false),
+    // Service: (id, name, kind). WebDAV ones differ in the fields asked.
+    #[derive(Clone, Copy, PartialEq)]
+    enum Kind {
+        Nextcloud,
+        Webdav,
+        // pCloud: WebDAV on its server for the region, e-mail and password.
+        Pcloud(&'static str),
+        Other,
+    }
+    let services: [(&str, &str, Kind); 7] = [
+        (PROVIDER_WEBDAV, "Nextcloud", Kind::Nextcloud),
+        (
+            PROVIDER_WEBDAV,
+            tr!("pCloud (data in the US)"),
+            Kind::Pcloud(PCLOUD_WEBDAV_US),
+        ),
+        (
+            PROVIDER_WEBDAV,
+            tr!("pCloud (data in Europe)"),
+            Kind::Pcloud(PCLOUD_WEBDAV_EU),
+        ),
+        (
+            PROVIDER_WEBDAV,
+            tr!("WebDAV (ownCloud, Synology, Seafile, Koofr…)"),
+            Kind::Webdav,
+        ),
+        (PROVIDER_DROPBOX, "Dropbox", Kind::Other),
+        (PROVIDER_GOOGLE_DRIVE, "Google Drive", Kind::Other),
+        (PROVIDER_LOCAL, tr!("Folder on this computer"), Kind::Other),
     ];
     let service_row = adw::ComboRow::builder()
         .title(tr!("Service"))
@@ -210,6 +235,13 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
     let user_row = adw::EntryRow::builder().title(tr!("Login name")).build();
     let pass_row = adw::PasswordEntryRow::builder()
         .title(tr!("App password"))
+        .build();
+    let pcloud_row = adw::ActionRow::builder()
+        .title(tr!("Your pCloud e-mail and password"))
+        .subtitle(tr!(
+            "With two-step verification on, pCloud e-mails you about the new sign-in: approve it there and connect again."
+        ))
+        .subtitle_lines(0)
         .build();
     // Dropbox: allow in the browser, paste the code Dropbox shows.
     let dropbox_auth: Rc<RefCell<Option<DropboxAuth>>> = Rc::new(RefCell::new(None));
@@ -326,7 +358,8 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
         .visible(needs_master)
         .build();
     // The Nextcloud Passwords account works for the folder too.
-    if let Some(nc) = state.nextcloud.borrow().config.clone() {
+    let nextcloud = state.nextcloud.borrow().config.clone();
+    if let Some(nc) = &nextcloud {
         url_row.set_text(&nc.base_url);
         user_row.set_text(&nc.username);
         pass_row.set_text(&nc.app_password);
@@ -334,6 +367,8 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
 
     let show_fields = {
         let (url_row, user_row, pass_row) = (url_row.clone(), user_row.clone(), pass_row.clone());
+        let pcloud_row = pcloud_row.clone();
+        let last_kind = std::cell::Cell::new(Kind::Nextcloud);
         let (dropbox_row, code_row, google_row, local_row) = (
             dropbox_row.clone(),
             code_row.clone(),
@@ -341,11 +376,27 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
             local_row.clone(),
         );
         move |index: u32| {
-            let (provider, _, nextcloud) = services[index as usize];
+            let (provider, _, kind) = services[index as usize];
             let webdav = provider == PROVIDER_WEBDAV;
-            url_row.set_visible(webdav);
+            let pcloud = matches!(kind, Kind::Pcloud(_));
+            // The Nextcloud account's login is no use on pCloud, and the
+            // other way round.
+            if pcloud != matches!(last_kind.get(), Kind::Pcloud(_)) {
+                url_row.set_text("");
+                user_row.set_text("");
+                pass_row.set_text("");
+                if let (Kind::Nextcloud, Some(nc)) = (kind, &nextcloud) {
+                    url_row.set_text(&nc.base_url);
+                    user_row.set_text(&nc.username);
+                    pass_row.set_text(&nc.app_password);
+                }
+            }
+            last_kind.set(kind);
+            url_row.set_visible(webdav && !pcloud);
             user_row.set_visible(webdav);
             pass_row.set_visible(webdav);
+            pcloud_row.set_visible(pcloud);
+            let nextcloud = kind == Kind::Nextcloud;
             url_row.set_title(if nextcloud {
                 tr!("Server address")
             } else {
@@ -353,6 +404,8 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
             });
             user_row.set_title(if nextcloud {
                 tr!("Login name")
+            } else if pcloud {
+                tr!("pCloud e-mail")
             } else {
                 tr!("User name")
             });
@@ -376,6 +429,7 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
     list.add_css_class("boxed-list");
     for row in [
         service_row.upcast_ref::<gtk::Widget>(),
+        pcloud_row.upcast_ref(),
         url_row.upcast_ref(),
         user_row.upcast_ref(),
         pass_row.upcast_ref(),
@@ -391,10 +445,10 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
     dialog.set_extra_child(Some(&list));
 
     dialog.connect_response(Some("connect"), move |_, _| {
-        let (provider, _, nextcloud) = services[service_row.selected() as usize];
+        let (provider, _, kind) = services[service_row.selected() as usize];
         let mut account = FolderSyncAccount {
             provider: provider.to_string(),
-            nextcloud,
+            nextcloud: kind == Kind::Nextcloud,
             folder: folder_row.text().trim().to_string(),
             ..Default::default()
         };
@@ -402,7 +456,10 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
         let mut dropbox_code: Option<(DropboxAuth, String)> = None;
         match provider {
             PROVIDER_WEBDAV => {
-                account.server_url = url_row.text().trim().to_string();
+                account.server_url = match kind {
+                    Kind::Pcloud(server) => server.to_string(),
+                    _ => url_row.text().trim().to_string(),
+                };
                 account.user = user_row.text().trim().to_string();
                 account.password = pass_row.text().to_string();
                 if account.server_url.is_empty()

@@ -19,6 +19,11 @@ pub const PROVIDER_DROPBOX: &str = "dropbox";
 pub const PROVIDER_GOOGLE_DRIVE: &str = "gdrive";
 pub const PROVIDER_LOCAL: &str = "local";
 
+/// pCloud's WebDAV servers, by where the account's data lives. A pCloud
+/// account is a WebDAV one on either.
+pub const PCLOUD_WEBDAV_US: &str = "https://webdav.pcloud.com";
+pub const PCLOUD_WEBDAV_EU: &str = "https://ewebdav.pcloud.com";
+
 #[derive(Clone, Default, Serialize, Deserialize)]
 pub struct FolderSyncAccount {
     /// `webdav` (also Nextcloud; the default, as in older files),
@@ -59,6 +64,14 @@ impl FolderSyncAccount {
         } else {
             &self.provider
         }
+    }
+
+    /// A WebDAV account on pCloud's servers.
+    pub fn is_pcloud(&self) -> bool {
+        self.provider() == PROVIDER_WEBDAV
+            && !self.nextcloud
+            && [PCLOUD_WEBDAV_US, PCLOUD_WEBDAV_EU]
+                .contains(&server_url::normalize(&self.server_url).as_str())
     }
 
     /// The WebDAV folder of a WebDAV (or Nextcloud) account.
@@ -237,6 +250,25 @@ fn desktop_google_token() -> Result<TokenSource> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn pcloud_accounts_are_webdav_on_its_servers() {
+        let account = |url: &str| FolderSyncAccount {
+            server_url: url.into(),
+            user: "ana@example.com".into(),
+            password: "p".into(),
+            ..Default::default()
+        };
+        assert!(account(PCLOUD_WEBDAV_US).is_pcloud());
+        assert!(account("ewebdav.pcloud.com/").is_pcloud());
+        assert!(account(PCLOUD_WEBDAV_EU).remote().is_ok());
+        assert!(!account("https://dav.example.com").is_pcloud());
+        let nextcloud = FolderSyncAccount {
+            nextcloud: true,
+            ..account(PCLOUD_WEBDAV_US)
+        };
+        assert!(!nextcloud.is_pcloud());
+    }
 
     #[test]
     fn nextcloud_accounts_use_the_files_endpoint() {
