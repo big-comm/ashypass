@@ -150,9 +150,11 @@ pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw
         connect_row.connect_activated(move |row| {
             if state.folder_account.borrow().is_some() {
                 confirm_disconnect(row, state.clone(), toast.clone());
-            } else {
-                let parent = row.root().and_then(|r| r.downcast::<gtk::Window>().ok());
-                show_connect_dialog(parent.as_ref(), state.clone(), toast.clone());
+            } else if let Some(dialog) = row
+                .ancestor(adw::PreferencesDialog::static_type())
+                .and_downcast::<adw::PreferencesDialog>()
+            {
+                show_connect_page(&dialog, state.clone(), toast.clone());
             }
         });
     }
@@ -188,7 +190,9 @@ fn confirm_disconnect(row: &adw::ActionRow, state: SharedState, toast: Toaster) 
     dialog.present(parent.as_ref());
 }
 
-fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: Toaster) {
+/// The connection form, as a page of the settings: it stays open while
+/// connecting (with a spinner) and shows what went wrong, to fix and retry.
+fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast: Toaster) {
     use ashypass_core::sync::folder_account::{
         PCLOUD_WEBDAV_EU, PCLOUD_WEBDAV_US, PROVIDER_DROPBOX, PROVIDER_GOOGLE_DRIVE,
         PROVIDER_LOCAL, PROVIDER_WEBDAV,
@@ -199,20 +203,6 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
         return;
     }
     let needs_master = folder::needs_master_password(&state.vault.borrow()).unwrap_or(true);
-    let dialog = adw::AlertDialog::builder()
-        .heading(tr!("Connect the sync folder"))
-        .body(if needs_master {
-            tr!(
-                "Use the same master password on all your devices: it opens the folder's key. You type it once here, to join."
-            )
-        } else {
-            ""
-        })
-        .build();
-    dialog.add_response("cancel", tr!("Cancel"));
-    dialog.add_response("connect", tr!("Connect"));
-    dialog.set_default_response(Some("connect"));
-    dialog.set_response_appearance("connect", adw::ResponseAppearance::Suggested);
 
     // Service: (id, name, kind). WebDAV ones differ in the fields asked.
     #[derive(Clone, Copy, PartialEq)]
@@ -317,6 +307,7 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
                 return;
             };
             button.set_sensitive(false);
+            google_row.set_subtitle(tr!("Waiting for Google in the browser…"));
             let button = button.clone();
             let toast = toast.clone();
             let google_row = google_row.clone();
@@ -332,6 +323,7 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
                                 .set_subtitle(tr!("Uses your Google Drive sign-in from Backups"));
                         }
                         Err(e) => {
+                            google_row.set_subtitle(tr!("Sign in to Google to use your Drive"));
                             show_toast(&toast, &format!("{}: {e}", tr!("Google sign-in failed")))
                         }
                     }
@@ -444,10 +436,16 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
     show_fields(0);
     service_row.connect_selected_notify(move |row| show_fields(row.selected()));
 
-    let list = gtk::ListBox::builder()
-        .selection_mode(gtk::SelectionMode::None)
+    let page = adw::PreferencesPage::new();
+    let group = adw::PreferencesGroup::builder()
+        .description(if needs_master {
+            tr!(
+                "Use the same master password on all your devices: it opens the folder's key. You type it once here, to join."
+            )
+        } else {
+            ""
+        })
         .build();
-    list.add_css_class("boxed-list");
     for row in [
         service_row.upcast_ref::<gtk::Widget>(),
         pcloud_row.upcast_ref(),
@@ -461,11 +459,73 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
         folder_row.upcast_ref(),
         master_row.upcast_ref(),
     ] {
-        list.append(row);
+        group.add(row);
     }
-    dialog.set_extra_child(Some(&list));
+    page.add(&group);
 
-    dialog.connect_response(Some("connect"), move |_, _| {
+    // While connecting: a spinner and what is going on; after a failure,
+    // what went wrong, with the form left as it was.
+    let spinner = gtk::Spinner::builder().visible(false).build();
+    let status = gtk::Label::builder()
+        .xalign(0.0)
+        .wrap(true)
+        .hexpand(true)
+        .build();
+    status.set_accessible_role(gtk::AccessibleRole::Alert);
+    let status_box = gtk::Box::builder()
+        .orientation(gtk::Orientation::Horizontal)
+        .spacing(12)
+        .visible(false)
+        .build();
+    status_box.append(&spinner);
+    status_box.append(&status);
+    let button = gtk::Button::builder()
+        .label(tr!("Connect"))
+        .halign(gtk::Align::End)
+        .build();
+    button.add_css_class("suggested-action");
+    button.add_css_class("pill");
+    let action_box = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(12)
+        .build();
+    action_box.append(&status_box);
+    action_box.append(&button);
+    let actions = adw::PreferencesGroup::new();
+    actions.add(&action_box);
+    page.add(&actions);
+
+    let show = {
+        let (spinner, status, status_box) = (spinner.clone(), status.clone(), status_box.clone());
+        let (group, button) = (group.clone(), button.clone());
+        move |message: &str, busy: bool| {
+            status_box.set_visible(!message.is_empty());
+            status.set_label(message);
+            if busy {
+                status.remove_css_class("error");
+            } else {
+                status.add_css_class("error");
+            }
+            spinner.set_visible(busy);
+            spinner.set_spinning(busy);
+            group.set_sensitive(!busy);
+            button.set_sensitive(!busy);
+        }
+    };
+
+    let toolbar = adw::ToolbarView::new();
+    toolbar.add_top_bar(&adw::HeaderBar::new());
+    toolbar.set_content(Some(&page));
+    let nav = adw::NavigationPage::builder()
+        .title(tr!("Connect the sync folder"))
+        .child(&toolbar)
+        .build();
+
+    // Dropbox's code works once: the sign-in it gave is kept for a retry
+    // (after a wrong master password, say).
+    let dropbox_token: Rc<RefCell<Option<String>>> = Rc::new(RefCell::new(None));
+    let dialog_weak = dialog.downgrade();
+    button.connect_clicked(move |_| {
         let (provider, _, kind) = services[service_row.selected() as usize];
         let mut account = FolderSyncAccount {
             provider: provider.to_string(),
@@ -487,27 +547,32 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
                     || account.user.is_empty()
                     || account.password.is_empty()
                 {
-                    show_toast(&toast, tr!("Address, user and password are required"));
+                    show(tr!("Address, user and password are required"), false);
                     return;
                 }
             }
             PROVIDER_DROPBOX => {
-                let code = code_row.text().trim().to_string();
-                match dropbox_auth.borrow_mut().take() {
-                    Some(auth) if !code.is_empty() => dropbox_code = Some((auth, code)),
-                    _ => {
-                        show_toast(
-                            &toast,
-                            tr!("Open Dropbox, allow Ashy Pass and paste the code it shows"),
-                        );
-                        return;
+                if let Some(token) = dropbox_token.borrow().clone() {
+                    account.password = token;
+                } else {
+                    let code = code_row.text().trim().to_string();
+                    match dropbox_auth.borrow_mut().take() {
+                        Some(auth) if !code.is_empty() => dropbox_code = Some((auth, code)),
+                        auth => {
+                            *dropbox_auth.borrow_mut() = auth;
+                            show(
+                                tr!("Open Dropbox, allow Ashy Pass and paste the code it shows"),
+                                false,
+                            );
+                            return;
+                        }
                     }
                 }
             }
             PROVIDER_LOCAL => {
                 account.server_url = local_path.borrow().clone();
                 if account.server_url.is_empty() {
-                    show_toast(&toast, tr!("Choose the folder"));
+                    show(tr!("Choose the folder"), false);
                     return;
                 }
             }
@@ -515,79 +580,98 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
         }
         let master = needs_master.then(|| zeroize::Zeroizing::new(master_row.text().to_string()));
         if master.as_ref().is_some_and(|m| m.is_empty()) {
-            show_toast(&toast, tr!("Enter the master password"));
+            show(tr!("Enter the master password"), false);
             return;
         }
         let parts = match state.vault.borrow().session_reopen_parts() {
             Ok(parts) => parts,
             Err(e) => {
-                show_toast(&toast, &format!("{}: {e}", tr!("Connect failed")));
+                show(&format!("{}: {e}", tr!("Connect failed")), false);
                 return;
             }
         };
+        show(tr!("Connecting and syncing…"), true);
         state.set_folder_status(SyncStatus::Running);
         let state = state.clone();
         let toast = toast.clone();
+        let show = show.clone();
+        let dialog_weak = dialog_weak.clone();
+        let dropbox_token = dropbox_token.clone();
         run_background(
-            move || -> ashypass_core::Result<_> {
-                if let Some((auth, code)) = dropbox_code {
-                    let tokens = auth.finish(&code)?;
-                    account.password = tokens.refresh_token.ok_or_else(|| {
-                        ashypass_core::Error::Other("Dropbox gave no refresh token".into())
-                    })?;
-                }
-                let shown = account.probe()?;
-                if !shown.is_empty() {
-                    account.user = shown;
-                }
-                let vault = ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
-                let report = folder::sync(
-                    &vault,
-                    account.remote()?.as_ref(),
-                    master.as_deref().map(|m| m.as_str()),
-                    FolderSyncOptions::default(),
-                )?;
-                Ok((account, report))
+            move || {
+                // The Dropbox sign-in, kept even when what follows fails.
+                let mut token = None;
+                let result = (|| -> ashypass_core::Result<_> {
+                    if let Some((auth, code)) = dropbox_code {
+                        let tokens = auth.finish(&code)?;
+                        account.password = tokens.refresh_token.ok_or_else(|| {
+                            ashypass_core::Error::Other("Dropbox gave no refresh token".into())
+                        })?;
+                        token = Some(account.password.clone());
+                    }
+                    let shown = account.probe()?;
+                    if !shown.is_empty() {
+                        account.user = shown;
+                    }
+                    let vault =
+                        ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
+                    let report = folder::sync(
+                        &vault,
+                        account.remote()?.as_ref(),
+                        master.as_deref().map(|m| m.as_str()),
+                        FolderSyncOptions::default(),
+                    )?;
+                    Ok((account, report))
+                })();
+                (token, result)
             },
-            move |result| match result {
-                Ok((account, report)) => {
-                    if let Err(e) = account.save() {
-                        log::warn!("could not save the sync folder account: {e}");
-                    }
-                    *state.folder_account.borrow_mut() = Some(account);
-                    state.set_folder_status(SyncStatus::Synced {
-                        at: chrono::Utc::now().timestamp(),
-                    });
-                    state.events.emit(AppEvent::FolderSyncChanged);
-                    if report.received + report.deleted_here > 0 {
-                        state.events.emit(AppEvent::VaultChangedBySync);
-                    }
-                    show_toast(
-                        &toast,
-                        &format!(
-                            "{} {} · {} {}",
-                            tr!("Connected. Received:"),
-                            report.received,
-                            tr!("sent:"),
-                            report.sent
-                        ),
-                    );
+            move |(token, result)| {
+                if token.is_some() {
+                    *dropbox_token.borrow_mut() = token;
                 }
-                Err(e) => {
-                    state.set_folder_status(SyncStatus::Unknown);
-                    let message = match e {
-                        ashypass_core::Error::InvalidMasterPassword => {
-                            tr!("Wrong master password. The folder belongs to a vault with another one.")
-                                .to_string()
+                match result {
+                    Ok((account, report)) => {
+                        if let Err(e) = account.save() {
+                            log::warn!("could not save the sync folder account: {e}");
                         }
-                        e => format!("{}: {e}", tr!("Connect failed")),
-                    };
-                    show_toast(&toast, &message);
+                        *state.folder_account.borrow_mut() = Some(account);
+                        state.set_folder_status(SyncStatus::Synced {
+                            at: chrono::Utc::now().timestamp(),
+                        });
+                        state.events.emit(AppEvent::FolderSyncChanged);
+                        if report.received + report.deleted_here > 0 {
+                            state.events.emit(AppEvent::VaultChangedBySync);
+                        }
+                        if let Some(dialog) = dialog_weak.upgrade() {
+                            dialog.pop_subpage();
+                        }
+                        show_toast(
+                            &toast,
+                            &format!(
+                                "{} {} · {} {}",
+                                tr!("Connected. Received:"),
+                                report.received,
+                                tr!("sent:"),
+                                report.sent
+                            ),
+                        );
+                    }
+                    Err(e) => {
+                        state.set_folder_status(SyncStatus::Unknown);
+                        let message = match e {
+                            ashypass_core::Error::InvalidMasterPassword => {
+                                tr!("Wrong master password. The folder belongs to a vault with another one.")
+                                    .to_string()
+                            }
+                            e => format!("{}: {e}", tr!("Connect failed")),
+                        };
+                        show(&message, false);
+                    }
                 }
             },
         );
     });
-    dialog.present(parent);
+    dialog.push_subpage(&nav);
 }
 
 /// The connection as a QR code for Ashy Pass for Android, sealed with a

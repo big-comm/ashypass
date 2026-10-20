@@ -41,32 +41,60 @@ pub(super) fn populate_appearance(
     theme_group.add(&theme_row);
 
     // Shown passwords: digits and symbols in colour (as in the extension).
-    let color_ids: Vec<&str> = std::iter::once("off")
-        .chain(crate::ui::password_colors::THEMES.iter().map(|t| t.0))
-        .collect();
-    let mut color_names = vec![tr!("No colors")];
-    color_names.extend(crate::ui::password_colors::theme_names());
-    let colors_row = adw::ComboRow::builder()
+    // The row shows a password in the chosen colours; its page, every
+    // style on the same random password.
+    let colors_row = adw::ActionRow::builder()
         .title(tr!("Password colors"))
-        .subtitle(tr!("Digits and symbols in color, easier to read and type"))
-        .model(&gtk::StringList::new(&color_names))
+        .activatable(true)
         .build();
-    let current = settings.borrow().password_colors.clone();
-    colors_row.set_selected(color_ids.iter().position(|v| *v == current).unwrap_or(1) as u32);
+    let colors_sample = sample_label();
+    colors_row.add_suffix(&colors_sample);
+    colors_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+    let sample = Rc::new(RefCell::new(color_sample()));
+    let refresh_row: Rc<dyn Fn()> = {
+        let (row, label, settings, sample) = (
+            colors_row.downgrade(),
+            colors_sample.downgrade(),
+            settings.clone(),
+            sample.clone(),
+        );
+        Rc::new(move || {
+            let (Some(row), Some(label)) = (row.upgrade(), label.upgrade()) else {
+                return;
+            };
+            let id = settings.borrow().password_colors.clone();
+            row.set_subtitle(color_name(&id));
+            label.set_markup(&sample_markup(&sample.borrow(), &id));
+        })
+    };
+    refresh_row();
+    // The colours differ between the light and dark styles.
+    {
+        let refresh_row = refresh_row.clone();
+        let handler = adw::StyleManager::default().connect_dark_notify(move |_| refresh_row());
+        let handler = std::cell::Cell::new(Some(handler));
+        colors_row.connect_destroy(move |_| {
+            if let Some(handler) = handler.take() {
+                adw::StyleManager::default().disconnect(handler);
+            }
+        });
+    }
     {
         let settings = settings.clone();
         let state = state.clone();
-        colors_row.connect_selected_notify(move |row| {
-            let value = color_ids
-                .get(row.selected() as usize)
-                .copied()
-                .unwrap_or("classic")
-                .to_string();
-            settings.borrow_mut().password_colors = value.clone();
-            if let Err(e) = state.update_settings(|s| s.password_colors = value) {
-                log::warn!("could not save settings: {e}");
-            }
-            state.events.emit(crate::events::AppEvent::DisplayChanged);
+        colors_row.connect_activated(move |row| {
+            let Some(dialog) = row
+                .ancestor(adw::PreferencesDialog::static_type())
+                .and_downcast::<adw::PreferencesDialog>()
+            else {
+                return;
+            };
+            dialog.push_subpage(&password_colors_page(
+                settings.clone(),
+                state.clone(),
+                sample.clone(),
+                refresh_row.clone(),
+            ));
         });
     }
     theme_group.add(&colors_row);
@@ -207,4 +235,150 @@ pub(crate) fn apply_color_scheme(value: &str) {
         "dark" => adw::ColorScheme::ForceDark,
         _ => adw::ColorScheme::Default,
     });
+}
+
+/// The ids of the password colour choices, "off" first, in display order.
+fn color_ids() -> Vec<&'static str> {
+    std::iter::once("off")
+        .chain(crate::ui::password_colors::THEMES.iter().map(|t| t.0))
+        .collect()
+}
+
+fn color_name(id: &str) -> &'static str {
+    color_ids()
+        .iter()
+        .position(|v| *v == id)
+        .and_then(|i| i.checked_sub(1))
+        .map(|i| crate::ui::password_colors::theme_names()[i])
+        .unwrap_or(tr!("No colors"))
+}
+
+/// A random password to show the colours on, with a few digits and
+/// symbols at least.
+fn color_sample() -> String {
+    let config = ashypass_core::generator::PasswordConfig::default();
+    let enough = |p: &str| {
+        p.chars().filter(|c| c.is_ascii_digit()).count() >= 3
+            && p.chars().filter(|c| !c.is_alphanumeric()).count() >= 3
+    };
+    (0..50)
+        .filter_map(|_| ashypass_core::generator::generate_password(&config).ok())
+        .find(|p| enough(p))
+        .unwrap_or_else(|| "x7#Kq2!mZ9$wT4".into())
+}
+
+/// `sample` as the password list shows it in colours `id`, monospaced.
+fn sample_markup(sample: &str, id: &str) -> String {
+    let text = crate::ui::password_colors::markup(sample, id)
+        .unwrap_or_else(|| glib::markup_escape_text(sample).to_string());
+    format!("<span font_family=\"monospace\" size=\"large\">{text}</span>")
+}
+
+/// Where a sample password goes: a row suffix (the row's subtitle would
+/// dim the colours).
+fn sample_label() -> gtk::Label {
+    let label = gtk::Label::builder().valign(gtk::Align::Center).build();
+    label.set_accessible_role(gtk::AccessibleRole::Presentation);
+    label
+}
+
+/// Every password colour style, each on the same random password.
+fn password_colors_page(
+    settings: Rc<RefCell<Settings>>,
+    state: SharedState,
+    sample: Rc<RefCell<String>>,
+    refresh_row: Rc<dyn Fn()>,
+) -> adw::NavigationPage {
+    let page = adw::PreferencesPage::new();
+    let group = adw::PreferencesGroup::builder()
+        .description(tr!("Digits and symbols in color, easier to read and type"))
+        .build();
+    let another = gtk::Button::builder()
+        .icon_name("view-refresh-symbolic")
+        .tooltip_text(tr!("Another example"))
+        .valign(gtk::Align::Center)
+        .build();
+    another.add_css_class("flat");
+    group.set_header_suffix(Some(&another));
+
+    let mut rows = Vec::new();
+    for id in color_ids() {
+        let row = adw::ActionRow::builder()
+            .title(color_name(id))
+            .activatable(true)
+            .build();
+        let label = sample_label();
+        row.add_suffix(&label);
+        let check = gtk::Image::from_icon_name("object-select-symbolic");
+        // Keep the samples aligned whether or not the check shows.
+        let check_slot = gtk::Box::builder().width_request(16).build();
+        check_slot.append(&check);
+        row.add_suffix(&check_slot);
+        group.add(&row);
+        rows.push((id, label, check));
+    }
+    let rows = Rc::new(rows);
+    let refresh: Rc<dyn Fn()> = {
+        let (rows, settings, sample) = (rows.clone(), settings.clone(), sample.clone());
+        Rc::new(move || {
+            let current = settings.borrow().password_colors.clone();
+            for (id, label, check) in rows.iter() {
+                label.set_markup(&sample_markup(&sample.borrow(), id));
+                check.set_visible(*id == current);
+            }
+        })
+    };
+    refresh();
+    for (id, label, _) in rows.iter() {
+        let Some(row) = label
+            .ancestor(adw::ActionRow::static_type())
+            .and_downcast::<adw::ActionRow>()
+        else {
+            continue;
+        };
+        let id = id.to_string();
+        let (settings, state, refresh, refresh_row) = (
+            settings.clone(),
+            state.clone(),
+            refresh.clone(),
+            refresh_row.clone(),
+        );
+        row.connect_activated(move |_| {
+            settings.borrow_mut().password_colors = id.clone();
+            let value = id.clone();
+            if let Err(e) = state.update_settings(|s| s.password_colors = value) {
+                log::warn!("could not save settings: {e}");
+            }
+            state.events.emit(crate::events::AppEvent::DisplayChanged);
+            refresh();
+            refresh_row();
+        });
+    }
+    {
+        let (sample, refresh, refresh_row) = (sample.clone(), refresh.clone(), refresh_row.clone());
+        another.connect_clicked(move |_| {
+            *sample.borrow_mut() = color_sample();
+            refresh();
+            refresh_row();
+        });
+    }
+    {
+        let refresh = refresh.clone();
+        let handler = adw::StyleManager::default().connect_dark_notify(move |_| refresh());
+        let handler = std::cell::Cell::new(Some(handler));
+        page.connect_destroy(move |_| {
+            if let Some(handler) = handler.take() {
+                adw::StyleManager::default().disconnect(handler);
+            }
+        });
+    }
+    page.add(&group);
+
+    let toolbar = adw::ToolbarView::new();
+    toolbar.add_top_bar(&adw::HeaderBar::new());
+    toolbar.set_content(Some(&page));
+    adw::NavigationPage::builder()
+        .title(tr!("Password colors"))
+        .child(&toolbar)
+        .build()
 }
