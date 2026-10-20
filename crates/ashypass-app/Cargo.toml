@@ -39,6 +39,6 @@ url.workspace = true
 dirs.workspace = true
 zeroize.workspace = true
 rqrr = { version = "0.11", default-features = false }
+qrcode = { version = "0.14", default-features = false, features = ["image"] }
 
 [dev-dependencies]
-qrcode = { version = "0.14", default-features = false, features = ["image"] }

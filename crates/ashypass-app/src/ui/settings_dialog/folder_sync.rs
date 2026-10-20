@@ -7,6 +7,7 @@ use crate::events::AppEvent;
 use crate::state::SyncStatus;
 use ashypass_core::sync::folder::{self, FolderSyncOptions};
 use ashypass_core::sync::folder_account::FolderSyncAccount;
+use ashypass_core::sync::pairing;
 
 pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw::PreferencesGroup {
     let group = adw::PreferencesGroup::builder()
@@ -30,20 +31,31 @@ pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw
     sync_row.add_suffix(&gtk::Image::from_icon_name("view-refresh-symbolic"));
     group.add(&sync_row);
 
+    let pair_row = adw::ActionRow::builder()
+        .title(tr!("Connect a phone…"))
+        .subtitle(tr!("Shows a QR code to scan with Ashy Pass for Android"))
+        .activatable(true)
+        .build();
+    pair_row.add_suffix(&gtk::Image::from_icon_name("phone-symbolic"));
+    group.add(&pair_row);
+
     let refresh: Rc<dyn Fn()> = {
         let state = state.clone();
         let status_row = status_row.downgrade();
         let connect_row = connect_row.downgrade();
         let sync_row = sync_row.downgrade();
+        let pair_row = pair_row.downgrade();
         Rc::new(move || {
-            let (Some(status_row), Some(connect_row), Some(sync_row)) = (
+            let (Some(status_row), Some(connect_row), Some(sync_row), Some(pair_row)) = (
                 status_row.upgrade(),
                 connect_row.upgrade(),
                 sync_row.upgrade(),
+                pair_row.upgrade(),
             ) else {
                 return;
             };
             let account = state.folder_account.borrow().clone();
+            pair_row.set_visible(account.as_ref().is_some_and(pairing::can_pair));
             match account {
                 None => {
                     status_row.set_subtitle(tr!("Not connected"));
@@ -122,6 +134,15 @@ pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw
     {
         let state = state.clone();
         sync_row.connect_activated(move |_| state.events.emit(AppEvent::FolderSyncRequested));
+    }
+    {
+        let state = state.clone();
+        let toast = toast.clone();
+        pair_row.connect_activated(move |row| {
+            if let Some(account) = state.folder_account.borrow().clone() {
+                show_pairing_dialog(row, account, toast.clone());
+            }
+        });
     }
     {
         let state = state.clone();
@@ -567,4 +588,141 @@ fn show_connect_dialog(parent: Option<&gtk::Window>, state: SharedState, toast: 
         );
     });
     dialog.present(parent);
+}
+
+/// The connection as a QR code for Ashy Pass for Android, sealed with a
+/// 6-digit code shown below it (`ashypass_core::sync::pairing`).
+fn show_pairing_dialog(row: &adw::ActionRow, account: FolderSyncAccount, toast: Toaster) {
+    let dialog = adw::AlertDialog::builder()
+        .heading(tr!("Connect a phone"))
+        .body(tr!(
+            "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap “Scan the computer's QR code”. Then type the code below and your master password."
+        ))
+        .build();
+    dialog.add_response("close", tr!("Close"));
+    dialog.set_default_response(Some("close"));
+
+    let content = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(12)
+        .halign(gtk::Align::Center)
+        .build();
+    let spinner = gtk::Spinner::builder()
+        .spinning(true)
+        .width_request(48)
+        .height_request(48)
+        .margin_top(24)
+        .margin_bottom(24)
+        .build();
+    content.append(&spinner);
+    dialog.set_extra_child(Some(&content));
+
+    // Sealing costs a memory-hard key derivation: off the main thread.
+    let now = chrono::Utc::now().timestamp();
+    let dialog_weak = dialog.downgrade();
+    run_background(
+        move || -> ashypass_core::Result<(pairing::Pairing, Vec<u8>, u32)> {
+            let pairing = pairing::seal(&account, now)?;
+            let (pixels, size) = qr_pixels(&pairing.qr)?;
+            Ok((pairing, pixels, size))
+        },
+        move |result| {
+            let Some(dialog) = dialog_weak.upgrade() else {
+                return;
+            };
+            content.remove(&spinner);
+            match result {
+                Ok((pairing, pixels, size)) => {
+                    let texture = gtk::gdk::MemoryTexture::new(
+                        size as i32,
+                        size as i32,
+                        gtk::gdk::MemoryFormat::R8g8b8,
+                        &glib::Bytes::from_owned(pixels),
+                        size as usize * 3,
+                    );
+                    let picture = gtk::Picture::for_paintable(&texture);
+                    picture.set_can_shrink(false);
+                    picture.set_alternative_text(Some(tr!("Connection QR code")));
+                    content.append(&picture);
+                    let code = gtk::Label::builder()
+                        .label(format!("{} {}", &pairing.code[..3], &pairing.code[3..]))
+                        .selectable(true)
+                        .build();
+                    code.add_css_class("title-1");
+                    code.add_css_class("monospace");
+                    content.append(&code);
+                    let note = gtk::Label::builder()
+                        .label(tr!(
+                            "Good for 10 minutes. The QR code alone is no use without this code, and neither opens your passwords without the master password."
+                        ))
+                        .wrap(true)
+                        .max_width_chars(42)
+                        .justify(gtk::Justification::Center)
+                        .build();
+                    note.add_css_class("dim-label");
+                    content.append(&note);
+                    // Gone when it stops working.
+                    let dialog_weak = dialog.downgrade();
+                    glib::timeout_add_seconds_local_once(
+                        pairing::PAIRING_TTL_SECS as u32,
+                        move || {
+                            if let Some(dialog) = dialog_weak.upgrade() {
+                                dialog.close();
+                            }
+                        },
+                    );
+                }
+                Err(e) => {
+                    dialog.close();
+                    show_toast(
+                        &toast,
+                        &format!("{}: {e}", tr!("Could not make the QR code")),
+                    );
+                }
+            }
+        },
+    );
+    dialog.present(row.root().as_ref());
+}
+
+/// `text` as a QR code: RGB pixels, and the side in pixels.
+fn qr_pixels(text: &str) -> ashypass_core::Result<(Vec<u8>, u32)> {
+    let code = qrcode::QrCode::new(text.as_bytes())
+        .map_err(|e| ashypass_core::Error::Other(format!("QR code: {e}")))?;
+    let image = code
+        .render::<image::Rgb<u8>>()
+        .quiet_zone(true)
+        .min_dimensions(280, 280)
+        .build();
+    let size = image.width();
+    Ok((image.into_raw(), size))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn the_pairing_qr_code_reads_back() {
+        let account = FolderSyncAccount {
+            provider: "dropbox".into(),
+            user: "ana@example.com".into(),
+            // About the size of a Dropbox refresh token.
+            password: "x".repeat(64),
+            folder: "AshyPass Sync".into(),
+            ..Default::default()
+        };
+        let pairing = pairing::seal(&account, 0).unwrap();
+        let (pixels, size) = qr_pixels(&pairing.qr).unwrap();
+        let image = image::RgbImage::from_raw(size, size, pixels).unwrap();
+        let luma = image::DynamicImage::ImageRgb8(image).to_luma8();
+        let mut prepared =
+            rqrr::PreparedImage::prepare_from_greyscale(size as usize, size as usize, |x, y| {
+                luma.get_pixel(x as u32, y as u32).0[0]
+            });
+        let grids = prepared.detect_grids();
+        assert_eq!(grids.len(), 1);
+        let (_, text) = grids[0].decode().unwrap();
+        assert_eq!(text, pairing.qr);
+    }
 }
