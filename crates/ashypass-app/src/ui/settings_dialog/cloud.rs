@@ -11,7 +11,7 @@ pub(super) fn populate_cloud(
     state: SharedState,
     toast: Toaster,
     parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) {
     let creds = Rc::new(RefCell::new(
         ashypass_core::backup::ClientCredentials::load(),
@@ -267,7 +267,7 @@ pub(super) fn populate_sync(
     state: SharedState,
     toast: Toaster,
     parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) {
     page.add(&super::folder_sync::build_folder_sync_group(
         state.clone(),

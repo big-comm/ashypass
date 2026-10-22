@@ -73,15 +73,15 @@ pub(super) fn populate_protection(
     page: &adw::PreferencesPage,
     state: SharedState,
     toast: Toaster,
-    dialog: adw::PreferencesDialog,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    parent: gtk::Widget,
+    dialog_slot: DialogSlot,
 ) {
     let unlocked = state.vault.borrow().is_unlocked();
     if !unlocked {
         page.add(&locked_notice_group(
             state.clone(),
             toast.clone(),
-            dialog.clone().upcast(),
+            parent,
             dialog_slot,
         ));
     }
@@ -103,8 +103,11 @@ pub(super) fn populate_protection(
     {
         let state = state.clone();
         let toast = toast.clone();
-        let dialog = dialog.clone();
-        change_row.connect_activated(move |_| {
+        // The dialog from the row: a captured one would hold itself.
+        change_row.connect_activated(move |row| {
+            let Some(dialog) = settings_dialog_of(row) else {
+                return;
+            };
             dialog.push_subpage(&change_master_page(&state, &toast, &dialog));
         });
     }
@@ -120,8 +123,10 @@ pub(super) fn populate_protection(
         reset_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
         let state = state.clone();
         let toast = toast.clone();
-        let dialog = dialog.clone();
-        reset_row.connect_activated(move |_| {
+        reset_row.connect_activated(move |row| {
+            let Some(dialog) = settings_dialog_of(row) else {
+                return;
+            };
             dialog.push_subpage(&reset_master_page(&state, &toast, &dialog));
         });
         master_group.add(&reset_row);
@@ -288,8 +293,12 @@ fn reset_master_page(
     {
         let state = state.clone();
         let toast = toast.clone();
-        let dialog = dialog.clone();
+        // Weak: the button sits in a page of the dialog.
+        let dialog = dialog.downgrade();
         button.connect_clicked(move |button| {
+            let Some(dialog) = dialog.upgrade() else {
+                return;
+            };
             let show = |message: &str| {
                 status.set_label(message);
                 status.set_visible(true);
@@ -472,8 +481,12 @@ fn change_master_page(
     {
         let state = state.clone();
         let toast = toast.clone();
-        let dialog = dialog.clone();
+        // Weak: the button sits in a page of the dialog.
+        let dialog = dialog.downgrade();
         button.connect_clicked(move |button| {
+            let Some(dialog) = dialog.upgrade() else {
+                return;
+            };
             let current = Zeroizing::new(current_row.text().to_string());
             let new = Zeroizing::new(new_row.text().to_string());
             let confirm = Zeroizing::new(confirm_row.text().to_string());
@@ -1261,6 +1274,13 @@ fn legacy_backup_group(state: &SharedState, toast: &Toaster) -> Option<adw::Pref
         confirm.present();
     });
     Some(group)
+}
+
+/// The settings dialog `widget` sits in.
+fn settings_dialog_of(widget: &impl IsA<gtk::Widget>) -> Option<adw::PreferencesDialog> {
+    widget
+        .ancestor(adw::PreferencesDialog::static_type())
+        .and_downcast::<adw::PreferencesDialog>()
 }
 
 #[cfg(test)]

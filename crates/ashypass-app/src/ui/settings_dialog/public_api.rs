@@ -196,7 +196,7 @@ pub fn present_trash(parent: &impl IsA<gtk::Widget>, state: SharedState) {
 pub fn present_cloud_backups(parent: &impl IsA<gtk::Widget>, state: SharedState) {
     let toast = adw::ToastOverlay::new();
     let page = adw::PreferencesPage::new();
-    let slot: Rc<RefCell<Option<adw::Dialog>>> = Rc::new(RefCell::new(None));
+    let slot: DialogSlot = Rc::default();
     populate_cloud(
         &page,
         state.clone(),
@@ -214,7 +214,7 @@ pub fn present_cloud_backups(parent: &impl IsA<gtk::Widget>, state: SharedState)
         .content_height(640)
         .child(&toast)
         .build();
-    *slot.borrow_mut() = Some(dialog.dialog().clone());
+    *slot.borrow_mut() = dialog.dialog().downgrade();
     state.track_sensitive_dialog(&dialog);
     dialog.present();
 }

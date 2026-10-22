@@ -72,12 +72,15 @@ pub fn present(
         .content_height(680)
         .build();
     // Sub-dialogs and the legacy unlock prompt reach the settings window
-    // through this slot to close or re-open it.
-    let dialog_slot: Rc<RefCell<Option<adw::Dialog>>> =
-        Rc::new(RefCell::new(Some(dialog.clone().upcast())));
+    // through this slot to close or re-open it (weakly: the rows that hold
+    // the slot sit inside the dialog).
+    let dialog_slot: DialogSlot =
+        Rc::new(RefCell::new(dialog.upcast_ref::<adw::Dialog>().downgrade()));
     // Toasts raised from inside the dialog must show over it.
     let toast = Toaster::Dialog(dialog.downgrade(), window_toast);
-    let parent_widget: gtk::Widget = dialog.clone().upcast();
+    // Sub-dialogs present on the main window (shown over these settings):
+    // the dialog itself, held by its own rows, would never be freed.
+    let parent_widget: gtk::Widget = parent.as_ref().clone();
 
     let protection = adw::PreferencesPage::builder()
         .title(tr!("Protection"))
@@ -87,7 +90,7 @@ pub fn present(
         &protection,
         state.clone(),
         toast.clone(),
-        dialog.clone(),
+        parent_widget.clone(),
         dialog_slot.clone(),
     );
     let settings = Rc::new(RefCell::new(Settings::load()));
@@ -142,6 +145,10 @@ pub fn present(
     state.track_sensitive_dialog(&dialog);
     dialog.present(Some(parent));
 }
+
+/// The open settings dialog, for sub-dialogs that close or reopen it; weak,
+/// because the rows holding it sit inside it.
+pub(crate) type DialogSlot = Rc<RefCell<glib::WeakRef<adw::Dialog>>>;
 
 /// Where a settings page sends its toasts: the preferences dialog itself, or
 /// an overlay when a section is shown in another dialog or page.
@@ -293,7 +300,7 @@ fn locked_notice_group(
     state: SharedState,
     toast: Toaster,
     parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) -> adw::PreferencesGroup {
     let group = adw::PreferencesGroup::new();
     let row = adw::ActionRow::builder()
@@ -314,7 +321,7 @@ fn show_settings_unlock_dialog(
     parent: &gtk::Widget,
     state: SharedState,
     toast: Toaster,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) {
     let has_master = state.vault.borrow().has_master_password().unwrap_or(false);
     let dialog = big_gtk_kit::alert::Alert::builder(Some(parent))
@@ -407,7 +414,7 @@ fn show_settings_unlock_dialog(
                     // Take before closing: `close()` can run handlers that
                     // reach for the same slot, and holding the RefMut across
                     // that would panic.
-                    let open_settings = dialog_slot.borrow_mut().take();
+                    let open_settings = dialog_slot.borrow().upgrade();
                     if let Some(settings_dialog) = open_settings {
                         settings_dialog.close();
                     }

@@ -1,0 +1,93 @@
+# Leak sweep of the desktop app with big-gtk-kit's tools: each surface is
+# opened and closed N times and the GObject census compared; a type that
+# grows every cycle is a leak.
+#
+#   cargo build -p ashypass-app
+#   KIT=/path/to/big-gtk-kit; make -C $KIT/tools
+#   LEAK_SWEEP_DIR=/tmp $KIT/tools/headless-gate.sh --accessible \
+#     python3 $KIT/tools/sweep/leak_sweep.py tools/leak-sweep.toml \
+#     --library $KIT/tools/build/libgobject-census.so
+#
+# Run from the repository root. The app runs in a private KWin session and
+# D-Bus bus, with a throwaway vault in the sweep's work folder (which must be
+# under /tmp: the debug build's ASHYPASS_DEV_SCRIPT refuses anything else).
+cycles = 6
+
+[program]
+command = ["target/debug/ashypass"]
+atspi_name = "ashypass"
+dbus_name = "com.bigcommunity.ashypass"
+window_path = "/com/bigcommunity/ashypass/window/1"
+start_timeout = 60
+settle = 6
+
+[program.env]
+XDG_DATA_HOME = "{workdir}/data"
+XDG_CONFIG_HOME = "{workdir}/config"
+XDG_CACHE_HOME = "{workdir}/cache"
+LANGUAGE = "en"
+LC_ALL = "C.UTF-8"
+# Creates, unlocks and fills the throwaway vault (debug builds only).
+ASHYPASS_DEV_SCRIPT = "unlock:correct horse battery staple;wait:2500;seed"
+
+[program.files]
+"data/.keep" = ""
+"config/.keep" = ""
+"cache/.keep" = ""
+
+[[allow]]
+type = "AdwBreakpoint"
+per_cycle = 3
+reason = "libadwaita 1.9: the three breakpoints of an adaptive dialog the program cannot make through big-gtk-kit (AdwPreferencesDialog, AdwAboutDialog, AdwShortcutsDialog)"
+
+[[surface]]
+name = "settings"
+quick = true
+open = [{ do = "action", name = "settings", settle = 2.0 }]
+close = [{ do = "dismiss" }]
+# Measured with an empty AdwPreferencesDialog of two pages, outside Ashy Pass
+# (libadwaita 1.9.4): every opening leaves about 4 breakpoints and the view
+# stack's transition animation behind.
+[[surface.allow]]
+type = "AdwBreakpoint"
+per_cycle = 4
+reason = "AdwPreferencesDialog (libadwaita 1.9): its own breakpoints"
+[[surface.allow]]
+type = "AdwTimedAnimation"
+per_cycle = 1
+reason = "AdwPreferencesDialog's AdwViewStack transition (libadwaita 1.9)"
+[[surface.allow]]
+type = "AdwCallbackAnimationTarget"
+per_cycle = 1
+reason = "the target of that animation"
+
+[[surface]]
+name = "new-entry"
+quick = true
+open = [{ do = "action", name = "new-entry", settle = 1.5 }]
+close = [{ do = "dismiss" }]
+
+[[surface]]
+name = "shortcuts"
+open = [{ do = "action", name = "shortcuts", settle = 1.5 }]
+close = [{ do = "dismiss" }]
+
+[[surface]]
+name = "about"
+open = [{ do = "action", name = "about", path = "/com/bigcommunity/ashypass", settle = 1.5 }]
+close = [{ do = "dismiss" }]
+
+[[surface]]
+name = "codes-page"
+open = [{ do = "action", name = "nav-totp", settle = 1.5 }]
+close = [{ do = "action", name = "nav-vault", settle = 1.5 }]
+
+[[surface]]
+name = "generator-page"
+open = [{ do = "action", name = "nav-generator", settle = 1.5 }]
+close = [{ do = "action", name = "nav-vault", settle = 1.5 }]
+
+[[surface]]
+name = "backups-page"
+open = [{ do = "action", name = "nav-backups", settle = 1.5 }]
+close = [{ do = "action", name = "nav-vault", settle = 1.5 }]

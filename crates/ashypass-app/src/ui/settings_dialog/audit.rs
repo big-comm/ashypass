@@ -12,7 +12,7 @@ pub(super) fn populate_audit(
     settings: Rc<RefCell<Settings>>,
     toast: Toaster,
     parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) {
     let duplicates = build_duplicates_group(state.clone(), toast.clone());
     let opts_group = adw::PreferencesGroup::builder()

@@ -12,7 +12,7 @@ pub(super) fn build_nextcloud_passwords_group(
     state: SharedState,
     toast: Toaster,
     parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) -> adw::PreferencesGroup {
     let logged_in = state.nextcloud.borrow().is_logged_in();
     let group = adw::PreferencesGroup::builder()
@@ -237,7 +237,7 @@ pub(super) fn show_nextcloud_dialog<F>(
     state: SharedState,
     toast: Toaster,
     unlock_parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
     on_saved: F,
 ) where
     F: Fn() + 'static,
@@ -331,7 +331,7 @@ pub(super) fn show_nextcloud_initial_sync_dialog(
     state: SharedState,
     toast: Toaster,
     unlock_parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) {
     if !state.vault.borrow().is_unlocked() {
         show_toast(&toast, tr!("Unlock the vault first"));
@@ -372,7 +372,7 @@ pub(super) fn run_nextcloud_sync(
     state: SharedState,
     toast: Toaster,
     unlock_parent: Option<gtk::Widget>,
-    dialog_slot: Option<Rc<RefCell<Option<adw::Dialog>>>>,
+    dialog_slot: Option<DialogSlot>,
     active_row: Option<adw::ActionRow>,
 ) {
     use ashypass_core::sync::{nextcloud_engine, ConflictResolution};
