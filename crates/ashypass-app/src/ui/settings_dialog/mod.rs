@@ -53,7 +53,7 @@ enum NextcloudSyncMessage {
 
 #[derive(Clone)]
 struct NextcloudProgressUi {
-    dialog: adw::Dialog,
+    dialog: big_gtk_kit::dialog::Dialog,
     spinner: gtk::Spinner,
     title: gtk::Label,
     detail: gtk::Label,
@@ -120,7 +120,9 @@ pub fn present(
 
     let appearance = adw::PreferencesPage::builder()
         .title(tr!("Appearance"))
-        .icon_name("preferences-desktop-appearance-symbolic")
+        // Not preferences-desktop-appearance-symbolic: Adwaita draws it with
+        // embedded bitmaps, which GTK 4.22 never frees (29 MB, big-gtk-kit).
+        .icon_name("color-select-symbolic")
         .build();
     populate_appearance(&appearance, settings, state.clone());
 
@@ -191,17 +193,17 @@ fn show_toast(overlay: &Toaster, message: &str) {
 }
 
 fn show_message_dialog(parent: Option<&gtk::Window>, heading: &str, body: &str) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(heading)
         .body(body)
         .build();
     dialog.add_response("ok", tr!("OK"));
     dialog.set_default_response(Some("ok"));
-    dialog.present(parent);
+    dialog.present();
 }
 
 fn show_nextcloud_progress_dialog(parent: Option<&gtk::Window>) -> NextcloudProgressUi {
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(parent)
         .title(tr!("Synchronizing Nextcloud"))
         .content_width(420)
         .build();
@@ -242,7 +244,7 @@ fn show_nextcloud_progress_dialog(parent: Option<&gtk::Window>) -> NextcloudProg
     content.append(&progress);
 
     dialog.set_child(Some(&content));
-    dialog.present(parent);
+    dialog.present();
 
     NextcloudProgressUi {
         dialog,
@@ -315,7 +317,7 @@ fn show_settings_unlock_dialog(
     dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
 ) {
     let has_master = state.vault.borrow().has_master_password().unwrap_or(false);
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(parent))
         .heading(if has_master {
             tr!("Unlock Vault")
         } else {
@@ -335,13 +337,14 @@ fn show_settings_unlock_dialog(
     );
     dialog.set_response_appearance("unlock", adw::ResponseAppearance::Suggested);
 
-    let password_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Master Password"))
-        .build();
-    let confirm_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Confirm Password"))
-        .visible(!has_master)
-        .build();
+    let password_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Master Password")),
+    );
+    let confirm_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder()
+            .title(tr!("Confirm Password"))
+            .visible(!has_master),
+    );
     let list = gtk::ListBox::builder()
         .selection_mode(gtk::SelectionMode::None)
         .build();
@@ -476,7 +479,7 @@ fn show_settings_unlock_dialog(
             }
         });
     }
-    dialog.present(Some(parent));
+    dialog.present();
     glib::idle_add_local_once(move || {
         password_row_focus.grab_focus();
     });

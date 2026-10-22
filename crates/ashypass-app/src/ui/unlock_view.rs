@@ -108,12 +108,13 @@ impl UnlockView {
             .margin_top(8)
             .build();
         fields.add_css_class("boxed-list");
-        let secret_entry = adw::PasswordEntryRow::new();
+        let secret_entry = big_gtk_kit::password::password_row(adw::PasswordEntryRow::builder());
         fields.append(&secret_entry);
-        let confirm_entry = adw::PasswordEntryRow::builder()
-            .title(tr!("Confirm master password"))
-            .visible(false)
-            .build();
+        let confirm_entry = big_gtk_kit::password::password_row(
+            adw::PasswordEntryRow::builder()
+                .title(tr!("Confirm master password"))
+                .visible(false),
+        );
         fields.append(&confirm_entry);
         content.append(&fields);
 
@@ -469,7 +470,7 @@ impl Inner {
                 false,
             )
         };
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
             .heading(tr!("Forgot the master password"))
             .body(body)
             .close_response("ok")
@@ -490,7 +491,7 @@ impl Inner {
                 inner.focus();
             }
         });
-        dialog.present(Some(anchor));
+        dialog.present();
     }
 
     fn focus(&self) {

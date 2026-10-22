@@ -206,7 +206,10 @@ fn button(icon: &str, label: &str) -> gtk::Button {
 fn open_image(anchor: &gtk::Button, done: Done) {
     let filter = gtk::FileFilter::new();
     filter.set_name(Some(tr!("Images")));
-    filter.add_pixbuf_formats();
+    // The formats the decoder reads (the `image` crate's png, jpeg, webp).
+    for mime in ["image/png", "image/jpeg", "image/webp"] {
+        filter.add_mime_type(mime);
+    }
     let filters = gio::ListStore::new::<gtk::FileFilter>();
     filters.append(&filter);
     let dialog = gtk::FileDialog::builder()

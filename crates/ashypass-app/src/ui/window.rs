@@ -111,16 +111,22 @@ impl MainWindow {
             .build();
 
         let menu = gio::Menu::new();
-        let tools = gio::Menu::new();
-        tools.append(Some(tr!("External drives")), Some("win.drives"));
-        menu.append_section(Some(tr!("Tools")), &tools);
-        let help = gio::Menu::new();
-        help.append(Some(tr!("Keyboard shortcuts")), Some("win.shortcuts"));
-        help.append(Some(tr!("About Ashy Pass")), Some("app.about"));
-        menu.append_section(None, &help);
-        let quit = gio::Menu::new();
-        quit.append(Some(tr!("Quit")), Some("app.quit"));
-        menu.append_section(None, &quit);
+        big_gtk_kit::menu::append_shared_section(&menu, Some(tr!("Tools")), "main-tools", || {
+            let tools = gio::Menu::new();
+            tools.append(Some(tr!("External drives")), Some("win.drives"));
+            tools
+        });
+        big_gtk_kit::menu::append_shared_section(&menu, None, "main-help", || {
+            let help = gio::Menu::new();
+            help.append(Some(tr!("Keyboard shortcuts")), Some("win.shortcuts"));
+            help.append(Some(tr!("About Ashy Pass")), Some("app.about"));
+            help
+        });
+        big_gtk_kit::menu::append_shared_section(&menu, None, "main-quit", || {
+            let quit = gio::Menu::new();
+            quit.append(Some(tr!("Quit")), Some("app.quit"));
+            quit
+        });
         let chrome = Chrome {
             split: split.clone(),
             menu,
@@ -280,8 +286,8 @@ impl MainWindow {
         ));
         narrow.add_setter(&vault_view.root, "collapsed", Some(&true.to_value()));
         narrow.add_setter(&split, "collapsed", Some(&true.to_value()));
-        window.add_breakpoint(medium);
-        window.add_breakpoint(narrow);
+        big_gtk_kit::breakpoint::add(&window, medium);
+        big_gtk_kit::breakpoint::add(&window, narrow);
 
         let auto_sync = crate::auto_sync::install(state.clone(), toast_overlay.clone());
         let folder_sync = crate::folder_sync::install(state.clone(), toast_overlay.clone());
@@ -751,7 +757,7 @@ impl MainWindowInner {
         update();
         self.lock_banner.set_revealed(true);
         if let Some(id) = self.banner_timer.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         let weak = Rc::downgrade(self);
         let id = glib::timeout_add_seconds_local(1, move || {
@@ -772,7 +778,7 @@ impl MainWindowInner {
 
     fn hide_lock_warning(&self) {
         if let Some(id) = self.banner_timer.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         self.lock_banner.set_revealed(false);
     }
@@ -868,7 +874,7 @@ impl MainWindowInner {
     }
 
     fn show_import_help(self: &Rc<Self>) {
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.window))
             .heading(tr!("Bring your passwords"))
             .body(tr!(
                 "From another app: create your vault first, then open Backups → Import passwords.\n\nFrom a copy made by Ashy Pass: restore it now. The vault will open with the master password of the copy."
@@ -886,7 +892,7 @@ impl MainWindowInner {
                 }
             }
         });
-        dialog.present(Some(&self.window));
+        dialog.present();
     }
 
     /// Swap the live vault for a validated backup. The open vault is closed
@@ -943,7 +949,7 @@ impl MainWindowInner {
                         // Never let the empty placeholder pose as the user's
                         // vault: stop here and ask for a restart.
                         log::error!("could not reopen the vault after restore: {e}");
-                        let dialog = adw::AlertDialog::builder()
+                        let dialog = big_gtk_kit::alert::Alert::builder(Some(&inner.window))
                             .heading(tr!("The vault could not be reopened"))
                             .body(format!(
                                 "{}\n\n{e}",
@@ -957,7 +963,7 @@ impl MainWindowInner {
                                 app.quit();
                             }
                         });
-                        dialog.present(Some(&inner.window));
+                        dialog.present();
                         return;
                     }
                 }
@@ -985,19 +991,19 @@ impl MainWindowInner {
                         format!("{}\n\n{e}", tr!("Your vault was not changed.")),
                     ),
                 };
-                let dialog = adw::AlertDialog::builder()
+                let dialog = big_gtk_kit::alert::Alert::builder(Some(&inner.window))
                     .heading(heading)
                     .body(body)
                     .build();
                 dialog.add_response("ok", tr!("OK"));
-                dialog.present(Some(&inner.window));
+                dialog.present();
             },
         );
     }
 }
 
 fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(parent))
         .title(tr!("Keyboard shortcuts"))
         .content_width(520)
         .content_height(560)
@@ -1044,7 +1050,7 @@ fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
     }
     toolbar.set_content(Some(&page));
     dialog.set_child(Some(&toolbar));
-    dialog.present(Some(parent));
+    dialog.present();
 }
 
 // ============================================================================
@@ -1189,7 +1195,9 @@ impl DevHandle {
                         .and_then(|row| row.activatable_widget())
                         .and_then(|s| s.downcast::<gtk::Switch>().ok())
                     {
-                        Some(switch) => switch.set_active(!switch.is_active()),
+                        Some(switch) => {
+                            big_gtk_kit::switch::set_active(&switch, !switch.is_active())
+                        }
                         None => eprintln!("dev: {arg} is not a switch"),
                     },
                     None => eprintln!("dev: no switch {arg}"),

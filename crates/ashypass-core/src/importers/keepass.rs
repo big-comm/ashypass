@@ -316,7 +316,7 @@ fn decode_hex(text: &str) -> std::result::Result<Vec<u8>, ()> {
         .filter(|b| !b.is_ascii_whitespace())
         .map(|b| (b as char).to_digit(16).map(|d| d as u8).ok_or(()))
         .collect::<std::result::Result<_, _>>()?;
-    if digits.len() % 2 != 0 {
+    if !digits.len().is_multiple_of(2) {
         return Err(());
     }
     Ok(digits

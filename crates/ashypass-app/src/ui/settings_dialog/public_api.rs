@@ -38,7 +38,7 @@ pub fn export_kdbx(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Wi
 /// write it.
 pub fn export_csv_with_warning(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget) {
     let toast: Toaster = toast.into();
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(&anchor))
         .heading(tr!("This file can be read without a password"))
         .body(tr!(
             "Anyone who gets the file can see what it contains: names, users, websites, passwords and notes. Verification codes, folders and attachments are not included. Confirm your master password to continue."
@@ -49,9 +49,9 @@ pub fn export_csv_with_warning(state: SharedState, toast: adw::ToastOverlay, anc
     dialog.add_response("cancel", tr!("Cancel"));
     dialog.add_response("export", tr!("Export unprotected file"));
     dialog.set_response_appearance("export", adw::ResponseAppearance::Destructive);
-    let password = adw::PasswordEntryRow::builder()
-        .title(tr!("Master password"))
-        .build();
+    let password = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Master password")),
+    );
     let list = gtk::ListBox::builder()
         .selection_mode(gtk::SelectionMode::None)
         .build();
@@ -60,9 +60,12 @@ pub fn export_csv_with_warning(state: SharedState, toast: adw::ToastOverlay, anc
     dialog.set_extra_child(Some(&list));
     dialog.set_response_enabled("export", false);
     {
-        let dialog = dialog.clone();
+        // Weak: the row sits in the dialog.
+        let dialog = dialog.downgrade();
         password.connect_changed(move |row| {
-            dialog.set_response_enabled("export", !row.text().is_empty());
+            if let Some(dialog) = dialog.upgrade() {
+                dialog.set_response_enabled("export", !row.text().is_empty());
+            }
         });
     }
     let anchor_cl = anchor.clone();
@@ -86,7 +89,7 @@ pub fn export_csv_with_warning(state: SharedState, toast: adw::ToastOverlay, anc
         });
     });
     let tracked = dialog.clone();
-    dialog.present(Some(&anchor));
+    dialog.present();
     if let Some(state) = tracked_state.upgrade() {
         state.track_sensitive_dialog(&tracked);
     }
@@ -103,7 +106,7 @@ pub fn confirm_master_password<F>(
 ) where
     F: Fn() + 'static,
 {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
         .heading(heading)
         .body(body)
         .close_response("cancel")
@@ -112,10 +115,11 @@ pub fn confirm_master_password<F>(
     dialog.add_response("cancel", tr!("Cancel"));
     dialog.add_response("ok", tr!("Continue"));
     dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
-    let password = adw::PasswordEntryRow::builder()
-        .title(tr!("Master password"))
-        .activates_default(true)
-        .build();
+    let password = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder()
+            .title(tr!("Master password"))
+            .activates_default(true),
+    );
     let list = gtk::ListBox::builder()
         .selection_mode(gtk::SelectionMode::None)
         .build();
@@ -135,17 +139,17 @@ pub fn confirm_master_password<F>(
             if ok {
                 on_ok();
             } else {
-                let warn = adw::AlertDialog::builder()
+                let warn = big_gtk_kit::alert::Alert::builder(Some(&anchor_cl))
                     .heading(tr!("Incorrect master password"))
                     .body(tr!("Nothing was changed."))
                     .build();
                 warn.add_response("ok", tr!("OK"));
-                warn.present(Some(&anchor_cl));
+                warn.present();
             }
         });
     });
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(anchor));
+    dialog.present();
 }
 
 /// Ask for a new password twice (for a backup or export file).
@@ -178,14 +182,14 @@ pub fn present_trash(parent: &impl IsA<gtk::Widget>, state: SharedState) {
     toolbar.add_top_bar(&adw::HeaderBar::new());
     toolbar.set_content(Some(&page));
     toast.set_child(Some(&toolbar));
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(parent))
         .title(tr!("Deleted items"))
         .content_width(640)
         .content_height(600)
         .child(&toast)
         .build();
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(parent));
+    dialog.present();
 }
 
 /// Google Drive and WebDAV copies, opened from the Backups page.
@@ -204,13 +208,13 @@ pub fn present_cloud_backups(parent: &impl IsA<gtk::Widget>, state: SharedState)
     toolbar.add_top_bar(&adw::HeaderBar::new());
     toolbar.set_content(Some(&page));
     toast.set_child(Some(&toolbar));
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(parent))
         .title(tr!("Copies in the cloud"))
         .content_width(680)
         .content_height(640)
         .child(&toast)
         .build();
-    *slot.borrow_mut() = Some(dialog.clone());
+    *slot.borrow_mut() = Some(dialog.dialog().clone());
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(parent));
+    dialog.present();
 }

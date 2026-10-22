@@ -269,7 +269,8 @@ fn present_duplicates(
         {
             let state = state.clone();
             let toast = toast.clone();
-            let section = section.clone();
+            // Weak: the button sits in the section's header.
+            let section = section.downgrade();
             let choices = choices.clone();
             merge.connect_clicked(move |button| {
                 let ids: Vec<i64> = choices.borrow().iter().map(|(id, _)| *id).collect();
@@ -286,8 +287,10 @@ fn present_duplicates(
                 match merged {
                     Ok(()) => {
                         button.set_sensitive(false);
-                        section.set_sensitive(false);
-                        section.set_description(Some(tr!("Merged")));
+                        if let Some(section) = section.upgrade() {
+                            section.set_sensitive(false);
+                            section.set_description(Some(tr!("Merged")));
+                        }
                         show_toast(&toast, tr!("Merged; the others are in Deleted items"));
                     }
                     Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Could not merge"))),
@@ -300,14 +303,14 @@ fn present_duplicates(
     let toolbar = adw::ToolbarView::new();
     toolbar.add_top_bar(&adw::HeaderBar::new());
     toolbar.set_content(Some(&page));
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(anchor))
         .title(format!("{} ({count})", tr!("Duplicate items")))
         .content_width(640)
         .content_height(620)
         .child(&toolbar)
         .build();
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(anchor));
+    dialog.present();
 }
 
 pub(super) fn render_audit_report(

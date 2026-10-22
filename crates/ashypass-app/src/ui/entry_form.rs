@@ -162,7 +162,7 @@ pub fn present(
             .unwrap_or_default(),
     );
 
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(parent))
         .title(if is_edit {
             tr!("Edit password")
         } else {
@@ -203,9 +203,9 @@ pub fn present(
     let username_row = adw::EntryRow::builder()
         .title(tr!("User or e-mail (optional)"))
         .build();
-    let password_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Password"))
-        .build();
+    let password_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Password")),
+    );
     let generate_button = gtk::Button::builder()
         .label(tr!("Generate password"))
         .valign(gtk::Align::Center)
@@ -355,9 +355,9 @@ pub fn present(
             "Paste the setup key or otpauth:// link from the site's two-step verification settings"
         ))
         .build();
-    let totp_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Setup key"))
-        .build();
+    let totp_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Setup key")),
+    );
     let algo_model = gtk::StringList::new(&["SHA1", "SHA256", "SHA512"]);
     let algo_row = adw::ComboRow::builder()
         .title(tr!("Algorithm"))
@@ -482,21 +482,26 @@ pub fn present(
     {
         let state = state.clone();
         let toast = toast.clone();
-        let password_row = password_row.clone();
+        // Weak: the button sits inside the password row.
+        let password_row = password_row.downgrade();
         generate_button.connect_clicked(move |button| {
             present_embedded_generator(&state, &toast, button, {
                 let password_row = password_row.clone();
                 move |value| {
-                    password_row.set_text(&value);
+                    if let Some(password_row) = password_row.upgrade() {
+                        password_row.set_text(&value);
+                    }
                 }
             });
         });
     }
 
     {
-        let dialog = dialog.clone();
+        let dialog = dialog.downgrade();
         cancel_button.connect_clicked(move |_| {
-            dialog.close();
+            if let Some(dialog) = dialog.upgrade() {
+                dialog.close();
+            }
         });
     }
 
@@ -505,7 +510,7 @@ pub fn present(
     {
         let state = state.clone();
         let toast = toast.clone();
-        let dialog_cl = dialog.clone();
+        let dialog_cl = dialog.downgrade();
         let save_banner = save_banner.clone();
         save_button.connect_clicked(move |_| {
             save_banner.set_revealed(false);
@@ -686,7 +691,9 @@ pub fn present(
                     if let Some(cb) = on_saved.as_ref() {
                         cb(id);
                     }
-                    dialog_cl.close();
+                    if let Some(dialog) = dialog_cl.upgrade() {
+                        dialog.close();
+                    }
                 }
                 Err(e) => {
                     log::error!("saving entry failed: {e}");
@@ -710,7 +717,7 @@ pub fn present(
         });
     }
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(parent));
+    dialog.present();
 }
 
 /// The generator inside the entry form, with "Use this password" as its
@@ -723,7 +730,7 @@ fn present_embedded_generator<F>(
 ) where
     F: Fn(String) + 'static,
 {
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(parent))
         .title(tr!("Generate password"))
         .content_width(520)
         .build();
@@ -759,7 +766,7 @@ fn present_embedded_generator<F>(
         keep_alive.borrow_mut().take();
     });
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(parent));
+    dialog.present();
 }
 
 fn build_attachments_group(
@@ -851,7 +858,7 @@ fn build_attachments_group(
                     let filename = att.filename.clone();
                     let att_id = att.id;
                     delete.connect_clicked(move |button| {
-                        let confirm = adw::AlertDialog::builder()
+                        let confirm = big_gtk_kit::alert::Alert::builder(Some(button))
                             .heading(tr!("Remove attachment?"))
                             .body(format!(
                                 "{} “{filename}”",
@@ -897,7 +904,7 @@ fn build_attachments_group(
                                 r();
                             }
                         });
-                        confirm.present(Some(button));
+                        confirm.present();
                     });
                 }
                 row.add_suffix(&delete);

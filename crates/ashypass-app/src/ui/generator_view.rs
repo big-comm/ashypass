@@ -125,22 +125,32 @@ impl GeneratorPanel {
 
         // ---- Type selector: the two everyday choices first, PIN under
         // "Other formats" with its own explanation.
+        // Sections made once and shared (GTK keeps every section it shows).
         let kind_menu = gio::Menu::new();
-        let main_section = gio::Menu::new();
-        for kind in [GeneratorKind::Random, GeneratorKind::Words] {
-            let item = gio::MenuItem::new(Some(kind.label()), None);
-            item.set_action_and_target_value(Some("gen.kind"), Some(&kind.id().to_variant()));
-            main_section.append_item(&item);
-        }
-        kind_menu.append_section(None, &main_section);
-        let other_section = gio::Menu::new();
-        let pin_item = gio::MenuItem::new(Some(GeneratorKind::Pin.label()), None);
-        pin_item.set_action_and_target_value(
-            Some("gen.kind"),
-            Some(&GeneratorKind::Pin.id().to_variant()),
+        big_gtk_kit::menu::append_shared_section(&kind_menu, None, "generator-kinds", || {
+            let section = gio::Menu::new();
+            for kind in [GeneratorKind::Random, GeneratorKind::Words] {
+                let item = gio::MenuItem::new(Some(kind.label()), None);
+                item.set_action_and_target_value(Some("gen.kind"), Some(&kind.id().to_variant()));
+                section.append_item(&item);
+            }
+            section
+        });
+        big_gtk_kit::menu::append_shared_section(
+            &kind_menu,
+            Some(tr!("Other formats")),
+            "generator-other-kinds",
+            || {
+                let section = gio::Menu::new();
+                let pin_item = gio::MenuItem::new(Some(GeneratorKind::Pin.label()), None);
+                pin_item.set_action_and_target_value(
+                    Some("gen.kind"),
+                    Some(&GeneratorKind::Pin.id().to_variant()),
+                );
+                section.append_item(&pin_item);
+                section
+            },
         );
-        other_section.append_item(&pin_item);
-        kind_menu.append_section(Some(tr!("Other formats")), &other_section);
 
         let kind_button = gtk::MenuButton::builder()
             .label(GeneratorKind::Random.label())

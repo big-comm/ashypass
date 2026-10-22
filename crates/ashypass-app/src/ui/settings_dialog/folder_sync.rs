@@ -162,7 +162,7 @@ pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw
 }
 
 fn confirm_disconnect(row: &adw::ActionRow, state: SharedState, toast: Toaster) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(row.root().as_ref())
         .heading(tr!("Disconnect the sync folder?"))
         .body(tr!(
             "Your items stay on this computer and in the folder. Connecting again later merges them instead of duplicating."
@@ -186,8 +186,7 @@ fn confirm_disconnect(row: &adw::ActionRow, state: SharedState, toast: Toaster) 
         state.events.emit(AppEvent::FolderSyncChanged);
         show_toast(&toast, tr!("Sync folder disconnected"));
     });
-    let parent = row.root();
-    dialog.present(parent.as_ref());
+    dialog.present();
 }
 
 /// The connection form, as a page of the settings: it stays open while
@@ -244,9 +243,9 @@ fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast:
         .title(tr!("Server address"))
         .build();
     let user_row = adw::EntryRow::builder().title(tr!("Login name")).build();
-    let pass_row = adw::PasswordEntryRow::builder()
-        .title(tr!("App password"))
-        .build();
+    let pass_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("App password")),
+    );
     let pcloud_row = adw::ActionRow::builder()
         .title(tr!("Your pCloud e-mail and password"))
         .subtitle(tr!(
@@ -300,17 +299,20 @@ fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast:
     google_row.add_suffix(&google_button);
     {
         let toast = toast.clone();
-        let google_row = google_row.clone();
+        // Weak: the button sits in the row.
+        let google_row = google_row.downgrade();
         google_button.connect_clicked(move |button| {
             let Some(creds) = ashypass_core::backup::ClientCredentials::load() else {
                 show_toast(&toast, tr!("This build has no Google sign-in configured"));
+                return;
+            };
+            let Some(google_row) = google_row.upgrade() else {
                 return;
             };
             button.set_sensitive(false);
             google_row.set_subtitle(tr!("Waiting for Google in the browser…"));
             let button = button.clone();
             let toast = toast.clone();
-            let google_row = google_row.clone();
             // Opens the browser; returns when Google sends the user back.
             run_background(
                 move || ashypass_core::backup::oauth::login(&creds).map(|_| ()),
@@ -344,7 +346,8 @@ fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast:
     local_row.add_suffix(&local_button);
     {
         let local_path = local_path.clone();
-        let local_row = local_row.clone();
+        // Weak: the button sits in the row.
+        let local_row = local_row.downgrade();
         local_button.connect_clicked(move |button| {
             let chooser = gtk::FileDialog::builder()
                 .title(tr!("Choose the folder"))
@@ -354,7 +357,9 @@ fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast:
             let local_path = local_path.clone();
             let local_row = local_row.clone();
             chooser.select_folder(window.as_ref(), None::<&gio::Cancellable>, move |result| {
-                if let Some(path) = result.ok().and_then(|f| f.path()) {
+                if let (Some(path), Some(local_row)) =
+                    (result.ok().and_then(|f| f.path()), local_row.upgrade())
+                {
                     let text = path.display().to_string();
                     local_row.set_subtitle(&text);
                     *local_path.borrow_mut() = text;
@@ -366,10 +371,11 @@ fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast:
         .title(tr!("Folder name"))
         .text("AshyPass Sync")
         .build();
-    let master_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Master password"))
-        .visible(needs_master)
-        .build();
+    let master_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder()
+            .title(tr!("Master password"))
+            .visible(needs_master),
+    );
     // The Nextcloud Passwords account works for the folder too.
     let nextcloud = state.nextcloud.borrow().config.clone();
     if let Some(nc) = &nextcloud {
@@ -495,10 +501,24 @@ fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast:
     actions.add(&action_box);
     page.add(&actions);
 
+    // Weak: the Connect button's own handler calls it.
     let show = {
-        let (spinner, status, status_box) = (spinner.clone(), status.clone(), status_box.clone());
-        let (group, button) = (group.clone(), button.clone());
+        let (spinner, status, status_box) = (
+            spinner.downgrade(),
+            status.downgrade(),
+            status_box.downgrade(),
+        );
+        let (group, button) = (group.downgrade(), button.downgrade());
         move |message: &str, busy: bool| {
+            let (Some(spinner), Some(status), Some(status_box), Some(group), Some(button)) = (
+                spinner.upgrade(),
+                status.upgrade(),
+                status_box.upgrade(),
+                group.upgrade(),
+                button.upgrade(),
+            ) else {
+                return;
+            };
             status_box.set_visible(!message.is_empty());
             status.set_label(message);
             if busy {
@@ -677,7 +697,7 @@ fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast:
 /// The connection as a QR code for Ashy Pass for Android, sealed with a
 /// 6-digit code shown below it (`ashypass_core::sync::pairing`).
 fn show_pairing_dialog(row: &adw::ActionRow, account: FolderSyncAccount, toast: Toaster) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(row.root().as_ref())
         .heading(tr!("Connect a phone"))
         .body(tr!(
             "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap “Scan the computer's QR code”. Then type the code below and your master password."
@@ -766,7 +786,7 @@ fn show_pairing_dialog(row: &adw::ActionRow, account: FolderSyncAccount, toast: 
             }
         },
     );
-    dialog.present(row.root().as_ref());
+    dialog.present();
 }
 
 /// `text` as a QR code: RGB pixels, and the side in pixels.

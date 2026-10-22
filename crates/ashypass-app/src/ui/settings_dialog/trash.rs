@@ -294,7 +294,7 @@ fn confirm_destructive<F>(
 ) where
     F: Fn() + 'static,
 {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
         .heading(heading)
         .body(body)
         .close_response("cancel")
@@ -305,5 +305,5 @@ fn confirm_destructive<F>(
     dialog.set_response_appearance("confirm", adw::ResponseAppearance::Destructive);
     dialog.connect_response(Some("confirm"), move |_, _| confirmed());
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(anchor));
+    dialog.present();
 }

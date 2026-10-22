@@ -220,7 +220,7 @@ pub(super) fn populate_two_factor(page: &adw::PreferencesPage, toast: Toaster) {
 
 #[allow(dead_code)]
 pub(super) fn present_backup_phrase_dialog(anchor: &impl IsA<gtk::Widget>, phrase: &str) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
         .heading(tr!("Backup Phrase"))
         .body(tr!(
             "Write these 12 words down and keep them safe. This is the only time they will be shown."
@@ -245,7 +245,7 @@ pub(super) fn present_backup_phrase_dialog(anchor: &impl IsA<gtk::Widget>, phras
     dialog.add_response("close", tr!("Done"));
     dialog.set_default_response(Some("close"));
     dialog.set_close_response("close");
-    dialog.present(Some(anchor));
+    dialog.present();
 }
 
 pub(super) fn populate_two_factor_unavailable(page: &adw::PreferencesPage) {

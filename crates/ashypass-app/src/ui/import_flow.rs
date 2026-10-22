@@ -109,7 +109,7 @@ fn ask_password<F>(anchor: &gtk::Widget, heading: &str, done: F)
 where
     F: Fn(Zeroizing<String>) + 'static,
 {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
         .heading(heading)
         .close_response("cancel")
         .default_response("ok")
@@ -117,10 +117,11 @@ where
     dialog.add_response("cancel", tr!("Cancel"));
     dialog.add_response("ok", tr!("Continue"));
     dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
-    let row = adw::PasswordEntryRow::builder()
-        .title(tr!("Password"))
-        .activates_default(true)
-        .build();
+    let row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder()
+            .title(tr!("Password"))
+            .activates_default(true),
+    );
     let list = gtk::ListBox::builder()
         .selection_mode(gtk::SelectionMode::None)
         .build();
@@ -132,7 +133,7 @@ where
             done(Zeroizing::new(row.text().to_string()));
         }
     });
-    dialog.present(Some(anchor));
+    dialog.present();
 }
 
 fn toast_message(toast: &adw::ToastOverlay, message: &str) {
@@ -202,7 +203,7 @@ pub(crate) fn analyse(
                 });
             }
             Err(e) => {
-                let dialog = adw::AlertDialog::builder()
+                let dialog = big_gtk_kit::alert::Alert::builder(Some(&anchor))
                     .heading(tr!("This file could not be read"))
                     .body(format!(
                         "{}\n\n{e}",
@@ -210,7 +211,7 @@ pub(crate) fn analyse(
                     ))
                     .build();
                 dialog.add_response("ok", tr!("OK"));
-                dialog.present(Some(&anchor));
+                dialog.present();
             }
         },
     );
@@ -310,7 +311,7 @@ fn show_preview(
     parsed: ParsedImport,
     preview: ImportPreview,
 ) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(&anchor))
         .heading(tr!("Before importing"))
         .body(preview_text(&preview))
         .close_response("cancel")
@@ -347,7 +348,7 @@ fn show_preview(
         };
         apply(state.clone(), toast.clone(), anchor_cl.clone(), parsed);
     });
-    dialog.present(Some(&anchor));
+    dialog.present();
 }
 
 fn apply(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget, parsed: ParsedImport) {
@@ -368,7 +369,7 @@ fn apply(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget, pars
             match outcome {
                 Ok(report) => show_report(&anchor, &report),
                 Err(e) => {
-                    let dialog = adw::AlertDialog::builder()
+                    let dialog = big_gtk_kit::alert::Alert::builder(Some(&anchor))
                         .heading(tr!("Nothing was imported"))
                         .body(format!(
                             "{}\n\n{e}",
@@ -376,7 +377,7 @@ fn apply(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget, pars
                         ))
                         .build();
                     dialog.add_response("ok", tr!("OK"));
-                    dialog.present(Some(&anchor));
+                    dialog.present();
                 }
             }
         },
@@ -437,7 +438,7 @@ pub fn report_text(report: &ImportReport) -> String {
 }
 
 fn show_report(anchor: &gtk::Widget, report: &ImportReport) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
         .heading(report_heading(report))
         .body(report_text(report))
         .build();
@@ -445,7 +446,7 @@ fn show_report(anchor: &gtk::Widget, report: &ImportReport) {
         dialog.set_extra_child(Some(&details));
     }
     dialog.add_response("ok", tr!("OK"));
-    dialog.present(Some(anchor));
+    dialog.present();
 }
 
 #[cfg(test)]

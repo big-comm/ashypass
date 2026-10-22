@@ -232,7 +232,7 @@ fn clear_signatures_with_size(runner: &dyn Runner, device: &Path, size: u64) -> 
 /// multiple of 512 bytes, which is the block size used here.
 fn build_tail_zero_spec(device: &Path, size: u64) -> Result<CommandSpec> {
     const BS: u64 = 512;
-    if size == 0 || size % BS != 0 {
+    if size == 0 || !size.is_multiple_of(BS) {
         return Err(Error::Refused(format!(
             "unexpected size for {}: {size} bytes",
             device.display()

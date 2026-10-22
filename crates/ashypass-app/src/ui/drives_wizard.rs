@@ -406,12 +406,11 @@ fn build_key_page(
             "At least 8 characters. A four-word passphrase from the EFF wordlist is a strong default."
         ))
         .build();
-    let pw = adw::PasswordEntryRow::builder()
-        .title(tr!("Passphrase"))
-        .build();
-    let pw2 = adw::PasswordEntryRow::builder()
-        .title(tr!("Repeat"))
-        .build();
+    let pw = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Passphrase")),
+    );
+    let pw2 =
+        big_gtk_kit::password::password_row(adw::PasswordEntryRow::builder().title(tr!("Repeat")));
     group.add(&pw);
     group.add(&pw2);
     content.append(&group);
@@ -451,13 +450,23 @@ fn build_key_page(
 
     // Live validation: enable Next only when both passphrases match and
     // are ≥ 8 chars; update the strength meter from the first entry.
+    // Weak: the entries that call it are its own widgets.
     {
-        let pw_cl = pw.clone();
-        let pw2_cl = pw2.clone();
-        let next_cl = next.clone();
-        let bar_cl = bar.clone();
-        let lbl_cl = strength_label.clone();
+        let pw_cl = pw.downgrade();
+        let pw2_cl = pw2.downgrade();
+        let next_cl = next.downgrade();
+        let bar_cl = bar.downgrade();
+        let lbl_cl = strength_label.downgrade();
         let update = Rc::new(move || {
+            let (Some(pw_cl), Some(pw2_cl), Some(next_cl), Some(bar_cl), Some(lbl_cl)) = (
+                pw_cl.upgrade(),
+                pw2_cl.upgrade(),
+                next_cl.upgrade(),
+                bar_cl.upgrade(),
+                lbl_cl.upgrade(),
+            ) else {
+                return;
+            };
             let s = pw_cl.text();
             let s2 = pw2_cl.text();
             let (score_u8, word) = legacy_score(s.as_str());
@@ -564,12 +573,21 @@ fn build_options_page(
 
     // Live label validation against the selected filesystem's limit, so a
     // label mkfs would reject is caught before anything is wiped.
+    // Weak: the rows that call it are its own widgets.
     {
-        let label_cl = label_row.clone();
-        let fs_cl = fs_row.clone();
-        let error_cl = label_error.clone();
-        let go_cl = go.clone();
+        let label_cl = label_row.downgrade();
+        let fs_cl = fs_row.downgrade();
+        let error_cl = label_error.downgrade();
+        let go_cl = go.downgrade();
         let validate = Rc::new(move || {
+            let (Some(label_cl), Some(fs_cl), Some(error_cl), Some(go_cl)) = (
+                label_cl.upgrade(),
+                fs_cl.upgrade(),
+                error_cl.upgrade(),
+                go_cl.upgrade(),
+            ) else {
+                return;
+            };
             let result = check_label_for_fs(&label_cl.text(), selected_filesystem(&fs_cl));
             match result {
                 Ok(()) => {
@@ -932,9 +950,9 @@ pub fn present_unlock(
         .title(tr!("Encrypted device"))
         .description(device_path.display().to_string())
         .build();
-    let pw = adw::PasswordEntryRow::builder()
-        .title(tr!("Passphrase"))
-        .build();
+    let pw = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Passphrase")),
+    );
     group.add(&pw);
     content.append(&group);
 
@@ -957,12 +975,16 @@ pub fn present_unlock(
     win.present();
 
     {
-        let win_cl = win.clone();
-        cancel.connect_clicked(move |_| win_cl.close());
+        let win_cl = win.downgrade();
+        cancel.connect_clicked(move |_| {
+            if let Some(win) = win_cl.upgrade() {
+                win.close();
+            }
+        });
     }
 
     {
-        let win_cl = win.clone();
+        let win_cl = win.downgrade();
         let status_cl = status.clone();
         let pw_cl = pw.clone();
         let toast_cl = toast.clone();
@@ -1003,7 +1025,9 @@ pub fn present_unlock(
                             .timeout(5)
                             .build();
                         toast_done.add_toast(t);
-                        win_done.close();
+                        if let Some(win) = win_done.upgrade() {
+                            win.close();
+                        }
                         glib::ControlFlow::Break
                     }
                     Ok(Err(error)) => {
@@ -1057,9 +1081,9 @@ pub fn present_enroll_fido2(
     content.append(&intro);
 
     let key_group = adw::PreferencesGroup::new();
-    let pw = adw::PasswordEntryRow::builder()
-        .title(tr!("Current passphrase"))
-        .build();
+    let pw = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Current passphrase")),
+    );
     key_group.add(&pw);
     content.append(&key_group);
 
@@ -1095,12 +1119,16 @@ pub fn present_enroll_fido2(
     win.present();
 
     {
-        let win_cl = win.clone();
-        cancel.connect_clicked(move |_| win_cl.close());
+        let win_cl = win.downgrade();
+        cancel.connect_clicked(move |_| {
+            if let Some(win) = win_cl.upgrade() {
+                win.close();
+            }
+        });
     }
 
     {
-        let win_cl = win.clone();
+        let win_cl = win.downgrade();
         let status_cl = status.clone();
         let pw_cl = pw.clone();
         let toast_cl = toast.clone();
@@ -1141,7 +1169,9 @@ pub fn present_enroll_fido2(
                             .timeout(5)
                             .build();
                         toast_done.add_toast(t);
-                        win_done.close();
+                        if let Some(win) = win_done.upgrade() {
+                            win.close();
+                        }
                         glib::ControlFlow::Break
                     }
                     Ok(Err(error)) => {

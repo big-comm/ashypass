@@ -19,11 +19,11 @@ pub(super) fn duration_label(seconds: u64) -> String {
     if seconds == 0 {
         return tr!("Never").to_string();
     }
-    if seconds % 3600 == 0 {
+    if seconds.is_multiple_of(3600) {
         let hours = (seconds / 3600) as usize;
         return trn!("{} hour", "{} hours", hours).replace("{}", &hours.to_string());
     }
-    if seconds % 60 == 0 {
+    if seconds.is_multiple_of(60) {
         let minutes = (seconds / 60) as usize;
         return trn!("{} minute", "{} minutes", minutes).replace("{}", &minutes.to_string());
     }
@@ -248,15 +248,15 @@ fn reset_master_page(
             "Confirm the PIN you use on this computer and choose a new master password. Everything in the vault is encrypted again, and the PIN keeps working. Backups made earlier still need the master password they were made with."
         ))
         .build();
-    let pin_row = adw::PasswordEntryRow::builder()
-        .title(tr!("PIN of this computer"))
-        .build();
-    let new_row = adw::PasswordEntryRow::builder()
-        .title(tr!("New master password"))
-        .build();
-    let confirm_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Confirm new master password"))
-        .build();
+    let pin_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("PIN of this computer")),
+    );
+    let new_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("New master password")),
+    );
+    let confirm_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Confirm new master password")),
+    );
     group.add(&pin_row);
     group.add(&new_row);
     group.add(&confirm_row);
@@ -424,15 +424,15 @@ fn change_master_page(
             "Everything in the vault is encrypted again with the new password. Backups made earlier still open with the password they were made with."
         ))
         .build();
-    let current_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Current master password"))
-        .build();
-    let new_row = adw::PasswordEntryRow::builder()
-        .title(tr!("New master password"))
-        .build();
-    let confirm_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Confirm new master password"))
-        .build();
+    let current_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Current master password")),
+    );
+    let new_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("New master password")),
+    );
+    let confirm_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Confirm new master password")),
+    );
     group.add(&current_row);
     group.add(&new_row);
     group.add(&confirm_row);
@@ -623,10 +623,11 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
     status_label.set_label(render());
     group.add(&status_row);
 
-    let pin_row = adw::PasswordEntryRow::builder()
-        .title(tr!("New PIN (at least 4 characters)"))
-        .sensitive(unlocked)
-        .build();
+    let pin_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder()
+            .title(tr!("New PIN (at least 4 characters)"))
+            .sensitive(unlocked),
+    );
     group.add(&pin_row);
 
     let buttons = gtk::Box::builder()
@@ -646,15 +647,25 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
     // so there is nothing to show. With a PIN on, the field for a new one
     // stays hidden until the user asks to change it.
     let editing = Rc::new(std::cell::Cell::new(false));
+    // Weak: the buttons it updates call it from their own handlers.
     let layout: Rc<dyn Fn()> = {
-        let status_row = status_row.clone();
-        let status_label = status_label.clone();
-        let pin_row = pin_row.clone();
-        let enable = enable.clone();
-        let disable = disable.clone();
+        let status_row = status_row.downgrade();
+        let status_label = status_label.downgrade();
+        let pin_row = pin_row.downgrade();
+        let enable = enable.downgrade();
+        let disable = disable.downgrade();
         let editing = editing.clone();
         let render = render.clone();
         Rc::new(move || {
+            let (Some(status_row), Some(status_label), Some(pin_row), Some(enable), Some(disable)) = (
+                status_row.upgrade(),
+                status_label.upgrade(),
+                pin_row.upgrade(),
+                enable.upgrade(),
+                disable.upgrade(),
+            ) else {
+                return;
+            };
             let label = render();
             status_label.set_label(label);
             let on = label != tr!("Off");
@@ -819,9 +830,9 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
     status_label.set_label(render());
     status_row.add_suffix(&status_label);
     group.add(&status_row);
-    let master_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Master password"))
-        .build();
+    let master_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Master password")),
+    );
     group.add(&master_row);
     let buttons = gtk::Box::builder()
         .orientation(gtk::Orientation::Horizontal)
@@ -836,12 +847,21 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
     group.add(&buttons);
     // The field only confirms the master password when turning this on;
     // once it is on there is nothing to edit there.
+    // Weak: the buttons it updates call it from their own handlers.
     let layout: Rc<dyn Fn()> = {
-        let status_label = status_label.clone();
-        let master_row = master_row.clone();
-        let remove = remove.clone();
-        let store = store.clone();
+        let status_label = status_label.downgrade();
+        let master_row = master_row.downgrade();
+        let remove = remove.downgrade();
+        let store = store.downgrade();
         Rc::new(move || {
+            let (Some(status_label), Some(master_row), Some(remove), Some(store)) = (
+                status_label.upgrade(),
+                master_row.upgrade(),
+                remove.upgrade(),
+                store.upgrade(),
+            ) else {
+                return;
+            };
             let on = ashypass_core::keyring::is_stored();
             status_label.set_label(if on { tr!("On") } else { tr!("Off") });
             master_row.set_visible(!on);
@@ -1050,7 +1070,7 @@ fn strong_key_row(state: &SharedState) -> adw::ActionRow {
 /// Move `switch` to `on` without asking again.
 fn set_switch(switch: &gtk::Switch, on: bool, by_code: &std::cell::Cell<bool>) {
     by_code.set(true);
-    switch.set_active(on);
+    big_gtk_kit::switch::set_active(switch, on);
     switch.set_state(on);
     by_code.set(false);
 }
@@ -1062,7 +1082,7 @@ fn ask_key_format_change(
     by_code: Rc<std::cell::Cell<bool>>,
 ) {
     use ashypass_core::db::vault::KeyFormat;
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(row))
         .heading(tr!("Change how the vault key is protected?"))
         .body(if wanted == KeyFormat::Strong {
             tr!("Everything in the vault is encrypted again with a key derived using the costs above. Older versions of Ashy Pass will not open the vault with the master password. The PIN must be set up again.")
@@ -1075,10 +1095,11 @@ fn ask_key_format_change(
     dialog.add_response("cancel", tr!("Cancel"));
     dialog.add_response("change", tr!("Encrypt again"));
     dialog.set_response_appearance("change", adw::ResponseAppearance::Suggested);
-    let password = adw::PasswordEntryRow::builder()
-        .title(tr!("Master password"))
-        .activates_default(true)
-        .build();
+    let password = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder()
+            .title(tr!("Master password"))
+            .activates_default(true),
+    );
     let list = gtk::ListBox::builder()
         .selection_mode(gtk::SelectionMode::None)
         .build();
@@ -1160,7 +1181,7 @@ fn ask_key_format_change(
         );
     });
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(row));
+    dialog.present();
 }
 
 /// A toast on the settings dialog that contains `widget`.
@@ -1204,7 +1225,7 @@ fn legacy_backup_group(state: &SharedState, toast: &Toaster) -> Option<adw::Pref
     let state = state.clone();
     let toast = toast.clone();
     remove.connect_clicked(move |button| {
-        let confirm = adw::AlertDialog::builder()
+        let confirm = big_gtk_kit::alert::Alert::builder(Some(button))
             .heading(tr!("Remove the old copy?"))
             .body(tr!(
                 "The file is overwritten and deleted. Your current vault is not affected."
@@ -1237,7 +1258,7 @@ fn legacy_backup_group(state: &SharedState, toast: &Toaster) -> Option<adw::Pref
                     .build(),
             );
         });
-        confirm.present(Some(button));
+        confirm.present();
     });
     Some(group)
 }

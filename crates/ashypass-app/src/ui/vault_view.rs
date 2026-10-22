@@ -527,18 +527,7 @@ fn setup_factory(inner: &Rc<Inner>, factory: &gtk::SignalListItemFactory) {
         root.append(&copy);
 
         let menu = gio::Menu::new();
-        let open_section = gio::Menu::new();
-        open_section.append(Some(tr!("Open details")), Some("row.open"));
-        open_section.append(Some(tr!("Copy user")), Some("row.copy-user"));
-        open_section.append(Some(tr!("Edit…")), Some("row.edit"));
-        menu.append_section(None, &open_section);
-        let fav_section = gio::Menu::new();
-        fav_section.append(Some(tr!("Add to favorites")), Some("row.favorite"));
-        menu.append_section(None, &fav_section);
-        let danger_section = gio::Menu::new();
-        danger_section.append(Some(tr!("Password history…")), Some("row.history"));
-        danger_section.append(Some(tr!("Delete…")), Some("row.delete"));
-        menu.append_section(None, &danger_section);
+        fill_row_menu(&menu, false);
         let more = gtk::MenuButton::builder()
             .icon_name("view-more-symbolic")
             .menu_model(&menu)
@@ -628,15 +617,7 @@ fn setup_factory(inner: &Rc<Inner>, factory: &gtk::SignalListItemFactory) {
                     .as_ref()
                     .is_some_and(|ids| ids.contains(&entry.id));
             badge.set_visible(synced);
-            fav_section.remove_all();
-            fav_section.append(
-                Some(if entry.favorite {
-                    tr!("Remove from favorites")
-                } else {
-                    tr!("Add to favorites")
-                }),
-                Some("row.favorite"),
-            );
+            fill_row_menu(&menu, entry.favorite);
             copy.update_property(&[gtk::accessible::Property::Label(&format!(
                 "{} — {}",
                 tr!("Copy password"),
@@ -806,14 +787,14 @@ impl Inner {
 
     fn cancel_search_reload(&self) {
         if let Some(id) = self.search_reload_id.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
     }
 
     fn cancel_pending(&self) {
         self.cancel_search_reload();
         if let Some(id) = self.event_reload_id.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         self.stop_details_timer();
     }
@@ -839,7 +820,7 @@ impl Inner {
 
     fn schedule_reload(self: &Rc<Self>) {
         if let Some(id) = self.event_reload_id.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         let weak = Rc::downgrade(self);
         let id = glib::timeout_add_local(std::time::Duration::from_millis(60), move || {
@@ -993,22 +974,30 @@ impl Inner {
         };
         filters.append_item(&item(tr!("All folders"), FolderFilter::All));
         filters.append_item(&item(tr!("No folder"), FolderFilter::NoFolder));
-        self.folder_menu.append_section(None, &filters);
-        if !categories.is_empty() {
-            let named = gio::Menu::new();
-            for category in categories {
-                named.append_item(&item(category, FolderFilter::Named(category.clone())));
-            }
-            self.folder_menu
-                .append_section(Some(tr!("Folders")), &named);
-        }
-        let manage = gio::Menu::new();
-        manage.append(Some(tr!("Create folder…")), Some("vault.new-folder"));
-        manage.append(
-            Some(tr!("Organize folders…")),
-            Some("vault.organize-folders"),
+        big_gtk_kit::menu::append_shared_section(&self.folder_menu, None, "folder-filters", || {
+            filters
+        });
+        // The folder names change: one section kept and refilled (an empty
+        // one is left out).
+        big_gtk_kit::menu::append_refilled_section(
+            &self.folder_menu,
+            Some(tr!("Folders")),
+            "folder-names",
+            |named| {
+                for category in categories {
+                    named.append_item(&item(category, FolderFilter::Named(category.clone())));
+                }
+            },
         );
-        self.folder_menu.append_section(None, &manage);
+        big_gtk_kit::menu::append_shared_section(&self.folder_menu, None, "folder-manage", || {
+            let manage = gio::Menu::new();
+            manage.append(Some(tr!("Create folder…")), Some("vault.new-folder"));
+            manage.append(
+                Some(tr!("Organize folders…")),
+                Some("vault.organize-folders"),
+            );
+            manage
+        });
     }
 
     fn sync_folder_actions(&self, filter: &FolderFilter) {
@@ -1265,7 +1254,7 @@ impl Inner {
                 return;
             }
         };
-        let dialog = adw::Dialog::builder()
+        let dialog = big_gtk_kit::dialog::Dialog::builder(Some(&self.split))
             .title(tr!("Password history"))
             .content_width(520)
             .content_height(440)
@@ -1342,9 +1331,13 @@ impl Inner {
             clear.set_halign(gtk::Align::End);
             {
                 let inner = self.clone();
-                let dialog = dialog.clone();
+                // Weak: the button sits in the dialog.
+                let dialog = dialog.downgrade();
                 clear.connect_clicked(move |button| {
-                    let confirm = adw::AlertDialog::builder()
+                    let Some(dialog) = dialog.upgrade() else {
+                        return;
+                    };
+                    let confirm = big_gtk_kit::alert::Alert::builder(Some(button))
                         .heading(tr!("Clear the password history?"))
                         .body(tr!(
                             "The previous passwords of this access are deleted for good. This cannot be undone."
@@ -1368,7 +1361,7 @@ impl Inner {
                                 .toast(&format!("{}: {e}", tr!("Could not clear the history"))),
                         }
                     });
-                    confirm.present(Some(button));
+                    confirm.present();
                 });
             }
             actions.add(&clear);
@@ -1377,7 +1370,7 @@ impl Inner {
         toolbar.set_content(Some(&page));
         dialog.set_child(Some(&toolbar));
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.split));
+        dialog.present();
     }
 
     fn confirm_delete(self: &Rc<Self>, id: i64) {
@@ -1403,7 +1396,7 @@ impl Inner {
         } else {
             tr!("Deleted items are not kept (see Settings). This cannot be undone.").to_string()
         };
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.split))
             .heading(&heading)
             .body(&body)
             .default_response("cancel")
@@ -1439,7 +1432,7 @@ impl Inner {
             SessionManager::on_activity(&inner.state.session);
         });
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.split));
+        dialog.present();
     }
 
     /// "Undo" is offered only because the trash really holds the entry.
@@ -1478,7 +1471,7 @@ impl Inner {
     }
 
     fn show_new_folder_dialog(self: &Rc<Self>) {
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.split))
             .heading(tr!("Create folder"))
             .body(tr!(
                 "Folders organize your passwords. You can choose them when adding or editing."
@@ -1534,7 +1527,7 @@ impl Inner {
             }
         });
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.split));
+        dialog.present();
     }
 
     fn show_organize_folders_dialog(self: &Rc<Self>) {
@@ -1545,7 +1538,7 @@ impl Inner {
 
     fn stop_details_timer(&self) {
         if let Some(id) = self.details_timer.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
     }
 
@@ -1816,11 +1809,14 @@ fn build_details(inner: &Rc<Inner>, entry: &PasswordEntry) -> gtk::Widget {
         reveal.add_css_class("flat");
         reveal.update_property(&[gtk::accessible::Property::Label(tr!("Show password"))]);
         {
-            let row = row.clone();
+            // Weak: the button sits in the row, which shows the password.
+            let row = row.downgrade();
             let weak = Rc::downgrade(inner);
             let hidden_subtitle = hidden_subtitle.clone();
             reveal.connect_toggled(move |button| {
-                let Some(inner) = weak.upgrade() else { return };
+                let (Some(inner), Some(row)) = (weak.upgrade(), row.upgrade()) else {
+                    return;
+                };
                 if button.is_active() && inner.can_show_vault_data() {
                     // Fetch on demand: the details keep only the mask.
                     let value = inner
@@ -2230,6 +2226,36 @@ pub(crate) fn mime_guess_from_ext(filename: &str) -> Option<String> {
         }
         .to_string(),
     )
+}
+
+/// The *More* menu of a password row: sections made once and shared by every
+/// row (GTK keeps every section it shows, which per row added up), the
+/// favorite one picked for the row's entry.
+fn fill_row_menu(menu: &gio::Menu, favorite: bool) {
+    menu.remove_all();
+    big_gtk_kit::menu::append_shared_section(menu, None, "entry-row-open", || {
+        let section = gio::Menu::new();
+        section.append(Some(tr!("Open details")), Some("row.open"));
+        section.append(Some(tr!("Copy user")), Some("row.copy-user"));
+        section.append(Some(tr!("Edit…")), Some("row.edit"));
+        section
+    });
+    let (key, label) = if favorite {
+        ("entry-row-unfavorite", tr!("Remove from favorites"))
+    } else {
+        ("entry-row-favorite", tr!("Add to favorites"))
+    };
+    big_gtk_kit::menu::append_shared_section(menu, None, key, || {
+        let section = gio::Menu::new();
+        section.append(Some(label), Some("row.favorite"));
+        section
+    });
+    big_gtk_kit::menu::append_shared_section(menu, None, "entry-row-danger", || {
+        let section = gio::Menu::new();
+        section.append(Some(tr!("Password history…")), Some("row.history"));
+        section.append(Some(tr!("Delete…")), Some("row.delete"));
+        section
+    });
 }
 
 #[cfg(test)]

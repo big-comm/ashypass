@@ -241,10 +241,13 @@ pub fn group_code(code: &str) -> String {
 }
 
 /// Mark a label as describing `widget` for assistive technologies.
-pub fn describe(widget: &impl IsA<gtk::Accessible>, label: &impl IsA<gtk::Accessible>) {
-    widget.update_relation(&[gtk::accessible::Relation::DescribedBy(
-        &[label.upcast_ref()],
-    )]);
+/// (`update_relation` leaks the target list on every call, gtk-rs 0.11.)
+pub fn describe(widget: &impl IsA<gtk::Widget>, label: &impl IsA<gtk::Widget>) {
+    big_gtk_kit::accessible::relate(
+        widget.upcast_ref::<gtk::Widget>(),
+        gtk::AccessibleRelation::DescribedBy,
+        &[label.upcast_ref::<gtk::Widget>().upcast_ref()],
+    );
 }
 
 #[cfg(test)]

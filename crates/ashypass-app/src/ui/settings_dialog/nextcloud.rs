@@ -48,11 +48,12 @@ pub(super) fn build_nextcloud_passwords_group(
         let state = state.clone();
         let toast = toast.clone();
         let status = status_row.clone();
-        let configure = configure_row.clone();
         let action_rows = nextcloud_action_rows.clone();
         let parent_widget = parent.clone();
         let dialog_slot = dialog_slot.clone();
         configure_row.connect_activated(move |row| {
+            // From the argument: a captured copy would make the row hold itself.
+            let configure = row.clone();
             if state.nextcloud.borrow().is_logged_in() {
                 // A running sync would write its mappings back after the
                 // reset below.
@@ -241,7 +242,7 @@ pub(super) fn show_nextcloud_dialog<F>(
 ) where
     F: Fn() + 'static,
 {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(tr!("Nextcloud Passwords"))
         .body(tr!(
             "Server address (for example cloud.example.com), username and an app password."
@@ -254,9 +255,9 @@ pub(super) fn show_nextcloud_dialog<F>(
 
     let url_row = adw::EntryRow::builder().title(tr!("Server URL")).build();
     let user_row = adw::EntryRow::builder().title(tr!("Username")).build();
-    let pass_row = adw::PasswordEntryRow::builder()
-        .title(tr!("App password"))
-        .build();
+    let pass_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("App password")),
+    );
     let parent_window = parent.cloned();
 
     let list = gtk::ListBox::builder()
@@ -322,7 +323,7 @@ pub(super) fn show_nextcloud_dialog<F>(
             );
         });
     }
-    dialog.present(parent);
+    dialog.present();
 }
 
 pub(super) fn show_nextcloud_initial_sync_dialog(
@@ -338,7 +339,7 @@ pub(super) fn show_nextcloud_initial_sync_dialog(
         return;
     }
 
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(tr!("Nextcloud Passwords connected"))
         .body(tr!(
             "Two-way reconcile: pull remote, push local, resolve by latest-wins"
@@ -363,7 +364,7 @@ pub(super) fn show_nextcloud_initial_sync_dialog(
         }
         dlg.close();
     });
-    dialog.present(parent);
+    dialog.present();
 }
 
 pub(super) fn run_nextcloud_sync(
@@ -577,7 +578,7 @@ pub(crate) fn present_sync_success_dialog(
         tr!("Two-way reconciliation completed successfully.")
     };
 
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(heading)
         .body(body_text)
         .build();
@@ -741,7 +742,7 @@ pub(crate) fn present_sync_success_dialog(
         dialog.set_extra_child(Some(&content));
     }
 
-    dialog.present(parent);
+    dialog.present();
 }
 
 pub(super) fn sync_count_row(
@@ -766,7 +767,7 @@ pub(super) fn sync_count_row(
 }
 
 pub(crate) fn present_sync_failure_dialog(parent: Option<&gtk::Window>, error: &str) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(tr!("Could not sync"))
         .body(tr!(
             "Ashy Pass could not reach Nextcloud. Check your connection, server address, and app password."
@@ -793,5 +794,5 @@ pub(crate) fn present_sync_failure_dialog(parent: Option<&gtk::Window>, error: &
     group.add(&expander);
 
     dialog.set_extra_child(Some(&group));
-    dialog.present(parent);
+    dialog.present();
 }

@@ -610,7 +610,9 @@ mod tests {
             .update(
                 mail,
                 UpdateEntry {
-                    password: Some("p2".into()),
+                    // Long enough that ciphertext can't hold it by chance
+                    // (the plaintext check below).
+                    password: Some("second-password".into()),
                     ..Default::default()
                 },
             )
@@ -624,7 +626,7 @@ mod tests {
                 .unwrap()
                 .password
                 .as_deref(),
-            Some("p2")
+            Some("second-password")
         );
         assert_eq!(desk.password_history(desk_mail).unwrap().len(), 1);
 
@@ -680,7 +682,7 @@ mod tests {
         // The folder holds no plaintext.
         for entry in walk(&dir.path().join("cloud")) {
             let bytes = std::fs::read(&entry).unwrap();
-            for secret in [&b"p2"[..], b"4111", b"Visa", b"example.com"] {
+            for secret in [&b"second-password"[..], b"4111", b"Visa", b"example.com"] {
                 assert!(
                     !bytes.windows(secret.len()).any(|w| w == secret),
                     "{entry:?} leaks"

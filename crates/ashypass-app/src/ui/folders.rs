@@ -13,7 +13,7 @@ use std::rc::Rc;
 type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
 
 pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA<gtk::Widget>) {
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(parent))
         .title(tr!("Organize folders"))
         .content_width(480)
         .content_height(520)
@@ -146,7 +146,7 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                             )
                             .replace("{}", &count.to_string())
                         };
-                        let confirm = adw::AlertDialog::builder()
+                        let confirm = big_gtk_kit::alert::Alert::builder(Some(button))
                             .heading(format!("{} “{name}”?", tr!("Remove folder")))
                             .body(&body)
                             .close_response("cancel")
@@ -181,7 +181,7 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                                 r();
                             }
                         });
-                        confirm.present(Some(button));
+                        confirm.present();
                     });
                 }
                 row.add_suffix(&rename);
@@ -239,7 +239,7 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
     }
 
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(parent));
+    dialog.present();
 }
 
 fn ask_name<F>(
@@ -252,7 +252,7 @@ fn ask_name<F>(
 ) where
     F: Fn(&str) + 'static,
 {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
         .heading(heading)
         .default_response("ok")
         .close_response("cancel")
@@ -289,5 +289,5 @@ fn ask_name<F>(
         }
     });
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(anchor));
+    dialog.present();
 }

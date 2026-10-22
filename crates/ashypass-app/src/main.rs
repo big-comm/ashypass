@@ -41,6 +41,10 @@ fn main() -> glib::ExitCode {
     let state_holder: Rc<RefCell<Option<SharedState>>> = Rc::new(RefCell::new(None));
     let window_holder: Rc<RefCell<Option<ui::MainWindow>>> = Rc::new(RefCell::new(None));
 
+    // BigLinux's GTK fixes: the tooltip card, and releasing what GTK and
+    // libadwaita keep of closed dialogs and popups (big-gtk-kit).
+    app.connect_startup(|_| big_gtk_kit::install());
+
     // app actions
     setup_app_actions(&app);
 
@@ -59,7 +63,7 @@ fn main() -> glib::ExitCode {
                     eprintln!("Failed to open vault: {e}");
                     // Started from the menu there is no terminal: say why
                     // the app is not opening before quitting.
-                    let dialog = adw::AlertDialog::builder()
+                    let dialog = big_gtk_kit::alert::Alert::builder(None::<&gtk::Widget>)
                         .heading(tr!("Could not open the vault"))
                         .body(format!(
                             "{}\n\n{e}",
@@ -75,7 +79,7 @@ fn main() -> glib::ExitCode {
                         hold.borrow_mut().take();
                         app.quit();
                     });
-                    dialog.present(None::<&gtk::Widget>);
+                    dialog.present();
                     return;
                 }
             };

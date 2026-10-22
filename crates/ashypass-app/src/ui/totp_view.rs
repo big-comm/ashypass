@@ -167,7 +167,7 @@ impl TotpView {
             inner.search_entry.connect_search_changed(move |_| {
                 let Some(inner) = weak.upgrade() else { return };
                 if let Some(id) = inner.search_reload_id.borrow_mut().take() {
-                    id.remove();
+                    big_gtk_kit::source::remove(id);
                 }
                 let weak = Rc::downgrade(&inner);
                 let id =
@@ -225,7 +225,7 @@ impl TotpView {
         let inner = &self.inner;
         inner.search_entry.set_text("");
         if let Some(id) = inner.search_reload_id.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         inner.stop_timer();
         inner.rows.borrow_mut().clear();
@@ -268,7 +268,7 @@ impl Inner {
 
     fn stop_timer(&self) {
         if let Some(id) = self.timer_id.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
     }
 
@@ -439,7 +439,7 @@ impl Inner {
             (current, known)
         };
         known.sort_by_key(|g| g.to_lowercase());
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.root))
             .heading(tr!("Groups"))
             .body(tr!("Group the codes as in Aegis. Groups are the item's tags: they sync to your other devices."))
             .close_response("cancel")
@@ -490,7 +490,7 @@ impl Inner {
             }
         });
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.root));
+        dialog.present();
     }
 
     fn build_row(
@@ -616,10 +616,12 @@ impl Inner {
         let menu = gio::Menu::new();
         menu.append(Some(tr!("Edit access…")), Some("code.edit"));
         menu.append(Some(tr!("Groups…")), Some("code.groups"));
-        let danger = gio::Menu::new();
-        danger.append(Some(tr!("Remove verification code…")), Some("code.remove"));
-        danger.append(Some(tr!("Delete access…")), Some("code.delete"));
-        menu.append_section(None, &danger);
+        big_gtk_kit::menu::append_shared_section(&menu, None, "code-row-danger", || {
+            let danger = gio::Menu::new();
+            danger.append(Some(tr!("Remove verification code…")), Some("code.remove"));
+            danger.append(Some(tr!("Delete access…")), Some("code.delete"));
+            danger
+        });
         let more = gtk::MenuButton::builder()
             .icon_name("view-more-symbolic")
             .menu_model(&menu)
@@ -741,7 +743,7 @@ impl Inner {
             self.confirm_delete(id);
             return;
         }
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.root))
             .heading(format!("{} “{}”?", tr!("Remove the verification code from"), entry.title))
             .body(tr!(
                 "The password and other details stay. Before removing, make sure another app or a backup code can still sign you in, or turn off two-step verification on the site."
@@ -780,7 +782,7 @@ impl Inner {
             inner.reload();
         });
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.root));
+        dialog.present();
     }
 
     fn confirm_delete(self: &Rc<Self>, id: i64) {
@@ -809,7 +811,7 @@ impl Inner {
         } else {
             tr!("This cannot be undone.")
         });
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.root))
             .heading(format!("{} “{}”{who}?", tr!("Delete"), entry.title))
             .body(&body)
             .close_response("cancel")
@@ -841,7 +843,7 @@ impl Inner {
             inner.reload();
         });
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.root));
+        dialog.present();
     }
 
     /// Add a code to an existing access or create a new one. The text
@@ -851,7 +853,7 @@ impl Inner {
         if !self.can_show_vault_data() {
             return;
         }
-        let dialog = adw::Dialog::builder()
+        let dialog = big_gtk_kit::dialog::Dialog::builder(Some(anchor))
             .title(tr!("Add verification code"))
             .content_width(540)
             .content_height(620)
@@ -940,9 +942,9 @@ impl Inner {
         let key_group = adw::PreferencesGroup::builder()
             .title(tr!("Setup key"))
             .build();
-        let key_row = adw::PasswordEntryRow::builder()
-            .title(tr!("Setup key or otpauth:// link"))
-            .build();
+        let key_row = big_gtk_kit::password::password_row(
+            adw::PasswordEntryRow::builder().title(tr!("Setup key or otpauth:// link")),
+        );
         key_group.add(&key_row);
         let params = adw::ExpanderRow::builder()
             .title(tr!("Code settings"))
@@ -1046,9 +1048,11 @@ impl Inner {
         dialog.set_default_widget(Some(&save));
 
         {
-            let dialog = dialog.clone();
+            let dialog = dialog.downgrade();
             cancel.connect_clicked(move |_| {
-                dialog.close();
+                if let Some(dialog) = dialog.upgrade() {
+                    dialog.close();
+                }
             });
         }
         {
@@ -1066,9 +1070,12 @@ impl Inner {
             });
         }
         let weak = Rc::downgrade(self);
-        let dialog_cl = dialog.clone();
+        // Weak: the button sits in the dialog.
+        let dialog_weak = dialog.downgrade();
         save.connect_clicked(move |_| {
-            let Some(inner) = weak.upgrade() else { return };
+            let (Some(inner), Some(dialog_cl)) = (weak.upgrade(), dialog_weak.upgrade()) else {
+                return;
+            };
             if !inner.can_show_vault_data() {
                 dialog_cl.close();
                 return;
@@ -1180,6 +1187,6 @@ impl Inner {
             dialog.connect_closed(move |_| SessionManager::release(&state.session));
         }
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(anchor));
+        dialog.present();
     }
 }

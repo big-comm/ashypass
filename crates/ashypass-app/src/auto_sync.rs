@@ -137,7 +137,7 @@ impl Inner {
     /// the next one when it finishes, so the delay can follow the failures.
     fn schedule_periodic(self: &Rc<Self>) {
         if let Some(id) = self.periodic_source.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         let interval_minutes = {
             let s = self.settings.borrow();
@@ -179,7 +179,7 @@ impl Inner {
 
     fn cancel_debounce(&self) {
         if let Some(id) = self.debounce_source.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
     }
 
@@ -316,7 +316,7 @@ impl Inner {
     /// deleted them there, or the server answered only in part. Only the
     /// user can tell, so ask before deleting anything here.
     fn ask_mass_delete(self: &Rc<Self>, count: usize) {
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.toast))
             .heading(
                 trn!(
                     "Delete {} entry here too?",
@@ -342,7 +342,7 @@ impl Inner {
             inner.run_sync();
         });
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.toast));
+        dialog.present();
     }
 
     /// After a sync: restart the periodic timer (with the current backoff)
