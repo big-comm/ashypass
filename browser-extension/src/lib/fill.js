@@ -48,8 +48,22 @@ export function fillCredentials(username, password, pageOrigin) {
       return best;
     };
 
+    // A field drawn almost invisible (over a decoy) is not filled: the
+    // opacities of it and its ancestors multiplied, or a hidden ancestor.
+    const concealed = (el) => {
+      let opacity = 1;
+      for (let node = el; node instanceof Element; node = node.parentElement ?? node.getRootNode?.().host) {
+        const style = getComputedStyle(node);
+        if (style.visibility !== "visible" || style.display === "none") return true;
+        opacity *= Number(style.opacity);
+        if (!(opacity >= 0.5)) return true;
+      }
+      return false;
+    };
+
     const inputs = Array.from(document.querySelectorAll("input"));
     const passwordField = inputs.find((el) => el.type === "password" && isUsable(el)) || null;
+    if (passwordField && concealed(passwordField)) return 0;
     const textFields = inputs.filter((el) => TEXT_TYPES.has(el.type) && isUsable(el));
 
     let usernameField = null;

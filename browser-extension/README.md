@@ -116,7 +116,11 @@ The suite covers the following:
 1. Run the build.
 2. Open `chrome://extensions` (`brave://extensions`, …) and turn on *Developer mode*.
 3. Click *Load unpacked* and choose `browser-extension/dist/chrome-dev`.
-4. Check that the id is `opelfkfheadglgamfephkfejfpcnlbck`. That id is what the native host allows.
+4. Check that the id is `opelfkfheadglgamfephkfejfpcnlbck`.
+5. Allow that id in the native host. Debug builds of the host allow it by
+   themselves; a packaged (release) Ashy Pass does not, because anyone can
+   make an extension with the public development key. Run once:
+   `ashypass-native-host --install --chrome-id opelfkfheadglgamfephkfejfpcnlbck`.
 
 **Firefox**
 
@@ -146,7 +150,7 @@ Use **Alt+Shift+L** or the toolbar button to open the popup.
 | `scripting` | Inject the filler into that tab and register the inline script. |
 | `clipboardWrite` | Copy usernames, passwords and codes when you click *Copy*. |
 | `storage` | Remember the generator options and whether you dismissed the inline-suggestions hint. Never vault data. |
-| `http://*/*`, `https://*/*` | Asked at install, like other password managers: runs the small content script that shows the Ashy Pass button and menu in login fields, and fills from that menu without opening the popup. The script never receives vault data. *Show suggestions in login fields* in Settings turns the feature off (the script is unregistered). |
+| `http://*/*`, `https://*/*` | Asked at install in Chrome, like other password managers; Firefox leaves MV3 site access to the user, so the popup asks for it the first time (*Enable*): runs the small content script that shows the Ashy Pass button and menu in login fields, and fills from that menu without opening the popup. The script never receives vault data. *Show suggestions in login fields* in Settings turns the feature off (the script is unregistered). |
 
 ## Inline suggestions
 

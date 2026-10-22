@@ -41,6 +41,10 @@ one are absent from `icons`. It never fetches anything.
 
 `Summary`: `{id, title, username, url, category, has_totp, favorite}`
 
+Replies with `entries` also carry `truncated`: true when the list was cut to
+fit one message (browsers take at most 1 MiB from the host), which only
+happens with several thousand entries; search narrows it down.
+
 `Entry`: `{id, title, username, url, password, category, has_totp, favorite, updated_at}`,
 plus `notes` (empty string when none) only when the request has `notes: true`.
 Notes often hold recovery codes: the extension asks for them only to fill the
@@ -100,5 +104,5 @@ delay without requests, when the screen locks (if that option is on), when
 | Browser           | Id                                   | Where it comes from                  |
 |-------------------|--------------------------------------|--------------------------------------|
 | Firefox           | `ashypass@big-comm.github.io`        | `browser_specific_settings` (fixed)  |
-| Chrome (dev)      | `opelfkfheadglgamfephkfejfpcnlbck`   | `key` in the development manifest    |
+| Chrome (dev)      | `opelfkfheadglgamfephkfejfpcnlbck`   | `key` in the development manifest; allowed by debug hosts, or `--install --chrome-id` |
 | Chrome Web Store  | assigned on first publication        | add it to the host's allowed list    |

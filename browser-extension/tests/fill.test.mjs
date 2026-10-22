@@ -5,7 +5,15 @@ import { fillCredentials, fillPasswordFields } from "../src/lib/fill.js";
 
 const ORIGIN = "https://example.com";
 
-class FakeInputBase {
+class FakeElement {
+  constructor(opts = {}) {
+    this.opacity = opts.opacity ?? "1";
+    this.visibility = opts.visibility ?? "visible";
+    this.parentElement = opts.parent ?? null;
+  }
+}
+
+class FakeInputBase extends FakeElement {
   get value() {
     return this._value ?? "";
   }
@@ -17,7 +25,7 @@ class FakeInputBase {
 
 class FakeInput extends FakeInputBase {
   constructor(doc, order, opts = {}) {
-    super();
+    super(opts);
     this.doc = doc;
     this.order = order;
     this.type = opts.type ?? "text";
@@ -27,7 +35,6 @@ class FakeInput extends FakeInputBase {
     this.disabled = opts.disabled ?? false;
     this.readOnly = opts.readOnly ?? false;
     this.visible = opts.visible ?? true;
-    this.visibility = opts.visibility ?? "visible";
     this.autocomplete = opts.autocomplete ?? null;
     this.events = [];
   }
@@ -60,13 +67,14 @@ function makeDoc(specs) {
 }
 
 const saved = {};
-const GLOBALS = ["location", "document", "getComputedStyle", "HTMLInputElement"];
+const GLOBALS = ["location", "document", "getComputedStyle", "HTMLInputElement", "Element"];
 
 beforeEach(() => {
   for (const g of GLOBALS) saved[g] = Object.getOwnPropertyDescriptor(globalThis, g);
   globalThis.location = { origin: ORIGIN };
-  globalThis.getComputedStyle = (el) => ({ visibility: el.visibility, display: "inline-block" });
+  globalThis.getComputedStyle = (el) => ({ visibility: el.visibility, display: "inline-block", opacity: el.opacity });
   globalThis.HTMLInputElement = FakeInputBase;
+  globalThis.Element = FakeElement;
 });
 
 afterEach(() => {
@@ -206,6 +214,22 @@ test("no fields at all returns 0 and never throws", () => {
   assert.equal(run([]).count, 0);
   globalThis.document = { querySelectorAll() { throw new Error("boom"); } };
   assert.equal(fillCredentials("a", "b", ORIGIN), 0);
+});
+
+test("a login drawn almost invisible (over a decoy) is not filled", () => {
+  const faded = run([{ type: "text", name: "user" }, { type: "password", opacity: "0.05" }]);
+  assert.equal(faded.count, 0);
+  assert.equal(faded.inputs[1].value, "");
+  // Fading comes from the ancestors too: 0.6 × 0.6 is below one half.
+  const outer = new FakeElement({ opacity: "0.6" });
+  const inner = new FakeElement({ opacity: "0.6", parent: outer });
+  const nested = run([{ type: "text", name: "user", parent: inner }, { type: "password", parent: inner }]);
+  assert.equal(nested.count, 0);
+  const hiddenParent = new FakeElement({ visibility: "hidden" });
+  assert.equal(run([{ type: "password", parent: hiddenParent }]).count, 0);
+  // A lightly styled page still fills.
+  const soft = new FakeElement({ opacity: "0.9" });
+  assert.equal(run([{ type: "text", name: "user", parent: soft }, { type: "password", parent: soft }]).count, 2);
 });
 
 test("is self-contained (safe to serialise for executeScript)", () => {

@@ -57,9 +57,13 @@ use std::time::{Duration, Instant};
 const EXTENSION_NAME: &str = "com.bigcommunity.ashypass";
 /// Firefox id of the extension (`browser_specific_settings.gecko.id`).
 const FIREFOX_EXTENSION_ID: &str = "ashypass@big-comm.github.io";
-/// Chrome-family ids allowed to connect: the development build (fixed by the
-/// `key` in its manifest). Add the Chrome Web Store id here once published.
-const CHROME_EXTENSION_IDS: &[&str] = &["opelfkfheadglgamfephkfejfpcnlbck"];
+/// Chrome-family ids allowed to connect: the Chrome Web Store's (add it here
+/// once the store assigns it, on the first upload).
+const CHROME_EXTENSION_IDS: &[&str] = &[];
+/// The development build's id, fixed by the public `key` in its manifest.
+/// Anyone can make an extension with that key, so release builds don't
+/// allow it; `--install --chrome-id` adds it for testing an unpacked build.
+const CHROME_DEV_EXTENSION_ID: &str = "opelfkfheadglgamfephkfejfpcnlbck";
 const VERSION: &str = ashypass_core::config::APP_VERSION;
 /// Maximum incoming payload accepted. Mirrors the Chrome limit (~1 MiB),
 /// guarding against a runaway extension stream.
@@ -140,13 +144,18 @@ fn print_help() {
     println!("  ashypass-native-host                         # browser wire mode (stdin/stdout)");
     println!("  ashypass-native-host --install [--chrome-id ID]... [--firefox-id ID]...");
     println!("        write the host manifests for this user into every installed browser");
-    println!("        (built-in extension ids are always included)");
+    println!("        (built-in extension ids are always included; for an unpacked");
+    println!("        development build add --chrome-id {CHROME_DEV_EXTENSION_ID})");
     println!("  ashypass-native-host --print-manifest <chrome|firefox> [host path]");
     println!("        print a manifest, e.g. for system-wide packaging");
 }
 
 fn default_chrome_ids() -> Vec<String> {
-    CHROME_EXTENSION_IDS.iter().map(|s| s.to_string()).collect()
+    let mut ids: Vec<String> = CHROME_EXTENSION_IDS.iter().map(|s| s.to_string()).collect();
+    if cfg!(debug_assertions) {
+        ids.push(CHROME_DEV_EXTENSION_ID.to_string());
+    }
+    ids
 }
 
 fn default_firefox_ids() -> Vec<String> {
@@ -550,6 +559,25 @@ impl HostSession {
         self.last_used = None;
     }
 
+    /// Between requests: drop the key once the vault has been idle for the
+    /// auto-lock delay, or when the screen locks (if that option is on), so
+    /// it does not stay in memory while the browser keeps the port open.
+    fn lock_if_idle(&mut self) {
+        if !self.vault.is_unlocked() {
+            return;
+        }
+        let settings = (self.load_settings)();
+        let idle = self
+            .last_used
+            .is_none_or(|last| last.elapsed() >= Self::idle_timeout(&settings));
+        if !settings.browser_extension
+            || idle
+            || (settings.lock_on_screen_lock && self.screen_lock.is_locked())
+        {
+            self.relock();
+        }
+    }
+
     /// Answer one request.
     fn respond(&mut self, request: Request) -> serde_json::Value {
         use serde_json::json;
@@ -733,13 +761,36 @@ enum HintError {
     Reply,
 }
 
+/// How often the idle and screen-lock policy is checked between requests.
+const IDLE_CHECK: Duration = Duration::from_secs(15);
+
 fn serve() -> Result<()> {
     let mut session = HostSession::open()?;
-    let stdin = std::io::stdin();
-    let mut input = stdin.lock();
+    // Requests arrive on a thread of their own, so the auto-lock also runs
+    // while the browser sends nothing.
+    let (tx, rx) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        let stdin = std::io::stdin();
+        let mut input = stdin.lock();
+        loop {
+            let message = read_message::<serde_json::Value>(&mut input);
+            let last = !matches!(message, Ok(Incoming::Message(_) | Incoming::Malformed(_)));
+            if tx.send(message).is_err() || last {
+                return;
+            }
+        }
+    });
 
     loop {
-        let raw = match read_message::<serde_json::Value>(&mut input)? {
+        let message = match rx.recv_timeout(IDLE_CHECK) {
+            Ok(message) => message?,
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+                session.lock_if_idle();
+                continue;
+            }
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => return Ok(()),
+        };
+        let raw = match message {
             Incoming::Message(raw) => raw,
             Incoming::Eof => return Ok(()), // EOF: browser closed the port.
             Incoming::Malformed(e) => {
@@ -753,7 +804,14 @@ fn serve() -> Result<()> {
             }
         };
         let response = answer(&mut session, raw);
-        write_message(&response)?;
+        if let Err(e) = write_message(&response) {
+            // Too big for the browser: say so instead of ending the session.
+            let mut error = error_response(ErrorCode::Internal, &e.to_string());
+            if let (Some(rid), Some(object)) = (response.get("rid"), error.as_object_mut()) {
+                object.insert("rid".into(), rid.clone());
+            }
+            write_message(&error)?;
+        }
     }
 }
 
@@ -771,12 +829,33 @@ fn answer(session: &mut HostSession, raw: serde_json::Value) -> serde_json::Valu
     response
 }
 
+/// Room for the entries of one reply: browsers take at most 1 MiB from the
+/// host, and the reply carries a little more than the entries.
+const ENTRIES_BUDGET_BYTES: usize = 900 * 1024;
+
+/// `{ok, entries}` with as many entries as fit in a message; `truncated`
+/// tells the rest were left out (a vault of several thousand logins).
+fn entries_reply(summaries: Vec<EntrySummary>) -> serde_json::Value {
+    let mut used = 0;
+    let mut kept = Vec::with_capacity(summaries.len());
+    let total = summaries.len();
+    for summary in summaries {
+        let size = serde_json::to_vec(&summary)
+            .map(|b| b.len() + 1)
+            .unwrap_or(usize::MAX);
+        if used + size > ENTRIES_BUDGET_BYTES {
+            break;
+        }
+        used += size;
+        kept.push(summary);
+    }
+    let truncated = kept.len() < total;
+    serde_json::json!({"ok": true, "entries": kept, "truncated": truncated})
+}
+
 fn handle_list(vault: &Vault, query: Option<&str>) -> serde_json::Value {
     match vault.list(query) {
-        Ok(entries) => {
-            let summaries: Vec<EntrySummary> = entries.iter().map(EntrySummary::from).collect();
-            serde_json::json!({"ok": true, "entries": summaries})
-        }
+        Ok(entries) => entries_reply(entries.iter().map(EntrySummary::from).collect()),
         Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
     }
 }
@@ -792,7 +871,7 @@ fn handle_match_url(vault: &Vault, url: &str) -> serde_json::Value {
                 .filter(|e| e.url.as_deref().is_some_and(|u| entry_matches_page(u, url)))
                 .map(EntrySummary::from)
                 .collect();
-            serde_json::json!({"ok": true, "entries": matches})
+            entries_reply(matches)
         }
         Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
     }
@@ -1678,6 +1757,42 @@ mod tests {
     }
 
     #[test]
+    fn an_idle_vault_locks_between_requests() {
+        let (_dir, mut s, _, _) = session_with(enabled);
+        let reply = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        assert_eq!(reply["ok"], true);
+        s.lock_if_idle();
+        assert!(s.vault.is_unlocked(), "just used");
+        s.last_used = Instant::now().checked_sub(Duration::from_secs(3600));
+        s.lock_if_idle();
+        assert!(!s.vault.is_unlocked(), "idle past the auto-lock delay");
+    }
+
+    #[test]
+    fn long_lists_are_cut_to_fit_a_message() {
+        let summary = |i: i64| EntrySummary {
+            id: i,
+            title: format!("Login {i} {}", "x".repeat(200)),
+            username: Some("user@example.com".into()),
+            url: Some("https://example.com/login".into()),
+            category: None,
+            has_totp: false,
+            favorite: false,
+        };
+        let small = entries_reply((0..10).map(summary).collect());
+        assert_eq!(small["entries"].as_array().unwrap().len(), 10);
+        assert_eq!(small["truncated"], false);
+        let big = entries_reply((0..20_000).map(summary).collect());
+        let kept = big["entries"].as_array().unwrap().len();
+        assert!(kept > 1000 && kept < 20_000, "{kept}");
+        assert_eq!(big["truncated"], true);
+        assert!(serde_json::to_vec(&big).unwrap().len() < MAX_MESSAGE_BYTES as usize);
+    }
+
+    #[test]
     fn install_arguments_keep_the_built_in_ids() {
         let (chrome, firefox) = parse_install_args(&[
             "--chrome-id".into(),
@@ -1687,7 +1802,11 @@ mod tests {
         ])
         .unwrap();
         assert!(chrome.contains(&"storeid".to_string()));
-        assert!(chrome.contains(&CHROME_EXTENSION_IDS[0].to_string()));
+        assert!(CHROME_EXTENSION_IDS
+            .iter()
+            .all(|id| chrome.contains(&id.to_string())));
+        // Debug builds (these tests) also allow the development extension.
+        assert!(chrome.contains(&CHROME_DEV_EXTENSION_ID.to_string()));
         assert!(firefox.contains(&FIREFOX_EXTENSION_ID.to_string()));
         assert!(firefox.contains(&"other@example.org".to_string()));
         assert!(parse_install_args(&["--chrome-id".into()]).is_err());

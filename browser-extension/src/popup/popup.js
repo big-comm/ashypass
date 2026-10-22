@@ -26,7 +26,7 @@ const TOAST_MS = 2500;
 const STORAGE_GENERATOR = "generatorOptions";
 const STORAGE_HINT = "inlineHintDismissed";
 const HELP_URL = "https://github.com/big-comm/ashypass";
-const PRIVACY_URL = "https://github.com/big-comm/ashypass/blob/main/browser-extension/README.md#security-model";
+const PRIVACY_URL = "https://github.com/big-comm/ashypass/blob/main/browser-extension/PRIVACY.md";
 const VIEWS = [
   "view-loading",
   "view-message",

@@ -103,6 +103,23 @@
     return style.visibility === "visible" && style.display !== "none" && Number(style.opacity) > 0.1;
   }
 
+  /**
+   * Whether `el` is shown faded out or hidden by its page: the opacities of
+   * it and its ancestors multiplied together, or a hidden ancestor. A page
+   * that draws its login field almost invisible over a decoy could trick
+   * the user into clicking our menu, so no menu (nor filling) there.
+   */
+  function concealed(el) {
+    let opacity = 1;
+    for (let node = el; node instanceof Element; node = node.parentElement ?? node.getRootNode?.().host) {
+      const style = getComputedStyle(node);
+      if (style.visibility !== "visible" || style.display === "none") return true;
+      opacity *= Number(style.opacity);
+      if (!(opacity >= 0.5)) return true;
+    }
+    return false;
+  }
+
   function scopeOf(el) {
     return el.form || el.closest("form") || el.getRootNode() || document;
   }
@@ -193,6 +210,7 @@
     button.addEventListener("click", (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
+      if (!ev.isTrusted) return;
       suppressed = null;
       if (frame) closeMenu();
       else openMenu();
@@ -234,7 +252,7 @@
   }
 
   async function openMenu() {
-    if (!field || disabled || frame || framePending) return;
+    if (!field || disabled || frame || framePending || concealed(field)) return;
     framePending = true;
     const seq = ++openSeq;
     const reply = await send({ type: "inlineOpen" });
@@ -367,7 +385,7 @@
     badge.addEventListener("click", (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
-      if (!el.isConnected) return;
+      if (!ev.isTrusted || !el.isConnected) return;
       el.focus();
       suppressed = null;
       attach(el, { open: true });
@@ -528,7 +546,9 @@
   document.addEventListener(
     "pointerdown",
     (ev) => {
-      if (!field || isOurs(ev)) return;
+      // Only the user's own clicks and keys open the menu, never a page's
+      // synthetic events.
+      if (!ev.isTrusted || !field || isOurs(ev)) return;
       const el = targetOf(ev);
       if (el === field) {
         // A click on the field reopens a menu closed with Escape.
@@ -546,7 +566,7 @@
   document.addEventListener(
     "keydown",
     (ev) => {
-      if (!field || targetOf(ev) !== field) return;
+      if (!ev.isTrusted || !field || targetOf(ev) !== field) return;
       if (ev.key === "Escape" && frame) {
         ev.stopPropagation();
         suppressed = field;

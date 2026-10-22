@@ -125,7 +125,8 @@ fn url_scheme(input: &str) -> Option<String> {
 /// `http://` entry may be offered on the `https://` version of the site. A
 /// bare host saved without a scheme (`192.168.1.1`, `nas.local`) says
 /// nothing about it, so it matches both `http://` and `https://` pages (the
-/// port rule still limits it to their default ports unless it names one).
+/// port rule still limits it to their default ports unless it names one);
+/// `entry_matches_page` reads a bare public site (`example.com`) as `https`.
 /// Any other scheme must match exactly, and a page without a recognisable
 /// scheme only matches bare-host entries.
 fn scheme_compatible(entry: Option<&str>, page: Option<&str>) -> bool {
@@ -144,10 +145,14 @@ pub fn entry_matches_page(entry_url: &str, page_url: &str) -> bool {
     let (Some(entry_host), Some(page_host)) = (url_host(entry_url), url_host(page_url)) else {
         return false;
     };
-    scheme_compatible(
-        url_scheme(entry_url).as_deref(),
-        url_scheme(page_url).as_deref(),
-    ) && port_compatible(entry_url, page_url)
+    // A bare public site (`example.com`) means its https site: offering it on
+    // `http://example.com` would hand it to whoever controls the network.
+    // Only local names and addresses (`nas.local`, `192.168.1.1`) keep both.
+    let entry_scheme = url_scheme(entry_url).or_else(|| {
+        registrable_domain(entry_host.trim_start_matches("www.")).map(|_| "https".to_string())
+    });
+    scheme_compatible(entry_scheme.as_deref(), url_scheme(page_url).as_deref())
+        && port_compatible(entry_url, page_url)
         && host_match(&entry_host, &page_host)
 }
 
@@ -201,6 +206,35 @@ fn host_match(candidate: &str, target: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn bare_public_sites_are_https_only_local_names_keep_both() {
+        assert!(entry_matches_page(
+            "example.com",
+            "https://example.com/login"
+        ));
+        assert!(entry_matches_page(
+            "www.example.com/login",
+            "https://mail.example.com/"
+        ));
+        assert!(!entry_matches_page(
+            "example.com",
+            "http://example.com/login"
+        ));
+        assert!(!entry_matches_page(
+            "example.co.uk",
+            "http://shop.example.co.uk/"
+        ));
+        // Local names and addresses say nothing about the scheme.
+        assert!(entry_matches_page("192.168.1.1", "http://192.168.1.1/"));
+        assert!(entry_matches_page("nas.local", "http://nas.local/"));
+        assert!(entry_matches_page("router", "http://router/"));
+        // Saved with http on purpose: still offered there.
+        assert!(entry_matches_page(
+            "http://example.com",
+            "http://example.com/login"
+        ));
+    }
 
     #[test]
     fn url_host_strips_scheme_and_path() {
@@ -462,7 +496,8 @@ mod tests {
             "https://example.com",
             "http://example.com/"
         ));
-        assert!(entry_matches_page("example.com", "http://example.com/"));
+        // A bare public site is its https site (no downgrade).
+        assert!(!entry_matches_page("example.com", "http://example.com/"));
         assert!(entry_matches_page(
             "http://intranet.example.com",
             "http://intranet.example.com/"
