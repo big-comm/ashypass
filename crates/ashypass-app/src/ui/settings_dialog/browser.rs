@@ -54,8 +54,50 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
         .build();
     connect_row.add_suffix(&connect);
     connect_group.add(&connect_row);
+
+    // One row per browser set up for this user: connected or not.
+    let status_rows: Rc<RefCell<Vec<adw::ActionRow>>> = Rc::default();
+    let refresh_status: Rc<dyn Fn()> = {
+        // Weak: the Connect button, inside the group, calls it.
+        let group = connect_group.downgrade();
+        let rows = status_rows.clone();
+        Rc::new(move || {
+            let Some(group) = group.upgrade() else {
+                return;
+            };
+            for row in rows.borrow_mut().drain(..) {
+                group.remove(&row);
+            }
+            let found = browser_connections(&BrowserPaths::current());
+            if found.is_empty() {
+                let row = adw::ActionRow::builder()
+                    .title(tr!("No browser found yet"))
+                    .subtitle(tr!("Open your browser once, then connect"))
+                    .build();
+                group.add(&row);
+                rows.borrow_mut().push(row);
+            }
+            for (name, connected) in found {
+                let row = adw::ActionRow::builder().title(name).build();
+                let label = gtk::Label::new(Some(if connected {
+                    tr!("Connected")
+                } else {
+                    tr!("Not connected")
+                }));
+                label.add_css_class(if connected { "success" } else { "dim-label" });
+                if connected {
+                    row.add_suffix(&gtk::Image::from_icon_name("object-select-symbolic"));
+                }
+                row.add_suffix(&label);
+                group.add(&row);
+                rows.borrow_mut().push(row);
+            }
+        })
+    };
+    refresh_status();
     {
         let toast = toast.clone();
+        let refresh_status = refresh_status.clone();
         connect.connect_clicked(move |button| {
             let Some(host) = native_host_path() else {
                 toast.add_toast(
@@ -69,6 +111,7 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
             button.set_sensitive(false);
             let button = button.clone();
             let toast = toast.clone();
+            let refresh_status = refresh_status.clone();
             run_background(
                 move || {
                     let mut command = std::process::Command::new(host);
@@ -102,6 +145,7 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
                 },
                 move |result| {
                     button.set_sensitive(true);
+                    refresh_status();
                     let message = match result {
                         Ok(0) => tr!("No supported browser was found. Open your browser once, then try again.").to_string(),
                         Ok(count) => trn!(
@@ -172,4 +216,175 @@ fn native_host_path() -> Option<std::path::PathBuf> {
             "/usr/lib/ashypass/ashypass-native-host",
         )])
         .find(|path| path.is_file())
+}
+
+/// Where browsers look for the native host's manifest: this user's folders
+/// and the ones the package installs system-wide.
+struct BrowserPaths {
+    home: std::path::PathBuf,
+    config: std::path::PathBuf,
+    /// Prefix of the system-wide folders (`/`; a temporary folder in tests).
+    system: std::path::PathBuf,
+}
+
+impl BrowserPaths {
+    fn current() -> Self {
+        let home = dirs::home_dir().unwrap_or_default();
+        let config = std::env::var_os("XDG_CONFIG_HOME")
+            .map(std::path::PathBuf::from)
+            .filter(|p| p.is_absolute())
+            .unwrap_or_else(|| home.join(".config"));
+        Self {
+            home,
+            config,
+            system: "/".into(),
+        }
+    }
+}
+
+const HOST_MANIFEST: &str = "com.bigcommunity.ashypass.json";
+
+/// The browsers set up for this user, and whether each finds Ashy Pass: a
+/// manifest (its own, or the package's) that points at an existing host and
+/// allows an extension. The folders are the ones `ashypass-native-host
+/// --install` writes to.
+fn browser_connections(paths: &BrowserPaths) -> Vec<(&'static str, bool)> {
+    let BrowserPaths {
+        home,
+        config,
+        system,
+    } = paths;
+    let chrome = |name, dir: &str, system_dir: Option<&str>| {
+        let profile = config.join(dir);
+        let mut manifests = vec![profile.join("NativeMessagingHosts").join(HOST_MANIFEST)];
+        manifests.extend(system_dir.map(|d| system.join(d).join(HOST_MANIFEST)));
+        (name, profile.exists(), manifests, "allowed_origins")
+    };
+    let firefox = |name, legacy: &str, xdg: &str, system_dir: Option<&str>| {
+        let installed = home.join(legacy).exists() || config.join(xdg).exists();
+        let mut manifests = vec![home
+            .join(legacy)
+            .join("native-messaging-hosts")
+            .join(HOST_MANIFEST)];
+        manifests.extend(system_dir.map(|d| system.join(d).join(HOST_MANIFEST)));
+        (name, installed, manifests, "allowed_extensions")
+    };
+    let browsers = [
+        chrome(
+            "Google Chrome",
+            "google-chrome",
+            Some("etc/opt/chrome/native-messaging-hosts"),
+        ),
+        chrome(
+            "Chromium",
+            "chromium",
+            Some("etc/chromium/native-messaging-hosts"),
+        ),
+        chrome("Brave", "BraveSoftware/Brave-Browser", None),
+        chrome(
+            "Microsoft Edge",
+            "microsoft-edge",
+            Some("etc/opt/edge/native-messaging-hosts"),
+        ),
+        chrome("Vivaldi", "vivaldi", None),
+        firefox(
+            "Firefox",
+            ".mozilla",
+            "mozilla",
+            Some("usr/lib/mozilla/native-messaging-hosts"),
+        ),
+        firefox("LibreWolf", ".librewolf", "librewolf", None),
+        firefox("Waterfox", ".waterfox", "waterfox", None),
+    ];
+    browsers
+        .into_iter()
+        .filter(|(_, installed, _, _)| *installed)
+        .map(|(name, _, manifests, allowed)| {
+            let connected = manifests.iter().any(|path| manifest_works(path, allowed));
+            (name, connected)
+        })
+        .collect()
+}
+
+/// A host manifest that points at an existing program and lets at least one
+/// extension use it.
+fn manifest_works(path: &std::path::Path, allowed_key: &str) -> bool {
+    let Ok(text) = std::fs::read_to_string(path) else {
+        return false;
+    };
+    let Ok(manifest) = serde_json::from_str::<serde_json::Value>(&text) else {
+        return false;
+    };
+    manifest["name"] == "com.bigcommunity.ashypass"
+        && manifest["path"]
+            .as_str()
+            .is_some_and(|host| std::path::Path::new(host).is_file())
+        && manifest[allowed_key]
+            .as_array()
+            .is_some_and(|ids| !ids.is_empty())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn write(path: &std::path::Path, text: &str) {
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(path, text).unwrap();
+    }
+
+    #[test]
+    fn browsers_show_connected_only_with_a_working_manifest() {
+        let dir = std::env::temp_dir().join(format!("ashypass-browsers-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        let host = dir.join("bin/ashypass-native-host");
+        write(&host, "");
+        let paths = BrowserPaths {
+            home: dir.join("home"),
+            config: dir.join("home/.config"),
+            system: dir.join("root"),
+        };
+        let manifest = |key: &str, ids: &str| {
+            format!(
+                r#"{{"name":"com.bigcommunity.ashypass","path":"{}","type":"stdio","{key}":{ids}}}"#,
+                host.display()
+            )
+        };
+        // Set up: Brave (connected), Chromium (no extension allowed), Firefox
+        // (through the package's system manifest); Vivaldi is not installed.
+        write(
+            &paths
+                .config
+                .join("BraveSoftware/Brave-Browser/NativeMessagingHosts")
+                .join(HOST_MANIFEST),
+            &manifest("allowed_origins", r#"["chrome-extension://abc/"]"#),
+        );
+        write(
+            &paths
+                .config
+                .join("chromium/NativeMessagingHosts")
+                .join(HOST_MANIFEST),
+            &manifest("allowed_origins", "[]"),
+        );
+        std::fs::create_dir_all(paths.home.join(".mozilla/firefox")).unwrap();
+        write(
+            &paths
+                .system
+                .join("usr/lib/mozilla/native-messaging-hosts")
+                .join(HOST_MANIFEST),
+            &manifest("allowed_extensions", r#"["ashypass@big-comm.github.io"]"#),
+        );
+        let found = browser_connections(&paths);
+        assert_eq!(
+            found,
+            vec![("Chromium", false), ("Brave", true), ("Firefox", true)]
+        );
+        // A manifest whose program is gone does not count.
+        std::fs::remove_file(&host).unwrap();
+        assert_eq!(
+            browser_connections(&paths),
+            vec![("Chromium", false), ("Brave", false), ("Firefox", false)]
+        );
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 }
