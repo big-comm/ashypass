@@ -139,7 +139,7 @@ Use **Alt+Shift+L** or the toolbar button to open the popup.
 |---------|----|---------------------|
 | Firefox | `ashypass@big-comm.github.io` | `browser_specific_settings.gecko.id` (fixed) |
 | Chrome (dev) | `opelfkfheadglgamfephkfejfpcnlbck` | `key` added to the `chrome-dev` manifest by `build.py` |
-| Chrome Web Store | assigned on first publication | add it to the host's allowed origins |
+| Chrome Web Store | `aaffaajejkomddnihpblnkolkhcgaoom` | allowed by the host (`CHROME_EXTENSION_IDS`) |
 
 ## Permissions
 

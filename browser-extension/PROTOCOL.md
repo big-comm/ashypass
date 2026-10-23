@@ -105,4 +105,4 @@ delay without requests, when the screen locks (if that option is on), when
 |-------------------|--------------------------------------|--------------------------------------|
 | Firefox           | `ashypass@big-comm.github.io`        | `browser_specific_settings` (fixed)  |
 | Chrome (dev)      | `opelfkfheadglgamfephkfejfpcnlbck`   | `key` in the development manifest; allowed by debug hosts, or `--install --chrome-id` |
-| Chrome Web Store  | assigned on first publication        | add it to the host's allowed list    |
+| Chrome Web Store  | `aaffaajejkomddnihpblnkolkhcgaoom`   | allowed by the host (`CHROME_EXTENSION_IDS`) |

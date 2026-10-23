@@ -57,9 +57,9 @@ use std::time::{Duration, Instant};
 const EXTENSION_NAME: &str = "com.bigcommunity.ashypass";
 /// Firefox id of the extension (`browser_specific_settings.gecko.id`).
 const FIREFOX_EXTENSION_ID: &str = "ashypass@big-comm.github.io";
-/// Chrome-family ids allowed to connect: the Chrome Web Store's (add it here
-/// once the store assigns it, on the first upload).
-const CHROME_EXTENSION_IDS: &[&str] = &[];
+/// Chrome-family ids allowed to connect: the Chrome Web Store's (Chrome,
+/// Brave, Vivaldi, Opera; Edge too when installed from the Chrome store).
+const CHROME_EXTENSION_IDS: &[&str] = &["aaffaajejkomddnihpblnkolkhcgaoom"];
 /// The development build's id, fixed by the public `key` in its manifest.
 /// Anyone can make an extension with that key, so release builds don't
 /// allow it; `--install --chrome-id` adds it for testing an unpacked build.
