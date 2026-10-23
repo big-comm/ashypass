@@ -349,8 +349,8 @@ impl Inner {
         self.content_stack.set_visible_child_name("list");
         let settings = self.state.settings();
         let large = settings.large_totp_codes;
-        // Off: no icon column at all. On: the site's icon when site icons
-        // are on (Password list), else a plain one.
+        // Off: no icon column at all. On: the brand's icon, else the site's
+        // when site icons are on (Password list), else a plain one.
         let icons = settings.totp_icons.then_some(settings.show_favicons);
         for (entry, secret) in entries {
             let row = self.build_row(&entry, secret, large, icons);
@@ -516,11 +516,15 @@ impl Inner {
 
         if let Some(favicons) = icons {
             let icon = gtk::Image::new();
-            if favicons {
-                crate::favicons::apply(&icon, entry.url.as_deref(), 32);
-            } else {
-                icon.set_pixel_size(32);
-                icon.set_icon_name(Some("security-high-symbolic"));
+            // The brand's icon (built in), else the saved site's, else a
+            // plain one.
+            if !crate::favicons::apply_brand(&icon, &entry.title, 32) {
+                if favicons {
+                    crate::favicons::apply(&icon, entry.url.as_deref(), 32);
+                } else {
+                    icon.set_pixel_size(32);
+                    icon.set_icon_name(Some("security-high-symbolic"));
+                }
             }
             icon.add_css_class("ashy-entry-icon");
             icon.set_accessible_role(gtk::AccessibleRole::Presentation);

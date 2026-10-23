@@ -46,6 +46,10 @@ keepass.workspace = true
 # Aegis encrypted vaults: its key derivation, and hex fields.
 scrypt = { version = "0.11", default-features = false }
 hex = "0.4"
+# Brand icons for verification codes (assets/brand-icons.json.gz): both
+# already in the tree, through keepass and url.
+flate2 = "1"
+unicode-normalization = "0.1"
 
 # The system keyring (Secret Service over D-Bus) only exists on the Linux
 # desktop; elsewhere `keyring` is a stub and the app keeps its own secrets.

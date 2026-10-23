@@ -167,3 +167,37 @@ fn load(path: &std::path::Path) -> Option<gdk::Texture> {
 pub fn clear_cache() {
     CACHE.with(|cache| cache.borrow_mut().clear());
 }
+
+thread_local! {
+    /// Brand icons drawn so far, by Simple Icons id.
+    static BRANDS: RefCell<HashMap<String, Option<gdk::Texture>>> = RefCell::new(HashMap::new());
+}
+
+/// Show the built-in brand icon for a code named `name` (offline, see
+/// `ashypass_core::brand_icons`). Returns false, leaving `image` as it
+/// was, when no brand matches.
+pub fn apply_brand(image: &gtk::Image, name: &str, pixel: i32) -> bool {
+    let Some(brand) = ashypass_core::brand_icons::find(name) else {
+        return false;
+    };
+    let texture = BRANDS.with(|cache| {
+        cache
+            .borrow_mut()
+            .entry(brand.slug.clone())
+            .or_insert_with(|| {
+                // Drawn at twice the size shown, for HiDPI screens.
+                let svg = brand.svg((pixel * 2) as u32);
+                gdk::Texture::from_bytes(&glib::Bytes::from_owned(svg.into_bytes()))
+                    .map_err(|e| log::warn!("brand icon {}: {e}", brand.slug))
+                    .ok()
+            })
+            .clone()
+    });
+    let Some(texture) = texture else {
+        return false;
+    };
+    image.set_widget_name("");
+    image.set_pixel_size(pixel);
+    image.set_paintable(Some(&texture));
+    true
+}
