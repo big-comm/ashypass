@@ -1805,8 +1805,12 @@ mod tests {
         assert!(CHROME_EXTENSION_IDS
             .iter()
             .all(|id| chrome.contains(&id.to_string())));
-        // Debug builds (these tests) also allow the development extension.
-        assert!(chrome.contains(&CHROME_DEV_EXTENSION_ID.to_string()));
+        // Only debug builds allow the development extension; release builds
+        // (the package runs its tests with --release) never do.
+        assert_eq!(
+            chrome.contains(&CHROME_DEV_EXTENSION_ID.to_string()),
+            cfg!(debug_assertions)
+        );
         assert!(firefox.contains(&FIREFOX_EXTENSION_ID.to_string()));
         assert!(firefox.contains(&"other@example.org".to_string()));
         assert!(parse_install_args(&["--chrome-id".into()]).is_err());
