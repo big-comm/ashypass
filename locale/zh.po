@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-23 15:11-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -91,6 +91,9 @@ msgstr "添加条目仅适用于 .ashy 副本。对于 .db 副本，请选择“
 msgid "Address copied"
 msgstr "地址已复制"
 
+msgid "Address, user and password are required"
+msgstr "地址、用户和密码为必填项"
+
 msgid "Adjust length and characters"
 msgstr "调整长度和字符"
 
@@ -102,6 +105,9 @@ msgstr "调整单词和分隔符"
 
 msgid "Algorithm"
 msgstr "算法"
+
+msgid "All"
+msgstr "全部"
 
 msgid "All clear"
 msgstr "一切正常"
@@ -120,11 +126,22 @@ msgid ""
 "destroyed."
 msgstr "所有分区、文件和文件系统签名将被永久销毁。"
 
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "在 Dropbox 中允许 Ashy Pass"
+
 msgid "Allow TRIM through encrypted mapping"
 msgstr "允许通过加密映射使用TRIM"
 
 msgid "Allow the browser extension"
 msgstr "允许浏览器扩展"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"另一台设备已将它们从加密同步文件夹中删除。如果是您删除的，它们会移到此处的“已"
+"删除项目”。如果不是，请保留它们：它们会再次发送到文件夹。"
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -133,8 +150,8 @@ msgstr ""
 "自本设备上次同步以来，另一台设备已上传了更新的快照。现在上传将导致远程更改被"
 "孤立。"
 
-msgid "Answer requests from the installed extension"
-msgstr "响应已安装扩展的请求"
+msgid "Another example"
+msgstr "换一个示例"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -213,6 +230,9 @@ msgstr "附件"
 msgid "Audit failed"
 msgstr "审计失败"
 
+msgid "Authentication was cancelled"
+msgstr "认证已取消"
+
 msgid "Auto-tune"
 msgstr "自动调优"
 
@@ -285,6 +305,12 @@ msgstr "Caps Lock 已开启"
 msgid "Capture from screen…"
 msgstr "从屏幕截取…"
 
+msgid "Change PIN"
+msgstr "更改 PIN"
+
+msgid "Change how the vault key is protected?"
+msgstr "要更改密码库密钥的保护方式吗？"
+
 msgid "Change master password"
 msgstr "更改主密码"
 
@@ -294,8 +320,14 @@ msgstr "更改主密码…"
 msgid "Change only if the site shows different values"
 msgstr "仅当网站显示不同的值时才更改"
 
+msgid "Changed"
+msgstr "已更改"
+
 msgid "Changes saved to the vault"
 msgstr "更改已保存到保险库"
+
+msgid "Changes waiting to be sent"
+msgstr "等待发送的更改"
 
 msgid "Check known data breaches (online)"
 msgstr "检查已知数据泄露（联网）"
@@ -305,6 +337,12 @@ msgstr "检查我的密码"
 
 msgid "Check now"
 msgstr "立即检查"
+
+msgid "Check the server every"
+msgstr "检查服务器的间隔"
+
+msgid "Checking the drive…"
+msgstr "正在检查驱动器…"
 
 msgid "Choose a backup"
 msgstr "选择备份"
@@ -338,6 +376,9 @@ msgstr "选择 KeePass 数据库"
 msgid "Choose the andOTP export"
 msgstr "选择 andOTP 导出文件"
 
+msgid "Choose the folder"
+msgstr "选择文件夹"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr "添加或编辑密码时可选择此文件夹。"
 
@@ -347,11 +388,17 @@ msgstr "选择…"
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Chrome、Edge、Brave 或 Firefox 导出的密码（CSV）"
 
+msgid "Classic"
+msgstr "经典"
+
 msgid "Clear copied passwords after"
 msgstr "清除已复制密码的时间"
 
 msgid "Clear history"
 msgstr "清除历史记录"
+
+msgid "Clear the password history?"
+msgstr "要清除密码历史记录吗？"
 
 msgid "Client ID"
 msgstr "客户端 ID"
@@ -380,8 +427,14 @@ msgstr "正在关闭映射"
 msgid "Code copied"
 msgstr "验证码已复制"
 
+msgid "Code from Dropbox"
+msgstr "Dropbox 代码"
+
 msgid "Code settings"
 msgstr "验证码设置"
+
+msgid "Coffee"
+msgstr "咖啡"
 
 msgid "Columns such as name, url, username, password"
 msgstr "包含 name、url、username、password 等列"
@@ -439,8 +492,46 @@ msgstr "请确认主密码以导出数据。"
 msgid "Conflicts"
 msgstr "冲突"
 
-msgid "Connecting the extension"
-msgstr "连接扩展"
+msgid "Connect"
+msgstr "连接"
+
+msgid "Connect a phone"
+msgstr "连接手机"
+
+msgid "Connect a phone…"
+msgstr "连接手机…"
+
+msgid "Connect browsers"
+msgstr "连接浏览器"
+
+msgid "Connect failed"
+msgstr "连接失败"
+
+msgid "Connect the sync folder"
+msgstr "连接同步文件夹"
+
+msgid "Connect your browsers"
+msgstr "连接您的浏览器"
+
+msgid "Connected"
+msgstr "已连接"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "已连接 {} 个浏览器。如果它们已打开，请重新启动。"
+
+msgid "Connected. Received:"
+msgstr "已连接。已接收："
+
+msgid "Connecting and syncing…"
+msgstr "正在连接并同步…"
+
+msgid "Connection QR code"
+msgstr "连接二维码"
+
+msgid "Connect…"
+msgstr "连接…"
 
 msgid "Continue"
 msgstr "继续"
@@ -478,8 +569,14 @@ msgstr "无法添加附件"
 msgid "Could not change the favorite"
 msgstr "无法更改收藏"
 
+msgid "Could not check"
+msgstr "无法检查"
+
 msgid "Could not clear the history"
 msgstr "无法清除历史记录"
+
+msgid "Could not connect the browsers"
+msgstr "无法连接浏览器"
 
 msgid "Could not create the folder"
 msgstr "无法创建文件夹"
@@ -495,6 +592,15 @@ msgstr "无法删除"
 
 msgid "Could not lock the drive"
 msgstr "无法锁定驱动器"
+
+msgid "Could not make the QR code"
+msgstr "无法生成二维码"
+
+msgid "Could not merge"
+msgstr "无法合并"
+
+msgid "Could not open the vault"
+msgstr "无法打开密码库"
 
 msgid "Could not open this access"
 msgstr "无法打开此条目"
@@ -525,6 +631,9 @@ msgstr "无法重命名文件夹"
 
 msgid "Could not restore. Look in Deleted items."
 msgstr "无法恢复。请在“已删除项目”中查找。"
+
+msgid "Could not save"
+msgstr "无法保存"
 
 msgid "Could not save the file"
 msgstr "无法保存文件"
@@ -610,8 +719,16 @@ msgstr "删除条目…"
 msgid "Delete permanently"
 msgstr "永久删除"
 
+msgid "Delete permanently?"
+msgstr "要永久删除吗？"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "如果导出文件没有密码保护，请将其删除。"
+
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "也要在这里删除 {} 个项目吗？"
 
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
@@ -647,6 +764,18 @@ msgstr "设备路径"
 msgid "Digits"
 msgstr "位数"
 
+msgid "Digits and symbols in color, easier to read and type"
+msgstr "数字和符号以彩色显示，更易阅读和输入"
+
+msgid "Disconnect"
+msgstr "断开连接"
+
+msgid "Disconnect failed"
+msgstr "断开连接失败"
+
+msgid "Disconnect the sync folder?"
+msgstr "断开同步文件夹？"
+
 msgid "Done"
 msgstr "完成"
 
@@ -661,6 +790,9 @@ msgstr "正在下载远程更改"
 
 msgid "Drive locked"
 msgstr "驱动器已锁定"
+
+msgid "Duplicate items"
+msgstr "重复项目"
 
 msgid "Easier to type and remember."
 msgstr "更易于输入和记忆。"
@@ -683,6 +815,9 @@ msgstr "空密码短语"
 msgid "Empty trash"
 msgstr "清空回收站"
 
+msgid "Empty trash?"
+msgstr "要清空回收站吗？"
+
 msgid "Encrypt"
 msgstr "加密"
 
@@ -692,11 +827,20 @@ msgstr "加密驱动器"
 msgid "Encrypt KeePass export"
 msgstr "加密 KeePass 导出"
 
+msgid "Encrypt again"
+msgstr "重新加密"
+
 msgid "Encrypted as"
 msgstr "加密方式"
 
 msgid "Encrypted device"
 msgstr "已加密设备"
+
+msgid "Encrypted folder sync"
+msgstr "加密文件夹同步"
+
+msgid "Encrypted folder sync failed"
+msgstr "加密文件夹同步失败"
 
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "加密快照上传，支持冲突检测"
@@ -715,6 +859,9 @@ msgid ""
 "Encrypting erases the whole drive. Unlock and lock work for LUKS drives."
 msgstr "加密会清除整个驱动器。解锁和锁定适用于 LUKS 驱动器。"
 
+msgid "Encrypting the vault again…"
+msgstr "正在重新加密密码库…"
+
 msgid "Encrypting…"
 msgstr "正在加密…"
 
@@ -732,6 +879,9 @@ msgstr "请输入标签名。"
 
 msgid "Enter the PIN set up on this computer."
 msgstr "输入在此电脑上设置的 PIN。"
+
+msgid "Enter the master password"
+msgstr "请输入主密码"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "输入密码，或在下方添加验证码。"
@@ -758,11 +908,26 @@ msgid "Estimated strength"
 msgstr "预估强度"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"密码库中的所有内容将使用按上述开销派生的密钥重新加密。旧版 Ashy Pass 将无法用"
+"主密码打开密码库。需要重新设置 PIN。"
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "保险库中的所有内容都会使用新密码重新加密。之前创建的备份仍使用创建时的密码打"
 "开。"
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"密码库中的所有内容将使用标准开销重新加密，所有 Ashy Pass 3 版本都能打开。需要"
+"重新设置 PIN。"
 
 msgid "Everything is in sync"
 msgstr "一切同步正常"
@@ -832,8 +997,19 @@ msgstr "文件会被加密并存储在保险库中。"
 msgid "Filesystem"
 msgstr "文件系统"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"在 Chrome、Brave、Edge、Vivaldi、Firefox 和 LibreWolf 中填写和复制密码。扩展"
+"不保存任何内容：每次都向 Ashy Pass 询问，并且只在您点击后才填写页面。"
+
 msgid "Fill in all three fields."
 msgstr "请填写全部三个字段。"
+
+msgid "Find duplicate items"
+msgstr "查找重复项目"
 
 msgid "Findings"
 msgstr "发现结果"
@@ -858,6 +1034,9 @@ msgstr "文件夹已创建"
 msgid "Folder name"
 msgstr "文件夹名称"
 
+msgid "Folder on this computer"
+msgstr "此电脑上的文件夹"
+
 msgid "Folder removed. Its passwords were kept."
 msgstr "文件夹已移除，其中的密码已保留。"
 
@@ -880,6 +1059,12 @@ msgid ""
 msgstr ""
 "对于 Nextcloud，基础地址格式为 https://cloud.example.com/remote.php/dav/"
 "files/用户名"
+
+msgid "For the browsers installed for this user"
+msgstr "适用于此用户安装的浏览器"
+
+msgid "Forest"
+msgstr "森林"
 
 msgid "Forgot the master password"
 msgstr "忘记主密码"
@@ -913,17 +1098,50 @@ msgstr "生成密码"
 msgid "Generated password"
 msgstr "已生成的密码"
 
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "获取适用于 Chrome、Brave、Edge 和 Vivaldi 的扩展"
+
+msgid "Get the extension for Firefox"
+msgstr "获取适用于 Firefox 的扩展"
+
 msgid "Give this access a name, for example the site or app."
 msgstr "为此条目命名，例如网站或应用名称。"
 
 msgid "Go to search"
 msgstr "转到搜索"
 
+msgid ""
+"Good for 10 minutes. The QR code alone is no use without this code, and "
+"neither opens your passwords without the master password."
+msgstr ""
+"10 分钟内有效。没有这个代码，单靠二维码没有用；没有主密码，两者都打不开你的密"
+"码。"
+
 msgid "Google Drive"
 msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive 和 WebDAV"
+
+msgid "Google account"
+msgstr "Google 账号"
+
+msgid "Google sign-in failed"
+msgstr "Google 登录失败"
+
+msgid "Grape"
+msgstr "葡萄"
+
+msgid ""
+"Group the codes as in Aegis. Groups are the item's tags: they sync to your "
+"other devices."
+msgstr "像 Aegis 一样对验证码分组。分组即条目的标签：会同步到您的其他设备。"
+
+msgid "Groups"
+msgstr "分组"
+
+msgid "Groups…"
+msgstr "分组…"
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr "有助于SSD磨损均衡，但会将空闲空间模式泄露给设备。"
@@ -934,13 +1152,15 @@ msgstr "在剪贴板历史中隐藏复制的密码"
 msgid "Hide password"
 msgstr "隐藏密码"
 
+msgid "High contrast"
+msgstr "高对比度"
+
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"更高的成本会减缓猜测攻击，也会让解锁变慢。自动调整会选择在此电脑上约需半秒的"
-"参数；这些参数将在下次设置或更改主密码时生效。"
+"更高的开销会减缓猜测攻击，也会让解锁变慢。自动调整会选择在这台计算机上约耗时"
+"半秒的数值。"
 
 msgid "History cleared"
 msgstr "历史记录已清除"
@@ -980,6 +1200,14 @@ msgstr "导入密码"
 msgid "Import passwords…"
 msgstr "导入密码…"
 
+msgid ""
+"In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
+"“Scan the computer's QR code”. Then type the code below and your master "
+"password."
+msgstr ""
+"在 Android 版 Ashy Pass 中打开 设置 → 加密文件夹同步，点按“扫描电脑上的二维"
+"码”。然后输入下方的代码和主密码。"
+
 msgid "Incorrect PIN"
 msgstr "PIN码错误"
 
@@ -994,6 +1222,9 @@ msgstr[0] "PIN 不正确。还剩 {} 次尝试机会。"
 msgid "Incorrect master password"
 msgstr "主密码错误"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "主密码不正确。未做任何更改。"
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "主密码不正确。未导出任何内容。"
 
@@ -1005,15 +1236,11 @@ msgstr ""
 "插入您的 FIDO2 令牌（Yubikey、Nitrokey 等），并在提示时在设备上授权。需要您当"
 "前的密码短语来授权新的密钥槽。"
 
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"在 Chrome 或 Firefox 中安装扩展，然后使用以下命令注册此电脑：  ashypass-"
-"native-host --install <扩展ID>"
-
 msgid "Internal error: no passphrase set"
 msgstr "内部错误：未设置密码短语"
+
+msgid "Internal error: the drive was not checked"
+msgstr "内部错误：驱动器未经检查"
 
 msgid "It can be restored from Deleted items."
 msgstr "可以从“已删除项目”中恢复。"
@@ -1022,6 +1249,9 @@ msgid ""
 "It opens the vault on this computer. Nobody can recover it for you — not "
 "even Ashy Pass."
 msgstr "它用于在此电脑上打开保险库。没有人能帮你找回它——Ashy Pass 也不能。"
+
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "项目会保留在此处和文件夹中；重新连接时会合并"
 
 msgid "Its user, password and other details appear here."
 msgstr "它的用户、密码和其他详细信息会显示在这里。"
@@ -1044,6 +1274,9 @@ msgstr "将保险库的受保护副本存放在安全的地方，并导入或导
 
 msgid "Keep deleted entries for (days)"
 msgstr "保留已删除条目的天数"
+
+msgid "Keep them"
+msgstr "保留"
 
 msgid "Keep using"
 msgstr "继续使用"
@@ -1107,6 +1340,9 @@ msgstr "此电脑上的最近一次备份"
 msgid "Last changed:"
 msgstr "上次更改："
 
+msgid "Last sync:"
+msgstr "上次同步："
+
 msgid "Launch the encryption wizard"
 msgstr "启动加密向导"
 
@@ -1127,6 +1363,28 @@ msgstr "立即锁定保险库（Ctrl+L）"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "屏幕锁定或电脑休眠时锁定"
+
+msgid "Login name"
+msgstr "登录名"
+
+msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"同一网站和账户的登录信息，或具有相同验证码的项目，由导入或两次同步遗留。合并"
+"会保留其中一个，将只有其他项目才有的内容（验证码、备注、其他网站、分组；其他"
+"密码进入其历史记录）并入其中，并将其他项目移至“已删除项目”。"
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
+"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+msgstr ""
+"登录信息、卡片、身份、笔记和通行密钥会先在这台电脑上加密，再通过 Nextcloud、"
+"pCloud、WebDAV、Dropbox、Google 云端硬盘或这台电脑上的文件夹同步。Android 版 "
+"Ashy Pass 使用同一个文件夹。"
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1159,8 +1417,20 @@ msgstr "测试此电脑性能（约 5 秒）"
 msgid "Medium"
 msgstr "中等"
 
+msgid "Merge, keeping the selected one"
+msgstr "合并并保留所选项目"
+
+msgid "Merged"
+msgstr "已合并"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "已合并；其他项目在“已删除项目”中"
+
 msgid "Minimum length:"
 msgstr "最小长度："
+
+msgid "Mint"
+msgstr "薄荷"
 
 msgid "Model"
 msgstr "型号"
@@ -1168,11 +1438,17 @@ msgstr "型号"
 msgid "Modern password generator and encrypted password vault"
 msgstr "现代密码生成器和加密密码保险库"
 
+msgid "Monochrome"
+msgstr "单色"
+
 msgid "More actions"
 msgstr "更多操作"
 
 msgid "More options"
 msgstr "更多选项"
+
+msgid "Move to Deleted items"
+msgstr "移到已删除项目"
 
 msgid "Moved to Deleted items"
 msgstr "已移至“已删除项目”"
@@ -1212,6 +1488,9 @@ msgstr "新文件夹名称"
 msgid "New folder…"
 msgstr "新建文件夹…"
 
+msgid "New group"
+msgstr "新建分组"
+
 msgid "New master password"
 msgstr "新主密码"
 
@@ -1236,6 +1515,9 @@ msgstr ""
 "Nextcloud Passwords 要求密码字段必须填写。请在 Ashy Pass 中编辑这些条目，添加"
 "密码后即可发送。"
 
+msgid "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or a local folder"
+msgstr "Nextcloud、pCloud、WebDAV、Dropbox、Google 云端硬盘或本地文件夹"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr "未找到二维码。请确保整个二维码可见且不要太小。"
@@ -1246,8 +1528,17 @@ msgstr "无附件"
 msgid "No backup made on this computer yet"
 msgstr "此电脑上尚未创建备份"
 
+msgid "No browser found yet"
+msgstr "尚未找到浏览器"
+
 msgid "No codes found for"
 msgstr "未找到验证码："
+
+msgid "No colors"
+msgstr "无颜色"
+
+msgid "No duplicate items"
+msgstr "没有重复项目"
 
 msgid "No external drives detected"
 msgstr "未检测到外部驱动器"
@@ -1276,14 +1567,26 @@ msgstr "没有以前的密码"
 msgid "No security key or recovery phrase changes can be made in this version."
 msgstr "此版本不支持更改安全密钥或恢复短语。"
 
+msgid "No stable device link"
+msgstr "没有稳定的设备链接"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr "未找到受支持的浏览器。请先打开一次浏览器，然后重试。"
+
 msgid "No verification codes yet"
 msgstr "暂无验证码"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "无——快速，但会遗留可恢复的先前数据"
 
+msgid "Not chosen"
+msgstr "未选择"
+
 msgid "Not configured"
 msgstr "未配置"
+
+msgid "Not connected"
+msgstr "未连接"
 
 msgid "Not run yet"
 msgstr "尚未运行"
@@ -1306,8 +1609,14 @@ msgstr "无任何变更——Ashypass 与 Nextcloud 已保持一致。"
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "不会删除任何内容。已在保险库中的条目将被跳过。"
 
+msgid "Nothing was changed"
+msgstr "未做任何更改"
+
 msgid "Nothing was changed."
 msgstr "未做任何更改。"
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "未做任何更改。请关闭其他 Ashy Pass 窗口后重试。"
 
 msgid "Nothing was imported"
 msgstr "未导入任何内容"
@@ -1337,6 +1646,9 @@ msgstr "构建时未配置OAuth客户端"
 
 msgid "OK"
 msgstr "确定"
+
+msgid "Ocean"
+msgstr "海洋"
 
 msgid "Off"
 msgstr "关"
@@ -1375,6 +1687,12 @@ msgstr "仅在网站有特定规则时需要"
 msgid "Only when some entries come from Nextcloud Passwords and others do not"
 msgstr "仅当部分条目来自 Nextcloud Passwords 而其他条目不是时"
 
+msgid "Open Dropbox"
+msgstr "打开 Dropbox"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr "打开 Dropbox，允许 Ashy Pass，然后粘贴显示的代码"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr "打开一个密码并点亮星标，可以更快找到它。"
 
@@ -1396,8 +1714,14 @@ msgstr "打开加密卷"
 msgid "Open website"
 msgstr "打开网站"
 
+msgid "Open your browser once, then connect"
+msgstr "请先打开一次浏览器，然后再连接"
+
 msgid "Opening encrypted mapping"
 msgstr "正在打开加密映射"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr "在浏览器中打开 Dropbox；复制显示的代码"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "打开浏览器进行OAuth授权"
@@ -1458,6 +1782,9 @@ msgstr "密码"
 msgid "Password / app-password"
 msgstr "密码/应用密码"
 
+msgid "Password colors"
+msgstr "密码颜色"
+
 msgid "Password copied"
 msgstr "密码已复制"
 
@@ -1472,6 +1799,9 @@ msgstr "密码历史…"
 
 msgid "Password list"
 msgstr "密码列表"
+
+msgid "Password of the Aegis vault"
+msgstr "Aegis 保险库的密码"
 
 msgid "Password of the KeePass database"
 msgstr "KeePass 数据库的密码"
@@ -1677,8 +2007,18 @@ msgstr "正在恢复副本…"
 msgid "Retention"
 msgstr "保留期限"
 
+msgid "Rose"
+msgstr "玫瑰"
+
 msgid "Run"
 msgstr "运行"
+
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"安装浏览器后运行一次，以便它能找到 Ashy Pass。只会在每个浏览器的设置文件夹中"
+"添加一个小文件。"
 
 msgid "Running audit..."
 msgstr "正在运行审计..."
@@ -1694,6 +2034,12 @@ msgstr "安全检查未通过"
 
 msgid "Safety checks passed"
 msgstr "安全检查通过"
+
+msgid "Same site and account"
+msgstr "相同网站和账户"
+
+msgid "Same verification code"
+msgstr "相同验证码"
 
 msgid "Save"
 msgstr "保存"
@@ -1715,6 +2061,9 @@ msgstr "保存备份"
 
 msgid "Save in"
 msgstr "保存到"
+
+msgid "Save new PIN"
+msgstr "保存新 PIN"
 
 msgid "Save to vault"
 msgstr "保存到保险库"
@@ -1773,6 +2122,9 @@ msgstr "查看我的密码"
 msgid "Select an access"
 msgstr "选择一个条目"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr "每次编辑后很快发送更改，并定期检查服务器"
+
 msgid "Sending local changes"
 msgstr "正在发送本地更改"
 
@@ -1797,9 +2149,15 @@ msgstr "服务器 URL、用户名、应用密码"
 msgid "Server URL, username, app-password"
 msgstr "服务器地址、用户名、应用密码"
 
+msgid "Server address"
+msgstr "服务器地址"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr "服务器地址（例如 cloud.example.com）、用户名和应用密码。"
+
+msgid "Service"
+msgstr "服务"
 
 msgid "Set PIN"
 msgstr "设置 PIN"
@@ -1837,6 +2195,9 @@ msgstr "显示文件夹"
 msgid "Show favicons"
 msgstr "显示网站图标"
 
+msgid "Show icons beside the codes"
+msgstr "在验证码旁显示图标"
+
 msgid "Show only favorites"
 msgstr "仅显示收藏"
 
@@ -1849,11 +2210,17 @@ msgstr "显示侧边栏"
 msgid "Show technical details"
 msgstr "查看技术详情"
 
+msgid "Shows a QR code to scan with Ashy Pass for Android"
+msgstr "显示一个二维码，用 Android 版 Ashy Pass 扫描"
+
 msgid "Sign in failed"
 msgstr "登录失败"
 
 msgid "Sign in to Google"
 msgstr "登录Google"
+
+msgid "Sign in to Google to use your Drive"
+msgstr "登录 Google 以使用你的云端硬盘"
 
 msgid "Sign out"
 msgstr "退出登录"
@@ -1891,14 +2258,26 @@ msgstr "强度"
 msgid "Strong"
 msgstr "强"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"更能抵御对主密码的猜测。开启期间，旧版 Ashy Pass 无法用主密码打开密码库。"
+
 msgid "Style"
 msgstr "样式"
 
 msgid "Summary"
 msgstr "摘要"
 
+msgid "Sunset"
+msgstr "日落"
+
 msgid "Symbols (!@#$…)"
 msgstr "符号 (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "自动同步"
 
 msgid "Sync completed"
 msgstr "同步完成"
@@ -1909,17 +2288,24 @@ msgstr "同步出现问题"
 msgid "Sync completed with warnings"
 msgstr "同步完成，但有警告"
 
-msgid "Sync conflict"
-msgstr "同步冲突"
-
 msgid "Sync conflict detected"
 msgstr "检测到同步冲突"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "同步冲突：服务器上有更新的副本（第 {} 代）"
 
 msgid "Sync failed"
 msgstr "同步失败"
 
+msgid "Sync folder disconnected"
+msgstr "同步文件夹已断开连接"
+
 msgid "Sync now"
 msgstr "立即同步"
+
+msgid "Sync when the vault is unlocked"
+msgstr "解锁密码库时同步"
 
 msgid "Synchronization"
 msgstr "同步"
@@ -1950,6 +2336,9 @@ msgstr "正在同步..."
 msgid "Syncing folders"
 msgstr "正在同步文件夹"
 
+msgid "Syncing…"
+msgstr "正在同步…"
+
 msgid "Tags"
 msgstr "标签"
 
@@ -1967,6 +2356,11 @@ msgstr "技术细节"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "无法在此电脑上使用 PIN。请使用主密码。"
+
+msgid ""
+"The PIN is not stored anywhere, so it cannot be shown. To change it, set a "
+"new one."
+msgstr "PIN 不会保存在任何地方，因此无法显示。如需更改，请设置新的 PIN。"
 
 msgid "The PIN must have at least 4 characters"
 msgstr "PIN 至少需要 4 个字符"
@@ -1987,6 +2381,9 @@ msgstr "该条目将移至“已删除项目”，在以下时间内可恢复：
 msgid "The backup was not created"
 msgstr "未创建备份"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "未安装 Ashy Pass 浏览器连接器"
+
 msgid "The copy could not be downloaded"
 msgstr "无法下载副本"
 
@@ -1997,6 +2394,14 @@ msgstr[0] "副本已校验，包含 {} 个条目。"
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "当前主密码不正确。未做任何更改。"
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"扩展会要求输入主密码，并且只在自动锁定前保持密码库打开。如果开启了“登录时自动"
+"打开”，则无需询问即可打开。开启该选项时，锁定屏幕也会将其锁定。"
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2017,6 +2422,9 @@ msgstr "导入已停止，所有更改均已撤销。保险库保持原样。"
 msgid ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
 msgstr "标签名不能以 \"-\" 开头，也不能包含 \"/\" 或控制字符。"
+
+msgid "The last sync failed"
+msgstr "上次同步失败"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "主密码太短。最小长度："
@@ -2046,6 +2454,11 @@ msgstr "密码未更改"
 msgid "The passwords do not match"
 msgstr "两次输入的密码不一致"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr "此访问项的旧密码将被永久删除。此操作无法撤销。"
+
 msgid "The previous vault was kept at:"
 msgstr "之前的保险库已保存在："
 
@@ -2060,6 +2473,9 @@ msgstr "搜索仅限于没有文件夹的密码。"
 
 msgid "The search is limited to the folder"
 msgstr "搜索仅限于文件夹"
+
+msgid "The site's icon, when the code has a site saved"
+msgstr "验证码保存了网站时显示该网站的图标"
 
 msgid "The sync finished, but some items reported errors."
 msgstr "同步已结束，但部分项目报告了错误。"
@@ -2089,6 +2505,12 @@ msgid "The vault will open automatically at login"
 msgstr "登录时将自动打开保险库"
 
 #, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] "回收站中的 {} 个项目将被永久删除。此操作无法撤销。"
+
+#, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
 msgid_plural ""
 "The {} passwords in it stay in the vault and move to “No folder”."
@@ -2102,6 +2524,16 @@ msgstr "没有可导入的新内容。"
 
 msgid "These options cannot produce a password."
 msgstr "这些选项无法生成密码。"
+
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"这些项目曾与 Nextcloud Passwords 同步，但已不在服务器上。如果是你在那里删除"
+"的，它们会在这里移到已删除项目。如果不是，服务器可能只返回了部分数据：请保留"
+"它们，下次同步会再次尝试。"
 
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "此 PIN 已与保险库不匹配。未做任何更改。"
@@ -2120,6 +2552,12 @@ msgstr "此条目没有用户"
 msgid "This access no longer exists"
 msgstr "此条目已不存在"
 
+msgid "This build has no Dropbox app key"
+msgstr "此版本没有 Dropbox 应用密钥"
+
+msgid "This build has no Google sign-in configured"
+msgstr "此版本未配置 Google 登录"
+
 msgid "This cannot be undone."
 msgstr "此操作无法撤销。"
 
@@ -2132,17 +2570,32 @@ msgstr "这将删除整个条目：验证码、密码和备注。"
 msgid "This device generation:"
 msgstr "本设备版本："
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"此驱动器在 /dev/disk/by-id 中没有链接，因此 Ashy Pass 无法确保擦除时仍是同一"
+"个驱动器。无法在此加密。"
+
 msgid "This file can be read without a password"
 msgstr "此文件无需密码即可读取"
 
 msgid "This file could not be read"
 msgstr "无法读取此文件"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "此文件太大，无法添加为附件。上限为 64 MB。"
+
 msgid "This folder already exists"
 msgstr "此文件夹已存在"
 
 msgid "This folder is empty"
 msgstr "此文件夹为空"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr "无法打开此图片。请使用不超过 20 MB 的 PNG、JPEG 或 WebP 图片。"
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "
@@ -2277,6 +2730,9 @@ msgstr "解锁于"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "已被其他应用解锁。请从文件管理器中锁定。"
 
+msgid "Unlocking"
+msgstr "解锁"
+
 msgid "Unlocking…"
 msgstr "正在解锁…"
 
@@ -2322,8 +2778,18 @@ msgstr "使用主密码"
 msgid "Use the + button to create one."
 msgstr "使用 + 按钮创建一个。"
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"请在所有设备上使用相同的主密码：它用于打开文件夹的密钥。加入时只需在此输入一"
+"次。"
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "当网站要求两步验证时，使用这些验证码。"
+
+msgid "Use these costs for the vault key"
+msgstr "将这些开销用于密码库密钥"
 
 msgid "Use this password"
 msgstr "使用此密码"
@@ -2340,6 +2806,9 @@ msgstr "用户"
 msgid "User copied"
 msgstr "用户已复制"
 
+msgid "User name"
+msgstr "用户名"
+
 msgid "User or e-mail (optional)"
 msgstr "用户名或电子邮件（可选）"
 
@@ -2353,6 +2822,9 @@ msgid ""
 msgstr ""
 "使用 Have I Been Pwned。只发送每个密码哈希值的前 5 个字符，绝不发送密码本身。"
 "结果会在此电脑上保留 7 天。"
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr "使用“备份”中的 Google Drive 登录"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2371,6 +2843,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "保管库已同步"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "密码库已重新加密。如果之前使用了 PIN，请重新设置。"
 
 msgid "Vault locked after a period of inactivity"
 msgstr "保险库因闲置一段时间而锁定"
@@ -2399,6 +2874,9 @@ msgstr "验证码已保存到保险库"
 msgid "Verification codes"
 msgstr "验证码"
 
+msgid "Verification codes (JSON, encrypted or not)"
+msgstr "验证码(JSON,已加密或未加密)"
+
 msgid "Verification codes (unencrypted JSON)"
 msgstr "验证码（未加密的 JSON）"
 
@@ -2408,14 +2886,26 @@ msgstr "非常强"
 msgid "Very Weak"
 msgstr "非常弱"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "请等待同步完成，然后再退出登录。"
+
+msgid "Waiting for Google in the browser…"
+msgstr "正在浏览器中等待 Google…"
+
 msgid "Waiting for Nextcloud..."
 msgstr "正在等待 Nextcloud..."
 
 msgid "Weak"
 msgstr "弱"
 
+msgid "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+msgstr "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "WebDAV 地址"
 
 msgid "WebDAV configured"
 msgstr "WebDAV 配置成功"
@@ -2434,13 +2924,8 @@ msgid ""
 "codes."
 msgstr "当网站提供两步验证时，在此添加其设置密钥以获取验证码。"
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"开启后，即使此窗口已锁定，Ashy Pass 浏览器扩展也可以通过系统密钥环解锁来读取"
-"保险库条目。自动锁定延迟过后，密钥将再次被丢弃。"
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "关闭时，扩展无法看到密码库中的任何内容"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "你想从哪里导入密码？"
@@ -2469,6 +2954,12 @@ msgstr "擦除设备"
 msgid "Wiping device"
 msgstr "正在擦除设备"
 
+msgid ""
+"With two-step verification on, pCloud e-mails you about the new sign-in: "
+"approve it there and connect again."
+msgstr ""
+"如果开启了两步验证，pCloud 会发邮件告知这次新登录：在邮件中批准后再连接一次。"
+
 msgid "Working..."
 msgstr "处理中..."
 
@@ -2489,6 +2980,12 @@ msgstr "正在写入 LUKS2 头部"
 msgid "Wrong master password"
 msgstr "主密码错误"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "主密码错误。该文件夹属于使用另一个密码的保险库。"
+
+msgid "Wrong password. Password of the Aegis vault"
+msgstr "密码错误。Aegis 保险库的密码"
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2502,8 +2999,16 @@ msgstr "恢复副本时需要此密码。可以使用你的主密码；Ashy Pass
 msgid "Your entries are still available on this computer."
 msgstr "你的条目在此电脑上仍然可用。"
 
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr "您的项目会保留在此电脑和文件夹中。稍后重新连接会合并而不是重复。"
+
 msgid "Your most used accesses can be here"
 msgstr "你最常用的条目可以放在这里"
+
+msgid "Your pCloud e-mail and password"
+msgstr "你的 pCloud 邮箱和密码"
 
 msgid "Your vault is ready"
 msgstr "你的保险库已准备就绪"
@@ -2519,6 +3024,9 @@ msgstr "已分配"
 
 msgid "breached"
 msgstr "已泄露密码"
+
+msgid "different password"
+msgstr "不同密码"
 
 msgid "duplicate"
 msgstr "重复密码"
@@ -2551,6 +3059,10 @@ msgstr "低"
 msgid "medium"
 msgstr "中"
 
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "分钟"
+
 msgid "more"
 msgstr "个其他错误"
 
@@ -2571,6 +3083,15 @@ msgstr "未挂载"
 msgid "old"
 msgstr "旧密码"
 
+msgid "pCloud (data in Europe)"
+msgstr "pCloud（数据在欧洲）"
+
+msgid "pCloud (data in the US)"
+msgstr "pCloud（数据在美国）"
+
+msgid "pCloud e-mail"
+msgstr "pCloud 邮箱"
+
 msgid "passwordless entry was skipped"
 msgid_plural "passwordless entries were skipped"
 msgstr[0] "个无密码条目已忽略"
@@ -2587,6 +3108,9 @@ msgstr "机械硬盘 (HDD)"
 
 msgid "seen"
 msgstr "已查看"
+
+msgid "sent:"
+msgstr "已发送："
 
 msgid "solid-state"
 msgstr "固态硬盘"
@@ -2699,6 +3223,10 @@ msgstr[0] "{} 个将在调整后导入。"
 msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} 个单词"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "“{}”将被永久删除。此操作无法撤销。"
 
 msgid "…"
 msgstr "…"

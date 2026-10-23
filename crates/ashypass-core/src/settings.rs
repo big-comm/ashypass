@@ -47,13 +47,17 @@ pub struct Settings {
     /// `/favicon.ico`. Off by default: the query string carries the hostname,
     /// so enabling it discloses part of the vault's contents to a third party.
     pub favicon_third_party_fallback: bool,
-    /// Allow the browser native-messaging host to unlock the vault from the
-    /// system keyring and answer extension queries. Off disables browser
-    /// integration without having to remove the host manifests.
-    pub browser_integration: bool,
+    /// Let the browser extension reach the vault through the native host.
+    /// Off by default. (Named differently from the old `browser_extension`,
+    /// which defaulted to on before the extension existed and is saved as
+    /// `true` in most settings files: the new name makes it a real opt-in.)
+    pub browser_extension: bool,
     pub show_sync_badges: bool,
     pub compact_vault_list: bool,
     pub large_totp_codes: bool,
+    /// Site icons beside the verification codes. Off by default: most codes
+    /// have no site saved, and a column of identical icons only adds noise.
+    pub totp_icons: bool,
     pub lock_timeout: u64,
     pub clipboard_clear: u64,
     pub generator: GeneratorPrefs,
@@ -84,6 +88,9 @@ pub struct Settings {
     /// Off by default: earlier versions did not mark copies, and many people
     /// rely on their clipboard history.
     pub clipboard_hide_from_history: bool,
+    /// Colour theme for shown passwords (digits and symbols stand out):
+    /// "classic", "ocean", … or "off". Same themes as the Android app.
+    pub password_colors: String,
 }
 
 /// Wrapping-KDF generation for `QuickUnlockPrefs::encrypted_key`.
@@ -137,10 +144,11 @@ impl Default for Settings {
         Self {
             show_favicons: true,
             favicon_third_party_fallback: false,
-            browser_integration: true,
+            browser_extension: false,
             show_sync_badges: true,
             compact_vault_list: false,
             large_totp_codes: true,
+            totp_icons: false,
             lock_timeout: SESSION_TIMEOUT_SECONDS,
             clipboard_clear: CLIPBOARD_CLEAR_SECONDS,
             generator: GeneratorPrefs::default(),
@@ -154,11 +162,21 @@ impl Default for Settings {
             lock_on_screen_lock: true,
             color_scheme: "system".to_string(),
             clipboard_hide_from_history: false,
+            password_colors: "classic".to_string(),
         }
     }
 }
 
 impl Settings {
+    /// Keep hand-edited durations in a range the timers can represent (they
+    /// count in `u32` seconds): one day at most.
+    fn clamped(mut self) -> Self {
+        const MAX_SECONDS: u64 = 24 * 3600;
+        self.lock_timeout = self.lock_timeout.min(MAX_SECONDS);
+        self.clipboard_clear = self.clipboard_clear.min(MAX_SECONDS);
+        self
+    }
+
     pub fn load() -> Self {
         Self::load_from(&settings_file())
     }
@@ -189,8 +207,8 @@ impl Settings {
                 return Self::default();
             }
         };
-        match serde_json::from_slice(&bytes) {
-            Ok(settings) => settings,
+        match serde_json::from_slice::<Self>(&bytes) {
+            Ok(settings) => settings.clamped(),
             Err(error) => {
                 log::error!(
                     "settings file {} could not be parsed: {error}",
@@ -299,6 +317,8 @@ mod tests {
         )
         .unwrap();
         let settings = Settings::load_from(&path);
+        // A setting the file predates takes its default.
+        assert!(!settings.totp_icons);
         // Non-round values chosen in the old seconds-based UI stay as they were.
         assert_eq!(settings.lock_timeout, 45);
         assert_eq!(settings.clipboard_clear, 20);
@@ -391,5 +411,27 @@ mod tests {
         assert!(current.is_configured());
         assert!(!current.needs_upgrade());
         assert!(!QuickUnlockPrefs::default().is_configured());
+    }
+
+    #[test]
+    fn huge_durations_are_clamped_on_load() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("settings.json");
+        std::fs::write(
+            &path,
+            r#"{"lock_timeout": 4294967296, "clipboard_clear": 18446744073709551615}"#,
+        )
+        .unwrap();
+        let settings = Settings::load_from(&path);
+        assert_eq!(settings.lock_timeout, 24 * 3600);
+        assert_eq!(settings.clipboard_clear, 24 * 3600);
+    }
+
+    #[test]
+    fn the_old_browser_switch_does_not_turn_the_extension_on() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("settings.json");
+        std::fs::write(&path, r#"{"browser_integration": true}"#).unwrap();
+        assert!(!Settings::load_from(&path).browser_extension);
     }
 }

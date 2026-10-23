@@ -1,0 +1,716 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Udfyld og kopiér logins fra Ashy Pass, adgangskodehåndteringen til Linux.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Forbinder til Ashy Pass…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass er ikke forbundet",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Installer Ashy Pass, og forbind denne browser i Ashy Pass → Indstillinger → Browser.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "Browserudvidelsen er slået fra",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Slå browserudvidelsen til i Ashy Pass → Indstillinger → Browser.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "Ingen boks endnu",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "Opret først din boks i Ashy Pass.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "Noget gik galt",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "Prøv igen",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "Din boks er låst",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "Hovedadgangskode",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "Lås op",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "Låser op…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "Forkert hovedadgangskode.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "For mange forsøg. Vent lidt, og prøv igen.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "Søg i alle poster",
+    "description": "Label and placeholder of the search field."
+  },
+  "searchResultsHeading": {
+    "message": "Søgeresultater",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "Ingen gemte logins til dette websted.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "Ingen poster fundet.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "Udfyldning virker kun på websider.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "Intet brugernavn",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "Uden titel",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "Udfyld",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "Kopiér bruger",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "Kopiér adgangskode",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "Kopiér kode",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "Udfyld $TITLE$ på denne side",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "Kopiér brugernavnet til $TITLE$",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "Kopiér adgangskoden til $TITLE$",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "Kopiér bekræftelseskoden til $TITLE$",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "Brugernavn kopieret",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "Adgangskode kopieret",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "Kode kopieret",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "Udfyldt",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "Ingen loginformular fundet på denne side",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "Kunne ikke kopiere til udklipsholderen",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "Generér adgangskode",
+    "description": "Button that generates a new password and copies it."
+  },
+  "revealPassword": {
+    "message": "Vis adgangskode",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "Skjul adgangskode",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "Lås",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "Boks låst",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass svarede ikke i tide.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "Forbindelsen til Ashy Pass blev afbrudt.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "Dette login hører ikke til dette websted.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "Denne post findes ikke længere.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "Denne post har ingen bekræftelseskode.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "Denne side tillader ikke udfyldning.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass rapporterede: $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  },
+  "backButton": {
+    "message": "Tilbage",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Tilføj",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Åbn Ashy Pass",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Boks",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Generator",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Indstillinger",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Sektioner",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "Pinkode",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Lås op med pinkode",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Brug hovedadgangskode i stedet",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Brug pinkode i stedet",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "Forkert pinkode.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "Forkert pinkode. Forsøg tilbage: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "Pinkoden blev slået fra efter for mange forkerte forsøg. Brug din hovedadgangskode.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "Der er ikke oprettet en pinkode på denne computer. Brug din hovedadgangskode.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Vis forslag i loginfelter?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass kan vise dine logins lige under felterne til brugernavn og adgangskode på websteder.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Ikke nu",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Aktivér",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Mappe",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Type",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Alle poster",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "Logins med koder",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Favoritter",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Alle mapper",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Ingen mappe",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Forslag til autoudfyldning",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Favoritter",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Alle poster",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Poster",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Ingen poster matcher disse filtre.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "Din boks er tom.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Vis detaljerne for $TITLE$",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Åbn webstedet for $TITLE$",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "Flere valgmuligheder for $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Føj til favoritter",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Fjern fra favoritter",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Åbn websted",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Kopiér webadresse",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Vis detaljer",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Webadresse kopieret",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Føjet til favoritter",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Fjernet fra favoritter",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Postdetaljer",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Brugernavn",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Adgangskode",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Bekræftelseskode",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Websted",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Mappe",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Navn",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Nyt login",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Annuller",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Gem",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Angiv et navn.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Angiv en adgangskode.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Gemt",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Adgangskode genereret",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass kunne ikke acceptere denne anmodning.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Generér igen",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Kopiér",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Type værdi, der skal genereres",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Adgangskode",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Adgangssætning",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "Pinkode",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Længde",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Store bogstaver (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Små bogstaver (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Tal (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Symboler (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Undgå tvetydige tegn",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Ord",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Ordadskiller",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "Stort begyndelsesbogstav",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Medtag tal",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Behold mindst én tegntype.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Udfyld på denne side",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "Intet adgangskodefelt fundet på denne side",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Boks",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Lås nu",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Autoudfyldning",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Vis forslag i loginfelter",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Kræver adgang til de websteder, du besøger. Siden ser aldrig dine logins; intet udfyldes, før du vælger et.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "Forslag er slået til. Genindlæs åbne sider for at se dem.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "Tilladelsen blev ikke givet.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Tastaturgenvej",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutNotSet": {
+    "message": "Ikke angivet",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "Om",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Version",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Hjælp",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Privatliv",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Forslag fra Ashy Pass",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Vis forslag fra Ashy Pass",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass er låst",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Ingen logins til dette websted",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Tilføj login",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "Klik på Ashy Pass-ikonet i værktøjslinjen for at fortsætte.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Denne menu er udløbet. Klik på feltet igen.",
+    "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Slå browserens adgangskodeadministrator fra"
+  },
+  "browserPmHint": {
+    "message": "Dens egen liste vises oven på siden og dækker Ashy Pass’ forslag. Når den er slået fra, åbner Ashy Pass, så snart du klikker i et loginfelt."
+  },
+  "browserPmOffToast": {
+    "message": "Browserens adgangskodeadministrator er slået fra"
+  },
+  "browserPmOnToast": {
+    "message": "Browserens adgangskodeadministrator er slået til igen"
+  },
+  "shortcutOpens": {
+    "message": "Åbner dette vindue."
+  },
+  "shortcutChange": {
+    "message": "Skift"
+  },
+  "shortcutRecord": {
+    "message": "Tryk på den nye tastekombination…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl eller Alt, eventuelt Shift, og et bogstav eller tal. Esc annullerer."
+  },
+  "shortcutReset": {
+    "message": "Standard"
+  },
+  "shortcutSaved": {
+    "message": "Genvej gemt"
+  },
+  "shortcutInvalid": {
+    "message": "Den kombination kan ikke bruges. Prøv Ctrl eller Alt med et bogstav."
+  },
+  "shortcutOpenFailed": {
+    "message": "Browserens indstillinger for genveje kunne ikke åbnes."
+  },
+  "editButton": {
+    "message": "Rediger"
+  },
+  "deleteButton": {
+    "message": "Slet"
+  },
+  "deleteConfirmTitle": {
+    "message": "Slet “$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Hvis papirkurven er slået til i Ashy Pass, kan du gendanne det derfra. Synkroniserede enheder sletter det også."
+  },
+  "editLoginTitle": {
+    "message": "Rediger login"
+  },
+  "movedToTrash": {
+    "message": "Flyttet til Ashy Pass’ papirkurv"
+  },
+  "loginDeleted": {
+    "message": "Login slettet"
+  },
+  "errorChanged": {
+    "message": "Dette login blev ændret i Ashy Pass i mellemtiden. Åbn det igen for at se den nyeste version."
+  },
+  "errorHostOutdated": {
+    "message": "Opdater Ashy Pass på denne computer for at bruge dette."
+  },
+  "notesLabel": {
+    "message": "Noter"
+  }
+}

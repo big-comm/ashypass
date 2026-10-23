@@ -12,7 +12,7 @@ pub(super) fn build_nextcloud_passwords_group(
     state: SharedState,
     toast: Toaster,
     parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) -> adw::PreferencesGroup {
     let logged_in = state.nextcloud.borrow().is_logged_in();
     let group = adw::PreferencesGroup::builder()
@@ -48,12 +48,19 @@ pub(super) fn build_nextcloud_passwords_group(
         let state = state.clone();
         let toast = toast.clone();
         let status = status_row.clone();
-        let configure = configure_row.clone();
         let action_rows = nextcloud_action_rows.clone();
         let parent_widget = parent.clone();
         let dialog_slot = dialog_slot.clone();
         configure_row.connect_activated(move |row| {
+            // From the argument: a captured copy would make the row hold itself.
+            let configure = row.clone();
             if state.nextcloud.borrow().is_logged_in() {
+                // A running sync would write its mappings back after the
+                // reset below.
+                if ashypass_core::sync::nextcloud_engine::is_sync_running() {
+                    show_toast(&toast, tr!("Wait for the sync to finish, then sign out."));
+                    return;
+                }
                 // Drop the sync records before the credentials: if this fails
                 // the account stays signed in, and stale mappings never meet
                 // a different account on the next sign-in.
@@ -71,6 +78,11 @@ pub(super) fn build_nextcloud_passwords_group(
                 for row in action_rows.borrow().iter() {
                     row.set_sensitive(false);
                 }
+                // No status and no badges any more under the list.
+                state.set_sync_status(crate::state::SyncStatus::Unknown);
+                state
+                    .events
+                    .emit(crate::events::AppEvent::SyncStatusChanged);
                 show_toast(&toast, tr!("Signed out"));
                 return;
             }
@@ -127,7 +139,97 @@ pub(super) fn build_nextcloud_passwords_group(
     }
     group.add(&sync_row);
 
+    add_auto_sync_rows(&group, &state);
+
     group
+}
+
+/// Choices offered for the periodic sync, in minutes.
+const AUTO_SYNC_INTERVALS: [u32; 4] = [5, 15, 30, 60];
+
+/// "Sync automatically", its interval and "Sync when the vault is unlocked".
+/// Each change is saved at once and announced so the running scheduler
+/// picks it up.
+fn add_auto_sync_rows(group: &adw::PreferencesGroup, state: &SharedState) {
+    let current = state.settings();
+
+    let auto_row = adw::SwitchRow::builder()
+        .title(tr!("Sync automatically"))
+        .subtitle(tr!(
+            "Send changes shortly after each edit and check the server regularly"
+        ))
+        .active(current.nextcloud_auto_sync)
+        .build();
+
+    let labels: Vec<String> = AUTO_SYNC_INTERVALS
+        .iter()
+        .map(|minutes| format!("{minutes} {}", trn!("minute", "minutes", *minutes as usize)))
+        .collect();
+    let model = gtk::StringList::new(&labels.iter().map(String::as_str).collect::<Vec<_>>());
+    let interval_row = adw::ComboRow::builder()
+        .title(tr!("Check the server every"))
+        .model(&model)
+        .sensitive(current.nextcloud_auto_sync)
+        .build();
+    interval_row.set_selected(interval_index(current.nextcloud_auto_sync_interval_minutes));
+
+    let unlock_row = adw::SwitchRow::builder()
+        .title(tr!("Sync when the vault is unlocked"))
+        .active(current.nextcloud_sync_on_unlock)
+        .build();
+
+    {
+        let state = state.clone();
+        let interval_row = interval_row.clone();
+        auto_row.connect_active_notify(move |row| {
+            let value = row.is_active();
+            interval_row.set_sensitive(value);
+            save_sync_setting(&state, |s| s.nextcloud_auto_sync = value);
+        });
+    }
+    {
+        let state = state.clone();
+        interval_row.connect_selected_notify(move |row| {
+            let Some(minutes) = AUTO_SYNC_INTERVALS.get(row.selected() as usize).copied() else {
+                return;
+            };
+            save_sync_setting(&state, |s| s.nextcloud_auto_sync_interval_minutes = minutes);
+        });
+    }
+    {
+        let state = state.clone();
+        unlock_row.connect_active_notify(move |row| {
+            let value = row.is_active();
+            save_sync_setting(&state, |s| s.nextcloud_sync_on_unlock = value);
+        });
+    }
+
+    group.add(&auto_row);
+    group.add(&interval_row);
+    group.add(&unlock_row);
+}
+
+/// Row to show for a stored interval: the exact choice, else the closest
+/// longer one (the longest for anything above it).
+fn interval_index(minutes: u32) -> u32 {
+    AUTO_SYNC_INTERVALS
+        .iter()
+        .position(|choice| *choice >= minutes)
+        .unwrap_or(AUTO_SYNC_INTERVALS.len() - 1) as u32
+}
+
+fn save_sync_setting<F>(state: &SharedState, edit: F)
+where
+    F: FnOnce(&mut Settings),
+{
+    // Persist through the shared state: saving this page's snapshot would
+    // write back stale values changed on other pages.
+    if let Err(e) = state.update_settings(edit) {
+        log::warn!("could not save settings: {e}");
+    }
+    state
+        .events
+        .emit(crate::events::AppEvent::SyncSettingsChanged);
 }
 
 pub(super) fn show_nextcloud_dialog<F>(
@@ -135,12 +237,12 @@ pub(super) fn show_nextcloud_dialog<F>(
     state: SharedState,
     toast: Toaster,
     unlock_parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
     on_saved: F,
 ) where
     F: Fn() + 'static,
 {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(tr!("Nextcloud Passwords"))
         .body(tr!(
             "Server address (for example cloud.example.com), username and an app password."
@@ -153,9 +255,9 @@ pub(super) fn show_nextcloud_dialog<F>(
 
     let url_row = adw::EntryRow::builder().title(tr!("Server URL")).build();
     let user_row = adw::EntryRow::builder().title(tr!("Username")).build();
-    let pass_row = adw::PasswordEntryRow::builder()
-        .title(tr!("App password"))
-        .build();
+    let pass_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("App password")),
+    );
     let parent_window = parent.cloned();
 
     let list = gtk::ListBox::builder()
@@ -221,7 +323,7 @@ pub(super) fn show_nextcloud_dialog<F>(
             );
         });
     }
-    dialog.present(parent);
+    dialog.present();
 }
 
 pub(super) fn show_nextcloud_initial_sync_dialog(
@@ -229,7 +331,7 @@ pub(super) fn show_nextcloud_initial_sync_dialog(
     state: SharedState,
     toast: Toaster,
     unlock_parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) {
     if !state.vault.borrow().is_unlocked() {
         show_toast(&toast, tr!("Unlock the vault first"));
@@ -237,7 +339,7 @@ pub(super) fn show_nextcloud_initial_sync_dialog(
         return;
     }
 
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(tr!("Nextcloud Passwords connected"))
         .body(tr!(
             "Two-way reconcile: pull remote, push local, resolve by latest-wins"
@@ -262,7 +364,7 @@ pub(super) fn show_nextcloud_initial_sync_dialog(
         }
         dlg.close();
     });
-    dialog.present(parent);
+    dialog.present();
 }
 
 pub(super) fn run_nextcloud_sync(
@@ -270,7 +372,7 @@ pub(super) fn run_nextcloud_sync(
     state: SharedState,
     toast: Toaster,
     unlock_parent: Option<gtk::Widget>,
-    dialog_slot: Option<Rc<RefCell<Option<adw::Dialog>>>>,
+    dialog_slot: Option<DialogSlot>,
     active_row: Option<adw::ActionRow>,
 ) {
     use ashypass_core::sync::{nextcloud_engine, ConflictResolution};
@@ -320,8 +422,7 @@ pub(super) fn run_nextcloud_sync(
                     let _ = progress_sender.send(NextcloudSyncMessage::Progress(progress));
                 },
             )
-        })()
-        .map_err(|e| e.to_string());
+        })();
         let _ = worker_sender.send(NextcloudSyncMessage::Finished(outcome));
     });
     drop(sender);
@@ -395,14 +496,32 @@ pub(super) fn finish_nextcloud_sync(
     match result {
         Ok(r) => {
             present_sync_success_dialog(parent, &toast, &r);
+            // The line under the list follows manual syncs too.
+            let at = chrono::Utc::now().timestamp();
+            state.set_sync_status(if r.stats.errors.is_empty() {
+                crate::state::SyncStatus::Synced { at }
+            } else {
+                crate::state::SyncStatus::Failed { at }
+            });
             state.events.emit(crate::events::AppEvent::SyncCompleted {
                 filename: "nextcloud".into(),
             });
         }
+        Err(ashypass_core::Error::MassDelete { count, .. }) => {
+            // Not a failure to report: a question for the user, asked by the
+            // auto-sync scheduler (which reruns the sync if confirmed).
+            state
+                .events
+                .emit(crate::events::AppEvent::MassDeletePending { count });
+        }
         Err(e) => {
+            let e = e.to_string();
             // Concise toast + structured dialog with the raw error tucked
             // behind an expander so the surface stays calm.
             show_toast(&toast, tr!("Sync failed"));
+            state.set_sync_status(crate::state::SyncStatus::Failed {
+                at: chrono::Utc::now().timestamp(),
+            });
             present_sync_failure_dialog(parent, &e);
             state
                 .events
@@ -459,7 +578,7 @@ pub(crate) fn present_sync_success_dialog(
         tr!("Two-way reconciliation completed successfully.")
     };
 
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(heading)
         .body(body_text)
         .build();
@@ -552,6 +671,7 @@ pub(crate) fn present_sync_success_dialog(
                     "remote" => tr!("Kept remote version"),
                     other => other,
                 })
+                .use_markup(false)
                 .build();
             group.add(&r);
         }
@@ -598,7 +718,10 @@ pub(crate) fn present_sync_success_dialog(
         icon.add_css_class("warning");
         expander.add_prefix(&icon);
         for err in s.errors.iter().take(10) {
-            let r = adw::ActionRow::builder().title(err.as_str()).build();
+            let r = adw::ActionRow::builder()
+                .title(err.as_str())
+                .use_markup(false)
+                .build();
             r.add_css_class("monospace");
             expander.add_row(&r);
         }
@@ -619,7 +742,7 @@ pub(crate) fn present_sync_success_dialog(
         dialog.set_extra_child(Some(&content));
     }
 
-    dialog.present(parent);
+    dialog.present();
 }
 
 pub(super) fn sync_count_row(
@@ -644,7 +767,7 @@ pub(super) fn sync_count_row(
 }
 
 pub(crate) fn present_sync_failure_dialog(parent: Option<&gtk::Window>, error: &str) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(tr!("Could not sync"))
         .body(tr!(
             "Ashy Pass could not reach Nextcloud. Check your connection, server address, and app password."
@@ -662,11 +785,14 @@ pub(crate) fn present_sync_failure_dialog(parent: Option<&gtk::Window>, error: &
     let icon = gtk::Image::from_icon_name("dialog-error-symbolic");
     icon.add_css_class("error");
     expander.add_prefix(&icon);
-    let err_row = adw::ActionRow::builder().title(error).build();
+    let err_row = adw::ActionRow::builder()
+        .title(error)
+        .use_markup(false)
+        .build();
     err_row.add_css_class("monospace");
     expander.add_row(&err_row);
     group.add(&expander);
 
     dialog.set_extra_child(Some(&group));
-    dialog.present(parent);
+    dialog.present();
 }

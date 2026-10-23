@@ -28,8 +28,12 @@ use zeroize::Zeroize;
 /// the system keyring and is wiped after a few wrong attempts.
 pub const MIN_QUICK_UNLOCK_PIN_LENGTH: usize = 4;
 
+#[path = "vault_folder_sync.rs"]
+mod folder_sync;
 #[path = "vault_folders.rs"]
 mod folders;
+pub use folder_sync::SyncItem;
+pub use folders::NextcloudFolderOp;
 
 type ChangeListener = Rc<dyn Fn() + 'static>;
 type EncryptedEntryRow = (i64, Vec<u8>, Option<Vec<u8>>, Option<Vec<u8>>);
@@ -59,6 +63,10 @@ pub struct Vault {
     /// after auto-lock without re-running Argon2 on the master password.
     /// Cleared on `full_lock()` or app exit.
     cached_key: Option<DerivedKey>,
+    /// For a handle opened by a worker with a session key: the master salt
+    /// that key belongs to. A master password change elsewhere replaces the
+    /// salt, and the worker must then stop writing (its key is stale).
+    session_salt: Option<String>,
     /// PHC-format Argon2id hash of the quick-unlock PIN. None means quick-
     /// unlock is not configured for this session.
     quick_pin_hash: Option<String>,
@@ -71,8 +79,37 @@ pub struct Vault {
     listeners: Rc<RefCell<Vec<ChangeListener>>>,
 }
 
+/// What an entry holds. Older vaults only have logins; the other kinds keep
+/// their fields in `extra` (encrypted JSON).
+pub const ITEM_LOGIN: &str = "login";
+pub const ITEM_CARD: &str = "card";
+pub const ITEM_IDENTITY: &str = "identity";
+pub const ITEM_NOTE: &str = "note";
+/// A passkey (WebAuthn credential); its private key lives in `extra`.
+pub const ITEM_PASSKEY: &str = "passkey";
+const ITEM_TYPES: &[&str] = &[
+    ITEM_LOGIN,
+    ITEM_CARD,
+    ITEM_IDENTITY,
+    ITEM_NOTE,
+    ITEM_PASSKEY,
+];
+
+fn checked_item_type(item_type: &str) -> Result<&str> {
+    ITEM_TYPES
+        .iter()
+        .find(|t| **t == item_type)
+        .copied()
+        .ok_or_else(|| Error::InvalidInput(format!("unknown item type: {item_type}")))
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct NewEntry {
+    /// `ITEM_LOGIN` when `None`.
+    pub item_type: Option<String>,
+    /// Encrypted JSON the apps use for the fields of cards and identities and
+    /// for extra websites (see the mobile app); opaque to the core.
+    pub extra: Option<String>,
     pub title: String,
     pub username: Option<String>,
     pub password: String,
@@ -87,6 +124,9 @@ pub struct NewEntry {
 
 #[derive(Debug, Clone, Default)]
 pub struct UpdateEntry {
+    pub item_type: Option<String>,
+    /// `Some(None)` clears it.
+    pub extra: Option<Option<String>>,
     pub title: Option<String>,
     pub username: Option<String>,
     pub password: Option<String>,
@@ -152,6 +192,10 @@ pub struct TrashedEntry {
 #[derive(Debug, Clone)]
 pub struct PasswordEntry {
     pub id: i64,
+    /// `ITEM_LOGIN`, `ITEM_CARD`, `ITEM_IDENTITY` or `ITEM_NOTE`.
+    pub item_type: String,
+    /// Decrypted only by `get()`; `None` in summaries.
+    pub extra: Option<String>,
     pub title: String,
     pub username: Option<String>,
     pub url: Option<String>,
@@ -194,6 +238,7 @@ impl Vault {
             conn,
             key: None,
             cached_key: None,
+            session_salt: None,
             quick_pin_hash: None,
             listeners: Rc::new(RefCell::new(Vec::new())),
         })
@@ -273,6 +318,10 @@ impl Vault {
 
     pub fn open_with_session_key(path: impl AsRef<Path>, key: DerivedKey) -> Result<Self> {
         let mut vault = Self::open(path)?;
+        // A worker that opens the vault after a master password change must
+        // not write rows under the old key: they could never be read again.
+        vault.ensure_key_matches(&key)?;
+        vault.session_salt = Some(vault.master_salt()?);
         vault.key = Some(key.clone());
         vault.cached_key = Some(key);
         Ok(vault)
@@ -565,6 +614,7 @@ impl Vault {
         tx.execute("DELETE FROM nextcloud_mapping", [])?;
         tx.execute("DELETE FROM nextcloud_folder_mapping", [])?;
         tx.execute("DELETE FROM nextcloud_tombstones", [])?;
+        tx.execute("DELETE FROM nextcloud_folder_ops", [])?;
         tx.commit()?;
         Ok(())
     }
@@ -610,20 +660,28 @@ impl Vault {
         if self.has_master_password()? {
             return Err(Error::MasterAlreadySet);
         }
-        validate_new_master_password(password)?;
-        let mut salt = [0u8; 32];
-        rand::thread_rng().fill_bytes(&mut salt);
-        let salt_text = URL_SAFE_NO_PAD.encode(salt);
+        self.install_master_password(prepare_rekey(password, KeyFormat::Compatible)?)
+    }
 
-        let hash = argon2_kdf::hash_master(password)?;
-        let key = argon2_kdf::derive_key_v2(password, salt_text.as_bytes())?;
+    /// Create the master row from a password prepared by `prepare_rekey`
+    /// (on a worker thread) and unlock the new vault.
+    pub fn install_master_password(&mut self, prepared: PreparedRekey) -> Result<()> {
+        if self.has_master_password()? {
+            return Err(Error::MasterAlreadySet);
+        }
+        let PreparedRekey {
+            salt_text,
+            key,
+            hash,
+            format,
+        } = prepared;
         let ts = chrono::Utc::now().timestamp();
 
         let tx = self.conn.unchecked_transaction()?;
         tx.execute(
             "INSERT INTO master (id, password_hash, salt, crypto_version, created_at)
-             VALUES (1, ?, ?, 2, ?)",
-            params![hash, salt_text, ts],
+             VALUES (1, ?, ?, ?, ?)",
+            params![hash, salt_text, format.crypto_version(), ts],
         )?;
         key_check::write(&tx, &key, &salt_text)?;
         tx.commit()?;
@@ -782,6 +840,26 @@ impl Vault {
         wrap_quick_unlock_key(pin, key)
     }
 
+    /// Keep the current key cached for PIN unlocks after a record made by
+    /// `prepare_quick_unlock` was persisted. Later PIN unlocks in this
+    /// session go through that record.
+    ///
+    /// `wrapped` is the key the record wraps: if the vault was re-keyed in
+    /// the meantime the record is stale and this fails with `KeyMismatch`
+    /// (the caller should remove the record).
+    pub fn cache_key_for_quick_unlock(&mut self, wrapped: &DerivedKey) -> Result<()> {
+        let current = self.key()?.clone();
+        if !bool::from(subtle::ConstantTimeEq::ct_eq(
+            wrapped.as_bytes().as_slice(),
+            current.as_bytes().as_slice(),
+        )) {
+            return Err(Error::KeyMismatch);
+        }
+        self.cached_key = Some(current);
+        self.quick_pin_hash = None;
+        Ok(())
+    }
+
     /// Re-acquire the encryption key using a previously-set quick-unlock PIN.
     /// Fails if quick-unlock was never configured this session, or if the PIN
     /// is wrong. Wrong PIN does not clear the cache — caller decides whether
@@ -867,7 +945,19 @@ impl Vault {
         self.key.as_ref().ok_or(Error::Locked)
     }
 
+    /// A worker handle refuses to encrypt once the vault was re-keyed by
+    /// another connection: rows written with the old key could never be read.
+    fn ensure_session_current(&self) -> Result<()> {
+        if let Some(salt) = self.session_salt.as_deref() {
+            if self.master_salt()? != salt {
+                return Err(Error::KeyMismatch);
+            }
+        }
+        Ok(())
+    }
+
     fn encrypt(&self, plaintext: &str) -> Result<Vec<u8>> {
+        self.ensure_session_current()?;
         aes_gcm_v2::encrypt(self.key()?, plaintext.as_bytes())
     }
 
@@ -892,6 +982,13 @@ impl Vault {
         {
             crate::totp::generate_totp(secret, algorithm, totp_digits, totp_period, 0)?;
         }
+        let item_type = checked_item_type(entry.item_type.as_deref().unwrap_or(ITEM_LOGIN))?;
+        let extra = entry
+            .extra
+            .as_deref()
+            .filter(|s| !s.is_empty())
+            .map(|s| self.encrypt(s))
+            .transpose()?;
         let ts = chrono::Utc::now().timestamp();
         let pw = self.encrypt(&entry.password)?;
         let notes = entry
@@ -910,8 +1007,8 @@ impl Vault {
         self.conn.execute(
             "INSERT INTO passwords (title, username, password_encrypted, notes_encrypted, url,
                 totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
-                category, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                category, created_at, updated_at, item_type, extra_encrypted)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             params![
                 entry.title,
                 entry.username,
@@ -925,11 +1022,36 @@ impl Vault {
                 entry.category,
                 ts,
                 ts,
+                item_type,
+                extra,
             ],
         )?;
         let id = self.conn.last_insert_rowid();
         self.notify_change();
         Ok(id)
+    }
+
+    /// The entry's identity across devices (folder sync); kept through the
+    /// trash.
+    pub fn uid_of(&self, id: i64) -> Result<Option<String>> {
+        Ok(self
+            .conn
+            .query_row("SELECT uid FROM passwords WHERE id = ?", params![id], |r| {
+                r.get(0)
+            })
+            .optional()?
+            .flatten())
+    }
+
+    pub fn id_by_uid(&self, uid: &str) -> Result<Option<i64>> {
+        Ok(self
+            .conn
+            .query_row(
+                "SELECT id FROM passwords WHERE uid = ?",
+                params![uid],
+                |r| r.get(0),
+            )
+            .optional()?)
     }
 
     pub fn list(&self, search: Option<&str>) -> Result<Vec<PasswordEntry>> {
@@ -943,7 +1065,7 @@ impl Vault {
     ) -> Result<Vec<PasswordEntry>> {
         let base = "SELECT id, title, username, url,
                            totp_secret_encrypted IS NOT NULL, totp_algorithm, totp_digits, totp_period,
-                           category, favorite, created_at, updated_at, last_accessed
+                           category, favorite, created_at, updated_at, last_accessed, item_type
                     FROM passwords";
 
         let mut clauses: Vec<&str> = Vec::new();
@@ -989,7 +1111,7 @@ impl Vault {
     ) -> Result<Vec<PasswordEntry>> {
         let base = "SELECT p.id, p.title, p.username, p.url,
                            p.totp_secret_encrypted IS NOT NULL, p.totp_algorithm, p.totp_digits, p.totp_period,
-                           p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed
+                           p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed, p.item_type
                     FROM passwords_fts
                     JOIN passwords p ON p.id = passwords_fts.rowid
                     WHERE passwords_fts MATCH ?";
@@ -1034,7 +1156,8 @@ impl Vault {
         let mut stmt = self.conn.prepare_cached(
             "SELECT id, title, username, password_encrypted, notes_encrypted, url,
                     totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
-                    category, favorite, created_at, updated_at, last_accessed
+                    category, favorite, created_at, updated_at, last_accessed,
+                    item_type, extra_encrypted
              FROM passwords WHERE id = ?",
         )?;
         let mut rows = stmt.query(params![id])?;
@@ -1045,9 +1168,14 @@ impl Vault {
         let pw_blob: Vec<u8> = row.get(3)?;
         let notes_blob: Option<Vec<u8>> = row.get(4)?;
         let totp_blob: Option<Vec<u8>> = row.get(6)?;
+        let extra_blob: Option<Vec<u8>> = row.get(16)?;
 
         let entry = PasswordEntry {
             id: row.get(0)?,
+            item_type: row
+                .get::<_, Option<String>>(15)?
+                .unwrap_or_else(|| ITEM_LOGIN.into()),
+            extra: extra_blob.as_ref().map(|b| self.decrypt(b)).transpose()?,
             title: row.get(1)?,
             username: row.get(2)?,
             password: Some(self.decrypt(&pw_blob)?),
@@ -1069,16 +1197,47 @@ impl Vault {
         drop(rows);
         drop(stmt);
         if touch {
+            // Best effort: the read already succeeded, so a busy database
+            // (another connection writing) must not turn it into an error.
             let now = chrono::Utc::now().timestamp();
-            self.conn.execute(
+            if let Err(e) = self.conn.execute(
                 "UPDATE passwords SET last_accessed = ? WHERE id = ?",
                 params![now, id],
-            )?;
+            ) {
+                log::debug!("could not record access time for entry {id}: {e}");
+            }
         }
         Ok(Some(entry))
     }
 
     pub fn update(&self, id: i64, change: UpdateEntry) -> Result<bool> {
+        self.update_inner(id, change, None)
+            .map(|written| written.is_some())
+    }
+
+    /// Like [`Vault::update`], but only when the entry's `updated_at` still
+    /// equals `expected_updated_at`. Returns `Ok(false)` without writing
+    /// anything (not even password history) when the entry changed or is
+    /// gone. Used by sync so a pulled remote change never overwrites a local
+    /// edit made after the sync read the entry.
+    ///
+    /// Returns the `updated_at` it wrote, so a sync can record exactly that
+    /// value (a later local edit then always compares newer).
+    pub fn update_if_unchanged(
+        &self,
+        id: i64,
+        expected_updated_at: i64,
+        change: UpdateEntry,
+    ) -> Result<Option<i64>> {
+        self.update_inner(id, change, Some(expected_updated_at))
+    }
+
+    fn update_inner(
+        &self,
+        id: i64,
+        change: UpdateEntry,
+        expected_updated_at: Option<i64>,
+    ) -> Result<Option<i64>> {
         if let Some(algorithm) = change.totp_algorithm.as_deref() {
             crate::totp::Algorithm::parse(algorithm)?;
         }
@@ -1100,7 +1259,27 @@ impl Vault {
                 )?;
             }
         }
-        let tx = self.conn.unchecked_transaction()?;
+        let tx = match expected_updated_at {
+            // Take the write lock up front so the check below and the write
+            // see the same row: no other connection can slip in between.
+            Some(_) => {
+                rusqlite::Transaction::new_unchecked(&self.conn, TransactionBehavior::Immediate)?
+            }
+            None => self.conn.unchecked_transaction()?,
+        };
+        if let Some(expected) = expected_updated_at {
+            let current: Option<i64> = tx
+                .query_row(
+                    "SELECT updated_at FROM passwords WHERE id = ?",
+                    params![id],
+                    |r| r.get(0),
+                )
+                .optional()?;
+            if current != Some(expected) {
+                // Dropping the transaction rolls it back.
+                return Ok(None);
+            }
+        }
         let mut sets: Vec<&'static str> = Vec::new();
         let mut vals: Vec<Value> = Vec::new();
 
@@ -1166,6 +1345,17 @@ impl Vault {
             sets.push("totp_period = ?");
             vals.push((p as i64).into());
         }
+        if let Some(t) = change.item_type {
+            sets.push("item_type = ?");
+            vals.push(checked_item_type(&t)?.to_string().into());
+        }
+        if let Some(x) = change.extra {
+            sets.push("extra_encrypted = ?");
+            vals.push(match x {
+                Some(s) if !s.is_empty() => self.encrypt(&s)?.into(),
+                _ => Value::Null,
+            });
+        }
         if let Some(c) = change.category {
             sets.push("category = ?");
             vals.push(match c {
@@ -1175,19 +1365,27 @@ impl Vault {
         }
 
         if sets.is_empty() {
-            return Ok(false);
+            return Ok(None);
         }
-        sets.push("updated_at = ?");
+        // Strictly increasing, even for two edits within one second: change
+        // detection (sync snapshots) compares `updated_at` with `>`.
+        sets.push("updated_at = MAX(?, COALESCE(updated_at, 0) + 1)");
         vals.push(chrono::Utc::now().timestamp().into());
         vals.push(id.into());
 
         let sql = format!("UPDATE passwords SET {} WHERE id = ?", sets.join(", "));
         let n = tx.execute(&sql, params_from_iter(vals))?;
-        tx.commit()?;
-        if n > 0 {
-            self.notify_change();
+        if n == 0 {
+            return Ok(None);
         }
-        Ok(n > 0)
+        let written: i64 = tx.query_row(
+            "SELECT updated_at FROM passwords WHERE id = ?",
+            params![id],
+            |r| r.get(0),
+        )?;
+        tx.commit()?;
+        self.notify_change();
+        Ok(Some(written))
     }
 
     /// Past passwords for an entry, newest first. Each row was the active
@@ -1244,10 +1442,12 @@ impl Vault {
             "INSERT INTO passwords_trash (
                 original_id, title, username, password_encrypted, notes_encrypted,
                 url, totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
-                category, favorite, created_at, updated_at, deleted_at)
+                category, favorite, created_at, updated_at, deleted_at,
+                item_type, extra_encrypted, uid)
              SELECT id, title, username, password_encrypted, notes_encrypted,
                     url, totp_secret_encrypted, totp_algorithm, totp_digits, totp_period,
-                    category, favorite, created_at, updated_at, ?
+                    category, favorite, created_at, updated_at, ?,
+                    item_type, extra_encrypted, uid
              FROM passwords WHERE id = ?",
             params![now, id],
         )?;
@@ -1404,6 +1604,14 @@ impl Vault {
         )?;
         let new_id = tx.last_insert_rowid();
         tx.execute(
+            "UPDATE passwords
+                SET item_type = COALESCE((SELECT item_type FROM passwords_trash WHERE id = ?1), 'login'),
+                    extra_encrypted = (SELECT extra_encrypted FROM passwords_trash WHERE id = ?1),
+                    uid = COALESCE((SELECT uid FROM passwords_trash WHERE id = ?1), uid)
+              WHERE id = ?2",
+            params![trash_id, new_id],
+        )?;
+        tx.execute(
             "INSERT INTO passwords_history (entry_id, password_encrypted, changed_at)
              SELECT ?, password_encrypted, changed_at
                FROM passwords_history_trash WHERE trash_id = ?
@@ -1463,23 +1671,26 @@ impl Vault {
         Ok(n)
     }
 
-    pub fn toggle_favorite(&self, id: i64) -> Result<bool> {
-        let current: Option<i64> = self
-            .conn
-            .query_row(
-                "SELECT favorite FROM passwords WHERE id = ?",
-                params![id],
-                |r| r.get(0),
-            )
-            .ok();
-        let Some(cur) = current else { return Ok(false) };
-        let new = if cur == 0 { 1 } else { 0 };
-        self.conn.execute(
-            "UPDATE passwords SET favorite = ? WHERE id = ?",
-            params![new, id],
+    /// Flip the favorite flag in one statement. Returns the new state, or
+    /// `None` when the entry does not exist. (No `RETURNING`: the system
+    /// SQLite may predate 3.35.)
+    pub fn toggle_favorite(&self, id: i64) -> Result<Option<bool>> {
+        let tx = self.conn.unchecked_transaction()?;
+        let changed = tx.execute(
+            "UPDATE passwords SET favorite = 1 - (COALESCE(favorite, 0) != 0) WHERE id = ?",
+            params![id],
         )?;
+        if changed == 0 {
+            return Ok(None);
+        }
+        let now: i64 = tx.query_row(
+            "SELECT favorite FROM passwords WHERE id = ?",
+            params![id],
+            |r| r.get(0),
+        )?;
+        tx.commit()?;
         self.notify_change();
-        Ok(new != 0)
+        Ok(Some(now != 0))
     }
 
     pub fn set_favorite(&self, id: i64, favorite: bool) -> Result<bool> {
@@ -1519,8 +1730,20 @@ impl Vault {
 
     /// Set the tags for an entry to exactly the given list. Unknown tag names
     /// are created on the fly; tags removed from the list are dissociated but
-    /// stay in the catalog (call `prune_tags` to drop orphans).
+    /// stay in the catalog (call `prune_tags` to drop orphans). A change
+    /// counts as an edit of the entry (its `updated_at` moves), so syncs send
+    /// it.
     pub fn set_tags(&self, entry_id: i64, names: &[String]) -> Result<()> {
+        self.set_tags_inner(entry_id, names, true)
+    }
+
+    /// `set_tags` for the folder sync, which stamps the entry itself with
+    /// the other device's time.
+    pub(crate) fn set_tags_unstamped(&self, entry_id: i64, names: &[String]) -> Result<()> {
+        self.set_tags_inner(entry_id, names, false)
+    }
+
+    fn set_tags_inner(&self, entry_id: i64, names: &[String], stamp: bool) -> Result<()> {
         let mut normalized: Vec<String> = names
             .iter()
             .map(|s| s.trim().to_string())
@@ -1567,6 +1790,13 @@ impl Vault {
                 self.conn.execute(
                     "INSERT OR IGNORE INTO entry_tags (entry_id, tag_id) VALUES (?, ?)",
                     params![entry_id, tid],
+                )?;
+            }
+            if stamp {
+                self.conn.execute(
+                    "UPDATE passwords SET updated_at = MAX(CAST(strftime('%s','now') AS INTEGER), updated_at + 1)
+                     WHERE id = ?",
+                    params![entry_id],
                 )?;
             }
             Ok(true)
@@ -1657,7 +1887,7 @@ impl Vault {
         let mut stmt = self.conn.prepare_cached(
             "SELECT p.id, p.title, p.username, p.url,
                     p.totp_secret_encrypted IS NOT NULL, p.totp_algorithm, p.totp_digits, p.totp_period,
-                    p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed
+                    p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed, p.item_type
              FROM passwords p
              JOIN entry_tags et ON et.entry_id = p.id
              WHERE et.tag_id = ?
@@ -1680,6 +1910,7 @@ impl Vault {
         mime_type: Option<&str>,
         data: &[u8],
     ) -> Result<i64> {
+        self.ensure_session_current()?;
         let ciphertext = aes_gcm_v2::encrypt(self.key()?, data)?;
         let size = data.len() as i64;
         let now = chrono::Utc::now().timestamp();
@@ -1783,16 +2014,36 @@ impl Vault {
     }
 
     /// Change master password and re-encrypt every protected value atomically.
+    ///
+    /// Runs every KDF on the calling thread. The UI uses `master_hash`,
+    /// `argon2_kdf::verify_master` and `prepare_rekey` on a worker and then
+    /// `apply_rekey` here instead.
     pub fn change_master_password(&mut self, current: &str, new: &str) -> Result<()> {
-        let hash: String =
-            self.conn
-                .query_row("SELECT password_hash FROM master WHERE id = 1", [], |row| {
-                    row.get(0)
-                })?;
-        if !argon2_kdf::verify_master(current, &hash)? {
+        if !argon2_kdf::verify_master(current, &self.master_hash()?)? {
             return Err(Error::InvalidMasterPassword);
         }
-        self.rekey_with_new_master(new)
+        let format = self.key_format()?;
+        self.apply_rekey(prepare_rekey(new, format)?)
+    }
+
+    /// How the vault key is derived from the master password today. A new
+    /// master password keeps the same format unless the user changes it.
+    pub fn key_format(&self) -> Result<KeyFormat> {
+        Ok(if argon2_kdf::is_strong_salt(&self.master_salt()?) {
+            KeyFormat::Strong
+        } else {
+            KeyFormat::Compatible
+        })
+    }
+
+    /// The stored PHC hash of the master password, for verifying a typed
+    /// password off the thread that owns the vault.
+    pub fn master_hash(&self) -> Result<String> {
+        Ok(self
+            .conn
+            .query_row("SELECT password_hash FROM master WHERE id = 1", [], |row| {
+                row.get(0)
+            })?)
     }
 
     /// Set a new master password without the current one, proving instead
@@ -1813,30 +2064,38 @@ impl Vault {
         new: &str,
     ) -> Result<QuickUnlockPrefs> {
         let current = self.key()?.clone();
-        let (from_pin, _) = derive_quick_unlock_key(pin, prefs)?;
-        if !bool::from(subtle::ConstantTimeEq::ct_eq(
-            from_pin.as_bytes().as_slice(),
-            current.as_bytes().as_slice(),
-        )) {
-            return Err(Error::KeyMismatch);
-        }
-        self.rekey_with_new_master(new)?;
-        let key = self.key()?.clone();
-        self.quick_pin_hash = Some(argon2_kdf::hash_session_secret(pin)?);
-        self.cached_key = Some(key.clone());
-        wrap_quick_unlock_key(pin, &key)
+        let reset = prepare_pin_reset(pin, prefs, &current, new, self.key_format()?)?;
+        self.apply_pin_reset(reset)
     }
 
-    /// Re-encrypt every protected value under a key derived from `new`, in
-    /// one transaction, and store the new master hash and verifier.
-    fn rekey_with_new_master(&mut self, new: &str) -> Result<()> {
-        validate_new_master_password(new)?;
+    /// Commit a reset prepared by `prepare_pin_reset`. Everything that can
+    /// fail for reasons other than the database already ran, so a success
+    /// here means the new master password and the re-wrapped PIN both work.
+    pub fn apply_pin_reset(&mut self, reset: PinReset) -> Result<QuickUnlockPrefs> {
+        let current = self.key()?.clone();
+        if !bool::from(subtle::ConstantTimeEq::ct_eq(
+            reset.old_key.as_bytes().as_slice(),
+            current.as_bytes().as_slice(),
+        )) {
+            // The vault key changed while the reset was being prepared.
+            return Err(Error::KeyMismatch);
+        }
+        let key = reset.rekey.key.clone();
+        self.apply_rekey(reset.rekey)?;
+        // Cached for this session; later PIN unlocks go through the record.
+        self.cached_key = Some(key);
+        Ok(reset.rewrapped)
+    }
 
-        let mut salt = [0u8; 32];
-        rand::thread_rng().fill_bytes(&mut salt);
-        let new_salt_text = URL_SAFE_NO_PAD.encode(salt);
-        let new_key = argon2_kdf::derive_key_v2(new, new_salt_text.as_bytes())?;
-        let new_hash = argon2_kdf::hash_master(new)?;
+    /// Re-encrypt every protected value under the key in `prepared`, in one
+    /// transaction, and store the new master hash and verifier.
+    pub fn apply_rekey(&mut self, prepared: PreparedRekey) -> Result<()> {
+        let PreparedRekey {
+            salt_text: new_salt_text,
+            key: new_key,
+            hash: new_hash,
+            format,
+        } = prepared;
         let old_key = self.key()?.clone();
 
         // Take the write lock *before* reading the rows: another connection
@@ -1856,6 +2115,43 @@ impl Vault {
             "password_encrypted",
         )?;
         let attachments = collect_encrypted_blobs(&tx, "attachments", "id", "ciphertext")?;
+        // Cards, identities and extra websites: forgetting these here would
+        // leave them unreadable after the master password changes.
+        let extras = collect_optional_blobs(&tx, "passwords", "extra_encrypted")?;
+        let trash_extras = collect_optional_blobs(&tx, "passwords_trash", "extra_encrypted")?;
+        for (table, rows) in [("passwords", extras), ("passwords_trash", trash_extras)] {
+            let sql = format!("UPDATE {table} SET extra_encrypted = ? WHERE id = ?");
+            let mut update = tx.prepare(&sql)?;
+            for (id, blob) in rows {
+                update.execute(params![reencrypt_blob(&old_key, &new_key, &blob)?, id])?;
+            }
+        }
+        // The folder sync key kept in the vault (see `sync::folder`).
+        let has_folder_sync: bool = tx.query_row(
+            "SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'folder_sync_kv')",
+            [],
+            |r| r.get(0),
+        )?;
+        if has_folder_sync {
+            let sealed: Option<String> = tx
+                .query_row(
+                    "SELECT value FROM folder_sync_kv WHERE key = 'sync_key'",
+                    [],
+                    |r| r.get(0),
+                )
+                .optional()?;
+            if let Some(sealed) = sealed {
+                let blob = reencrypt_blob(
+                    &old_key,
+                    &new_key,
+                    &base64::engine::general_purpose::STANDARD.decode(sealed)?,
+                )?;
+                tx.execute(
+                    "UPDATE folder_sync_kv SET value = ? WHERE key = 'sync_key'",
+                    params![base64::engine::general_purpose::STANDARD.encode(blob)],
+                )?;
+            }
+        }
         let trash_attachments = collect_encrypted_blobs(
             &tx,
             "attachments_trash",
@@ -1898,8 +2194,8 @@ impl Vault {
             }
         }
         tx.execute(
-            "UPDATE master SET password_hash = ?, salt = ? WHERE id = 1",
-            params![new_hash, new_salt_text],
+            "UPDATE master SET password_hash = ?, salt = ?, crypto_version = ? WHERE id = 1",
+            params![new_hash, new_salt_text, format.crypto_version()],
         )?;
         key_check::write(&tx, &new_key, &new_salt_text)?;
         tx.commit()?;
@@ -1910,6 +2206,119 @@ impl Vault {
         self.notify_change();
         Ok(())
     }
+}
+
+/// How the vault key is derived from the master password.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum KeyFormat {
+    /// Fixed Argon2id costs (64 MiB, 3 passes). Every Ashy Pass 3 release
+    /// opens it. The default.
+    Compatible,
+    /// The costs auto-tuned for this computer, stored with the salt. Stronger
+    /// against guessing; releases before this one cannot open the vault
+    /// with the master password (they refuse it without writing anything).
+    Strong,
+}
+
+impl KeyFormat {
+    fn crypto_version(self) -> i64 {
+        match self {
+            Self::Compatible => 2,
+            Self::Strong => 3,
+        }
+    }
+}
+
+/// Salt, key and PHC hash for a new master password; see `prepare_rekey`.
+pub struct PreparedRekey {
+    salt_text: String,
+    key: DerivedKey,
+    hash: String,
+    format: KeyFormat,
+}
+
+/// Run the expensive part of a master password change (both KDFs) without
+/// the vault, so it can happen on a worker thread. Apply the result with
+/// `Vault::apply_rekey` (or `install_master_password` for a new vault).
+pub fn prepare_rekey(new: &str, format: KeyFormat) -> Result<PreparedRekey> {
+    let costs = match format {
+        KeyFormat::Compatible => None,
+        KeyFormat::Strong => Some(argon2_kdf::tuned_params()),
+    };
+    prepare_rekey_with(new, format, costs)
+}
+
+fn prepare_rekey_with(
+    new: &str,
+    format: KeyFormat,
+    costs: Option<argon2::Params>,
+) -> Result<PreparedRekey> {
+    validate_new_master_password(new)?;
+    let mut salt = [0u8; 32];
+    rand::thread_rng().fill_bytes(&mut salt);
+    let random = URL_SAFE_NO_PAD.encode(salt);
+    let (salt_text, hash) = match format {
+        KeyFormat::Compatible => (random, argon2_kdf::hash_master(new)?),
+        KeyFormat::Strong => (
+            argon2_kdf::strong_salt(&costs.unwrap_or_else(argon2_kdf::tuned_params), &random),
+            format!(
+                "{}{}",
+                argon2_kdf::STRONG_HASH_PREFIX,
+                argon2_kdf::hash_master(new)?
+            ),
+        ),
+    };
+    let key = argon2_kdf::derive_vault_key(new, &salt_text)?;
+    Ok(PreparedRekey {
+        salt_text,
+        key,
+        hash,
+        format,
+    })
+}
+
+/// Wrap `key` with a new PIN, off the vault's thread (expensive). Persist the
+/// record, then call `Vault::cache_key_for_quick_unlock`.
+pub fn prepare_quick_unlock(pin: &str, key: &DerivedKey) -> Result<QuickUnlockPrefs> {
+    if pin.chars().count() < MIN_QUICK_UNLOCK_PIN_LENGTH {
+        return Err(Error::InvalidInput(format!(
+            "PIN must contain at least {MIN_QUICK_UNLOCK_PIN_LENGTH} characters"
+        )));
+    }
+    wrap_quick_unlock_key(pin, key)
+}
+
+/// A PIN-based master reset, checked and prepared off the vault's thread.
+pub struct PinReset {
+    old_key: DerivedKey,
+    rekey: PreparedRekey,
+    rewrapped: QuickUnlockPrefs,
+}
+
+/// Prove `pin` against the persisted record `prefs` (it must unwrap exactly
+/// `current_key`), and prepare the new master password and the PIN record
+/// re-wrapped around the new key. Expensive; does not touch the vault.
+pub fn prepare_pin_reset(
+    pin: &str,
+    prefs: &QuickUnlockPrefs,
+    current_key: &DerivedKey,
+    new: &str,
+    format: KeyFormat,
+) -> Result<PinReset> {
+    let (from_pin, _) = derive_quick_unlock_key(pin, prefs)?;
+    if !bool::from(subtle::ConstantTimeEq::ct_eq(
+        from_pin.as_bytes().as_slice(),
+        current_key.as_bytes().as_slice(),
+    )) {
+        return Err(Error::KeyMismatch);
+    }
+    let rekey = prepare_rekey(new, format)?;
+    let rewrapped = wrap_quick_unlock_key(pin, &rekey.key)?;
+    Ok(PinReset {
+        old_key: current_key.clone(),
+        rekey,
+        rewrapped,
+    })
 }
 
 /// Snapshot of what `derive_unlock_key` needs, taken by `Vault::unlock_inputs`.
@@ -1938,7 +2347,7 @@ impl std::fmt::Debug for UnlockInputs {
 /// derived key either opens the verifier or the password is checked against
 /// the PHC hash as a fallback); otherwise the PHC hash is verified as before.
 pub fn derive_unlock_key(password: &str, inputs: &UnlockInputs) -> Result<DerivedKey> {
-    let key = argon2_kdf::derive_key_v2(password, inputs.salt.as_bytes())?;
+    let key = argon2_kdf::derive_vault_key(password, &inputs.salt)?;
     if inputs
         .key_check
         .as_deref()
@@ -2089,6 +2498,20 @@ fn collect_encrypted_blobs(
     Ok(rows)
 }
 
+/// `(id, blob)` for the rows where the nullable `column` is set.
+fn collect_optional_blobs(
+    conn: &Connection,
+    table: &str,
+    column: &str,
+) -> Result<Vec<(i64, Vec<u8>)>> {
+    let sql = format!("SELECT id, {column} FROM {table} WHERE {column} IS NOT NULL");
+    let mut stmt = conn.prepare(&sql)?;
+    let rows = stmt
+        .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?
+        .collect::<rusqlite::Result<Vec<_>>>()?;
+    Ok(rows)
+}
+
 fn reencrypt_blob(old_key: &DerivedKey, new_key: &DerivedKey, blob: &[u8]) -> Result<Vec<u8>> {
     aes_gcm_v2::encrypt(new_key, &aes_gcm_v2::decrypt(old_key, blob)?)
 }
@@ -2124,6 +2547,10 @@ fn password_summary_from_row(r: &Row<'_>) -> rusqlite::Result<PasswordEntry> {
     let has_totp: bool = r.get(4)?;
     Ok(PasswordEntry {
         id: r.get(0)?,
+        item_type: r
+            .get::<_, Option<String>>(13)?
+            .unwrap_or_else(|| ITEM_LOGIN.into()),
+        extra: None,
         title: r.get(1)?,
         username: r.get(2)?,
         url: r.get(3)?,
@@ -2521,9 +2948,10 @@ mod tests {
             vault.unlock_with_key(&stale_inputs, key.clone()),
             Err(Error::KeyMismatch)
         ));
-        let session = Vault::open_with_session_key(&path, key).unwrap();
+        // A worker handed the old key is refused at open, before it could
+        // write rows nobody can read.
         assert!(matches!(
-            session.verify_session_key(),
+            Vault::open_with_session_key(&path, key),
             Err(Error::KeyMismatch)
         ));
 
@@ -2588,7 +3016,11 @@ mod tests {
             .set_tags(id, &["work".into(), "Work".into(), " home ".into()])
             .unwrap();
         assert_eq!(vault.tags_of(id).unwrap(), vec!["home", "work"]);
-        assert_eq!(vault.entry_updated_at(id).unwrap(), updated_at);
+        // A tag change is an edit (syncs send it); the same tags are not.
+        let tagged_at = vault.entry_updated_at(id).unwrap();
+        assert!(tagged_at > updated_at);
+        vault.set_tags(id, &["home".into(), "work".into()]).unwrap();
+        assert_eq!(vault.entry_updated_at(id).unwrap(), tagged_at);
 
         // Inside an outer transaction that commits.
         vault
@@ -3074,6 +3506,168 @@ mod tests {
         vault.get_without_touch(id).unwrap().unwrap();
         assert_eq!(vault.list(None).unwrap()[0].last_accessed, touched);
     }
+    #[test]
+    fn strong_key_format_round_trips_and_stays_readable() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let id = vault
+            .add(NewEntry {
+                title: "Mail".into(),
+                password: "kept-secret".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        assert_eq!(vault.key_format().unwrap(), KeyFormat::Compatible);
+
+        // Upgrade with small costs (the tuned ones may be up to 1 GiB).
+        let small = argon2::Params::new(8 * 1024, 1, 1, Some(32)).unwrap();
+        let strong =
+            prepare_rekey_with("master password here", KeyFormat::Strong, Some(small)).unwrap();
+        vault.apply_rekey(strong).unwrap();
+        assert_eq!(vault.key_format().unwrap(), KeyFormat::Strong);
+        let (hash, version): (String, i64) = vault
+            .conn
+            .query_row(
+                "SELECT password_hash, crypto_version FROM master WHERE id = 1",
+                [],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .unwrap();
+        assert_eq!(version, 3);
+        // Older releases parse the hash with the PHC parser and refuse it,
+        // so they never derive the wrong key and write with it.
+        assert!(argon2::password_hash::PasswordHash::new(&hash).is_err());
+
+        // A fresh handle unlocks with the master password, by both paths.
+        vault.full_lock();
+        drop(vault);
+        let mut reopened = Vault::open(tmp.path()).unwrap();
+        reopened.unlock("master password here").unwrap();
+        assert_eq!(
+            reopened
+                .get_without_touch(id)
+                .unwrap()
+                .unwrap()
+                .password
+                .as_deref(),
+            Some("kept-secret")
+        );
+        reopened.full_lock();
+        let inputs = reopened.unlock_inputs().unwrap().unwrap();
+        let key = derive_unlock_key("master password here", &inputs).unwrap();
+        reopened.unlock_with_key(&inputs, key).unwrap();
+
+        // Back to the compatible format.
+        let compatible =
+            prepare_rekey_with("master password here", KeyFormat::Compatible, None).unwrap();
+        reopened.apply_rekey(compatible).unwrap();
+        assert_eq!(reopened.key_format().unwrap(), KeyFormat::Compatible);
+        reopened.full_lock();
+        reopened.unlock("master password here").unwrap();
+        assert_eq!(
+            reopened
+                .get_without_touch(id)
+                .unwrap()
+                .unwrap()
+                .password
+                .as_deref(),
+            Some("kept-secret")
+        );
+    }
+
+    #[test]
+    fn an_older_version_rewriting_the_master_row_stays_readable() {
+        // An older release unlocked by PIN can still change the master
+        // password: it writes a plain salt and hash but keeps
+        // crypto_version = 3. The plain salt decides, not the version.
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let small = argon2::Params::new(8 * 1024, 1, 1, Some(32)).unwrap();
+        vault
+            .apply_rekey(
+                prepare_rekey_with("master password here", KeyFormat::Strong, Some(small)).unwrap(),
+            )
+            .unwrap();
+        let legacy = prepare_rekey_with("a brand new master", KeyFormat::Compatible, None).unwrap();
+        vault.apply_rekey(legacy).unwrap();
+        vault
+            .conn
+            .execute("UPDATE master SET crypto_version = 3", [])
+            .unwrap();
+        vault.full_lock();
+        vault.unlock("a brand new master").unwrap();
+        assert_eq!(vault.key_format().unwrap(), KeyFormat::Compatible);
+    }
+
+    #[test]
+    fn a_worker_opened_before_a_rekey_cannot_write_with_the_old_key() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let mut vault = unlocked_vault(tmp.path());
+        let (path, key) = vault.session_reopen_parts().unwrap();
+        let worker = Vault::open_with_session_key(&path, key).unwrap();
+        // A worker write before the change is fine.
+        worker
+            .add(NewEntry {
+                title: "Before".into(),
+                password: "one".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        vault
+            .change_master_password("master password here", "a brand new master")
+            .unwrap();
+        let late = worker.add(NewEntry {
+            title: "After".into(),
+            password: "two".into(),
+            ..Default::default()
+        });
+        assert!(matches!(late, Err(Error::KeyMismatch)));
+        // Everything in the vault still opens with the new key.
+        for entry in vault.list(None).unwrap() {
+            assert!(vault.get_without_touch(entry.id).unwrap().is_some());
+        }
+    }
+
+    #[test]
+    fn two_edits_in_one_second_both_advance_updated_at() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let vault = unlocked_vault(tmp.path());
+        let id = vault
+            .add(NewEntry {
+                title: "Mail".into(),
+                password: "one".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        let before = vault.entry_updated_at(id).unwrap().unwrap();
+        let first = vault
+            .update_if_unchanged(
+                id,
+                before,
+                UpdateEntry {
+                    title: Some("Mail 2".into()),
+                    ..Default::default()
+                },
+            )
+            .unwrap()
+            .unwrap();
+        assert!(first > before);
+        assert!(vault
+            .update(
+                id,
+                UpdateEntry {
+                    title: Some("Mail 3".into()),
+                    ..Default::default()
+                },
+            )
+            .unwrap());
+        assert!(vault.entry_updated_at(id).unwrap().unwrap() > first);
+        // A stale expectation writes nothing.
+        assert!(vault
+            .update_if_unchanged(id, first, UpdateEntry::default())
+            .unwrap()
+            .is_none());
+    }
 }
 
 // -----------------------------------------------------------------
@@ -3104,5 +3698,182 @@ impl Vault {
         )?;
         self.notify_change();
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod item_type_tests {
+    use super::*;
+
+    fn vault() -> (Vault, tempfile::TempDir) {
+        let dir = tempfile::tempdir().unwrap();
+        let mut v = Vault::open(dir.path().join("v.db")).unwrap();
+        v.set_master_password("correct horse battery").unwrap();
+        (v, dir)
+    }
+
+    const CARD: &str = r#"{"number":"4111111111111111","cvv":"123"}"#;
+
+    #[test]
+    fn item_types_and_extra_survive_edit_trash_and_rekey() {
+        let (mut v, _dir) = vault();
+        let card = v
+            .add(NewEntry {
+                item_type: Some(ITEM_CARD.into()),
+                extra: Some(CARD.into()),
+                title: "Visa".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        let login = v
+            .add(NewEntry {
+                title: "Mail".into(),
+                password: "pw".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        assert!(v
+            .add(NewEntry {
+                item_type: Some("spaceship".into()),
+                title: "x".into(),
+                ..Default::default()
+            })
+            .is_err());
+
+        let summaries = v.list(None).unwrap();
+        let summary = summaries.iter().find(|e| e.id == card).unwrap();
+        assert_eq!(summary.item_type, ITEM_CARD);
+        assert!(summary.extra.is_none(), "summaries never decrypt extra");
+        assert_eq!(
+            summaries.iter().find(|e| e.id == login).unwrap().item_type,
+            ITEM_LOGIN
+        );
+
+        // An edit that does not name them keeps type and fields.
+        v.update(
+            card,
+            UpdateEntry {
+                title: Some("Visa Gold".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        let got = v.get_without_touch(card).unwrap().unwrap();
+        assert_eq!(
+            (got.item_type.as_str(), got.extra.as_deref()),
+            (ITEM_CARD, Some(CARD))
+        );
+
+        // Trash and back.
+        v.delete(card).unwrap();
+        let trash = v.list_trash().unwrap();
+        let restored = v.restore_from_trash(trash[0].trash_id).unwrap().unwrap();
+        let got = v.get_without_touch(restored).unwrap().unwrap();
+        assert_eq!(
+            (got.item_type.as_str(), got.extra.as_deref()),
+            (ITEM_CARD, Some(CARD))
+        );
+
+        // A new master password re-encrypts the extra fields too.
+        v.change_master_password("correct horse battery", "a brand new master")
+            .unwrap();
+        v.lock();
+        v.unlock("a brand new master").unwrap();
+        let got = v.get_without_touch(restored).unwrap().unwrap();
+        assert_eq!(got.extra.as_deref(), Some(CARD));
+
+        // Clearing works.
+        v.update(
+            restored,
+            UpdateEntry {
+                extra: Some(None),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert!(v
+            .get_without_touch(restored)
+            .unwrap()
+            .unwrap()
+            .extra
+            .is_none());
+    }
+
+    #[test]
+    fn ashy_export_keeps_item_types() {
+        let (v, dir) = vault();
+        v.add(NewEntry {
+            item_type: Some(ITEM_IDENTITY.into()),
+            extra: Some(r#"{"name":"Ana"}"#.into()),
+            title: "Me".into(),
+            ..Default::default()
+        })
+        .unwrap();
+        let file = dir.path().join("x.ashy");
+        crate::importers::ashy::export_vault(&v, &file, "export-pass-1").unwrap();
+        let parsed = crate::importers::ashy::parse_file(&file, "export-pass-1").unwrap();
+        let entry = &parsed.candidates[0].entry;
+        assert_eq!(entry.item_type.as_deref(), Some(ITEM_IDENTITY));
+        assert_eq!(entry.extra.as_deref(), Some(r#"{"name":"Ana"}"#));
+    }
+
+    #[test]
+    fn entries_keep_a_uid_through_the_trash() {
+        let (v, _dir) = vault();
+        let id = v
+            .add(NewEntry {
+                title: "A".into(),
+                password: "p".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        let other = v
+            .add(NewEntry {
+                title: "B".into(),
+                password: "p".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        let uid = v.uid_of(id).unwrap().unwrap();
+        assert_eq!(uid.len(), 32);
+        assert_ne!(Some(uid.clone()), v.uid_of(other).unwrap());
+        assert_eq!(v.id_by_uid(&uid).unwrap(), Some(id));
+        v.delete(id).unwrap();
+        assert_eq!(v.id_by_uid(&uid).unwrap(), None);
+        let trash = v.list_trash().unwrap();
+        let restored = v.restore_from_trash(trash[0].trash_id).unwrap().unwrap();
+        assert_eq!(v.uid_of(restored).unwrap(), Some(uid));
+    }
+
+    #[test]
+    fn sharing_exports_only_the_chosen_entries() {
+        let (v, dir) = vault();
+        let keep = v
+            .add(NewEntry {
+                title: "Shared".into(),
+                password: "pw1".into(),
+                ..Default::default()
+            })
+            .unwrap();
+        v.add(NewEntry {
+            title: "Private".into(),
+            password: "pw2".into(),
+            ..Default::default()
+        })
+        .unwrap();
+        let file = dir.path().join("share.ashy");
+        assert_eq!(
+            crate::importers::ashy::export_entries(&v, &[keep], &file, "one-time-words").unwrap(),
+            1
+        );
+        let parsed = crate::importers::ashy::parse_file(&file, "one-time-words").unwrap();
+        let titles: Vec<_> = parsed
+            .candidates
+            .iter()
+            .map(|c| c.entry.title.as_str())
+            .collect();
+        assert_eq!(titles, vec!["Shared"]);
+        assert!(crate::importers::ashy::parse_file(&file, "wrong words").is_err());
+        assert!(crate::importers::ashy::export_entries(&v, &[], &file, "x").is_err());
     }
 }

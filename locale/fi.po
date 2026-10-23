@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-23 15:11-0300\n"
 "PO-Revision-Date: 2026-05-12 19:28\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -97,6 +97,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Osoite kopioitu"
 
+msgid "Address, user and password are required"
+msgstr "Osoite, käyttäjä ja salasana vaaditaan"
+
 msgid "Adjust length and characters"
 msgstr "Säädä pituutta ja merkkejä"
 
@@ -108,6 +111,9 @@ msgstr "Säädä sanoja ja erotinta"
 
 msgid "Algorithm"
 msgstr "Algoritmi"
+
+msgid "All"
+msgstr "Kaikki"
 
 msgid "All clear"
 msgstr "Kaikki kunnossa"
@@ -128,11 +134,23 @@ msgstr ""
 "Kaikki osiot, tiedostot ja tiedostojärjestelmän allekirjoitukset tuhotaan "
 "pysyvästi."
 
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "Salli Ashy Pass Dropboxissa"
+
 msgid "Allow TRIM through encrypted mapping"
 msgstr "Salli TRIM salatun kartoituksen läpi"
 
 msgid "Allow the browser extension"
 msgstr "Salli selainlaajennus"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Toinen laite poisti ne salatusta synkronointikansiosta. Jos teit sen itse, "
+"ne siirretään tässä kohtaan Poistetut kohteet. Jos et, säilytä ne: ne "
+"lähetetään kansioon uudelleen."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -141,8 +159,8 @@ msgstr ""
 "Toinen laite on lähettänyt uudemman tilannevedoksen sen jälkeen, kun tämä "
 "laite viimeksi synkronoi. Lähettäminen nyt jättäisi etämuutokset orvoiksi."
 
-msgid "Answer requests from the installed extension"
-msgstr "Vastaa asennetun laajennuksen pyyntöihin"
+msgid "Another example"
+msgstr "Toinen esimerkki"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -229,6 +247,9 @@ msgstr "Liitteet"
 msgid "Audit failed"
 msgstr "Tarkistus epäonnistui"
 
+msgid "Authentication was cancelled"
+msgstr "Tunnistautuminen peruttiin"
+
 msgid "Auto-tune"
 msgstr "Automaattinen viritys"
 
@@ -301,6 +322,12 @@ msgstr "Caps Lock on päällä"
 msgid "Capture from screen…"
 msgstr "Kaappaa näytöltä…"
 
+msgid "Change PIN"
+msgstr "Vaihda PIN-koodi"
+
+msgid "Change how the vault key is protected?"
+msgstr "Muutetaanko holviavaimen suojausta?"
+
 msgid "Change master password"
 msgstr "Vaihda pääsalasana"
 
@@ -310,8 +337,14 @@ msgstr "Vaihda pääsalasana…"
 msgid "Change only if the site shows different values"
 msgstr "Muuta vain, jos sivusto näyttää eri arvot"
 
+msgid "Changed"
+msgstr "Muutettu"
+
 msgid "Changes saved to the vault"
 msgstr "Muutokset tallennettu holviin"
+
+msgid "Changes waiting to be sent"
+msgstr "Lähetystä odottavat muutokset"
 
 msgid "Check known data breaches (online)"
 msgstr "Tarkista tunnetut tietovuodot (verkossa)"
@@ -321,6 +354,12 @@ msgstr "Tarkista salasanani"
 
 msgid "Check now"
 msgstr "Tarkista nyt"
+
+msgid "Check the server every"
+msgstr "Tarkista palvelin"
+
+msgid "Checking the drive…"
+msgstr "Tarkistetaan asemaa…"
 
 msgid "Choose a backup"
 msgstr "Valitse varmuuskopio"
@@ -356,6 +395,9 @@ msgstr "Valitse KeePass-tietokanta"
 msgid "Choose the andOTP export"
 msgstr "Valitse andOTP-vienti"
 
+msgid "Choose the folder"
+msgstr "Valitse kansio"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr "Valitse tämä kansio, kun lisäät tai muokkaat salasanaa."
 
@@ -365,11 +407,17 @@ msgstr "Valitse…"
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Chromesta, Edgestä, Bravesta tai Firefoxista viedyt salasanat (CSV)"
 
+msgid "Classic"
+msgstr "Klassinen"
+
 msgid "Clear copied passwords after"
 msgstr "Tyhjennä kopioidut salasanat"
 
 msgid "Clear history"
 msgstr "Tyhjennä historia"
+
+msgid "Clear the password history?"
+msgstr "Tyhjennetäänkö salasanahistoria?"
 
 msgid "Client ID"
 msgstr "Asiakastunnus"
@@ -398,8 +446,14 @@ msgstr "Suljetaan yhdistämistä"
 msgid "Code copied"
 msgstr "Koodi kopioitu"
 
+msgid "Code from Dropbox"
+msgstr "Dropboxin koodi"
+
 msgid "Code settings"
 msgstr "Koodin asetukset"
+
+msgid "Coffee"
+msgstr "Kahvi"
 
 msgid "Columns such as name, url, username, password"
 msgstr "Sarakkeet kuten name, url, username, password"
@@ -458,8 +512,47 @@ msgstr "Vahvista pääsalasanasi viedäksesi tietosi."
 msgid "Conflicts"
 msgstr "Ristiriidat"
 
-msgid "Connecting the extension"
-msgstr "Laajennuksen yhdistäminen"
+msgid "Connect"
+msgstr "Yhdistä"
+
+msgid "Connect a phone"
+msgstr "Yhdistä puhelin"
+
+msgid "Connect a phone…"
+msgstr "Yhdistä puhelin…"
+
+msgid "Connect browsers"
+msgstr "Yhdistä selaimet"
+
+msgid "Connect failed"
+msgstr "Yhdistäminen epäonnistui"
+
+msgid "Connect the sync folder"
+msgstr "Yhdistä synkronointikansio"
+
+msgid "Connect your browsers"
+msgstr "Yhdistä selaimesi"
+
+msgid "Connected"
+msgstr "Yhdistetty"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Yhdistetty {} selaimeen. Käynnistä se uudelleen, jos se on auki."
+msgstr[1] "Yhdistetty {} selaimeen. Käynnistä ne uudelleen, jos ne ovat auki."
+
+msgid "Connected. Received:"
+msgstr "Yhdistetty. Vastaanotettu:"
+
+msgid "Connecting and syncing…"
+msgstr "Yhdistetään ja synkronoidaan…"
+
+msgid "Connection QR code"
+msgstr "Yhteyden QR-koodi"
+
+msgid "Connect…"
+msgstr "Yhdistä…"
 
 msgid "Continue"
 msgstr "Jatka"
@@ -497,8 +590,14 @@ msgstr "Liitteen lisääminen epäonnistui"
 msgid "Could not change the favorite"
 msgstr "Suosikin muuttaminen epäonnistui"
 
+msgid "Could not check"
+msgstr "Tarkistus epäonnistui"
+
 msgid "Could not clear the history"
 msgstr "Historian tyhjentäminen epäonnistui"
+
+msgid "Could not connect the browsers"
+msgstr "Selaimia ei voitu yhdistää"
 
 msgid "Could not create the folder"
 msgstr "Kansion luominen epäonnistui"
@@ -514,6 +613,15 @@ msgstr "Poistaminen epäonnistui"
 
 msgid "Could not lock the drive"
 msgstr "Aseman lukitseminen epäonnistui"
+
+msgid "Could not make the QR code"
+msgstr "QR-koodin luominen epäonnistui"
+
+msgid "Could not merge"
+msgstr "Yhdistäminen epäonnistui"
+
+msgid "Could not open the vault"
+msgstr "Holvia ei voitu avata"
 
 msgid "Could not open this access"
 msgstr "Tämän kirjautumistiedon avaaminen epäonnistui"
@@ -544,6 +652,9 @@ msgstr "Kansion nimeäminen uudelleen epäonnistui"
 
 msgid "Could not restore. Look in Deleted items."
 msgstr "Palauttaminen epäonnistui. Katso Poistetut kohteet."
+
+msgid "Could not save"
+msgstr "Tallennus epäonnistui"
 
 msgid "Could not save the file"
 msgstr "Tiedoston tallentaminen epäonnistui"
@@ -629,8 +740,17 @@ msgstr "Poista kirjautumistieto…"
 msgid "Delete permanently"
 msgstr "Poista pysyvästi"
 
+msgid "Delete permanently?"
+msgstr "Poistetaanko pysyvästi?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Poista vientitiedosto, jos sitä ei ollut suojattu salasanalla."
+
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Poistetaanko {} kohde myös täältä?"
+msgstr[1] "Poistetaanko {} kohdetta myös täältä?"
 
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
@@ -668,6 +788,18 @@ msgstr "Laitepolku"
 msgid "Digits"
 msgstr "Numerot"
 
+msgid "Digits and symbols in color, easier to read and type"
+msgstr "Numerot ja symbolit väreillä, helpompi lukea ja kirjoittaa"
+
+msgid "Disconnect"
+msgstr "Katkaise yhteys"
+
+msgid "Disconnect failed"
+msgstr "Yhteyden katkaisu epäonnistui"
+
+msgid "Disconnect the sync folder?"
+msgstr "Katkaistaanko synkronointikansion yhteys?"
+
 msgid "Done"
 msgstr "Valmis"
 
@@ -682,6 +814,9 @@ msgstr "Ladataan etämuutoksia"
 
 msgid "Drive locked"
 msgstr "Asema lukittu"
+
+msgid "Duplicate items"
+msgstr "Kaksoiskappaleet"
 
 msgid "Easier to type and remember."
 msgstr "Helpompi kirjoittaa ja muistaa."
@@ -704,6 +839,9 @@ msgstr "Tyhjä salasana"
 msgid "Empty trash"
 msgstr "Tyhjennä roskakori"
 
+msgid "Empty trash?"
+msgstr "Tyhjennetäänkö roskakori?"
+
 msgid "Encrypt"
 msgstr "Salaa"
 
@@ -713,11 +851,20 @@ msgstr "Salaa asema"
 msgid "Encrypt KeePass export"
 msgstr "Salaa KeePass-vienti"
 
+msgid "Encrypt again"
+msgstr "Salaa uudelleen"
+
 msgid "Encrypted as"
 msgstr "Salattuna"
 
 msgid "Encrypted device"
 msgstr "Salattu laite"
+
+msgid "Encrypted folder sync"
+msgstr "Salattu kansiosynkronointi"
+
+msgid "Encrypted folder sync failed"
+msgstr "Salattu kansiosynkronointi epäonnistui"
 
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Salattu tilannevedoksen lähetys ristiriitojen tunnistuksella"
@@ -739,6 +886,9 @@ msgid ""
 msgstr ""
 "Salaaminen tyhjentää koko aseman. Avaus ja lukitus toimivat LUKS-asemilla."
 
+msgid "Encrypting the vault again…"
+msgstr "Salataan holvia uudelleen…"
+
 msgid "Encrypting…"
 msgstr "Salataan…"
 
@@ -756,6 +906,9 @@ msgstr "Anna nimiö."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Anna tälle tietokoneelle asetettu PIN-koodi."
+
+msgid "Enter the master password"
+msgstr "Anna pääsalasana"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Anna salasana tai lisää vahvistuskoodi alle."
@@ -782,11 +935,27 @@ msgid "Estimated strength"
 msgstr "Arvioitu vahvuus"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Koko holvi salataan uudelleen avaimella, joka johdetaan yllä olevilla "
+"kustannuksilla. Ashy Passin vanhemmat versiot eivät avaa holvia "
+"pääsalasanalla. PIN-koodi on asetettava uudelleen."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Kaikki holvissa salataan uudelleen uudella salasanalla. Aiemmin tehdyt "
 "varmuuskopiot avautuvat edelleen salasanalla, jolla ne tehtiin."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Koko holvi salataan uudelleen vakiokustannuksilla, jotka jokainen Ashy Pass "
+"3 -versio avaa. PIN-koodi on asetettava uudelleen."
 
 msgid "Everything is in sync"
 msgstr "Kaikki synkronissa"
@@ -857,8 +1026,20 @@ msgstr "Tiedostot salataan ja tallennetaan holviin."
 msgid "Filesystem"
 msgstr "Tiedostojärjestelmä"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Täytä ja kopioi salasanasi Chromessa, Bravessa, Edgessä, Vivaldissa, "
+"Firefoxissa ja LibreWolfissa. Laajennus ei tallenna mitään: se kysyy Ashy "
+"Passilta joka kerta ja täyttää sivun vasta napsautuksesi jälkeen."
+
 msgid "Fill in all three fields."
 msgstr "Täytä kaikki kolme kenttää."
+
+msgid "Find duplicate items"
+msgstr "Etsi kaksoiskappaleet"
 
 msgid "Findings"
 msgstr "Löydökset"
@@ -884,6 +1065,9 @@ msgstr "Kansio luotu"
 msgid "Folder name"
 msgstr "Kansion nimi"
 
+msgid "Folder on this computer"
+msgstr "Kansio tällä tietokoneella"
+
 msgid "Folder removed. Its passwords were kept."
 msgstr "Kansio poistettu. Sen salasanat säilytettiin."
 
@@ -907,6 +1091,12 @@ msgid ""
 msgstr ""
 "Nextcloudin perus-URL on muotoa https://cloud.example.com/remote.php/dav/"
 "files/KÄYTTÄJÄTUNNUS"
+
+msgid "For the browsers installed for this user"
+msgstr "Tälle käyttäjälle asennetuille selaimille"
+
+msgid "Forest"
+msgstr "Metsä"
 
 msgid "Forgot the master password"
 msgstr "Unohdin pääsalasanan"
@@ -942,17 +1132,52 @@ msgstr "Luo salasana"
 msgid "Generated password"
 msgstr "Luotu salasana"
 
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Hae laajennus Chromeen, Braveen, Edgeen ja Vivaldiin"
+
+msgid "Get the extension for Firefox"
+msgstr "Hae laajennus Firefoxiin"
+
 msgid "Give this access a name, for example the site or app."
 msgstr "Anna tälle kirjautumistiedolle nimi, esimerkiksi sivusto tai sovellus."
 
 msgid "Go to search"
 msgstr "Siirry hakuun"
 
+msgid ""
+"Good for 10 minutes. The QR code alone is no use without this code, and "
+"neither opens your passwords without the master password."
+msgstr ""
+"Voimassa 10 minuuttia. Pelkkä QR-koodi on hyödytön ilman tätä koodia, eikä "
+"kumpikaan avaa salasanojasi ilman pääsalasanaa."
+
 msgid "Google Drive"
 msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive ja WebDAV"
+
+msgid "Google account"
+msgstr "Google-tili"
+
+msgid "Google sign-in failed"
+msgstr "Googleen kirjautuminen epäonnistui"
+
+msgid "Grape"
+msgstr "Viinirypäle"
+
+msgid ""
+"Group the codes as in Aegis. Groups are the item's tags: they sync to your "
+"other devices."
+msgstr ""
+"Ryhmittele koodit kuten Aegisissa. Ryhmät ovat merkinnän tunnisteita: ne "
+"synkronoidaan muille laitteillesi."
+
+msgid "Groups"
+msgstr "Ryhmät"
+
+msgid "Groups…"
+msgstr "Ryhmät…"
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr ""
@@ -965,15 +1190,16 @@ msgstr "Piilota kopioidut salasanat leikepöydän historiasta"
 msgid "Hide password"
 msgstr "Piilota salasana"
 
+msgid "High contrast"
+msgstr "Korkea kontrasti"
+
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Suuremmat kustannukset hidastavat arvaushyökkäyksiä mutta myös avaamista. "
-"Automaattinen säätö valitsee arvot, joihin kuluu noin puoli sekuntia tällä "
-"tietokoneella; ne otetaan käyttöön, kun pääsalasana seuraavan kerran "
-"asetetaan tai vaihdetaan."
+"Suuremmat kustannukset hidastavat arvaushyökkäyksiä ja myös lukituksen "
+"avaamista. Automaattinen säätö valitsee arvot noin puolen sekunnin ajalle "
+"tällä tietokoneella."
 
 msgid "History cleared"
 msgstr "Historia tyhjennetty"
@@ -1015,6 +1241,15 @@ msgstr "Tuo salasanoja"
 msgid "Import passwords…"
 msgstr "Tuo salasanoja…"
 
+msgid ""
+"In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
+"“Scan the computer's QR code”. Then type the code below and your master "
+"password."
+msgstr ""
+"Avaa Androidin Ashy Passissa Asetukset → Salatun kansion synkronointi ja "
+"napauta ”Skannaa tietokoneen QR-koodi”. Kirjoita sitten alla oleva koodi ja "
+"pääsalasana."
+
 msgid "Incorrect PIN"
 msgstr "Väärä PIN-koodi"
 
@@ -1030,6 +1265,9 @@ msgstr[1] "Väärä PIN-koodi. Yrityksiä jäljellä: {}."
 msgid "Incorrect master password"
 msgstr "Väärä pääsalasana"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Väärä pääsalasana. Mitään ei muutettu."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Väärä pääsalasana. Mitään ei viety."
 
@@ -1042,15 +1280,11 @@ msgstr ""
 "sitä pyydetään. Nykyinen salasanasi vaaditaan uuden avainpaikan "
 "vahvistamiseen."
 
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Asenna laajennus Chromeen tai Firefoxiin ja rekisteröi sitten tämä tietokone "
-"komennolla:  ashypass-native-host --install <laajennuksen-tunnus>"
-
 msgid "Internal error: no passphrase set"
 msgstr "Sisäinen virhe: salasanaa ei ole asetettu"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Sisäinen virhe: asemaa ei tarkistettu"
 
 msgid "It can be restored from Deleted items."
 msgstr "Sen voi palauttaa kohdasta Poistetut kohteet."
@@ -1061,6 +1295,10 @@ msgid ""
 msgstr ""
 "Se avaa holvin tällä tietokoneella. Kukaan ei voi palauttaa sitä puolestasi "
 "— ei edes Ashy Pass."
+
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr ""
+"Kohteet säilyvät täällä ja kansiossa; uudelleenyhdistäminen yhdistää ne"
 
 msgid "Its user, password and other details appear here."
 msgstr "Sen käyttäjä, salasana ja muut tiedot näkyvät tässä."
@@ -1087,6 +1325,9 @@ msgstr ""
 
 msgid "Keep deleted entries for (days)"
 msgstr "Säilytä poistetut merkinnät (päivää)"
+
+msgid "Keep them"
+msgstr "Säilytä"
 
 msgid "Keep using"
 msgstr "Jatka käyttöä"
@@ -1152,6 +1393,9 @@ msgstr "Viimeisin tällä tietokoneella tehty varmuuskopio"
 msgid "Last changed:"
 msgstr "Viimeksi muutettu:"
 
+msgid "Last sync:"
+msgstr "Viimeisin synkronointi:"
+
 msgid "Launch the encryption wizard"
 msgstr "Käynnistä salausvelho"
 
@@ -1172,6 +1416,31 @@ msgstr "Lukitse holvi nyt (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Lukitse, kun näyttö lukittuu tai tietokone menee lepotilaan"
+
+msgid "Login name"
+msgstr "Kirjautumisnimi"
+
+msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"Saman sivuston ja tilin kirjautumistiedot tai kohteet, joilla on sama "
+"vahvistuskoodi, tuonneista tai kahdesta synkronoinnista jääneinä. "
+"Yhdistäminen säilyttää yhden, tuo siihen sen, mitä vain muilla oli (koodi, "
+"muistiinpanot, muut verkkosivustot, ryhmät; muut salasanat siirtyvät sen "
+"historiaan) ja siirtää muut kohtaan Poistetut kohteet."
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
+"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+msgstr ""
+"Kirjautumistiedot, kortit, henkilöllisyydet, muistiinpanot ja pääsyavaimet "
+"salattuina tällä tietokoneella ennen lähtöä, kansion kautta Nextcloudissa, "
+"pCloudissa, WebDAVissa, Dropboxissa, Google Drivessa tai tällä "
+"tietokoneella. Ashy Pass Androidille käyttää samaa kansiota."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1205,8 +1474,20 @@ msgstr "Mittaa tämän tietokoneen (noin 5 sekuntia)"
 msgid "Medium"
 msgstr "Keskivahva"
 
+msgid "Merge, keeping the selected one"
+msgstr "Yhdistä ja säilytä valittu"
+
+msgid "Merged"
+msgstr "Yhdistetty"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "Yhdistetty; muut ovat kohdassa Poistetut kohteet"
+
 msgid "Minimum length:"
 msgstr "Vähimmäispituus:"
+
+msgid "Mint"
+msgstr "Minttu"
 
 msgid "Model"
 msgstr "Malli"
@@ -1214,11 +1495,17 @@ msgstr "Malli"
 msgid "Modern password generator and encrypted password vault"
 msgstr "Moderni salasanageneraattori ja salattu salasanaholvi"
 
+msgid "Monochrome"
+msgstr "Yksivärinen"
+
 msgid "More actions"
 msgstr "Lisää toimintoja"
 
 msgid "More options"
 msgstr "Lisää valintoja"
+
+msgid "Move to Deleted items"
+msgstr "Siirrä Poistettuihin"
 
 msgid "Moved to Deleted items"
 msgstr "Siirretty kohtaan Poistetut kohteet"
@@ -1259,6 +1546,9 @@ msgstr "Uuden kansion nimi"
 msgid "New folder…"
 msgstr "Uusi kansio…"
 
+msgid "New group"
+msgstr "Uusi ryhmä"
+
 msgid "New master password"
 msgstr "Uusi pääsalasana"
 
@@ -1285,6 +1575,10 @@ msgstr ""
 "Nextcloud Passwords edellyttää täytettyä salasanakenttää. Muokkaa näitä "
 "merkintöjä Ashy Passissa lisäämällä salasana, jotta ne voidaan lähettää."
 
+msgid "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or a local folder"
+msgstr ""
+"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive tai paikallinen kansio"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1297,8 +1591,17 @@ msgstr "Ei liitteitä"
 msgid "No backup made on this computer yet"
 msgstr "Tällä tietokoneella ei ole vielä tehty varmuuskopiota"
 
+msgid "No browser found yet"
+msgstr "Selainta ei vielä löytynyt"
+
 msgid "No codes found for"
 msgstr "Koodeja ei löytynyt haulle"
+
+msgid "No colors"
+msgstr "Ei värejä"
+
+msgid "No duplicate items"
+msgstr "Ei kaksoiskappaleita"
 
 msgid "No external drives detected"
 msgstr "Ulkoisia asemia ei havaittu"
@@ -1328,14 +1631,26 @@ msgid "No security key or recovery phrase changes can be made in this version."
 msgstr ""
 "Tässä versiossa suojausavaimia tai varmuuskopiolauseita ei voi muuttaa."
 
+msgid "No stable device link"
+msgstr "Ei pysyvää laitelinkkiä"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr "Tuettua selainta ei löytynyt. Avaa selain kerran ja yritä uudelleen."
+
 msgid "No verification codes yet"
 msgstr "Ei vielä vahvistuskoodeja"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "Ei mitään — nopea, jättää aiemmat tiedot palautettaviksi"
 
+msgid "Not chosen"
+msgstr "Ei valittu"
+
 msgid "Not configured"
 msgstr "Ei määritetty"
+
+msgid "Not connected"
+msgstr "Ei yhdistetty"
 
 msgid "Not run yet"
 msgstr "Ei vielä suoritettu"
@@ -1358,8 +1673,14 @@ msgstr "Mikään ei muuttunut — Ashy Pass ja Nextcloud olivat jo linjassa."
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Mitään ei poisteta. Holvissa jo olevat merkinnät ohitetaan."
 
+msgid "Nothing was changed"
+msgstr "Mitään ei muutettu"
+
 msgid "Nothing was changed."
 msgstr "Mitään ei muutettu."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr "Mitään ei muutettu. Sulje muut Ashy Passin ikkunat ja yritä uudelleen."
 
 msgid "Nothing was imported"
 msgstr "Mitään ei tuotu"
@@ -1391,6 +1712,9 @@ msgstr "OAuth-asiakasta ei ole määritetty rakennusvaiheessa"
 
 msgid "OK"
 msgstr "OK"
+
+msgid "Ocean"
+msgstr "Valtameri"
 
 msgid "Off"
 msgstr "Pois"
@@ -1432,6 +1756,12 @@ msgstr "Tarvitaan vain, jos sivustolla on erityisiä sääntöjä"
 msgid "Only when some entries come from Nextcloud Passwords and others do not"
 msgstr "Vain kun osa merkinnöistä tulee Nextcloud Passwordsista ja osa ei"
 
+msgid "Open Dropbox"
+msgstr "Avaa Dropbox"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr "Avaa Dropbox, salli Ashy Pass ja liitä näytetty koodi"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr "Avaa salasana ja merkitse tähti löytääksesi sen nopeammin."
 
@@ -1453,8 +1783,14 @@ msgstr "Avaa salattu taltio"
 msgid "Open website"
 msgstr "Avaa sivusto"
 
+msgid "Open your browser once, then connect"
+msgstr "Avaa selain kerran ja yhdistä sitten"
+
 msgid "Opening encrypted mapping"
 msgstr "Avataan salattua yhdistämistä"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr "Avaa Dropboxin selaimessa; kopioi näytetty koodi"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Avaa selaimen OAuth-suostumusta varten"
@@ -1518,6 +1854,9 @@ msgstr "Salasana"
 msgid "Password / app-password"
 msgstr "Salasana / sovellussalasana"
 
+msgid "Password colors"
+msgstr "Salasanan värit"
+
 msgid "Password copied"
 msgstr "Salasana kopioitu"
 
@@ -1532,6 +1871,9 @@ msgstr "Salasanahistoria…"
 
 msgid "Password list"
 msgstr "Salasanaluettelo"
+
+msgid "Password of the Aegis vault"
+msgstr "Aegis-holvin salasana"
 
 msgid "Password of the KeePass database"
 msgstr "KeePass-tietokannan salasana"
@@ -1744,8 +2086,18 @@ msgstr "Palautetaan kopiota…"
 msgid "Retention"
 msgstr "Säilytysaika"
 
+msgid "Rose"
+msgstr "Ruusu"
+
 msgid "Run"
 msgstr "Suorita"
+
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Tee tämä kerran selaimen asentamisen jälkeen, jotta se löytää Ashy Passin. "
+"Se lisää vain pienen tiedoston jokaisen selaimen asetuskansioon."
 
 msgid "Running audit..."
 msgstr "Suoritetaan tarkistusta..."
@@ -1761,6 +2113,12 @@ msgstr "Turvallisuustarkistukset epäonnistuivat"
 
 msgid "Safety checks passed"
 msgstr "Turvallisuustarkistukset läpäisty"
+
+msgid "Same site and account"
+msgstr "Sama sivusto ja tili"
+
+msgid "Same verification code"
+msgstr "Sama vahvistuskoodi"
 
 msgid "Save"
 msgstr "Tallenna"
@@ -1782,6 +2140,9 @@ msgstr "Tallenna varmuuskopio"
 
 msgid "Save in"
 msgstr "Tallenna kohteeseen"
+
+msgid "Save new PIN"
+msgstr "Tallenna uusi PIN-koodi"
 
 msgid "Save to vault"
 msgstr "Tallenna holviin"
@@ -1840,6 +2201,11 @@ msgstr "Näytä salasanani"
 msgid "Select an access"
 msgstr "Valitse kirjautumistieto"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Lähettää muutokset pian jokaisen muokkauksen jälkeen ja tarkistaa palvelimen "
+"säännöllisesti"
+
 msgid "Sending local changes"
 msgstr "Lähetetään paikallisia muutoksia"
 
@@ -1865,10 +2231,16 @@ msgstr "Palvelimen URL, käyttäjätunnus, sovellussalasana"
 msgid "Server URL, username, app-password"
 msgstr "Palvelimen URL, käyttäjätunnus, sovellussalasana"
 
+msgid "Server address"
+msgstr "Palvelimen osoite"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
 "Palvelimen URL (esim. cloud.example.com), käyttäjätunnus ja sovellussalasana."
+
+msgid "Service"
+msgstr "Palvelu"
 
 msgid "Set PIN"
 msgstr "Aseta PIN-koodi"
@@ -1906,6 +2278,9 @@ msgstr "Näytä kansio"
 msgid "Show favicons"
 msgstr "Näytä suosikkikuvakkeet"
 
+msgid "Show icons beside the codes"
+msgstr "Näytä kuvakkeet koodien vieressä"
+
 msgid "Show only favorites"
 msgstr "Näytä vain suosikit"
 
@@ -1918,11 +2293,17 @@ msgstr "Näytä sivupalkki"
 msgid "Show technical details"
 msgstr "Näytä tekninen yksityiskohta"
 
+msgid "Shows a QR code to scan with Ashy Pass for Android"
+msgstr "Näyttää QR-koodin skannattavaksi Androidin Ashy Passilla"
+
 msgid "Sign in failed"
 msgstr "Kirjautuminen epäonnistui"
 
 msgid "Sign in to Google"
 msgstr "Kirjaudu Googleen"
+
+msgid "Sign in to Google to use your Drive"
+msgstr "Kirjaudu Googleen käyttääksesi Driveasi"
 
 msgid "Sign out"
 msgstr "Kirjaudu ulos"
@@ -1960,14 +2341,27 @@ msgstr "Vahvuus"
 msgid "Strong"
 msgstr "Vahva"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Kestävämpi pääsalasanan arvailua vastaan. Kun tämä on käytössä, Ashy Passin "
+"vanhemmat versiot eivät voi avata holvia pääsalasanalla."
+
 msgid "Style"
 msgstr "Tyyli"
 
 msgid "Summary"
 msgstr "Yhteenveto"
 
+msgid "Sunset"
+msgstr "Auringonlasku"
+
 msgid "Symbols (!@#$…)"
 msgstr "Erikoismerkit (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Synkronoi automaattisesti"
 
 msgid "Sync completed"
 msgstr "Synkronointi valmis"
@@ -1978,17 +2372,24 @@ msgstr "Synkronointi epäonnistui"
 msgid "Sync completed with warnings"
 msgstr "Synkronointi valmis varoituksin"
 
-msgid "Sync conflict"
-msgstr "Synkronointikonflikti"
-
 msgid "Sync conflict detected"
 msgstr "Synkronointikonflikti havaittu"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Synkronointiristiriita: palvelimella on uudempi kopio (sukupolvi {})"
 
 msgid "Sync failed"
 msgstr "Synkronointi epäonnistui"
 
+msgid "Sync folder disconnected"
+msgstr "Synkronointikansion yhteys katkaistu"
+
 msgid "Sync now"
 msgstr "Synkronoi nyt"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Synkronoi, kun holvin lukitus avataan"
 
 msgid "Synchronization"
 msgstr "Synkronointi"
@@ -2020,6 +2421,9 @@ msgstr "Synkronoidaan..."
 msgid "Syncing folders"
 msgstr "Synkronoidaan kansioita"
 
+msgid "Syncing…"
+msgstr "Synkronoidaan…"
+
 msgid "Tags"
 msgstr "Tunnisteet"
 
@@ -2037,6 +2441,13 @@ msgstr "Tekniset tiedot"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "PIN-koodia ei voitu käyttää tällä tietokoneella. Käytä pääsalasanaasi."
+
+msgid ""
+"The PIN is not stored anywhere, so it cannot be shown. To change it, set a "
+"new one."
+msgstr ""
+"PIN-koodia ei tallenneta mihinkään, joten sitä ei voi näyttää. Vaihda se "
+"asettamalla uusi."
 
 msgid "The PIN must have at least 4 characters"
 msgstr "PIN-koodissa on oltava vähintään 4 merkkiä"
@@ -2060,6 +2471,9 @@ msgstr ""
 msgid "The backup was not created"
 msgstr "Varmuuskopiota ei luotu"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Ashy Passin selainyhteyttä ei ole asennettu"
+
 msgid "The copy could not be downloaded"
 msgstr "Kopiota ei voitu ladata"
 
@@ -2071,6 +2485,16 @@ msgstr[1] "Kopio tarkistettiin, ja siinä on {} merkintää."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Nykyinen pääsalasana on väärä. Mitään ei muutettu."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Laajennus pyytää pääsalasanaa ja pitää holvin auki vain automaattiseen "
+"lukitukseen asti. Jos ”Avaa automaattisesti kirjautuessa” on käytössä, se "
+"avaa kysymättä. Näytön lukitseminen lukitsee sen myös, kun asetus on "
+"käytössä."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2095,6 +2519,9 @@ msgid ""
 msgstr ""
 "Nimiö ei voi alkaa merkillä \"-\" eikä sisältää merkkiä \"/\" tai "
 "ohjausmerkkejä."
+
+msgid "The last sync failed"
+msgstr "Viimeisin synkronointi epäonnistui"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Pääsalasana on liian lyhyt. Vähimmäispituus:"
@@ -2126,6 +2553,13 @@ msgstr "Salasanaa ei vaihdettu"
 msgid "The passwords do not match"
 msgstr "Salasanat eivät täsmää"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Tämän käyttöoikeuden aiemmat salasanat poistetaan pysyvästi. Tätä ei voi "
+"perua."
+
 msgid "The previous vault was kept at:"
 msgstr "Aiempi holvi säilytettiin sijainnissa:"
 
@@ -2140,6 +2574,9 @@ msgstr "Haku on rajattu salasanoihin, joilla ei ole kansiota."
 
 msgid "The search is limited to the folder"
 msgstr "Haku on rajattu kansioon"
+
+msgid "The site's icon, when the code has a site saved"
+msgstr "Sivuston kuvake, kun koodille on tallennettu sivusto"
 
 msgid "The sync finished, but some items reported errors."
 msgstr "Synkronointi päättyi, mutta joissakin kohteissa ilmeni virhe."
@@ -2171,6 +2608,13 @@ msgid "The vault will open automatically at login"
 msgstr "Holvi avautuu automaattisesti kirjautuessa"
 
 #, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] "Roskakorin {} kohde poistetaan pysyvästi. Tätä ei voi perua."
+msgstr[1] "Roskakorin {} kohdetta poistetaan pysyvästi. Tätä ei voi perua."
+
+#, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
 msgid_plural ""
 "The {} passwords in it stay in the vault and move to “No folder”."
@@ -2185,6 +2629,17 @@ msgstr "Ei mitään uutta tuotavaa."
 
 msgid "These options cannot produce a password."
 msgstr "Näillä valinnoilla ei voi luoda salasanaa."
+
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Ne oli synkronoitu Nextcloud Passwordsin kanssa, eikä niitä ole enää "
+"palvelimella. Jos poistit ne siellä, ne siirtyvät täällä Poistettuihin. Jos "
+"et, palvelin on ehkä vastannut vain osittain: säilytä ne, niin seuraava "
+"synkronointi yrittää uudelleen."
 
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Tämä PIN-koodi ei enää vastaa holvia. Mitään ei muutettu."
@@ -2205,6 +2660,12 @@ msgstr "Tällä kirjautumistiedolla ei ole käyttäjää"
 msgid "This access no longer exists"
 msgstr "Tätä kirjautumistietoa ei enää ole"
 
+msgid "This build has no Dropbox app key"
+msgstr "Tässä versiossa ei ole Dropbox-sovellusavainta"
+
+msgid "This build has no Google sign-in configured"
+msgstr "Tässä versiossa ei ole määritetty Google-kirjautumista"
+
 msgid "This cannot be undone."
 msgstr "Tätä ei voi kumota."
 
@@ -2219,17 +2680,34 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Tämän laitteen sukupolvi:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Asemalla ei ole linkkiä hakemistossa /dev/disk/by-id, joten Ashy Pass ei voi "
+"varmistaa, että kyseessä on yhä sama asema sitä tyhjennettäessä. Sitä ei voi "
+"salata täällä."
+
 msgid "This file can be read without a password"
 msgstr "Tämän tiedoston voi lukea ilman salasanaa"
 
 msgid "This file could not be read"
 msgstr "Tätä tiedostoa ei voitu lukea"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Tiedosto on liian suuri liitettäväksi. Raja on 64 Mt."
+
 msgid "This folder already exists"
 msgstr "Tämä kansio on jo olemassa"
 
 msgid "This folder is empty"
 msgstr "Tämä kansio on tyhjä"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Kuvaa ei voitu avata. Käytä enintään 20 Mt:n PNG-, JPEG- tai WebP-kuvaa."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "
@@ -2376,6 +2854,9 @@ msgstr "Avattu klo"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "Toinen sovellus avasi lukituksen. Lukitse se tiedostonhallinnasta."
 
+msgid "Unlocking"
+msgstr "Lukituksen avaaminen"
+
 msgid "Unlocking…"
 msgstr "Avataan…"
 
@@ -2422,8 +2903,18 @@ msgstr "Käytä pääsalasanaa"
 msgid "Use the + button to create one."
 msgstr "Luo uusi +-painikkeella."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Käytä samaa pääsalasanaa kaikilla laitteillasi: se avaa kansion avaimen. "
+"Kirjoitat sen kerran tähän liittyäksesi."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Käytä näitä koodeja, kun sivusto pyytää kaksivaiheista vahvistusta."
+
+msgid "Use these costs for the vault key"
+msgstr "Käytä näitä kustannuksia holviavaimelle"
 
 msgid "Use this password"
 msgstr "Käytä tätä salasanaa"
@@ -2440,6 +2931,9 @@ msgstr "Käyttäjä"
 msgid "User copied"
 msgstr "Käyttäjä kopioitu"
 
+msgid "User name"
+msgstr "Käyttäjätunnus"
+
 msgid "User or e-mail (optional)"
 msgstr "Käyttäjä tai sähköposti (valinnainen)"
 
@@ -2454,6 +2948,9 @@ msgstr ""
 "Käyttää Have I Been Pwned -palvelua. Vain kunkin salasanan tiivisteen 5 "
 "ensimmäistä merkkiä lähetetään, ei koskaan salasanaa. Tulokset säilytetään "
 "tällä tietokoneella 7 päivää."
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr "Käyttää Google Drive -kirjautumistasi kohdasta Varmuuskopiot"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2475,6 +2972,10 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Tallelokero on jo synkronoitu"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Holvi salattu uudelleen. Aseta PIN-koodi uudelleen, jos käytit sellaista."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Holvi lukittiin käyttämättömyyden vuoksi"
@@ -2505,6 +3006,9 @@ msgstr "Vahvistuskoodi tallennettu holviin"
 msgid "Verification codes"
 msgstr "Vahvistuskoodit"
 
+msgid "Verification codes (JSON, encrypted or not)"
+msgstr "Vahvistuskoodit (JSON, salattu tai ei)"
+
 msgid "Verification codes (unencrypted JSON)"
 msgstr "Vahvistuskoodit (salaamaton JSON)"
 
@@ -2514,14 +3018,26 @@ msgstr "Erittäin vahva"
 msgid "Very Weak"
 msgstr "Erittäin heikko"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Odota, että synkronointi päättyy, ja kirjaudu sitten ulos."
+
+msgid "Waiting for Google in the browser…"
+msgstr "Odotetaan Googlea selaimessa…"
+
 msgid "Waiting for Nextcloud..."
 msgstr "Odotetaan Nextcloudia..."
 
 msgid "Weak"
 msgstr "Heikko"
 
+msgid "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+msgstr "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "WebDAV-osoite"
 
 msgid "WebDAV configured"
 msgstr "WebDAV määritetty"
@@ -2542,14 +3058,8 @@ msgstr ""
 "Kun sivusto tarjoaa kaksivaiheista vahvistusta, lisää sen asetusavain tähän "
 "saadaksesi koodit."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Kun tämä on päällä, Ashy Passin selainlaajennus voi lukea holvin merkintöjä "
-"avaamalla sen järjestelmän avainnipun kautta, vaikka tämä ikkuna olisi "
-"lukittu. Avain hylätään taas automaattisen lukituksen viiveen jälkeen."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Kun tämä on pois, laajennus ei näe holvista mitään"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Mistä haluat tuoda salasanasi?"
@@ -2579,6 +3089,13 @@ msgstr "Tyhjennä laite"
 msgid "Wiping device"
 msgstr "Tyhjennetään laitetta"
 
+msgid ""
+"With two-step verification on, pCloud e-mails you about the new sign-in: "
+"approve it there and connect again."
+msgstr ""
+"Kun kaksivaiheinen vahvistus on käytössä, pCloud lähettää uudesta "
+"kirjautumisesta sähköpostin: hyväksy se siellä ja yhdistä uudelleen."
+
 msgid "Working..."
 msgstr "Työstetään..."
 
@@ -2601,6 +3118,12 @@ msgstr "Kirjoitetaan LUKS2-otsikkoa"
 msgid "Wrong master password"
 msgstr "Väärä pääsalasana"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Väärä pääsalasana. Kansio kuuluu holville, jolla on eri salasana."
+
+msgid "Wrong password. Password of the Aegis vault"
+msgstr "Väärä salasana. Aegis-holvin salasana"
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2618,8 +3141,18 @@ msgstr ""
 msgid "Your entries are still available on this computer."
 msgstr "Merkintäsi ovat yhä käytettävissä tällä tietokoneella."
 
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Kohteesi säilyvät tällä tietokoneella ja kansiossa. Myöhempi "
+"uudelleenyhdistäminen yhdistää ne päällekkäisyyksien sijaan."
+
 msgid "Your most used accesses can be here"
 msgstr "Eniten käyttämäsi kirjautumistiedot voivat olla tässä"
+
+msgid "Your pCloud e-mail and password"
+msgstr "pCloud-sähköpostisi ja salasanasi"
 
 msgid "Your vault is ready"
 msgstr "Holvisi on valmis"
@@ -2635,6 +3168,9 @@ msgstr "varattu"
 
 msgid "breached"
 msgstr "tietovuodossa"
+
+msgid "different password"
+msgstr "eri salasana"
 
 msgid "duplicate"
 msgstr "kaksoiskappale"
@@ -2668,6 +3204,11 @@ msgstr "matala"
 msgid "medium"
 msgstr "keskitaso"
 
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minuutin välein"
+msgstr[1] "minuutin välein"
+
 msgid "more"
 msgstr "lisää"
 
@@ -2689,6 +3230,15 @@ msgstr "ei asennettu"
 msgid "old"
 msgstr "vanha"
 
+msgid "pCloud (data in Europe)"
+msgstr "pCloud (tiedot Euroopassa)"
+
+msgid "pCloud (data in the US)"
+msgstr "pCloud (tiedot Yhdysvalloissa)"
+
+msgid "pCloud e-mail"
+msgstr "pCloud-sähköposti"
+
 msgid "passwordless entry was skipped"
 msgid_plural "passwordless entries were skipped"
 msgstr[0] "salasanaton merkintä ohitettiin"
@@ -2707,6 +3257,9 @@ msgstr "pyörivä (HDD)"
 
 msgid "seen"
 msgstr "nähty"
+
+msgid "sent:"
+msgstr "lähetetty:"
 
 msgid "solid-state"
 msgstr "puolijohde"
@@ -2841,6 +3394,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} sana"
 msgstr[1] "{} sanaa"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "”{}” poistetaan pysyvästi. Tätä ei voi perua."
 
 msgid "…"
 msgstr "…"

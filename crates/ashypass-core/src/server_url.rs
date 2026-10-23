@@ -11,12 +11,25 @@ pub fn normalize(input: &str) -> String {
     if trimmed.is_empty() {
         return String::new();
     }
-    let with_scheme = if trimmed.contains("://") {
+    let with_scheme = if has_scheme(trimmed) {
         trimmed.to_string()
     } else {
         format!("https://{}", trimmed.trim_start_matches('/'))
     };
     with_scheme.trim_end_matches('/').to_string()
+}
+
+/// `scheme://` at the very start (RFC 3986 scheme characters), so a `://`
+/// later in a path or query does not count.
+fn has_scheme(url: &str) -> bool {
+    let Some(end) = url.find("://") else {
+        return false;
+    };
+    let scheme = &url[..end];
+    scheme.starts_with(|c: char| c.is_ascii_alphabetic())
+        && scheme
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '-' | '.'))
 }
 
 /// Like [`normalize`], for a Nextcloud base address: also drops the
@@ -38,6 +51,15 @@ pub fn normalize_nextcloud(input: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_scheme_later_in_the_url_is_not_the_scheme() {
+        assert_eq!(
+            normalize("cloud.example.com/r?u=http://x"),
+            "https://cloud.example.com/r?u=http://x"
+        );
+        assert_eq!(normalize("http://cloud.lan"), "http://cloud.lan");
+    }
 
     #[test]
     fn a_bare_domain_gets_https() {

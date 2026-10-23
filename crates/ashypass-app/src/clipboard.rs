@@ -76,7 +76,7 @@ pub fn copy_with(text: &str, seconds: u64, hide_from_history: bool) {
         let still_ours = PENDING.with(|p| *p.borrow() == Some(expected))
             && GENERATION.with(|g| g.get()) == generation;
         if still_ours {
-            clear_if_matches(expected);
+            clear_if_matches(expected, generation);
         }
         glib::ControlFlow::Break
     });
@@ -88,7 +88,7 @@ pub fn copy_with(text: &str, seconds: u64, hide_from_history: bool) {
 pub fn clear_now() {
     let pending = PENDING.with(|p| p.borrow_mut().take());
     if let Some(expected) = pending {
-        clear_if_matches(expected);
+        clear_if_matches(expected, GENERATION.with(|g| g.get()));
     }
 }
 
@@ -109,13 +109,19 @@ pub fn clear_on_exit() {
     }
 }
 
-fn clear_if_matches(expected: [u8; 32]) {
+/// `generation` is the copy this clear belongs to: the read-back is async,
+/// and a copy made meanwhile (a newer generation) must not be wiped even if
+/// the read returned the old text.
+fn clear_if_matches(expected: [u8; 32], generation: u64) {
     let Some(display) = gdk::Display::default() else {
         return;
     };
     display
         .clipboard()
         .read_text_async(None::<&gio::Cancellable>, move |res| {
+            if GENERATION.with(|g| g.get()) != generation {
+                return;
+            }
             if let Ok(Some(current)) = res {
                 if digest(current.as_str()) == expected {
                     if let Some(display) = gdk::Display::default() {

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-23 15:11-0300\n"
 "PO-Revision-Date: 2026-05-12 19:23\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -101,6 +101,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Η διεύθυνση αντιγράφηκε"
 
+msgid "Address, user and password are required"
+msgstr "Απαιτούνται διεύθυνση, χρήστης και κωδικός πρόσβασης"
+
 msgid "Adjust length and characters"
 msgstr "Ρύθμιση μήκους και χαρακτήρων"
 
@@ -112,6 +115,9 @@ msgstr "Ρύθμιση λέξεων και διαχωριστικού"
 
 msgid "Algorithm"
 msgstr "Αλγόριθμος"
+
+msgid "All"
+msgstr "Όλες"
 
 msgid "All clear"
 msgstr "Όλα εντάξει"
@@ -132,11 +138,23 @@ msgstr ""
 "Όλα τα διαμερίσματα, αρχεία και υπογραφές συστήματος αρχείων θα καταστραφούν "
 "οριστικά."
 
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "Να επιτραπεί το Ashy Pass στο Dropbox"
+
 msgid "Allow TRIM through encrypted mapping"
 msgstr "Να επιτρέπεται το TRIM μέσω κρυπτογραφημένης αντιστοίχισης"
 
 msgid "Allow the browser extension"
 msgstr "Να επιτρέπεται η επέκταση του προγράμματος περιήγησης"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Άλλη συσκευή τα διέγραψε από τον κρυπτογραφημένο φάκελο συγχρονισμού. Αν "
+"ήσασταν εσείς, μετακινούνται εδώ στα Διαγραμμένα στοιχεία. Αν όχι, κρατήστε "
+"τα: στέλνονται ξανά στον φάκελο."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -146,8 +164,8 @@ msgstr ""
 "συγχρονίστηκε τελευταία φορά αυτή η συσκευή. Η μεταφόρτωση τώρα θα "
 "απομονώσει τις απομακρυσμένες αλλαγές."
 
-msgid "Answer requests from the installed extension"
-msgstr "Απάντηση σε αιτήματα από την εγκατεστημένη επέκταση"
+msgid "Another example"
+msgstr "Άλλο παράδειγμα"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -237,6 +255,9 @@ msgstr "Συνημμένα"
 msgid "Audit failed"
 msgstr "Ο έλεγχος απέτυχε"
 
+msgid "Authentication was cancelled"
+msgstr "Ο έλεγχος ταυτότητας ακυρώθηκε"
+
 msgid "Auto-tune"
 msgstr "Αυτόματη ρύθμιση"
 
@@ -309,6 +330,12 @@ msgstr "Το Caps Lock είναι ενεργό"
 msgid "Capture from screen…"
 msgstr "Λήψη από την οθόνη…"
 
+msgid "Change PIN"
+msgstr "Αλλαγή PIN"
+
+msgid "Change how the vault key is protected?"
+msgstr "Αλλαγή της προστασίας του κλειδιού θησαυροφυλακίου;"
+
 msgid "Change master password"
 msgstr "Αλλαγή κύριου κωδικού πρόσβασης"
 
@@ -318,8 +345,14 @@ msgstr "Αλλαγή κύριου κωδικού πρόσβασης…"
 msgid "Change only if the site shows different values"
 msgstr "Αλλάξτε μόνο αν ο ιστότοπος δείχνει διαφορετικές τιμές"
 
+msgid "Changed"
+msgstr "Άλλαξε"
+
 msgid "Changes saved to the vault"
 msgstr "Οι αλλαγές αποθηκεύτηκαν στο θησαυροφυλάκιο"
+
+msgid "Changes waiting to be sent"
+msgstr "Αλλαγές σε αναμονή αποστολής"
 
 msgid "Check known data breaches (online)"
 msgstr "Έλεγχος γνωστών διαρροών δεδομένων (online)"
@@ -329,6 +362,12 @@ msgstr "Έλεγχος των κωδικών μου"
 
 msgid "Check now"
 msgstr "Έλεγχος τώρα"
+
+msgid "Check the server every"
+msgstr "Έλεγχος διακομιστή κάθε"
+
+msgid "Checking the drive…"
+msgstr "Έλεγχος μονάδας…"
 
 msgid "Choose a backup"
 msgstr "Επιλέξτε αντίγραφο ασφαλείας"
@@ -364,6 +403,9 @@ msgstr "Επιλέξτε τη βάση δεδομένων KeePass"
 msgid "Choose the andOTP export"
 msgstr "Επιλέξτε την εξαγωγή του andOTP"
 
+msgid "Choose the folder"
+msgstr "Επιλέξτε τον φάκελο"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr ""
 "Επιλέξτε αυτόν τον φάκελο κατά την προσθήκη ή επεξεργασία κωδικού πρόσβασης."
@@ -374,11 +416,17 @@ msgstr "Επιλογή…"
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Εξαγωγή κωδικών από Chrome, Edge, Brave ή Firefox (CSV)"
 
+msgid "Classic"
+msgstr "Κλασικό"
+
 msgid "Clear copied passwords after"
 msgstr "Εκκαθάριση αντιγραμμένων κωδικών μετά από"
 
 msgid "Clear history"
 msgstr "Εκκαθάριση ιστορικού"
+
+msgid "Clear the password history?"
+msgstr "Εκκαθάριση ιστορικού κωδικών;"
 
 msgid "Client ID"
 msgstr "Αναγνωριστικό πελάτη"
@@ -407,8 +455,14 @@ msgstr "Κλείσιμο αντιστοίχισης"
 msgid "Code copied"
 msgstr "Ο κωδικός αντιγράφηκε"
 
+msgid "Code from Dropbox"
+msgstr "Κωδικός από το Dropbox"
+
 msgid "Code settings"
 msgstr "Ρυθμίσεις κωδικού"
+
+msgid "Coffee"
+msgstr "Καφές"
 
 msgid "Columns such as name, url, username, password"
 msgstr "Στήλες όπως name, url, username, password"
@@ -471,8 +525,48 @@ msgstr ""
 msgid "Conflicts"
 msgstr "Συγκρούσεις"
 
-msgid "Connecting the extension"
-msgstr "Σύνδεση της επέκτασης"
+msgid "Connect"
+msgstr "Σύνδεση"
+
+msgid "Connect a phone"
+msgstr "Σύνδεση κινητού"
+
+msgid "Connect a phone…"
+msgstr "Σύνδεση κινητού…"
+
+msgid "Connect browsers"
+msgstr "Σύνδεση φυλλομετρητών"
+
+msgid "Connect failed"
+msgstr "Η σύνδεση απέτυχε"
+
+msgid "Connect the sync folder"
+msgstr "Σύνδεση του φακέλου συγχρονισμού"
+
+msgid "Connect your browsers"
+msgstr "Συνδέστε τους φυλλομετρητές σας"
+
+msgid "Connected"
+msgstr "Συνδεδεμένο"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Συνδέθηκε με {} φυλλομετρητή. Επανεκκινήστε τον αν είναι ανοιχτός."
+msgstr[1] ""
+"Συνδέθηκε με {} φυλλομετρητές. Επανεκκινήστε τους αν είναι ανοιχτοί."
+
+msgid "Connected. Received:"
+msgstr "Συνδέθηκε. Ελήφθησαν:"
+
+msgid "Connecting and syncing…"
+msgstr "Σύνδεση και συγχρονισμός…"
+
+msgid "Connection QR code"
+msgstr "Κωδικός QR σύνδεσης"
+
+msgid "Connect…"
+msgstr "Σύνδεση…"
 
 msgid "Continue"
 msgstr "Συνέχεια"
@@ -510,8 +604,14 @@ msgstr "Δεν ήταν δυνατή η προσθήκη του συνημμέν
 msgid "Could not change the favorite"
 msgstr "Δεν ήταν δυνατή η αλλαγή του αγαπημένου"
 
+msgid "Could not check"
+msgstr "Δεν ήταν δυνατός ο έλεγχος"
+
 msgid "Could not clear the history"
 msgstr "Δεν ήταν δυνατή η εκκαθάριση του ιστορικού"
+
+msgid "Could not connect the browsers"
+msgstr "Δεν ήταν δυνατή η σύνδεση των φυλλομετρητών"
 
 msgid "Could not create the folder"
 msgstr "Δεν ήταν δυνατή η δημιουργία του φακέλου"
@@ -527,6 +627,15 @@ msgstr "Δεν ήταν δυνατή η διαγραφή"
 
 msgid "Could not lock the drive"
 msgstr "Δεν ήταν δυνατό το κλείδωμα της μονάδας"
+
+msgid "Could not make the QR code"
+msgstr "Δεν ήταν δυνατή η δημιουργία του κωδικού QR"
+
+msgid "Could not merge"
+msgstr "Δεν ήταν δυνατή η συγχώνευση"
+
+msgid "Could not open the vault"
+msgstr "Δεν ήταν δυνατό το άνοιγμα του θησαυροφυλακίου"
 
 msgid "Could not open this access"
 msgstr "Δεν ήταν δυνατό το άνοιγμα αυτής της καταχώρησης"
@@ -557,6 +666,9 @@ msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλ
 
 msgid "Could not restore. Look in Deleted items."
 msgstr "Δεν ήταν δυνατή η επαναφορά. Δείτε στα Διαγραμμένα στοιχεία."
+
+msgid "Could not save"
+msgstr "Δεν ήταν δυνατή η αποθήκευση"
 
 msgid "Could not save the file"
 msgstr "Δεν ήταν δυνατή η αποθήκευση του αρχείου"
@@ -643,8 +755,17 @@ msgstr "Διαγραφή καταχώρησης…"
 msgid "Delete permanently"
 msgstr "Οριστική διαγραφή"
 
+msgid "Delete permanently?"
+msgstr "Οριστική διαγραφή;"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Διαγράψτε το αρχείο εξαγωγής αν δεν προστατευόταν με κωδικό πρόσβασης."
+
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Διαγραφή {} στοιχείου και εδώ;"
+msgstr[1] "Διαγραφή {} στοιχείων και εδώ;"
 
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
@@ -683,6 +804,19 @@ msgstr "Διαδρομή συσκευής"
 msgid "Digits"
 msgstr "Ψηφία"
 
+msgid "Digits and symbols in color, easier to read and type"
+msgstr ""
+"Ψηφία και σύμβολα με χρώμα, πιο εύκολα στην ανάγνωση και την πληκτρολόγηση"
+
+msgid "Disconnect"
+msgstr "Αποσύνδεση"
+
+msgid "Disconnect failed"
+msgstr "Η αποσύνδεση απέτυχε"
+
+msgid "Disconnect the sync folder?"
+msgstr "Αποσύνδεση του φακέλου συγχρονισμού;"
+
 msgid "Done"
 msgstr "Ολοκληρώθηκε"
 
@@ -697,6 +831,9 @@ msgstr "Λήψη απομακρυσμένων αλλαγών"
 
 msgid "Drive locked"
 msgstr "Η μονάδα κλειδώθηκε"
+
+msgid "Duplicate items"
+msgstr "Διπλότυπα στοιχεία"
 
 msgid "Easier to type and remember."
 msgstr "Πιο εύκολος στην πληκτρολόγηση και στην απομνημόνευση."
@@ -719,6 +856,9 @@ msgstr "Κενή φράση πρόσβασης"
 msgid "Empty trash"
 msgstr "Άδειασμα κάδου"
 
+msgid "Empty trash?"
+msgstr "Άδειασμα κάδου;"
+
 msgid "Encrypt"
 msgstr "Κρυπτογράφηση"
 
@@ -728,11 +868,20 @@ msgstr "Κρυπτογράφηση Μονάδας"
 msgid "Encrypt KeePass export"
 msgstr "Κρυπτογράφηση εξαγωγής KeePass"
 
+msgid "Encrypt again"
+msgstr "Νέα κρυπτογράφηση"
+
 msgid "Encrypted as"
 msgstr "Κρυπτογραφήθηκε ως"
 
 msgid "Encrypted device"
 msgstr "Κρυπτογραφημένη συσκευή"
+
+msgid "Encrypted folder sync"
+msgstr "Κρυπτογραφημένος συγχρονισμός φακέλου"
+
+msgid "Encrypted folder sync failed"
+msgstr "Ο κρυπτογραφημένος συγχρονισμός φακέλου απέτυχε"
 
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Μεταφόρτωση κρυπτογραφημένου στιγμιότυπου με ανίχνευση διενέξεων"
@@ -757,6 +906,9 @@ msgstr ""
 "Η κρυπτογράφηση διαγράφει ολόκληρη τη μονάδα. Το ξεκλείδωμα και το κλείδωμα "
 "λειτουργούν για μονάδες LUKS."
 
+msgid "Encrypting the vault again…"
+msgstr "Νέα κρυπτογράφηση του θησαυροφυλακίου…"
+
 msgid "Encrypting…"
 msgstr "Γίνεται κρυπτογράφηση…"
 
@@ -774,6 +926,9 @@ msgstr "Εισαγάγετε ετικέτα."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Εισαγάγετε το PIN που ορίστηκε σε αυτόν τον υπολογιστή."
+
+msgid "Enter the master password"
+msgstr "Εισαγάγετε τον κύριο κωδικό πρόσβασης"
 
 msgid "Enter the password, or add a verification code below."
 msgstr ""
@@ -803,11 +958,27 @@ msgid "Estimated strength"
 msgstr "Εκτιμώμενη ισχύς"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Όλο το περιεχόμενο κρυπτογραφείται ξανά με κλειδί που προκύπτει από τα "
+"παραπάνω κόστη. Παλαιότερες εκδόσεις του Ashy Pass δεν θα ανοίγουν το "
+"θησαυροφυλάκιο με τον κύριο κωδικό. Το PIN πρέπει να ρυθμιστεί ξανά."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Όλο το θησαυροφυλάκιο κρυπτογραφείται ξανά με τον νέο κωδικό. Τα παλαιότερα "
 "αντίγραφα ασφαλείας ανοίγουν ακόμα με τον κωδικό με τον οποίο δημιουργήθηκαν."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Όλο το περιεχόμενο κρυπτογραφείται ξανά με τα τυπικά κόστη, που ανοίγει κάθε "
+"έκδοση του Ashy Pass 3. Το PIN πρέπει να ρυθμιστεί ξανά."
 
 msgid "Everything is in sync"
 msgstr "Όλα σε συγχρονισμό"
@@ -880,8 +1051,20 @@ msgstr "Τα αρχεία κρυπτογραφούνται και αποθηκε
 msgid "Filesystem"
 msgstr "Σύστημα αρχείων"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Συμπληρώστε και αντιγράψτε τους κωδικούς σας σε Chrome, Brave, Edge, "
+"Vivaldi, Firefox και LibreWolf. Η επέκταση δεν αποθηκεύει τίποτα: ρωτά το "
+"Ashy Pass κάθε φορά και συμπληρώνει μια σελίδα μόνο αφού κάνετε κλικ."
+
 msgid "Fill in all three fields."
 msgstr "Συμπληρώστε και τα τρία πεδία."
+
+msgid "Find duplicate items"
+msgstr "Εύρεση διπλότυπων στοιχείων"
 
 msgid "Findings"
 msgstr "Ευρήματα"
@@ -907,6 +1090,9 @@ msgstr "Ο φάκελος δημιουργήθηκε"
 msgid "Folder name"
 msgstr "Όνομα φακέλου"
 
+msgid "Folder on this computer"
+msgstr "Φάκελος σε αυτόν τον υπολογιστή"
+
 msgid "Folder removed. Its passwords were kept."
 msgstr "Ο φάκελος αφαιρέθηκε. Οι κωδικοί του διατηρήθηκαν."
 
@@ -931,6 +1117,12 @@ msgid ""
 msgstr ""
 "Για το Nextcloud, η βασική URL μοιάζει με https://cloud.example.com/"
 "remote.php/dav/files/USERNAME"
+
+msgid "For the browsers installed for this user"
+msgstr "Για τους φυλλομετρητές αυτού του χρήστη"
+
+msgid "Forest"
+msgstr "Δάσος"
 
 msgid "Forgot the master password"
 msgstr "Ξέχασα τον κύριο κωδικό πρόσβασης"
@@ -966,6 +1158,12 @@ msgstr "Δημιουργία κωδικού πρόσβασης"
 msgid "Generated password"
 msgstr "Κωδικός που δημιουργήθηκε"
 
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Λήψη της επέκτασης για Chrome, Brave, Edge και Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Λήψη της επέκτασης για Firefox"
+
 msgid "Give this access a name, for example the site or app."
 msgstr ""
 "Δώστε ένα όνομα σε αυτή την καταχώρηση, για παράδειγμα τον ιστότοπο ή την "
@@ -974,11 +1172,41 @@ msgstr ""
 msgid "Go to search"
 msgstr "Μετάβαση στην αναζήτηση"
 
+msgid ""
+"Good for 10 minutes. The QR code alone is no use without this code, and "
+"neither opens your passwords without the master password."
+msgstr ""
+"Ισχύει για 10 λεπτά. Ο κωδικός QR μόνος του δεν χρησιμεύει χωρίς αυτόν τον "
+"κωδικό, και κανένας από τους δύο δεν ανοίγει τους κωδικούς σας χωρίς τον "
+"κύριο κωδικό πρόσβασης."
+
 msgid "Google Drive"
 msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive και WebDAV"
+
+msgid "Google account"
+msgstr "Λογαριασμός Google"
+
+msgid "Google sign-in failed"
+msgstr "Η σύνδεση στο Google απέτυχε"
+
+msgid "Grape"
+msgstr "Σταφύλι"
+
+msgid ""
+"Group the codes as in Aegis. Groups are the item's tags: they sync to your "
+"other devices."
+msgstr ""
+"Ομαδοποιήστε τους κωδικούς όπως στο Aegis. Οι ομάδες είναι οι ετικέτες της "
+"καταχώρησης: συγχρονίζονται με τις άλλες συσκευές σας."
+
+msgid "Groups"
+msgstr "Ομάδες"
+
+msgid "Groups…"
+msgstr "Ομάδες…"
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr ""
@@ -991,15 +1219,16 @@ msgstr "Απόκρυψη αντιγραμμένων κωδικών από το �
 msgid "Hide password"
 msgstr "Απόκρυψη κωδικού πρόσβασης"
 
+msgid "High contrast"
+msgstr "Υψηλή αντίθεση"
+
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Υψηλότερο κόστος επιβραδύνει τις επιθέσεις μαντέματος αλλά και το "
-"ξεκλείδωμα. Η αυτόματη ρύθμιση επιλέγει τιμές για περίπου μισό δευτερόλεπτο "
-"σε αυτόν τον υπολογιστή· εφαρμόζονται την επόμενη φορά που θα οριστεί ή θα "
-"αλλάξει ο κύριος κωδικός πρόσβασης."
+"Τα υψηλότερα κόστη επιβραδύνουν τις επιθέσεις μαντέματος αλλά και το "
+"ξεκλείδωμα. Ο αυτόματος συντονισμός επιλέγει τιμές για περίπου μισό "
+"δευτερόλεπτο σε αυτόν τον υπολογιστή."
 
 msgid "History cleared"
 msgstr "Το ιστορικό εκκαθαρίστηκε"
@@ -1041,6 +1270,15 @@ msgstr "Εισαγωγή κωδικών πρόσβασης"
 msgid "Import passwords…"
 msgstr "Εισαγωγή κωδικών πρόσβασης…"
 
+msgid ""
+"In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
+"“Scan the computer's QR code”. Then type the code below and your master "
+"password."
+msgstr ""
+"Στο Ashy Pass για Android, ανοίξτε Ρυθμίσεις → Συγχρονισμός με "
+"κρυπτογραφημένο φάκελο και πατήστε «Σάρωση του QR του υπολογιστή». Μετά "
+"πληκτρολογήστε τον κωδικό παρακάτω και τον κύριο κωδικό πρόσβασης."
+
 msgid "Incorrect PIN"
 msgstr "Λάθος PIN"
 
@@ -1056,6 +1294,9 @@ msgstr[1] "Λάθος PIN. Απομένουν {} προσπάθειες."
 msgid "Incorrect master password"
 msgstr "Λανθασμένος κύριος κωδικός πρόσβασης"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Λάθος κύριος κωδικός. Δεν άλλαξε τίποτα."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Λανθασμένος κύριος κωδικός πρόσβασης. Δεν εξήχθη τίποτα."
 
@@ -1068,16 +1309,11 @@ msgstr ""
 "εξουσιοδοτήστε στη συσκευή όταν σας ζητηθεί. Απαιτείται η τρέχουσα φράση "
 "πρόσβασής σας για την εξουσιοδότηση της νέας υποδοχής κλειδιού."
 
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Εγκαταστήστε την επέκταση στο Chrome ή στο Firefox και μετά καταχωρήστε "
-"αυτόν τον υπολογιστή με:  ashypass-native-host --install <αναγνωριστικό-"
-"επέκτασης>"
-
 msgid "Internal error: no passphrase set"
 msgstr "Εσωτερικό σφάλμα: δεν έχει οριστεί φράση πρόσβασης"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Εσωτερικό σφάλμα: η μονάδα δεν ελέγχθηκε"
 
 msgid "It can be restored from Deleted items."
 msgstr "Μπορεί να επαναφερθεί από τα Διαγραμμένα στοιχεία."
@@ -1088,6 +1324,10 @@ msgid ""
 msgstr ""
 "Ανοίγει το θησαυροφυλάκιο σε αυτόν τον υπολογιστή. Κανείς δεν μπορεί να τον "
 "ανακτήσει για εσάς — ούτε το Ashy Pass."
+
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr ""
+"Τα στοιχεία παραμένουν εδώ και στον φάκελο· μια νέα σύνδεση τα συγχωνεύει"
 
 msgid "Its user, password and other details appear here."
 msgstr ""
@@ -1115,6 +1355,9 @@ msgstr ""
 
 msgid "Keep deleted entries for (days)"
 msgstr "Διατήρηση διαγραμμένων εγγραφών για (ημέρες)"
+
+msgid "Keep them"
+msgstr "Διατήρηση"
 
 msgid "Keep using"
 msgstr "Συνέχεια χρήσης"
@@ -1183,6 +1426,9 @@ msgstr "Τελευταίο αντίγραφο ασφαλείας σε αυτόν
 msgid "Last changed:"
 msgstr "Τελευταία αλλαγή:"
 
+msgid "Last sync:"
+msgstr "Τελευταίος συγχρονισμός:"
+
 msgid "Launch the encryption wizard"
 msgstr "Εκκίνηση του οδηγού κρυπτογράφησης"
 
@@ -1203,6 +1449,31 @@ msgstr "Κλείδωμα του θησαυροφυλακίου τώρα (Ctrl+L)
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Κλείδωμα όταν κλειδώνει η οθόνη ή ο υπολογιστής μπαίνει σε αναστολή"
+
+msgid "Login name"
+msgstr "Όνομα σύνδεσης"
+
+msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"Συνδέσεις του ίδιου ιστότοπου και λογαριασμού ή στοιχεία με τον ίδιο κωδικό "
+"επαλήθευσης, που προέκυψαν από εισαγωγές ή δύο συγχρονισμούς. Η συγχώνευση "
+"κρατά ένα, φέρνει σε αυτό ό,τι είχαν μόνο τα άλλα (κωδικός, σημειώσεις, "
+"άλλοι ιστότοποι, ομάδες· οι άλλοι κωδικοί πρόσβασης πηγαίνουν στο ιστορικό "
+"του) και μεταφέρει τα άλλα στα Διαγραμμένα στοιχεία."
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
+"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+msgstr ""
+"Συνδέσεις, κάρτες, ταυτότητες, σημειώσεις και κλειδιά πρόσβασης, "
+"κρυπτογραφημένα σε αυτόν τον υπολογιστή πριν φύγουν, μέσω ενός φακέλου στο "
+"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive ή σε αυτόν τον υπολογιστή. "
+"Το Ashy Pass για Android χρησιμοποιεί τον ίδιο φάκελο."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1237,8 +1508,20 @@ msgstr "Μετρά αυτόν τον υπολογιστή (περίπου 5 δε
 msgid "Medium"
 msgstr "Μέτρια"
 
+msgid "Merge, keeping the selected one"
+msgstr "Συγχώνευση, κρατώντας το επιλεγμένο"
+
+msgid "Merged"
+msgstr "Συγχωνεύτηκε"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "Συγχωνεύτηκε· τα υπόλοιπα είναι στα Διαγραμμένα στοιχεία"
+
 msgid "Minimum length:"
 msgstr "Ελάχιστο μήκος:"
+
+msgid "Mint"
+msgstr "Μέντα"
 
 msgid "Model"
 msgstr "Μοντέλο"
@@ -1248,11 +1531,17 @@ msgstr ""
 "Σύγχρονη γεννήτρια κωδικών πρόσβασης και κρυπτογραφημένο θησαυροφυλάκιο "
 "κωδικών πρόσβασης"
 
+msgid "Monochrome"
+msgstr "Μονόχρωμο"
+
 msgid "More actions"
 msgstr "Περισσότερες ενέργειες"
 
 msgid "More options"
 msgstr "Περισσότερες επιλογές"
+
+msgid "Move to Deleted items"
+msgstr "Μετακίνηση στα Διαγραμμένα"
 
 msgid "Moved to Deleted items"
 msgstr "Μετακινήθηκε στα Διαγραμμένα στοιχεία"
@@ -1295,6 +1584,9 @@ msgstr "Νέο όνομα φακέλου"
 msgid "New folder…"
 msgstr "Νέος φάκελος…"
 
+msgid "New group"
+msgstr "Νέα ομάδα"
+
 msgid "New master password"
 msgstr "Νέος κύριος κωδικός πρόσβασης"
 
@@ -1322,6 +1614,9 @@ msgstr ""
 "Το Nextcloud Passwords απαιτεί συμπληρωμένο πεδίο κωδικού. Επεξεργαστείτε "
 "αυτές τις εγγραφές στο Ashy Pass προσθέτοντας έναν κωδικό για να σταλούν."
 
+msgid "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or a local folder"
+msgstr "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive ή τοπικός φάκελος"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1335,8 +1630,17 @@ msgid "No backup made on this computer yet"
 msgstr ""
 "Δεν έχει δημιουργηθεί ακόμα αντίγραφο ασφαλείας σε αυτόν τον υπολογιστή"
 
+msgid "No browser found yet"
+msgstr "Δεν βρέθηκε ακόμη πρόγραμμα περιήγησης"
+
 msgid "No codes found for"
 msgstr "Δεν βρέθηκαν κωδικοί για"
+
+msgid "No colors"
+msgstr "Χωρίς χρώματα"
+
+msgid "No duplicate items"
+msgstr "Κανένα διπλότυπο στοιχείο"
 
 msgid "No external drives detected"
 msgstr "Δεν εντοπίστηκαν εξωτερικές μονάδες δίσκου"
@@ -1367,14 +1671,28 @@ msgstr ""
 "Σε αυτήν την έκδοση δεν μπορούν να γίνουν αλλαγές στο κλειδί ασφαλείας ή στη "
 "φράση ανάκτησης."
 
+msgid "No stable device link"
+msgstr "Δεν υπάρχει σταθερός σύνδεσμος συσκευής"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Δεν βρέθηκε υποστηριζόμενος φυλλομετρητής. Ανοίξτε τον φυλλομετρητή μία φορά "
+"και δοκιμάστε ξανά."
+
 msgid "No verification codes yet"
 msgstr "Δεν υπάρχουν κωδικοί επαλήθευσης ακόμα"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "Κανένα — γρήγορο, αφήνει προηγούμενα δεδομένα ανακτήσιμα"
 
+msgid "Not chosen"
+msgstr "Δεν έχει επιλεγεί"
+
 msgid "Not configured"
 msgstr "Δεν έχει ρυθμιστεί"
+
+msgid "Not connected"
+msgstr "Μη συνδεδεμένο"
 
 msgid "Not run yet"
 msgstr "Δεν έχει εκτελεστεί ακόμα"
@@ -1400,8 +1718,16 @@ msgstr ""
 "Δεν αφαιρείται τίποτα. Οι καταχωρήσεις που υπάρχουν ήδη στο θησαυροφυλάκιο "
 "παραλείπονται."
 
+msgid "Nothing was changed"
+msgstr "Δεν άλλαξε τίποτα"
+
 msgid "Nothing was changed."
 msgstr "Δεν άλλαξε τίποτα."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Δεν άλλαξε τίποτα. Κλείστε τα άλλα αντίγραφα του Ashy Pass και δοκιμάστε "
+"ξανά."
 
 msgid "Nothing was imported"
 msgstr "Δεν εισήχθη τίποτα"
@@ -1433,6 +1759,9 @@ msgstr "Ο πελάτης OAuth δεν έχει ρυθμιστεί κατά τη
 
 msgid "OK"
 msgstr "ΟΚ"
+
+msgid "Ocean"
+msgstr "Ωκεανός"
 
 msgid "Off"
 msgstr "Ανενεργό"
@@ -1478,6 +1807,14 @@ msgstr ""
 "Μόνο όταν κάποιες καταχωρήσεις προέρχονται από το Nextcloud Passwords και "
 "άλλες όχι"
 
+msgid "Open Dropbox"
+msgstr "Άνοιγμα του Dropbox"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr ""
+"Ανοίξτε το Dropbox, επιτρέψτε το Ashy Pass και επικολλήστε τον κωδικό που "
+"εμφανίζεται"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr ""
 "Ανοίξτε έναν κωδικό και πατήστε το αστέρι για να τον βρίσκετε πιο γρήγορα."
@@ -1500,8 +1837,16 @@ msgstr "Άνοιγμα του κρυπτογραφημένου τόμου"
 msgid "Open website"
 msgstr "Άνοιγμα ιστοτόπου"
 
+msgid "Open your browser once, then connect"
+msgstr "Ανοίξτε μία φορά το πρόγραμμα περιήγησης και μετά συνδέστε"
+
 msgid "Opening encrypted mapping"
 msgstr "Άνοιγμα κρυπτογραφημένης αντιστοίχισης"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr ""
+"Ανοίγει το Dropbox στο πρόγραμμα περιήγησης· αντιγράψτε τον κωδικό που "
+"εμφανίζεται"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Ανοίγει το πρόγραμμα περιήγησης για συγκατάθεση OAuth"
@@ -1568,6 +1913,9 @@ msgstr "Κωδικός Πρόσβασης"
 msgid "Password / app-password"
 msgstr "Κωδικός πρόσβασης / κωδικός εφαρμογής"
 
+msgid "Password colors"
+msgstr "Χρώματα κωδικών"
+
 msgid "Password copied"
 msgstr "Ο κωδικός πρόσβασης αντιγράφηκε"
 
@@ -1582,6 +1930,9 @@ msgstr "Ιστορικό κωδικών πρόσβασης…"
 
 msgid "Password list"
 msgstr "Λίστα κωδικών πρόσβασης"
+
+msgid "Password of the Aegis vault"
+msgstr "Κωδικός πρόσβασης του θησαυροφυλακίου Aegis"
 
 msgid "Password of the KeePass database"
 msgstr "Κωδικός της βάσης δεδομένων KeePass"
@@ -1798,8 +2149,19 @@ msgstr "Επαναφορά του αντιγράφου…"
 msgid "Retention"
 msgstr "Διατήρηση"
 
+msgid "Rose"
+msgstr "Ρόδο"
+
 msgid "Run"
 msgstr "Εκτέλεση"
+
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Κάντε το μία φορά μετά την εγκατάσταση ενός φυλλομετρητή, ώστε να βρίσκει το "
+"Ashy Pass. Προσθέτει μόνο ένα μικρό αρχείο στον φάκελο ρυθμίσεων κάθε "
+"φυλλομετρητή."
 
 msgid "Running audit..."
 msgstr "Εκτέλεση ελέγχου..."
@@ -1815,6 +2177,12 @@ msgstr "Οι έλεγχοι ασφαλείας απέτυχαν"
 
 msgid "Safety checks passed"
 msgstr "Οι έλεγχοι ασφαλείας πέρασαν"
+
+msgid "Same site and account"
+msgstr "Ίδιος ιστότοπος και λογαριασμός"
+
+msgid "Same verification code"
+msgstr "Ίδιος κωδικός επαλήθευσης"
 
 msgid "Save"
 msgstr "Αποθήκευση"
@@ -1837,6 +2205,9 @@ msgstr "Αποθήκευση αντιγράφου ασφαλείας"
 
 msgid "Save in"
 msgstr "Αποθήκευση σε"
+
+msgid "Save new PIN"
+msgstr "Αποθήκευση νέου PIN"
 
 msgid "Save to vault"
 msgstr "Αποθήκευση στο θησαυροφυλάκιο"
@@ -1897,6 +2268,11 @@ msgstr "Προβολή των κωδικών μου"
 msgid "Select an access"
 msgstr "Επιλέξτε καταχώρηση"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Στέλνει τις αλλαγές λίγο μετά από κάθε επεξεργασία και ελέγχει τακτικά τον "
+"διακομιστή"
+
 msgid "Sending local changes"
 msgstr "Αποστολή τοπικών αλλαγών"
 
@@ -1923,11 +2299,17 @@ msgstr "URL διακομιστή, όνομα χρήστη, κωδικός πρό
 msgid "Server URL, username, app-password"
 msgstr "URL διακομιστή, όνομα χρήστη, κωδικός εφαρμογής"
 
+msgid "Server address"
+msgstr "Διεύθυνση διακομιστή"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
 "Διεύθυνση URL διακομιστή (π.χ. cloud.example.com), όνομα χρήστη και έναν "
 "κωδικό πρόσβασης εφαρμογής."
+
+msgid "Service"
+msgstr "Υπηρεσία"
 
 msgid "Set PIN"
 msgstr "Ορισμός PIN"
@@ -1965,6 +2347,9 @@ msgstr "Εμφάνιση φακέλου"
 msgid "Show favicons"
 msgstr "Εμφάνιση favicons"
 
+msgid "Show icons beside the codes"
+msgstr "Εμφάνιση εικονιδίων δίπλα στους κωδικούς"
+
 msgid "Show only favorites"
 msgstr "Μόνο τα αγαπημένα"
 
@@ -1977,11 +2362,17 @@ msgstr "Εμφάνιση πλευρικής στήλης"
 msgid "Show technical details"
 msgstr "Προβολή τεχνικής λεπτομέρειας"
 
+msgid "Shows a QR code to scan with Ashy Pass for Android"
+msgstr "Εμφανίζει έναν κωδικό QR για σάρωση με το Ashy Pass για Android"
+
 msgid "Sign in failed"
 msgstr "Η σύνδεση απέτυχε"
 
 msgid "Sign in to Google"
 msgstr "Σύνδεση στο Google"
+
+msgid "Sign in to Google to use your Drive"
+msgstr "Συνδεθείτε στο Google για να χρησιμοποιήσετε το Drive σας"
 
 msgid "Sign out"
 msgstr "Αποσύνδεση"
@@ -2019,14 +2410,28 @@ msgstr "Ισχύς"
 msgid "Strong"
 msgstr "Ισχυρή"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Πιο ανθεκτικό στο μάντεμα του κύριου κωδικού. Όσο είναι ενεργό, παλαιότερες "
+"εκδόσεις του Ashy Pass δεν μπορούν να ανοίξουν το θησαυροφυλάκιο με τον "
+"κύριο κωδικό."
+
 msgid "Style"
 msgstr "Στυλ"
 
 msgid "Summary"
 msgstr "Σύνοψη"
 
+msgid "Sunset"
+msgstr "Ηλιοβασίλεμα"
+
 msgid "Symbols (!@#$…)"
 msgstr "Σύμβολα (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Αυτόματος συγχρονισμός"
 
 msgid "Sync completed"
 msgstr "Ο συγχρονισμός ολοκληρώθηκε"
@@ -2037,17 +2442,24 @@ msgstr "Πρόβλημα συγχρονισμού"
 msgid "Sync completed with warnings"
 msgstr "Ο συγχρονισμός ολοκληρώθηκε με προειδοποιήσεις"
 
-msgid "Sync conflict"
-msgstr "Σύγκρουση συγχρονισμού"
-
 msgid "Sync conflict detected"
 msgstr "Εντοπίστηκε σύγκρουση συγχρονισμού"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Διένεξη συγχρονισμού: ο διακομιστής έχει νεότερο αντίγραφο (γενιά {})"
 
 msgid "Sync failed"
 msgstr "Ο συγχρονισμός απέτυχε"
 
+msgid "Sync folder disconnected"
+msgstr "Ο φάκελος συγχρονισμού αποσυνδέθηκε"
+
 msgid "Sync now"
 msgstr "Συγχρονισμός τώρα"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Συγχρονισμός στο ξεκλείδωμα του θησαυροφυλακίου"
 
 msgid "Synchronization"
 msgstr "Συγχρονισμός"
@@ -2079,6 +2491,9 @@ msgstr "Συγχρονισμός..."
 msgid "Syncing folders"
 msgstr "Συγχρονισμός φακέλων"
 
+msgid "Syncing…"
+msgstr "Συγχρονισμός…"
+
 msgid "Tags"
 msgstr "Ετικέτες"
 
@@ -2099,6 +2514,13 @@ msgid "The PIN could not be used on this computer. Use your master password."
 msgstr ""
 "Το PIN δεν μπόρεσε να χρησιμοποιηθεί σε αυτόν τον υπολογιστή. Χρησιμοποιήστε "
 "τον κύριο κωδικό πρόσβασης."
+
+msgid ""
+"The PIN is not stored anywhere, so it cannot be shown. To change it, set a "
+"new one."
+msgstr ""
+"Το PIN δεν αποθηκεύεται πουθενά, οπότε δεν μπορεί να εμφανιστεί. Για να το "
+"αλλάξετε, ορίστε νέο."
 
 msgid "The PIN must have at least 4 characters"
 msgstr "Το PIN πρέπει να έχει τουλάχιστον 4 χαρακτήρες"
@@ -2122,6 +2544,9 @@ msgstr ""
 msgid "The backup was not created"
 msgstr "Το αντίγραφο ασφαλείας δεν δημιουργήθηκε"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Η σύνδεση φυλλομετρητή του Ashy Pass δεν είναι εγκατεστημένη"
+
 msgid "The copy could not be downloaded"
 msgstr "Δεν ήταν δυνατή η λήψη του αντιγράφου"
 
@@ -2134,6 +2559,16 @@ msgstr[1] "Το αντίγραφο ελέγχθηκε και έχει {} κατ�
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr ""
 "Ο τρέχων κύριος κωδικός πρόσβασης είναι λανθασμένος. Δεν άλλαξε τίποτα."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Η επέκταση ζητά τον κύριο κωδικό και κρατά το θησαυροφυλάκιο ανοιχτό μόνο "
+"μέχρι το αυτόματο κλείδωμα. Αν είναι ενεργό το «Αυτόματο άνοιγμα στη "
+"σύνδεση», ανοίγει χωρίς ερώτηση. Το κλείδωμα της οθόνης το κλειδώνει επίσης, "
+"όταν η επιλογή είναι ενεργή."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2162,6 +2597,9 @@ msgid ""
 msgstr ""
 "Η ετικέτα δεν μπορεί να ξεκινά με \"-\" ή να περιέχει \"/\" ή χαρακτήρες "
 "ελέγχου."
+
+msgid "The last sync failed"
+msgstr "Ο τελευταίος συγχρονισμός απέτυχε"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Ο κύριος κωδικός πρόσβασης είναι πολύ μικρός. Ελάχιστο μήκος:"
@@ -2194,6 +2632,13 @@ msgstr "Ο κωδικός πρόσβασης δεν άλλαξε"
 msgid "The passwords do not match"
 msgstr "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Οι προηγούμενοι κωδικοί αυτής της πρόσβασης διαγράφονται οριστικά. Η "
+"ενέργεια δεν αναιρείται."
+
 msgid "The previous vault was kept at:"
 msgstr "Το προηγούμενο θησαυροφυλάκιο φυλάχτηκε στο:"
 
@@ -2208,6 +2653,9 @@ msgstr "Η αναζήτηση περιορίζεται σε κωδικούς χ�
 
 msgid "The search is limited to the folder"
 msgstr "Η αναζήτηση περιορίζεται στον φάκελο"
+
+msgid "The site's icon, when the code has a site saved"
+msgstr "Το εικονίδιο του ιστότοπου, όταν ο κωδικός έχει αποθηκευμένο ιστότοπο"
 
 msgid "The sync finished, but some items reported errors."
 msgstr "Ο συγχρονισμός ολοκληρώθηκε, αλλά ορισμένα στοιχεία ανέφεραν σφάλμα."
@@ -2243,6 +2691,15 @@ msgid "The vault will open automatically at login"
 msgstr "Το θησαυροφυλάκιο θα ανοίγει αυτόματα κατά τη σύνδεση"
 
 #, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"Το {} στοιχείο του κάδου διαγράφεται οριστικά. Η ενέργεια δεν αναιρείται."
+msgstr[1] ""
+"Τα {} στοιχεία του κάδου διαγράφονται οριστικά. Η ενέργεια δεν αναιρείται."
+
+#, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
 msgid_plural ""
 "The {} passwords in it stay in the vault and move to “No folder”."
@@ -2261,6 +2718,17 @@ msgstr "Δεν υπάρχει τίποτα νέο για εισαγωγή."
 
 msgid "These options cannot produce a password."
 msgstr "Με αυτές τις επιλογές δεν μπορεί να δημιουργηθεί κωδικός."
+
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Ήταν συγχρονισμένα με το Nextcloud Passwords και δεν υπάρχουν πια στον "
+"διακομιστή. Αν τα διαγράψατε εκεί, μεταφέρονται εδώ στα Διαγραμμένα. Αν όχι, "
+"ο διακομιστής ίσως απάντησε μόνο εν μέρει: κρατήστε τα και ο επόμενος "
+"συγχρονισμός θα ξαναδοκιμάσει."
 
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Αυτό το PIN δεν ταιριάζει πια με το θησαυροφυλάκιο. Δεν άλλαξε τίποτα."
@@ -2281,6 +2749,12 @@ msgstr "Αυτή η καταχώρηση δεν έχει χρήστη"
 msgid "This access no longer exists"
 msgstr "Αυτή η καταχώρηση δεν υπάρχει πια"
 
+msgid "This build has no Dropbox app key"
+msgstr "Αυτή η έκδοση δεν έχει κλειδί εφαρμογής Dropbox"
+
+msgid "This build has no Google sign-in configured"
+msgstr "Αυτή η έκδοση δεν έχει ρυθμισμένη σύνδεση Google"
+
 msgid "This cannot be undone."
 msgstr "Αυτό δεν μπορεί να αναιρεθεί."
 
@@ -2295,17 +2769,35 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Γενιά αυτής της συσκευής:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Αυτή η μονάδα δεν έχει σύνδεσμο στο /dev/disk/by-id, οπότε το Ashy Pass δεν "
+"μπορεί να βεβαιωθεί ότι είναι η ίδια μονάδα κατά τη διαγραφή. Δεν μπορεί να "
+"κρυπτογραφηθεί εδώ."
+
 msgid "This file can be read without a password"
 msgstr "Αυτό το αρχείο μπορεί να διαβαστεί χωρίς κωδικό πρόσβασης"
 
 msgid "This file could not be read"
 msgstr "Δεν ήταν δυνατή η ανάγνωση αυτού του αρχείου"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Αυτό το αρχείο είναι πολύ μεγάλο για επισύναψη. Το όριο είναι 64 MB."
+
 msgid "This folder already exists"
 msgstr "Αυτός ο φάκελος υπάρχει ήδη"
 
 msgid "This folder is empty"
 msgstr "Αυτός ο φάκελος είναι κενός"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Δεν ήταν δυνατό το άνοιγμα της εικόνας. Χρησιμοποιήστε εικόνα PNG, JPEG ή "
+"WebP έως 20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "
@@ -2458,6 +2950,9 @@ msgid "Unlocked by another application. Lock it from your file manager."
 msgstr ""
 "Ξεκλειδώθηκε από άλλη εφαρμογή. Κλειδώστε το από τη διαχείριση αρχείων."
 
+msgid "Unlocking"
+msgstr "Ξεκλείδωμα"
+
 msgid "Unlocking…"
 msgstr "Ξεκλείδωμα…"
 
@@ -2504,10 +2999,21 @@ msgstr "Χρήση κύριου κωδικού πρόσβασης"
 msgid "Use the + button to create one."
 msgstr "Πατήστε το κουμπί + για να δημιουργήσετε έναν."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Χρησιμοποιήστε τον ίδιο κύριο κωδικό πρόσβασης σε όλες τις συσκευές σας: "
+"ανοίγει το κλειδί του φακέλου. Τον πληκτρολογείτε μία φορά εδώ, για να "
+"συμμετάσχετε."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr ""
 "Χρησιμοποιήστε αυτούς τους κωδικούς όταν ένας ιστότοπος ζητά επαλήθευση δύο "
 "βημάτων."
+
+msgid "Use these costs for the vault key"
+msgstr "Χρήση αυτών των κοστών για το κλειδί του θησαυροφυλακίου"
 
 msgid "Use this password"
 msgstr "Χρήση αυτού του κωδικού"
@@ -2524,6 +3030,9 @@ msgstr "Χρήστης"
 msgid "User copied"
 msgstr "Ο χρήστης αντιγράφηκε"
 
+msgid "User name"
+msgstr "Όνομα χρήστη"
+
 msgid "User or e-mail (optional)"
 msgstr "Χρήστης ή e-mail (προαιρετικά)"
 
@@ -2538,6 +3047,10 @@ msgstr ""
 "Χρησιμοποιεί το Have I Been Pwned. Αποστέλλονται μόνο οι πρώτοι 5 χαρακτήρες "
 "ενός hash κάθε κωδικού, ποτέ ο ίδιος ο κωδικός. Τα αποτελέσματα φυλάσσονται "
 "σε αυτόν τον υπολογιστή για 7 ημέρες."
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr ""
+"Χρησιμοποιεί τη σύνδεσή σας στο Google Drive από τα Αντίγραφα ασφαλείας"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2559,6 +3072,11 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Το vault είναι ήδη συγχρονισμένο"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Το θησαυροφυλάκιο κρυπτογραφήθηκε ξανά. Ρυθμίστε ξανά το PIN αν "
+"χρησιμοποιούσατε."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Το θησαυροφυλάκιο κλείδωσε μετά από ένα διάστημα αδράνειας"
@@ -2589,6 +3107,9 @@ msgstr "Ο κωδικός επαλήθευσης αποθηκεύτηκε στο
 msgid "Verification codes"
 msgstr "Κωδικοί επαλήθευσης"
 
+msgid "Verification codes (JSON, encrypted or not)"
+msgstr "Κωδικοί επαλήθευσης (JSON, κρυπτογραφημένοι ή μη)"
+
 msgid "Verification codes (unencrypted JSON)"
 msgstr "Κωδικοί επαλήθευσης (μη κρυπτογραφημένο JSON)"
 
@@ -2598,14 +3119,26 @@ msgstr "Πολύ ισχυρή"
 msgid "Very Weak"
 msgstr "Πολύ αδύναμη"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Περιμένετε να ολοκληρωθεί ο συγχρονισμός και μετά αποσυνδεθείτε."
+
+msgid "Waiting for Google in the browser…"
+msgstr "Αναμονή για το Google στο πρόγραμμα περιήγησης…"
+
 msgid "Waiting for Nextcloud..."
 msgstr "Αναμονή για Nextcloud..."
 
 msgid "Weak"
 msgstr "Αδύναμη"
 
+msgid "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+msgstr "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "Διεύθυνση WebDAV"
 
 msgid "WebDAV configured"
 msgstr "Το WebDAV ρυθμίστηκε"
@@ -2626,15 +3159,9 @@ msgstr ""
 "Όταν ένας ιστότοπος προσφέρει επαλήθευση δύο βημάτων, προσθέστε εδώ το "
 "κλειδί ρύθμισης για να λαμβάνετε τους κωδικούς."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
+msgid "When off, the extension cannot see anything in the vault"
 msgstr ""
-"Όταν είναι ενεργό, η επέκταση του Ashy Pass για το πρόγραμμα περιήγησης "
-"μπορεί να διαβάζει καταχωρήσεις του θησαυροφυλακίου ξεκλειδώνοντας από τη "
-"συλλογή κλειδιών του συστήματος, ακόμα κι όταν αυτό το παράθυρο είναι "
-"κλειδωμένο. Το κλειδί απορρίπτεται ξανά μετά τον χρόνο αυτόματου κλειδώματος."
+"Όταν είναι ανενεργό, η επέκταση δεν βλέπει τίποτα από το θησαυροφυλάκιο"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Από πού θέλετε να φέρετε τους κωδικούς σας;"
@@ -2664,6 +3191,13 @@ msgstr "Εκκαθάριση συσκευής"
 msgid "Wiping device"
 msgstr "Εκκαθάριση συσκευής"
 
+msgid ""
+"With two-step verification on, pCloud e-mails you about the new sign-in: "
+"approve it there and connect again."
+msgstr ""
+"Με ενεργή την επαλήθευση δύο βημάτων, το pCloud σάς στέλνει email για τη νέα "
+"σύνδεση: εγκρίνετέ τη εκεί και συνδεθείτε ξανά."
+
 msgid "Working..."
 msgstr "Εργασία..."
 
@@ -2686,6 +3220,13 @@ msgstr "Εγγραφή κεφαλίδας LUKS2"
 msgid "Wrong master password"
 msgstr "Λάθος κύριος κωδικός πρόσβασης"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr ""
+"Λάθος κύριος κωδικός πρόσβασης. Ο φάκελος ανήκει σε θυρίδα με διαφορετικό."
+
+msgid "Wrong password. Password of the Aegis vault"
+msgstr "Λάθος κωδικός πρόσβασης. Κωδικός πρόσβασης του θησαυροφυλακίου Aegis"
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2704,9 +3245,19 @@ msgstr ""
 msgid "Your entries are still available on this computer."
 msgstr "Οι καταχωρήσεις σας είναι ακόμα διαθέσιμες σε αυτόν τον υπολογιστή."
 
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Τα στοιχεία σας παραμένουν σε αυτόν τον υπολογιστή και στον φάκελο. Η νέα "
+"σύνδεση αργότερα τα συγχωνεύει αντί να τα διπλασιάζει."
+
 msgid "Your most used accesses can be here"
 msgstr ""
 "Εδώ μπορούν να βρίσκονται οι καταχωρήσεις που χρησιμοποιείτε περισσότερο"
+
+msgid "Your pCloud e-mail and password"
+msgstr "Το email και ο κωδικός σας στο pCloud"
 
 msgid "Your vault is ready"
 msgstr "Το θησαυροφυλάκιό σας είναι έτοιμο"
@@ -2722,6 +3273,9 @@ msgstr "εκχωρημένο"
 
 msgid "breached"
 msgstr "παραβιασμένος"
+
+msgid "different password"
+msgstr "διαφορετικός κωδικός πρόσβασης"
 
 msgid "duplicate"
 msgstr "διπλότυπος"
@@ -2755,6 +3309,11 @@ msgstr "χαμηλή"
 msgid "medium"
 msgstr "μέτρια"
 
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "λεπτό"
+msgstr[1] "λεπτά"
+
 msgid "more"
 msgstr "επιπλέον"
 
@@ -2776,6 +3335,15 @@ msgstr "μη προσαρτημένο"
 msgid "old"
 msgstr "παλιός"
 
+msgid "pCloud (data in Europe)"
+msgstr "pCloud (δεδομένα στην Ευρώπη)"
+
+msgid "pCloud (data in the US)"
+msgstr "pCloud (δεδομένα στις ΗΠΑ)"
+
+msgid "pCloud e-mail"
+msgstr "Email του pCloud"
+
 msgid "passwordless entry was skipped"
 msgid_plural "passwordless entries were skipped"
 msgstr[0] "καταχώρηση χωρίς κωδικό πρόσβασης παραλείφθηκε"
@@ -2794,6 +3362,9 @@ msgstr "περιστροφικός (HDD)"
 
 msgid "seen"
 msgstr "εμφανίστηκε"
+
+msgid "sent:"
+msgstr "στάλθηκαν:"
 
 msgid "solid-state"
 msgstr "στερεάς κατάστασης"
@@ -2930,6 +3501,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} λέξη"
 msgstr[1] "{} λέξεις"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "Το «{}» διαγράφεται οριστικά. Η ενέργεια δεν αναιρείται."
 
 msgid "…"
 msgstr "…"

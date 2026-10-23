@@ -19,3 +19,10 @@ pub use restore::{
 };
 pub use sync::{plan_push, push, PushOutcome, SyncAction, SyncPlan};
 pub use webdav::{WebdavConfig, WebdavFile, WebdavService};
+
+/// Write `bytes` to `path` owner-only (0600) through a temporary file and a
+/// rename, so a failed write never leaves the destination truncated and an
+/// existing file's looser permissions are not kept.
+pub fn write_private_file(path: &std::path::Path, bytes: &[u8]) -> crate::Result<()> {
+    files::write_private_replacing(path, bytes)
+}

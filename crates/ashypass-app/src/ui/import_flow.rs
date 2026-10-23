@@ -109,7 +109,7 @@ fn ask_password<F>(anchor: &gtk::Widget, heading: &str, done: F)
 where
     F: Fn(Zeroizing<String>) + 'static,
 {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
         .heading(heading)
         .close_response("cancel")
         .default_response("ok")
@@ -117,10 +117,11 @@ where
     dialog.add_response("cancel", tr!("Cancel"));
     dialog.add_response("ok", tr!("Continue"));
     dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
-    let row = adw::PasswordEntryRow::builder()
-        .title(tr!("Password"))
-        .activates_default(true)
-        .build();
+    let row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder()
+            .title(tr!("Password"))
+            .activates_default(true),
+    );
     let list = gtk::ListBox::builder()
         .selection_mode(gtk::SelectionMode::None)
         .build();
@@ -132,11 +133,17 @@ where
             done(Zeroizing::new(row.text().to_string()));
         }
     });
-    dialog.present(Some(anchor));
+    dialog.present();
 }
 
 fn toast_message(toast: &adw::ToastOverlay, message: &str) {
-    toast.add_toast(adw::Toast::builder().title(message).timeout(5).build());
+    toast.add_toast(
+        adw::Toast::builder()
+            .use_markup(false)
+            .title(message)
+            .timeout(5)
+            .build(),
+    );
 }
 
 /// Read and compare with the vault in the background, then show the preview.
@@ -155,6 +162,11 @@ pub(crate) fn analyse(
         }
     };
     toast_message(&toast, tr!("Reading the file…"));
+    let is_aegis = matches!(
+        source,
+        CoreSource::Aegis | CoreSource::AegisEncrypted { .. }
+    );
+    let retry_path = path.clone();
     run_background_task(
         move || -> ashypass_core::Result<(ParsedImport, ImportPreview)> {
             let vault = ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
@@ -167,8 +179,31 @@ pub(crate) fn analyse(
             // locked vault. Drop it; nothing was written.
             Ok(_) if !state.vault.borrow().is_unlocked() => {}
             Ok((parsed, preview)) => show_preview(state, toast, anchor, parsed, preview),
+            // An encrypted Aegis vault: ask for its password (again, after
+            // a wrong one) and read the same file once more.
+            Err(e)
+                if is_aegis && matches!(&e, ashypass_core::Error::InvalidMasterPassword)
+                    || matches!(&e, ashypass_core::Error::InvalidInput(m) if m == importers::aegis::NEEDS_PASSWORD) =>
+            {
+                let heading = if matches!(e, ashypass_core::Error::InvalidMasterPassword) {
+                    tr!("Wrong password. Password of the Aegis vault")
+                } else {
+                    tr!("Password of the Aegis vault")
+                };
+                ask_password(&anchor.clone(), heading, move |password| {
+                    analyse(
+                        state.clone(),
+                        toast.clone(),
+                        anchor.clone(),
+                        CoreSource::AegisEncrypted {
+                            password: password.to_string(),
+                        },
+                        retry_path.clone(),
+                    );
+                });
+            }
             Err(e) => {
-                let dialog = adw::AlertDialog::builder()
+                let dialog = big_gtk_kit::alert::Alert::builder(Some(&anchor))
                     .heading(tr!("This file could not be read"))
                     .body(format!(
                         "{}\n\n{e}",
@@ -176,7 +211,7 @@ pub(crate) fn analyse(
                     ))
                     .build();
                 dialog.add_response("ok", tr!("OK"));
-                dialog.present(Some(&anchor));
+                dialog.present();
             }
         },
     );
@@ -276,7 +311,7 @@ fn show_preview(
     parsed: ParsedImport,
     preview: ImportPreview,
 ) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(&anchor))
         .heading(tr!("Before importing"))
         .body(preview_text(&preview))
         .close_response("cancel")
@@ -313,7 +348,7 @@ fn show_preview(
         };
         apply(state.clone(), toast.clone(), anchor_cl.clone(), parsed);
     });
-    dialog.present(Some(&anchor));
+    dialog.present();
 }
 
 fn apply(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget, parsed: ParsedImport) {
@@ -334,7 +369,7 @@ fn apply(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget, pars
             match outcome {
                 Ok(report) => show_report(&anchor, &report),
                 Err(e) => {
-                    let dialog = adw::AlertDialog::builder()
+                    let dialog = big_gtk_kit::alert::Alert::builder(Some(&anchor))
                         .heading(tr!("Nothing was imported"))
                         .body(format!(
                             "{}\n\n{e}",
@@ -342,7 +377,7 @@ fn apply(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget, pars
                         ))
                         .build();
                     dialog.add_response("ok", tr!("OK"));
-                    dialog.present(Some(&anchor));
+                    dialog.present();
                 }
             }
         },
@@ -403,7 +438,7 @@ pub fn report_text(report: &ImportReport) -> String {
 }
 
 fn show_report(anchor: &gtk::Widget, report: &ImportReport) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
         .heading(report_heading(report))
         .body(report_text(report))
         .build();
@@ -411,7 +446,7 @@ fn show_report(anchor: &gtk::Widget, report: &ImportReport) {
         dialog.set_extra_child(Some(&details));
     }
     dialog.add_response("ok", tr!("OK"));
-    dialog.present(Some(anchor));
+    dialog.present();
 }
 
 #[cfg(test)]

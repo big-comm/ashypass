@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="color-scheme" content="light dark">
+    <title data-i18n="extName">Ashy Pass</title>
+    <link rel="stylesheet" href="popup.css">
+    <script type="module" src="popup.js"></script>
+  </head>
+  <body>
+    <div id="app" class="app">
+      <header class="headerbar">
+        <button type="button" id="back" class="icon-button" data-i18n-title="backButton" hidden><span data-icon="back"></span></button>
+        <img id="header-logo" class="app-icon" src="../icons/icon-32.png" alt="" width="22" height="22">
+        <h1 id="header-title" class="title" data-i18n="extName">Ashy Pass</h1>
+        <div class="header-actions">
+          <button type="button" id="add" class="pill suggested small with-icon" hidden><span data-icon="plus" data-icon-size="16"></span><span data-i18n="addButton">Add</span></button>
+          <button type="button" id="lock" class="icon-button" data-i18n-title="lockButton" hidden><span data-icon="lock"></span></button>
+        </div>
+      </header>
+
+      <main id="main" class="main">
+        <!-- Connecting -->
+        <section id="view-loading" class="view status-page" aria-busy="true">
+          <div class="spinner" aria-hidden="true"></div>
+          <p data-i18n="loading">Connecting to Ashy Pass…</p>
+        </section>
+
+        <!-- Not installed / disabled / no vault / error -->
+        <section id="view-message" class="view status-page" hidden aria-labelledby="message-title">
+          <img src="../icons/icon-128.png" alt="" width="72" height="72">
+          <h2 id="message-title"></h2>
+          <p id="message-body" class="dim"></p>
+          <div class="stack">
+            <button type="button" id="message-open-app" class="pill suggested" data-i18n="openAppButton" hidden>Open Ashy Pass</button>
+            <button type="button" id="retry" class="pill" data-i18n="retryButton">Try again</button>
+          </div>
+        </section>
+
+        <!-- Locked -->
+        <section id="view-locked" class="view status-page locked" hidden aria-labelledby="locked-title">
+          <img src="../icons/icon-128.png" alt="" width="72" height="72">
+          <h2 id="locked-title" data-i18n="lockedTitle">Your vault is locked</h2>
+          <form id="unlock-form" class="unlock-form" novalidate>
+            <label id="unlock-label" for="unlock-input" data-i18n="masterPasswordLabel">Master password</label>
+            <input type="password" id="unlock-input" name="unlock" autocomplete="current-password"
+                   spellcheck="false" aria-describedby="unlock-error unlock-note">
+            <p id="unlock-error" class="error" role="alert"></p>
+            <p id="unlock-note" class="dim small-text" aria-live="polite"></p>
+            <button type="submit" id="unlock-submit" class="suggested wide" data-i18n="unlockButton">Unlock</button>
+            <button type="button" id="unlock-switch" class="link" hidden></button>
+          </form>
+          <button type="button" id="locked-open-app" class="link" data-i18n="openAppButton">Open Ashy Pass</button>
+        </section>
+
+        <!-- Vault -->
+        <section id="view-vault" class="view" hidden aria-labelledby="header-title">
+          <div id="inline-hint" class="card hint" hidden>
+            <div class="hint-text">
+              <p class="hint-title" data-i18n="inlineHintTitle">Show suggestions inside login fields?</p>
+              <p class="dim small-text" data-i18n="inlineHintBody">Ashy Pass can show your logins right below the username and password fields of websites.</p>
+            </div>
+            <div class="hint-actions">
+              <button type="button" id="inline-hint-dismiss" class="pill flat small" data-i18n="notNowButton">Not now</button>
+              <button type="button" id="inline-hint-enable" class="pill suggested small" data-i18n="enableButton">Enable</button>
+            </div>
+          </div>
+
+          <div class="search">
+            <span class="search-icon" data-icon="search" data-icon-size="16"></span>
+            <label for="search" class="visually-hidden" data-i18n="searchLabel">Search the vault</label>
+            <input type="search" id="search" autocomplete="off" spellcheck="false" data-i18n-placeholder="searchLabel">
+          </div>
+
+          <div class="filters">
+            <label for="filter-folder" class="visually-hidden" data-i18n="folderFilterLabel">Folder</label>
+            <select id="filter-folder"></select>
+            <label for="filter-type" class="visually-hidden" data-i18n="typeFilterLabel">Type</label>
+            <select id="filter-type">
+              <option value="all" data-i18n="filterAllItems">All items</option>
+              <option value="totp" data-i18n="filterWithCodes">Logins with codes</option>
+              <option value="favorites" data-i18n="filterFavorites">Favorites</option>
+            </select>
+          </div>
+
+          <section id="sec-suggestions" class="list-section" aria-labelledby="h-suggestions">
+            <h2 id="h-suggestions" class="section-title"><span data-i18n="autofillSuggestions">Autofill suggestions</span> <span class="count" id="count-suggestions"></span></h2>
+            <ul id="list-suggestions" class="boxed-list"></ul>
+            <p id="empty-suggestions" class="empty dim" hidden></p>
+          </section>
+
+          <section id="sec-favorites" class="list-section" aria-labelledby="h-favorites">
+            <h2 id="h-favorites" class="section-title"><span data-i18n="favoritesHeading">Favorites</span> <span class="count" id="count-favorites"></span></h2>
+            <ul id="list-favorites" class="boxed-list"></ul>
+          </section>
+
+          <section id="sec-all" class="list-section" aria-labelledby="h-all">
+            <h2 id="h-all" class="section-title"><span id="all-heading-text" data-i18n="allItemsHeading">All items</span> <span class="count" id="count-all"></span></h2>
+            <ul id="list-all" class="boxed-list"></ul>
+            <div id="all-sentinel" class="sentinel" aria-hidden="true"></div>
+            <p id="empty-all" class="empty dim" hidden></p>
+          </section>
+        </section>
+
+        <!-- Item details -->
+        <section id="view-details" class="view" hidden aria-labelledby="details-title">
+          <div class="details-head">
+            <span id="details-favicon" class="favicon large"></span>
+            <div class="details-titles">
+              <h2 id="details-title"></h2>
+              <p id="details-subtitle" class="dim small-text"></p>
+            </div>
+            <button type="button" id="details-fav" class="icon-button star-button" aria-pressed="false"><span data-icon="star"></span></button>
+          </div>
+
+          <div class="card fields">
+            <div class="field" id="field-username">
+              <div class="field-text">
+                <span class="caption" id="label-username" data-i18n="usernameLabel">Username</span>
+                <span id="details-username" class="field-value" aria-labelledby="label-username"></span>
+              </div>
+              <button type="button" id="details-copy-username" class="icon-button" data-i18n-title="copyUsernameButton"><span data-icon="copy"></span></button>
+            </div>
+            <div class="field" id="field-password">
+              <div class="field-text">
+                <span class="caption" id="label-password" data-i18n="passwordLabel">Password</span>
+                <span id="details-password" class="field-value mono" aria-labelledby="label-password"></span>
+              </div>
+              <button type="button" id="details-reveal" class="icon-button" aria-pressed="false" data-i18n-title="revealPassword"><span data-icon="eye"></span></button>
+              <button type="button" id="details-copy-password" class="icon-button" data-i18n-title="copyPasswordButton"><span data-icon="copy"></span></button>
+            </div>
+            <div class="field" id="field-totp" hidden>
+              <div class="field-text">
+                <span class="caption" id="label-totp" data-i18n="totpLabel">Verification code</span>
+                <span class="totp-line">
+                  <span id="details-totp" class="field-value mono totp-code" aria-labelledby="label-totp"></span>
+                  <span class="ring-wrap" id="totp-ring-wrap">
+                    <svg class="ring" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                      <circle class="ring-bg" cx="12" cy="12" r="10"></circle>
+                      <circle id="totp-ring" class="ring-fg" cx="12" cy="12" r="10"></circle>
+                    </svg>
+                    <span id="totp-seconds" class="ring-seconds"></span>
+                  </span>
+                </span>
+              </div>
+              <button type="button" id="details-copy-totp" class="icon-button" data-i18n-title="copyCodeButton"><span data-icon="copy"></span></button>
+            </div>
+          </div>
+
+          <div class="card fields">
+            <div class="field" id="field-url">
+              <div class="field-text">
+                <span class="caption" id="label-url" data-i18n="websiteLabel">Website</span>
+                <span id="details-url" class="field-value" aria-labelledby="label-url"></span>
+              </div>
+              <button type="button" id="details-open-url" class="icon-button" data-i18n-title="openWebsiteButton"><span data-icon="external"></span></button>
+              <button type="button" id="details-copy-url" class="icon-button" data-i18n-title="copyWebsiteButton"><span data-icon="copy"></span></button>
+            </div>
+            <div class="field" id="field-folder">
+              <div class="field-text">
+                <span class="caption" id="label-folder" data-i18n="folderLabel">Folder</span>
+                <span id="details-folder" class="field-value" aria-labelledby="label-folder"></span>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" id="details-fill" class="suggested wide with-icon" hidden><span data-icon="fill" data-icon-size="16"></span><span data-i18n="fillButton">Fill</span></button>
+
+          <div class="details-actions">
+            <button type="button" id="details-edit" class="pill with-icon"><span data-icon="edit" data-icon-size="16"></span><span data-i18n="editButton">Edit</span></button>
+            <button type="button" id="details-delete" class="pill destructive-text with-icon"><span data-icon="trash" data-icon-size="16"></span><span data-i18n="deleteButton">Delete</span></button>
+          </div>
+
+          <div id="delete-confirm" class="card confirm-card" role="alertdialog" aria-labelledby="delete-confirm-title" aria-describedby="delete-confirm-hint" hidden>
+            <p id="delete-confirm-title" class="confirm-title"></p>
+            <p id="delete-confirm-hint" class="dim small-text" data-i18n="deleteConfirmHint">If the trash is on in Ashy Pass, you can restore it from there. Synced devices delete it too.</p>
+            <div class="form-actions">
+              <button type="button" id="delete-cancel" class="pill" data-i18n="cancelButton">Cancel</button>
+              <button type="button" id="delete-confirm-button" class="pill destructive" data-i18n="deleteButton">Delete</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- New login -->
+        <section id="view-add" class="view" hidden aria-labelledby="header-title">
+          <form id="add-form" class="card form-card" novalidate>
+            <label for="add-title" data-i18n="nameLabel">Name</label>
+            <input type="text" id="add-title" autocomplete="off" spellcheck="false" maxlength="512" required>
+
+            <label for="add-username" data-i18n="usernameLabel">Username</label>
+            <input type="text" id="add-username" autocomplete="off" spellcheck="false" maxlength="512">
+
+            <label for="add-password" data-i18n="passwordLabel">Password</label>
+            <div class="input-with-buttons">
+              <input type="password" id="add-password" autocomplete="new-password" spellcheck="false" maxlength="4096" required>
+              <button type="button" id="add-reveal" class="icon-button" aria-pressed="false" data-i18n-title="revealPassword"><span data-icon="eye"></span></button>
+              <button type="button" id="add-generate" class="icon-button" data-i18n-title="generateButton"><span data-icon="refresh"></span></button>
+            </div>
+
+            <label for="add-url" data-i18n="websiteLabel">Website</label>
+            <input type="url" id="add-url" autocomplete="off" spellcheck="false" maxlength="2048">
+
+            <label for="add-folder" data-i18n="folderLabel">Folder</label>
+            <input type="text" id="add-folder" list="add-folder-list" autocomplete="off" maxlength="256" data-i18n-placeholder="noFolder">
+            <datalist id="add-folder-list"></datalist>
+
+            <label for="add-notes" data-i18n="notesLabel">Notes</label>
+            <textarea id="add-notes" rows="3" spellcheck="false" maxlength="65536"></textarea>
+
+            <p id="add-error" class="error" role="alert"></p>
+            <div class="form-actions">
+              <button type="button" id="add-cancel" class="pill" data-i18n="cancelButton">Cancel</button>
+              <button type="submit" id="add-save" class="pill suggested" data-i18n="saveButton">Save</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Generator -->
+        <section id="view-generator" class="view" hidden aria-labelledby="header-title">
+          <div class="card gen-output">
+            <output id="gen-value" class="mono gen-value" aria-live="polite"></output>
+            <div class="gen-buttons">
+              <button type="button" id="gen-regen" class="icon-button" data-i18n-title="regenerateButton"><span data-icon="refresh"></span></button>
+              <button type="button" id="gen-copy" class="icon-button" data-i18n-title="copyButton"><span data-icon="copy"></span></button>
+            </div>
+          </div>
+
+          <div class="segmented" role="radiogroup" id="gen-kind" data-i18n-aria-label="generatorTypeLabel">
+            <button type="button" role="radio" data-kind="password" aria-checked="true" data-i18n="kindPassword">Password</button>
+            <button type="button" role="radio" data-kind="passphrase" aria-checked="false" data-i18n="kindPassphrase">Passphrase</button>
+            <button type="button" role="radio" data-kind="pin" aria-checked="false" data-i18n="kindPin">PIN</button>
+          </div>
+
+          <div id="gen-opts-password" class="card options">
+            <div class="opt-row range-row">
+              <label for="gen-length" data-i18n="lengthLabel">Length</label>
+              <input type="range" id="gen-length" min="8" max="64" step="1">
+              <input type="number" id="gen-length-num" min="8" max="64" step="1" class="num" data-i18n-aria-label="lengthLabel">
+            </div>
+            <label class="opt-row switch-row"><span data-i18n="optUppercase">Uppercase (A-Z)</span><input type="checkbox" role="switch" id="gen-upper" class="switch"></label>
+            <label class="opt-row switch-row"><span data-i18n="optLowercase">Lowercase (a-z)</span><input type="checkbox" role="switch" id="gen-lower" class="switch"></label>
+            <label class="opt-row switch-row"><span data-i18n="optDigits">Numbers (0-9)</span><input type="checkbox" role="switch" id="gen-digits" class="switch"></label>
+            <label class="opt-row switch-row"><span data-i18n="optSymbols">Symbols (!@#)</span><input type="checkbox" role="switch" id="gen-symbols" class="switch"></label>
+            <label class="opt-row switch-row"><span data-i18n="optAvoidAmbiguous">Avoid ambiguous characters</span><input type="checkbox" role="switch" id="gen-ambiguous" class="switch"></label>
+          </div>
+
+          <div id="gen-opts-passphrase" class="card options" hidden>
+            <div class="opt-row range-row">
+              <label for="gen-words" data-i18n="wordsLabel">Words</label>
+              <input type="range" id="gen-words" min="3" max="12" step="1">
+              <input type="number" id="gen-words-num" min="3" max="12" step="1" class="num" data-i18n-aria-label="wordsLabel">
+            </div>
+            <div class="opt-row">
+              <label for="gen-separator" data-i18n="separatorLabel">Word separator</label>
+              <input type="text" id="gen-separator" maxlength="3" class="num" spellcheck="false" autocomplete="off">
+            </div>
+            <label class="opt-row switch-row"><span data-i18n="optCapitalize">Capitalize</span><input type="checkbox" role="switch" id="gen-capitalize" class="switch"></label>
+            <label class="opt-row switch-row"><span data-i18n="optIncludeNumber">Include number</span><input type="checkbox" role="switch" id="gen-number" class="switch"></label>
+          </div>
+
+          <div id="gen-opts-pin" class="card options" hidden>
+            <div class="opt-row range-row">
+              <label for="gen-pin-length" data-i18n="lengthLabel">Length</label>
+              <input type="range" id="gen-pin-length" min="4" max="12" step="1">
+              <input type="number" id="gen-pin-length-num" min="4" max="12" step="1" class="num" data-i18n-aria-label="lengthLabel">
+            </div>
+          </div>
+
+          <button type="button" id="gen-fill" class="pill wide with-icon"><span data-icon="fill" data-icon-size="16"></span><span data-i18n="fillOnPageButton">Fill on this page</span></button>
+        </section>
+
+        <!-- Settings -->
+        <section id="view-settings" class="view" hidden aria-labelledby="header-title">
+          <h2 class="section-title" data-i18n="settingsVaultHeading">Vault</h2>
+          <div class="card list-card">
+            <button type="button" id="settings-lock" class="list-row"><span data-icon="lock"></span><span data-i18n="lockNowButton">Lock now</span></button>
+            <button type="button" id="settings-open-app" class="list-row"><span data-icon="app"></span><span data-i18n="openAppButton">Open Ashy Pass</span></button>
+          </div>
+
+          <h2 class="section-title" data-i18n="settingsAutofillHeading">Autofill</h2>
+          <div class="card list-card">
+            <label class="list-row switch-row">
+              <span class="row-text">
+                <span data-i18n="inlineSettingLabel">Show suggestions in login fields</span>
+                <span class="dim small-text" data-i18n="inlineSettingHint">Needs access to the websites you visit. Your logins never leave Ashy Pass until you pick one.</span>
+              </span>
+              <input type="checkbox" role="switch" id="settings-inline" class="switch">
+            </label>
+            <label class="list-row switch-row">
+              <span class="row-text">
+                <span data-i18n="browserPmLabel">Turn off the browser's password manager</span>
+                <span class="dim small-text" data-i18n="browserPmHint">Its own list appears over the page and covers Ashy Pass suggestions. When it is off, Ashy Pass opens as soon as you click a login field.</span>
+              </span>
+              <input type="checkbox" role="switch" id="settings-browser-pm" class="switch">
+            </label>
+            <div class="list-row static">
+              <span data-icon="keyboard"></span>
+              <span class="row-text">
+                <span data-i18n="shortcutLabel">Keyboard shortcut</span>
+                <span class="dim small-text" data-i18n="shortcutOpens">Opens this window.</span>
+              </span>
+              <kbd id="settings-shortcut">Alt+Shift+L</kbd>
+              <button type="button" id="settings-shortcut-change" class="pill" data-i18n="shortcutChange">Change</button>
+            </div>
+            <div class="list-row static" id="shortcut-recorder" hidden>
+              <span class="row-text">
+                <span data-i18n="shortcutRecord">Press the new key combination…</span>
+                <span class="dim small-text" data-i18n="shortcutRecordHint">Ctrl or Alt, optionally Shift, and a letter or number. Esc cancels.</span>
+              </span>
+              <button type="button" id="settings-shortcut-reset" class="pill" data-i18n="shortcutReset">Default</button>
+            </div>
+          </div>
+
+          <h2 class="section-title" data-i18n="settingsAboutHeading">About</h2>
+          <div class="card list-card">
+            <div class="list-row static">
+              <span data-icon="info"></span>
+              <span class="row-text" data-i18n="versionLabel">Version</span>
+              <span id="settings-version" class="dim"></span>
+            </div>
+            <button type="button" id="settings-help" class="list-row"><span data-icon="help"></span><span class="row-text" data-i18n="helpLink">Help</span><span data-icon="external" data-icon-size="14" class="dim"></span></button>
+            <button type="button" id="settings-privacy" class="list-row"><span data-icon="shield"></span><span class="row-text" data-i18n="privacyLink">Privacy</span><span data-icon="external" data-icon-size="14" class="dim"></span></button>
+          </div>
+        </section>
+      </main>
+
+      <nav id="tabbar" class="tabbar" role="tablist" data-i18n-aria-label="sectionsLabel" hidden>
+        <button type="button" role="tab" id="tab-vault" data-tab="vault" aria-selected="true"><span data-icon="vault" data-icon-size="20"></span><span data-i18n="tabVault">Vault</span></button>
+        <button type="button" role="tab" id="tab-generator" data-tab="generator" aria-selected="false"><span data-icon="generator" data-icon-size="20"></span><span data-i18n="tabGenerator">Generator</span></button>
+        <button type="button" role="tab" id="tab-settings" data-tab="settings" aria-selected="false"><span data-icon="settings" data-icon-size="20"></span><span data-i18n="tabSettings">Settings</span></button>
+      </nav>
+    </div>
+
+    <div id="row-menu" class="popover" role="menu" hidden></div>
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>

@@ -23,6 +23,9 @@ use std::time::Duration;
 
 const HIBP_RANGE_URL: &str = "https://api.pwnedpasswords.com/range/";
 const CACHE_TTL_SECS: i64 = 7 * 24 * 3600;
+/// Stale ranges are kept a while as an offline fallback, then dropped so the
+/// cache does not grow forever.
+const CACHE_KEEP_SECS: i64 = 4 * CACHE_TTL_SECS;
 
 #[derive(Debug, Clone, Copy)]
 pub enum BreachStatus {
@@ -55,11 +58,23 @@ fn load_cache() -> Cache {
         .unwrap_or_default()
 }
 
-fn save_cache(c: &Cache) -> Result<()> {
+fn save_cache(c: &mut Cache) -> Result<()> {
+    let now = now_secs();
+    c.prefixes
+        .retain(|_, entry| now - entry.fetched_at < CACHE_KEEP_SECS);
     let path = cache_file();
     let serialized = serde_json::to_string(c)?;
     crate::config::atomic_write_private(&path, serialized.as_bytes())?;
     Ok(())
+}
+
+/// Drop the padding rows (count 0) the API adds to hide the response size:
+/// they carry no information and make up most of each cached range.
+fn strip_padding(body: &str) -> String {
+    body.lines()
+        .filter(|line| !line.trim().ends_with(":0"))
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 fn sha1_hex_upper(password: &str) -> String {
@@ -112,6 +127,10 @@ fn parse_body(body: &str, suffix: &str) -> BreachStatus {
         };
         if s.eq_ignore_ascii_case(suffix) {
             let count = it.next().and_then(|c| c.parse::<u64>().ok()).unwrap_or(1);
+            // Padding rows (Add-Padding) carry a count of 0: not a breach.
+            if count == 0 {
+                return BreachStatus::NotFound;
+            }
             return BreachStatus::Found { count };
         }
     }
@@ -161,7 +180,7 @@ pub fn check_many_report(passwords: &[&str]) -> BatchReport {
         fetch_range(client, prefix)
     });
     if dirty {
-        if let Err(error) = save_cache(&cache) {
+        if let Err(error) = save_cache(&mut cache) {
             log::warn!("could not save HIBP cache: {error}");
         }
     }
@@ -218,7 +237,7 @@ where
                     prefix.to_string(),
                     CacheEntry {
                         fetched_at: now,
-                        body,
+                        body: strip_padding(&body),
                     },
                 );
                 dirty = true;

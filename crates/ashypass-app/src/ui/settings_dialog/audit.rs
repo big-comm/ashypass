@@ -12,8 +12,9 @@ pub(super) fn populate_audit(
     settings: Rc<RefCell<Settings>>,
     toast: Toaster,
     parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) {
+    let duplicates = build_duplicates_group(state.clone(), toast.clone());
     let opts_group = adw::PreferencesGroup::builder()
         .title(tr!("Check my passwords"))
         .description(tr!(
@@ -59,6 +60,7 @@ pub(super) fn populate_audit(
     let summary_row = adw::ActionRow::builder()
         .title(tr!("Not run yet"))
         .subtitle("")
+        .use_markup(false)
         .build();
     summary_group.add(&summary_row);
     page.add(&summary_group);
@@ -178,6 +180,137 @@ pub(super) fn populate_audit(
             },
         );
     });
+    page.add(&duplicates);
+}
+
+/// Settings → Protection → Duplicate items: the same site and account, or
+/// the same two-step code, more than once. Merging keeps one item and moves
+/// the rest to the trash.
+fn build_duplicates_group(state: SharedState, toast: Toaster) -> adw::PreferencesGroup {
+    let group = adw::PreferencesGroup::builder()
+        .title(tr!("Duplicate items"))
+        .description(tr!(
+            "Logins of the same site and account, or items with the same verification code, left by imports or by two syncs. Merging keeps one, brings into it what only the others had (code, notes, other websites, groups; other passwords go to its history) and moves the others to Deleted items."
+        ))
+        .build();
+    let row = adw::ActionRow::builder()
+        .title(tr!("Find duplicate items"))
+        .activatable(true)
+        .build();
+    row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+    row.connect_activated(move |row| {
+        if !state.vault.borrow().is_unlocked() {
+            show_toast(&toast, tr!("Unlock the vault first"));
+            return;
+        }
+        let found = ashypass_core::duplicates::find_duplicates(&state.vault.borrow());
+        match found {
+            Ok(groups) if groups.is_empty() => show_toast(&toast, tr!("No duplicate items")),
+            Ok(groups) => present_duplicates(row, state.clone(), toast.clone(), groups),
+            Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Could not check"))),
+        }
+    });
+    group.add(&row);
+    group
+}
+
+fn present_duplicates(
+    anchor: &adw::ActionRow,
+    state: SharedState,
+    toast: Toaster,
+    groups: Vec<ashypass_core::duplicates::DuplicateGroup>,
+) {
+    use ashypass_core::duplicates::{merge_duplicates, DuplicateReason};
+    let page = adw::PreferencesPage::new();
+    let count = groups.len();
+    for found in groups {
+        let section = adw::PreferencesGroup::builder()
+            .title(glib::markup_escape_text(&found.label).as_str())
+            .description(match found.reason {
+                DuplicateReason::SameLogin => tr!("Same site and account"),
+                DuplicateReason::SameCode => tr!("Same verification code"),
+            })
+            .build();
+        let mut first: Option<gtk::CheckButton> = None;
+        let choices: Rc<RefCell<Vec<(i64, gtk::CheckButton)>>> = Rc::default();
+        for (i, member) in found.members.iter().enumerate() {
+            let check = gtk::CheckButton::builder()
+                .active(i == 0)
+                .valign(gtk::Align::Center)
+                .build();
+            match &first {
+                Some(f) => check.set_group(Some(f)),
+                None => first = Some(check.clone()),
+            }
+            let when = chrono::DateTime::from_timestamp(member.updated_at, 0)
+                .map(|t| t.with_timezone(&chrono::Local).format("%x").to_string())
+                .unwrap_or_default();
+            let mut details = vec![member.username.clone(), member.url.clone()];
+            details.retain(|d| !d.is_empty());
+            details.push(format!("{} {when}", tr!("Changed")));
+            if member.password_differs {
+                details.push(tr!("different password").to_string());
+            }
+            let item = adw::ActionRow::builder()
+                .title(glib::markup_escape_text(&member.title).as_str())
+                .subtitle(glib::markup_escape_text(&details.join(" · ")).as_str())
+                .activatable_widget(&check)
+                .build();
+            item.add_prefix(&check);
+            section.add(&item);
+            choices.borrow_mut().push((member.id, check));
+        }
+        let merge = gtk::Button::builder()
+            .label(tr!("Merge, keeping the selected one"))
+            .halign(gtk::Align::End)
+            .margin_top(6)
+            .build();
+        merge.add_css_class("suggested-action");
+        {
+            let state = state.clone();
+            let toast = toast.clone();
+            // Weak: the button sits in the section's header.
+            let section = section.downgrade();
+            let choices = choices.clone();
+            merge.connect_clicked(move |button| {
+                let ids: Vec<i64> = choices.borrow().iter().map(|(id, _)| *id).collect();
+                let Some(keep) = choices
+                    .borrow()
+                    .iter()
+                    .find(|(_, c)| c.is_active())
+                    .map(|(id, _)| *id)
+                else {
+                    return;
+                };
+                let others: Vec<i64> = ids.into_iter().filter(|id| *id != keep).collect();
+                let merged = merge_duplicates(&state.vault.borrow(), keep, &others);
+                match merged {
+                    Ok(()) => {
+                        button.set_sensitive(false);
+                        if let Some(section) = section.upgrade() {
+                            section.set_sensitive(false);
+                            section.set_description(Some(tr!("Merged")));
+                        }
+                        show_toast(&toast, tr!("Merged; the others are in Deleted items"));
+                    }
+                    Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Could not merge"))),
+                }
+            });
+        }
+        section.set_header_suffix(Some(&merge));
+        page.add(&section);
+    }
+    let toolbar = adw::ToolbarView::new();
+    toolbar.add_top_bar(&adw::HeaderBar::new());
+    toolbar.set_content(Some(&page));
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(anchor))
+        .title(format!("{} ({count})", tr!("Duplicate items")))
+        .content_width(640)
+        .content_height(620)
+        .child(&toolbar)
+        .build();
+    state.track_sensitive_dialog(&dialog);
+    dialog.present();
 }
 
 pub(super) fn render_audit_report(

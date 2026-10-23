@@ -34,6 +34,18 @@ pub enum AppEvent {
     /// Vault data mutated (add / update / delete / restore / attachment, …).
     /// Views should refresh whatever they show from the vault.
     VaultChanged,
+    /// A display preference changed (compact list, large codes, …). Views
+    /// re-render; unlike `VaultChanged` it does not schedule a sync.
+    DisplayChanged,
+    /// A Nextcloud Passwords sync changed vault data. Views refresh exactly
+    /// as for [`AppEvent::VaultChanged`]; the auto-sync scheduler ignores it,
+    /// so a sync does not trigger another one.
+    VaultChangedBySync,
+    /// A manual sync stopped because `count` synced entries vanished from
+    /// the server at once; the user must confirm before they are deleted.
+    MassDeletePending { count: usize },
+    /// The Nextcloud auto-sync preferences were changed in Settings.
+    SyncSettingsChanged,
     /// Session auto-locked due to inactivity. Views must hide secrets.
     SessionLocked,
     /// The vault was unlocked somewhere other than the main unlock screen
@@ -47,6 +59,12 @@ pub enum AppEvent {
     SyncFailed(String),
     /// The Nextcloud Passwords sync state changed (see `AppState::sync_status`).
     SyncStatusChanged,
+    /// The encrypted sync folder was connected or disconnected in Settings.
+    FolderSyncChanged,
+    /// Settings asked for an encrypted folder sync now.
+    FolderSyncRequested,
+    /// The encrypted folder sync state changed (`AppState::folder_status`).
+    FolderSyncStatusChanged,
     /// A remote conflict was detected during a sync attempt.
     SyncConflict {
         local_generation: u64,

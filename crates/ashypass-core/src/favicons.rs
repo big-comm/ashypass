@@ -46,7 +46,17 @@ pub fn lookup(host: &str) -> Option<PathBuf> {
 }
 
 /// Fetch `host`'s favicon and store it under `favicons_dir()`. Blocking.
+/// The Google fallback follows `Settings::favicon_third_party_fallback`.
 pub fn fetch_blocking(host: &str) -> Result<PathBuf> {
+    fetch_blocking_with(
+        host,
+        crate::settings::Settings::load().favicon_third_party_fallback,
+    )
+}
+
+/// Like [`fetch_blocking`], with the Google fallback chosen by the caller
+/// (apps that keep their own settings).
+pub fn fetch_blocking_with(host: &str, third_party_fallback: bool) -> Result<PathBuf> {
     let path = cache_path(host);
     if path.exists() {
         return Ok(path);
@@ -66,7 +76,7 @@ pub fn fetch_blocking(host: &str) -> Result<PathBuf> {
     let mut candidates = vec![format!("https://{host}/favicon.ico")];
     // The third-party fallback sends the hostname to Google, i.e. leaks which
     // sites are in the vault. Opt-in only.
-    if crate::settings::Settings::load().favicon_third_party_fallback {
+    if third_party_fallback {
         candidates.push(format!(
             "https://www.google.com/s2/favicons?domain={host}&sz=64"
         ));
@@ -77,20 +87,42 @@ pub fn fetch_blocking(host: &str) -> Result<PathBuf> {
             Ok(r) if r.status().is_success() => r,
             _ => continue,
         };
-        let bytes = match resp.bytes() {
-            Ok(b) if !b.is_empty() && b.len() <= MAX_BYTES => b,
-            _ => continue,
-        };
-        if let Ok(img) = image::load_from_memory(&bytes) {
-            if img.save(&path).is_ok() {
-                return Ok(path);
-            }
-        } else {
-            // not parseable; store raw bytes anyway (e.g. animated/atypical ico)
-            if fs::write(&path, &bytes).is_ok() {
-                return Ok(path);
-            }
+        if resp
+            .content_length()
+            .is_some_and(|len| len > MAX_BYTES as u64)
+        {
+            continue;
         }
+        // Read at most one byte past the limit so a hostile server cannot
+        // stream an unbounded body into memory.
+        let mut bytes = Vec::new();
+        if std::io::Read::read_to_end(
+            &mut std::io::Read::take(resp, MAX_BYTES as u64 + 1),
+            &mut bytes,
+        )
+        .is_err()
+            || bytes.is_empty()
+            || bytes.len() > MAX_BYTES
+        {
+            continue;
+        }
+        // Write to a temporary name and rename, so a crash or a concurrent
+        // fetch never leaves a truncated file that looks cached.
+        let tmp = path.with_extension("png.part");
+        let written = if let Ok(img) = image::load_from_memory(&bytes) {
+            img.save_with_format(&tmp, image::ImageFormat::Png).is_ok()
+        } else if bytes.starts_with(&[0, 0, 1, 0]) {
+            // An icon the decoder does not handle; GTK may still load it.
+            // Anything else (often an HTML error page served with 200) is
+            // not cached, so the next source is tried.
+            fs::write(&tmp, &bytes).is_ok()
+        } else {
+            false
+        };
+        if written && fs::rename(&tmp, &path).is_ok() {
+            return Ok(path);
+        }
+        let _ = fs::remove_file(&tmp);
     }
 
     Err(Error::Other(format!("favicon: no source for {host}")))

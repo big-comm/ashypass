@@ -11,7 +11,7 @@ pub(super) fn populate_cloud(
     state: SharedState,
     toast: Toaster,
     parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) {
     let creds = Rc::new(RefCell::new(
         ashypass_core::backup::ClientCredentials::load(),
@@ -55,8 +55,9 @@ pub(super) fn populate_cloud(
         let status = status_row.clone();
         let toast = toast.clone();
         let signin_row = google_signin_row.clone();
-        let configure = configure_row.clone();
         configure_row.connect_activated(move |row| {
+            // From the argument: a captured copy would make the row hold itself.
+            let configure = row.clone();
             let parent = row.root().and_then(|r| r.downcast::<gtk::Window>().ok());
             show_google_oauth_dialog(
                 parent.as_ref(),
@@ -87,9 +88,9 @@ pub(super) fn populate_cloud(
         let toast = toast.clone();
         let creds = creds.clone();
         let status = status_row.clone();
-        let signin = signin_row.clone();
         let action_rows = drive_action_rows.clone();
-        signin_row.connect_activated(move |_| {
+        signin_row.connect_activated(move |row| {
+            let signin = row.clone();
             if state.backup.borrow().is_logged_in() {
                 if let Err(e) = state.backup.borrow_mut().logout() {
                     show_toast(&toast, &format!("{}: {e}", tr!("Sign out failed")));
@@ -266,8 +267,12 @@ pub(super) fn populate_sync(
     state: SharedState,
     toast: Toaster,
     parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) {
+    page.add(&super::folder_sync::build_folder_sync_group(
+        state.clone(),
+        toast.clone(),
+    ));
     page.add(&build_nextcloud_passwords_group(
         state,
         toast,
@@ -290,7 +295,7 @@ pub(super) fn show_google_oauth_dialog(
     signin_row: Option<adw::ActionRow>,
     toast: Toaster,
 ) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(tr!("Configure Google OAuth"))
         .body(tr!("OAuth client not configured at build time"))
         .build();
@@ -300,9 +305,9 @@ pub(super) fn show_google_oauth_dialog(
     dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
 
     let client_id = adw::EntryRow::builder().title(tr!("Client ID")).build();
-    let client_secret = adw::PasswordEntryRow::builder()
-        .title(tr!("Client Secret (optional)"))
-        .build();
+    let client_secret = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Client Secret (optional)")),
+    );
     if let Some(existing) = creds.borrow().as_ref() {
         client_id.set_text(&existing.client_id);
         if let Some(secret) = existing.client_secret.as_ref() {
@@ -349,7 +354,7 @@ pub(super) fn show_google_oauth_dialog(
             Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Configure failed"))),
         }
     });
-    dialog.present(parent);
+    dialog.present();
 }
 
 pub(super) fn build_webdav_group(state: SharedState, toast: Toaster) -> adw::PreferencesGroup {
@@ -387,9 +392,9 @@ pub(super) fn build_webdav_group(state: SharedState, toast: Toaster) -> adw::Pre
         let state = state.clone();
         let toast = toast.clone();
         let status = status_row.clone();
-        let configure = configure_row.clone();
         let action_rows = webdav_action_rows.clone();
         configure_row.connect_activated(move |row| {
+            let configure = row.clone();
             if state.webdav.borrow().is_logged_in() {
                 if let Err(e) = state.webdav.borrow_mut().logout() {
                     show_toast(&toast, &format!("{}: {e}", tr!("Sign out failed")));
@@ -558,7 +563,7 @@ pub(super) fn show_webdav_dialog<F>(
 ) where
     F: Fn() + 'static,
 {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(tr!("WebDAV / Nextcloud"))
         .body(tr!(
             "For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/dav/files/USERNAME"
@@ -571,9 +576,9 @@ pub(super) fn show_webdav_dialog<F>(
 
     let url_row = adw::EntryRow::builder().title(tr!("Server URL")).build();
     let user_row = adw::EntryRow::builder().title(tr!("Username")).build();
-    let pass_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Password / app-password"))
-        .build();
+    let pass_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Password / app-password")),
+    );
     let folder_row = adw::EntryRow::builder()
         .title(tr!("Folder"))
         .text("AshyPass Backups")
@@ -636,7 +641,7 @@ pub(super) fn show_webdav_dialog<F>(
             );
         });
     }
-    dialog.present(parent);
+    dialog.present();
 }
 
 /// Drive the incremental-sync flow: plan → resolve conflict → upload.
@@ -727,16 +732,16 @@ pub(super) fn prompt_webdav_push(
             let state = state.clone();
             let toast = toast.clone();
             move |pw| {
-                let ok = state
-                    .vault
-                    .borrow()
-                    .verify_master_password(&pw)
-                    .unwrap_or(false);
-                if !ok {
-                    show_toast(&toast, tr!("Wrong master password"));
-                    return;
-                }
-                do_webdav_push(state.clone(), toast.clone(), pw, force);
+                let state = state.clone();
+                let toast = toast.clone();
+                let checked = pw.clone();
+                verify_master_in_background(&state.clone(), &checked, move |ok| {
+                    if !ok {
+                        show_toast(&toast, tr!("Wrong master password"));
+                        return;
+                    }
+                    do_webdav_push(state, toast, pw, force);
+                });
             }
         },
     );
@@ -777,11 +782,8 @@ pub(super) fn do_webdav_push(state: SharedState, toast: Toaster, master: String,
                     // Should be unreachable with force=true, but stay defensive.
                     show_toast(
                         &toast_done,
-                        &format!(
-                            "{}: remote generation {}",
-                            tr!("Sync conflict"),
-                            plan.remote_max_generation
-                        ),
+                        &tr!("Sync conflict: the server has a newer copy (generation {})")
+                            .replace("{}", &plan.remote_max_generation.to_string()),
                     );
                     state_done
                         .events
@@ -809,7 +811,7 @@ pub(super) fn show_sync_conflict_dialog(
     local_gen: u64,
     remote_gen: u64,
 ) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(tr!("Sync conflict detected"))
         .body(format!(
             "{}\n\n{} {local_gen}\n{} {remote_gen}",
@@ -832,13 +834,13 @@ pub(super) fn show_sync_conflict_dialog(
         let parent = dlg.parent().and_then(|w| w.downcast::<gtk::Window>().ok());
         run_webdav_sync(parent.as_ref(), state.clone(), toast.clone(), true);
     });
-    dialog.present(parent);
+    dialog.present();
 }
 
 /// A downloaded copy is not a restored vault. Say where it is and how to
 /// actually restore it.
 fn present_downloaded_copy(anchor: &impl IsA<gtk::Widget>, path: &std::path::Path) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
         .heading(tr!("Copy downloaded and checked"))
         .body(format!(
             "{}\n\n{}\n\n{}",
@@ -848,5 +850,5 @@ fn present_downloaded_copy(anchor: &impl IsA<gtk::Widget>, path: &std::path::Pat
         ))
         .build();
     dialog.add_response("ok", tr!("Understood"));
-    dialog.present(Some(anchor));
+    dialog.present();
 }

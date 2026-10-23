@@ -1,0 +1,716 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Completați și copiați datele de autentificare din Ashy Pass, managerul de parole pentru Linux.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Se conectează la Ashy Pass…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass nu este conectat",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Instalați Ashy Pass și conectați acest navigator în Ashy Pass → Setări → Navigator.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "Extensia pentru navigator este dezactivată",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Activați extensia pentru navigator în Ashy Pass → Setări → Navigator.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "Încă nu există un seif",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "Creați mai întâi seiful în Ashy Pass.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "Ceva nu a funcționat",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "Reîncercați",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "Seiful este blocat",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "Parola principală",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "Deblocați",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "Se deblochează…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "Parolă principală greșită.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "Prea multe încercări. Așteptați puțin și reîncercați.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "Căutați în toate intrările",
+    "description": "Label and placeholder of the search field."
+  },
+  "searchResultsHeading": {
+    "message": "Rezultatele căutării",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "Nicio autentificare salvată pentru acest site.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "Nu s-a găsit nicio intrare.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "Completarea funcționează doar pe pagini web.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "Fără nume de utilizator",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "Fără titlu",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "Completează",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "Copiază utilizator",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "Copiază parola",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "Copiază codul",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "Completează $TITLE$ pe această pagină",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "Copiază numele de utilizator pentru $TITLE$",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "Copiază parola pentru $TITLE$",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "Copiază codul de verificare pentru $TITLE$",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "Nume de utilizator copiat",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "Parolă copiată",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "Cod copiat",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "Completat",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "Nu s-a găsit niciun formular de autentificare pe această pagină",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "Nu s-a putut copia în clipboard",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "Generează parolă",
+    "description": "Button that generates a new password and copies it."
+  },
+  "revealPassword": {
+    "message": "Afișează parola",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "Ascunde parola",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "Blochează",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "Seif blocat",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass nu a răspuns la timp.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "Conexiunea cu Ashy Pass s-a pierdut.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "Această autentificare nu aparține acestui site.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "Această intrare nu mai există.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "Această intrare nu are cod de verificare.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "Această pagină nu permite completarea.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass a raportat: $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  },
+  "backButton": {
+    "message": "Înapoi",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Adaugă",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Deschide Ashy Pass",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Seif",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Generator",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Setări",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Secțiuni",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "PIN",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Deblocați cu PIN",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Folosiți parola principală",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Folosiți PIN-ul",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "PIN greșit.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "PIN greșit. Încercări rămase: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "PIN-ul a fost dezactivat după prea multe încercări greșite. Folosiți parola principală.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "Nu este configurat niciun PIN pe acest computer. Folosiți parola principală.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Afișați sugestii în câmpurile de autentificare?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass poate afișa autentificările dvs. chiar sub câmpurile de nume de utilizator și parolă ale site-urilor.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Nu acum",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Activează",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Dosar",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Tip",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Toate intrările",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "Autentificări cu coduri",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Favorite",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Toate dosarele",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Fără dosar",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Sugestii de completare automată",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Favorite",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Toate intrările",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Intrări",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Nicio intrare nu corespunde acestor filtre.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "Seiful dvs. este gol.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Afișează detaliile pentru $TITLE$",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Deschide site-ul pentru $TITLE$",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "Mai multe opțiuni pentru $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Adaugă la favorite",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Elimină din favorite",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Deschide site-ul",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Copiază adresa site-ului",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Vezi detaliile",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Adresa site-ului a fost copiată",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Adăugat la favorite",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Eliminat din favorite",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Detaliile intrării",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Nume de utilizator",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Parolă",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Cod de verificare",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Site",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Dosar",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Nume",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Autentificare nouă",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Anulează",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Salvează",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Introduceți un nume.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Introduceți o parolă.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Salvat",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Parolă generată",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass nu a putut accepta această cerere.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Regenerează",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Copiază",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Tipul valorii de generat",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Parolă",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Frază de acces",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "PIN",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Lungime",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Majuscule (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Minuscule (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Cifre (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Simboluri (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Evită caracterele ambigue",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Cuvinte",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Separator de cuvinte",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "Prima literă mare",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Include un număr",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Păstrați cel puțin un tip de caractere.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Completează pe această pagină",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "Nu s-a găsit niciun câmp de parolă pe această pagină",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Seif",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Blochează acum",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Completare automată",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Afișează sugestii în câmpurile de autentificare",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Necesită acces la site-urile pe care le vizitați. Pagina nu vede niciodată autentificările dvs.; nimic nu se completează până nu alegeți una.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "Sugestiile sunt activate. Reîncărcați paginile deschise pentru a le vedea.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "Permisiunea nu a fost acordată.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Comandă rapidă de la tastatură",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutNotSet": {
+    "message": "Nesetată",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "Despre",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Versiune",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Ajutor",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Confidențialitate",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Sugestii Ashy Pass",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Afișează sugestiile Ashy Pass",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass este blocat",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Nicio autentificare pentru acest site",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Adaugă autentificare",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "Faceți clic pe pictograma Ashy Pass din bara de instrumente pentru a continua.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Acest meniu a expirat. Faceți din nou clic pe câmp.",
+    "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Dezactivează managerul de parole al browserului"
+  },
+  "browserPmHint": {
+    "message": "Lista lui apare peste pagină și acoperă sugestiile Ashy Pass. Când este dezactivat, Ashy Pass se deschide imediat ce dați clic într-un câmp de autentificare."
+  },
+  "browserPmOffToast": {
+    "message": "Managerul de parole al browserului este dezactivat"
+  },
+  "browserPmOnToast": {
+    "message": "Managerul de parole al browserului este din nou activ"
+  },
+  "shortcutOpens": {
+    "message": "Deschide această fereastră."
+  },
+  "shortcutChange": {
+    "message": "Schimbă"
+  },
+  "shortcutRecord": {
+    "message": "Apăsați noua combinație de taste…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl sau Alt, opțional Shift, și o literă sau o cifră. Esc anulează."
+  },
+  "shortcutReset": {
+    "message": "Implicit"
+  },
+  "shortcutSaved": {
+    "message": "Comanda rapidă a fost salvată"
+  },
+  "shortcutInvalid": {
+    "message": "Această combinație nu poate fi folosită. Încercați Ctrl sau Alt cu o literă."
+  },
+  "shortcutOpenFailed": {
+    "message": "Setările pentru comenzi rapide ale browserului nu au putut fi deschise."
+  },
+  "editButton": {
+    "message": "Editează"
+  },
+  "deleteButton": {
+    "message": "Șterge"
+  },
+  "deleteConfirmTitle": {
+    "message": "Ștergeți „$TITLE$”?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Dacă coșul de gunoi este activat în Ashy Pass, îl puteți restaura de acolo. Dispozitivele sincronizate îl șterg și ele."
+  },
+  "editLoginTitle": {
+    "message": "Editează autentificarea"
+  },
+  "movedToTrash": {
+    "message": "Mutat în coșul de gunoi Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Autentificare ștearsă"
+  },
+  "errorChanged": {
+    "message": "Această autentificare a fost modificată între timp în Ashy Pass. Deschideți-o din nou pentru a vedea cea mai recentă versiune."
+  },
+  "errorHostOutdated": {
+    "message": "Actualizați Ashy Pass pe acest computer pentru a folosi asta."
+  },
+  "notesLabel": {
+    "message": "Note"
+  }
+}

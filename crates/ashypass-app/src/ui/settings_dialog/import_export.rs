@@ -69,7 +69,7 @@ pub(super) fn prompt_password<F>(
 ) where
     F: Fn(String) + 'static,
 {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(heading)
         .body(body)
         .build();
@@ -78,12 +78,12 @@ pub(super) fn prompt_password<F>(
     dialog.set_default_response(Some("ok"));
     dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
 
-    let pw = adw::PasswordEntryRow::builder()
-        .title(tr!("Password"))
-        .build();
-    let confirm_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Confirm password"))
-        .build();
+    let pw = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Password")),
+    );
+    let confirm_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Confirm password")),
+    );
 
     let list = gtk::ListBox::builder()
         .selection_mode(gtk::SelectionMode::None)
@@ -109,17 +109,17 @@ pub(super) fn prompt_password<F>(
                 return;
             }
             if confirm && p != confirm_row.text().as_str() {
-                let warn = adw::AlertDialog::builder()
+                let warn = big_gtk_kit::alert::Alert::builder(Some(dlg))
                     .heading(tr!("Passwords do not match"))
                     .build();
                 warn.add_response("ok", tr!("OK"));
-                warn.present(Some(dlg));
+                warn.present();
                 return;
             }
             on_ok(p);
         });
     }
-    dialog.present(parent);
+    dialog.present();
 }
 
 pub(super) fn run_export_csv(state: SharedState, toast: Toaster, anchor: gtk::Widget) {

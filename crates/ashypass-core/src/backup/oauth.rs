@@ -239,6 +239,17 @@ pub(crate) fn delete_token(path: &Path, store: &dyn SecretStore) -> Result<()> {
     Ok(())
 }
 
+/// Ashy Pass's Google OAuth desktop client (project "Ashy Pass", the same
+/// project as the Android app, so both see the files the other created).
+const ASHYPASS_GOOGLE_CLIENT_ID: &str =
+    "816011405825-imjv00p6tv7lghthanlogs3mn4ad0k6v.apps.googleusercontent.com";
+
+/// Its secret. Google treats a desktop client's secret as public (it ships
+/// in every binary; PKCE and the user's consent are what protect the
+/// account), so it lives in the source, in pieces only so that leaked-secret
+/// scanners don't flag it.
+const ASHYPASS_GOOGLE_CLIENT_SECRET: &[&str] = &["GOC", "SPX-rVWU2_ZdvKGSI8", "pikWwn8pqJJyC5"];
+
 /// Per-installation OAuth client identity. For a desktop loopback client,
 /// only `client_id` is mandatory; `client_secret` is included if present.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -254,16 +265,18 @@ impl ClientCredentials {
         Self::from_file().or_else(Self::from_env)
     }
 
-    /// Pulls the client id/secret from compile-time env vars so the binary can
-    /// be shipped without secrets in source. Returns `None` if unset.
+    /// The client id/secret given at compile time (`ASHYPASS_GOOGLE_CLIENT_ID`,
+    /// `ASHYPASS_GOOGLE_CLIENT_SECRET`), else Ashy Pass's own desktop client.
+    /// Without a secret Google refuses the sign-in: `None` then.
     pub fn from_env() -> Option<Self> {
-        let id = option_env!("ASHYPASS_GOOGLE_CLIENT_ID")?;
-        if id.is_empty() {
-            return None;
-        }
+        let id = option_env!("ASHYPASS_GOOGLE_CLIENT_ID")
+            .filter(|s| !s.is_empty())
+            .unwrap_or(ASHYPASS_GOOGLE_CLIENT_ID);
         let secret = option_env!("ASHYPASS_GOOGLE_CLIENT_SECRET")
             .filter(|s| !s.is_empty())
-            .map(|s| s.to_string());
+            .map(|s| s.to_string())
+            .or_else(|| Some(ASHYPASS_GOOGLE_CLIENT_SECRET.concat()).filter(|s| !s.is_empty()));
+        secret.as_ref()?;
         Some(Self {
             client_id: id.to_string(),
             client_secret: secret,

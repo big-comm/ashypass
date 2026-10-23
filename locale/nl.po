@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-23 15:11-0300\n"
 "PO-Revision-Date: 2026-05-12 19:38\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -99,6 +99,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Adres gekopieerd"
 
+msgid "Address, user and password are required"
+msgstr "Adres, gebruiker en wachtwoord zijn verplicht"
+
 msgid "Adjust length and characters"
 msgstr "Lengte en tekens aanpassen"
 
@@ -110,6 +113,9 @@ msgstr "Woorden en scheidingsteken aanpassen"
 
 msgid "Algorithm"
 msgstr "Algoritme"
+
+msgid "All"
+msgstr "Alle"
 
 msgid "All clear"
 msgstr "Alles in orde"
@@ -130,11 +136,23 @@ msgstr ""
 "Alle partities, bestanden en bestandssysteemsignaturen worden permanent "
 "vernietigd."
 
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "Ashy Pass toestaan in Dropbox"
+
 msgid "Allow TRIM through encrypted mapping"
 msgstr "TRIM toestaan via versleutelde toewijzing"
 
 msgid "Allow the browser extension"
 msgstr "Browserextensie toestaan"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Een ander apparaat heeft ze uit de versleutelde synchronisatiemap "
+"verwijderd. Als jij dat was, worden ze hier naar Verwijderde items "
+"verplaatst. Zo niet, bewaar ze dan: ze worden opnieuw naar de map gestuurd."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -144,8 +162,8 @@ msgstr ""
 "synchronisatie van dit apparaat. Uploaden nu zou de externe wijzigingen wees "
 "maken."
 
-msgid "Answer requests from the installed extension"
-msgstr "Verzoeken van de geïnstalleerde extensie beantwoorden"
+msgid "Another example"
+msgstr "Ander voorbeeld"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -232,6 +250,9 @@ msgstr "Bijlagen"
 msgid "Audit failed"
 msgstr "Audit mislukt"
 
+msgid "Authentication was cancelled"
+msgstr "Authenticatie is geannuleerd"
+
 msgid "Auto-tune"
 msgstr "Automatisch afstemmen"
 
@@ -304,6 +325,12 @@ msgstr "Caps Lock staat aan"
 msgid "Capture from screen…"
 msgstr "Vastleggen van scherm…"
 
+msgid "Change PIN"
+msgstr "Pincode wijzigen"
+
+msgid "Change how the vault key is protected?"
+msgstr "Bescherming van de kluissleutel wijzigen?"
+
 msgid "Change master password"
 msgstr "Hoofdwachtwoord wijzigen"
 
@@ -313,8 +340,14 @@ msgstr "Hoofdwachtwoord wijzigen…"
 msgid "Change only if the site shows different values"
 msgstr "Alleen wijzigen als de website andere waarden toont"
 
+msgid "Changed"
+msgstr "Gewijzigd"
+
 msgid "Changes saved to the vault"
 msgstr "Wijzigingen in de kluis opgeslagen"
+
+msgid "Changes waiting to be sent"
+msgstr "Wijzigingen wachten op verzending"
 
 msgid "Check known data breaches (online)"
 msgstr "Bekende datalekken controleren (online)"
@@ -324,6 +357,12 @@ msgstr "Mijn wachtwoorden controleren"
 
 msgid "Check now"
 msgstr "Nu controleren"
+
+msgid "Check the server every"
+msgstr "Server controleren elke"
+
+msgid "Checking the drive…"
+msgstr "Schijf wordt gecontroleerd…"
 
 msgid "Choose a backup"
 msgstr "Een back-up kiezen"
@@ -359,6 +398,9 @@ msgstr "Kies de KeePass-database"
 msgid "Choose the andOTP export"
 msgstr "Kies de andOTP-export"
 
+msgid "Choose the folder"
+msgstr "Kies de map"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr "Kies deze map bij het toevoegen of bewerken van een wachtwoord."
 
@@ -368,11 +410,17 @@ msgstr "Kiezen…"
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Wachtwoordexport van Chrome, Edge, Brave of Firefox (CSV)"
 
+msgid "Classic"
+msgstr "Klassiek"
+
 msgid "Clear copied passwords after"
 msgstr "Gekopieerde wachtwoorden wissen na"
 
 msgid "Clear history"
 msgstr "Geschiedenis wissen"
+
+msgid "Clear the password history?"
+msgstr "Wachtwoordgeschiedenis wissen?"
 
 msgid "Client ID"
 msgstr "Client-ID"
@@ -401,8 +449,14 @@ msgstr "Mapping sluiten"
 msgid "Code copied"
 msgstr "Code gekopieerd"
 
+msgid "Code from Dropbox"
+msgstr "Code van Dropbox"
+
 msgid "Code settings"
 msgstr "Code-instellingen"
+
+msgid "Coffee"
+msgstr "Koffie"
 
 msgid "Columns such as name, url, username, password"
 msgstr "Kolommen zoals name, url, username, password"
@@ -461,8 +515,47 @@ msgstr "Bevestig uw hoofdwachtwoord om uw gegevens te exporteren."
 msgid "Conflicts"
 msgstr "Conflicten"
 
-msgid "Connecting the extension"
-msgstr "De extensie koppelen"
+msgid "Connect"
+msgstr "Verbinden"
+
+msgid "Connect a phone"
+msgstr "Telefoon koppelen"
+
+msgid "Connect a phone…"
+msgstr "Telefoon koppelen…"
+
+msgid "Connect browsers"
+msgstr "Browsers verbinden"
+
+msgid "Connect failed"
+msgstr "Verbinden mislukt"
+
+msgid "Connect the sync folder"
+msgstr "De synchronisatiemap verbinden"
+
+msgid "Connect your browsers"
+msgstr "Verbind je browsers"
+
+msgid "Connected"
+msgstr "Verbonden"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Verbonden met {} browser. Herstart hem als hij open is."
+msgstr[1] "Verbonden met {} browsers. Herstart ze als ze open zijn."
+
+msgid "Connected. Received:"
+msgstr "Verbonden. Ontvangen:"
+
+msgid "Connecting and syncing…"
+msgstr "Verbinden en synchroniseren…"
+
+msgid "Connection QR code"
+msgstr "QR-code om te koppelen"
+
+msgid "Connect…"
+msgstr "Verbinden…"
 
 msgid "Continue"
 msgstr "Doorgaan"
@@ -500,8 +593,14 @@ msgstr "Kan de bijlage niet toevoegen"
 msgid "Could not change the favorite"
 msgstr "Kan de favoriet niet wijzigen"
 
+msgid "Could not check"
+msgstr "Controleren mislukt"
+
 msgid "Could not clear the history"
 msgstr "Kan de geschiedenis niet wissen"
+
+msgid "Could not connect the browsers"
+msgstr "De browsers konden niet worden verbonden"
 
 msgid "Could not create the folder"
 msgstr "Kan de map niet aanmaken"
@@ -517,6 +616,15 @@ msgstr "Kan niet verwijderen"
 
 msgid "Could not lock the drive"
 msgstr "Kan de schijf niet vergrendelen"
+
+msgid "Could not make the QR code"
+msgstr "Kan de QR-code niet maken"
+
+msgid "Could not merge"
+msgstr "Samenvoegen mislukt"
+
+msgid "Could not open the vault"
+msgstr "De kluis kon niet worden geopend"
 
 msgid "Could not open this access"
 msgstr "Kan dit item niet openen"
@@ -547,6 +655,9 @@ msgstr "Kan de map niet hernoemen"
 
 msgid "Could not restore. Look in Deleted items."
 msgstr "Kan niet terugzetten. Kijk in Verwijderde items."
+
+msgid "Could not save"
+msgstr "Kan niet opslaan"
 
 msgid "Could not save the file"
 msgstr "Kan het bestand niet opslaan"
@@ -633,9 +744,18 @@ msgstr "Item verwijderen…"
 msgid "Delete permanently"
 msgstr "Permanent verwijderen"
 
+msgid "Delete permanently?"
+msgstr "Definitief verwijderen?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr ""
 "Verwijder het exportbestand als het niet met een wachtwoord was beveiligd."
+
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "{} item hier ook verwijderen?"
+msgstr[1] "{} items hier ook verwijderen?"
 
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
@@ -674,6 +794,18 @@ msgstr "Apparaatpad"
 msgid "Digits"
 msgstr "Cijfers"
 
+msgid "Digits and symbols in color, easier to read and type"
+msgstr "Cijfers en symbolen in kleur, makkelijker te lezen en over te typen"
+
+msgid "Disconnect"
+msgstr "Verbinding verbreken"
+
+msgid "Disconnect failed"
+msgstr "Verbinding verbreken mislukt"
+
+msgid "Disconnect the sync folder?"
+msgstr "De synchronisatiemap loskoppelen?"
+
 msgid "Done"
 msgstr "Gereed"
 
@@ -688,6 +820,9 @@ msgstr "Externe wijzigingen downloaden"
 
 msgid "Drive locked"
 msgstr "Schijf vergrendeld"
+
+msgid "Duplicate items"
+msgstr "Dubbele items"
 
 msgid "Easier to type and remember."
 msgstr "Makkelijker te typen en te onthouden."
@@ -710,6 +845,9 @@ msgstr "Lege wachtzin"
 msgid "Empty trash"
 msgstr "Prullenbak legen"
 
+msgid "Empty trash?"
+msgstr "Prullenbak legen?"
+
 msgid "Encrypt"
 msgstr "Versleutelen"
 
@@ -719,11 +857,20 @@ msgstr "Schijf versleutelen"
 msgid "Encrypt KeePass export"
 msgstr "Versleutel KeePass-export"
 
+msgid "Encrypt again"
+msgstr "Opnieuw versleutelen"
+
 msgid "Encrypted as"
 msgstr "Versleuteld als"
 
 msgid "Encrypted device"
 msgstr "Versleuteld apparaat"
+
+msgid "Encrypted folder sync"
+msgstr "Versleutelde mapsynchronisatie"
+
+msgid "Encrypted folder sync failed"
+msgstr "Versleutelde mapsynchronisatie mislukt"
 
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Versleutelde snapshot-upload met conflict detectie"
@@ -746,6 +893,9 @@ msgstr ""
 "Versleutelen wist de hele schijf. Ontgrendelen en vergrendelen werken voor "
 "LUKS-schijven."
 
+msgid "Encrypting the vault again…"
+msgstr "Kluis wordt opnieuw versleuteld…"
+
 msgid "Encrypting…"
 msgstr "Bezig met versleutelen…"
 
@@ -763,6 +913,9 @@ msgstr "Voer een label in."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Voer de pincode in die op deze computer is ingesteld."
+
+msgid "Enter the master password"
+msgstr "Voer het hoofdwachtwoord in"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Voer het wachtwoord in, of voeg hieronder een verificatiecode toe."
@@ -789,12 +942,29 @@ msgid "Estimated strength"
 msgstr "Geschatte sterkte"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Alles in de kluis wordt opnieuw versleuteld met een sleutel die met de "
+"bovenstaande kosten wordt afgeleid. Oudere versies van Ashy Pass openen de "
+"kluis dan niet meer met het hoofdwachtwoord. De pincode moet opnieuw worden "
+"ingesteld."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Alles in de kluis wordt opnieuw versleuteld met het nieuwe wachtwoord. "
 "Eerder gemaakte back-ups openen nog steeds met het wachtwoord waarmee ze "
 "zijn gemaakt."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Alles in de kluis wordt opnieuw versleuteld met de standaardkosten, die elke "
+"versie van Ashy Pass 3 opent. De pincode moet opnieuw worden ingesteld."
 
 msgid "Everything is in sync"
 msgstr "Alles in sync"
@@ -865,8 +1035,20 @@ msgstr "Bestanden worden versleuteld en in de kluis opgeslagen."
 msgid "Filesystem"
 msgstr "Bestandssysteem"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Vul en kopieer je wachtwoorden in Chrome, Brave, Edge, Vivaldi, Firefox en "
+"LibreWolf. De extensie bewaart niets: ze vraagt het elke keer aan Ashy Pass "
+"en vult een pagina pas in nadat je klikt."
+
 msgid "Fill in all three fields."
 msgstr "Vul alle drie de velden in."
+
+msgid "Find duplicate items"
+msgstr "Dubbele items zoeken"
 
 msgid "Findings"
 msgstr "Bevindingen"
@@ -892,6 +1074,9 @@ msgstr "Map aangemaakt"
 msgid "Folder name"
 msgstr "Mapnaam"
 
+msgid "Folder on this computer"
+msgstr "Map op deze computer"
+
 msgid "Folder removed. Its passwords were kept."
 msgstr "Map verwijderd. De wachtwoorden erin zijn bewaard."
 
@@ -916,6 +1101,12 @@ msgid ""
 msgstr ""
 "Voor Nextcloud ziet de basis-URL eruit als https://cloud.example.com/"
 "remote.php/dav/files/GEBRUIKERSNAAM"
+
+msgid "For the browsers installed for this user"
+msgstr "Voor de browsers van deze gebruiker"
+
+msgid "Forest"
+msgstr "Bos"
 
 msgid "Forgot the master password"
 msgstr "Hoofdwachtwoord vergeten"
@@ -951,17 +1142,52 @@ msgstr "Wachtwoord genereren"
 msgid "Generated password"
 msgstr "Gegenereerd wachtwoord"
 
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "De extensie voor Chrome, Brave, Edge en Vivaldi downloaden"
+
+msgid "Get the extension for Firefox"
+msgstr "De extensie voor Firefox downloaden"
+
 msgid "Give this access a name, for example the site or app."
 msgstr "Geef dit item een naam, bijvoorbeeld de website of app."
 
 msgid "Go to search"
 msgstr "Naar zoeken gaan"
 
+msgid ""
+"Good for 10 minutes. The QR code alone is no use without this code, and "
+"neither opens your passwords without the master password."
+msgstr ""
+"10 minuten geldig. De QR-code alleen heeft zonder deze code geen zin, en "
+"geen van beide opent uw wachtwoorden zonder het hoofdwachtwoord."
+
 msgid "Google Drive"
 msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive en WebDAV"
+
+msgid "Google account"
+msgstr "Google-account"
+
+msgid "Google sign-in failed"
+msgstr "Aanmelden bij Google mislukt"
+
+msgid "Grape"
+msgstr "Druif"
+
+msgid ""
+"Group the codes as in Aegis. Groups are the item's tags: they sync to your "
+"other devices."
+msgstr ""
+"Groepeer de codes zoals in Aegis. Groepen zijn de labels van het item: ze "
+"worden gesynchroniseerd met je andere apparaten."
+
+msgid "Groups"
+msgstr "Groepen"
+
+msgid "Groups…"
+msgstr "Groepen…"
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr ""
@@ -974,15 +1200,16 @@ msgstr "Gekopieerde wachtwoorden verbergen in de klembordgeschiedenis"
 msgid "Hide password"
 msgstr "Wachtwoord verbergen"
 
+msgid "High contrast"
+msgstr "Hoog contrast"
+
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
 "Hogere kosten vertragen raadaanvallen, maar ook het ontgrendelen. "
 "Automatisch afstemmen kiest waarden van ongeveer een halve seconde op deze "
-"computer; ze gelden de volgende keer dat het hoofdwachtwoord wordt ingesteld "
-"of gewijzigd."
+"computer."
 
 msgid "History cleared"
 msgstr "Geschiedenis gewist"
@@ -1024,6 +1251,15 @@ msgstr "Wachtwoorden importeren"
 msgid "Import passwords…"
 msgstr "Wachtwoorden importeren…"
 
+msgid ""
+"In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
+"“Scan the computer's QR code”. Then type the code below and your master "
+"password."
+msgstr ""
+"Open in Ashy Pass voor Android Instellingen → Gesynchroniseerde versleutelde "
+"map en tik op ‘QR-code van de computer scannen’. Typ daarna de code "
+"hieronder en uw hoofdwachtwoord."
+
 msgid "Incorrect PIN"
 msgstr "Onjuiste pincode"
 
@@ -1039,6 +1275,9 @@ msgstr[1] "Onjuiste pincode. Nog {} pogingen over."
 msgid "Incorrect master password"
 msgstr "Onjuist hoofdwachtwoord"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Onjuist hoofdwachtwoord. Er is niets gewijzigd."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Onjuist hoofdwachtwoord. Er is niets geëxporteerd."
 
@@ -1051,15 +1290,11 @@ msgstr ""
 "apparaat wanneer daarom wordt gevraagd. Uw huidige wachtzin is vereist om de "
 "nieuwe sleutelsleuf te autoriseren."
 
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Installeer de extensie in Chrome of Firefox en registreer deze computer "
-"met:  ashypass-native-host --install <extensie-id>"
-
 msgid "Internal error: no passphrase set"
 msgstr "Interne fout: geen wachtzin ingesteld"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Interne fout: de schijf is niet gecontroleerd"
 
 msgid "It can be restored from Deleted items."
 msgstr "Het kan worden teruggezet vanuit Verwijderde items."
@@ -1070,6 +1305,9 @@ msgid ""
 msgstr ""
 "Het opent de kluis op deze computer. Niemand kan het voor u herstellen — ook "
 "Ashy Pass niet."
+
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "Items blijven hier en in de map; opnieuw verbinden voegt ze samen"
 
 msgid "Its user, password and other details appear here."
 msgstr "De gebruiker, het wachtwoord en andere details verschijnen hier."
@@ -1096,6 +1334,9 @@ msgstr ""
 
 msgid "Keep deleted entries for (days)"
 msgstr "Verwijderde items bewaren (dagen)"
+
+msgid "Keep them"
+msgstr "Behouden"
 
 msgid "Keep using"
 msgstr "Doorgaan"
@@ -1161,6 +1402,9 @@ msgstr "Laatste back-up op deze computer"
 msgid "Last changed:"
 msgstr "Laatst gewijzigd:"
 
+msgid "Last sync:"
+msgstr "Laatste synchronisatie:"
+
 msgid "Launch the encryption wizard"
 msgstr "De versleutelingswizard starten"
 
@@ -1182,6 +1426,31 @@ msgstr "De kluis nu vergrendelen (Ctrl+L)"
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr ""
 "Vergrendelen als het scherm vergrendelt of de computer in slaapstand gaat"
+
+msgid "Login name"
+msgstr "Inlognaam"
+
+msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"Logins van dezelfde site en hetzelfde account, of items met dezelfde "
+"verificatiecode, achtergebleven na importen of twee synchronisaties. Bij "
+"samenvoegen blijft er één over, die krijgt wat alleen de andere hadden "
+"(code, notities, andere websites, groepen; andere wachtwoorden gaan naar de "
+"geschiedenis) en de andere gaan naar Verwijderde items."
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
+"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+msgstr ""
+"Logins, kaarten, identiteiten, notities en passkeys, versleuteld op deze "
+"computer voordat ze vertrekken, via een map op Nextcloud, pCloud, WebDAV, "
+"Dropbox, Google Drive of deze computer. Ashy Pass voor Android gebruikt "
+"dezelfde map."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1217,8 +1486,20 @@ msgstr "Meet deze computer (ongeveer 5 seconden)"
 msgid "Medium"
 msgstr "Gemiddeld"
 
+msgid "Merge, keeping the selected one"
+msgstr "Samenvoegen, geselecteerde behouden"
+
+msgid "Merged"
+msgstr "Samengevoegd"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "Samengevoegd; de andere staan in Verwijderde items"
+
 msgid "Minimum length:"
 msgstr "Minimale lengte:"
+
+msgid "Mint"
+msgstr "Munt"
 
 msgid "Model"
 msgstr "Model"
@@ -1226,11 +1507,17 @@ msgstr "Model"
 msgid "Modern password generator and encrypted password vault"
 msgstr "Moderne wachtwoordgenerator en versleutelde wachtwoordkluis"
 
+msgid "Monochrome"
+msgstr "Monochroom"
+
 msgid "More actions"
 msgstr "Meer acties"
 
 msgid "More options"
 msgstr "Meer opties"
+
+msgid "Move to Deleted items"
+msgstr "Naar Verwijderde items verplaatsen"
 
 msgid "Moved to Deleted items"
 msgstr "Verplaatst naar Verwijderde items"
@@ -1271,6 +1558,9 @@ msgstr "Nieuwe mapnaam"
 msgid "New folder…"
 msgstr "Nieuwe map…"
 
+msgid "New group"
+msgstr "Nieuwe groep"
+
 msgid "New master password"
 msgstr "Nieuw hoofdwachtwoord"
 
@@ -1298,6 +1588,9 @@ msgstr ""
 "in Ashy Pass door een wachtwoord toe te voegen, zodat ze kunnen worden "
 "verzonden."
 
+msgid "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or a local folder"
+msgstr "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive of een lokale map"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1309,8 +1602,17 @@ msgstr "Geen bijlagen"
 msgid "No backup made on this computer yet"
 msgstr "Nog geen back-up gemaakt op deze computer"
 
+msgid "No browser found yet"
+msgstr "Nog geen browser gevonden"
+
 msgid "No codes found for"
 msgstr "Geen codes gevonden voor"
+
+msgid "No colors"
+msgstr "Geen kleuren"
+
+msgid "No duplicate items"
+msgstr "Geen dubbele items"
 
 msgid "No external drives detected"
 msgstr "Geen externe schijven gedetecteerd"
@@ -1341,14 +1643,28 @@ msgstr ""
 "In deze versie kunnen geen beveiligingssleutels of herstelzinnen worden "
 "gewijzigd."
 
+msgid "No stable device link"
+msgstr "Geen stabiele apparaatkoppeling"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Geen ondersteunde browser gevonden. Open je browser één keer en probeer het "
+"opnieuw."
+
 msgid "No verification codes yet"
 msgstr "Nog geen verificatiecodes"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "Geen — snel, maar laat eerdere gegevens herstelbaar"
 
+msgid "Not chosen"
+msgstr "Niet gekozen"
+
 msgid "Not configured"
 msgstr "Niet geconfigureerd"
+
+msgid "Not connected"
+msgstr "Niet verbonden"
 
 msgid "Not run yet"
 msgstr "Nog niet uitgevoerd"
@@ -1373,8 +1689,16 @@ msgstr ""
 "Er wordt niets verwijderd. Items die al in de kluis staan, worden "
 "overgeslagen."
 
+msgid "Nothing was changed"
+msgstr "Er is niets gewijzigd"
+
 msgid "Nothing was changed."
 msgstr "Er is niets gewijzigd."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Er is niets gewijzigd. Sluit andere exemplaren van Ashy Pass en probeer het "
+"opnieuw."
 
 msgid "Nothing was imported"
 msgstr "Er is niets geïmporteerd"
@@ -1406,6 +1730,9 @@ msgstr "OAuth-client niet geconfigureerd tijdens het bouwen"
 
 msgid "OK"
 msgstr "OK"
+
+msgid "Ocean"
+msgstr "Oceaan"
 
 msgid "Off"
 msgstr "Uit"
@@ -1447,6 +1774,12 @@ msgstr "Alleen nodig als een website specifieke regels heeft"
 msgid "Only when some entries come from Nextcloud Passwords and others do not"
 msgstr "Alleen als sommige items uit Nextcloud Passwords komen en andere niet"
 
+msgid "Open Dropbox"
+msgstr "Dropbox openen"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr "Open Dropbox, sta Ashy Pass toe en plak de getoonde code"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr "Open een wachtwoord en markeer de ster om het sneller te vinden."
 
@@ -1468,8 +1801,14 @@ msgstr "Het versleutelde volume openen"
 msgid "Open website"
 msgstr "Website openen"
 
+msgid "Open your browser once, then connect"
+msgstr "Open uw browser één keer en maak dan verbinding"
+
 msgid "Opening encrypted mapping"
 msgstr "Versleutelde mapping openen"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr "Opent Dropbox in de browser; kopieer de getoonde code"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Opent de browser voor OAuth-toestemming"
@@ -1534,6 +1873,9 @@ msgstr "Wachtwoord"
 msgid "Password / app-password"
 msgstr "Wachtwoord / app-wachtwoord"
 
+msgid "Password colors"
+msgstr "Wachtwoordkleuren"
+
 msgid "Password copied"
 msgstr "Wachtwoord gekopieerd"
 
@@ -1548,6 +1890,9 @@ msgstr "Wachtwoordgeschiedenis…"
 
 msgid "Password list"
 msgstr "Wachtwoordenlijst"
+
+msgid "Password of the Aegis vault"
+msgstr "Wachtwoord van de Aegis-kluis"
 
 msgid "Password of the KeePass database"
 msgstr "Wachtwoord van de KeePass-database"
@@ -1762,8 +2107,19 @@ msgstr "Kopie terugzetten…"
 msgid "Retention"
 msgstr "Bewaartermijn"
 
+msgid "Rose"
+msgstr "Roos"
+
 msgid "Run"
 msgstr "Uitvoeren"
+
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Doe dit één keer na het installeren van een browser, zodat hij Ashy Pass kan "
+"vinden. Er wordt alleen een klein bestand in de instellingenmap van elke "
+"browser gezet."
 
 msgid "Running audit..."
 msgstr "Audit uitvoeren..."
@@ -1779,6 +2135,12 @@ msgstr "Veiligheidscontroles mislukt"
 
 msgid "Safety checks passed"
 msgstr "Veiligheidscontroles geslaagd"
+
+msgid "Same site and account"
+msgstr "Dezelfde site en hetzelfde account"
+
+msgid "Same verification code"
+msgstr "Dezelfde verificatiecode"
 
 msgid "Save"
 msgstr "Opslaan"
@@ -1800,6 +2162,9 @@ msgstr "Back-up opslaan"
 
 msgid "Save in"
 msgstr "Opslaan in"
+
+msgid "Save new PIN"
+msgstr "Nieuwe pincode opslaan"
 
 msgid "Save to vault"
 msgstr "In kluis opslaan"
@@ -1859,6 +2224,11 @@ msgstr "Mijn wachtwoorden bekijken"
 msgid "Select an access"
 msgstr "Selecteer een item"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Verstuurt wijzigingen kort na elke bewerking en controleert de server "
+"regelmatig"
+
 msgid "Sending local changes"
 msgstr "Lokale wijzigingen verzenden"
 
@@ -1885,10 +2255,16 @@ msgstr "Server-URL, gebruikersnaam, app-wachtwoord"
 msgid "Server URL, username, app-password"
 msgstr "Server-URL, gebruikersnaam, app-wachtwoord"
 
+msgid "Server address"
+msgstr "Serveradres"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
 "Server-URL (bijv. cloud.example.com), gebruikersnaam en een app-wachtwoord."
+
+msgid "Service"
+msgstr "Dienst"
 
 msgid "Set PIN"
 msgstr "Pincode instellen"
@@ -1926,6 +2302,9 @@ msgstr "Een map tonen"
 msgid "Show favicons"
 msgstr "Favicons weergeven"
 
+msgid "Show icons beside the codes"
+msgstr "Pictogrammen naast de codes tonen"
+
 msgid "Show only favorites"
 msgstr "Alleen favorieten tonen"
 
@@ -1938,11 +2317,17 @@ msgstr "Zijbalk tonen"
 msgid "Show technical details"
 msgstr "Technisch detail bekijken"
 
+msgid "Shows a QR code to scan with Ashy Pass for Android"
+msgstr "Toont een QR-code om te scannen met Ashy Pass voor Android"
+
 msgid "Sign in failed"
 msgstr "Inloggen mislukt"
 
 msgid "Sign in to Google"
 msgstr "Aanmelden bij Google"
+
+msgid "Sign in to Google to use your Drive"
+msgstr "Meld je aan bij Google om je Drive te gebruiken"
 
 msgid "Sign out"
 msgstr "Afmelden"
@@ -1980,14 +2365,28 @@ msgstr "Sterkte"
 msgid "Strong"
 msgstr "Sterk"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Beter bestand tegen het raden van het hoofdwachtwoord. Zolang dit aan staat, "
+"kunnen oudere versies van Ashy Pass de kluis niet openen met het "
+"hoofdwachtwoord."
+
 msgid "Style"
 msgstr "Stijl"
 
 msgid "Summary"
 msgstr "Samenvatting"
 
+msgid "Sunset"
+msgstr "Zonsondergang"
+
 msgid "Symbols (!@#$…)"
 msgstr "Symbolen (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Automatisch synchroniseren"
 
 msgid "Sync completed"
 msgstr "Synchronisatie voltooid"
@@ -1998,17 +2397,25 @@ msgstr "Sync-problemen"
 msgid "Sync completed with warnings"
 msgstr "Synchronisatie voltooid met waarschuwingen"
 
-msgid "Sync conflict"
-msgstr "Synchronisatieconflict"
-
 msgid "Sync conflict detected"
 msgstr "Synchronisatieconflict gedetecteerd"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr ""
+"Synchronisatieconflict: de server heeft een nieuwere kopie (generatie {})"
 
 msgid "Sync failed"
 msgstr "Synchronisatie mislukt"
 
+msgid "Sync folder disconnected"
+msgstr "Synchronisatiemap losgekoppeld"
+
 msgid "Sync now"
 msgstr "Nu synchroniseren"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Synchroniseren bij het ontgrendelen van de kluis"
 
 msgid "Synchronization"
 msgstr "Synchronisatie"
@@ -2040,6 +2447,9 @@ msgstr "Bezig met synchroniseren..."
 msgid "Syncing folders"
 msgstr "Mappen synchroniseren"
 
+msgid "Syncing…"
+msgstr "Synchroniseren…"
+
 msgid "Tags"
 msgstr "Labels"
 
@@ -2061,6 +2471,13 @@ msgid "The PIN could not be used on this computer. Use your master password."
 msgstr ""
 "De pincode kon op deze computer niet worden gebruikt. Gebruik uw "
 "hoofdwachtwoord."
+
+msgid ""
+"The PIN is not stored anywhere, so it cannot be shown. To change it, set a "
+"new one."
+msgstr ""
+"De pincode wordt nergens opgeslagen en kan dus niet worden getoond. Stel een "
+"nieuwe in om hem te wijzigen."
 
 msgid "The PIN must have at least 4 characters"
 msgstr "De pincode moet minstens 4 tekens hebben"
@@ -2084,6 +2501,9 @@ msgstr ""
 msgid "The backup was not created"
 msgstr "De back-up is niet gemaakt"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "De browserkoppeling van Ashy Pass is niet geïnstalleerd"
+
 msgid "The copy could not be downloaded"
 msgstr "De kopie kon niet worden gedownload"
 
@@ -2095,6 +2515,16 @@ msgstr[1] "De kopie is gecontroleerd en bevat {} items."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Het huidige hoofdwachtwoord is onjuist. Er is niets gewijzigd."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"De extensie vraagt je hoofdwachtwoord en houdt de kluis alleen open tot de "
+"automatische vergrendeling. Staat “Automatisch openen bij aanmelden” aan, "
+"dan opent ze zonder te vragen. Het scherm vergrendelen vergrendelt hem ook, "
+"als die optie aan staat."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2123,6 +2553,9 @@ msgid ""
 msgstr ""
 "Het label mag niet beginnen met \"-\" en geen \"/\" of besturingstekens "
 "bevatten."
+
+msgid "The last sync failed"
+msgstr "De laatste synchronisatie is mislukt"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Het hoofdwachtwoord is te kort. Minimale lengte:"
@@ -2155,6 +2588,13 @@ msgstr "Het wachtwoord is niet gewijzigd"
 msgid "The passwords do not match"
 msgstr "De wachtwoorden komen niet overeen"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"De vorige wachtwoorden van deze toegang worden definitief verwijderd. Dit "
+"kan niet ongedaan worden gemaakt."
+
 msgid "The previous vault was kept at:"
 msgstr "De vorige kluis is bewaard in:"
 
@@ -2169,6 +2609,9 @@ msgstr "Er wordt alleen in wachtwoorden zonder map gezocht."
 
 msgid "The search is limited to the folder"
 msgstr "Er wordt alleen gezocht in de map"
+
+msgid "The site's icon, when the code has a site saved"
+msgstr "Het pictogram van de site, als de code een opgeslagen site heeft"
 
 msgid "The sync finished, but some items reported errors."
 msgstr ""
@@ -2203,6 +2646,17 @@ msgid "The vault will open automatically at login"
 msgstr "De kluis opent automatisch bij aanmelden"
 
 #, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"{} item in de prullenbak wordt definitief verwijderd. Dit kan niet ongedaan "
+"worden gemaakt."
+msgstr[1] ""
+"{} items in de prullenbak worden definitief verwijderd. Dit kan niet "
+"ongedaan worden gemaakt."
+
+#, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
 msgid_plural ""
 "The {} passwords in it stay in the vault and move to “No folder”."
@@ -2218,6 +2672,17 @@ msgstr "Er is niets nieuws om te importeren."
 
 msgid "These options cannot produce a password."
 msgstr "Met deze opties kan geen wachtwoord worden gemaakt."
+
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Ze werden gesynchroniseerd met Nextcloud Passwords en staan niet meer op de "
+"server. Als je ze daar hebt verwijderd, gaan ze hier naar Verwijderde items. "
+"Zo niet, dan heeft de server misschien maar gedeeltelijk geantwoord: behoud "
+"ze, de volgende synchronisatie probeert het opnieuw."
 
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Deze pincode past niet meer bij de kluis. Er is niets gewijzigd."
@@ -2238,6 +2703,12 @@ msgstr "Dit item heeft geen gebruiker"
 msgid "This access no longer exists"
 msgstr "Dit item bestaat niet meer"
 
+msgid "This build has no Dropbox app key"
+msgstr "Deze build heeft geen Dropbox-appsleutel"
+
+msgid "This build has no Google sign-in configured"
+msgstr "Deze versie heeft geen Google-aanmelding ingesteld"
+
 msgid "This cannot be undone."
 msgstr "Dit kan niet ongedaan worden gemaakt."
 
@@ -2252,17 +2723,35 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Generatie van dit apparaat:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Deze schijf heeft geen koppeling in /dev/disk/by-id, dus Ashy Pass kan niet "
+"controleren of het bij het wissen nog dezelfde schijf is. Hij kan hier niet "
+"worden versleuteld."
+
 msgid "This file can be read without a password"
 msgstr "Dit bestand kan zonder wachtwoord worden gelezen"
 
 msgid "This file could not be read"
 msgstr "Dit bestand kon niet worden gelezen"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Dit bestand is te groot om bij te voegen. De limiet is 64 MB."
+
 msgid "This folder already exists"
 msgstr "Deze map bestaat al"
 
 msgid "This folder is empty"
 msgstr "Deze map is leeg"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Deze afbeelding kon niet worden geopend. Gebruik een PNG-, JPEG- of WebP-"
+"afbeelding van maximaal 20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "
@@ -2412,6 +2901,9 @@ msgstr ""
 "Ontgrendeld door een andere toepassing. Vergrendel de schijf via uw "
 "bestandsbeheerder."
 
+msgid "Unlocking"
+msgstr "Ontgrendelen"
+
 msgid "Unlocking…"
 msgstr "Ontgrendelen…"
 
@@ -2458,8 +2950,18 @@ msgstr "Hoofdwachtwoord gebruiken"
 msgid "Use the + button to create one."
 msgstr "Gebruik de knop + om er een aan te maken."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Gebruik hetzelfde hoofdwachtwoord op al je apparaten: het opent de sleutel "
+"van de map. Je typt het hier één keer in om je aan te sluiten."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Gebruik deze codes als een website om tweestapsverificatie vraagt."
+
+msgid "Use these costs for the vault key"
+msgstr "Deze kosten gebruiken voor de kluissleutel"
 
 msgid "Use this password"
 msgstr "Dit wachtwoord gebruiken"
@@ -2476,6 +2978,9 @@ msgstr "Gebruiker"
 msgid "User copied"
 msgstr "Gebruiker gekopieerd"
 
+msgid "User name"
+msgstr "Gebruikersnaam"
+
 msgid "User or e-mail (optional)"
 msgstr "Gebruiker of e-mail (optioneel)"
 
@@ -2490,6 +2995,9 @@ msgstr ""
 "Gebruikt Have I Been Pwned. Alleen de eerste 5 tekens van een hash van elk "
 "wachtwoord worden verstuurd, nooit het wachtwoord zelf. De resultaten "
 "blijven 7 dagen op deze computer bewaard."
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr "Gebruikt je Google Drive-aanmelding van Back-ups"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2511,6 +3019,11 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Kluis al gesynchroniseerd"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Kluis opnieuw versleuteld. Stel de pincode opnieuw in als je er een "
+"gebruikte."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Kluis vergrendeld na een periode van inactiviteit"
@@ -2541,6 +3054,9 @@ msgstr "Verificatiecode in de kluis opgeslagen"
 msgid "Verification codes"
 msgstr "Verificatiecodes"
 
+msgid "Verification codes (JSON, encrypted or not)"
+msgstr "Verificatiecodes (JSON, versleuteld of niet)"
+
 msgid "Verification codes (unencrypted JSON)"
 msgstr "Verificatiecodes (onversleutelde JSON)"
 
@@ -2550,14 +3066,26 @@ msgstr "Zeer sterk"
 msgid "Very Weak"
 msgstr "Zeer zwak"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Wacht tot de synchronisatie klaar is en meld je daarna af."
+
+msgid "Waiting for Google in the browser…"
+msgstr "Wachten op Google in de browser…"
+
 msgid "Waiting for Nextcloud..."
 msgstr "Wachten op Nextcloud..."
 
 msgid "Weak"
 msgstr "Zwak"
 
+msgid "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+msgstr "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "WebDAV-adres"
 
 msgid "WebDAV configured"
 msgstr "WebDAV geconfigureerd"
@@ -2578,15 +3106,8 @@ msgstr ""
 "Als een website tweestapsverificatie aanbiedt, voeg dan hier de "
 "configuratiesleutel toe om de codes te krijgen."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Indien ingeschakeld kan de Ashy Pass-browserextensie items uit de kluis "
-"lezen door te ontgrendelen via de systeemsleutelbos, ook als dit venster "
-"vergrendeld is. De sleutel wordt weer gewist na de tijd voor automatisch "
-"vergrendelen."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Als dit uit staat, ziet de extensie niets van de kluis"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Waar wilt u uw wachtwoorden vandaan halen?"
@@ -2616,6 +3137,13 @@ msgstr "Apparaat wissen"
 msgid "Wiping device"
 msgstr "Apparaat wissen"
 
+msgid ""
+"With two-step verification on, pCloud e-mails you about the new sign-in: "
+"approve it there and connect again."
+msgstr ""
+"Met verificatie in twee stappen aan stuurt pCloud u een e-mail over de "
+"nieuwe aanmelding: keur die daar goed en maak opnieuw verbinding."
+
 msgid "Working..."
 msgstr "Bezig..."
 
@@ -2638,6 +3166,14 @@ msgstr "LUKS2-header schrijven"
 msgid "Wrong master password"
 msgstr "Verkeerd hoofdwachtwoord"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr ""
+"Verkeerd hoofdwachtwoord. De map hoort bij een kluis met een ander "
+"wachtwoord."
+
+msgid "Wrong password. Password of the Aegis vault"
+msgstr "Onjuist wachtwoord. Wachtwoord van de Aegis-kluis"
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2655,8 +3191,18 @@ msgstr ""
 msgid "Your entries are still available on this computer."
 msgstr "Uw items zijn nog steeds beschikbaar op deze computer."
 
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Je items blijven op deze computer en in de map. Later opnieuw verbinden "
+"voegt ze samen in plaats van te dupliceren."
+
 msgid "Your most used accesses can be here"
 msgstr "Uw meest gebruikte items kunnen hier staan"
+
+msgid "Your pCloud e-mail and password"
+msgstr "Uw pCloud-e-mailadres en wachtwoord"
 
 msgid "Your vault is ready"
 msgstr "Uw kluis is klaar"
@@ -2672,6 +3218,9 @@ msgstr "toegewezen"
 
 msgid "breached"
 msgstr "gelekt"
+
+msgid "different password"
+msgstr "ander wachtwoord"
 
 msgid "duplicate"
 msgstr "duplicaat"
@@ -2705,6 +3254,11 @@ msgstr "laag"
 msgid "medium"
 msgstr "gemiddeld"
 
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minuut"
+msgstr[1] "minuten"
+
 msgid "more"
 msgstr "meer"
 
@@ -2726,6 +3280,15 @@ msgstr "niet aangekoppeld"
 msgid "old"
 msgstr "oud"
 
+msgid "pCloud (data in Europe)"
+msgstr "pCloud (gegevens in Europa)"
+
+msgid "pCloud (data in the US)"
+msgstr "pCloud (gegevens in de VS)"
+
+msgid "pCloud e-mail"
+msgstr "pCloud-e-mail"
+
 msgid "passwordless entry was skipped"
 msgid_plural "passwordless entries were skipped"
 msgstr[0] "item zonder wachtwoord is genegeerd"
@@ -2744,6 +3307,9 @@ msgstr "roterend (HDD)"
 
 msgid "seen"
 msgstr "gezien"
+
+msgid "sent:"
+msgstr "verzonden:"
 
 msgid "solid-state"
 msgstr "solid-state"
@@ -2878,6 +3444,11 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} woord"
 msgstr[1] "{} woorden"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr ""
+"‘{}’ wordt definitief verwijderd. Dit kan niet ongedaan worden gemaakt."
 
 msgid "…"
 msgstr "…"

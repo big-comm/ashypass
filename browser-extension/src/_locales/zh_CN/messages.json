@@ -1,0 +1,716 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "从 Ashy Pass（Linux 密码管理器）中填充和复制登录信息。",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "正在连接 Ashy Pass…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass 未连接",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "请安装 Ashy Pass，并在 Ashy Pass → 设置 → 浏览器 中连接此浏览器。",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "浏览器扩展已关闭",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "请在 Ashy Pass → 设置 → 浏览器 中开启浏览器扩展。",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "尚无保险库",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "请先在 Ashy Pass 中创建保险库。",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "出错了",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "重试",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "保险库已锁定",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "主密码",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "解锁",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "正在解锁…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "主密码错误。",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "尝试次数过多。请稍候再试。",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "搜索所有条目",
+    "description": "Label and placeholder of the search field."
+  },
+  "searchResultsHeading": {
+    "message": "搜索结果",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "此网站没有已保存的登录信息。",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "未找到条目。",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "仅可在网页上填充。",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "无用户名",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "无标题",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "填充",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "复制用户名",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "复制密码",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "复制验证码",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "在此页面填充 $TITLE$",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "复制 $TITLE$ 的用户名",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "复制 $TITLE$ 的密码",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "复制 $TITLE$ 的验证码",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "用户名已复制",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "密码已复制",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "验证码已复制",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "已填充",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "此页面上未找到登录表单",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "无法复制到剪贴板",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "生成密码",
+    "description": "Button that generates a new password and copies it."
+  },
+  "revealPassword": {
+    "message": "显示密码",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "隐藏密码",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "锁定",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "保险库已锁定",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass 未及时响应。",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "与 Ashy Pass 的连接已断开。",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "此登录信息不属于此网站。",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "此条目已不存在。",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "此条目没有验证码。",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "此页面不允许填充。",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass 报告：$DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  },
+  "backButton": {
+    "message": "返回",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "添加",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "打开 Ashy Pass",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "保险库",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "生成器",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "设置",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "分区",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "PIN 码",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "使用 PIN 码解锁",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "改用主密码",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "改用 PIN 码",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "PIN 码错误。",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "PIN 码错误。剩余尝试次数：$COUNT$。",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "错误尝试次数过多，PIN 码已关闭。请使用主密码。",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "此电脑上未设置 PIN 码。请使用主密码。",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "在登录字段中显示建议？",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass 可以在网站的用户名和密码字段正下方列出您的登录信息。",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "以后再说",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "启用",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "文件夹",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "类型",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "所有项目",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "带验证码的登录信息",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "收藏",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "所有文件夹",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "无文件夹",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "自动填充建议",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "收藏",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "所有项目",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "项目",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "没有符合这些筛选条件的项目。",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "您的保险库是空的。",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "显示 $TITLE$ 的详细信息",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "打开 $TITLE$ 的网站",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "$TITLE$ 的更多选项",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "添加到收藏",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "从收藏中移除",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "打开网站",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "复制网站地址",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "查看详细信息",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "网站地址已复制",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "已添加到收藏",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "已从收藏中移除",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "项目详细信息",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "用户名",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "密码",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "验证码",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "网站",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "文件夹",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "名称",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "新建登录信息",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "取消",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "保存",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "请输入名称。",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "请输入密码。",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "已保存",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "密码已生成",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass 无法接受此请求。",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "重新生成",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "复制",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "要生成的值类型",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "密码",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "密码短语",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "PIN 码",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "长度",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "大写字母 (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "小写字母 (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "数字 (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "符号 (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "避免易混淆字符",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "单词数",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "单词分隔符",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "首字母大写",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "包含数字",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "请至少保留一种字符类型。",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "在此页面填充",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "此页面上未找到密码字段",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "保险库",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "立即锁定",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "自动填充",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "在登录字段中显示建议",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "需要访问您所浏览网站的权限。网页永远无法看到您的登录信息；在您选择之前不会填充任何内容。",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "建议已开启。请重新加载已打开的页面以查看。",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "未授予权限。",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "键盘快捷键",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutNotSet": {
+    "message": "未设置",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "关于",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "版本",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "帮助",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "隐私",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Ashy Pass 建议",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "显示 Ashy Pass 建议",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass 已锁定",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "此网站没有登录信息",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "添加登录信息",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "请点击工具栏中的 Ashy Pass 图标以继续。",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "此菜单已过期。请再次点击该字段。",
+    "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "关闭浏览器的密码管理器"
+  },
+  "browserPmHint": {
+    "message": "浏览器自己的列表会显示在页面上方，遮住 Ashy Pass 的建议。关闭后，点击登录框时会立即打开 Ashy Pass。"
+  },
+  "browserPmOffToast": {
+    "message": "已关闭浏览器的密码管理器"
+  },
+  "browserPmOnToast": {
+    "message": "已重新开启浏览器的密码管理器"
+  },
+  "shortcutOpens": {
+    "message": "打开此窗口。"
+  },
+  "shortcutChange": {
+    "message": "更改"
+  },
+  "shortcutRecord": {
+    "message": "请按下新的组合键…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl 或 Alt，可加 Shift，再加一个字母或数字。按 Esc 取消。"
+  },
+  "shortcutReset": {
+    "message": "默认"
+  },
+  "shortcutSaved": {
+    "message": "快捷键已保存"
+  },
+  "shortcutInvalid": {
+    "message": "无法使用该组合。请尝试 Ctrl 或 Alt 加一个字母。"
+  },
+  "shortcutOpenFailed": {
+    "message": "无法打开浏览器的快捷键设置。"
+  },
+  "editButton": {
+    "message": "编辑"
+  },
+  "deleteButton": {
+    "message": "删除"
+  },
+  "deleteConfirmTitle": {
+    "message": "删除“$TITLE$”？",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "如果 Ashy Pass 中启用了回收站，可以从那里恢复。已同步的设备也会删除它。"
+  },
+  "editLoginTitle": {
+    "message": "编辑登录信息"
+  },
+  "movedToTrash": {
+    "message": "已移至 Ashy Pass 回收站"
+  },
+  "loginDeleted": {
+    "message": "登录信息已删除"
+  },
+  "errorChanged": {
+    "message": "此登录信息在此期间已在 Ashy Pass 中更改。请重新打开以查看最新版本。"
+  },
+  "errorHostOutdated": {
+    "message": "请更新此电脑上的 Ashy Pass 以使用此功能。"
+  },
+  "notesLabel": {
+    "message": "备注"
+  }
+}

@@ -18,7 +18,9 @@ use std::rc::Rc;
 
 mod appearance;
 mod audit;
+mod browser;
 mod cloud;
+mod folder_sync;
 mod import_export;
 mod nextcloud;
 mod public_api;
@@ -30,6 +32,7 @@ mod two_factor;
 pub(crate) use appearance::apply_color_scheme;
 use appearance::*;
 use audit::*;
+use browser::*;
 use cloud::*;
 use import_export::*;
 use nextcloud::*;
@@ -40,7 +43,7 @@ use security::*;
 use trash::*;
 
 type RenderSlot = Rc<RefCell<Option<Rc<dyn Fn()>>>>;
-type NextcloudSyncResult = Result<ashypass_core::sync::SyncReport, String>;
+type NextcloudSyncResult = Result<ashypass_core::sync::SyncReport, ashypass_core::Error>;
 type AuditResult = Result<ashypass_core::audit::Report, String>;
 
 enum NextcloudSyncMessage {
@@ -50,14 +53,18 @@ enum NextcloudSyncMessage {
 
 #[derive(Clone)]
 struct NextcloudProgressUi {
-    dialog: adw::Dialog,
+    dialog: big_gtk_kit::dialog::Dialog,
     spinner: gtk::Spinner,
     title: gtk::Label,
     detail: gtk::Label,
     progress: gtk::ProgressBar,
 }
 
-pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::ToastOverlay) {
+pub fn present(
+    parent: &impl IsA<gtk::Widget>,
+    state: SharedState,
+    window_toast: adw::ToastOverlay,
+) {
     let dialog = adw::PreferencesDialog::builder()
         .title(tr!("Settings"))
         .search_enabled(true)
@@ -65,12 +72,15 @@ pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::
         .content_height(680)
         .build();
     // Sub-dialogs and the legacy unlock prompt reach the settings window
-    // through this slot to close or re-open it.
-    let dialog_slot: Rc<RefCell<Option<adw::Dialog>>> =
-        Rc::new(RefCell::new(Some(dialog.clone().upcast())));
+    // through this slot to close or re-open it (weakly: the rows that hold
+    // the slot sit inside the dialog).
+    let dialog_slot: DialogSlot =
+        Rc::new(RefCell::new(dialog.upcast_ref::<adw::Dialog>().downgrade()));
     // Toasts raised from inside the dialog must show over it.
-    let toast = Toaster::Dialog(dialog.downgrade());
-    let parent_widget: gtk::Widget = dialog.clone().upcast();
+    let toast = Toaster::Dialog(dialog.downgrade(), window_toast);
+    // Sub-dialogs present on the main window (shown over these settings):
+    // the dialog itself, held by its own rows, would never be freed.
+    let parent_widget: gtk::Widget = parent.as_ref().clone();
 
     let protection = adw::PreferencesPage::builder()
         .title(tr!("Protection"))
@@ -80,7 +90,7 @@ pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::
         &protection,
         state.clone(),
         toast.clone(),
-        dialog.clone(),
+        parent_widget.clone(),
         dialog_slot.clone(),
     );
     let settings = Rc::new(RefCell::new(Settings::load()));
@@ -105,41 +115,70 @@ pub fn present(parent: &impl IsA<gtk::Widget>, state: SharedState, _toast: adw::
         dialog_slot.clone(),
     );
 
-    // No "Browser" page yet: the native-messaging host exists, but there is
-    // no published extension to connect to it. `populate_browser` is kept
-    // for when there is one.
+    let browser = adw::PreferencesPage::builder()
+        .title(tr!("Browser"))
+        .icon_name("web-browser-symbolic")
+        .build();
+    populate_browser(&browser, state.clone(), toast.clone());
 
     let appearance = adw::PreferencesPage::builder()
         .title(tr!("Appearance"))
-        .icon_name("preferences-desktop-appearance-symbolic")
+        // Not preferences-desktop-appearance-symbolic: Adwaita draws it with
+        // embedded bitmaps, which GTK 4.22 never frees (29 MB, big-gtk-kit).
+        .icon_name("color-select-symbolic")
         .build();
     populate_appearance(&appearance, settings, state.clone());
 
     dialog.add(&protection);
     dialog.add(&sync);
+    dialog.add(&browser);
     dialog.add(&appearance);
 
+    // Reading or changing settings is not idle time: hold off auto-lock
+    // while the dialog is open (capped in SessionManager). The lock warning
+    // would show behind the dialog, out of reach.
+    SessionManager::inhibit(&state.session);
+    {
+        let state = state.clone();
+        dialog.connect_closed(move |_| SessionManager::release(&state.session));
+    }
     state.track_sensitive_dialog(&dialog);
     dialog.present(Some(parent));
 }
+
+/// The open settings dialog, for sub-dialogs that close or reopen it; weak,
+/// because the rows holding it sit inside it.
+pub(crate) type DialogSlot = Rc<RefCell<glib::WeakRef<adw::Dialog>>>;
 
 /// Where a settings page sends its toasts: the preferences dialog itself, or
 /// an overlay when a section is shown in another dialog or page.
 #[derive(Clone)]
 pub enum Toaster {
     Overlay(adw::ToastOverlay),
-    Dialog(glib::WeakRef<adw::PreferencesDialog>),
+    /// The dialog, with the main window's overlay for results that arrive
+    /// after the dialog was closed (uploads, exports, …).
+    Dialog(glib::WeakRef<adw::PreferencesDialog>, adw::ToastOverlay),
 }
 
 impl Toaster {
+    /// The main window's overlay (or the overlay itself), for a dialog that
+    /// is reopened after this one closed.
+    pub fn window_overlay(&self) -> adw::ToastOverlay {
+        match self {
+            Self::Overlay(overlay) | Self::Dialog(_, overlay) => overlay.clone(),
+        }
+    }
+
     pub fn add_toast(&self, toast: adw::Toast) {
+        // Messages carry file names, entry titles and server errors: show
+        // them as plain text, never as Pango markup.
+        toast.set_use_markup(false);
         match self {
             Self::Overlay(overlay) => overlay.add_toast(toast),
-            Self::Dialog(dialog) => {
-                if let Some(dialog) = dialog.upgrade() {
-                    dialog.add_toast(toast);
-                }
-            }
+            Self::Dialog(dialog, fallback) => match dialog.upgrade() {
+                Some(dialog) if dialog.is_mapped() => dialog.add_toast(toast),
+                _ => fallback.add_toast(toast),
+            },
         }
     }
 }
@@ -151,21 +190,27 @@ impl From<adw::ToastOverlay> for Toaster {
 }
 
 fn show_toast(overlay: &Toaster, message: &str) {
-    overlay.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+    overlay.add_toast(
+        adw::Toast::builder()
+            .use_markup(false)
+            .title(message)
+            .timeout(4)
+            .build(),
+    );
 }
 
 fn show_message_dialog(parent: Option<&gtk::Window>, heading: &str, body: &str) {
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(parent)
         .heading(heading)
         .body(body)
         .build();
     dialog.add_response("ok", tr!("OK"));
     dialog.set_default_response(Some("ok"));
-    dialog.present(parent);
+    dialog.present();
 }
 
 fn show_nextcloud_progress_dialog(parent: Option<&gtk::Window>) -> NextcloudProgressUi {
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(parent)
         .title(tr!("Synchronizing Nextcloud"))
         .content_width(420)
         .build();
@@ -206,7 +251,7 @@ fn show_nextcloud_progress_dialog(parent: Option<&gtk::Window>) -> NextcloudProg
     content.append(&progress);
 
     dialog.set_child(Some(&content));
-    dialog.present(parent);
+    dialog.present();
 
     NextcloudProgressUi {
         dialog,
@@ -255,7 +300,7 @@ fn locked_notice_group(
     state: SharedState,
     toast: Toaster,
     parent: gtk::Widget,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) -> adw::PreferencesGroup {
     let group = adw::PreferencesGroup::new();
     let row = adw::ActionRow::builder()
@@ -276,10 +321,10 @@ fn show_settings_unlock_dialog(
     parent: &gtk::Widget,
     state: SharedState,
     toast: Toaster,
-    dialog_slot: Rc<RefCell<Option<adw::Dialog>>>,
+    dialog_slot: DialogSlot,
 ) {
     let has_master = state.vault.borrow().has_master_password().unwrap_or(false);
-    let dialog = adw::AlertDialog::builder()
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(parent))
         .heading(if has_master {
             tr!("Unlock Vault")
         } else {
@@ -299,13 +344,14 @@ fn show_settings_unlock_dialog(
     );
     dialog.set_response_appearance("unlock", adw::ResponseAppearance::Suggested);
 
-    let password_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Master Password"))
-        .build();
-    let confirm_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Confirm Password"))
-        .visible(!has_master)
-        .build();
+    let password_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Master Password")),
+    );
+    let confirm_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder()
+            .title(tr!("Confirm Password"))
+            .visible(!has_master),
+    );
     let list = gtk::ListBox::builder()
         .selection_mode(gtk::SelectionMode::None)
         .build();
@@ -332,9 +378,7 @@ fn show_settings_unlock_dialog(
                 return;
             }
 
-            let result = if has_master {
-                state.vault.borrow_mut().unlock(&password)
-            } else {
+            if !has_master {
                 if password.chars().count() < MIN_MASTER_PASSWORD_LENGTH {
                     show_toast(&toast, tr!("Password too short"));
                     return;
@@ -343,10 +387,19 @@ fn show_settings_unlock_dialog(
                     show_toast(&toast, tr!("Passwords do not match"));
                     return;
                 }
-                state.vault.borrow_mut().set_master_password(&password)
-            };
-
-            match result {
+            }
+            // The settings dialog closes on success; reopen it over the main
+            // window, which stays rooted.
+            let anchor: gtk::Widget = parent
+                .root()
+                .map(|root| root.upcast())
+                .unwrap_or_else(|| parent.clone());
+            let state = state.clone();
+            let toast = toast.clone();
+            let dialog_slot = dialog_slot.clone();
+            let dlg = dlg.clone();
+            let finish_state = state.clone();
+            let finish = move |result: ashypass_core::Result<()>| match result {
                 Ok(()) => {
                     if !has_master {
                         if let Err(e) = state.update_settings(|s| s.quick_unlock = None) {
@@ -361,11 +414,11 @@ fn show_settings_unlock_dialog(
                     // Take before closing: `close()` can run handlers that
                     // reach for the same slot, and holding the RefMut across
                     // that would panic.
-                    let open_settings = dialog_slot.borrow_mut().take();
+                    let open_settings = dialog_slot.borrow().upgrade();
                     if let Some(settings_dialog) = open_settings {
                         settings_dialog.close();
                     }
-                    present(&parent, state.clone(), adw::ToastOverlay::new());
+                    present(&anchor, state.clone(), toast.window_overlay());
                 }
                 Err(ashypass_core::Error::InvalidMasterPassword) => {
                     show_toast(&toast, tr!("Incorrect master password"));
@@ -373,10 +426,67 @@ fn show_settings_unlock_dialog(
                 Err(e) => {
                     show_toast(&toast, &format!("{}: {e}", tr!("Failed to unlock vault")));
                 }
+            };
+            // Argon2 runs on a worker; the vault is updated back here.
+            let password = zeroize::Zeroizing::new(password);
+            if !has_master {
+                run_background(
+                    move || {
+                        ashypass_core::db::vault::prepare_rekey(
+                            &password,
+                            ashypass_core::db::vault::KeyFormat::Compatible,
+                        )
+                    },
+                    move |prepared| {
+                        let result = prepared.and_then(|p| {
+                            finish_state.vault.borrow_mut().install_master_password(p)
+                        });
+                        finish(result);
+                    },
+                );
+                return;
+            }
+            let inputs = finish_state.vault.borrow().unlock_inputs();
+            match inputs {
+                Ok(Some(inputs)) => {
+                    let worker_inputs = inputs.clone();
+                    let worker_password = password.clone();
+                    run_background(
+                        move || {
+                            ashypass_core::db::vault::derive_unlock_key(
+                                &worker_password,
+                                &worker_inputs,
+                            )
+                        },
+                        move |key| {
+                            let result = key.and_then(|key| {
+                                let installed = finish_state
+                                    .vault
+                                    .borrow_mut()
+                                    .unlock_with_key(&inputs, key);
+                                match installed {
+                                    // The master row changed meanwhile, or the
+                                    // verifier needs repair: the full path.
+                                    Err(ashypass_core::Error::KeyMismatch) => {
+                                        finish_state.vault.borrow_mut().unlock(&password)
+                                    }
+                                    other => other,
+                                }
+                            });
+                            finish(result);
+                        },
+                    );
+                }
+                // A v1 vault migrates through the synchronous path.
+                Ok(None) => {
+                    let result = finish_state.vault.borrow_mut().unlock(&password);
+                    finish(result);
+                }
+                Err(e) => finish(Err(e)),
             }
         });
     }
-    dialog.present(Some(parent));
+    dialog.present();
     glib::idle_add_local_once(move || {
         password_row_focus.grab_focus();
     });
@@ -411,6 +521,23 @@ fn restore_destination() -> std::path::PathBuf {
     let stamp = chrono::Utc::now().format("%Y%m%d-%H%M%S");
     let nonce = chrono::Utc::now().timestamp_subsec_nanos();
     ashypass_core::config::data_dir().join(format!("passwords-restored-{stamp}-{:08x}.db", nonce))
+}
+
+/// Check a typed master password on a worker (Argon2 is memory-hard and
+/// would freeze the window); `done` gets the answer on the main thread.
+pub(crate) fn verify_master_in_background<F>(state: &SharedState, password: &str, done: F)
+where
+    F: FnOnce(bool) + 'static,
+{
+    let hash = match state.vault.borrow().master_hash() {
+        Ok(hash) => hash,
+        Err(_) => return done(false),
+    };
+    let password = zeroize::Zeroizing::new(password.to_string());
+    run_background(
+        move || ashypass_core::crypto::argon2_kdf::verify_master(&password, &hash).unwrap_or(false),
+        done,
+    );
 }
 
 pub(crate) fn run_background<T, F, C>(task: F, complete: C)

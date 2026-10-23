@@ -9,6 +9,7 @@
 //! desktop keyring.
 
 use crate::backup::files::{check_content_length, write_stream_new, MAX_DOWNLOAD_BYTES};
+use crate::sync::nextcloud_passwords::error_chain;
 use crate::{Error, Result};
 use reqwest::blocking::Client;
 use reqwest::Method;
@@ -19,7 +20,7 @@ use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 use std::time::Duration;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Clone, Serialize, Deserialize, Default)]
 pub struct WebdavConfig {
     /// Full base URL including any per-user prefix. Trailing slash optional.
     /// e.g. `https://cloud.example.com/remote.php/dav/files/alice`
@@ -138,10 +139,15 @@ impl WebdavService {
         let cfg = self.require()?;
         let folder = self.folder_url()?;
         let url = format!("{folder}/{}", url_escape_path(remote_name));
-        let body = reqwest::blocking::Body::new(fs::File::open(local.as_ref())?);
+        let file = fs::File::open(local.as_ref())?;
+        let len = file.metadata()?.len();
+        // A known length lets the server reject a truncated upload instead
+        // of storing a short file (chunked bodies cannot be checked).
+        let body = reqwest::blocking::Body::sized(file, len);
         let client = http_client()?;
         let resp = client
             .put(&url)
+            .timeout(TRANSFER_TIMEOUT)
             .basic_auth(&cfg.username, Some(&cfg.password))
             .body(body)
             .send()
@@ -198,6 +204,7 @@ impl WebdavService {
         let client = http_client()?;
         let mut resp = client
             .get(&url)
+            .timeout(TRANSFER_TIMEOUT)
             .basic_auth(&cfg.username, Some(&cfg.password))
             .send()
             .map_err(|e| Error::Other(format!("webdav get: {e}")))?;
@@ -226,8 +233,7 @@ impl WebdavService {
     }
 
     fn config_path() -> PathBuf {
-        let base = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-        base.join("ashypass").join("webdav.json")
+        crate::config::config_dir().join("webdav.json")
     }
 
     fn load_config() -> Option<WebdavConfig> {
@@ -286,6 +292,38 @@ impl Default for WebdavService {
     }
 }
 
+/// Uploads and downloads of a whole vault can take longer than the 60 s
+/// allowed for listing and folder requests on a slow link.
+const TRANSFER_TIMEOUT: Duration = Duration::from_secs(30 * 60);
+
+impl std::fmt::Debug for WebdavConfig {
+    // Never print the password, even in a debug log.
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("WebdavConfig")
+            .field("base_url", &self.base_url)
+            .field("username", &self.username)
+            .field("password", &"<redacted>")
+            .field("folder", &self.folder)
+            .finish()
+    }
+}
+
+/// Follow redirects, but never from https to plain http: the request carries
+/// the account password (Basic auth), which must not go out unencrypted.
+pub(crate) fn redirect_policy() -> reqwest::redirect::Policy {
+    reqwest::redirect::Policy::custom(|attempt| {
+        let leaves_https = attempt.url().scheme() != "https"
+            && attempt.previous().iter().any(|url| url.scheme() == "https");
+        if attempt.previous().len() >= 10 {
+            attempt.error("too many redirects")
+        } else if leaves_https {
+            attempt.stop()
+        } else {
+            attempt.follow()
+        }
+    })
+}
+
 fn http_client() -> Result<&'static Client> {
     static CLIENT: OnceLock<Client> = OnceLock::new();
     if let Some(client) = CLIENT.get() {
@@ -293,6 +331,9 @@ fn http_client() -> Result<&'static Client> {
     }
     let client = Client::builder()
         .timeout(Duration::from_secs(60))
+        // A dead route fails in seconds, not after the system's minutes.
+        .connect_timeout(Duration::from_secs(15))
+        .redirect(redirect_policy())
         .build()
         .map_err(|e| Error::Other(format!("webdav http: {e}")))?;
     let _ = CLIENT.set(client);
@@ -494,9 +535,252 @@ fn extract_inner(block: &str, local: &str) -> Option<String> {
     Some(inner[..close_start].to_string())
 }
 
+/// One more try when a request could not reach the server (no route,
+/// connection refused or timed out): phones drop connections for a moment
+/// when they wake, change networks or leave the app.
+trait SendRetrying {
+    fn send_retrying(self) -> reqwest::Result<reqwest::blocking::Response>;
+}
+
+impl SendRetrying for reqwest::blocking::RequestBuilder {
+    fn send_retrying(self) -> reqwest::Result<reqwest::blocking::Response> {
+        let again = self.try_clone();
+        match self.send() {
+            Err(e) if e.is_connect() || e.is_timeout() => match again {
+                Some(again) => {
+                    std::thread::sleep(Duration::from_secs(2));
+                    again.send()
+                }
+                None => Err(e),
+            },
+            other => other,
+        }
+    }
+}
+
+/// Largest single file the encrypted folder sync reads into memory.
+const MAX_SYNC_FILE_BYTES: u64 = 64 * 1024 * 1024;
+
+/// A WebDAV folder (Nextcloud Files or any RFC 4918 server) used as the
+/// remote of the encrypted folder sync. Paths are relative to
+/// `config.folder`, with `/` between segments.
+pub struct WebdavFolder {
+    config: WebdavConfig,
+    /// Folders already known to exist, so each is created only once.
+    created: std::sync::Mutex<std::collections::HashSet<String>>,
+}
+
+impl WebdavFolder {
+    pub fn new(mut config: WebdavConfig) -> Result<Self> {
+        config.base_url = crate::server_url::normalize(&config.base_url);
+        validate_server_url(&config.base_url)?;
+        config.folder = normalize_folder(&config.folder);
+        if config.folder.is_empty() {
+            config.folder = "AshyPass Sync".into();
+        }
+        Ok(Self {
+            config,
+            created: Default::default(),
+        })
+    }
+
+    /// Check the address and credentials (PROPFIND on the base URL).
+    pub fn probe(&self) -> Result<()> {
+        let resp = self
+            .request(propfind(), &self.config.base_url)?
+            .header("Depth", "0")
+            .header("Content-Type", "application/xml")
+            .body(PROPFIND_BODY)
+            .send_retrying()
+            .map_err(|e| Error::Other(format!("webdav probe: {}", error_chain(&e))))?;
+        match resp.status().as_u16() {
+            401 | 403 => Err(Error::Other(
+                "WebDAV refused the user name or password (HTTP 401)".into(),
+            )),
+            status if status >= 400 => Err(Error::Other(format!("webdav probe: HTTP {status}"))),
+            _ => Ok(()),
+        }
+    }
+
+    fn url_of(&self, path: &str) -> String {
+        let full = normalize_folder(&format!("{}/{path}", self.config.folder));
+        format!("{}/{}", self.config.base_url, url_escape_path(&full))
+    }
+
+    fn request(&self, method: Method, url: &str) -> Result<reqwest::blocking::RequestBuilder> {
+        Ok(http_client()?
+            .request(method, url)
+            .basic_auth(&self.config.username, Some(&self.config.password)))
+    }
+
+    /// Create `dir` (relative to the sync folder) and its parents.
+    fn ensure_dir(&self, dir: &str) -> Result<()> {
+        let full = normalize_folder(&format!("{}/{dir}", self.config.folder));
+        for prefix in folder_prefixes(&full) {
+            if self.created.lock().expect("lock").contains(&prefix) {
+                continue;
+            }
+            let url = format!("{}/{}/", self.config.base_url, url_escape_path(&prefix));
+            let resp = self
+                .request(Method::from_bytes(b"MKCOL").expect("valid method"), &url)?
+                .send_retrying()
+                .map_err(|e| Error::Other(format!("webdav mkcol: {}", error_chain(&e))))?;
+            let status = resp.status().as_u16();
+            // 201 created, 405 already exists.
+            if status != 201 && status != 405 {
+                return Err(Error::Other(format!(
+                    "webdav mkcol {prefix}: HTTP {status}"
+                )));
+            }
+            self.created.lock().expect("lock").insert(prefix);
+        }
+        Ok(())
+    }
+}
+
+impl crate::sync::folder::Remote for WebdavFolder {
+    fn list(&self, dir: &str) -> Result<Vec<String>> {
+        let url = format!("{}/", self.url_of(dir).trim_end_matches('/'));
+        let mut resp = self
+            .request(propfind(), &url)?
+            .header("Depth", "1")
+            .header("Content-Type", "application/xml")
+            .body(PROPFIND_BODY)
+            .send_retrying()
+            .map_err(|e| Error::Other(format!("webdav propfind: {}", error_chain(&e))))?;
+        let status = resp.status().as_u16();
+        if status == 404 {
+            return Ok(Vec::new());
+        }
+        if !(200..300).contains(&status) {
+            return Err(Error::Other(format!("webdav propfind: HTTP {status}")));
+        }
+        const MAX_PROPFIND_BYTES: u64 = 16 * 1024 * 1024;
+        let mut body = String::new();
+        (&mut resp)
+            .take(MAX_PROPFIND_BYTES + 1)
+            .read_to_string(&mut body)?;
+        if body.len() as u64 > MAX_PROPFIND_BYTES {
+            return Err(Error::InvalidInput("WebDAV listing is too large".into()));
+        }
+        let base = validate_server_url(&url)?;
+        Ok(child_names(&base, &body))
+    }
+
+    fn get(&self, path: &str) -> Result<Option<Vec<u8>>> {
+        let mut resp = self
+            .request(Method::GET, &self.url_of(path))?
+            .timeout(TRANSFER_TIMEOUT)
+            .send_retrying()
+            .map_err(|e| Error::Other(format!("webdav get: {}", error_chain(&e))))?;
+        let status = resp.status().as_u16();
+        if status == 404 {
+            return Ok(None);
+        }
+        if !(200..300).contains(&status) {
+            return Err(Error::Other(format!("webdav get: HTTP {status}")));
+        }
+        check_content_length(resp.content_length(), MAX_SYNC_FILE_BYTES)?;
+        let mut data = Vec::new();
+        (&mut resp)
+            .take(MAX_SYNC_FILE_BYTES + 1)
+            .read_to_end(&mut data)?;
+        if data.len() as u64 > MAX_SYNC_FILE_BYTES {
+            return Err(Error::InvalidInput("WebDAV file is too large".into()));
+        }
+        Ok(Some(data))
+    }
+
+    fn put(&self, path: &str, data: &[u8]) -> Result<()> {
+        if let Some((dir, _)) = path.rsplit_once('/') {
+            self.ensure_dir(dir)?;
+        } else {
+            self.ensure_dir("")?;
+        }
+        let resp = self
+            .request(Method::PUT, &self.url_of(path))?
+            .timeout(TRANSFER_TIMEOUT)
+            .body(data.to_vec())
+            .send_retrying()
+            .map_err(|e| Error::Other(format!("webdav put: {}", error_chain(&e))))?;
+        let status = resp.status().as_u16();
+        if !(200..300).contains(&status) {
+            return Err(Error::Other(format!("webdav put: HTTP {status}")));
+        }
+        Ok(())
+    }
+}
+
+/// Names of the direct children (files and folders) of the collection at
+/// `base`, from a Depth 1 PROPFIND answer. The collection itself is skipped.
+fn child_names(base: &url::Url, xml: &str) -> Vec<String> {
+    let segments = |url: &url::Url| -> Vec<String> {
+        url.path()
+            .split('/')
+            .filter(|s| !s.is_empty())
+            .map(percent_decode)
+            .collect()
+    };
+    let parent = segments(base);
+    let mut out = Vec::new();
+    let mut rest = xml;
+    while let Some(start) = find_tag(rest, "response") {
+        let after_open = &rest[start..];
+        let Some(end) = find_close_tag(after_open, "response") else {
+            break;
+        };
+        let block = &after_open[..end];
+        rest = &after_open[end..];
+        let Some(href) = extract_inner(block, "href") else {
+            continue;
+        };
+        let Ok(url) = base.join(href.trim()) else {
+            continue;
+        };
+        let path = segments(&url);
+        if path.len() == parent.len() + 1 && path.starts_with(&parent) {
+            out.push(path[parent.len()].clone());
+        }
+    }
+    out
+}
+
+fn percent_decode(segment: &str) -> String {
+    let bytes = segment.as_bytes();
+    let mut out = Vec::with_capacity(bytes.len());
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'%' && i + 2 < bytes.len() {
+            let hex = std::str::from_utf8(&bytes[i + 1..i + 3]).ok();
+            if let Some(byte) = hex.and_then(|h| u8::from_str_radix(h, 16).ok()) {
+                out.push(byte);
+                i += 3;
+                continue;
+            }
+        }
+        out.push(bytes[i]);
+        i += 1;
+    }
+    String::from_utf8_lossy(&out).into_owned()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn child_names_lists_files_and_folders_but_not_the_folder_itself() {
+        let xml = r#"<d:multistatus xmlns:d="DAV:">
+  <d:response><d:href>/dav/AshyPass%20Sync/changes/</d:href>
+    <d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype></d:prop></d:propstat></d:response>
+  <d:response><d:href>/dav/AshyPass%20Sync/changes/dev%20a/</d:href>
+    <d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype></d:prop></d:propstat></d:response>
+  <d:response><d:href>https://cloud.example.com/dav/AshyPass Sync/changes/b%C3%A9.bin</d:href></d:response>
+</d:multistatus>"#;
+        let base =
+            url::Url::parse("https://cloud.example.com/dav/AshyPass%20Sync/changes/").unwrap();
+        assert_eq!(child_names(&base, xml), ["dev a", "bé.bin"]);
+    }
 
     #[test]
     fn propfind_parses_two_files() {

@@ -69,8 +69,10 @@ struct BwHistory {
 
 #[derive(Debug, Clone, Deserialize)]
 struct BwItem {
-    #[serde(default)]
-    r#type: u8,
+    /// `None` when the field is missing, `null` or not an integer, so one
+    /// odd item never makes the whole export unreadable.
+    #[serde(default, deserialize_with = "lenient_type")]
+    r#type: Option<i64>,
     name: Option<String>,
     notes: Option<String>,
     #[serde(rename = "folderId")]
@@ -86,6 +88,15 @@ struct BwItem {
     fields: Option<Vec<BwField>>,
     #[serde(rename = "passwordHistory", default)]
     password_history: Option<Vec<BwHistory>>,
+}
+
+/// Accept any JSON value for `type`; only integers are meaningful.
+fn lenient_type<'de, D>(deserializer: D) -> std::result::Result<Option<i64>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let value = serde_json::Value::deserialize(deserializer)?;
+    Ok(value.as_i64())
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -137,7 +148,7 @@ pub fn parse_str(text: &str) -> Result<ParsedImport> {
         };
         let mut history = Vec::new();
         match item.r#type {
-            1 => {
+            Some(1) => {
                 let login = item.login.clone().unwrap_or(BwLogin {
                     username: None,
                     password: None,
@@ -173,28 +184,32 @@ pub fn parse_str(text: &str) -> Result<ParsedImport> {
                     }
                 }
             }
-            2 => {}
-            3 => {
+            Some(2) => {}
+            Some(3) => {
                 append_section(&mut entry, "Card", item.card.as_ref(), CARD_LABELS);
                 out.warnings.push(report::ImportIssue::new(
                     &title,
                     "card details stored in notes",
                 ));
             }
-            4 => {
+            Some(4) => {
                 append_section(&mut entry, "Identity", item.identity.as_ref(), &[]);
                 out.warnings.push(report::ImportIssue::new(
                     &title,
                     "identity details stored in notes",
                 ));
             }
-            5 => {
+            Some(5) => {
                 append_section(&mut entry, "SSH key", item.ssh_key.as_ref(), SSH_LABELS);
                 out.warnings
                     .push(report::ImportIssue::new(&title, "SSH key stored in notes"));
             }
-            other => {
+            Some(other) => {
                 out.skip(&title, &format!("unsupported Bitwarden item type {other}"));
+                continue;
+            }
+            None => {
+                out.skip(&title, "missing or invalid Bitwarden item type");
                 continue;
             }
         }
@@ -298,7 +313,7 @@ mod tests {
                    "uris": [{"uri": "https://example.com"}, {"uri": "https://login.example.com"}]},
          "fields": [{"name": "PIN", "value": "1234", "type": 1}],
          "passwordHistory": [{"password": "old-pw", "lastUsedDate": "2024-01-02T03:04:05.000Z"}]},
-        {"type": 1, "name": "TOTP only", "login": {"totp": "JBSWY3DPEHPK3PXP"}},
+        {"type": 1, "name": "TOTP only", "login": {"totp": "KRSXG5CTMVRXEZLU"}},
         {"type": 1, "name": "Seven digits", "login": {"password": "p",
          "totp": "otpauth://totp/x?secret=JBSWY3DPEHPK3PXP&digits=7"}},
         {"type": 2, "name": "Secure note", "notes": "secret text"},
@@ -334,7 +349,7 @@ mod tests {
 
         let totp_only = &parsed.candidates[1].entry;
         assert!(totp_only.password.is_empty());
-        assert_eq!(totp_only.totp_secret.as_deref(), Some("JBSWY3DPEHPK3PXP"));
+        assert_eq!(totp_only.totp_secret.as_deref(), Some("KRSXG5CTMVRXEZLU"));
 
         let seven = &parsed.candidates[2].entry;
         assert!(seven.totp_secret.is_none());
@@ -355,6 +370,33 @@ mod tests {
             .contains("email: a@example.com"));
         // 7-digit TOTP + card + identity.
         assert_eq!(parsed.warnings.len(), 3);
+    }
+
+    #[test]
+    fn odd_item_types_are_skipped_not_fatal() {
+        let json = r#"{"items": [
+            {"type": null, "name": "Null type"},
+            {"type": 300, "name": "Huge type"},
+            {"type": -1, "name": "Negative type"},
+            {"type": "1", "name": "String type"},
+            {"name": "Missing type"},
+            {"type": 1, "name": "Good", "login": {"password": "pw"}}
+        ]}"#;
+        let parsed = parse_str(json).unwrap();
+        assert_eq!(parsed.candidates.len(), 1);
+        assert_eq!(parsed.candidates[0].entry.title, "Good");
+        let skipped: Vec<&str> = parsed.skipped.iter().map(|s| s.title.as_str()).collect();
+        assert_eq!(
+            skipped,
+            vec![
+                "Null type",
+                "Huge type",
+                "Negative type",
+                "String type",
+                "Missing type"
+            ]
+        );
+        assert!(parsed.skipped[1].reason.contains("300"));
     }
 
     #[test]

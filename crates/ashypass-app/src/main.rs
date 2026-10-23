@@ -4,6 +4,7 @@ mod auto_sync;
 mod clipboard;
 mod events;
 mod favicons;
+mod folder_sync;
 mod session;
 mod session_watch;
 mod state;
@@ -40,6 +41,10 @@ fn main() -> glib::ExitCode {
     let state_holder: Rc<RefCell<Option<SharedState>>> = Rc::new(RefCell::new(None));
     let window_holder: Rc<RefCell<Option<ui::MainWindow>>> = Rc::new(RefCell::new(None));
 
+    // BigLinux's GTK fixes: the tooltip card, and releasing what GTK and
+    // libadwaita keep of closed dialogs and popups (big-gtk-kit).
+    app.connect_startup(|_| big_gtk_kit::install());
+
     // app actions
     setup_app_actions(&app);
 
@@ -56,7 +61,25 @@ fn main() -> glib::ExitCode {
                 Ok(v) => v,
                 Err(e) => {
                     eprintln!("Failed to open vault: {e}");
-                    app.quit();
+                    // Started from the menu there is no terminal: say why
+                    // the app is not opening before quitting.
+                    let dialog = big_gtk_kit::alert::Alert::builder(None::<&gtk::Widget>)
+                        .heading(tr!("Could not open the vault"))
+                        .body(format!(
+                            "{}\n\n{e}",
+                            tr!("Nothing was changed. Close other copies of Ashy Pass and try again.")
+                        ))
+                        .close_response("close")
+                        .default_response("close")
+                        .build();
+                    dialog.add_response("close", tr!("Close"));
+                    let hold = RefCell::new(Some(app.hold()));
+                    let app = app.clone();
+                    dialog.connect_closed(move |_| {
+                        hold.borrow_mut().take();
+                        app.quit();
+                    });
+                    dialog.present();
                     return;
                 }
             };
@@ -318,7 +341,13 @@ fn run_dev_script(window: &ui::MainWindow) {
     };
     let safe = ["XDG_DATA_HOME", "XDG_CONFIG_HOME", "XDG_CACHE_HOME"]
         .iter()
-        .all(|var| std::env::var(var).is_ok_and(|v| v.starts_with("/tmp/")));
+        .all(|var| {
+            // Resolved, so `/tmp/../home/...` does not pass.
+            std::env::var(var)
+                .ok()
+                .and_then(|v| std::fs::canonicalize(v).ok())
+                .is_some_and(|p| p.starts_with("/tmp/"))
+        });
     if !safe {
         eprintln!("ASHYPASS_DEV_SCRIPT refused: XDG_DATA_HOME, XDG_CONFIG_HOME and XDG_CACHE_HOME must be under /tmp");
         return;
@@ -444,6 +473,8 @@ fn dev_seed(state: &SharedState) {
     ];
     for (title, user, url, folder, totp, favorite) in samples {
         let id = vault.add(NewEntry {
+            item_type: None,
+            extra: None,
             title: title.to_string(),
             username: Some(user.to_string()),
             password: ashypass_core::generator::generate_password(

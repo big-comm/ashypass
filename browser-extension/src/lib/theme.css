@@ -1,0 +1,281 @@
+/* Ashy Pass shared theme — libadwaita-like colours, follows the system light/dark theme. */
+
+:root {
+  color-scheme: light dark;
+  --accent: #3584e4;
+  --accent-fg: #ffffff;
+  --accent-text: #1c71d8;
+  --accent-soft: rgba(53, 132, 228, 0.14);
+  --window-bg: #fafafb;
+  --view-bg: #ffffff;
+  --window-fg: rgba(0, 0, 6, 0.8);
+  --headerbar-bg: #ffffff;
+  --card-bg: #ffffff;
+  --card-shade: rgba(0, 0, 6, 0.07);
+  --border: rgba(0, 0, 6, 0.1);
+  --dim: rgba(0, 0, 6, 0.55);
+  --button-bg: rgba(0, 0, 6, 0.08);
+  --button-hover: rgba(0, 0, 6, 0.12);
+  --button-active: rgba(0, 0, 6, 0.2);
+  --row-hover: rgba(0, 0, 6, 0.04);
+  --entry-bg: rgba(0, 0, 6, 0.06);
+  --error: #c01c28;
+  --error-fg: #ffffff;
+  --success: #26a269;
+  --warning: #e5a50a;
+  --digit: #1c71d8;
+  --symbol: #c01c28;
+  --toast-bg: rgba(30, 30, 30, 0.95);
+  --toast-fg: #ffffff;
+  --popover-bg: #ffffff;
+  --popover-shadow: 0 2px 10px rgba(0, 0, 6, 0.18), 0 0 0 1px rgba(0, 0, 6, 0.08);
+  --focus: rgba(53, 132, 228, 0.5);
+  --radius-card: 12px;
+  --radius-button: 6px;
+  --mono: "Adwaita Mono", "Source Code Pro", "DejaVu Sans Mono", ui-monospace, monospace;
+  font: 14px/1.4 "Adwaita Sans", Cantarell, Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent-text: #78aeed;
+    --accent-soft: rgba(120, 174, 237, 0.18);
+    --window-bg: #222226;
+    --view-bg: #1d1d20;
+    --window-fg: #ffffff;
+    --headerbar-bg: #2e2e32;
+    --card-bg: rgba(255, 255, 255, 0.08);
+    --card-shade: rgba(0, 0, 6, 0.36);
+    --border: rgba(255, 255, 255, 0.12);
+    --dim: rgba(255, 255, 255, 0.6);
+    --button-bg: rgba(255, 255, 255, 0.1);
+    --button-hover: rgba(255, 255, 255, 0.15);
+    --button-active: rgba(255, 255, 255, 0.3);
+    --row-hover: rgba(255, 255, 255, 0.05);
+    --entry-bg: rgba(255, 255, 255, 0.1);
+    --error: #ff7b63;
+    --error-fg: #222226;
+    --digit: #78aeed;
+    --symbol: #ff7b63;
+    --toast-bg: rgba(250, 250, 251, 0.95);
+    --toast-fg: #222226;
+    --popover-bg: #38383d;
+    --popover-shadow: 0 2px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--window-bg);
+  color: var(--window-fg);
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.dim {
+  color: var(--dim);
+}
+
+.small-text {
+  font-size: 12px;
+}
+
+.icon {
+  flex: none;
+  display: block;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────────── */
+
+button {
+  min-height: 32px;
+  padding: 5px 14px;
+  border: none;
+  border-radius: var(--radius-button);
+  background: var(--button-bg);
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--button-hover);
+}
+
+button:active {
+  background: var(--button-active);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+button.pill {
+  border-radius: 999px;
+}
+
+button.small {
+  min-height: 26px;
+  padding: 3px 12px;
+  font-size: 12px;
+}
+
+button.suggested {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+button.suggested:hover {
+  background: color-mix(in srgb, var(--accent), white 10%);
+}
+
+button.suggested:active {
+  background: color-mix(in srgb, var(--accent), black 15%);
+}
+
+button.flat {
+  background: transparent;
+}
+
+button.flat:hover {
+  background: var(--button-bg);
+}
+
+button.link {
+  min-height: 0;
+  padding: 4px 6px;
+  background: transparent;
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+button.link:hover {
+  background: transparent;
+  text-decoration: underline;
+}
+
+button.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 30px;
+  min-height: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+}
+
+button.icon-button:hover {
+  background: var(--button-bg);
+}
+
+button.icon-button:active {
+  background: var(--button-active);
+}
+
+button.with-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+button.wide {
+  width: 100%;
+}
+
+.error {
+  color: var(--error);
+  font-size: 13px;
+}
+
+.error:empty {
+  display: none;
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+/* ── Favicons ───────────────────────────────────────────────────────────── */
+
+.favicon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  overflow: hidden;
+  border-radius: 7px;
+}
+
+.favicon img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.favicon .avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.favicon.large {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+}
+
+.favicon.large img {
+  width: 36px;
+  height: 36px;
+}
+
+.favicon.large .avatar {
+  font-size: 20px;
+}

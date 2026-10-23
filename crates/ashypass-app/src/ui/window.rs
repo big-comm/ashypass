@@ -89,6 +89,7 @@ struct MainWindowInner {
     generator_view: GeneratorView,
     backups_view: Rc<BackupsView>,
     auto_sync: crate::auto_sync::Handle,
+    folder_sync: crate::folder_sync::Handle,
 }
 
 impl MainWindow {
@@ -110,16 +111,22 @@ impl MainWindow {
             .build();
 
         let menu = gio::Menu::new();
-        let tools = gio::Menu::new();
-        tools.append(Some(tr!("External drives")), Some("win.drives"));
-        menu.append_section(Some(tr!("Tools")), &tools);
-        let help = gio::Menu::new();
-        help.append(Some(tr!("Keyboard shortcuts")), Some("win.shortcuts"));
-        help.append(Some(tr!("About Ashy Pass")), Some("app.about"));
-        menu.append_section(None, &help);
-        let quit = gio::Menu::new();
-        quit.append(Some(tr!("Quit")), Some("app.quit"));
-        menu.append_section(None, &quit);
+        big_gtk_kit::menu::append_shared_section(&menu, Some(tr!("Tools")), "main-tools", || {
+            let tools = gio::Menu::new();
+            tools.append(Some(tr!("External drives")), Some("win.drives"));
+            tools
+        });
+        big_gtk_kit::menu::append_shared_section(&menu, None, "main-help", || {
+            let help = gio::Menu::new();
+            help.append(Some(tr!("Keyboard shortcuts")), Some("win.shortcuts"));
+            help.append(Some(tr!("About Ashy Pass")), Some("app.about"));
+            help
+        });
+        big_gtk_kit::menu::append_shared_section(&menu, None, "main-quit", || {
+            let quit = gio::Menu::new();
+            quit.append(Some(tr!("Quit")), Some("app.quit"));
+            quit
+        });
         let chrome = Chrome {
             split: split.clone(),
             menu,
@@ -279,13 +286,11 @@ impl MainWindow {
         ));
         narrow.add_setter(&vault_view.root, "collapsed", Some(&true.to_value()));
         narrow.add_setter(&split, "collapsed", Some(&true.to_value()));
-        window.add_breakpoint(medium);
-        window.add_breakpoint(narrow);
-
-        // Typing anywhere on the list goes to its search box.
-        vault_view.set_key_capture(&vault_view.root);
+        big_gtk_kit::breakpoint::add(&window, medium);
+        big_gtk_kit::breakpoint::add(&window, narrow);
 
         let auto_sync = crate::auto_sync::install(state.clone(), toast_overlay.clone());
+        let folder_sync = crate::folder_sync::install(state.clone(), toast_overlay.clone());
 
         let inner = Rc::new(MainWindowInner {
             state: state.clone(),
@@ -307,6 +312,7 @@ impl MainWindow {
             generator_view,
             backups_view,
             auto_sync,
+            folder_sync,
         });
 
         wire(&inner, app);
@@ -488,6 +494,25 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
         });
         inner.window.add_controller(key);
     }
+    // Type-to-search: on My passwords and Verification codes, typing anywhere
+    // in the window filters the list, without clicking the search box first.
+    // Bubble phase, so a focused text field or button keeps its own keys.
+    {
+        let key = gtk::EventControllerKey::new();
+        key.set_propagation_phase(gtk::PropagationPhase::Bubble);
+        let weak = Rc::downgrade(inner);
+        key.connect_key_pressed(move |_, keyval, _, modifiers| {
+            let Some(inner) = weak.upgrade() else {
+                return glib::Propagation::Proceed;
+            };
+            if inner.type_to_search(keyval, modifiers) {
+                glib::Propagation::Stop
+            } else {
+                glib::Propagation::Proceed
+            }
+        });
+        inner.window.add_controller(key);
+    }
     {
         let click = gtk::GestureClick::new();
         click.set_propagation_phase(gtk::PropagationPhase::Capture);
@@ -498,6 +523,39 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
             }
         });
         inner.window.add_controller(click);
+    }
+
+    // Scrolling and moving the pointer are use too (reading a long list or
+    // the settings). Throttled: they fire many times a second.
+    {
+        let last = Rc::new(std::cell::Cell::new(std::time::Instant::now()));
+        let touch = {
+            let weak = Rc::downgrade(inner);
+            move || {
+                if last.get().elapsed() < std::time::Duration::from_secs(2) {
+                    return;
+                }
+                last.set(std::time::Instant::now());
+                if let Some(inner) = weak.upgrade() {
+                    inner.on_user_activity();
+                }
+            }
+        };
+        let touch = Rc::new(touch);
+        let scroll = gtk::EventControllerScroll::new(gtk::EventControllerScrollFlags::BOTH_AXES);
+        scroll.set_propagation_phase(gtk::PropagationPhase::Capture);
+        {
+            let touch = touch.clone();
+            scroll.connect_scroll(move |_, _, _| {
+                touch();
+                glib::Propagation::Proceed
+            });
+        }
+        inner.window.add_controller(scroll);
+        let motion = gtk::EventControllerMotion::new();
+        motion.set_propagation_phase(gtk::PropagationPhase::Capture);
+        motion.connect_motion(move |_, _, _| touch());
+        inner.window.add_controller(motion);
     }
 
     // ---- Actions and shortcuts ------------------------------------------
@@ -567,6 +625,7 @@ impl MainWindowInner {
     fn toast(&self, message: &str, timeout: u32) {
         self.toast_overlay.add_toast(
             adw::Toast::builder()
+                .use_markup(false)
                 .title(message)
                 .timeout(timeout)
                 .build(),
@@ -603,7 +662,11 @@ impl MainWindowInner {
         self.pages.set_visible_child_name(page);
         if requires_vault(page) && !self.unlocked() {
             self.pending_page.set(Some(page));
-            self.unlock_view.refresh();
+            // Already on the unlock screen (moving between locked pages):
+            // keep what was typed and skip the keyring query.
+            if self.gate.visible_child_name().as_deref() != Some("unlock") {
+                self.unlock_view.refresh();
+            }
             self.gate.set_visible_child_name("unlock");
             self.unlock_view.focus();
         } else {
@@ -623,6 +686,7 @@ impl MainWindowInner {
         self.totp_view.on_unlocked();
         self.backups_view.on_unlocked();
         self.auto_sync.on_vault_unlocked();
+        self.folder_sync.on_vault_unlocked();
         let target = self.pending_page.take().unwrap_or(self.current.get());
         self.show_page(target);
         if let Some(password) = self.pending_password.borrow_mut().take() {
@@ -643,6 +707,8 @@ impl MainWindowInner {
         self.totp_view.on_locked();
         self.backups_view.on_locked();
         self.unlock_view.on_locked();
+        self.generator_view.panel.regenerate();
+        crate::favicons::clear_cache();
         self.lock_button.set_visible(false);
         if requires_vault(self.current.get()) {
             self.pending_page.set(Some(self.current.get()));
@@ -691,7 +757,7 @@ impl MainWindowInner {
         update();
         self.lock_banner.set_revealed(true);
         if let Some(id) = self.banner_timer.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         let weak = Rc::downgrade(self);
         let id = glib::timeout_add_seconds_local(1, move || {
@@ -712,7 +778,7 @@ impl MainWindowInner {
 
     fn hide_lock_warning(&self) {
         if let Some(id) = self.banner_timer.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         self.lock_banner.set_revealed(false);
     }
@@ -732,7 +798,9 @@ impl MainWindowInner {
     }
 
     fn new_entry(self: &Rc<Self>) {
-        if !self.unlocked() {
+        // Not behind an open dialog: Ctrl+N inside the entry form would
+        // stack a second form.
+        if !self.unlocked() || self.window.visible_dialog().is_some() {
             return;
         }
         if self.current.get() == "totp" {
@@ -743,8 +811,49 @@ impl MainWindowInner {
         }
     }
 
+    /// Send a printable key to the current page's search box. Returns true
+    /// when the key was used.
+    fn type_to_search(&self, keyval: gtk::gdk::Key, modifiers: gtk::gdk::ModifierType) -> bool {
+        if !self.unlocked()
+            || self.gate.visible_child_name().as_deref() != Some("pages")
+            // A dialog owns the keyboard; never type behind it.
+            || self.window.visible_dialog().is_some()
+            || modifiers.intersects(
+                gtk::gdk::ModifierType::CONTROL_MASK
+                    | gtk::gdk::ModifierType::ALT_MASK
+                    | gtk::gdk::ModifierType::SUPER_MASK
+                    | gtk::gdk::ModifierType::META_MASK,
+            )
+        {
+            return false;
+        }
+        let Some(ch) = keyval.to_unicode() else {
+            return false;
+        };
+        if ch.is_control() || ch.is_whitespace() {
+            return false;
+        }
+        let entry = match self.current.get() {
+            "vault" => self.vault_view.search_entry_for_typing(),
+            "totp" => self.totp_view.search_entry(),
+            _ => return false,
+        };
+        if entry.has_focus() {
+            return false;
+        }
+        // Continue the current search rather than replacing it, and keep
+        // the focus there so the next keys go straight to the box.
+        entry.grab_focus();
+        let mut position = entry.text().chars().count() as i32;
+        entry.insert_text(&ch.to_string(), &mut position);
+        entry.set_position(position);
+        true
+    }
+
     fn focus_search(self: &Rc<Self>) {
-        if !self.unlocked() {
+        // Not behind an open dialog: Ctrl+N inside the entry form would
+        // stack a second form.
+        if !self.unlocked() || self.window.visible_dialog().is_some() {
             return;
         }
         match self.current.get() {
@@ -757,11 +866,15 @@ impl MainWindowInner {
     }
 
     fn open_settings(self: &Rc<Self>) {
+        // Ctrl+, twice, or over the entry form, must not stack dialogs.
+        if self.window.visible_dialog().is_some() {
+            return;
+        }
         settings_dialog::present(&self.window, self.state.clone(), self.toast_overlay.clone());
     }
 
     fn show_import_help(self: &Rc<Self>) {
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.window))
             .heading(tr!("Bring your passwords"))
             .body(tr!(
                 "From another app: create your vault first, then open Backups → Import passwords.\n\nFrom a copy made by Ashy Pass: restore it now. The vault will open with the master password of the copy."
@@ -779,7 +892,7 @@ impl MainWindowInner {
                 }
             }
         });
-        dialog.present(Some(&self.window));
+        dialog.present();
     }
 
     /// Swap the live vault for a validated backup. The open vault is closed
@@ -836,7 +949,7 @@ impl MainWindowInner {
                         // Never let the empty placeholder pose as the user's
                         // vault: stop here and ask for a restart.
                         log::error!("could not reopen the vault after restore: {e}");
-                        let dialog = adw::AlertDialog::builder()
+                        let dialog = big_gtk_kit::alert::Alert::builder(Some(&inner.window))
                             .heading(tr!("The vault could not be reopened"))
                             .body(format!(
                                 "{}\n\n{e}",
@@ -850,7 +963,7 @@ impl MainWindowInner {
                                 app.quit();
                             }
                         });
-                        dialog.present(Some(&inner.window));
+                        dialog.present();
                         return;
                     }
                 }
@@ -878,19 +991,19 @@ impl MainWindowInner {
                         format!("{}\n\n{e}", tr!("Your vault was not changed.")),
                     ),
                 };
-                let dialog = adw::AlertDialog::builder()
+                let dialog = big_gtk_kit::alert::Alert::builder(Some(&inner.window))
                     .heading(heading)
                     .body(body)
                     .build();
                 dialog.add_response("ok", tr!("OK"));
-                dialog.present(Some(&inner.window));
+                dialog.present();
             },
         );
     }
 }
 
 fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(parent))
         .title(tr!("Keyboard shortcuts"))
         .content_width(520)
         .content_height(560)
@@ -937,7 +1050,7 @@ fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
     }
     toolbar.set_content(Some(&page));
     dialog.set_child(Some(&toolbar));
-    dialog.present(Some(parent));
+    dialog.present();
 }
 
 // ============================================================================
@@ -971,6 +1084,20 @@ impl DevHandle {
             "add" => inner.vault_view.show_add_dialog(None),
             "add-code" => inner.totp_view.show_add_dialog(),
             "settings" => inner.open_settings(),
+            // settings-page:<index> — switch the open Settings dialog's page.
+            "settings-page" => {
+                if let Some(dialog) = inner
+                    .window
+                    .visible_dialog()
+                    .and_then(|d| d.downcast::<adw::PreferencesDialog>().ok())
+                {
+                    let mut pages = Vec::new();
+                    collect_pages(dialog.upcast_ref(), &mut pages);
+                    if let Some(page) = pages.get(arg.parse().unwrap_or(0)) {
+                        dialog.set_visible_page(page);
+                    }
+                }
+            }
             "lock" => inner.lock_now(false),
             "warn" => inner.show_lock_warning(arg.parse().unwrap_or(20)),
             "gen-kind" => inner.generator_view.panel.dev_set_kind(arg),
@@ -1026,15 +1153,96 @@ impl DevHandle {
                 // click:<button label> — anywhere in the window, dialogs included.
                 match find_widget(&inner.window.clone().upcast(), &|w| {
                     button_label(w).as_deref() == Some(arg)
+                        || w.downcast_ref::<gtk::MenuButton>()
+                            .is_some_and(|m| m.tooltip_text().as_deref() == Some(arg))
                 }) {
                     Some(w) => {
-                        if let Ok(button) = w.downcast::<gtk::Button>() {
+                        if let Some(menu) = w.downcast_ref::<gtk::MenuButton>() {
+                            menu.popup();
+                            eprintln!("dev: opened menu {arg}");
+                        } else if let Ok(button) = w.downcast::<gtk::Button>() {
                             button.emit_clicked();
                             eprintln!("dev: clicked {arg}");
                         }
                     }
                     None => eprintln!("dev: no button {arg}"),
                 }
+            }
+            "expand" => {
+                // expand:<row title> — open an expander row.
+                let found = find_widget(&inner.window.clone().upcast(), &|w| {
+                    w.downcast_ref::<adw::ExpanderRow>()
+                        .is_some_and(|row| row.title() == arg)
+                });
+                match found.and_then(|w| w.downcast::<adw::ExpanderRow>().ok()) {
+                    Some(row) => row.set_expanded(true),
+                    None => eprintln!("dev: no expander {arg}"),
+                }
+            }
+            "switch" => {
+                // switch:<row title> — flip a switch row.
+                let found = find_widget(&inner.window.clone().upcast(), &|w| {
+                    w.downcast_ref::<adw::PreferencesRow>()
+                        .is_some_and(|row| row.title() == arg)
+                });
+                match found {
+                    Some(w) if w.is::<adw::SwitchRow>() => {
+                        let row = w.downcast::<adw::SwitchRow>().expect("checked");
+                        row.set_active(!row.is_active());
+                    }
+                    Some(w) => match w
+                        .downcast_ref::<adw::ActionRow>()
+                        .and_then(|row| row.activatable_widget())
+                        .and_then(|s| s.downcast::<gtk::Switch>().ok())
+                    {
+                        Some(switch) => {
+                            big_gtk_kit::switch::set_active(&switch, !switch.is_active())
+                        }
+                        None => eprintln!("dev: {arg} is not a switch"),
+                    },
+                    None => eprintln!("dev: no switch {arg}"),
+                }
+            }
+            "fill" => {
+                // fill:<row title>=<text> — type into an entry row.
+                let (title, text) = arg.split_once('=').unwrap_or((arg, ""));
+                // The last match: a dialog on top comes after the page below.
+                let mut rows = Vec::new();
+                collect_entry_rows(&inner.window.clone().upcast(), title, &mut rows);
+                match rows.pop() {
+                    Some(row) => row.set_text(text),
+                    None => eprintln!("dev: no field {title}"),
+                }
+            }
+            "focus" => {
+                // focus:<entry row title> — focus (and scroll to) a field.
+                let mut rows = Vec::new();
+                collect_entry_rows(&inner.window.clone().upcast(), arg, &mut rows);
+                match rows.pop() {
+                    Some(row) => {
+                        row.grab_focus();
+                    }
+                    None => eprintln!("dev: no field {arg}"),
+                }
+            }
+            "scroll" => {
+                // scroll:<pixels> — scroll the open dialog's page.
+                if let Some(dialog) = inner.window.visible_dialog() {
+                    let mut scrolled = Vec::new();
+                    collect_scrolled(dialog.upcast_ref(), &mut scrolled);
+                    for sw in scrolled {
+                        sw.vadjustment().set_value(arg.parse().unwrap_or(0.0));
+                    }
+                }
+            }
+            "session-pin" => {
+                // session-pin:<pin> — a PIN for this session only (no keyring).
+                let result = inner.state.vault.borrow_mut().enable_quick_unlock(arg);
+                eprintln!("dev: session pin {result:?}");
+            }
+            "keyformat" => {
+                let format = inner.state.vault.borrow().key_format();
+                eprintln!("dev: key format {format:?}");
             }
             "field" => {
                 // field:<row title> — print the text of an entry row.
@@ -1045,6 +1253,21 @@ impl DevHandle {
                 match found.and_then(|w| w.downcast::<adw::EntryRow>().ok()) {
                     Some(row) => eprintln!("dev: field {arg} = {:?}", row.text().len()),
                     None => eprintln!("dev: no field {arg}"),
+                }
+            }
+            "type" => {
+                // type:<text> — keys as the window would receive them, with
+                // the focus on the sidebar (the case that used to fail).
+                if let Some(row) = inner.nav_list.row_at_index(0) {
+                    row.grab_focus();
+                }
+                for ch in arg.chars() {
+                    let used = inner.type_to_search(
+                        gtk::gdk::Key::from_name(ch.to_string())
+                            .unwrap_or(gtk::gdk::Key::VoidSymbol),
+                        gtk::gdk::ModifierType::empty(),
+                    );
+                    eprintln!("dev: key {ch:?} used={used}");
                 }
             }
             "count" => {
@@ -1094,6 +1317,47 @@ fn button_label(widget: &gtk::Widget) -> Option<String> {
         return Some(content.label().to_string());
     }
     None
+}
+
+#[cfg(debug_assertions)]
+fn collect_entry_rows(root: &gtk::Widget, title: &str, out: &mut Vec<adw::EntryRow>) {
+    if let Some(row) = root.downcast_ref::<adw::EntryRow>() {
+        if row.title() == title && row.is_mapped() {
+            out.push(row.clone());
+        }
+    }
+    let mut child = root.first_child();
+    while let Some(c) = child {
+        collect_entry_rows(&c, title, out);
+        child = c.next_sibling();
+    }
+}
+
+#[cfg(debug_assertions)]
+fn collect_scrolled(root: &gtk::Widget, out: &mut Vec<gtk::ScrolledWindow>) {
+    if let Some(sw) = root.downcast_ref::<gtk::ScrolledWindow>() {
+        if sw.is_mapped() {
+            out.push(sw.clone());
+        }
+    }
+    let mut child = root.first_child();
+    while let Some(c) = child {
+        collect_scrolled(&c, out);
+        child = c.next_sibling();
+    }
+}
+
+#[cfg(debug_assertions)]
+fn collect_pages(root: &gtk::Widget, out: &mut Vec<adw::PreferencesPage>) {
+    if let Some(page) = root.downcast_ref::<adw::PreferencesPage>() {
+        out.push(page.clone());
+        return;
+    }
+    let mut child = root.first_child();
+    while let Some(c) = child {
+        collect_pages(&c, out);
+        child = c.next_sibling();
+    }
 }
 
 #[cfg(debug_assertions)]

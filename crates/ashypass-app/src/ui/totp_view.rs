@@ -19,7 +19,7 @@ use adw::prelude::*;
 use ashypass_core::db::vault::{NewEntry, PasswordEntry, UpdateEntry};
 use ashypass_core::totp::{generate_totp, Algorithm};
 use gtk::{gio, glib};
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use zeroize::Zeroizing;
 
@@ -39,6 +39,14 @@ struct Inner {
     empty: EmptyState,
     rows: RefCell<Vec<RowData>>,
     timer_id: RefCell<Option<glib::SourceId>>,
+    scrolled: gtk::ScrolledWindow,
+    /// Second of the last code update.
+    last_tick: Cell<Option<u64>>,
+    /// Filter buttons, one per group (the items' tags, as in the Android
+    /// app and Aegis).
+    groups_bar: gtk::FlowBox,
+    /// The group shown (`None`: all).
+    group: RefCell<Option<String>>,
 }
 
 struct RowData {
@@ -49,6 +57,9 @@ struct RowData {
     algorithm: Algorithm,
     digits: u8,
     period: u32,
+    /// Time step of the code on screen: the HMAC runs once per period, not
+    /// on every tick.
+    shown_step: Cell<Option<u64>>,
 }
 
 impl TotpView {
@@ -80,6 +91,15 @@ impl TotpView {
                 "Use these codes when a site asks for two-step verification."
             )),
         ));
+
+        let groups_bar = gtk::FlowBox::builder()
+            .selection_mode(gtk::SelectionMode::None)
+            .column_spacing(6)
+            .row_spacing(6)
+            .max_children_per_line(30)
+            .visible(false)
+            .build();
+        content.append(&groups_bar);
 
         let list_box = gtk::ListBox::builder()
             .selection_mode(gtk::SelectionMode::None)
@@ -116,7 +136,6 @@ impl TotpView {
         let root = adw::ToolbarView::new();
         root.add_top_bar(&header);
         root.set_content(Some(&scrolled));
-        search_entry.set_key_capture_widget(Some(&scrolled));
 
         let inner = Rc::new(Inner {
             state,
@@ -129,6 +148,10 @@ impl TotpView {
             empty,
             rows: RefCell::new(Vec::new()),
             timer_id: RefCell::new(None),
+            scrolled: scrolled.clone(),
+            last_tick: Cell::new(None),
+            groups_bar,
+            group: RefCell::new(None),
         });
 
         {
@@ -144,7 +167,7 @@ impl TotpView {
             inner.search_entry.connect_search_changed(move |_| {
                 let Some(inner) = weak.upgrade() else { return };
                 if let Some(id) = inner.search_reload_id.borrow_mut().take() {
-                    id.remove();
+                    big_gtk_kit::source::remove(id);
                 }
                 let weak = Rc::downgrade(&inner);
                 let id =
@@ -183,6 +206,8 @@ impl TotpView {
                 if matches!(
                     event,
                     crate::events::AppEvent::VaultChanged
+                        | crate::events::AppEvent::DisplayChanged
+                        | crate::events::AppEvent::VaultChangedBySync
                         | crate::events::AppEvent::SyncCompleted { .. }
                 ) && inner.root.is_mapped()
                 {
@@ -200,7 +225,7 @@ impl TotpView {
         let inner = &self.inner;
         inner.search_entry.set_text("");
         if let Some(id) = inner.search_reload_id.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         inner.stop_timer();
         inner.rows.borrow_mut().clear();
@@ -217,6 +242,10 @@ impl TotpView {
         self.inner.search_entry.grab_focus();
     }
 
+    pub fn search_entry(&self) -> gtk::SearchEntry {
+        self.inner.search_entry.clone()
+    }
+
     pub fn show_add_dialog(&self) {
         self.inner.show_add_dialog(&self.inner.root);
     }
@@ -228,13 +257,18 @@ impl Inner {
     }
 
     fn toast(&self, message: &str) {
-        self.toast
-            .add_toast(adw::Toast::builder().title(message).timeout(3).build());
+        self.toast.add_toast(
+            adw::Toast::builder()
+                .use_markup(false)
+                .title(message)
+                .timeout(3)
+                .build(),
+        );
     }
 
     fn stop_timer(&self) {
         if let Some(id) = self.timer_id.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
     }
 
@@ -244,8 +278,22 @@ impl Inner {
             return;
         }
         let search = Some(self.search_entry.text().trim().to_string()).filter(|s| !s.is_empty());
+        let mut groups: Vec<String> = Vec::new();
         let entries: Vec<(PasswordEntry, Zeroizing<String>)> = {
             let vault = self.state.vault.borrow();
+            // Groups of every code (not only the searched ones), for the bar.
+            if let Ok(all) = vault.list(None) {
+                for e in all.iter().filter(|e| e.has_totp) {
+                    for tag in vault.tags_of(e.id).unwrap_or_default() {
+                        if !groups.iter().any(|g| g.eq_ignore_ascii_case(&tag)) {
+                            groups.push(tag);
+                        }
+                    }
+                }
+            }
+            groups.sort_by_key(|g| g.to_lowercase());
+            let shown_group = self.group.borrow().clone().filter(|g| groups.contains(g));
+            *self.group.borrow_mut() = shown_group.clone();
             let listed = match vault.list(search.as_deref()) {
                 Ok(v) => v,
                 Err(e) => {
@@ -256,6 +304,11 @@ impl Inner {
             listed
                 .into_iter()
                 .filter(|e| e.has_totp)
+                .filter(|e| {
+                    shown_group
+                        .as_ref()
+                        .is_none_or(|g| vault.tags_of(e.id).unwrap_or_default().contains(g))
+                })
                 .filter_map(|entry| match vault.totp_secret(entry.id) {
                     Ok(Some(secret)) => Some((entry, Zeroizing::new(secret))),
                     Ok(None) => None,
@@ -267,6 +320,12 @@ impl Inner {
                 .collect()
         };
 
+        self.fill_groups_bar(&groups);
+
+        // Rebuilding the rows must not throw the reader back to the top.
+        let scroll = self.scrolled.vadjustment();
+        let position = scroll.value();
+        let scroll = Some(scroll);
         self.rows.borrow_mut().clear();
         self.list_box.remove_all();
 
@@ -288,15 +347,27 @@ impl Inner {
             return;
         }
         self.content_stack.set_visible_child_name("list");
-        let large = self.state.settings().large_totp_codes;
-        let favicons = self.state.settings().show_favicons;
+        let settings = self.state.settings();
+        let large = settings.large_totp_codes;
+        // Off: no icon column at all. On: the brand's icon, else the site's
+        // when site icons are on (Password list), else a plain one.
+        let icons = settings.totp_icons.then_some(settings.show_favicons);
         for (entry, secret) in entries {
-            let row = self.build_row(&entry, secret, large, favicons);
+            let row = self.build_row(&entry, secret, large, icons);
             self.list_box.append(&row);
         }
+        self.last_tick.set(None);
         self.update_codes();
+        if let Some(adjustment) = scroll {
+            glib::idle_add_local_once(move || {
+                let max = (adjustment.upper() - adjustment.page_size()).max(0.0);
+                adjustment.set_value(position.min(max));
+            });
+        }
         let weak = Rc::downgrade(self);
-        let id = glib::timeout_add_seconds_local(1, move || {
+        // Half a second, so a new code shows at most half a second late
+        // (a one-second timer has an arbitrary phase).
+        let id = glib::timeout_add_local(std::time::Duration::from_millis(500), move || {
             let Some(inner) = weak.upgrade() else {
                 return glib::ControlFlow::Break;
             };
@@ -310,12 +381,127 @@ impl Inner {
         *self.timer_id.borrow_mut() = Some(id);
     }
 
+    /// One toggle per group, plus "All"; hidden when no code has a group.
+    fn fill_groups_bar(self: &Rc<Self>, groups: &[String]) {
+        while let Some(child) = self.groups_bar.first_child() {
+            self.groups_bar.remove(&child);
+        }
+        self.groups_bar.set_visible(!groups.is_empty());
+        if groups.is_empty() {
+            return;
+        }
+        let current = self.group.borrow().clone();
+        let mut first: Option<gtk::ToggleButton> = None;
+        for group in std::iter::once(None).chain(groups.iter().cloned().map(Some)) {
+            let button = gtk::ToggleButton::builder()
+                .label(group.as_deref().unwrap_or(tr!("All")))
+                .active(group == current)
+                .build();
+            button.add_css_class("pill");
+            button.add_css_class("ashy-group-chip");
+            match &first {
+                Some(f) => button.set_group(Some(f)),
+                None => first = Some(button.clone()),
+            }
+            let weak = Rc::downgrade(self);
+            button.connect_toggled(move |b| {
+                if !b.is_active() {
+                    return;
+                }
+                if let Some(inner) = weak.upgrade() {
+                    if *inner.group.borrow() != group {
+                        *inner.group.borrow_mut() = group.clone();
+                        // After the toggle signal: reload rebuilds this bar.
+                        let inner = inner.clone();
+                        glib::idle_add_local_once(move || inner.reload());
+                    }
+                }
+            });
+            self.groups_bar.append(&button);
+        }
+    }
+
+    /// Choose the groups of a code (the item's tags), or create one.
+    fn edit_groups(self: &Rc<Self>, id: i64) {
+        let (current, mut known) = {
+            let vault = self.state.vault.borrow();
+            let current = vault.tags_of(id).unwrap_or_default();
+            let mut known: Vec<String> = Vec::new();
+            for e in vault
+                .list(None)
+                .unwrap_or_default()
+                .iter()
+                .filter(|e| e.has_totp)
+            {
+                for tag in vault.tags_of(e.id).unwrap_or_default() {
+                    if !known.iter().any(|g| g.eq_ignore_ascii_case(&tag)) {
+                        known.push(tag);
+                    }
+                }
+            }
+            (current, known)
+        };
+        known.sort_by_key(|g| g.to_lowercase());
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.root))
+            .heading(tr!("Groups"))
+            .body(tr!("Group the codes as in Aegis. Groups are the item's tags: they sync to your other devices."))
+            .close_response("cancel")
+            .default_response("save")
+            .build();
+        dialog.add_response("cancel", tr!("Cancel"));
+        dialog.add_response("save", tr!("Save"));
+        dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
+        let list = gtk::ListBox::builder()
+            .selection_mode(gtk::SelectionMode::None)
+            .build();
+        list.add_css_class("boxed-list");
+        let mut checks: Vec<(String, gtk::CheckButton)> = Vec::new();
+        for group in known {
+            let check = gtk::CheckButton::builder()
+                .active(current.iter().any(|c| c.eq_ignore_ascii_case(&group)))
+                .valign(gtk::Align::Center)
+                .build();
+            let row = adw::ActionRow::builder()
+                .title(&group)
+                .activatable_widget(&check)
+                .build();
+            row.add_prefix(&check);
+            list.append(&row);
+            checks.push((group, check));
+        }
+        let new_row = adw::EntryRow::builder().title(tr!("New group")).build();
+        list.append(&new_row);
+        dialog.set_extra_child(Some(&list));
+        let weak = Rc::downgrade(self);
+        dialog.connect_response(Some("save"), move |_, _| {
+            let Some(inner) = weak.upgrade() else { return };
+            if !inner.can_show_vault_data() {
+                return;
+            }
+            let mut chosen: Vec<String> = checks
+                .iter()
+                .filter(|(_, c)| c.is_active())
+                .map(|(g, _)| g.clone())
+                .collect();
+            let new_group = new_row.text().trim().to_string();
+            if !new_group.is_empty() {
+                chosen.push(new_group);
+            }
+            let saved = inner.state.vault.borrow().set_tags(id, &chosen);
+            if let Err(e) = saved {
+                inner.toast(&format!("{}: {e}", tr!("Could not save")));
+            }
+        });
+        self.state.track_sensitive_dialog(&dialog);
+        dialog.present();
+    }
+
     fn build_row(
         self: &Rc<Self>,
         entry: &PasswordEntry,
         secret: Zeroizing<String>,
         large: bool,
-        favicons: bool,
+        icons: Option<bool>,
     ) -> gtk::ListBoxRow {
         let id = entry.id;
         let row = gtk::ListBoxRow::builder().activatable(false).build();
@@ -328,16 +514,22 @@ impl Inner {
             .margin_end(8)
             .build();
 
-        let icon = gtk::Image::new();
-        if favicons {
-            crate::favicons::apply(&icon, entry.url.as_deref(), 32);
-        } else {
-            icon.set_pixel_size(32);
-            icon.set_icon_name(Some("security-high-symbolic"));
+        if let Some(favicons) = icons {
+            let icon = gtk::Image::new();
+            // The brand's icon (built in), else the saved site's, else a
+            // plain one.
+            if !crate::favicons::apply_brand(&icon, &entry.title, 32) {
+                if favicons {
+                    crate::favicons::apply(&icon, entry.url.as_deref(), 32);
+                } else {
+                    icon.set_pixel_size(32);
+                    icon.set_icon_name(Some("security-high-symbolic"));
+                }
+            }
+            icon.add_css_class("ashy-entry-icon");
+            icon.set_accessible_role(gtk::AccessibleRole::Presentation);
+            content.append(&icon);
         }
-        icon.add_css_class("ashy-entry-icon");
-        icon.set_accessible_role(gtk::AccessibleRole::Presentation);
-        content.append(&icon);
 
         let text = gtk::Box::builder()
             .orientation(gtk::Orientation::Vertical)
@@ -369,10 +561,9 @@ impl Inner {
         }
         content.append(&text);
 
-        let code_label = gtk::Label::builder()
-            .valign(gtk::Align::Center)
-            .selectable(true)
-            .build();
+        // Not selectable: Ctrl+C on the label would skip the clipboard
+        // auto-clear that the Copy button applies.
+        let code_label = gtk::Label::builder().valign(gtk::Align::Center).build();
         code_label.add_css_class("ashy-code");
         code_label.add_css_class("monospace");
         if large {
@@ -433,10 +624,13 @@ impl Inner {
 
         let menu = gio::Menu::new();
         menu.append(Some(tr!("Edit access…")), Some("code.edit"));
-        let danger = gio::Menu::new();
-        danger.append(Some(tr!("Remove verification code…")), Some("code.remove"));
-        danger.append(Some(tr!("Delete access…")), Some("code.delete"));
-        menu.append_section(None, &danger);
+        menu.append(Some(tr!("Groups…")), Some("code.groups"));
+        big_gtk_kit::menu::append_shared_section(&menu, None, "code-row-danger", || {
+            let danger = gio::Menu::new();
+            danger.append(Some(tr!("Remove verification code…")), Some("code.remove"));
+            danger.append(Some(tr!("Delete access…")), Some("code.delete"));
+            danger
+        });
         let more = gtk::MenuButton::builder()
             .icon_name("view-more-symbolic")
             .menu_model(&menu)
@@ -454,6 +648,7 @@ impl Inner {
         let group = gio::SimpleActionGroup::new();
         for (name, run) in [
             ("edit", Inner::edit_entry as fn(&Rc<Inner>, i64)),
+            ("groups", Inner::edit_groups as fn(&Rc<Inner>, i64)),
             ("remove", Inner::confirm_remove_code as fn(&Rc<Inner>, i64)),
             ("delete", Inner::confirm_delete as fn(&Rc<Inner>, i64)),
         ] {
@@ -477,23 +672,26 @@ impl Inner {
             algorithm: Algorithm::parse(&entry.totp_algorithm).unwrap_or(Algorithm::Sha1),
             digits: entry.totp_digits,
             period: entry.totp_period.max(1),
+            shown_step: Cell::new(None),
         });
         row
     }
 
     fn update_codes(&self) {
         let now = chrono::Utc::now().timestamp().max(0) as u64;
+        // The timer ticks twice a second; work only when the second changed.
+        if self.last_tick.replace(Some(now)) == Some(now) {
+            return;
+        }
         for rd in self.rows.borrow().iter() {
             let period = rd.period as u64;
             let remaining = period - (now % period);
-            match generate_totp(&rd.secret, rd.algorithm, rd.digits, rd.period, now) {
-                Ok(code) => {
-                    let grouped = group_code(&code);
-                    if rd.code_label.label() != grouped {
-                        rd.code_label.set_label(&grouped);
-                    }
+            let step = now / period;
+            if rd.shown_step.replace(Some(step)) != Some(step) {
+                match generate_totp(&rd.secret, rd.algorithm, rd.digits, rd.period, now) {
+                    Ok(code) => rd.code_label.set_label(&group_code(&code)),
+                    Err(_) => rd.code_label.set_label("—"),
                 }
-                Err(_) => rd.code_label.set_label("—"),
             }
             rd.progress.set_value(remaining as f64 / period as f64);
             rd.countdown_label.set_label(&format!("{remaining} s"));
@@ -554,7 +752,7 @@ impl Inner {
             self.confirm_delete(id);
             return;
         }
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.root))
             .heading(format!("{} “{}”?", tr!("Remove the verification code from"), entry.title))
             .body(tr!(
                 "The password and other details stay. Before removing, make sure another app or a backup code can still sign you in, or turn off two-step verification on the site."
@@ -572,6 +770,9 @@ impl Inner {
                 return;
             }
             let change = UpdateEntry {
+                // Keep the type and fields the desktop does not edit yet.
+                item_type: None,
+                extra: None,
                 title: None,
                 username: None,
                 password: None,
@@ -590,7 +791,7 @@ impl Inner {
             inner.reload();
         });
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.root));
+        dialog.present();
     }
 
     fn confirm_delete(self: &Rc<Self>, id: i64) {
@@ -619,7 +820,7 @@ impl Inner {
         } else {
             tr!("This cannot be undone.")
         });
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.root))
             .heading(format!("{} “{}”{who}?", tr!("Delete"), entry.title))
             .body(&body)
             .close_response("cancel")
@@ -651,7 +852,7 @@ impl Inner {
             inner.reload();
         });
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.root));
+        dialog.present();
     }
 
     /// Add a code to an existing access or create a new one. The text
@@ -661,7 +862,7 @@ impl Inner {
         if !self.can_show_vault_data() {
             return;
         }
-        let dialog = adw::Dialog::builder()
+        let dialog = big_gtk_kit::dialog::Dialog::builder(Some(anchor))
             .title(tr!("Add verification code"))
             .content_width(540)
             .content_height(620)
@@ -750,9 +951,9 @@ impl Inner {
         let key_group = adw::PreferencesGroup::builder()
             .title(tr!("Setup key"))
             .build();
-        let key_row = adw::PasswordEntryRow::builder()
-            .title(tr!("Setup key or otpauth:// link"))
-            .build();
+        let key_row = big_gtk_kit::password::password_row(
+            adw::PasswordEntryRow::builder().title(tr!("Setup key or otpauth:// link")),
+        );
         key_group.add(&key_row);
         let params = adw::ExpanderRow::builder()
             .title(tr!("Code settings"))
@@ -856,9 +1057,11 @@ impl Inner {
         dialog.set_default_widget(Some(&save));
 
         {
-            let dialog = dialog.clone();
+            let dialog = dialog.downgrade();
             cancel.connect_clicked(move |_| {
-                dialog.close();
+                if let Some(dialog) = dialog.upgrade() {
+                    dialog.close();
+                }
             });
         }
         {
@@ -868,10 +1071,20 @@ impl Inner {
                 row.remove_css_class("error");
             });
         }
+        {
+            let error = error.clone();
+            title_row.connect_changed(move |row| {
+                error.set_visible(false);
+                row.remove_css_class("error");
+            });
+        }
         let weak = Rc::downgrade(self);
-        let dialog_cl = dialog.clone();
+        // Weak: the button sits in the dialog.
+        let dialog_weak = dialog.downgrade();
         save.connect_clicked(move |_| {
-            let Some(inner) = weak.upgrade() else { return };
+            let (Some(inner), Some(dialog_cl)) = (weak.upgrade(), dialog_weak.upgrade()) else {
+                return;
+            };
             if !inner.can_show_vault_data() {
                 dialog_cl.close();
                 return;
@@ -919,6 +1132,8 @@ impl Inner {
                     .vault
                     .borrow()
                     .add(NewEntry {
+                        item_type: None,
+                        extra: None,
                         title,
                         username: user,
                         password: String::new(),
@@ -942,6 +1157,9 @@ impl Inner {
                     .update(
                         target.id,
                         UpdateEntry {
+                            // Keep the type and fields the desktop does not edit yet.
+                            item_type: None,
+                            extra: None,
                             title: None,
                             username: None,
                             password: None,
@@ -978,6 +1196,6 @@ impl Inner {
             dialog.connect_closed(move |_| SessionManager::release(&state.session));
         }
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(anchor));
+        dialog.present();
     }
 }

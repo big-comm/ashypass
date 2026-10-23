@@ -152,6 +152,63 @@ pub fn luks_close(runner: &dyn Runner, mapper_name: &str) -> Result<()> {
     runner.run(build_close_spec(mapper_name)).map(|_| ())
 }
 
+/// Attempts made by [`luks_close_settled`] before giving up on a busy device.
+const CLOSE_ATTEMPTS: u32 = 5;
+const CLOSE_BACKOFF: std::time::Duration = std::time::Duration::from_millis(300);
+
+/// Close a mapping that was just written to (e.g. right after `mkfs`).
+///
+/// udev reacts to the new filesystem by probing the mapping (blkid, and
+/// udisks on desktops), which briefly holds it open; `cryptsetup close` then
+/// fails with "device is still in use". Wait for the udev queue first (best
+/// effort) and retry a few times with a growing backoff while it is busy.
+pub fn luks_close_settled(runner: &dyn Runner, mapper_name: &str) -> Result<()> {
+    close_settled_with(runner, mapper_name, CLOSE_BACKOFF)
+}
+
+fn close_settled_with(
+    runner: &dyn Runner,
+    mapper_name: &str,
+    backoff: std::time::Duration,
+) -> Result<()> {
+    crate::validate::validate_mapper_name(mapper_name)?;
+    settle_udev(runner);
+    let mut attempt = 1;
+    loop {
+        match luks_close(runner, mapper_name) {
+            Err(error) if attempt < CLOSE_ATTEMPTS && is_busy(&error) => {
+                log::debug!("{mapper_name} still busy (attempt {attempt}); retrying");
+                std::thread::sleep(backoff * attempt);
+                attempt += 1;
+            }
+            other => return other,
+        }
+    }
+}
+
+/// `udevadm settle`, ignoring failures: it is only a hint that makes the
+/// following `close` more likely to succeed on the first try.
+pub fn settle_udev(runner: &dyn Runner) {
+    let spec = CommandSpec::new("udevadm")
+        .arg("settle")
+        .arg("--timeout=10");
+    if let Err(error) = runner.run(spec) {
+        log::debug!("udevadm settle failed (ignored): {error}");
+    }
+}
+
+/// True when `cryptsetup` refused because the device is in use. Exit code 5
+/// is cryptsetup's "device already exists or device is busy".
+fn is_busy(error: &Error) -> bool {
+    match error {
+        Error::CommandFailed { status, stderr, .. } => {
+            let stderr = stderr.to_ascii_lowercase();
+            *status == 5 || stderr.contains("in use") || stderr.contains("busy")
+        }
+        _ => false,
+    }
+}
+
 /// Enrol a FIDO2 token on an existing LUKS2 device via
 /// `systemd-cryptenroll --fido2-device=auto`. The user will be asked to
 /// authorise on the token (tap / touch / PIN) by systemd-cryptenroll
@@ -240,5 +297,61 @@ mod tests {
     fn close_spec_is_minimal() {
         let s = build_close_spec("ash0");
         assert_eq!(s.args, vec!["close".to_string(), "ash0".to_string()]);
+    }
+
+    fn busy() -> Error {
+        Error::CommandFailed {
+            cmd: "cryptsetup close".into(),
+            status: 5,
+            stderr: "Device ashypass_vault is still in use.".into(),
+        }
+    }
+
+    #[test]
+    fn settled_close_waits_for_udev_and_retries_while_busy() {
+        use crate::runner::fake::FakeRunner;
+        let runner = FakeRunner::default()
+            // `udevadm settle` failing must not stop the close.
+            .reply(Err(Error::MissingTool("udevadm".into())))
+            .reply(Err(busy()))
+            .reply(Err(busy()));
+        close_settled_with(&runner, "ashypass_vault", std::time::Duration::ZERO).unwrap();
+        assert_eq!(
+            runner.calls(),
+            [
+                "udevadm settle --timeout=10",
+                "cryptsetup close ashypass_vault",
+                "cryptsetup close ashypass_vault",
+                "cryptsetup close ashypass_vault",
+            ]
+        );
+    }
+
+    #[test]
+    fn settled_close_gives_up_and_does_not_retry_other_errors() {
+        use crate::runner::fake::FakeRunner;
+        let always_busy = FakeRunner::default().stdout("");
+        for _ in 0..CLOSE_ATTEMPTS {
+            always_busy.replies.lock().unwrap().push_back(Err(busy()));
+        }
+        assert!(
+            close_settled_with(&always_busy, "ashypass_vault", std::time::Duration::ZERO).is_err()
+        );
+        assert_eq!(always_busy.calls().len(), 1 + CLOSE_ATTEMPTS as usize);
+
+        let missing = FakeRunner::default()
+            .stdout("")
+            .reply(Err(Error::CommandFailed {
+                cmd: "cryptsetup close".into(),
+                status: 4,
+                stderr: "Device ashypass_vault is not active.".into(),
+            }));
+        assert!(close_settled_with(&missing, "ashypass_vault", std::time::Duration::ZERO).is_err());
+        assert_eq!(missing.calls().len(), 2);
+
+        // Foreign mapper names are refused before anything runs.
+        let none = FakeRunner::default();
+        assert!(close_settled_with(&none, "cryptroot", std::time::Duration::ZERO).is_err());
+        assert!(none.calls().is_empty());
     }
 }

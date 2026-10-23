@@ -259,6 +259,20 @@ CREATE TABLE IF NOT EXISTS nextcloud_tombstones (
 )
 "#;
 
+/// Local folder changes waiting to be sent to Nextcloud Passwords, keyed by
+/// the remote folder UUID. `op` is `rename` (`label` is the new name) or
+/// `delete` (`label` is the removed name). A row is cleared once the server
+/// accepted the change, or when it no longer applies. Additive: builds that
+/// predate it ignore the table.
+pub const CREATE_NEXTCLOUD_FOLDER_OPS: &str = r#"
+CREATE TABLE IF NOT EXISTS nextcloud_folder_ops (
+    nc_uuid     TEXT PRIMARY KEY,
+    op          TEXT    NOT NULL,
+    label       TEXT    NOT NULL,
+    created_at  INTEGER NOT NULL
+)
+"#;
+
 /// Vault key verifier. See `db::key_check`. Additive: builds that predate it
 /// simply ignore the table.
 pub const CREATE_KEY_CHECK: &str = r#"
@@ -279,6 +293,29 @@ pub const LEGACY_COLUMN_ALTERS: &[&str] = &[
     "ALTER TABLE passwords ADD COLUMN totp_period INTEGER DEFAULT 30",
     "ALTER TABLE passwords ADD COLUMN category TEXT",
     "ALTER TABLE passwords ADD COLUMN favorite INTEGER DEFAULT 0",
+    // Item types (cards, identities, secure notes) and their encrypted
+    // fields. The trash tables exist only on the second pass of setup
+    // (`add_missing_columns`), where these succeed.
+    "ALTER TABLE passwords ADD COLUMN item_type TEXT NOT NULL DEFAULT 'login'",
+    "ALTER TABLE passwords ADD COLUMN extra_encrypted BLOB",
+    "ALTER TABLE passwords_trash ADD COLUMN item_type TEXT",
+    "ALTER TABLE passwords_trash ADD COLUMN extra_encrypted BLOB",
+    // A stable identity for each entry across devices (folder sync).
+    "ALTER TABLE passwords ADD COLUMN uid TEXT",
+    "ALTER TABLE passwords_trash ADD COLUMN uid TEXT",
+];
+
+/// Give every entry a `uid` (32 hex chars): the existing ones now, new ones
+/// as they are inserted, whatever code inserts them (older builds too).
+pub const ENTRY_UID_STATEMENTS: &[&str] = &[
+    "UPDATE passwords SET uid = lower(hex(randomblob(16))) WHERE uid IS NULL",
+    "UPDATE passwords_trash SET uid = lower(hex(randomblob(16))) WHERE uid IS NULL",
+    "CREATE UNIQUE INDEX IF NOT EXISTS idx_passwords_uid ON passwords(uid)",
+    "CREATE TRIGGER IF NOT EXISTS passwords_assign_uid AFTER INSERT ON passwords
+     WHEN NEW.uid IS NULL
+     BEGIN
+         UPDATE passwords SET uid = lower(hex(randomblob(16))) WHERE id = NEW.id;
+     END",
 ];
 
 const SEED_SYNC_META: &str =
@@ -308,6 +345,7 @@ const SETUP_STATEMENTS: &[&str] = &[
     CREATE_NEXTCLOUD_TOMBSTONES,
     CREATE_KEY_CHECK,
     CREATE_SEARCH_META,
+    CREATE_NEXTCLOUD_FOLDER_OPS,
 ];
 
 /// Bump when setup gains a *data* step that is not visible in the DDL text
@@ -360,6 +398,7 @@ const REQUIRED_TABLES: &[&str] = &[
     "nextcloud_mapping",
     "nextcloud_folder_mapping",
     "nextcloud_tombstones",
+    "nextcloud_folder_ops",
     "key_check",
     "search_meta",
     "passwords_fts",

@@ -26,7 +26,7 @@ use std::time::Duration;
 /// Persisted config. Service password is stored in Secret Service when
 /// available; the JSON file is still chmod 0600 and keeps legacy fallback
 /// compatibility on sessions without a keyring.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Clone, Serialize, Deserialize, Default)]
 pub struct NcConfig {
     /// Base URL of the Nextcloud instance, e.g.
     /// `https://cloud.example.com`. No trailing slash, no `/index.php`.
@@ -41,7 +41,7 @@ const APP_PASSWORD_SECRET_LABEL: &str = "Ashy Pass — Nextcloud Passwords app p
 
 /// A password entry as returned by the Nextcloud Passwords API. Only the
 /// fields the sync engine cares about are deserialised; extras are dropped.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Clone, Serialize, Deserialize, Default)]
 pub struct NcPassword {
     pub id: String,
     #[serde(default)]
@@ -89,7 +89,7 @@ pub struct NcFolder {
 /// Fields accepted on `password/create` and `password/update`. Server fills
 /// in defaults for anything we omit; the API does require `password` and
 /// `label` to be non-empty on create.
-#[derive(Debug, Clone, Serialize, Default)]
+#[derive(Clone, Serialize, Default)]
 pub struct NcCreateOrUpdate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -112,6 +112,51 @@ pub struct NcFolderCreate {
     pub parent: String,
 }
 
+/// Fields accepted on `folder/update`. The server moves a folder without a
+/// `parent` to the base folder, so the current parent is always sent back.
+#[derive(Debug, Clone, Serialize, Default)]
+pub struct NcFolderUpdate {
+    pub id: String,
+    pub label: String,
+    #[serde(skip_serializing_if = "String::is_empty")]
+    pub parent: String,
+}
+
+impl std::fmt::Debug for NcConfig {
+    // Never print the app password, even in a debug log.
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("NcConfig")
+            .field("base_url", &self.base_url)
+            .field("username", &self.username)
+            .finish_non_exhaustive()
+    }
+}
+
+impl std::fmt::Debug for NcPassword {
+    // Entry secrets stay out of debug output.
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("NcPassword")
+            .field("id", &self.id)
+            .field("label", &self.label)
+            .field("revision", &self.revision)
+            .field("edited", &self.edited)
+            .field("trashed", &self.trashed)
+            .field("folder", &self.folder)
+            .finish_non_exhaustive()
+    }
+}
+
+impl std::fmt::Debug for NcCreateOrUpdate {
+    // Entry secrets stay out of debug output.
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("NcCreateOrUpdate")
+            .field("id", &self.id)
+            .field("label", &self.label)
+            .field("folder", &self.folder)
+            .finish_non_exhaustive()
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct NextcloudPasswordsClient {
     pub config: Option<NcConfig>,
@@ -129,7 +174,17 @@ impl NextcloudPasswordsClient {
     }
 
     /// Probe the server and persist the config on success.
-    pub fn login(&mut self, mut cfg: NcConfig) -> Result<()> {
+    pub fn login(&mut self, cfg: NcConfig) -> Result<()> {
+        let cfg = self.probe(cfg)?;
+        Self::save_config(&cfg)?;
+        self.config = Some(cfg);
+        Ok(())
+    }
+
+    /// Check the server and the credentials without saving anything, and
+    /// return the config with its normalised URL. For apps that keep the
+    /// app password in their own secret store (the mobile app).
+    pub fn probe(&self, mut cfg: NcConfig) -> Result<NcConfig> {
         cfg.base_url = crate::server_url::normalize_nextcloud(&cfg.base_url);
         validate_server_url(&cfg.base_url)?;
         if cfg.base_url.is_empty() || cfg.username.is_empty() || cfg.app_password.is_empty() {
@@ -140,15 +195,20 @@ impl NextcloudPasswordsClient {
         // Smoke test: list passwords with limit=0 isn't a thing, but
         // /password/list is cheap and returns 200 even on empty vaults.
         let probe = self.request_with_cfg(&cfg, "GET", "/password/list", None)?;
+        if probe.status == 401 {
+            return Err(Error::Other(
+                "nextcloud login failed: HTTP 401 — check the login name (not the email) \
+                 and use an app password from Settings → Security"
+                    .into(),
+            ));
+        }
         if probe.status >= 400 {
             return Err(Error::Other(format!(
                 "nextcloud login failed: HTTP {}",
                 probe.status
             )));
         }
-        Self::save_config(&cfg)?;
-        self.config = Some(cfg);
-        Ok(())
+        Ok(cfg)
     }
 
     pub fn logout(&mut self) -> Result<()> {
@@ -227,6 +287,27 @@ impl NextcloudPasswordsClient {
         parse_single_folder(&r.body)
     }
 
+    pub fn update_folder(&self, payload: &NcFolderUpdate) -> Result<NcFolder> {
+        let cfg = self.require()?;
+        let body = serde_json::to_string(payload)?;
+        let r = self.request_with_cfg(cfg, "PATCH", "/folder/update", Some(body))?;
+        ensure_2xx(&r)?;
+        parse_single_folder(&r.body)
+    }
+
+    /// Delete a folder (the server moves it to its trash first). `Ok(false)`
+    /// means the server answered HTTP 404: the folder is already gone.
+    pub fn delete_folder_if_exists(&self, id: &str) -> Result<bool> {
+        let cfg = self.require()?;
+        let body = serde_json::json!({ "id": id }).to_string();
+        let r = self.request_with_cfg(cfg, "DELETE", "/folder/delete", Some(body))?;
+        if r.status == 404 {
+            return Ok(false);
+        }
+        ensure_2xx(&r)?;
+        Ok(true)
+    }
+
     // -----------------------------------------------------------------
     // Internals
     // -----------------------------------------------------------------
@@ -258,7 +339,7 @@ impl NextcloudPasswordsClient {
         }
         let mut resp = req
             .send()
-            .map_err(|e| Error::Other(format!("nextcloud {method} {path}: {e}")))?;
+            .map_err(|e| Error::Other(format!("nextcloud {method} {path}: {}", error_chain(&e))))?;
         let status = resp.status().as_u16();
         const MAX_RESPONSE_BYTES: u64 = 64 * 1024 * 1024;
         if resp
@@ -282,8 +363,7 @@ impl NextcloudPasswordsClient {
     }
 
     fn config_path() -> PathBuf {
-        let base = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-        base.join("ashypass").join("nextcloud_passwords.json")
+        crate::config::config_dir().join("nextcloud_passwords.json")
     }
 
     fn load_config() -> Option<NcConfig> {
@@ -443,6 +523,7 @@ fn http_client() -> Result<&'static Client> {
     }
     let client = Client::builder()
         .timeout(Duration::from_secs(60))
+        .redirect(crate::backup::webdav::redirect_policy())
         .build()
         .map_err(|e| Error::Other(format!("nextcloud http: {e}")))?;
     let _ = CLIENT.set(client);
@@ -456,6 +537,22 @@ fn default_headers() -> HeaderMap {
     // The Nextcloud Passwords API requires OCS-APIRequest on some endpoints.
     h.insert("OCS-APIRequest", HeaderValue::from_static("true"));
     h
+}
+
+/// An error with its causes ("error sending request: … : dns error: …"):
+/// reqwest's own message hides the reason a connection failed.
+pub(crate) fn error_chain(error: &dyn std::error::Error) -> String {
+    let mut text = error.to_string();
+    let mut source = error.source();
+    while let Some(cause) = source {
+        let cause_text = cause.to_string();
+        if !text.contains(&cause_text) {
+            text.push_str(": ");
+            text.push_str(&cause_text);
+        }
+        source = cause.source();
+    }
+    text
 }
 
 fn validate_server_url(value: &str) -> Result<()> {
@@ -550,6 +647,24 @@ mod tests {
         };
         let json = serde_json::to_string(&payload).unwrap();
         assert!(json.contains(r#""folder":"folder-uuid""#));
+    }
+
+    #[test]
+    fn folder_update_keeps_the_parent_when_known() {
+        let nested = NcFolderUpdate {
+            id: "f1".into(),
+            label: "Renamed".into(),
+            parent: "p1".into(),
+        };
+        let json = serde_json::to_string(&nested).unwrap();
+        assert!(json.contains(r#""parent":"p1""#));
+        assert!(json.contains(r#""label":"Renamed""#));
+        let root = NcFolderUpdate {
+            id: "f1".into(),
+            label: "Renamed".into(),
+            parent: String::new(),
+        };
+        assert!(!serde_json::to_string(&root).unwrap().contains("parent"));
     }
 
     #[test]

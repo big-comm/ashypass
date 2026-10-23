@@ -1,0 +1,29 @@
+# GTK and libadwaita calls that leak (measured by big-gtk-kit), and the
+# big-gtk-kit function to use instead. Copied from big-gtk-kit's clippy.toml
+# (Clippy has no include): keep it in step with the kit when updating it.
+
+
+disallowed-methods = [
+    { path = "gtk4::prelude::AccessibleExtManual::update_relation", reason = "leaks the list of targets on every call (gtk-rs 0.11); use `big_gtk_kit::accessible::relate`" },
+    { path = "libadwaita::PasswordEntryRow::new", reason = "leaks its buffer and the password in it (libadwaita 1.9); use `big_gtk_kit::password::password_row(adw::PasswordEntryRow::builder())`" },
+    { path = "libadwaita::builders::PasswordEntryRowBuilder::build", reason = "leaks its buffer and the password in it (libadwaita 1.9); pass the builder to `big_gtk_kit::password::password_row`" },
+    { path = "libadwaita::prelude::AlertDialogExtManual::choose", reason = "leaks the dialog (libadwaita-rs 0.9); use `big_gtk_kit::alert::choose`" },
+    { path = "libadwaita::prelude::AlertDialogExtManual::choose_future", reason = "leaks the dialog (libadwaita-rs 0.9); use `big_gtk_kit::alert::choose_future`" },
+    { path = "libadwaita::prelude::MessageDialogExtManual::choose", reason = "leaks the dialog (libadwaita-rs 0.9); use `adw::AlertDialog` with `big_gtk_kit::alert::choose`" },
+    { path = "libadwaita::prelude::AdwWindowExt::add_breakpoint", reason = "the breakpoint outlives the window (libadwaita 1.9); use `big_gtk_kit::breakpoint::add`" },
+    { path = "libadwaita::prelude::AdwApplicationWindowExt::add_breakpoint", reason = "the breakpoint outlives the window (libadwaita 1.9); use `big_gtk_kit::breakpoint::add`" },
+    { path = "libadwaita::prelude::AdwDialogExt::add_breakpoint", reason = "the breakpoint outlives the dialog (libadwaita 1.9); use `big_gtk_kit::breakpoint::add`" },
+    { path = "libadwaita::prelude::BreakpointBinExt::add_breakpoint", reason = "the breakpoint outlives the bin (libadwaita 1.9); use `big_gtk_kit::breakpoint::add`" },
+    { path = "gtk4::Switch::set_active", reason = "cancels a click's slide even when the value is unchanged (GTK 4.22), so a refresh swallows the click; use `big_gtk_kit::switch::set_active`" },
+    { path = "glib::SourceId::remove", reason = "panics when the source already ran, which aborts inside a GLib callback; use `big_gtk_kit::source::remove`" },
+    { path = "libadwaita::AlertDialog::new", reason = "every dialog leaves three breakpoints behind when it goes (libadwaita 1.9, about 1.8 KB an opening); use `big_gtk_kit::alert::Alert::new`, which asks again with one already made" },
+    { path = "libadwaita::AlertDialog::builder", reason = "every dialog leaves three breakpoints behind when it goes (libadwaita 1.9, about 1.8 KB an opening); use `big_gtk_kit::alert::Alert::builder`" },
+    { path = "libadwaita::Dialog::new", reason = "every dialog leaves three breakpoints behind when it goes (libadwaita 1.9, about 1.8 KB an opening); use `big_gtk_kit::dialog::Dialog::new`, which shows one already made" },
+    { path = "libadwaita::Dialog::builder", reason = "every dialog leaves three breakpoints behind when it goes (libadwaita 1.9, about 1.8 KB an opening); use `big_gtk_kit::dialog::Dialog::builder`" },
+    { path = "gio::Menu::append_section", reason = "GTK 4.22's menu tracker keeps every section it shows; use `big_gtk_kit::menu::append_shared_section`, or `append_refilled_section` for items that vary per build" },
+]
+disallowed-types = [
+    { path = "libadwaita::InlineViewSwitcher", reason = "leaks a widget tree per page (libadwaita 1.9); use `big_gtk_kit::view_switcher::toggles_for` over a `gtk::Stack`" },
+    { path = "libadwaita::ViewStack", reason = "leaks its transition animation (libadwaita 1.9); use `gtk::Stack` with `big_gtk_kit::view_switcher::toggles_for`" },
+    { path = "libadwaita::ViewSwitcher", reason = "needs an `AdwViewStack`, which leaks (libadwaita 1.9); use `big_gtk_kit::view_switcher::toggles_for` over a `gtk::Stack`" },
+]

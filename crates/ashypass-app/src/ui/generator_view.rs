@@ -125,22 +125,32 @@ impl GeneratorPanel {
 
         // ---- Type selector: the two everyday choices first, PIN under
         // "Other formats" with its own explanation.
+        // Sections made once and shared (GTK keeps every section it shows).
         let kind_menu = gio::Menu::new();
-        let main_section = gio::Menu::new();
-        for kind in [GeneratorKind::Random, GeneratorKind::Words] {
-            let item = gio::MenuItem::new(Some(kind.label()), None);
-            item.set_action_and_target_value(Some("gen.kind"), Some(&kind.id().to_variant()));
-            main_section.append_item(&item);
-        }
-        kind_menu.append_section(None, &main_section);
-        let other_section = gio::Menu::new();
-        let pin_item = gio::MenuItem::new(Some(GeneratorKind::Pin.label()), None);
-        pin_item.set_action_and_target_value(
-            Some("gen.kind"),
-            Some(&GeneratorKind::Pin.id().to_variant()),
+        big_gtk_kit::menu::append_shared_section(&kind_menu, None, "generator-kinds", || {
+            let section = gio::Menu::new();
+            for kind in [GeneratorKind::Random, GeneratorKind::Words] {
+                let item = gio::MenuItem::new(Some(kind.label()), None);
+                item.set_action_and_target_value(Some("gen.kind"), Some(&kind.id().to_variant()));
+                section.append_item(&item);
+            }
+            section
+        });
+        big_gtk_kit::menu::append_shared_section(
+            &kind_menu,
+            Some(tr!("Other formats")),
+            "generator-other-kinds",
+            || {
+                let section = gio::Menu::new();
+                let pin_item = gio::MenuItem::new(Some(GeneratorKind::Pin.label()), None);
+                pin_item.set_action_and_target_value(
+                    Some("gen.kind"),
+                    Some(&GeneratorKind::Pin.id().to_variant()),
+                );
+                section.append_item(&pin_item);
+                section
+            },
         );
-        other_section.append_item(&pin_item);
-        kind_menu.append_section(Some(tr!("Other formats")), &other_section);
 
         let kind_button = gtk::MenuButton::builder()
             .label(GeneratorKind::Random.label())
@@ -423,6 +433,12 @@ impl GeneratorPanel {
         *self.inner.on_primary.borrow_mut() = Some(cb);
     }
 
+    /// Replace the shown value with a fresh one (on lock, so the last
+    /// password does not stay on screen).
+    pub fn regenerate(&self) {
+        self.inner.generate();
+    }
+
     #[cfg(debug_assertions)]
     pub fn dev_set_kind(&self, id: &str) {
         self.inner.set_kind(GeneratorKind::from_id(id));
@@ -547,6 +563,10 @@ impl PanelInner {
                         log::warn!("password generation failed: {e}");
                         self.summary_label
                             .set_label(tr!("These options cannot produce a password."));
+                        // Drop the previous value so Copy and Use cannot
+                        // pick up a password that no longer matches.
+                        self.password_label.set_label("");
+                        *self.current.borrow_mut() = Zeroizing::new(String::new());
                         return;
                     }
                 }
@@ -559,7 +579,11 @@ impl PanelInner {
             ),
             GeneratorKind::Pin => generate_pin(self.pin_length_row.value() as usize),
         };
-        self.password_label.set_label(&value);
+        // Digits and symbols in the chosen colours (Settings → Appearance).
+        match super::password_colors::markup(&value, &self.state.settings().password_colors) {
+            Some(markup) => self.password_label.set_markup(&markup),
+            None => self.password_label.set_label(&value),
+        }
         self.summary_label.set_label(&summary_for(
             self.kind.get(),
             &value,
@@ -577,6 +601,7 @@ impl PanelInner {
         // Only what happened: it was copied, not saved and not used anywhere.
         self.toast.add_toast(
             adw::Toast::builder()
+                .use_markup(false)
                 .title(tr!("Password copied"))
                 .timeout(3)
                 .build(),

@@ -1,0 +1,37 @@
+{
+   "blockdevices": [
+      {"name":"sdg", "path":"/dev/sdg", "size":32015679488, "type":"disk", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":"usb", "vendor":"SanDisk", "model":"Ultra", "serial":"4C531001", "wwn":null, "ptuuid":"7d1e2f3a-0000-4b5c-8d9e-0a1b2c3d4e5f", "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":"gpt", "uuid":null,
+         "children": [
+            {"name":"sdg1", "path":"/dev/sdg1", "size":32014630912, "type":"part", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "wwn":null, "ptuuid":"7d1e2f3a-0000-4b5c-8d9e-0a1b2c3d4e5f", "fstype":"LVM2_member", "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":"gpt", "uuid":"pVaBcD-1234-5678-9abc-def0-1234-567890",
+               "children": [
+                  {"name":"vg0-data", "path":"/dev/mapper/vg0-data", "size":32010000000, "type":"lvm", "rm":false, "hotplug":false, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "wwn":null, "ptuuid":null, "fstype":"ext4", "fsused":null, "fssize":null, "mountpoint":null, "label":"data", "pttype":null, "uuid":"01010101-0202-0303-0404-050505050505"}
+               ]
+            }
+         ]
+      },
+      {"name":"sdh", "path":"/dev/sdh", "size":15376000000, "type":"disk", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":"usb", "vendor":"Kingston", "model":"DataTraveler 3.0", "serial":"E0D55EB6", "wwn":null, "ptuuid":null, "fstype":"linux_raid_member", "fsused":null, "fssize":null, "mountpoint":null, "label":"host:0", "pttype":null, "uuid":"aaaa1111-bbbb-2222-cccc-3333dddd4444",
+         "children": [
+            {"name":"md127", "path":"/dev/md127", "size":15360000000, "type":"raid1", "rm":false, "hotplug":false, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "wwn":null, "ptuuid":null, "fstype":"ext4", "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":null, "uuid":"55556666-7777-8888-9999-aaaabbbbcccc"}
+         ]
+      },
+      {"name":"sdi", "path":"/dev/sdi", "size":8053063680, "type":"disk", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":"usb", "vendor":"Generic", "model":"Flash Disk", "serial":"0123456789AB", "wwn":null, "ptuuid":"1a2b3c4d", "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":"dos", "uuid":null,
+         "children": [
+            {"name":"sdi1", "path":"/dev/sdi1", "size":8052015104, "type":"part", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "wwn":null, "ptuuid":"1a2b3c4d", "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":"dos", "uuid":null,
+               "children": [
+                  {"name":"sdi5", "path":"/dev/sdi5", "size":8050000000, "type":"part", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "wwn":null, "ptuuid":"1a2b3c4d", "fstype":"vfat", "fsused":null, "fssize":null, "mountpoint":null, "label":"NESTED", "pttype":"dos", "uuid":"6E7F-8091"}
+               ]
+            }
+         ]
+      },
+      {"name":"sdj", "path":"/dev/sdj", "size":64023257088, "type":"disk", "rm":false, "hotplug":true, "ro":false, "rota":false, "tran":"usb", "vendor":"Samsung", "model":"PSSD T7", "serial":"S5TANS0R", "wwn":"0x5002538e00000001", "ptuuid":null, "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":null, "uuid":null,
+         "children": [
+            {"name":"snap-cow", "path":"/dev/mapper/snap-cow", "size":64023257088, "type":"dm", "rm":false, "hotplug":false, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "wwn":null, "ptuuid":null, "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":null, "uuid":null}
+         ]
+      },
+      {"name":"sdk", "path":"/dev/sdk", "size":31004295168, "type":"disk", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":"usb", "vendor":"Samsung", "model":"Flash Drive FIT", "serial":"0374620080005678", "wwn":"0x5000000000000abc", "ptuuid":"0f0e0d0c-0b0a-0908-0706-050403020100", "fstype":null, "fsused":null, "fssize":null, "mountpoint":null, "label":null, "pttype":"gpt", "uuid":null,
+         "children": [
+            {"name":"sdk1", "path":"/dev/sdk1", "size":31003246592, "type":"part", "rm":true, "hotplug":true, "ro":false, "rota":false, "tran":null, "vendor":null, "model":null, "serial":null, "wwn":"0x5000000000000abc", "ptuuid":"0f0e0d0c-0b0a-0908-0706-050403020100", "fstype":"exfat", "fsused":null, "fssize":null, "mountpoint":null, "label":"FIT", "pttype":"gpt", "uuid":"1234-ABCD"}
+         ]
+      }
+   ]
+}

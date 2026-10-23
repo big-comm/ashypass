@@ -1,0 +1,716 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Anmeldedaten aus Ashy Pass, dem Passwortmanager für Linux, ausfüllen und kopieren.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Verbindung zu Ashy Pass wird hergestellt…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass ist nicht verbunden",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Installieren Sie Ashy Pass und verbinden Sie diesen Browser unter Ashy Pass → Einstellungen → Browser.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "Die Browsererweiterung ist ausgeschaltet",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Schalten Sie die Browsererweiterung unter Ashy Pass → Einstellungen → Browser ein.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "Noch kein Tresor",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "Erstellen Sie zuerst Ihren Tresor in Ashy Pass.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "Etwas ist schiefgelaufen",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "Erneut versuchen",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "Ihr Tresor ist gesperrt",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "Master-Passwort",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "Entsperren",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "Wird entsperrt…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "Falsches Master-Passwort.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "Zu viele Versuche. Warten Sie einen Moment und versuchen Sie es erneut.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "Alle Einträge durchsuchen",
+    "description": "Label and placeholder of the search field."
+  },
+  "searchResultsHeading": {
+    "message": "Suchergebnisse",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "Keine Anmeldedaten für diese Website gespeichert.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "Keine Einträge gefunden.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "Ausfüllen funktioniert nur auf Webseiten.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "Kein Benutzername",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "Ohne Titel",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "Ausfüllen",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "Benutzer kopieren",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "Passwort kopieren",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "Code kopieren",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "$TITLE$ auf dieser Seite ausfüllen",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "Benutzernamen von $TITLE$ kopieren",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "Passwort von $TITLE$ kopieren",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "Bestätigungscode von $TITLE$ kopieren",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "Benutzername kopiert",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "Passwort kopiert",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "Code kopiert",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "Ausgefüllt",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "Kein Anmeldeformular auf dieser Seite gefunden",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "Kopieren in die Zwischenablage fehlgeschlagen",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "Passwort erzeugen",
+    "description": "Button that generates a new password and copies it."
+  },
+  "revealPassword": {
+    "message": "Passwort anzeigen",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "Passwort verbergen",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "Sperren",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "Tresor gesperrt",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass hat nicht rechtzeitig geantwortet.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "Die Verbindung zu Ashy Pass wurde unterbrochen.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "Diese Anmeldedaten gehören nicht zu dieser Website.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "Dieser Eintrag existiert nicht mehr.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "Dieser Eintrag hat keinen Bestätigungscode.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "Diese Seite erlaubt kein Ausfüllen.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass meldete: $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  },
+  "backButton": {
+    "message": "Zurück",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Hinzufügen",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Ashy Pass öffnen",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Tresor",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Generator",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Einstellungen",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Bereiche",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "PIN",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Mit PIN entsperren",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Stattdessen Master-Passwort verwenden",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Stattdessen PIN verwenden",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "Falsche PIN.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "Falsche PIN. Verbleibende Versuche: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "Die PIN wurde nach zu vielen Fehlversuchen deaktiviert. Verwenden Sie Ihr Master-Passwort.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "Auf diesem Computer ist keine PIN eingerichtet. Verwenden Sie Ihr Master-Passwort.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Vorschläge in Anmeldefeldern anzeigen?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass kann Ihre Anmeldedaten direkt unter den Benutzername- und Passwortfeldern von Websites auflisten.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Nicht jetzt",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Aktivieren",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Ordner",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Typ",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Alle Einträge",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "Anmeldedaten mit Codes",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Favoriten",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Alle Ordner",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Kein Ordner",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Vorschläge zum Ausfüllen",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Favoriten",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Alle Einträge",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Einträge",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Keine Einträge entsprechen diesen Filtern.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "Ihr Tresor ist leer.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Details von $TITLE$ anzeigen",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Website von $TITLE$ öffnen",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "Weitere Optionen für $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Zu Favoriten hinzufügen",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Aus Favoriten entfernen",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Website öffnen",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Website-Adresse kopieren",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Details anzeigen",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Website-Adresse kopiert",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Zu Favoriten hinzugefügt",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Aus Favoriten entfernt",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Eintragsdetails",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Benutzername",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Passwort",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Bestätigungscode",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Website",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Ordner",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Name",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Neue Anmeldedaten",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Abbrechen",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Speichern",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Geben Sie einen Namen ein.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Geben Sie ein Passwort ein.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Gespeichert",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Passwort erzeugt",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass konnte diese Anfrage nicht annehmen.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Neu erzeugen",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Kopieren",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Art des zu erzeugenden Werts",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Passwort",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Passphrase",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "PIN",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Länge",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Großbuchstaben (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Kleinbuchstaben (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Ziffern (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Sonderzeichen (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Mehrdeutige Zeichen vermeiden",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Wörter",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Worttrenner",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "Großschreibung",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Zahl einfügen",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Behalten Sie mindestens eine Zeichenart bei.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Auf dieser Seite ausfüllen",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "Kein Passwortfeld auf dieser Seite gefunden",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Tresor",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Jetzt sperren",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Automatisches Ausfüllen",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Vorschläge in Anmeldefeldern anzeigen",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Benötigt Zugriff auf die von Ihnen besuchten Websites. Die Seite sieht Ihre Anmeldedaten nie; erst wenn Sie einen Eintrag wählen, wird etwas ausgefüllt.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "Vorschläge sind aktiviert. Laden Sie geöffnete Seiten neu, um sie zu sehen.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "Die Berechtigung wurde nicht erteilt.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Tastenkürzel",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutNotSet": {
+    "message": "Nicht festgelegt",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "Info",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Version",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Hilfe",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Datenschutz",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Ashy-Pass-Vorschläge",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Ashy-Pass-Vorschläge anzeigen",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass ist gesperrt",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Keine Anmeldedaten für diese Website",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Anmeldedaten hinzufügen",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "Klicken Sie auf das Ashy-Pass-Symbol in der Symbolleiste, um fortzufahren.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Dieses Menü ist abgelaufen. Klicken Sie erneut auf das Feld.",
+    "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Passwortmanager des Browsers ausschalten"
+  },
+  "browserPmHint": {
+    "message": "Seine eigene Liste erscheint über der Seite und verdeckt die Vorschläge von Ashy Pass. Ist er aus, öffnet sich Ashy Pass, sobald Sie in ein Anmeldefeld klicken."
+  },
+  "browserPmOffToast": {
+    "message": "Der Passwortmanager des Browsers ist aus"
+  },
+  "browserPmOnToast": {
+    "message": "Der Passwortmanager des Browsers ist wieder an"
+  },
+  "shortcutOpens": {
+    "message": "Öffnet dieses Fenster."
+  },
+  "shortcutChange": {
+    "message": "Ändern"
+  },
+  "shortcutRecord": {
+    "message": "Drücken Sie die neue Tastenkombination …"
+  },
+  "shortcutRecordHint": {
+    "message": "Strg oder Alt, optional Umschalt, und ein Buchstabe oder eine Ziffer. Esc bricht ab."
+  },
+  "shortcutReset": {
+    "message": "Standard"
+  },
+  "shortcutSaved": {
+    "message": "Tastenkürzel gespeichert"
+  },
+  "shortcutInvalid": {
+    "message": "Diese Kombination kann nicht verwendet werden. Versuchen Sie Strg oder Alt mit einem Buchstaben."
+  },
+  "shortcutOpenFailed": {
+    "message": "Die Tastenkürzel-Einstellungen des Browsers konnten nicht geöffnet werden."
+  },
+  "editButton": {
+    "message": "Bearbeiten"
+  },
+  "deleteButton": {
+    "message": "Löschen"
+  },
+  "deleteConfirmTitle": {
+    "message": "„$TITLE$“ löschen?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Wenn der Papierkorb in Ashy Pass aktiviert ist, können Sie ihn dort wiederherstellen. Synchronisierte Geräte löschen ihn ebenfalls."
+  },
+  "editLoginTitle": {
+    "message": "Zugangsdaten bearbeiten"
+  },
+  "movedToTrash": {
+    "message": "In den Papierkorb von Ashy Pass verschoben"
+  },
+  "loginDeleted": {
+    "message": "Zugangsdaten gelöscht"
+  },
+  "errorChanged": {
+    "message": "Diese Zugangsdaten wurden inzwischen in Ashy Pass geändert. Öffnen Sie sie erneut, um die neueste Version zu sehen."
+  },
+  "errorHostOutdated": {
+    "message": "Aktualisieren Sie Ashy Pass auf diesem Computer, um dies zu nutzen."
+  },
+  "notesLabel": {
+    "message": "Notizen"
+  }
+}

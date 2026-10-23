@@ -5,6 +5,7 @@ use ashypass_core::backup::{BackupService, WebdavService};
 use ashypass_core::config::settings_file;
 use ashypass_core::db::Vault;
 use ashypass_core::settings::Settings;
+use ashypass_core::sync::folder_account::FolderSyncAccount;
 use ashypass_core::sync::NextcloudPasswordsClient;
 use std::cell::RefCell;
 use std::fs;
@@ -42,6 +43,9 @@ pub struct AppState {
     /// acting on it would fail with a raw crypto error.
     sensitive_dialogs: RefCell<Vec<adw::Dialog>>,
     pub sync_status: std::cell::Cell<SyncStatus>,
+    /// The encrypted folder sync account (`None`: not connected).
+    pub folder_account: RefCell<Option<FolderSyncAccount>>,
+    pub folder_status: std::cell::Cell<SyncStatus>,
 }
 
 struct CachedSettings {
@@ -121,6 +125,8 @@ impl AppState {
             }),
             sensitive_dialogs: RefCell::new(Vec::new()),
             sync_status: std::cell::Cell::new(SyncStatus::Unknown),
+            folder_account: RefCell::new(FolderSyncAccount::load()),
+            folder_status: std::cell::Cell::new(SyncStatus::Unknown),
         })
     }
 
@@ -137,17 +143,25 @@ impl AppState {
         }
     }
 
+    pub fn set_folder_status(&self, status: SyncStatus) {
+        if self.folder_status.replace(status) != status {
+            self.events
+                .emit(crate::events::AppEvent::FolderSyncStatusChanged);
+        }
+    }
+
     /// Register a dialog to be closed when the vault locks. It unregisters
     /// itself when closed by any other route.
-    pub fn track_sensitive_dialog(self: &Rc<Self>, dialog: &impl IsA<adw::Dialog>) {
-        let dialog = dialog.upcast_ref::<adw::Dialog>().clone();
+    pub fn track_sensitive_dialog(self: &Rc<Self>, dialog: &impl SensitiveDialog) {
         let weak = Rc::downgrade(self);
-        dialog.connect_closed(move |closed| {
+        dialog.on_closed(Box::new(move |closed| {
             if let Some(state) = weak.upgrade() {
                 state.sensitive_dialogs.borrow_mut().retain(|d| d != closed);
             }
-        });
-        self.sensitive_dialogs.borrow_mut().push(dialog);
+        }));
+        self.sensitive_dialogs
+            .borrow_mut()
+            .push(dialog.adw_dialog());
     }
 
     /// Close every tracked dialog. Returns how many were open.
@@ -192,5 +206,41 @@ impl AppState {
             stamp: FileStamp::current(),
         };
         result
+    }
+}
+
+/// A dialog the vault's lock closes (`AppState::track_sensitive_dialog`).
+/// big-gtk-kit's dialogs reuse one `AdwDialog` for many openings, so the
+/// `closed` handler goes through them: they drop it when the opening ends.
+pub trait SensitiveDialog {
+    fn adw_dialog(&self) -> adw::Dialog;
+    fn on_closed(&self, handler: Box<dyn Fn(&adw::Dialog)>);
+}
+
+impl SensitiveDialog for big_gtk_kit::alert::Alert {
+    fn adw_dialog(&self) -> adw::Dialog {
+        self.dialog().clone().upcast()
+    }
+    fn on_closed(&self, handler: Box<dyn Fn(&adw::Dialog)>) {
+        self.connect_closed(move |dialog| handler(dialog.upcast_ref()));
+    }
+}
+
+impl SensitiveDialog for big_gtk_kit::dialog::Dialog {
+    fn adw_dialog(&self) -> adw::Dialog {
+        self.dialog().clone()
+    }
+    fn on_closed(&self, handler: Box<dyn Fn(&adw::Dialog)>) {
+        self.connect_closed(move |dialog| handler(dialog));
+    }
+}
+
+/// Dialogs made for one opening (preferences, about): their own handler.
+impl SensitiveDialog for adw::PreferencesDialog {
+    fn adw_dialog(&self) -> adw::Dialog {
+        self.clone().upcast()
+    }
+    fn on_closed(&self, handler: Box<dyn Fn(&adw::Dialog)>) {
+        self.connect_closed(move |dialog| handler(dialog.upcast_ref()));
     }
 }

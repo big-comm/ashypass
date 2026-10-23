@@ -284,8 +284,13 @@ impl BackupsView {
 
 impl Inner {
     fn toast(&self, message: &str) {
-        self.toast
-            .add_toast(adw::Toast::builder().title(message).timeout(4).build());
+        self.toast.add_toast(
+            adw::Toast::builder()
+                .use_markup(false)
+                .title(message)
+                .timeout(4)
+                .build(),
+        );
     }
 
     fn show_import(&self) {
@@ -413,7 +418,7 @@ impl Inner {
     /// with attachments and history; the current vault is kept in a file),
     /// or add the copy's entries to the current vault (nothing is removed).
     fn show_restore_dialog(self: &Rc<Self>, anchor: &impl IsA<gtk::Widget>) {
-        let dialog = adw::Dialog::builder()
+        let dialog = big_gtk_kit::dialog::Dialog::builder(Some(anchor))
             .title(tr!("Restore a backup"))
             .content_width(560)
             .content_height(640)
@@ -480,12 +485,12 @@ impl Inner {
         let password_group = adw::PreferencesGroup::builder()
             .title(tr!("Passwords"))
             .build();
-        let file_password = adw::PasswordEntryRow::builder()
-            .title(tr!("Password of the backup file"))
-            .build();
-        let master_password = adw::PasswordEntryRow::builder()
-            .title(tr!("Master password when the copy was made"))
-            .build();
+        let file_password = big_gtk_kit::password::password_row(
+            adw::PasswordEntryRow::builder().title(tr!("Password of the backup file")),
+        );
+        let master_password = big_gtk_kit::password::password_row(
+            adw::PasswordEntryRow::builder().title(tr!("Master password when the copy was made")),
+        );
         let master_hint = gtk::Label::builder()
             .label(tr!(
                 "Usually the same master password you use today. After replacing, the vault opens with this password."
@@ -518,14 +523,32 @@ impl Inner {
         dialog.set_child(Some(&toolbar));
 
         let chosen: Rc<RefCell<Option<PathBuf>>> = Rc::default();
+        // Weak: the fields that call it are its own widgets (a strong hold
+        // would keep the dialog, and the passwords typed in it, forever).
         let update = {
             let chosen = chosen.clone();
-            let restore = restore.clone();
-            let file_password = file_password.clone();
-            let master_password = master_password.clone();
-            let master_hint = master_hint.clone();
-            let replace_check = replace_check.clone();
+            let restore = restore.downgrade();
+            let file_password = file_password.downgrade();
+            let master_password = master_password.downgrade();
+            let master_hint = master_hint.downgrade();
+            let replace_check = replace_check.downgrade();
             move || {
+                let (
+                    Some(restore),
+                    Some(file_password),
+                    Some(master_password),
+                    Some(master_hint),
+                    Some(replace_check),
+                ) = (
+                    restore.upgrade(),
+                    file_password.upgrade(),
+                    master_password.upgrade(),
+                    master_hint.upgrade(),
+                    replace_check.upgrade(),
+                )
+                else {
+                    return;
+                };
                 let path = chosen.borrow().clone();
                 let is_ashy = path
                     .as_ref()
@@ -556,7 +579,7 @@ impl Inner {
         }
         {
             let chosen = chosen.clone();
-            let file_row = file_row.clone();
+            let file_row = file_row.downgrade();
             let update = update.clone();
             choose.connect_clicked(move |button| {
                 let filter = gtk::FileFilter::new();
@@ -577,6 +600,9 @@ impl Inner {
                 picker.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
                     let Ok(file) = result else { return };
                     let Some(path) = file.path() else { return };
+                    let Some(file_row) = file_row.upgrade() else {
+                        return;
+                    };
                     file_row.set_title(
                         &path
                             .file_name()
@@ -595,16 +621,19 @@ impl Inner {
             });
         }
         {
-            let dialog = dialog.clone();
+            let dialog = dialog.downgrade();
             cancel.connect_clicked(move |_| {
-                dialog.close();
+                if let Some(dialog) = dialog.upgrade() {
+                    dialog.close();
+                }
             });
         }
         {
             let weak = Rc::downgrade(self);
-            let dialog_cl = dialog.clone();
+            let dialog_weak = dialog.downgrade();
             restore.connect_clicked(move |button| {
                 let Some(inner) = weak.upgrade() else { return };
+                let Some(dialog_cl) = dialog_weak.upgrade() else { return };
                 let Some(path) = chosen.borrow().clone() else { return };
                 let is_ashy = path
                     .extension()
@@ -638,7 +667,7 @@ impl Inner {
                 let worker_master = master.clone();
                 let worker_file = file_pw.clone();
                 let weak = Rc::downgrade(&inner);
-                let dialog_cl = dialog_cl.clone();
+                let dialog_weak = dialog_weak.clone();
                 let error = error.clone();
                 let button = button.clone();
                 settings_dialog::run_background_task(
@@ -652,6 +681,12 @@ impl Inner {
                     move |checked| {
                         button.set_sensitive(true);
                         let Some(inner) = weak.upgrade() else { return };
+                        // Cancelled, or closed by a lock, while the copy was
+                        // being checked: do not pop the confirmation up.
+                        let Some(dialog_cl) = dialog_weak.upgrade().filter(|d| d.is_mapped())
+                        else {
+                            return;
+                        };
                         match checked {
                             Ok(info) => {
                                 dialog_cl.close();
@@ -676,7 +711,7 @@ impl Inner {
             });
         }
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(anchor));
+        dialog.present();
     }
 
     fn confirm_replace(
@@ -686,7 +721,7 @@ impl Inner {
         file_pw: Option<Zeroizing<String>>,
         entries: usize,
     ) {
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.nav))
             .heading(tr!("Replace the vault with this copy?"))
             .body(format!(
                 "{}\n\n{}",
@@ -715,11 +750,13 @@ impl Inner {
                 }
             }
         });
-        dialog.present(Some(&self.nav));
+        // It holds the passwords of the copy: close it on lock.
+        self.state.track_sensitive_dialog(&dialog);
+        dialog.present();
     }
 
     fn choose_export(self: &Rc<Self>, anchor: &adw::ActionRow) {
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
             .heading(tr!("Take my data to another app"))
             .body(tr!(
                 "KeePass keeps the file protected by a password. A CSV file can be read by anyone who gets hold of it."
@@ -762,7 +799,7 @@ impl Inner {
             }
             _ => {}
         });
-        dialog.present(Some(anchor));
+        dialog.present();
     }
 }
 
@@ -817,7 +854,7 @@ fn build_import_page(state: &SharedState, toast: &adw::ToastOverlay) -> adw::Nav
         (
             ImportSource::Aegis,
             "Aegis",
-            tr!("Verification codes (unencrypted JSON)"),
+            tr!("Verification codes (JSON, encrypted or not)"),
             "security-high-symbolic",
         ),
         (

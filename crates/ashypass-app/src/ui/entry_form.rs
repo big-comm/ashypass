@@ -75,7 +75,12 @@ pub fn parse_totp_input(
         }
     } else {
         TotpInput {
-            secret: compact.to_ascii_uppercase(),
+            // Stored without the grouping dashes and `=` padding some sites
+            // show, so exports to other apps carry a plain key.
+            secret: compact
+                .replace('-', "")
+                .trim_end_matches('=')
+                .to_ascii_uppercase(),
             algorithm: algorithm.to_string(),
             digits,
             period,
@@ -157,7 +162,7 @@ pub fn present(
             .unwrap_or_default(),
     );
 
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(parent))
         .title(if is_edit {
             tr!("Edit password")
         } else {
@@ -198,9 +203,9 @@ pub fn present(
     let username_row = adw::EntryRow::builder()
         .title(tr!("User or e-mail (optional)"))
         .build();
-    let password_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Password"))
-        .build();
+    let password_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Password")),
+    );
     let generate_button = gtk::Button::builder()
         .label(tr!("Generate password"))
         .valign(gtk::Align::Center)
@@ -350,9 +355,9 @@ pub fn present(
             "Paste the setup key or otpauth:// link from the site's two-step verification settings"
         ))
         .build();
-    let totp_row = adw::PasswordEntryRow::builder()
-        .title(tr!("Setup key"))
-        .build();
+    let totp_row = big_gtk_kit::password::password_row(
+        adw::PasswordEntryRow::builder().title(tr!("Setup key")),
+    );
     let algo_model = gtk::StringList::new(&["SHA1", "SHA256", "SHA512"]);
     let algo_row = adw::ComboRow::builder()
         .title(tr!("Algorithm"))
@@ -364,7 +369,7 @@ pub fn present(
         .build();
     let period_row = adw::SpinRow::builder()
         .title(tr!("New code every (seconds)"))
-        .adjustment(&gtk::Adjustment::new(30.0, 15.0, 120.0, 15.0, 15.0, 0.0))
+        .adjustment(&gtk::Adjustment::new(30.0, 1.0, 300.0, 1.0, 15.0, 0.0))
         .build();
     totp_expander.add_row(&totp_row);
     totp_expander.add_row(&algo_row);
@@ -477,21 +482,26 @@ pub fn present(
     {
         let state = state.clone();
         let toast = toast.clone();
-        let password_row = password_row.clone();
+        // Weak: the button sits inside the password row.
+        let password_row = password_row.downgrade();
         generate_button.connect_clicked(move |button| {
             present_embedded_generator(&state, &toast, button, {
                 let password_row = password_row.clone();
                 move |value| {
-                    password_row.set_text(&value);
+                    if let Some(password_row) = password_row.upgrade() {
+                        password_row.set_text(&value);
+                    }
                 }
             });
         });
     }
 
     {
-        let dialog = dialog.clone();
+        let dialog = dialog.downgrade();
         cancel_button.connect_clicked(move |_| {
-            dialog.close();
+            if let Some(dialog) = dialog.upgrade() {
+                dialog.close();
+            }
         });
     }
 
@@ -500,7 +510,7 @@ pub fn present(
     {
         let state = state.clone();
         let toast = toast.clone();
-        let dialog_cl = dialog.clone();
+        let dialog_cl = dialog.downgrade();
         let save_banner = save_banner.clone();
         save_button.connect_clicked(move |_| {
             save_banner.set_revealed(false);
@@ -610,6 +620,9 @@ pub fn present(
                     .update(
                         id,
                         UpdateEntry {
+                            // Keep the type and fields the desktop does not edit yet.
+                            item_type: None,
+                            extra: None,
                             title: Some(title),
                             username: Some(username.unwrap_or_default()),
                             password: Some(password.to_string()),
@@ -622,9 +635,21 @@ pub fn present(
                             category: Some(category),
                         },
                     )
-                    .map(|_| id)
+                    .and_then(|updated| {
+                        // `false`: the entry was deleted meanwhile (sync,
+                        // another window); do not report a save.
+                        if updated {
+                            Ok(id)
+                        } else {
+                            Err(ashypass_core::error::Error::Other(
+                                "the entry no longer exists".into(),
+                            ))
+                        }
+                    })
             } else {
                 state.vault.borrow().add(NewEntry {
+                    item_type: None,
+                    extra: None,
                     title,
                     username,
                     password: password.to_string(),
@@ -644,6 +669,7 @@ pub fn present(
                         log::warn!("could not save tags: {e}");
                         toast.add_toast(
                             adw::Toast::builder()
+                                .use_markup(false)
                                 .title(tr!("Saved, but the tags could not be updated"))
                                 .timeout(5)
                                 .build(),
@@ -651,6 +677,7 @@ pub fn present(
                     } else {
                         toast.add_toast(
                             adw::Toast::builder()
+                                .use_markup(false)
                                 .title(if entry_id.is_some() {
                                     tr!("Changes saved to the vault")
                                 } else {
@@ -664,7 +691,9 @@ pub fn present(
                     if let Some(cb) = on_saved.as_ref() {
                         cb(id);
                     }
-                    dialog_cl.close();
+                    if let Some(dialog) = dialog_cl.upgrade() {
+                        dialog.close();
+                    }
                 }
                 Err(e) => {
                     log::error!("saving entry failed: {e}");
@@ -688,7 +717,7 @@ pub fn present(
         });
     }
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(parent));
+    dialog.present();
 }
 
 /// The generator inside the entry form, with "Use this password" as its
@@ -701,7 +730,7 @@ fn present_embedded_generator<F>(
 ) where
     F: Fn(String) + 'static,
 {
-    let dialog = adw::Dialog::builder()
+    let dialog = big_gtk_kit::dialog::Dialog::builder(Some(parent))
         .title(tr!("Generate password"))
         .content_width(520)
         .build();
@@ -737,7 +766,7 @@ fn present_embedded_generator<F>(
         keep_alive.borrow_mut().take();
     });
     state.track_sensitive_dialog(&dialog);
-    dialog.present(Some(parent));
+    dialog.present();
 }
 
 fn build_attachments_group(
@@ -829,7 +858,7 @@ fn build_attachments_group(
                     let filename = att.filename.clone();
                     let att_id = att.id;
                     delete.connect_clicked(move |button| {
-                        let confirm = adw::AlertDialog::builder()
+                        let confirm = big_gtk_kit::alert::Alert::builder(Some(button))
                             .heading(tr!("Remove attachment?"))
                             .body(format!(
                                 "{} “{filename}”",
@@ -855,12 +884,14 @@ fn build_attachments_group(
                             match state.vault.borrow().delete_attachment(att_id) {
                                 Ok(_) => toast.add_toast(
                                     adw::Toast::builder()
+                                        .use_markup(false)
                                         .title(tr!("Attachment removed"))
                                         .timeout(3)
                                         .build(),
                                 ),
                                 Err(e) => toast.add_toast(
                                     adw::Toast::builder()
+                                        .use_markup(false)
                                         .title(format!(
                                             "{}: {e}",
                                             tr!("Could not remove the attachment")
@@ -873,7 +904,7 @@ fn build_attachments_group(
                                 r();
                             }
                         });
-                        confirm.present(Some(button));
+                        confirm.present();
                     });
                 }
                 row.add_suffix(&delete);
@@ -901,48 +932,98 @@ fn build_attachments_group(
             dialog.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
                 let Ok(file) = result else { return };
                 let Some(path) = file.path() else { return };
-                let data = match std::fs::read(&path) {
-                    Ok(d) => d,
-                    Err(e) => {
-                        toast.add_toast(
-                            adw::Toast::builder()
-                                .title(format!("{}: {e}", tr!("Could not read the file")))
-                                .timeout(5)
-                                .build(),
-                        );
-                        return;
-                    }
-                };
-                let filename = path
-                    .file_name()
-                    .and_then(|s| s.to_str())
-                    .unwrap_or("attachment")
-                    .to_string();
-                let mime = crate::ui::vault_view::mime_guess_from_ext(&filename);
-                let added =
-                    state
-                        .vault
-                        .borrow()
-                        .add_attachment(eid, &filename, mime.as_deref(), &data);
-                match added {
-                    Ok(_) => {
-                        toast.add_toast(
-                            adw::Toast::builder()
-                                .title(tr!("Attachment added"))
-                                .timeout(3)
-                                .build(),
-                        );
-                        if let Some(r) = render.borrow().as_ref() {
-                            r();
-                        }
-                    }
-                    Err(e) => toast.add_toast(
+                // Attachments live encrypted inside the vault database: keep
+                // them to a size that does not bloat it or stall the window.
+                const MAX_ATTACHMENT_BYTES: u64 = 64 * 1024 * 1024;
+                let too_large = std::fs::metadata(&path)
+                    .map(|m| m.len() > MAX_ATTACHMENT_BYTES)
+                    .unwrap_or(false);
+                if too_large {
+                    toast.add_toast(
                         adw::Toast::builder()
-                            .title(format!("{}: {e}", tr!("Could not add the attachment")))
+                            .use_markup(false)
+                            .title(tr!("This file is too large to attach. The limit is 64 MB."))
                             .timeout(5)
                             .build(),
-                    ),
+                    );
+                    return;
                 }
+                let state = state.clone();
+                let toast = toast.clone();
+                let render = render.clone();
+                let read_path = path.clone();
+                // Read off the main loop; encrypt and store back here, where
+                // the vault lives.
+                crate::ui::settings_dialog::run_background_task(
+                    move || {
+                        use std::io::Read;
+                        let mut data = Vec::new();
+                        std::fs::File::open(&read_path)
+                            .and_then(|f| f.take(MAX_ATTACHMENT_BYTES + 1).read_to_end(&mut data))
+                            .map(|_| data)
+                            .map_err(|e| e.to_string())
+                    },
+                    move |read| {
+                        let data = match read {
+                            Ok(d) if d.len() as u64 > MAX_ATTACHMENT_BYTES => {
+                                toast.add_toast(
+                                    adw::Toast::builder()
+                                        .use_markup(false)
+                                        .title(tr!(
+                                            "This file is too large to attach. The limit is 64 MB."
+                                        ))
+                                        .timeout(5)
+                                        .build(),
+                                );
+                                return;
+                            }
+                            Ok(d) => zeroize::Zeroizing::new(d),
+                            Err(e) => {
+                                toast.add_toast(
+                                    adw::Toast::builder()
+                                        .title(format!("{}: {e}", tr!("Could not read the file")))
+                                        .use_markup(false)
+                                        .timeout(5)
+                                        .build(),
+                                );
+                                return;
+                            }
+                        };
+                        let filename = path
+                            .file_name()
+                            .and_then(|s| s.to_str())
+                            .unwrap_or("attachment")
+                            .to_string();
+                        let mime = crate::ui::vault_view::mime_guess_from_ext(&filename);
+                        let added = state.vault.borrow().add_attachment(
+                            eid,
+                            &filename,
+                            mime.as_deref(),
+                            &data,
+                        );
+                        match added {
+                            Ok(_) => {
+                                toast.add_toast(
+                                    adw::Toast::builder()
+                                        .use_markup(false)
+                                        .title(tr!("Attachment added"))
+                                        .timeout(3)
+                                        .build(),
+                                );
+                                if let Some(r) = render.borrow().as_ref() {
+                                    r();
+                                }
+                            }
+                            Err(e) => toast.add_toast(
+                                adw::Toast::builder()
+                                    .title(format!("{}: {e}", tr!("Could not add the attachment")))
+                                    .use_markup(false)
+                                    .timeout(5)
+                                    .build(),
+                            ),
+                        }
+                    },
+                );
             });
         });
     }
@@ -982,7 +1063,9 @@ where
     group.add_action(&action);
     let menu = gio::Menu::new();
     for value in &values {
-        let item = gio::MenuItem::new(Some(value), None);
+        // `_` marks a mnemonic in menu labels; a tag like `my_tag` must show
+        // as typed.
+        let item = gio::MenuItem::new(Some(&value.replace('_', "__")), None);
         item.set_action_and_target_value(Some("picker.pick"), Some(&value.to_variant()));
         menu.append_item(&item);
     }
@@ -1040,6 +1123,12 @@ mod tests {
         let parsed = parse_totp_input("jbsw y3dp ehpk 3pxp", "SHA1", 6, 30).unwrap();
         assert_eq!(parsed.secret, "JBSWY3DPEHPK3PXP");
         assert_eq!(parsed.digits, 6);
+    }
+
+    #[test]
+    fn grouped_and_padded_keys_are_accepted() {
+        let parsed = parse_totp_input("JBSW-Y3DP-EHPK-3PXP====", "SHA1", 6, 30).unwrap();
+        assert_eq!(parsed.secret, "JBSWY3DPEHPK3PXP");
     }
 
     #[test]

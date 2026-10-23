@@ -64,7 +64,10 @@ pub(super) fn populate_trash(
             let entries = match state.vault.borrow().list_trash() {
                 Ok(v) => v,
                 Err(e) => {
-                    let row = adw::ActionRow::builder().title(format!("{e}")).build();
+                    let row = adw::ActionRow::builder()
+                        .title(format!("{e}"))
+                        .use_markup(false)
+                        .build();
                     group.add(&row);
                     trash_rows.borrow_mut().push(row.upcast());
                     return;
@@ -82,11 +85,17 @@ pub(super) fn populate_trash(
                 let when = crate::ui::vault_view::format_timestamp(t.deleted_at);
                 let row = adw::ActionRow::builder()
                     .title(&t.title)
-                    .subtitle(format!(
-                        "{} — {}",
-                        t.username.as_deref().unwrap_or(""),
-                        when
-                    ))
+                    .subtitle(
+                        match t
+                            .username
+                            .as_deref()
+                            .map(str::trim)
+                            .filter(|u| !u.is_empty())
+                        {
+                            Some(user) => format!("{user} — {when}"),
+                            None => when,
+                        },
+                    )
                     .use_markup(false)
                     .build();
 
@@ -114,6 +123,7 @@ pub(super) fn populate_trash(
                             Ok(Some(_)) => {
                                 toast.add_toast(
                                     adw::Toast::builder()
+                                        .use_markup(false)
                                         .title(tr!("Entry restored"))
                                         .timeout(3)
                                         .build(),
@@ -122,10 +132,17 @@ pub(super) fn populate_trash(
                                     (cb)();
                                 }
                             }
-                            Ok(None) => {}
+                            Ok(None) => {
+                                // Already gone (emptied elsewhere): just
+                                // show the current list.
+                                if let Some(cb) = render_slot.borrow().clone() {
+                                    (cb)();
+                                }
+                            }
                             Err(e) => {
                                 toast.add_toast(
                                     adw::Toast::builder()
+                                        .use_markup(false)
                                         .title(format!("{e}"))
                                         .timeout(3)
                                         .build(),
@@ -139,29 +156,45 @@ pub(super) fn populate_trash(
                     let toast = toast.clone();
                     let trash_id = t.trash_id;
                     let render_slot = render_slot.clone();
-                    purge_btn.connect_clicked(move |_| {
-                        let r = state.vault.borrow().delete_from_trash(trash_id);
-                        match r {
-                            Ok(_) => {
-                                toast.add_toast(
-                                    adw::Toast::builder()
-                                        .title(tr!("Permanently deleted"))
-                                        .timeout(3)
-                                        .build(),
-                                );
-                                if let Some(cb) = render_slot.borrow().clone() {
-                                    (cb)();
+                    let title = t.title.clone();
+                    purge_btn.connect_clicked(move |button| {
+                        let state = state.clone();
+                        let toast = toast.clone();
+                        let render_slot = render_slot.clone();
+                        confirm_destructive(
+                            &state.clone(),
+                            button,
+                            tr!("Delete permanently?"),
+                            &tr!("“{}” is deleted for good. This cannot be undone.")
+                                .replace("{}", &title),
+                            tr!("Delete permanently"),
+                            move || {
+                                let r = state.vault.borrow().delete_from_trash(trash_id);
+                                match r {
+                                    Ok(_) => {
+                                        toast.add_toast(
+                                            adw::Toast::builder()
+                                                .use_markup(false)
+                                                .title(tr!("Permanently deleted"))
+                                                .timeout(3)
+                                                .build(),
+                                        );
+                                        if let Some(cb) = render_slot.borrow().clone() {
+                                            (cb)();
+                                        }
+                                    }
+                                    Err(e) => {
+                                        toast.add_toast(
+                                            adw::Toast::builder()
+                                                .title(format!("{e}"))
+                                                .use_markup(false)
+                                                .timeout(3)
+                                                .build(),
+                                        );
+                                    }
                                 }
-                            }
-                            Err(e) => {
-                                toast.add_toast(
-                                    adw::Toast::builder()
-                                        .title(format!("{e}"))
-                                        .timeout(3)
-                                        .build(),
-                                );
-                            }
-                        }
+                            },
+                        );
                     });
                 }
 
@@ -195,26 +228,82 @@ pub(super) fn populate_trash(
         let state = state.clone();
         let toast = toast.clone();
         let render = render.clone();
-        empty_row.connect_activated(move |_| match state.vault.borrow().empty_trash() {
-            Ok(n) => {
-                toast.add_toast(
-                    adw::Toast::builder()
-                        .title(format!("{} {}", n, tr!("entries removed")))
-                        .timeout(3)
-                        .build(),
-                );
+        empty_row.connect_activated(move |row| {
+            let count = state
+                .vault
+                .borrow()
+                .list_trash()
+                .map(|v| v.len())
+                .unwrap_or(0);
+            if count == 0 {
                 (render)();
+                return;
             }
-            Err(e) => {
-                toast.add_toast(
-                    adw::Toast::builder()
-                        .title(format!("{e}"))
-                        .timeout(3)
-                        .build(),
-                );
-            }
+            let body = trn!(
+                "The {} entry in the trash is deleted for good. This cannot be undone.",
+                "The {} entries in the trash are deleted for good. This cannot be undone.",
+                count
+            )
+            .replace("{}", &count.to_string());
+            let state = state.clone();
+            let toast = toast.clone();
+            let render = render.clone();
+            confirm_destructive(
+                &state.clone(),
+                row,
+                tr!("Empty trash?"),
+                &body,
+                tr!("Empty trash"),
+                move || match state.vault.borrow().empty_trash() {
+                    Ok(n) => {
+                        toast.add_toast(
+                            adw::Toast::builder()
+                                .use_markup(false)
+                                .title(format!("{} {}", n, tr!("entries removed")))
+                                .timeout(3)
+                                .build(),
+                        );
+                        (render)();
+                    }
+                    Err(e) => {
+                        toast.add_toast(
+                            adw::Toast::builder()
+                                .title(format!("{e}"))
+                                .timeout(3)
+                                .use_markup(false)
+                                .build(),
+                        );
+                    }
+                },
+            );
         });
     }
     action_group.add(&empty_row);
     page.add(&action_group);
+}
+
+/// Ask before an action that cannot be undone; `confirmed` runs only on the
+/// destructive response.
+fn confirm_destructive<F>(
+    state: &SharedState,
+    anchor: &impl IsA<gtk::Widget>,
+    heading: &str,
+    body: &str,
+    action: &str,
+    confirmed: F,
+) where
+    F: Fn() + 'static,
+{
+    let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
+        .heading(heading)
+        .body(body)
+        .close_response("cancel")
+        .default_response("cancel")
+        .build();
+    dialog.add_response("cancel", tr!("Cancel"));
+    dialog.add_response("confirm", action);
+    dialog.set_response_appearance("confirm", adw::ResponseAppearance::Destructive);
+    dialog.connect_response(Some("confirm"), move |_, _| confirmed());
+    state.track_sensitive_dialog(&dialog);
+    dialog.present();
 }

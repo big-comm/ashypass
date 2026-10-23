@@ -16,6 +16,13 @@ use std::time::Duration;
 const DRIVE_FILES: &str = "https://www.googleapis.com/drive/v3/files";
 const DRIVE_UPLOAD: &str = "https://www.googleapis.com/upload/drive/v3/files";
 const FOLDER_MIME: &str = "application/vnd.google-apps.folder";
+/// Time allowed to establish a connection.
+const CONNECT_TIMEOUT: Duration = Duration::from_secs(30);
+/// Whole-request limit for small metadata calls (list, folder, delete).
+const METADATA_TIMEOUT: Duration = Duration::from_secs(60);
+/// Whole-request limit for a snapshot upload or download, which can be
+/// hundreds of MiB on a slow connection.
+const TRANSFER_TIMEOUT: Duration = Duration::from_secs(30 * 60);
 
 #[derive(Debug, Clone)]
 pub struct BackupService {
@@ -79,7 +86,8 @@ impl BackupService {
             return Ok(client);
         }
         let client = reqwest::blocking::Client::builder()
-            .timeout(Duration::from_secs(60))
+            .connect_timeout(CONNECT_TIMEOUT)
+            .timeout(METADATA_TIMEOUT)
             .build()
             .map_err(|e| Error::Other(format!("drive http: {e}")))?;
         let _ = CLIENT.set(client);
@@ -180,6 +188,7 @@ impl BackupService {
         let file = fs::File::open(path.as_ref())?;
         let resp = client
             .put(location)
+            .timeout(TRANSFER_TIMEOUT)
             .header(reqwest::header::CONTENT_LENGTH, size)
             .body(reqwest::blocking::Body::new(file))
             .send()
@@ -249,6 +258,7 @@ impl BackupService {
         let url = format!("{DRIVE_FILES}/{file_id}?alt=media");
         let mut resp = client
             .get(&url)
+            .timeout(TRANSFER_TIMEOUT)
             .bearer_auth(&access)
             .send()
             .map_err(|e| Error::Other(format!("download: {e}")))?;

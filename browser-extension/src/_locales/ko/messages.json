@@ -1,0 +1,716 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Linux용 비밀번호 관리자 Ashy Pass의 로그인 정보를 입력하고 복사합니다.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Ashy Pass에 연결하는 중…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass가 연결되지 않음",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Ashy Pass를 설치하고 Ashy Pass → 설정 → 브라우저에서 이 브라우저를 연결하세요.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "브라우저 확장 프로그램이 꺼져 있음",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Ashy Pass → 설정 → 브라우저에서 브라우저 확장 프로그램을 켜세요.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "아직 보관함이 없음",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "먼저 Ashy Pass에서 보관함을 만드세요.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "문제가 발생했습니다",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "다시 시도",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "보관함이 잠겨 있습니다",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "마스터 비밀번호",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "잠금 해제",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "잠금 해제하는 중…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "마스터 비밀번호가 올바르지 않습니다.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "시도 횟수가 너무 많습니다. 잠시 후 다시 시도하세요.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "모든 항목 검색",
+    "description": "Label and placeholder of the search field."
+  },
+  "searchResultsHeading": {
+    "message": "검색 결과",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "이 사이트에 저장된 로그인이 없습니다.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "항목을 찾을 수 없습니다.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "입력은 웹 페이지에서만 작동합니다.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "사용자 이름 없음",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "제목 없음",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "입력",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "사용자 복사",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "비밀번호 복사",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "코드 복사",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "이 페이지에 $TITLE$ 입력",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "$TITLE$의 사용자 이름 복사",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "$TITLE$의 비밀번호 복사",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "$TITLE$의 인증 코드 복사",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "사용자 이름 복사됨",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "비밀번호 복사됨",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "코드 복사됨",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "입력됨",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "이 페이지에서 로그인 양식을 찾을 수 없음",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "클립보드에 복사할 수 없음",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "비밀번호 생성",
+    "description": "Button that generates a new password and copies it."
+  },
+  "revealPassword": {
+    "message": "비밀번호 표시",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "비밀번호 숨기기",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "잠금",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "보관함 잠김",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass가 제시간에 응답하지 않았습니다.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "Ashy Pass와의 연결이 끊어졌습니다.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "이 로그인은 이 사이트의 것이 아닙니다.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "이 항목은 더 이상 존재하지 않습니다.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "이 항목에는 인증 코드가 없습니다.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "이 페이지에서는 입력이 허용되지 않습니다.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass 보고: $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  },
+  "backButton": {
+    "message": "뒤로",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "추가",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Ashy Pass 열기",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "보관함",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "생성기",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "설정",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "섹션",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "PIN",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "PIN으로 잠금 해제",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "마스터 비밀번호 사용",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "PIN 사용",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "PIN이 올바르지 않습니다.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "PIN이 올바르지 않습니다. 남은 시도 횟수: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "잘못된 시도가 너무 많아 PIN이 꺼졌습니다. 마스터 비밀번호를 사용하세요.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "이 컴퓨터에 설정된 PIN이 없습니다. 마스터 비밀번호를 사용하세요.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "로그인 입력란에 제안을 표시할까요?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass는 웹사이트의 사용자 이름 및 비밀번호 입력란 바로 아래에 로그인 목록을 표시할 수 있습니다.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "나중에",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "켜기",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "폴더",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "유형",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "모든 항목",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "인증 코드가 있는 로그인",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "즐겨찾기",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "모든 폴더",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "폴더 없음",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "자동 입력 제안",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "즐겨찾기",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "모든 항목",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "항목",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "이 필터와 일치하는 항목이 없습니다.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "보관함이 비어 있습니다.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "$TITLE$의 세부 정보 표시",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "$TITLE$의 웹사이트 열기",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "$TITLE$에 대한 추가 옵션",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "즐겨찾기에 추가",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "즐겨찾기에서 제거",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "웹사이트 열기",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "웹사이트 주소 복사",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "세부 정보 보기",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "웹사이트 주소 복사됨",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "즐겨찾기에 추가됨",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "즐겨찾기에서 제거됨",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "항목 세부 정보",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "사용자 이름",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "비밀번호",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "인증 코드",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "웹사이트",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "폴더",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "이름",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "새 로그인",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "취소",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "저장",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "이름을 입력하세요.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "비밀번호를 입력하세요.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "저장됨",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "비밀번호 생성됨",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass가 이 요청을 받아들일 수 없습니다.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "다시 생성",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "복사",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "생성할 값의 유형",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "비밀번호",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "암호 문구",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "PIN",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "길이",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "대문자 (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "소문자 (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "숫자 (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "기호 (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "헷갈리는 문자 피하기",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "단어 수",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "단어 구분자",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "첫 글자 대문자",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "숫자 포함",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "문자 유형을 하나 이상 유지하세요.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "이 페이지에 입력",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "이 페이지에서 비밀번호 입력란을 찾을 수 없음",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "보관함",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "지금 잠그기",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "자동 입력",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "로그인 입력란에 제안 표시",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "방문하는 웹사이트에 대한 접근 권한이 필요합니다. 페이지는 로그인 정보를 볼 수 없으며, 직접 선택하기 전에는 아무것도 입력되지 않습니다.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "제안이 켜졌습니다. 열려 있는 페이지를 새로 고침하면 표시됩니다.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "권한이 허용되지 않았습니다.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "키보드 단축키",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutNotSet": {
+    "message": "설정되지 않음",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "정보",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "버전",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "도움말",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "개인정보 보호",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Ashy Pass 제안",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Ashy Pass 제안 표시",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass가 잠겨 있습니다",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "이 사이트의 로그인이 없습니다",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "로그인 추가",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "계속하려면 도구 모음에서 Ashy Pass 아이콘을 클릭하세요.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "이 메뉴는 만료되었습니다. 입력란을 다시 클릭하세요.",
+    "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "브라우저 비밀번호 관리자 끄기"
+  },
+  "browserPmHint": {
+    "message": "브라우저 자체 목록이 페이지 위에 나타나 Ashy Pass 제안을 가립니다. 끄면 로그인 필드를 클릭하는 즉시 Ashy Pass가 열립니다."
+  },
+  "browserPmOffToast": {
+    "message": "브라우저 비밀번호 관리자를 껐습니다"
+  },
+  "browserPmOnToast": {
+    "message": "브라우저 비밀번호 관리자를 다시 켰습니다"
+  },
+  "shortcutOpens": {
+    "message": "이 창을 엽니다."
+  },
+  "shortcutChange": {
+    "message": "변경"
+  },
+  "shortcutRecord": {
+    "message": "새 키 조합을 누르세요…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl 또는 Alt, 필요하면 Shift, 그리고 문자나 숫자. Esc로 취소합니다."
+  },
+  "shortcutReset": {
+    "message": "기본값"
+  },
+  "shortcutSaved": {
+    "message": "단축키를 저장했습니다"
+  },
+  "shortcutInvalid": {
+    "message": "그 조합은 사용할 수 없습니다. Ctrl 또는 Alt와 문자를 시도하세요."
+  },
+  "shortcutOpenFailed": {
+    "message": "브라우저의 단축키 설정을 열 수 없습니다."
+  },
+  "editButton": {
+    "message": "편집"
+  },
+  "deleteButton": {
+    "message": "삭제"
+  },
+  "deleteConfirmTitle": {
+    "message": "“$TITLE$”을(를) 삭제할까요?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Ashy Pass에서 휴지통이 켜져 있으면 그곳에서 복원할 수 있습니다. 동기화된 기기에서도 삭제됩니다."
+  },
+  "editLoginTitle": {
+    "message": "로그인 편집"
+  },
+  "movedToTrash": {
+    "message": "Ashy Pass 휴지통으로 이동했습니다"
+  },
+  "loginDeleted": {
+    "message": "로그인을 삭제했습니다"
+  },
+  "errorChanged": {
+    "message": "그동안 Ashy Pass에서 이 로그인이 변경되었습니다. 최신 버전을 보려면 다시 여세요."
+  },
+  "errorHostOutdated": {
+    "message": "이 기능을 사용하려면 이 컴퓨터의 Ashy Pass를 업데이트하세요."
+  },
+  "notesLabel": {
+    "message": "메모"
+  }
+}

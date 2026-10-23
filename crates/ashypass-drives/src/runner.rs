@@ -7,8 +7,8 @@
 use crate::passphrase::Passphrase;
 use crate::{Error, Result};
 use std::fmt;
-use std::io::{BufRead, BufReader, Write};
-use std::process::{Command, Stdio};
+use std::io::{BufRead, BufReader, Read, Write};
+use std::process::{Child, Command, Stdio};
 use zeroize::Zeroize;
 
 pub struct CommandSpec {
@@ -214,9 +214,7 @@ fn execute(
 ) -> Result<CommandOutput> {
     let mut cmd = Command::new(program);
     cmd.args(args);
-    if stdin_bytes.is_some() {
-        cmd.stdin(Stdio::piped());
-    }
+    cmd.stdin(stdin_for(stdin_bytes));
     cmd.stdout(Stdio::piped());
     cmd.stderr(if inherit_stderr {
         Stdio::inherit()
@@ -224,22 +222,22 @@ fn execute(
         Stdio::piped()
     });
 
-    let mut child = cmd.spawn().map_err(|e| match e.kind() {
-        std::io::ErrorKind::NotFound => Error::MissingTool(program.to_string()),
-        _ => Error::Io(e),
-    })?;
-
-    if let (Some(bytes), Some(mut stdin)) = (stdin_bytes, child.stdin.take()) {
-        stdin.write_all(bytes)?;
-        stdin.flush()?;
-        drop(stdin);
-    }
+    let mut child = spawn(&mut cmd, program)?;
+    let write_error = feed_stdin(&mut child, stdin_bytes);
 
     let output = child.wait_with_output()?;
+    let display_cmd = || format!("{} {}", program, args.join(" "));
+    if let Some(error) = write_error {
+        return Err(stdin_failure(
+            display_cmd(),
+            output.status.code(),
+            &error,
+            &output.stderr,
+        ));
+    }
     if !output.status.success() {
-        let display_cmd = format!("{} {}", program, args.join(" "));
         return Err(Error::CommandFailed {
-            cmd: display_cmd,
+            cmd: display_cmd(),
             status: output.status.code().unwrap_or(-1),
             stderr: String::from_utf8_lossy(&output.stderr).into_owned(),
         });
@@ -250,10 +248,51 @@ fn execute(
     })
 }
 
+/// A child never inherits our stdin: in the privileged helper that is the
+/// request pipe, and a tool reading from it would swallow protocol lines.
+fn stdin_for(stdin_bytes: Option<&[u8]>) -> Stdio {
+    if stdin_bytes.is_some() {
+        Stdio::piped()
+    } else {
+        Stdio::null()
+    }
+}
+
+fn spawn(cmd: &mut Command, program: &str) -> Result<Child> {
+    cmd.spawn().map_err(|e| match e.kind() {
+        std::io::ErrorKind::NotFound => Error::MissingTool(program.to_string()),
+        _ => Error::Io(e),
+    })
+}
+
+/// Write `stdin_bytes` to the child and close its stdin. A failed write
+/// (typically a broken pipe because the child exited early) is returned
+/// instead of propagated, so the caller still reaps the child and can report
+/// its stderr, which usually explains why it stopped reading.
+fn feed_stdin(child: &mut Child, stdin_bytes: Option<&[u8]>) -> Option<std::io::Error> {
+    let (Some(bytes), Some(mut stdin)) = (stdin_bytes, child.stdin.take()) else {
+        return None;
+    };
+    stdin.write_all(bytes).and_then(|()| stdin.flush()).err()
+}
+
+fn stdin_failure(cmd: String, status: Option<i32>, error: &std::io::Error, stderr: &[u8]) -> Error {
+    Error::CommandFailed {
+        cmd,
+        status: status.unwrap_or(-1),
+        stderr: format!(
+            "could not write to stdin: {error}; {}",
+            String::from_utf8_lossy(stderr).trim()
+        ),
+    }
+}
+
 /// Streaming variant of [`execute`]: reads the child's stderr incrementally
 /// and invokes `on_stderr_chunk` for every newline- or carriage-return-
 /// delimited chunk. The full stderr is still accumulated for error reporting
-/// in case the process exits non-zero.
+/// in case the process exits non-zero. Stdout is drained on its own thread so
+/// a child that fills the stdout pipe cannot deadlock us while we block on
+/// stderr.
 fn execute_streaming(
     program: &str,
     args: &[String],
@@ -262,22 +301,18 @@ fn execute_streaming(
 ) -> Result<CommandOutput> {
     let mut cmd = Command::new(program);
     cmd.args(args);
-    if stdin_bytes.is_some() {
-        cmd.stdin(Stdio::piped());
-    }
+    cmd.stdin(stdin_for(stdin_bytes));
     cmd.stdout(Stdio::piped());
     cmd.stderr(Stdio::piped());
 
-    let mut child = cmd.spawn().map_err(|e| match e.kind() {
-        std::io::ErrorKind::NotFound => Error::MissingTool(program.to_string()),
-        _ => Error::Io(e),
-    })?;
+    let mut child = spawn(&mut cmd, program)?;
+    let write_error = feed_stdin(&mut child, stdin_bytes);
 
-    if let (Some(bytes), Some(mut stdin)) = (stdin_bytes, child.stdin.take()) {
-        stdin.write_all(bytes)?;
-        stdin.flush()?;
-        drop(stdin);
-    }
+    let mut stdout = child.stdout.take().expect("stdout was piped");
+    let stdout_reader = std::thread::spawn(move || {
+        let mut buf = Vec::new();
+        stdout.read_to_end(&mut buf).map(|_| buf)
+    });
 
     let stderr = child.stderr.take().expect("stderr was piped");
     let mut reader = BufReader::new(stderr);
@@ -287,11 +322,14 @@ fn execute_streaming(
     // Read until `\r` first — that's what `dd status=progress` uses to
     // overwrite the same line. Then read until `\n` for tools that only
     // emit newlines. `read_until` returns 0 on EOF.
-    loop {
+    let read_result = loop {
         chunk.clear();
-        let n = reader.read_until(b'\r', &mut chunk).map_err(Error::Io)?;
+        let n = match reader.read_until(b'\r', &mut chunk) {
+            Ok(n) => n,
+            Err(e) => break Err(e),
+        };
         if n == 0 {
-            break;
+            break Ok(());
         }
         all_stderr.extend_from_slice(&chunk);
         // Strip the trailing \r and any embedded \n so the callback sees a
@@ -312,20 +350,153 @@ fn execute_streaming(
                 on_stderr_chunk(s);
             }
         }
-    }
+    };
+    // Close our end before reaping, so a child still writing to stderr gets
+    // EPIPE instead of blocking forever.
+    drop(reader);
 
-    // Drain anything left and capture stdout.
-    let output = child.wait_with_output()?;
-    all_stderr.extend_from_slice(&output.stderr);
-    if !output.status.success() {
+    let status = child.wait()?;
+    let stdout = stdout_reader
+        .join()
+        .map_err(|_| Error::Io(std::io::Error::other("stdout reader panicked")))??;
+    read_result?;
+
+    let display_cmd = || format!("{} {}", program, args.join(" "));
+    if let Some(error) = write_error {
+        return Err(stdin_failure(
+            display_cmd(),
+            status.code(),
+            &error,
+            &all_stderr,
+        ));
+    }
+    if !status.success() {
         return Err(Error::CommandFailed {
-            cmd: format!("{} {}", program, args.join(" ")),
-            status: output.status.code().unwrap_or(-1),
+            cmd: display_cmd(),
+            status: status.code().unwrap_or(-1),
             stderr: String::from_utf8_lossy(&all_stderr).into_owned(),
         });
     }
     Ok(CommandOutput {
-        stdout: output.stdout,
+        stdout,
         stderr: all_stderr,
     })
+}
+
+/// Fake runner for unit tests: records every argv and answers from a queue
+/// of scripted results (success with empty output once the queue is empty).
+#[cfg(test)]
+pub(crate) mod fake {
+    use super::*;
+    use std::collections::VecDeque;
+    use std::sync::Mutex;
+
+    #[derive(Default)]
+    pub(crate) struct FakeRunner {
+        pub calls: Mutex<Vec<String>>,
+        pub replies: Mutex<VecDeque<Result<CommandOutput>>>,
+    }
+
+    impl FakeRunner {
+        pub(crate) fn reply(self, result: Result<CommandOutput>) -> Self {
+            self.replies.lock().unwrap().push_back(result);
+            self
+        }
+
+        pub(crate) fn stdout(self, text: &str) -> Self {
+            self.reply(Ok(CommandOutput {
+                stdout: text.as_bytes().to_vec(),
+                stderr: Vec::new(),
+            }))
+        }
+
+        /// Every command run so far, as `program arg1 arg2 …`.
+        pub(crate) fn calls(&self) -> Vec<String> {
+            self.calls.lock().unwrap().clone()
+        }
+    }
+
+    impl Runner for FakeRunner {
+        fn run(&self, spec: CommandSpec) -> Result<CommandOutput> {
+            let mut line = spec.program.clone();
+            for arg in &spec.args {
+                line.push(' ');
+                line.push_str(arg);
+            }
+            self.calls.lock().unwrap().push(line);
+            self.replies.lock().unwrap().pop_front().unwrap_or_else(|| {
+                Ok(CommandOutput {
+                    stdout: Vec::new(),
+                    stderr: Vec::new(),
+                })
+            })
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn sh(script: &str) -> CommandSpec {
+        CommandSpec::new("sh").arg("-c").arg(script)
+    }
+
+    #[test]
+    fn children_without_input_get_an_empty_stdin() {
+        // `cat` would block forever if it inherited the test harness stdin.
+        let out = PlainRunner.run(CommandSpec::new("cat")).unwrap();
+        assert!(out.stdout.is_empty());
+    }
+
+    #[test]
+    fn stdin_bytes_reach_the_child() {
+        let out = PlainRunner
+            .run(CommandSpec::new("cat").with_stdin(b"secret".to_vec()))
+            .unwrap();
+        assert_eq!(out.stdout, b"secret");
+    }
+
+    #[test]
+    fn broken_stdin_still_reports_the_child_stderr() {
+        // The child exits without reading a large input: the write fails
+        // with EPIPE, and the error must still carry the child's stderr.
+        let input = vec![b'x'; 4 * 1024 * 1024];
+        let error = PlainRunner
+            .run(sh("echo refused >&2; exit 3").with_stdin(input))
+            .unwrap_err();
+        match error {
+            Error::CommandFailed { status, stderr, .. } => {
+                assert_eq!(status, 3);
+                assert!(stderr.contains("refused"), "{stderr}");
+            }
+            other => panic!("unexpected {other:?}"),
+        }
+    }
+
+    #[test]
+    fn streaming_drains_large_stdout_and_stderr_together() {
+        // 1 MiB on stdout before anything on stderr: without a concurrent
+        // stdout reader the child blocks on a full pipe and we hang.
+        let mut lines = Vec::new();
+        let out = PlainRunner
+            .run_streaming(
+                sh("head -c 1048576 /dev/zero; echo one >&2; echo two >&2"),
+                &mut |line| lines.push(line.to_string()),
+            )
+            .unwrap();
+        assert_eq!(out.stdout.len(), 1_048_576);
+        assert_eq!(lines, ["one", "two"]);
+    }
+
+    #[test]
+    fn streaming_reports_failures_with_stderr() {
+        let error = PlainRunner
+            .run_streaming(sh("echo boom >&2; exit 4"), &mut |_| {})
+            .unwrap_err();
+        assert!(
+            matches!(&error, Error::CommandFailed { status: 4, stderr, .. } if stderr.contains("boom")),
+            "{error:?}"
+        );
+    }
 }

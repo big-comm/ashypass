@@ -158,6 +158,9 @@ struct Inner {
     synced_ids: RefCell<Option<Rc<HashSet<i64>>>>,
     show_badges: Cell<bool>,
     show_favicons: Cell<bool>,
+    /// Badges, favicons or the synced set changed: every row must re-bind
+    /// on the next filter, not only the entries that changed.
+    rebind_all: Cell<bool>,
     search_reload_id: RefCell<Option<glib::SourceId>>,
     event_reload_id: RefCell<Option<glib::SourceId>>,
 
@@ -165,6 +168,9 @@ struct Inner {
     details_toolbar: adw::ToolbarView,
     details_placeholder: gtk::Widget,
     open_id: Cell<Option<i64>>,
+    /// `(updated_at, favorite)` of the entry the details show, to skip a
+    /// rebuild (which re-hides a revealed password) when nothing changed.
+    open_stamp: Cell<Option<(i64, bool)>>,
     details_timer: RefCell<Option<glib::SourceId>>,
 
     on_import: RefCell<Option<Callback>>,
@@ -335,12 +341,14 @@ impl VaultView {
             synced_ids: RefCell::new(None),
             show_badges: Cell::new(false),
             show_favicons: Cell::new(true),
+            rebind_all: Cell::new(false),
             search_reload_id: RefCell::new(None),
             event_reload_id: RefCell::new(None),
             details_page,
             details_toolbar,
             details_placeholder: placeholder_widget,
             open_id: Cell::new(None),
+            open_stamp: Cell::new(None),
             details_timer: RefCell::new(None),
             on_import: RefCell::new(None),
             on_trash: RefCell::new(None),
@@ -348,8 +356,25 @@ impl VaultView {
 
         setup_factory(&inner, &factory);
         wire(&inner, &list_view, &add_button);
-        install_actions(&inner, list_body.upcast_ref());
+        // On the toolbar view, not the body: the "More options" menu lives in
+        // the header bar, a sibling of the body.
+        install_actions(&inner, list_toolbar.upcast_ref());
         install_actions(&inner, inner.details_toolbar.upcast_ref());
+        {
+            // In the collapsed layout the header Back button pops the details
+            // without going through `close_details`: drop the decrypted
+            // content, the open highlight and the timer once it is gone.
+            let weak = Rc::downgrade(&inner);
+            inner.details_page.connect_hidden(move |_| {
+                let Some(inner) = weak.upgrade() else { return };
+                if inner.split.is_collapsed()
+                    && !inner.split.shows_content()
+                    && inner.open_id.get().is_some()
+                {
+                    inner.close_details();
+                }
+            });
+        }
 
         Rc::new(Self { root: split, inner })
     }
@@ -397,8 +422,13 @@ impl VaultView {
 
     /// Type-to-search: characters typed anywhere on the list go to the
     /// search box.
-    pub fn set_key_capture(&self, widget: &impl IsA<gtk::Widget>) {
-        self.inner.search_entry.set_key_capture_widget(Some(widget));
+    /// The page's search box, for type-to-search from anywhere in the window.
+    /// Typing goes to the list, so leave a open details page first.
+    pub fn search_entry_for_typing(&self) -> gtk::SearchEntry {
+        if self.inner.split.is_collapsed() {
+            self.inner.split.set_show_content(false);
+        }
+        self.inner.search_entry.clone()
     }
 
     #[cfg(debug_assertions)]
@@ -497,18 +527,7 @@ fn setup_factory(inner: &Rc<Inner>, factory: &gtk::SignalListItemFactory) {
         root.append(&copy);
 
         let menu = gio::Menu::new();
-        let open_section = gio::Menu::new();
-        open_section.append(Some(tr!("Open details")), Some("row.open"));
-        open_section.append(Some(tr!("Copy user")), Some("row.copy-user"));
-        open_section.append(Some(tr!("Edit…")), Some("row.edit"));
-        menu.append_section(None, &open_section);
-        let fav_section = gio::Menu::new();
-        fav_section.append(Some(tr!("Add to favorites")), Some("row.favorite"));
-        menu.append_section(None, &fav_section);
-        let danger_section = gio::Menu::new();
-        danger_section.append(Some(tr!("Password history…")), Some("row.history"));
-        danger_section.append(Some(tr!("Delete…")), Some("row.delete"));
-        menu.append_section(None, &danger_section);
+        fill_row_menu(&menu, false);
         let more = gtk::MenuButton::builder()
             .icon_name("view-more-symbolic")
             .menu_model(&menu)
@@ -598,15 +617,7 @@ fn setup_factory(inner: &Rc<Inner>, factory: &gtk::SignalListItemFactory) {
                     .as_ref()
                     .is_some_and(|ids| ids.contains(&entry.id));
             badge.set_visible(synced);
-            fav_section.remove_all();
-            fav_section.append(
-                Some(if entry.favorite {
-                    tr!("Remove from favorites")
-                } else {
-                    tr!("Add to favorites")
-                }),
-                Some("row.favorite"),
-            );
+            fill_row_menu(&menu, entry.favorite);
             copy.update_property(&[gtk::accessible::Property::Label(&format!(
                 "{} — {}",
                 tr!("Copy password"),
@@ -679,6 +690,8 @@ fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) 
         let Some(inner) = weak.upgrade() else { return };
         match event {
             crate::events::AppEvent::VaultChanged
+            | crate::events::AppEvent::DisplayChanged
+            | crate::events::AppEvent::VaultChangedBySync
             | crate::events::AppEvent::SyncCompleted { .. }
                 if inner.can_show_vault_data() =>
             {
@@ -689,6 +702,9 @@ fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) 
                 if let Some(cache) = inner.cache.borrow().clone() {
                     let badges = inner.state.settings().show_sync_badges;
                     inner.update_sync_state(&cache, badges);
+                    if inner.rebind_all.get() {
+                        inner.apply_filter();
+                    }
                 }
             }
             _ => {}
@@ -760,27 +776,34 @@ impl Inner {
     }
 
     fn toast(&self, message: &str) {
-        self.toast
-            .add_toast(adw::Toast::builder().title(message).timeout(3).build());
+        self.toast.add_toast(
+            adw::Toast::builder()
+                .use_markup(false)
+                .title(message)
+                .timeout(3)
+                .build(),
+        );
     }
 
     fn cancel_search_reload(&self) {
         if let Some(id) = self.search_reload_id.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
     }
 
     fn cancel_pending(&self) {
         self.cancel_search_reload();
         if let Some(id) = self.event_reload_id.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         self.stop_details_timer();
     }
 
     fn invalidate_caches(&self) {
+        // `synced_ids` stays: `update_sync_state` replaces it on every reload
+        // and compares it with the previous set to decide whether rows must
+        // re-bind.
         self.cache.borrow_mut().take();
-        self.synced_ids.borrow_mut().take();
     }
 
     fn cache(&self) -> ashypass_core::Result<Rc<PasswordListCache>> {
@@ -797,7 +820,7 @@ impl Inner {
 
     fn schedule_reload(self: &Rc<Self>) {
         if let Some(id) = self.event_reload_id.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         let weak = Rc::downgrade(self);
         let id = glib::timeout_add_local(std::time::Duration::from_millis(60), move || {
@@ -816,7 +839,9 @@ impl Inner {
             return;
         }
         let settings = self.state.settings();
-        self.show_favicons.set(settings.show_favicons);
+        if self.show_favicons.replace(settings.show_favicons) != settings.show_favicons {
+            self.rebind_all.set(true);
+        }
         if settings.compact_vault_list {
             self.list_view.add_css_class("ashy-compact");
         } else {
@@ -847,11 +872,10 @@ impl Inner {
         self.apply_filter();
         // Keep the open details in step with the data (edited, deleted…).
         if let Some(id) = self.open_id.get() {
-            let still_there = cache.entries.iter().any(|e| e.id == id);
-            if still_there {
-                self.render_details(id);
-            } else {
-                self.close_details();
+            match cache.entries.iter().find(|e| e.id == id) {
+                Some(e) if self.open_stamp.get() == Some((e.updated_at, e.favorite)) => {}
+                Some(_) => self.render_details(id),
+                None => self.close_details(),
             }
         }
     }
@@ -870,8 +894,19 @@ impl Inner {
         let total = cache.len();
         let synced = cache.entries.iter().filter(|e| ids.contains(&e.id)).count();
         let all_synced = total > 0 && synced == total;
-        self.show_badges
-            .set(badges_enabled && synced > 0 && !all_synced);
+        let show_badges = badges_enabled && synced > 0 && !all_synced;
+        // Rows show a badge per synced entry: re-bind them all when that
+        // changes (a first upload, a sign-out), not only edited rows.
+        let badges_changed = self.show_badges.replace(show_badges) != show_badges
+            || (show_badges
+                && self
+                    .synced_ids
+                    .borrow()
+                    .as_deref()
+                    .is_none_or(|old| *old != ids));
+        if badges_changed {
+            self.rebind_all.set(true);
+        }
         // The observed sync state first: it tells the user whether the
         // latest changes reached the server, not just that a link exists.
         let time = |at: i64| {
@@ -929,7 +964,8 @@ impl Inner {
         self.folder_menu.remove_all();
         let filters = gio::Menu::new();
         let item = |label: &str, filter: FolderFilter| {
-            let item = gio::MenuItem::new(Some(label), None);
+            // `_` marks a mnemonic in menu labels: show folder names as typed.
+            let item = gio::MenuItem::new(Some(&label.replace('_', "__")), None);
             item.set_action_and_target_value(
                 Some("vault.folder"),
                 Some(&filter.target().to_variant()),
@@ -938,22 +974,30 @@ impl Inner {
         };
         filters.append_item(&item(tr!("All folders"), FolderFilter::All));
         filters.append_item(&item(tr!("No folder"), FolderFilter::NoFolder));
-        self.folder_menu.append_section(None, &filters);
-        if !categories.is_empty() {
-            let named = gio::Menu::new();
-            for category in categories {
-                named.append_item(&item(category, FolderFilter::Named(category.clone())));
-            }
-            self.folder_menu
-                .append_section(Some(tr!("Folders")), &named);
-        }
-        let manage = gio::Menu::new();
-        manage.append(Some(tr!("Create folder…")), Some("vault.new-folder"));
-        manage.append(
-            Some(tr!("Organize folders…")),
-            Some("vault.organize-folders"),
+        big_gtk_kit::menu::append_shared_section(&self.folder_menu, None, "folder-filters", || {
+            filters
+        });
+        // The folder names change: one section kept and refilled (an empty
+        // one is left out).
+        big_gtk_kit::menu::append_refilled_section(
+            &self.folder_menu,
+            Some(tr!("Folders")),
+            "folder-names",
+            |named| {
+                for category in categories {
+                    named.append_item(&item(category, FolderFilter::Named(category.clone())));
+                }
+            },
         );
-        self.folder_menu.append_section(None, &manage);
+        big_gtk_kit::menu::append_shared_section(&self.folder_menu, None, "folder-manage", || {
+            let manage = gio::Menu::new();
+            manage.append(Some(tr!("Create folder…")), Some("vault.new-folder"));
+            manage.append(
+                Some(tr!("Organize folders…")),
+                Some("vault.organize-folders"),
+            );
+            manage
+        });
     }
 
     fn sync_folder_actions(&self, filter: &FolderFilter) {
@@ -988,32 +1032,34 @@ impl Inner {
         let favorites_only = self.favorites_toggle.is_active();
         let entries = cache.filtered(search.as_deref(), &folder, favorites_only);
 
-        // Replacing the model scrolls the list back to the top. Skip it when
-        // the same entries are already shown in the same order.
-        let unchanged = self.store.n_items() as usize == entries.len()
-            && entries.iter().enumerate().all(|(i, e)| {
-                self.store
-                    .item(i as u32)
-                    .and_then(|o| o.downcast::<glib::BoxedAnyObject>().ok())
-                    .is_some_and(|b| Rc::ptr_eq(&b.borrow::<Rc<PasswordEntry>>(), e))
-            });
-        if !unchanged {
-            // Same number of rows: a refresh of the same entries (a favorite,
-            // an edit, a sync), so keep the user's place in the list.
-            let refresh = self.store.n_items() as usize == entries.len();
-            let adjustment = self.list_view.vadjustment();
-            let position = adjustment.as_ref().map(|a| a.value()).unwrap_or(0.0);
+        // Patch only the rows that changed: replacing the whole model
+        // scrolls back to the top, re-creates every row (losing keyboard
+        // focus) and decodes every favicon again.
+        let old: Vec<Rc<PasswordEntry>> = (0..self.store.n_items())
+            .filter_map(|i| self.store.item(i))
+            .filter_map(|o| o.downcast::<glib::BoxedAnyObject>().ok())
+            .map(|b| b.borrow::<Rc<PasswordEntry>>().clone())
+            .collect();
+        if self.rebind_all.replace(false) {
             let items: Vec<glib::Object> = entries
                 .iter()
                 .map(|e| glib::BoxedAnyObject::new(e.clone()).upcast())
                 .collect();
+            let adjustment = self.list_view.vadjustment();
+            let position = adjustment.as_ref().map(|a| a.value()).unwrap_or(0.0);
             self.store.splice(0, self.store.n_items(), &items);
-            if let (true, Some(adjustment)) = (refresh, adjustment) {
+            if let Some(adjustment) = adjustment {
                 glib::idle_add_local_once(move || {
                     let max = (adjustment.upper() - adjustment.page_size()).max(0.0);
                     adjustment.set_value(position.min(max));
                 });
             }
+        } else if let Some((at, removed, added)) = list_patch(&old, &entries) {
+            let items: Vec<glib::Object> = added
+                .iter()
+                .map(|e| glib::BoxedAnyObject::new(e.clone()).upcast())
+                .collect();
+            self.store.splice(at as u32, removed as u32, &items);
         }
 
         let shown = entries.len();
@@ -1126,12 +1172,11 @@ impl Inner {
     fn toggle_favorite(&self, id: i64) {
         let result = self.state.vault.borrow().toggle_favorite(id);
         match result {
-            Ok(true) => self.toast(tr!("Added to favorites")),
-            Ok(false) => self.toast(tr!("Removed from favorites")),
+            Ok(Some(true)) => self.toast(tr!("Added to favorites")),
+            Ok(Some(false)) => self.toast(tr!("Removed from favorites")),
+            Ok(None) => self.toast(tr!("This access no longer exists")),
             Err(e) => self.toast(&format!("{}: {e}", tr!("Could not change the favorite"))),
         }
-        // Favorites do not change `updated_at`, so the change listener may
-        // not fire; refresh explicitly.
         self.invalidate_caches();
         SessionManager::on_activity(&self.state.session);
     }
@@ -1180,9 +1225,11 @@ impl Inner {
                 prefill_folder: None,
                 on_saved: Some(Box::new(move |id| {
                     if let Some(inner) = weak.upgrade() {
+                        // Details first: the reload then sees them current
+                        // and does not build them a second time.
                         inner.invalidate_caches();
-                        inner.reload();
                         inner.render_details(id);
+                        inner.reload();
                     }
                 })),
             },
@@ -1207,7 +1254,7 @@ impl Inner {
                 return;
             }
         };
-        let dialog = adw::Dialog::builder()
+        let dialog = big_gtk_kit::dialog::Dialog::builder(Some(&self.split))
             .title(tr!("Password history"))
             .content_width(520)
             .content_height(440)
@@ -1249,7 +1296,7 @@ impl Inner {
                     // Read the value at click time instead of keeping a copy
                     // of every old password alive in the closure.
                     let inner = self.clone();
-                    let changed_at = h.changed_at;
+                    let history_id = h.id;
                     copy.connect_clicked(move |_| {
                         if !inner.can_show_vault_data() {
                             return;
@@ -1263,7 +1310,7 @@ impl Inner {
                             .and_then(|items| {
                                 items
                                     .into_iter()
-                                    .find(|item| item.changed_at == changed_at)
+                                    .find(|item| item.id == history_id)
                                     .map(|item| Zeroizing::new(item.password))
                             });
                         if let Some(value) = value {
@@ -1284,17 +1331,37 @@ impl Inner {
             clear.set_halign(gtk::Align::End);
             {
                 let inner = self.clone();
-                let dialog = dialog.clone();
-                clear.connect_clicked(move |_| {
-                    match inner.state.vault.borrow().clear_password_history(id) {
-                        Ok(_) => {
-                            inner.toast(tr!("History cleared"));
-                            dialog.close();
+                // Weak: the button sits in the dialog.
+                let dialog = dialog.downgrade();
+                clear.connect_clicked(move |button| {
+                    let Some(dialog) = dialog.upgrade() else {
+                        return;
+                    };
+                    let confirm = big_gtk_kit::alert::Alert::builder(Some(button))
+                        .heading(tr!("Clear the password history?"))
+                        .body(tr!(
+                            "The previous passwords of this access are deleted for good. This cannot be undone."
+                        ))
+                        .close_response("cancel")
+                        .default_response("cancel")
+                        .build();
+                    confirm.add_response("cancel", tr!("Cancel"));
+                    confirm.add_response("clear", tr!("Clear history"));
+                    confirm.set_response_appearance("clear", adw::ResponseAppearance::Destructive);
+                    inner.state.track_sensitive_dialog(&confirm);
+                    let inner = inner.clone();
+                    let dialog = dialog.clone();
+                    confirm.connect_response(Some("clear"), move |_, _| {
+                        match inner.state.vault.borrow().clear_password_history(id) {
+                            Ok(_) => {
+                                inner.toast(tr!("History cleared"));
+                                dialog.close();
+                            }
+                            Err(e) => inner
+                                .toast(&format!("{}: {e}", tr!("Could not clear the history"))),
                         }
-                        Err(e) => {
-                            inner.toast(&format!("{}: {e}", tr!("Could not clear the history")))
-                        }
-                    }
+                    });
+                    confirm.present();
                 });
             }
             actions.add(&clear);
@@ -1303,7 +1370,7 @@ impl Inner {
         toolbar.set_content(Some(&page));
         dialog.set_child(Some(&toolbar));
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.split));
+        dialog.present();
     }
 
     fn confirm_delete(self: &Rc<Self>, id: i64) {
@@ -1329,7 +1396,7 @@ impl Inner {
         } else {
             tr!("Deleted items are not kept (see Settings). This cannot be undone.").to_string()
         };
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.split))
             .heading(&heading)
             .body(&body)
             .default_response("cancel")
@@ -1365,12 +1432,13 @@ impl Inner {
             SessionManager::on_activity(&inner.state.session);
         });
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.split));
+        dialog.present();
     }
 
     /// "Undo" is offered only because the trash really holds the entry.
     fn offer_undo(self: &Rc<Self>, original_id: i64) {
         let toast = adw::Toast::builder()
+            .use_markup(false)
             .title(tr!("Moved to Deleted items"))
             .button_label(tr!("Undo"))
             .timeout(6)
@@ -1403,7 +1471,7 @@ impl Inner {
     }
 
     fn show_new_folder_dialog(self: &Rc<Self>) {
-        let dialog = adw::AlertDialog::builder()
+        let dialog = big_gtk_kit::alert::Alert::builder(Some(&self.split))
             .heading(tr!("Create folder"))
             .body(tr!(
                 "Folders organize your passwords. You can choose them when adding or editing."
@@ -1424,6 +1492,16 @@ impl Inner {
         list.add_css_class("boxed-list");
         list.append(&name_row);
         dialog.set_extra_child(Some(&list));
+        // Nothing to create until a name is typed.
+        dialog.set_response_enabled("create", false);
+        {
+            let dialog = dialog.downgrade();
+            name_row.connect_changed(move |row| {
+                if let Some(dialog) = dialog.upgrade() {
+                    dialog.set_response_enabled("create", !row.text().trim().is_empty());
+                }
+            });
+        }
         let inner = self.clone();
         dialog.connect_response(None, move |_, response| {
             if response != "create" {
@@ -1433,17 +1511,23 @@ impl Inner {
             if name.is_empty() {
                 return;
             }
-            match inner.state.vault.borrow().create_folder(&name) {
-                Ok(true) => inner.toast(tr!("Folder created")),
-                Ok(false) => inner.toast(tr!("This folder already exists")),
+            let result = inner.state.vault.borrow().create_folder(&name);
+            match result {
+                Ok(created) => {
+                    inner.toast(if created {
+                        tr!("Folder created")
+                    } else {
+                        tr!("This folder already exists")
+                    });
+                    inner.invalidate_caches();
+                    inner.reload();
+                    inner.set_folder_filter(FolderFilter::Named(name));
+                }
                 Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not create the folder"))),
             }
-            inner.invalidate_caches();
-            inner.reload();
-            inner.set_folder_filter(FolderFilter::Named(name));
         });
         self.state.track_sensitive_dialog(&dialog);
-        dialog.present(Some(&self.split));
+        dialog.present();
     }
 
     fn show_organize_folders_dialog(self: &Rc<Self>) {
@@ -1454,12 +1538,13 @@ impl Inner {
 
     fn stop_details_timer(&self) {
         if let Some(id) = self.details_timer.borrow_mut().take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
     }
 
     fn close_details(&self) {
         self.stop_details_timer();
+        self.open_stamp.set(None);
         if let Some(previous) = self.open_id.take() {
             self.refresh_rows(&[previous]);
         }
@@ -1518,6 +1603,8 @@ impl Inner {
             ids.extend(previous);
             self.refresh_rows(&ids);
         }
+        self.open_stamp
+            .set(Some((entry.updated_at, entry.favorite)));
         self.details_page.set_title(&entry.title);
         let content = build_details(self, &entry);
         self.details_toolbar.set_content(Some(&content));
@@ -1722,11 +1809,14 @@ fn build_details(inner: &Rc<Inner>, entry: &PasswordEntry) -> gtk::Widget {
         reveal.add_css_class("flat");
         reveal.update_property(&[gtk::accessible::Property::Label(tr!("Show password"))]);
         {
-            let row = row.clone();
+            // Weak: the button sits in the row, which shows the password.
+            let row = row.downgrade();
             let weak = Rc::downgrade(inner);
             let hidden_subtitle = hidden_subtitle.clone();
             reveal.connect_toggled(move |button| {
-                let Some(inner) = weak.upgrade() else { return };
+                let (Some(inner), Some(row)) = (weak.upgrade(), row.upgrade()) else {
+                    return;
+                };
                 if button.is_active() && inner.can_show_vault_data() {
                     // Fetch on demand: the details keep only the mask.
                     let value = inner
@@ -1739,12 +1829,20 @@ fn build_details(inner: &Rc<Inner>, entry: &PasswordEntry) -> gtk::Widget {
                         .and_then(|e| e.password)
                         .map(Zeroizing::new);
                     if let Some(value) = value {
-                        row.set_subtitle(&value);
+                        let theme = inner.state.settings().password_colors.clone();
+                        match crate::ui::password_colors::markup(&value, &theme) {
+                            Some(markup) => {
+                                row.set_use_markup(true);
+                                row.set_subtitle(&markup);
+                            }
+                            None => row.set_subtitle(&value),
+                        }
                         row.add_css_class("ashy-revealed");
                     }
                     button.set_icon_name("view-conceal-symbolic");
                     button.set_tooltip_text(Some(tr!("Hide password")));
                 } else {
+                    row.set_use_markup(false);
                     row.set_subtitle(&hidden_subtitle);
                     row.remove_css_class("ashy-revealed");
                     button.set_icon_name("view-reveal-symbolic");
@@ -2010,22 +2108,20 @@ pub(crate) fn save_attachment_copy(
             Ok(None) => tr!("Attachment not found").to_string(),
             Err(e) => format!("{}: {e}", tr!("Could not decrypt the attachment")),
         };
-        toast.add_toast(adw::Toast::builder().title(message).timeout(4).build());
+        toast.add_toast(
+            adw::Toast::builder()
+                .use_markup(false)
+                .title(message)
+                .timeout(4)
+                .build(),
+        );
     });
 }
 
-/// Attachments are secrets too: write them owner-only.
-fn write_private(path: &std::path::Path, data: &[u8]) -> std::io::Result<()> {
-    use std::io::Write;
-    use std::os::unix::fs::OpenOptionsExt;
-    let mut file = std::fs::OpenOptions::new()
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .mode(0o600)
-        .open(path)?;
-    file.write_all(data)?;
-    file.sync_all()
+/// Attachments are secrets too: write them owner-only, through a temporary
+/// file so a failed write never destroys a file being replaced.
+fn write_private(path: &std::path::Path, data: &[u8]) -> ashypass_core::Result<()> {
+    ashypass_core::backup::write_private_file(path, data)
 }
 
 fn password_search_text(entry: &PasswordEntry) -> String {
@@ -2041,15 +2137,55 @@ fn password_search_text(entry: &PasswordEntry) -> String {
     text
 }
 
+/// A fixed-width mask that does not reveal the length. Long passwords keep
+/// their last three characters as a hint to tell versions apart; short ones
+/// (PINs) show nothing, since three characters would give most of it away.
+/// The entries the list shows look the same (same row, same content).
+fn same_row(a: &PasswordEntry, b: &PasswordEntry) -> bool {
+    a.id == b.id
+        && a.title == b.title
+        && a.username == b.username
+        && a.url == b.url
+        && a.favorite == b.favorite
+        && a.category == b.category
+        && a.has_totp == b.has_totp
+        && a.updated_at == b.updated_at
+}
+
+/// The smallest single splice turning `old` into `new`: keep the common
+/// head and tail, replace what is between. `None` when nothing changed.
+fn list_patch<'a>(
+    old: &[Rc<PasswordEntry>],
+    new: &'a [Rc<PasswordEntry>],
+) -> Option<(usize, usize, &'a [Rc<PasswordEntry>])> {
+    let head = old
+        .iter()
+        .zip(new)
+        .take_while(|(a, b)| same_row(a, b))
+        .count();
+    if head == old.len() && head == new.len() {
+        return None;
+    }
+    let tail = old[head..]
+        .iter()
+        .rev()
+        .zip(new[head..].iter().rev())
+        .take_while(|(a, b)| same_row(a, b))
+        .count();
+    Some((head, old.len() - head - tail, &new[head..new.len() - tail]))
+}
+
 fn mask_password(s: &str) -> String {
+    const MASK: &str = "••••••••";
     let len = s.chars().count();
     if len == 0 {
         return String::new();
     }
-    let visible = len.min(3);
-    let masked = "•".repeat(len.saturating_sub(visible));
-    let tail: String = s.chars().skip(len.saturating_sub(visible)).collect();
-    format!("{masked}{tail}")
+    if len < 12 {
+        return MASK.to_string();
+    }
+    let tail: String = s.chars().skip(len - 3).collect();
+    format!("{MASK}{tail}")
 }
 
 pub(crate) fn human_size(bytes: u64) -> String {
@@ -2092,6 +2228,36 @@ pub(crate) fn mime_guess_from_ext(filename: &str) -> Option<String> {
     )
 }
 
+/// The *More* menu of a password row: sections made once and shared by every
+/// row (GTK keeps every section it shows, which per row added up), the
+/// favorite one picked for the row's entry.
+fn fill_row_menu(menu: &gio::Menu, favorite: bool) {
+    menu.remove_all();
+    big_gtk_kit::menu::append_shared_section(menu, None, "entry-row-open", || {
+        let section = gio::Menu::new();
+        section.append(Some(tr!("Open details")), Some("row.open"));
+        section.append(Some(tr!("Copy user")), Some("row.copy-user"));
+        section.append(Some(tr!("Edit…")), Some("row.edit"));
+        section
+    });
+    let (key, label) = if favorite {
+        ("entry-row-unfavorite", tr!("Remove from favorites"))
+    } else {
+        ("entry-row-favorite", tr!("Add to favorites"))
+    };
+    big_gtk_kit::menu::append_shared_section(menu, None, key, || {
+        let section = gio::Menu::new();
+        section.append(Some(label), Some("row.favorite"));
+        section
+    });
+    big_gtk_kit::menu::append_shared_section(menu, None, "entry-row-danger", || {
+        let section = gio::Menu::new();
+        section.append(Some(tr!("Password history…")), Some("row.history"));
+        section.append(Some(tr!("Delete…")), Some("row.delete"));
+        section
+    });
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2105,6 +2271,8 @@ mod tests {
         favorite: bool,
     ) -> PasswordEntry {
         PasswordEntry {
+            item_type: ashypass_core::db::vault::ITEM_LOGIN.into(),
+            extra: None,
             id,
             title: title.to_string(),
             username: username.map(str::to_string),
@@ -2209,10 +2377,52 @@ mod tests {
         assert!(!FolderFilter::NoFolder.matches(Some("Work")));
     }
 
+    fn row(id: i64, title: &str) -> Rc<PasswordEntry> {
+        Rc::new(PasswordEntry {
+            item_type: ashypass_core::db::vault::ITEM_LOGIN.into(),
+            extra: None,
+            id,
+            title: title.into(),
+            username: None,
+            url: None,
+            password: None,
+            notes: None,
+            totp_secret: None,
+            totp_algorithm: "SHA1".into(),
+            totp_digits: 6,
+            totp_period: 30,
+            has_totp: false,
+            category: None,
+            favorite: false,
+            created_at: 0,
+            updated_at: 0,
+            last_accessed: None,
+        })
+    }
+
     #[test]
-    fn history_mask_keeps_only_the_tail() {
-        assert_eq!(mask_password("abcdef"), "•••def");
-        assert_eq!(mask_password("ab"), "ab");
+    fn list_patch_touches_only_changed_rows() {
+        let old = vec![row(1, "a"), row(2, "b"), row(3, "c")];
+        // Fresh objects with the same content: nothing to do.
+        let same = vec![row(1, "a"), row(2, "b"), row(3, "c")];
+        assert!(list_patch(&old, &same).is_none());
+        // One edited row in the middle.
+        let edited = vec![row(1, "a"), row(2, "B"), row(3, "c")];
+        let (at, removed, added) = list_patch(&old, &edited).unwrap();
+        assert_eq!((at, removed, added.len()), (1, 1, 1));
+        // A row removed at the end, one inserted at the start.
+        let (at, removed, added) = list_patch(&old, &old[..2]).unwrap();
+        assert_eq!((at, removed, added.len()), (2, 1, 0));
+        let inserted = vec![row(0, "0"), row(1, "a"), row(2, "b"), row(3, "c")];
+        let (at, removed, added) = list_patch(&old, &inserted).unwrap();
+        assert_eq!((at, removed, added.len()), (0, 0, 1));
+    }
+
+    #[test]
+    fn history_mask_hides_length_and_short_values() {
+        assert_eq!(mask_password("1234"), "••••••••");
+        assert_eq!(mask_password("ab"), "••••••••");
+        assert_eq!(mask_password("correct-horse-staple"), "••••••••ple");
         assert_eq!(mask_password(""), "");
     }
 }

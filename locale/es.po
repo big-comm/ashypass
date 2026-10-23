@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-23 15:11-0300\n"
 "PO-Revision-Date: 2026-05-12 19:25\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -98,6 +98,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Dirección copiada"
 
+msgid "Address, user and password are required"
+msgstr "Se requieren dirección, usuario y contraseña"
+
 msgid "Adjust length and characters"
 msgstr "Ajustar longitud y caracteres"
 
@@ -109,6 +112,9 @@ msgstr "Ajustar palabras y separador"
 
 msgid "Algorithm"
 msgstr "Algoritmo"
+
+msgid "All"
+msgstr "Todos"
 
 msgid "All clear"
 msgstr "Todo en orden"
@@ -129,11 +135,23 @@ msgstr ""
 "Todas las particiones, archivos y firmas del sistema de archivos se "
 "destruirán permanentemente."
 
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "Permitir Ashy Pass en Dropbox"
+
 msgid "Allow TRIM through encrypted mapping"
 msgstr "Permitir TRIM a través del mapeo cifrado"
 
 msgid "Allow the browser extension"
 msgstr "Permitir la extensión del navegador"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Otro dispositivo los eliminó de la carpeta de sincronización cifrada. Si "
+"fuiste tú, pasan a Elementos eliminados aquí. Si no, consérvalos: se "
+"enviarán de nuevo a la carpeta."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -143,8 +161,8 @@ msgstr ""
 "sincronización de este dispositivo. Subir ahora dejaría huérfanos los "
 "cambios remotos."
 
-msgid "Answer requests from the installed extension"
-msgstr "Responder a las solicitudes de la extensión instalada"
+msgid "Another example"
+msgstr "Otro ejemplo"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -231,6 +249,9 @@ msgstr "Archivos adjuntos"
 msgid "Audit failed"
 msgstr "Auditoría fallida"
 
+msgid "Authentication was cancelled"
+msgstr "Se canceló la autenticación"
+
 msgid "Auto-tune"
 msgstr "Ajuste automático"
 
@@ -303,6 +324,12 @@ msgstr "Caps Lock está activado"
 msgid "Capture from screen…"
 msgstr "Capturar de la pantalla…"
 
+msgid "Change PIN"
+msgstr "Cambiar PIN"
+
+msgid "Change how the vault key is protected?"
+msgstr "¿Cambiar la protección de la clave de la bóveda?"
+
 msgid "Change master password"
 msgstr "Cambiar contraseña maestra"
 
@@ -312,8 +339,14 @@ msgstr "Cambiar contraseña maestra…"
 msgid "Change only if the site shows different values"
 msgstr "Cámbialo solo si el sitio muestra valores distintos"
 
+msgid "Changed"
+msgstr "Modificado"
+
 msgid "Changes saved to the vault"
 msgstr "Cambios guardados en la bóveda"
+
+msgid "Changes waiting to be sent"
+msgstr "Cambios en espera de envío"
 
 msgid "Check known data breaches (online)"
 msgstr "Comprobar filtraciones de datos conocidas (en línea)"
@@ -323,6 +356,12 @@ msgstr "Comprobar mis contraseñas"
 
 msgid "Check now"
 msgstr "Comprobar ahora"
+
+msgid "Check the server every"
+msgstr "Comprobar el servidor cada"
+
+msgid "Checking the drive…"
+msgstr "Comprobando la unidad…"
 
 msgid "Choose a backup"
 msgstr "Elegir una copia"
@@ -358,6 +397,9 @@ msgstr "Elige la base de datos de KeePass"
 msgid "Choose the andOTP export"
 msgstr "Elige la exportación de andOTP"
 
+msgid "Choose the folder"
+msgstr "Elige la carpeta"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr "Elige esta carpeta al añadir o editar una contraseña."
 
@@ -367,11 +409,17 @@ msgstr "Elegir…"
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Contraseñas exportadas de Chrome, Edge, Brave o Firefox (CSV)"
 
+msgid "Classic"
+msgstr "Clásico"
+
 msgid "Clear copied passwords after"
 msgstr "Borrar las contraseñas copiadas tras"
 
 msgid "Clear history"
 msgstr "Borrar historial"
+
+msgid "Clear the password history?"
+msgstr "¿Borrar el historial de contraseñas?"
 
 msgid "Client ID"
 msgstr "ID de cliente"
@@ -400,8 +448,14 @@ msgstr "Cerrando mapeo"
 msgid "Code copied"
 msgstr "Código copiado"
 
+msgid "Code from Dropbox"
+msgstr "Código de Dropbox"
+
 msgid "Code settings"
 msgstr "Ajustes del código"
+
+msgid "Coffee"
+msgstr "Café"
 
 msgid "Columns such as name, url, username, password"
 msgstr "Columnas como name, url, username, password"
@@ -461,8 +515,47 @@ msgstr "Confirma tu contraseña maestra para exportar tus datos."
 msgid "Conflicts"
 msgstr "Conflictos"
 
-msgid "Connecting the extension"
-msgstr "Conectar la extensión"
+msgid "Connect"
+msgstr "Conectar"
+
+msgid "Connect a phone"
+msgstr "Conectar un móvil"
+
+msgid "Connect a phone…"
+msgstr "Conectar un móvil…"
+
+msgid "Connect browsers"
+msgstr "Conectar navegadores"
+
+msgid "Connect failed"
+msgstr "Error al conectar"
+
+msgid "Connect the sync folder"
+msgstr "Conectar la carpeta de sincronización"
+
+msgid "Connect your browsers"
+msgstr "Conecte sus navegadores"
+
+msgid "Connected"
+msgstr "Conectado"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Conectado a {} navegador. Reinícielo si está abierto."
+msgstr[1] "Conectado a {} navegadores. Reinícielos si están abiertos."
+
+msgid "Connected. Received:"
+msgstr "Conectado. Recibidos:"
+
+msgid "Connecting and syncing…"
+msgstr "Conectando y sincronizando…"
+
+msgid "Connection QR code"
+msgstr "Código QR de conexión"
+
+msgid "Connect…"
+msgstr "Conectar…"
 
 msgid "Continue"
 msgstr "Continuar"
@@ -500,8 +593,14 @@ msgstr "No se pudo añadir el adjunto"
 msgid "Could not change the favorite"
 msgstr "No se pudo cambiar el favorito"
 
+msgid "Could not check"
+msgstr "No se pudo comprobar"
+
 msgid "Could not clear the history"
 msgstr "No se pudo borrar el historial"
+
+msgid "Could not connect the browsers"
+msgstr "No se pudieron conectar los navegadores"
 
 msgid "Could not create the folder"
 msgstr "No se pudo crear la carpeta"
@@ -517,6 +616,15 @@ msgstr "No se pudo eliminar"
 
 msgid "Could not lock the drive"
 msgstr "No se pudo bloquear la unidad"
+
+msgid "Could not make the QR code"
+msgstr "No se pudo crear el código QR"
+
+msgid "Could not merge"
+msgstr "No se pudo fusionar"
+
+msgid "Could not open the vault"
+msgstr "No se pudo abrir la bóveda"
 
 msgid "Could not open this access"
 msgstr "No se pudo abrir este acceso"
@@ -547,6 +655,9 @@ msgstr "No se pudo renombrar la carpeta"
 
 msgid "Could not restore. Look in Deleted items."
 msgstr "No se pudo restaurar. Búscalo en Elementos eliminados."
+
+msgid "Could not save"
+msgstr "No se pudo guardar"
 
 msgid "Could not save the file"
 msgstr "No se pudo guardar el archivo"
@@ -632,8 +743,17 @@ msgstr "Eliminar acceso…"
 msgid "Delete permanently"
 msgstr "Eliminar permanentemente"
 
+msgid "Delete permanently?"
+msgstr "¿Eliminar permanentemente?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Borra el archivo exportado si no estaba protegido con contraseña."
+
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "¿Eliminar también aquí {} elemento?"
+msgstr[1] "¿Eliminar también aquí {} elementos?"
 
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
@@ -672,6 +792,18 @@ msgstr "Ruta del dispositivo"
 msgid "Digits"
 msgstr "Dígitos"
 
+msgid "Digits and symbols in color, easier to read and type"
+msgstr "Dígitos y símbolos en color, más fáciles de leer y escribir"
+
+msgid "Disconnect"
+msgstr "Desconectar"
+
+msgid "Disconnect failed"
+msgstr "Error al desconectar"
+
+msgid "Disconnect the sync folder?"
+msgstr "¿Desconectar la carpeta de sincronización?"
+
 msgid "Done"
 msgstr "Hecho"
 
@@ -686,6 +818,9 @@ msgstr "Descargando cambios remotos"
 
 msgid "Drive locked"
 msgstr "Unidad bloqueada"
+
+msgid "Duplicate items"
+msgstr "Elementos duplicados"
 
 msgid "Easier to type and remember."
 msgstr "Más fácil de escribir y recordar."
@@ -708,6 +843,9 @@ msgstr "Frase de contraseña vacía"
 msgid "Empty trash"
 msgstr "Vaciar papelera"
 
+msgid "Empty trash?"
+msgstr "¿Vaciar la papelera?"
+
 msgid "Encrypt"
 msgstr "Cifrar"
 
@@ -717,11 +855,20 @@ msgstr "Cifrar unidad"
 msgid "Encrypt KeePass export"
 msgstr "Cifrar exportación de KeePass"
 
+msgid "Encrypt again"
+msgstr "Cifrar de nuevo"
+
 msgid "Encrypted as"
 msgstr "Cifrado como"
 
 msgid "Encrypted device"
 msgstr "Dispositivo cifrado"
+
+msgid "Encrypted folder sync"
+msgstr "Sincronización cifrada de carpeta"
+
+msgid "Encrypted folder sync failed"
+msgstr "Error en la sincronización cifrada de carpeta"
 
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Carga de instantánea cifrada con detección de conflictos"
@@ -744,6 +891,9 @@ msgstr ""
 "Cifrar borra la unidad entera. Desbloquear y bloquear funcionan con unidades "
 "LUKS."
 
+msgid "Encrypting the vault again…"
+msgstr "Cifrando la bóveda de nuevo…"
+
 msgid "Encrypting…"
 msgstr "Cifrando…"
 
@@ -761,6 +911,9 @@ msgstr "Introduce una etiqueta."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Introduce el PIN configurado en este equipo."
+
+msgid "Enter the master password"
+msgstr "Introduce la contraseña maestra"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Introduce la contraseña o añade un código de verificación abajo."
@@ -788,12 +941,29 @@ msgid "Estimated strength"
 msgstr "Fortaleza estimada"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Todo el contenido de la bóveda se cifra de nuevo con una clave derivada con "
+"los costes de arriba. Las versiones anteriores de Ashy Pass no abrirán la "
+"bóveda con la contraseña maestra. Habrá que configurar el PIN de nuevo."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Todo lo de la bóveda se vuelve a cifrar con la nueva contraseña. Las copias "
 "de seguridad anteriores se siguen abriendo con la contraseña con la que se "
 "hicieron."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Todo el contenido de la bóveda se cifra de nuevo con los costes estándar, "
+"que abren todas las versiones de Ashy Pass 3. Habrá que configurar el PIN de "
+"nuevo."
 
 msgid "Everything is in sync"
 msgstr "Todo en sincronía"
@@ -864,8 +1034,20 @@ msgstr "Los archivos se cifran y se guardan dentro de la bóveda."
 msgid "Filesystem"
 msgstr "Sistema de archivos"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Rellene y copie sus contraseñas en Chrome, Brave, Edge, Vivaldi, Firefox y "
+"LibreWolf. La extensión no guarda nada: pregunta a Ashy Pass cada vez y solo "
+"rellena una página después de que usted haga clic."
+
 msgid "Fill in all three fields."
 msgstr "Rellena los tres campos."
+
+msgid "Find duplicate items"
+msgstr "Buscar elementos duplicados"
 
 msgid "Findings"
 msgstr "Hallazgos"
@@ -891,6 +1073,9 @@ msgstr "Carpeta creada"
 msgid "Folder name"
 msgstr "Nombre de la carpeta"
 
+msgid "Folder on this computer"
+msgstr "Carpeta de este equipo"
+
 msgid "Folder removed. Its passwords were kept."
 msgstr "Carpeta eliminada. Sus contraseñas se han conservado."
 
@@ -914,6 +1099,12 @@ msgid ""
 msgstr ""
 "Para Nextcloud, la URL base se ve así: https://cloud.example.com/remote.php/"
 "dav/files/USERNAME"
+
+msgid "For the browsers installed for this user"
+msgstr "Para los navegadores instalados para este usuario"
+
+msgid "Forest"
+msgstr "Bosque"
 
 msgid "Forgot the master password"
 msgstr "He olvidado la contraseña maestra"
@@ -949,17 +1140,52 @@ msgstr "Generar contraseña"
 msgid "Generated password"
 msgstr "Contraseña generada"
 
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Obtener la extensión para Chrome, Brave, Edge y Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Obtener la extensión para Firefox"
+
 msgid "Give this access a name, for example the site or app."
 msgstr "Ponle un nombre a este acceso, por ejemplo el sitio o la aplicación."
 
 msgid "Go to search"
 msgstr "Ir a la búsqueda"
 
+msgid ""
+"Good for 10 minutes. The QR code alone is no use without this code, and "
+"neither opens your passwords without the master password."
+msgstr ""
+"Válido durante 10 minutos. El código QR solo no sirve sin este código, y "
+"ninguno de los dos abre tus contraseñas sin la contraseña maestra."
+
 msgid "Google Drive"
 msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive y WebDAV"
+
+msgid "Google account"
+msgstr "Cuenta de Google"
+
+msgid "Google sign-in failed"
+msgstr "Error al iniciar sesión en Google"
+
+msgid "Grape"
+msgstr "Uva"
+
+msgid ""
+"Group the codes as in Aegis. Groups are the item's tags: they sync to your "
+"other devices."
+msgstr ""
+"Agrupa los códigos como en Aegis. Los grupos son las etiquetas del acceso: "
+"se sincronizan con tus otros dispositivos."
+
+msgid "Groups"
+msgstr "Grupos"
+
+msgid "Groups…"
+msgstr "Grupos…"
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr ""
@@ -972,15 +1198,16 @@ msgstr "Ocultar contraseñas copiadas del historial del portapapeles"
 msgid "Hide password"
 msgstr "Ocultar contraseña"
 
+msgid "High contrast"
+msgstr "Alto contraste"
+
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Costes más altos ralentizan los ataques por adivinación y también el "
-"desbloqueo. El ajuste automático elige valores de aproximadamente medio "
-"segundo en este equipo; se aplican la próxima vez que se defina o cambie la "
-"contraseña maestra."
+"Los costes más altos frenan los ataques de adivinación y también ralentizan "
+"el desbloqueo. El ajuste automático elige valores de aproximadamente medio "
+"segundo en este equipo."
 
 msgid "History cleared"
 msgstr "Historial borrado"
@@ -1022,6 +1249,15 @@ msgstr "Importar contraseñas"
 msgid "Import passwords…"
 msgstr "Importar contraseñas…"
 
+msgid ""
+"In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
+"“Scan the computer's QR code”. Then type the code below and your master "
+"password."
+msgstr ""
+"En Ashy Pass para Android, abre Ajustes → Sincronización con carpeta cifrada "
+"y toca «Escanear el QR del ordenador». Después escribe el código de abajo y "
+"tu contraseña maestra."
+
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
 
@@ -1037,6 +1273,9 @@ msgstr[1] "PIN incorrecto. Quedan {} intentos."
 msgid "Incorrect master password"
 msgstr "Contraseña maestra incorrecta"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Contraseña maestra incorrecta. No se cambió nada."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Contraseña maestra incorrecta. No se ha exportado nada."
 
@@ -1049,15 +1288,11 @@ msgstr ""
 "dispositivo cuando se le solicite. Su frase de contraseña actual es "
 "necesaria para autorizar el nuevo slot de clave."
 
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Instala la extensión en Chrome o Firefox y luego registra este equipo con:  "
-"ashypass-native-host --install <id-de-la-extensión>"
-
 msgid "Internal error: no passphrase set"
 msgstr "Error interno: no se ha establecido ninguna frase de contraseña"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Error interno: la unidad no se comprobó"
 
 msgid "It can be restored from Deleted items."
 msgstr "Se puede restaurar desde Elementos eliminados."
@@ -1068,6 +1303,11 @@ msgid ""
 msgstr ""
 "Abre la bóveda en este equipo. Nadie puede recuperarla por ti, ni siquiera "
 "Ashy Pass."
+
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr ""
+"Los elementos permanecen aquí y en la carpeta; al conectar de nuevo se "
+"combinan"
 
 msgid "Its user, password and other details appear here."
 msgstr "Su usuario, contraseña y otros detalles aparecen aquí."
@@ -1094,6 +1334,9 @@ msgstr ""
 
 msgid "Keep deleted entries for (days)"
 msgstr "Conservar entradas eliminadas durante (días)"
+
+msgid "Keep them"
+msgstr "Conservarlos"
 
 msgid "Keep using"
 msgstr "Seguir usando"
@@ -1162,6 +1405,9 @@ msgstr "Última copia de seguridad hecha en este equipo"
 msgid "Last changed:"
 msgstr "Último cambio:"
 
+msgid "Last sync:"
+msgstr "Última sincronización:"
+
 msgid "Launch the encryption wizard"
 msgstr "Iniciar el asistente de cifrado"
 
@@ -1182,6 +1428,31 @@ msgstr "Bloquear la bóveda ahora (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Bloquear cuando se bloquee la pantalla o el equipo se suspenda"
+
+msgid "Login name"
+msgstr "Nombre de usuario"
+
+msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"Inicios de sesión del mismo sitio y cuenta, o elementos con el mismo código "
+"de verificación, dejados por importaciones o por dos sincronizaciones. Al "
+"fusionar se conserva uno, se le incorpora lo que solo tenían los demás "
+"(código, notas, otros sitios web, grupos; las otras contraseñas pasan a su "
+"historial) y los demás se mueven a Elementos eliminados."
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
+"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+msgstr ""
+"Inicios de sesión, tarjetas, identidades, notas y llaves de acceso, cifrados "
+"en este equipo antes de salir, a través de una carpeta en Nextcloud, pCloud, "
+"WebDAV, Dropbox, Google Drive o este equipo. Ashy Pass para Android usa la "
+"misma carpeta."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1215,8 +1486,20 @@ msgstr "Mide este equipo (unos 5 segundos)"
 msgid "Medium"
 msgstr "Media"
 
+msgid "Merge, keeping the selected one"
+msgstr "Fusionar, conservando el seleccionado"
+
+msgid "Merged"
+msgstr "Fusionado"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "Fusionado; los demás están en Elementos eliminados"
+
 msgid "Minimum length:"
 msgstr "Longitud mínima:"
+
+msgid "Mint"
+msgstr "Menta"
 
 msgid "Model"
 msgstr "Modelo"
@@ -1224,11 +1507,17 @@ msgstr "Modelo"
 msgid "Modern password generator and encrypted password vault"
 msgstr "Generador de contraseñas moderno y bóveda de contraseñas cifrada"
 
+msgid "Monochrome"
+msgstr "Monocromo"
+
 msgid "More actions"
 msgstr "Más acciones"
 
 msgid "More options"
 msgstr "Más opciones"
+
+msgid "Move to Deleted items"
+msgstr "Mover a Elementos eliminados"
 
 msgid "Moved to Deleted items"
 msgstr "Movido a Elementos eliminados"
@@ -1269,6 +1558,9 @@ msgstr "Nombre de la carpeta nueva"
 msgid "New folder…"
 msgstr "Carpeta nueva…"
 
+msgid "New group"
+msgstr "Nuevo grupo"
+
 msgid "New master password"
 msgstr "Contraseña maestra nueva"
 
@@ -1295,6 +1587,9 @@ msgstr ""
 "Nextcloud Passwords requiere un campo de contraseña completo. Edite estas "
 "entradas en Ashy Pass añadiendo una contraseña para que puedan enviarse."
 
+msgid "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or a local folder"
+msgstr "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive o una carpeta local"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1307,8 +1602,17 @@ msgstr "Sin archivos adjuntos"
 msgid "No backup made on this computer yet"
 msgstr "Aún no se ha hecho ninguna copia de seguridad en este equipo"
 
+msgid "No browser found yet"
+msgstr "Aún no se encontró ningún navegador"
+
 msgid "No codes found for"
 msgstr "No se encontraron códigos para"
+
+msgid "No colors"
+msgstr "Sin colores"
+
+msgid "No duplicate items"
+msgstr "No hay elementos duplicados"
 
 msgid "No external drives detected"
 msgstr "No se detectaron unidades externas"
@@ -1339,14 +1643,28 @@ msgstr ""
 "En esta versión no se puede cambiar la clave de seguridad ni la frase de "
 "recuperación."
 
+msgid "No stable device link"
+msgstr "Sin enlace estable al dispositivo"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"No se encontró ningún navegador compatible. Abra el navegador una vez e "
+"inténtelo de nuevo."
+
 msgid "No verification codes yet"
 msgstr "Aún no hay códigos de verificación"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "Ninguno: rápido, deja datos previos recuperables"
 
+msgid "Not chosen"
+msgstr "No elegida"
+
 msgid "Not configured"
 msgstr "No configurado"
+
+msgid "Not connected"
+msgstr "No conectado"
 
 msgid "Not run yet"
 msgstr "Aún no ejecutado"
@@ -1369,8 +1687,15 @@ msgstr "Nada cambió — Ashy Pass y Nextcloud ya estaban alineados."
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "No se elimina nada. Los accesos que ya están en la bóveda se omiten."
 
+msgid "Nothing was changed"
+msgstr "No se cambió nada"
+
 msgid "Nothing was changed."
 msgstr "No se ha cambiado nada."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"No se cambió nada. Cierre otras copias de Ashy Pass e inténtelo de nuevo."
 
 msgid "Nothing was imported"
 msgstr "No se ha importado nada"
@@ -1402,6 +1727,9 @@ msgstr "Cliente OAuth no configurado en tiempo de compilación"
 
 msgid "OK"
 msgstr "Aceptar"
+
+msgid "Ocean"
+msgstr "Océano"
 
 msgid "Off"
 msgstr "Desactivado"
@@ -1444,6 +1772,12 @@ msgstr "Solo es necesario cuando un sitio tiene reglas específicas"
 msgid "Only when some entries come from Nextcloud Passwords and others do not"
 msgstr "Solo cuando algunos accesos vienen de Nextcloud Passwords y otros no"
 
+msgid "Open Dropbox"
+msgstr "Abrir Dropbox"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr "Abre Dropbox, permite Ashy Pass y pega el código que muestra"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr "Abre una contraseña y marca la estrella para encontrarla más rápido."
 
@@ -1465,8 +1799,14 @@ msgstr "Abrir el volumen cifrado"
 msgid "Open website"
 msgstr "Abrir sitio web"
 
+msgid "Open your browser once, then connect"
+msgstr "Abre tu navegador una vez y luego conecta"
+
 msgid "Opening encrypted mapping"
 msgstr "Abriendo mapeo cifrado"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr "Abre Dropbox en el navegador; copia el código que muestra"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Abre el navegador para el consentimiento OAuth"
@@ -1530,6 +1870,9 @@ msgstr "Contraseña"
 msgid "Password / app-password"
 msgstr "Contraseña / contraseña de aplicación"
 
+msgid "Password colors"
+msgstr "Colores de la contraseña"
+
 msgid "Password copied"
 msgstr "Contraseña copiada"
 
@@ -1544,6 +1887,9 @@ msgstr "Historial de contraseñas…"
 
 msgid "Password list"
 msgstr "Lista de contraseñas"
+
+msgid "Password of the Aegis vault"
+msgstr "Contraseña de la bóveda de Aegis"
 
 msgid "Password of the KeePass database"
 msgstr "Contraseña de la base de datos de KeePass"
@@ -1755,8 +2101,19 @@ msgstr "Restaurando la copia…"
 msgid "Retention"
 msgstr "Retención"
 
+msgid "Rose"
+msgstr "Rosa"
+
 msgid "Run"
 msgstr "Ejecutar"
+
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Hágalo una vez después de instalar un navegador, para que encuentre Ashy "
+"Pass. Solo añade un archivo pequeño a la carpeta de configuración de cada "
+"navegador."
 
 msgid "Running audit..."
 msgstr "Ejecutando auditoría..."
@@ -1772,6 +2129,12 @@ msgstr "Verificaciones de seguridad fallidas"
 
 msgid "Safety checks passed"
 msgstr "Verificaciones de seguridad superadas"
+
+msgid "Same site and account"
+msgstr "Mismo sitio y cuenta"
+
+msgid "Same verification code"
+msgstr "Mismo código de verificación"
 
 msgid "Save"
 msgstr "Guardar"
@@ -1793,6 +2156,9 @@ msgstr "Guardar copia de seguridad"
 
 msgid "Save in"
 msgstr "Guardar en"
+
+msgid "Save new PIN"
+msgstr "Guardar nuevo PIN"
 
 msgid "Save to vault"
 msgstr "Guardar en la bóveda"
@@ -1851,6 +2217,11 @@ msgstr "Ver mis contraseñas"
 msgid "Select an access"
 msgstr "Selecciona un acceso"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Envía los cambios poco después de cada edición y comprueba el servidor con "
+"regularidad"
+
 msgid "Sending local changes"
 msgstr "Enviando cambios locales"
 
@@ -1876,11 +2247,17 @@ msgstr "URL del servidor, nombre de usuario, contraseña de aplicación"
 msgid "Server URL, username, app-password"
 msgstr "URL del servidor, nombre de usuario, contraseña de aplicación"
 
+msgid "Server address"
+msgstr "Dirección del servidor"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
 "URL del servidor (p. ej. cloud.example.com), nombre de usuario y una "
 "contraseña de aplicación."
+
+msgid "Service"
+msgstr "Servicio"
 
 msgid "Set PIN"
 msgstr "Establecer PIN"
@@ -1918,6 +2295,9 @@ msgstr "Mostrar una carpeta"
 msgid "Show favicons"
 msgstr "Mostrar favicons"
 
+msgid "Show icons beside the codes"
+msgstr "Mostrar iconos junto a los códigos"
+
 msgid "Show only favorites"
 msgstr "Mostrar solo favoritos"
 
@@ -1930,11 +2310,17 @@ msgstr "Mostrar barra lateral"
 msgid "Show technical details"
 msgstr "Ver detalle técnico"
 
+msgid "Shows a QR code to scan with Ashy Pass for Android"
+msgstr "Muestra un código QR para escanear con Ashy Pass para Android"
+
 msgid "Sign in failed"
 msgstr "Error al iniciar sesión"
 
 msgid "Sign in to Google"
 msgstr "Iniciar sesión en Google"
+
+msgid "Sign in to Google to use your Drive"
+msgstr "Inicia sesión en Google para usar tu Drive"
 
 msgid "Sign out"
 msgstr "Cerrar sesión"
@@ -1972,14 +2358,28 @@ msgstr "Fortaleza"
 msgid "Strong"
 msgstr "Fuerte"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Más resistente a los intentos de adivinar la contraseña maestra. Mientras "
+"esté activado, las versiones anteriores de Ashy Pass no pueden abrir la "
+"bóveda con la contraseña maestra."
+
 msgid "Style"
 msgstr "Estilo"
 
 msgid "Summary"
 msgstr "Resumen"
 
+msgid "Sunset"
+msgstr "Atardecer"
+
 msgid "Symbols (!@#$…)"
 msgstr "Símbolos (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Sincronizar automáticamente"
 
 msgid "Sync completed"
 msgstr "Sincronización completada"
@@ -1990,17 +2390,26 @@ msgstr "Sincronización con problemas"
 msgid "Sync completed with warnings"
 msgstr "Sincronización completada con advertencias"
 
-msgid "Sync conflict"
-msgstr "Conflicto de sincronización"
-
 msgid "Sync conflict detected"
 msgstr "Se detectó un conflicto de sincronización"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr ""
+"Conflicto de sincronización: el servidor tiene una copia más reciente "
+"(generación {})"
 
 msgid "Sync failed"
 msgstr "Error de sincronización"
 
+msgid "Sync folder disconnected"
+msgstr "Carpeta de sincronización desconectada"
+
 msgid "Sync now"
 msgstr "Sincronizar ahora"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Sincronizar al desbloquear la bóveda"
 
 msgid "Synchronization"
 msgstr "Sincronización"
@@ -2032,6 +2441,9 @@ msgstr "Sincronizando..."
 msgid "Syncing folders"
 msgstr "Sincronizando carpetas"
 
+msgid "Syncing…"
+msgstr "Sincronizando…"
+
 msgid "Tags"
 msgstr "Etiquetas"
 
@@ -2051,6 +2463,13 @@ msgstr "Detalles técnicos"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "No se pudo usar el PIN en este equipo. Usa tu contraseña maestra."
+
+msgid ""
+"The PIN is not stored anywhere, so it cannot be shown. To change it, set a "
+"new one."
+msgstr ""
+"El PIN no se guarda en ningún sitio, así que no se puede mostrar. Para "
+"cambiarlo, defina uno nuevo."
 
 msgid "The PIN must have at least 4 characters"
 msgstr "El PIN debe tener al menos 4 caracteres"
@@ -2073,6 +2492,9 @@ msgstr ""
 msgid "The backup was not created"
 msgstr "No se creó la copia de seguridad"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "El conector de navegador de Ashy Pass no está instalado"
+
 msgid "The copy could not be downloaded"
 msgstr "No se pudo descargar la copia"
 
@@ -2084,6 +2506,16 @@ msgstr[1] "La copia se ha verificado y tiene {} accesos."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "La contraseña maestra actual es incorrecta. No se ha cambiado nada."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"La extensión pide su contraseña maestra y mantiene la bóveda abierta solo "
+"hasta el bloqueo automático. Si «Abrir automáticamente al iniciar sesión» "
+"está activado, se abre sin preguntar. Bloquear la pantalla también la "
+"bloquea, cuando esa opción está activada."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2110,6 +2542,9 @@ msgid ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
 msgstr ""
 "La etiqueta no puede empezar por «-» ni contener «/» o caracteres de control."
+
+msgid "The last sync failed"
+msgstr "La última sincronización falló"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "La contraseña maestra es demasiado corta. Longitud mínima:"
@@ -2142,6 +2577,13 @@ msgstr "No se cambió la contraseña"
 msgid "The passwords do not match"
 msgstr "Las contraseñas no coinciden"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Las contraseñas anteriores de este acceso se eliminarán para siempre. Esto "
+"no se puede deshacer."
+
 msgid "The previous vault was kept at:"
 msgstr "La bóveda anterior se guardó en:"
 
@@ -2156,6 +2598,9 @@ msgstr "La búsqueda se limita a las contraseñas sin carpeta."
 
 msgid "The search is limited to the folder"
 msgstr "La búsqueda se limita a la carpeta"
+
+msgid "The site's icon, when the code has a site saved"
+msgstr "El icono del sitio, cuando el código tiene un sitio guardado"
 
 msgid "The sync finished, but some items reported errors."
 msgstr "La sincronización terminó, pero algunos elementos reportaron error."
@@ -2188,6 +2633,17 @@ msgid "The vault will open automatically at login"
 msgstr "La bóveda se abrirá automáticamente al iniciar sesión"
 
 #, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"El {} elemento de la papelera se eliminará para siempre. Esto no se puede "
+"deshacer."
+msgstr[1] ""
+"Los {} elementos de la papelera se eliminarán para siempre. Esto no se puede "
+"deshacer."
+
+#, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
 msgid_plural ""
 "The {} passwords in it stay in the vault and move to “No folder”."
@@ -2205,6 +2661,17 @@ msgstr "No hay nada nuevo que importar."
 
 msgid "These options cannot produce a password."
 msgstr "Estas opciones no pueden generar una contraseña."
+
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Estaban sincronizados con Nextcloud Passwords y ya no están en el servidor. "
+"Si los eliminó allí, pasan a Elementos eliminados aquí. Si no, puede que el "
+"servidor haya respondido solo en parte: consérvelos y la próxima "
+"sincronización lo intentará de nuevo."
 
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Este PIN ya no coincide con la bóveda. No se ha cambiado nada."
@@ -2225,6 +2692,12 @@ msgstr "Este acceso no tiene usuario"
 msgid "This access no longer exists"
 msgstr "Este acceso ya no existe"
 
+msgid "This build has no Dropbox app key"
+msgstr "Esta compilación no tiene clave de aplicación de Dropbox"
+
+msgid "This build has no Google sign-in configured"
+msgstr "Esta compilación no tiene configurado el inicio de sesión de Google"
+
 msgid "This cannot be undone."
 msgstr "Esto no se puede deshacer."
 
@@ -2238,17 +2711,34 @@ msgstr ""
 msgid "This device generation:"
 msgstr "Generación de este dispositivo:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Esta unidad no tiene un enlace en /dev/disk/by-id, por lo que Ashy Pass no "
+"puede asegurarse de que sigue siendo la misma unidad al borrarla. No se "
+"puede cifrar aquí."
+
 msgid "This file can be read without a password"
 msgstr "Este archivo se podrá leer sin contraseña"
 
 msgid "This file could not be read"
 msgstr "No se pudo leer este archivo"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Este archivo es demasiado grande para adjuntarlo. El límite es 64 MB."
+
 msgid "This folder already exists"
 msgstr "Esta carpeta ya existe"
 
 msgid "This folder is empty"
 msgstr "Esta carpeta está vacía"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"No se pudo abrir esta imagen. Use una imagen PNG, JPEG o WebP de hasta 20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "
@@ -2397,6 +2887,9 @@ msgid "Unlocked by another application. Lock it from your file manager."
 msgstr ""
 "Desbloqueada por otra aplicación. Bloquéala desde tu gestor de archivos."
 
+msgid "Unlocking"
+msgstr "Desbloqueo"
+
 msgid "Unlocking…"
 msgstr "Desbloqueando…"
 
@@ -2443,8 +2936,18 @@ msgstr "Usar contraseña maestra"
 msgid "Use the + button to create one."
 msgstr "Usa el botón + para crear una."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Usa la misma contraseña maestra en todos tus dispositivos: abre la clave de "
+"la carpeta. La escribes una vez aquí, para unirte."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Usa estos códigos cuando un sitio pida la verificación en dos pasos."
+
+msgid "Use these costs for the vault key"
+msgstr "Usar estos costes para la clave de la bóveda"
 
 msgid "Use this password"
 msgstr "Usar esta contraseña"
@@ -2461,6 +2964,9 @@ msgstr "Usuario"
 msgid "User copied"
 msgstr "Usuario copiado"
 
+msgid "User name"
+msgstr "Nombre de usuario"
+
 msgid "User or e-mail (optional)"
 msgstr "Usuario o correo electrónico (opcional)"
 
@@ -2475,6 +2981,9 @@ msgstr ""
 "Usa Have I Been Pwned. Solo se envían los 5 primeros caracteres de un hash "
 "de cada contraseña, nunca la contraseña. Los resultados se guardan en este "
 "equipo durante 7 días."
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr "Usa tu inicio de sesión de Google Drive de Copias de seguridad"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2496,6 +3005,9 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Bóveda ya sincronizada"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr "Bóveda cifrada de nuevo. Vuelva a configurar el PIN si usaba uno."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Bóveda bloqueada tras un periodo de inactividad"
@@ -2526,6 +3038,9 @@ msgstr "Código de verificación guardado en la bóveda"
 msgid "Verification codes"
 msgstr "Códigos de verificación"
 
+msgid "Verification codes (JSON, encrypted or not)"
+msgstr "Códigos de verificación (JSON, cifrados o no)"
+
 msgid "Verification codes (unencrypted JSON)"
 msgstr "Códigos de verificación (JSON sin cifrar)"
 
@@ -2535,14 +3050,26 @@ msgstr "Muy fuerte"
 msgid "Very Weak"
 msgstr "Muy débil"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Espere a que termine la sincronización y luego cierre la sesión."
+
+msgid "Waiting for Google in the browser…"
+msgstr "Esperando a Google en el navegador…"
+
 msgid "Waiting for Nextcloud..."
 msgstr "Esperando a Nextcloud..."
 
 msgid "Weak"
 msgstr "Débil"
 
+msgid "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+msgstr "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "Dirección WebDAV"
 
 msgid "WebDAV configured"
 msgstr "WebDAV configurado"
@@ -2563,15 +3090,8 @@ msgstr ""
 "Cuando un sitio ofrezca verificación en dos pasos, añade aquí su clave de "
 "configuración para obtener los códigos."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Si se activa, la extensión de Ashy Pass para el navegador puede leer los "
-"accesos de la bóveda desbloqueándola desde el llavero del sistema, incluso "
-"con esta ventana bloqueada. La clave se descarta de nuevo tras el tiempo de "
-"bloqueo automático."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Si está desactivado, la extensión no ve nada de la bóveda"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "¿De dónde quieres traer tus contraseñas?"
@@ -2601,6 +3121,13 @@ msgstr "Borrar dispositivo"
 msgid "Wiping device"
 msgstr "Limpiando dispositivo"
 
+msgid ""
+"With two-step verification on, pCloud e-mails you about the new sign-in: "
+"approve it there and connect again."
+msgstr ""
+"Con la verificación en dos pasos activada, pCloud te envía un correo sobre "
+"el nuevo inicio de sesión: apruébalo allí y vuelve a conectar."
+
 msgid "Working..."
 msgstr "Trabajando..."
 
@@ -2623,6 +3150,14 @@ msgstr "Escribiendo cabecera LUKS2"
 msgid "Wrong master password"
 msgstr "Contraseña maestra incorrecta"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr ""
+"Contraseña maestra incorrecta. La carpeta pertenece a una bóveda con otra "
+"distinta."
+
+msgid "Wrong password. Password of the Aegis vault"
+msgstr "Contraseña incorrecta. Contraseña de la bóveda de Aegis"
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2640,8 +3175,18 @@ msgstr ""
 msgid "Your entries are still available on this computer."
 msgstr "Tus accesos siguen disponibles en este equipo."
 
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Tus elementos permanecen en este equipo y en la carpeta. Al conectar de "
+"nuevo más tarde, se combinan en lugar de duplicarse."
+
 msgid "Your most used accesses can be here"
 msgstr "Tus accesos más usados pueden estar aquí"
+
+msgid "Your pCloud e-mail and password"
+msgstr "Tu correo y contraseña de pCloud"
 
 msgid "Your vault is ready"
 msgstr "Tu bóveda está lista"
@@ -2657,6 +3202,9 @@ msgstr "asignado"
 
 msgid "breached"
 msgstr "vulnerada"
+
+msgid "different password"
+msgstr "contraseña distinta"
 
 msgid "duplicate"
 msgstr "duplicada"
@@ -2690,6 +3238,11 @@ msgstr "baja"
 msgid "medium"
 msgstr "media"
 
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minuto"
+msgstr[1] "minutos"
+
 msgid "more"
 msgstr "más"
 
@@ -2711,6 +3264,15 @@ msgstr "no montado"
 msgid "old"
 msgstr "antigua"
 
+msgid "pCloud (data in Europe)"
+msgstr "pCloud (datos en Europa)"
+
+msgid "pCloud (data in the US)"
+msgstr "pCloud (datos en EE. UU.)"
+
+msgid "pCloud e-mail"
+msgstr "Correo de pCloud"
+
 msgid "passwordless entry was skipped"
 msgid_plural "passwordless entries were skipped"
 msgstr[0] "entrada sin contraseña omitida"
@@ -2729,6 +3291,9 @@ msgstr "rotacional (HDD)"
 
 msgid "seen"
 msgstr "vista"
+
+msgid "sent:"
+msgstr "enviados:"
 
 msgid "solid-state"
 msgstr "estado sólido"
@@ -2863,6 +3428,10 @@ msgid "{} word"
 msgid_plural "{} words"
 msgstr[0] "{} palabra"
 msgstr[1] "{} palabras"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "“{}” se eliminará para siempre. Esto no se puede deshacer."
 
 msgid "…"
 msgstr "…"

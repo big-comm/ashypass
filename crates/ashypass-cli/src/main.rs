@@ -12,6 +12,13 @@ use ashypass_core::generator::{
 };
 use ashypass_core::totp::{generate_totp, Algorithm};
 use clap::{Args, Parser, Subcommand};
+use zeroize::Zeroizing;
+
+/// Accepted `gen --pin-length` range. Shorter PINs are trivially guessable;
+/// longer ones are not PINs any more, and an unbounded value would let a typo
+/// allocate gigabytes.
+const PIN_MIN_LENGTH: u64 = 4;
+const PIN_MAX_LENGTH: u64 = 64;
 
 #[derive(Parser, Debug)]
 #[command(
@@ -157,14 +164,19 @@ struct GenArgs {
     /// Length in characters (ignored for --passphrase / --pin).
     #[arg(long, default_value_t = 20)]
     length: usize,
-    /// Generate a 4-word passphrase instead.
+    /// Generate a 6-word passphrase instead.
     #[arg(long)]
     passphrase: bool,
     /// Generate a numeric PIN instead.
     #[arg(long)]
     pin: bool,
-    /// PIN length when --pin is used.
-    #[arg(long, default_value_t = 6)]
+    /// PIN length when --pin is used (4 to 64 digits).
+    #[arg(
+        long,
+        default_value_t = 6,
+        value_parser = clap::builder::RangedU64ValueParser::<usize>::new()
+            .range(PIN_MIN_LENGTH..=PIN_MAX_LENGTH)
+    )]
     pin_length: usize,
 }
 
@@ -287,6 +299,9 @@ fn run_drives(action: DrivesAction) -> Result<()> {
         }
 
         DrivesAction::Info { device, json } => {
+            // Checked before elevating: `sudo cryptsetup luksDump` must never
+            // be pointed at an arbitrary file.
+            require_block_device(&device)?;
             let runner = auto_runner();
             let mut spec = CommandSpec::new("cryptsetup").arg("luksDump");
             if json {
@@ -457,6 +472,17 @@ fn run_drives(action: DrivesAction) -> Result<()> {
     }
 }
 
+/// Refuse anything that does not resolve to a block device.
+fn require_block_device(device: &std::path::Path) -> Result<()> {
+    use std::os::unix::fs::FileTypeExt;
+    let is_block =
+        std::fs::metadata(device).is_ok_and(|metadata| metadata.file_type().is_block_device());
+    if !is_block {
+        bail!("{} is not a block device", device.display());
+    }
+    Ok(())
+}
+
 /// Resolve `drives unlock --label/--mapper-name` into a mapper choice. An
 /// explicit name is used verbatim and must pass the mapper whitelist.
 fn unlock_mapper_choice<'a>(
@@ -549,13 +575,15 @@ fn unlock_vault(vault: &mut Vault) -> Result<()> {
     // Try keyring first; fall back to TTY prompt if nothing is stored or it
     // doesn't match (which indicates the user rotated the master).
     if let Ok(Some(stored)) = ashypass_core::keyring::load_master() {
+        let stored = Zeroizing::new(stored);
         if vault.unlock(&stored).is_ok() {
             return Ok(());
         }
     }
 
-    let password =
-        rpassword::prompt_password("Master password: ").context("reading password from tty")?;
+    let password = Zeroizing::new(
+        rpassword::prompt_password("Master password: ").context("reading password from tty")?,
+    );
     vault.unlock(&password).map_err(|e| anyhow!("{e}"))?;
     Ok(())
 }
@@ -670,12 +698,16 @@ fn run_show(vault: &Vault, a: ShowArgs, totp_only: bool) -> Result<()> {
 }
 
 fn run_add(vault: &Vault, a: AddArgs) -> Result<()> {
-    let password = if a.password_stdin {
-        let mut buf = String::new();
+    let mut password = if a.password_stdin {
+        let mut buf = Zeroizing::new(String::new());
         std::io::stdin().read_line(&mut buf).context("read stdin")?;
-        buf.trim_end_matches('\n').to_string()
+        // Trim in place: `trim_end_matches(..).to_string()` would leave the
+        // untrimmed copy behind un-wiped.
+        let len = buf.trim_end_matches('\n').len();
+        buf.truncate(len);
+        buf
     } else {
-        rpassword::prompt_password("Password: ").context("read tty")?
+        Zeroizing::new(rpassword::prompt_password("Password: ").context("read tty")?)
     };
     if password.is_empty() {
         bail!("password cannot be empty");
@@ -684,7 +716,9 @@ fn run_add(vault: &Vault, a: AddArgs) -> Result<()> {
         .add(NewEntry {
             title: a.title,
             username: a.username,
-            password,
+            // Move the buffer instead of copying it, so no second plaintext
+            // copy is left behind on this side of the call.
+            password: std::mem::take(&mut *password),
             url: a.url,
             category: a.category,
             ..Default::default()
@@ -940,6 +974,23 @@ mod tests {
     }
 
     #[test]
+    fn pin_length_is_bounded() {
+        let pin_length = |args: &[&str]| match parse(args).unwrap().command {
+            Command::Gen(a) => a.pin_length,
+            other => panic!("unexpected {other:?}"),
+        };
+        assert_eq!(pin_length(&["gen", "--pin"]), 6);
+        assert_eq!(pin_length(&["gen", "--pin", "--pin-length", "4"]), 4);
+        assert_eq!(pin_length(&["gen", "--pin", "--pin-length", "64"]), 64);
+        for bad in ["0", "3", "65", "10000000000", "-1"] {
+            assert!(
+                parse(&["gen", "--pin", "--pin-length", bad]).is_err(),
+                "{bad} accepted"
+            );
+        }
+    }
+
+    #[test]
     fn quick_conflicts_with_wipe() {
         assert!(parse(&["drives", "format", "/dev/sdb", "--quick", "--wipe", "random"]).is_err());
     }
@@ -999,5 +1050,14 @@ mod tests {
                 action: DrivesAction::Lock { .. }
             }
         ));
+    }
+
+    #[test]
+    fn info_requires_a_block_device() {
+        assert!(require_block_device(std::path::Path::new("/etc/passwd")).is_err());
+        assert!(require_block_device(std::path::Path::new("/dev/null")).is_err());
+        assert!(
+            require_block_device(std::path::Path::new("/dev/does-not-exist-ashypass")).is_err()
+        );
     }
 }

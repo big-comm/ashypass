@@ -151,10 +151,10 @@ impl SessionManager {
 
     fn cancel_timers(&mut self) {
         if let Some(id) = self.timeout_id.take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
         if let Some(id) = self.warning_id.take() {
-            id.remove();
+            big_gtk_kit::source::remove(id);
         }
     }
 

@@ -21,7 +21,15 @@ pub struct Strength {
     pub crack_seconds_offline_fast: f64,
 }
 
+/// zxcvbn's cost grows quickly with length; anything past this many
+/// characters is strong regardless, so only the start is analysed.
+const MAX_ANALYSED_CHARS: usize = 100;
+
 pub fn estimate(password: &str, user_inputs: &[&str]) -> Strength {
+    let password = match password.char_indices().nth(MAX_ANALYSED_CHARS) {
+        Some((end, _)) => &password[..end],
+        None => password,
+    };
     let est = zxcvbn(password, user_inputs);
     let score_u8 = match est.score() {
         Score::Zero => 0,

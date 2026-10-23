@@ -106,3 +106,9 @@ tests/__pycache__/
 # Screenshots for testing
 screenshots/test_*.png
 /tmp/
+
+# Built extension packages kept locally, never committed
+browser-extension/releases/
+
+# Local build secrets (Google OAuth client secret)
+/.env.build.local

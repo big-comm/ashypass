@@ -19,6 +19,7 @@ optdepends=(
     'btrfs-progs: Btrfs filesystem support for encrypted drives'
     'xfsprogs: XFS filesystem support for encrypted drives'
     'systemd: FIDO2 token enrolment via systemd-cryptenroll'
+    'udisks2: unmount an unlocked drive before locking it'
 )
 makedepends=(
     'rust'
@@ -73,6 +74,26 @@ package() {
     install -Dm755 "target/release/ashypass-cli"          "${pkgdir}/usr/bin/ashypass-cli"
     install -Dm755 "target/release/ashypass-native-host"  "${pkgdir}/usr/lib/${pkgname}/ashypass-native-host"
 
+    # Browser extension: system-wide native-messaging manifests, so Firefox,
+    # Chrome, Chromium and Edge find the host without a manual step. The
+    # manifests are printed by the host itself (they carry the allowed
+    # extension ids). Brave, Vivaldi and per-user profiles are covered by
+    # Settings → Browser → Connect browsers.
+    local host="/usr/lib/${pkgname}/ashypass-native-host"
+    local manifest="com.bigcommunity.ashypass.json"
+    install -d "${pkgdir}/usr/lib/mozilla/native-messaging-hosts" \
+               "${pkgdir}/etc/opt/chrome/native-messaging-hosts" \
+               "${pkgdir}/etc/chromium/native-messaging-hosts" \
+               "${pkgdir}/etc/opt/edge/native-messaging-hosts"
+    target/release/ashypass-native-host --print-manifest firefox "$host" \
+        > "${pkgdir}/usr/lib/mozilla/native-messaging-hosts/${manifest}"
+    for dir in etc/opt/chrome etc/chromium etc/opt/edge; do
+        target/release/ashypass-native-host --print-manifest chrome "$host" \
+            > "${pkgdir}/${dir}/native-messaging-hosts/${manifest}"
+    done
+    chmod 644 "${pkgdir}"/usr/lib/mozilla/native-messaging-hosts/"${manifest}" \
+              "${pkgdir}"/etc/{opt/chrome,chromium,opt/edge}/native-messaging-hosts/"${manifest}"
+
     # Privileged drive-encryption helper. Installed under /usr/libexec/ so
     # only the polkit-mediated `pkexec` invocation can launch it elevated;
     # users never need to run it directly.
@@ -82,6 +103,11 @@ package() {
     if [ -d "usr/share" ]; then
         cp -a usr/share "${pkgdir}/usr/"
     fi
+
+    # Install the polkit policy with a fixed mode rather than relying on the
+    # permissions `cp -a` copied from the checkout.
+    install -Dm644 usr/share/polkit-1/actions/com.bigcommunity.ashypass.drives.policy \
+        "${pkgdir}/usr/share/polkit-1/actions/com.bigcommunity.ashypass.drives.policy"
 
     # Compile and install .po translations as .mo if present.
     if [ -d "locale" ]; then

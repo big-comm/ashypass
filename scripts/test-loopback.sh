@@ -34,4 +34,4 @@ fi
 echo "[3/3] Running under sudo: $BIN"
 echo "       (--test-threads=1 to keep loop devices serialised)"
 echo
-exec sudo "$BIN" --ignored --test-threads=1 --nocapture
+exec sudo ASHYPASS_LOOPBACK_TEST=1 "$BIN" --ignored --test-threads=1 --nocapture

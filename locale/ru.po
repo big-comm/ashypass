@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-23 15:11-0300\n"
 "PO-Revision-Date: 2026-05-12 19:44\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -100,6 +100,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Адрес скопирован"
 
+msgid "Address, user and password are required"
+msgstr "Адрес, пользователь и пароль обязательны"
+
 msgid "Adjust length and characters"
 msgstr "Настроить длину и символы"
 
@@ -111,6 +114,9 @@ msgstr "Настроить слова и разделитель"
 
 msgid "Algorithm"
 msgstr "Алгоритм"
+
+msgid "All"
+msgstr "Все"
 
 msgid "All clear"
 msgstr "Всё в порядке"
@@ -130,11 +136,23 @@ msgid ""
 msgstr ""
 "Все разделы, файлы и сигнатуры файловых систем будут безвозвратно уничтожены."
 
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "Разрешить Ashy Pass в Dropbox"
+
 msgid "Allow TRIM through encrypted mapping"
 msgstr "Разрешить TRIM через зашифрованное отображение"
 
 msgid "Allow the browser extension"
 msgstr "Разрешить расширение браузера"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Другое устройство удалило их из зашифрованной папки синхронизации. Если это "
+"были вы, они переместятся здесь в «Удалённые». Если нет, оставьте их: они "
+"будут снова отправлены в папку."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -144,8 +162,8 @@ msgstr ""
 "синхронизации этого устройства. Загрузка сейчас приведет к потере удаленных "
 "изменений."
 
-msgid "Answer requests from the installed extension"
-msgstr "Отвечать на запросы установленного расширения"
+msgid "Another example"
+msgstr "Другой пример"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -231,6 +249,9 @@ msgstr "Вложения"
 msgid "Audit failed"
 msgstr "Аудит не выполнен"
 
+msgid "Authentication was cancelled"
+msgstr "Аутентификация отменена"
+
 msgid "Auto-tune"
 msgstr "Автонастройка"
 
@@ -303,6 +324,12 @@ msgstr "Включён Caps Lock"
 msgid "Capture from screen…"
 msgstr "Снять с экрана…"
 
+msgid "Change PIN"
+msgstr "Изменить PIN-код"
+
+msgid "Change how the vault key is protected?"
+msgstr "Изменить защиту ключа хранилища?"
+
 msgid "Change master password"
 msgstr "Изменить мастер-пароль"
 
@@ -312,8 +339,14 @@ msgstr "Изменить мастер-пароль…"
 msgid "Change only if the site shows different values"
 msgstr "Меняйте, только если сайт указывает другие значения"
 
+msgid "Changed"
+msgstr "Изменено"
+
 msgid "Changes saved to the vault"
 msgstr "Изменения сохранены в хранилище"
+
+msgid "Changes waiting to be sent"
+msgstr "Изменения ожидают отправки"
 
 msgid "Check known data breaches (online)"
 msgstr "Проверять известные утечки данных (онлайн)"
@@ -323,6 +356,12 @@ msgstr "Проверить мои пароли"
 
 msgid "Check now"
 msgstr "Проверить сейчас"
+
+msgid "Check the server every"
+msgstr "Проверять сервер каждые"
+
+msgid "Checking the drive…"
+msgstr "Проверка накопителя…"
 
 msgid "Choose a backup"
 msgstr "Выберите резервную копию"
@@ -358,6 +397,9 @@ msgstr "Выберите базу данных KeePass"
 msgid "Choose the andOTP export"
 msgstr "Выберите экспорт andOTP"
 
+msgid "Choose the folder"
+msgstr "Выберите папку"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr "Выбирайте эту папку при добавлении или изменении пароля."
 
@@ -367,11 +409,17 @@ msgstr "Выбрать…"
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Экспорт паролей Chrome, Edge, Brave или Firefox (CSV)"
 
+msgid "Classic"
+msgstr "Классика"
+
 msgid "Clear copied passwords after"
 msgstr "Очищать скопированные пароли через"
 
 msgid "Clear history"
 msgstr "Очистить историю"
+
+msgid "Clear the password history?"
+msgstr "Очистить историю паролей?"
 
 msgid "Client ID"
 msgstr "ID клиента"
@@ -400,8 +448,14 @@ msgstr "Закрытие отображения"
 msgid "Code copied"
 msgstr "Код скопирован"
 
+msgid "Code from Dropbox"
+msgstr "Код из Dropbox"
+
 msgid "Code settings"
 msgstr "Параметры кода"
+
+msgid "Coffee"
+msgstr "Кофе"
 
 msgid "Columns such as name, url, username, password"
 msgstr "Столбцы вида name, url, username, password"
@@ -460,8 +514,48 @@ msgstr "Подтвердите мастер-пароль, чтобы экспо�
 msgid "Conflicts"
 msgstr "Конфликты"
 
-msgid "Connecting the extension"
-msgstr "Подключение расширения"
+msgid "Connect"
+msgstr "Подключить"
+
+msgid "Connect a phone"
+msgstr "Подключить телефон"
+
+msgid "Connect a phone…"
+msgstr "Подключить телефон…"
+
+msgid "Connect browsers"
+msgstr "Подключить браузеры"
+
+msgid "Connect failed"
+msgstr "Не удалось подключиться"
+
+msgid "Connect the sync folder"
+msgstr "Подключить папку синхронизации"
+
+msgid "Connect your browsers"
+msgstr "Подключите браузеры"
+
+msgid "Connected"
+msgstr "Подключено"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Подключено браузеров: {}. Перезапустите их, если они открыты."
+msgstr[1] "Подключено браузеров: {}. Перезапустите их, если они открыты."
+msgstr[2] "Подключено браузеров: {}. Перезапустите их, если они открыты."
+
+msgid "Connected. Received:"
+msgstr "Подключено. Получено:"
+
+msgid "Connecting and syncing…"
+msgstr "Подключение и синхронизация…"
+
+msgid "Connection QR code"
+msgstr "QR-код подключения"
+
+msgid "Connect…"
+msgstr "Подключить…"
 
 msgid "Continue"
 msgstr "Продолжить"
@@ -499,8 +593,14 @@ msgstr "Не удалось добавить вложение"
 msgid "Could not change the favorite"
 msgstr "Не удалось изменить избранное"
 
+msgid "Could not check"
+msgstr "Не удалось проверить"
+
 msgid "Could not clear the history"
 msgstr "Не удалось очистить историю"
+
+msgid "Could not connect the browsers"
+msgstr "Не удалось подключить браузеры"
 
 msgid "Could not create the folder"
 msgstr "Не удалось создать папку"
@@ -516,6 +616,15 @@ msgstr "Не удалось удалить"
 
 msgid "Could not lock the drive"
 msgstr "Не удалось заблокировать диск"
+
+msgid "Could not make the QR code"
+msgstr "Не удалось создать QR-код"
+
+msgid "Could not merge"
+msgstr "Не удалось объединить"
+
+msgid "Could not open the vault"
+msgstr "Не удалось открыть хранилище"
 
 msgid "Could not open this access"
 msgstr "Не удалось открыть эту запись"
@@ -546,6 +655,9 @@ msgstr "Не удалось переименовать папку"
 
 msgid "Could not restore. Look in Deleted items."
 msgstr "Не удалось восстановить. Проверьте раздел «Удалённые»."
+
+msgid "Could not save"
+msgstr "Не удалось сохранить"
 
 msgid "Could not save the file"
 msgstr "Не удалось сохранить файл"
@@ -631,8 +743,18 @@ msgstr "Удалить запись…"
 msgid "Delete permanently"
 msgstr "Удалить навсегда"
 
+msgid "Delete permanently?"
+msgstr "Удалить навсегда?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Удалите файл экспорта, если он не был защищён паролем."
+
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Удалить и здесь записи ({})?"
+msgstr[1] "Удалить и здесь записи ({})?"
+msgstr[2] "Удалить и здесь записи ({})?"
 
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
@@ -671,6 +793,18 @@ msgstr "Путь к устройству"
 msgid "Digits"
 msgstr "Цифры"
 
+msgid "Digits and symbols in color, easier to read and type"
+msgstr "Цифры и символы в цвете – проще читать и вводить"
+
+msgid "Disconnect"
+msgstr "Отключить"
+
+msgid "Disconnect failed"
+msgstr "Не удалось отключить"
+
+msgid "Disconnect the sync folder?"
+msgstr "Отключить папку синхронизации?"
+
 msgid "Done"
 msgstr "Готово"
 
@@ -685,6 +819,9 @@ msgstr "Загрузка удаленных изменений"
 
 msgid "Drive locked"
 msgstr "Диск заблокирован"
+
+msgid "Duplicate items"
+msgstr "Дубликаты"
 
 msgid "Easier to type and remember."
 msgstr "Проще вводить и запоминать."
@@ -707,6 +844,9 @@ msgstr "Пустая парольная фраза"
 msgid "Empty trash"
 msgstr "Очистить корзину"
 
+msgid "Empty trash?"
+msgstr "Очистить корзину?"
+
 msgid "Encrypt"
 msgstr "Зашифровать"
 
@@ -716,11 +856,20 @@ msgstr "Зашифровать диск"
 msgid "Encrypt KeePass export"
 msgstr "Зашифровать экспорт KeePass"
 
+msgid "Encrypt again"
+msgstr "Зашифровать заново"
+
 msgid "Encrypted as"
 msgstr "Зашифровано как"
 
 msgid "Encrypted device"
 msgstr "Зашифрованное устройство"
+
+msgid "Encrypted folder sync"
+msgstr "Синхронизация зашифрованной папки"
+
+msgid "Encrypted folder sync failed"
+msgstr "Сбой синхронизации зашифрованной папки"
 
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Загрузка зашифрованного снимка с обнаружением конфликтов"
@@ -743,6 +892,9 @@ msgstr ""
 "Шифрование стирает весь диск. Разблокировка и блокировка работают для дисков "
 "LUKS."
 
+msgid "Encrypting the vault again…"
+msgstr "Повторное шифрование хранилища…"
+
 msgid "Encrypting…"
 msgstr "Шифрование…"
 
@@ -760,6 +912,9 @@ msgstr "Введите метку."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Введите PIN, заданный на этом компьютере."
+
+msgid "Enter the master password"
+msgstr "Введите мастер-пароль"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Введите пароль или добавьте код подтверждения ниже."
@@ -786,12 +941,29 @@ msgid "Estimated strength"
 msgstr "Оценка надёжности"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Всё содержимое хранилища будет заново зашифровано ключом, полученным с "
+"указанными выше затратами. Старые версии Ashy Pass не откроют хранилище "
+"основным паролем. PIN-код нужно будет настроить заново."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Всё содержимое хранилища будет заново зашифровано новым паролем. Ранее "
 "созданные резервные копии по-прежнему открываются паролем, с которым они "
 "были созданы."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Всё содержимое хранилища будет заново зашифровано со стандартными затратами, "
+"которые открывает любая версия Ashy Pass 3. PIN-код нужно будет настроить "
+"заново."
 
 msgid "Everything is in sync"
 msgstr "Всё синхронизировано"
@@ -862,8 +1034,20 @@ msgstr "Файлы шифруются и хранятся внутри хран�
 msgid "Filesystem"
 msgstr "Файловая система"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Заполняйте и копируйте пароли в Chrome, Brave, Edge, Vivaldi, Firefox и "
+"LibreWolf. Расширение ничего не хранит: каждый раз оно спрашивает Ashy Pass "
+"и заполняет страницу только после вашего нажатия."
+
 msgid "Fill in all three fields."
 msgstr "Заполните все три поля."
+
+msgid "Find duplicate items"
+msgstr "Найти дубликаты"
 
 msgid "Findings"
 msgstr "Результаты"
@@ -889,6 +1073,9 @@ msgstr "Папка создана"
 msgid "Folder name"
 msgstr "Имя папки"
 
+msgid "Folder on this computer"
+msgstr "Папка на этом компьютере"
+
 msgid "Folder removed. Its passwords were kept."
 msgstr "Папка удалена. Её пароли сохранены."
 
@@ -912,6 +1099,12 @@ msgid ""
 msgstr ""
 "Для Nextcloud базовый URL выглядит так: https://cloud.example.com/remote.php/"
 "dav/files/ИМЯ_ПОЛЬЗОВАТЕЛЯ"
+
+msgid "For the browsers installed for this user"
+msgstr "Для браузеров этого пользователя"
+
+msgid "Forest"
+msgstr "Лес"
 
 msgid "Forgot the master password"
 msgstr "Забыли мастер-пароль"
@@ -947,17 +1140,52 @@ msgstr "Сгенерировать пароль"
 msgid "Generated password"
 msgstr "Сгенерированный пароль"
 
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Получить расширение для Chrome, Brave, Edge и Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Получить расширение для Firefox"
+
 msgid "Give this access a name, for example the site or app."
 msgstr "Дайте записи название, например имя сайта или приложения."
 
 msgid "Go to search"
 msgstr "Перейти к поиску"
 
+msgid ""
+"Good for 10 minutes. The QR code alone is no use without this code, and "
+"neither opens your passwords without the master password."
+msgstr ""
+"Действует 10 минут. Сам по себе QR-код без этого кода бесполезен, и ни один "
+"из них не откроет ваши пароли без мастер-пароля."
+
 msgid "Google Drive"
 msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive и WebDAV"
+
+msgid "Google account"
+msgstr "Аккаунт Google"
+
+msgid "Google sign-in failed"
+msgstr "Не удалось войти в Google"
+
+msgid "Grape"
+msgstr "Виноград"
+
+msgid ""
+"Group the codes as in Aegis. Groups are the item's tags: they sync to your "
+"other devices."
+msgstr ""
+"Группируйте коды, как в Aegis. Группы — это теги элемента: они "
+"синхронизируются с вашими другими устройствами."
+
+msgid "Groups"
+msgstr "Группы"
+
+msgid "Groups…"
+msgstr "Группы…"
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr ""
@@ -970,15 +1198,15 @@ msgstr "Скрывать скопированные пароли из истор
 msgid "Hide password"
 msgstr "Скрыть пароль"
 
+msgid "High contrast"
+msgstr "Высокий контраст"
+
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
-"Более высокие затраты замедляют атаки перебором, но также замедляют "
-"разблокировку. Автонастройка подбирает значения примерно на полсекунды на "
-"этом компьютере; они применяются при следующей установке или смене мастер-"
-"пароля."
+"Большие затраты замедляют атаки подбором, но и разблокировку тоже. "
+"Автонастройка выбирает значения примерно на полсекунды на этом компьютере."
 
 msgid "History cleared"
 msgstr "История очищена"
@@ -1020,6 +1248,15 @@ msgstr "Импорт паролей"
 msgid "Import passwords…"
 msgstr "Импорт паролей…"
 
+msgid ""
+"In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
+"“Scan the computer's QR code”. Then type the code below and your master "
+"password."
+msgstr ""
+"В Ashy Pass для Android откройте Настройки → Синхронизация зашифрованной "
+"папки и нажмите «Сканировать QR-код компьютера». Затем введите код ниже и "
+"мастер-пароль."
+
 msgid "Incorrect PIN"
 msgstr "Неверный PIN-код"
 
@@ -1036,6 +1273,9 @@ msgstr[2] "Неверный PIN. Осталось {} попыток."
 msgid "Incorrect master password"
 msgstr "Неверный мастер-пароль"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Неверный основной пароль. Ничего не изменено."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Неверный мастер-пароль. Ничего не экспортировано."
 
@@ -1048,15 +1288,11 @@ msgstr ""
 "на устройстве по запросу. Для авторизации нового слота ключа требуется ваша "
 "текущая парольная фраза."
 
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Установите расширение в Chrome или Firefox, затем зарегистрируйте этот "
-"компьютер командой:  ashypass-native-host --install <id-расширения>"
-
 msgid "Internal error: no passphrase set"
 msgstr "Внутренняя ошибка: парольная фраза не задана"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Внутренняя ошибка: накопитель не проверен"
 
 msgid "It can be restored from Deleted items."
 msgstr "Её можно восстановить из раздела «Удалённые»."
@@ -1067,6 +1303,10 @@ msgid ""
 msgstr ""
 "Он открывает хранилище на этом компьютере. Никто не сможет восстановить его "
 "за вас — даже Ashy Pass."
+
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr ""
+"Записи останутся здесь и в папке; при повторном подключении они объединятся"
 
 msgid "Its user, password and other details appear here."
 msgstr "Здесь отображаются пользователь, пароль и другие данные."
@@ -1093,6 +1333,9 @@ msgstr ""
 
 msgid "Keep deleted entries for (days)"
 msgstr "Хранить удаленные записи (дней)"
+
+msgid "Keep them"
+msgstr "Оставить"
 
 msgid "Keep using"
 msgstr "Продолжить работу"
@@ -1158,6 +1401,9 @@ msgstr "Последняя резервная копия на этом комп�
 msgid "Last changed:"
 msgstr "Последнее изменение:"
 
+msgid "Last sync:"
+msgstr "Последняя синхронизация:"
+
 msgid "Launch the encryption wizard"
 msgstr "Запустить мастер шифрования"
 
@@ -1178,6 +1424,31 @@ msgstr "Заблокировать хранилище сейчас (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Блокировать при блокировке экрана или переходе в сон"
+
+msgid "Login name"
+msgstr "Логин"
+
+msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"Входы на один и тот же сайт и аккаунт или записи с одним кодом "
+"подтверждения, оставшиеся после импорта или двух синхронизаций. При "
+"объединении одна запись сохраняется, в неё переносится то, что было только у "
+"остальных (код, заметки, другие сайты, группы; другие пароли попадают в её "
+"историю), а остальные перемещаются в Удалённые."
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
+"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+msgstr ""
+"Логины, карты, личности, заметки и ключи доступа шифруются на этом "
+"компьютере перед отправкой, через папку в Nextcloud, pCloud, WebDAV, "
+"Dropbox, Google Диске или на этом компьютере. Ashy Pass для Android "
+"использует ту же папку."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1210,8 +1481,20 @@ msgstr "Замеряет этот компьютер (около 5 секунд)
 msgid "Medium"
 msgstr "Средняя"
 
+msgid "Merge, keeping the selected one"
+msgstr "Объединить, сохранив выбранную"
+
+msgid "Merged"
+msgstr "Объединено"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "Объединено; остальные в Удалённых"
+
 msgid "Minimum length:"
 msgstr "Минимальная длина:"
+
+msgid "Mint"
+msgstr "Мята"
 
 msgid "Model"
 msgstr "Модель"
@@ -1219,11 +1502,17 @@ msgstr "Модель"
 msgid "Modern password generator and encrypted password vault"
 msgstr "Современный генератор паролей и зашифрованное хранилище паролей"
 
+msgid "Monochrome"
+msgstr "Монохром"
+
 msgid "More actions"
 msgstr "Другие действия"
 
 msgid "More options"
 msgstr "Другие параметры"
+
+msgid "Move to Deleted items"
+msgstr "Переместить в удалённые"
 
 msgid "Moved to Deleted items"
 msgstr "Перемещено в «Удалённые»"
@@ -1266,6 +1555,9 @@ msgstr "Новое имя папки"
 msgid "New folder…"
 msgstr "Новая папка…"
 
+msgid "New group"
+msgstr "Новая группа"
+
 msgid "New master password"
 msgstr "Новый мастер-пароль"
 
@@ -1292,6 +1584,9 @@ msgstr ""
 "Nextcloud Passwords требует заполненного поля пароля. Отредактируйте эти "
 "записи в Ashy Pass, добавив пароль, чтобы они были отправлены."
 
+msgid "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or a local folder"
+msgstr "Nextcloud, pCloud, WebDAV, Dropbox, Google Диск или локальная папка"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1303,8 +1598,17 @@ msgstr "Нет вложений"
 msgid "No backup made on this computer yet"
 msgstr "На этом компьютере ещё не создано резервных копий"
 
+msgid "No browser found yet"
+msgstr "Браузер пока не найден"
+
 msgid "No codes found for"
 msgstr "Коды не найдены по запросу"
+
+msgid "No colors"
+msgstr "Без цветов"
+
+msgid "No duplicate items"
+msgstr "Дубликатов нет"
 
 msgid "No external drives detected"
 msgstr "Внешние диски не обнаружены"
@@ -1334,14 +1638,28 @@ msgid "No security key or recovery phrase changes can be made in this version."
 msgstr ""
 "В этой версии нельзя изменить ни ключ безопасности, ни фразу восстановления."
 
+msgid "No stable device link"
+msgstr "Нет постоянной ссылки на устройство"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Поддерживаемый браузер не найден. Откройте браузер один раз и повторите "
+"попытку."
+
 msgid "No verification codes yet"
 msgstr "Кодов подтверждения пока нет"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "Нет — быстро, но оставляет предыдущие данные восстанавливаемыми"
 
+msgid "Not chosen"
+msgstr "Не выбрано"
+
 msgid "Not configured"
 msgstr "Не настроено"
+
+msgid "Not connected"
+msgstr "Не подключено"
 
 msgid "Not run yet"
 msgstr "Еще не запущено"
@@ -1364,8 +1682,15 @@ msgstr "Ничего не изменилось — Ashy Pass и Nextcloud уже
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Ничего не удаляется. Записи, уже имеющиеся в хранилище, пропускаются."
 
+msgid "Nothing was changed"
+msgstr "Ничего не изменено"
+
 msgid "Nothing was changed."
 msgstr "Ничего не изменено."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Ничего не изменено. Закройте другие копии Ashy Pass и повторите попытку."
 
 msgid "Nothing was imported"
 msgstr "Ничего не импортировано"
@@ -1397,6 +1722,9 @@ msgstr "OAuth-клиент не настроен во время сборки"
 
 msgid "OK"
 msgstr "ОК"
+
+msgid "Ocean"
+msgstr "Океан"
 
 msgid "Off"
 msgstr "Выкл."
@@ -1438,6 +1766,12 @@ msgstr "Нужно, только если у сайта особые требо�
 msgid "Only when some entries come from Nextcloud Passwords and others do not"
 msgstr "Только если часть записей из Nextcloud Passwords, а часть — нет"
 
+msgid "Open Dropbox"
+msgstr "Открыть Dropbox"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr "Откройте Dropbox, разрешите доступ Ashy Pass и вставьте показанный код"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr "Откройте пароль и отметьте звёздочку, чтобы быстрее его находить."
 
@@ -1459,8 +1793,14 @@ msgstr "Открыть зашифрованный том"
 msgid "Open website"
 msgstr "Открыть сайт"
 
+msgid "Open your browser once, then connect"
+msgstr "Откройте браузер один раз, затем подключите"
+
 msgid "Opening encrypted mapping"
 msgstr "Открытие зашифрованного отображения"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr "Открывает Dropbox в браузере; скопируйте показанный код"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Открывает браузер для согласия OAuth"
@@ -1524,6 +1864,9 @@ msgstr "Пароль"
 msgid "Password / app-password"
 msgstr "Пароль / пароль приложения"
 
+msgid "Password colors"
+msgstr "Цвета пароля"
+
 msgid "Password copied"
 msgstr "Пароль скопирован"
 
@@ -1538,6 +1881,9 @@ msgstr "История паролей…"
 
 msgid "Password list"
 msgstr "Список паролей"
+
+msgid "Password of the Aegis vault"
+msgstr "Пароль хранилища Aegis"
 
 msgid "Password of the KeePass database"
 msgstr "Пароль базы данных KeePass"
@@ -1751,8 +2097,18 @@ msgstr "Восстановление копии…"
 msgid "Retention"
 msgstr "Хранение"
 
+msgid "Rose"
+msgstr "Роза"
+
 msgid "Run"
 msgstr "Запустить"
+
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Сделайте это один раз после установки браузера, чтобы он нашёл Ashy Pass. В "
+"папку настроек каждого браузера добавится только небольшой файл."
 
 msgid "Running audit..."
 msgstr "Выполнение проверки..."
@@ -1768,6 +2124,12 @@ msgstr "Проверки безопасности не пройдены"
 
 msgid "Safety checks passed"
 msgstr "Проверки безопасности пройдены"
+
+msgid "Same site and account"
+msgstr "Тот же сайт и аккаунт"
+
+msgid "Same verification code"
+msgstr "Тот же код подтверждения"
 
 msgid "Save"
 msgstr "Сохранить"
@@ -1789,6 +2151,9 @@ msgstr "Сохранить резервную копию"
 
 msgid "Save in"
 msgstr "Сохранить в"
+
+msgid "Save new PIN"
+msgstr "Сохранить новый PIN-код"
 
 msgid "Save to vault"
 msgstr "Сохранить в хранилище"
@@ -1847,6 +2212,10 @@ msgstr "Показать мои пароли"
 msgid "Select an access"
 msgstr "Выберите запись"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Отправляет изменения вскоре после каждой правки и регулярно проверяет сервер"
+
 msgid "Sending local changes"
 msgstr "Отправка локальных изменений"
 
@@ -1871,11 +2240,17 @@ msgstr "URL сервера, имя пользователя, пароль при
 msgid "Server URL, username, app-password"
 msgstr "URL сервера, имя пользователя, пароль приложения"
 
+msgid "Server address"
+msgstr "Адрес сервера"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
 "URL сервера (например, cloud.example.com), имя пользователя и пароль "
 "приложения."
+
+msgid "Service"
+msgstr "Сервис"
 
 msgid "Set PIN"
 msgstr "Задать PIN"
@@ -1913,6 +2288,9 @@ msgstr "Показать папку"
 msgid "Show favicons"
 msgstr "Показывать иконки сайтов"
 
+msgid "Show icons beside the codes"
+msgstr "Показывать значки рядом с кодами"
+
 msgid "Show only favorites"
 msgstr "Показывать только избранное"
 
@@ -1925,11 +2303,17 @@ msgstr "Показать боковую панель"
 msgid "Show technical details"
 msgstr "Посмотреть технические детали"
 
+msgid "Shows a QR code to scan with Ashy Pass for Android"
+msgstr "Показывает QR-код для сканирования в Ashy Pass для Android"
+
 msgid "Sign in failed"
 msgstr "Не удалось выполнить вход"
 
 msgid "Sign in to Google"
 msgstr "Войти в Google"
+
+msgid "Sign in to Google to use your Drive"
+msgstr "Войдите в Google, чтобы использовать свой Диск"
 
 msgid "Sign out"
 msgstr "Выйти"
@@ -1967,14 +2351,27 @@ msgstr "Надёжность"
 msgid "Strong"
 msgstr "Высокая"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Лучше защищает от подбора основного пароля. Пока параметр включён, старые "
+"версии Ashy Pass не смогут открыть хранилище основным паролем."
+
 msgid "Style"
 msgstr "Стиль"
 
 msgid "Summary"
 msgstr "Сводка"
 
+msgid "Sunset"
+msgstr "Закат"
+
 msgid "Symbols (!@#$…)"
 msgstr "Символы (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Синхронизировать автоматически"
 
 msgid "Sync completed"
 msgstr "Синхронизация завершена"
@@ -1985,17 +2382,24 @@ msgstr "Проблемы с синхронизацией"
 msgid "Sync completed with warnings"
 msgstr "Синхронизация завершена с предупреждениями"
 
-msgid "Sync conflict"
-msgstr "Конфликт синхронизации"
-
 msgid "Sync conflict detected"
 msgstr "Обнаружен конфликт синхронизации"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Конфликт синхронизации: на сервере более новая копия (поколение {})"
 
 msgid "Sync failed"
 msgstr "Ошибка синхронизации"
 
+msgid "Sync folder disconnected"
+msgstr "Папка синхронизации отключена"
+
 msgid "Sync now"
 msgstr "Синхронизировать сейчас"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Синхронизировать при разблокировке хранилища"
 
 msgid "Synchronization"
 msgstr "Синхронизация"
@@ -2027,6 +2431,9 @@ msgstr "Синхронизация..."
 msgid "Syncing folders"
 msgstr "Синхронизация папок"
 
+msgid "Syncing…"
+msgstr "Синхронизация…"
+
 msgid "Tags"
 msgstr "Теги"
 
@@ -2048,6 +2455,13 @@ msgid "The PIN could not be used on this computer. Use your master password."
 msgstr ""
 "Не удалось использовать PIN на этом компьютере. Используйте мастер-пароль."
 
+msgid ""
+"The PIN is not stored anywhere, so it cannot be shown. To change it, set a "
+"new one."
+msgstr ""
+"PIN-код нигде не хранится, поэтому его нельзя показать. Чтобы изменить его, "
+"задайте новый."
+
 msgid "The PIN must have at least 4 characters"
 msgstr "PIN должен содержать не менее 4 символов"
 
@@ -2068,6 +2482,9 @@ msgstr "Запись переместится в «Удалённые», где 
 msgid "The backup was not created"
 msgstr "Резервная копия не создана"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Модуль связи Ashy Pass с браузером не установлен"
+
 msgid "The copy could not be downloaded"
 msgstr "Не удалось загрузить копию"
 
@@ -2080,6 +2497,16 @@ msgstr[2] "Копия проверена и содержит {} записей."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Текущий мастер-пароль неверен. Ничего не изменено."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Расширение запрашивает основной пароль и держит хранилище открытым только до "
+"автоматической блокировки. Если включено «Открывать автоматически при "
+"входе», оно открывается без запроса. Блокировка экрана тоже его блокирует, "
+"если этот параметр включён."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2103,6 +2530,9 @@ msgid ""
 "The label cannot start with \"-\" or contain \"/\" or control characters."
 msgstr ""
 "Метка не может начинаться с «-» или содержать «/» и управляющие символы."
+
+msgid "The last sync failed"
+msgstr "Последняя синхронизация не удалась"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Мастер-пароль слишком короткий. Минимальная длина:"
@@ -2133,6 +2563,13 @@ msgstr "Пароль не изменён"
 msgid "The passwords do not match"
 msgstr "Пароли не совпадают"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Прежние пароли этого доступа будут удалены навсегда. Это действие нельзя "
+"отменить."
+
 msgid "The previous vault was kept at:"
 msgstr "Предыдущее хранилище сохранено в:"
 
@@ -2147,6 +2584,9 @@ msgstr "Поиск ограничен паролями без папки."
 
 msgid "The search is limited to the folder"
 msgstr "Поиск ограничен папкой"
+
+msgid "The site's icon, when the code has a site saved"
+msgstr "Значок сайта, если для кода сохранён сайт"
 
 msgid "The sync finished, but some items reported errors."
 msgstr "Синхронизация завершена, но в некоторых элементах возникли ошибки."
@@ -2180,6 +2620,20 @@ msgid "The vault will open automatically at login"
 msgstr "Хранилище будет открываться автоматически при входе в систему"
 
 #, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"Все записи в корзине ({}) будут удалены навсегда. Это действие нельзя "
+"отменить."
+msgstr[1] ""
+"Все записи в корзине ({}) будут удалены навсегда. Это действие нельзя "
+"отменить."
+msgstr[2] ""
+"Все записи в корзине ({}) будут удалены навсегда. Это действие нельзя "
+"отменить."
+
+#, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
 msgid_plural ""
 "The {} passwords in it stay in the vault and move to “No folder”."
@@ -2196,6 +2650,17 @@ msgstr "Нет ничего нового для импорта."
 
 msgid "These options cannot produce a password."
 msgstr "С этими параметрами невозможно создать пароль."
+
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Они были синхронизированы с Nextcloud Passwords и больше не находятся на "
+"сервере. Если вы удалили их там, здесь они попадут в удалённые. Если нет, "
+"сервер мог ответить лишь частично: оставьте их, и следующая синхронизация "
+"попробует снова."
 
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Этот PIN больше не подходит к хранилищу. Ничего не изменено."
@@ -2216,6 +2681,12 @@ msgstr "В этой записи нет пользователя"
 msgid "This access no longer exists"
 msgstr "Эта запись больше не существует"
 
+msgid "This build has no Dropbox app key"
+msgstr "В этой сборке нет ключа приложения Dropbox"
+
+msgid "This build has no Google sign-in configured"
+msgstr "В этой сборке не настроен вход в Google"
+
 msgid "This cannot be undone."
 msgstr "Это действие нельзя отменить."
 
@@ -2228,17 +2699,35 @@ msgstr "Будет удалена вся запись: код подтвержд
 msgid "This device generation:"
 msgstr "Поколение этого устройства:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"У этого накопителя нет ссылки в /dev/disk/by-id, поэтому Ashy Pass не может "
+"убедиться, что при стирании это тот же накопитель. Его нельзя зашифровать "
+"здесь."
+
 msgid "This file can be read without a password"
 msgstr "Этот файл можно прочитать без пароля"
 
 msgid "This file could not be read"
 msgstr "Не удалось прочитать этот файл"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Файл слишком большой для вложения. Ограничение — 64 МБ."
+
 msgid "This folder already exists"
 msgstr "Такая папка уже существует"
 
 msgid "This folder is empty"
 msgstr "Эта папка пуста"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Не удалось открыть изображение. Используйте изображение PNG, JPEG или WebP "
+"размером до 20 МБ."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "
@@ -2387,6 +2876,9 @@ msgid "Unlocked by another application. Lock it from your file manager."
 msgstr ""
 "Разблокировано другим приложением. Заблокируйте его в файловом менеджере."
 
+msgid "Unlocking"
+msgstr "Разблокировка"
+
 msgid "Unlocking…"
 msgstr "Разблокировка…"
 
@@ -2433,8 +2925,18 @@ msgstr "Использовать мастер-пароль"
 msgid "Use the + button to create one."
 msgstr "Создайте её кнопкой +."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Используйте один и тот же мастер-пароль на всех устройствах: он открывает "
+"ключ папки. Здесь его нужно ввести один раз, чтобы присоединиться."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Используйте эти коды, когда сайт запрашивает двухэтапную проверку."
+
+msgid "Use these costs for the vault key"
+msgstr "Использовать эти затраты для ключа хранилища"
 
 msgid "Use this password"
 msgstr "Использовать этот пароль"
@@ -2451,6 +2953,9 @@ msgstr "Пользователь"
 msgid "User copied"
 msgstr "Пользователь скопирован"
 
+msgid "User name"
+msgstr "Имя пользователя"
+
 msgid "User or e-mail (optional)"
 msgstr "Пользователь или эл. почта (необязательно)"
 
@@ -2465,6 +2970,9 @@ msgstr ""
 "Используется Have I Been Pwned. Отправляются только первые 5 символов хеша "
 "каждого пароля, но никогда сам пароль. Результаты хранятся на этом "
 "компьютере 7 дней."
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr "Использует ваш вход в Google Drive из раздела Резервные копии"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2486,6 +2994,10 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Хранилище уже синхронизировано"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Хранилище заново зашифровано. Настройте PIN-код снова, если пользовались им."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Хранилище заблокировано после периода бездействия"
@@ -2516,6 +3028,9 @@ msgstr "Код подтверждения сохранён в хранилище
 msgid "Verification codes"
 msgstr "Коды подтверждения"
 
+msgid "Verification codes (JSON, encrypted or not)"
+msgstr "Коды подтверждения (JSON, зашифрованные или нет)"
+
 msgid "Verification codes (unencrypted JSON)"
 msgstr "Коды подтверждения (незашифрованный JSON)"
 
@@ -2525,14 +3040,26 @@ msgstr "Очень высокая"
 msgid "Very Weak"
 msgstr "Очень низкая"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Дождитесь окончания синхронизации, затем выйдите из учётной записи."
+
+msgid "Waiting for Google in the browser…"
+msgstr "Ожидание Google в браузере…"
+
 msgid "Waiting for Nextcloud..."
 msgstr "Ожидание Nextcloud..."
 
 msgid "Weak"
 msgstr "Низкая"
 
+msgid "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+msgstr "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "Адрес WebDAV"
 
 msgid "WebDAV configured"
 msgstr "WebDAV настроен"
@@ -2553,14 +3080,8 @@ msgstr ""
 "Если сайт поддерживает двухэтапную проверку, добавьте сюда его ключ "
 "настройки, чтобы получать коды."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Если включено, расширение браузера Ashy Pass может читать записи хранилища, "
-"разблокируя его через системную связку ключей, даже когда это окно "
-"заблокировано. Ключ снова сбрасывается по истечении времени автоблокировки."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Когда выключено, расширение ничего не видит в хранилище"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Откуда вы хотите перенести пароли?"
@@ -2590,6 +3111,13 @@ msgstr "Очистить устройство"
 msgid "Wiping device"
 msgstr "Очистка устройства"
 
+msgid ""
+"With two-step verification on, pCloud e-mails you about the new sign-in: "
+"approve it there and connect again."
+msgstr ""
+"При включённой двухэтапной проверке pCloud пришлёт письмо о новом входе: "
+"подтвердите его там и подключитесь снова."
+
 msgid "Working..."
 msgstr "Выполняется..."
 
@@ -2612,6 +3140,12 @@ msgstr "Запись заголовка LUKS2"
 msgid "Wrong master password"
 msgstr "Неверный мастер-пароль"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Неверный мастер-пароль. Папка принадлежит хранилищу с другим паролем."
+
+msgid "Wrong password. Password of the Aegis vault"
+msgstr "Неверный пароль. Пароль хранилища Aegis"
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2629,8 +3163,18 @@ msgstr ""
 msgid "Your entries are still available on this computer."
 msgstr "Ваши записи по-прежнему доступны на этом компьютере."
 
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Ваши записи останутся на этом компьютере и в папке. Повторное подключение "
+"позже объединит их, а не продублирует."
+
 msgid "Your most used accesses can be here"
 msgstr "Здесь могут быть ваши самые используемые записи"
+
+msgid "Your pCloud e-mail and password"
+msgstr "Ваша почта и пароль pCloud"
 
 msgid "Your vault is ready"
 msgstr "Хранилище готово"
@@ -2646,6 +3190,9 @@ msgstr "выделено"
 
 msgid "breached"
 msgstr "скомпрометирован"
+
+msgid "different password"
+msgstr "другой пароль"
 
 msgid "duplicate"
 msgstr "дубликат"
@@ -2680,6 +3227,12 @@ msgstr "низкая"
 msgid "medium"
 msgstr "средняя"
 
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "мин."
+msgstr[1] "мин."
+msgstr[2] "мин."
+
 msgid "more"
 msgstr "других"
 
@@ -2702,6 +3255,15 @@ msgstr "не смонтирован"
 msgid "old"
 msgstr "старый"
 
+msgid "pCloud (data in Europe)"
+msgstr "pCloud (данные в Европе)"
+
+msgid "pCloud (data in the US)"
+msgstr "pCloud (данные в США)"
+
+msgid "pCloud e-mail"
+msgstr "Эл. почта pCloud"
+
 msgid "passwordless entry was skipped"
 msgid_plural "passwordless entries were skipped"
 msgstr[0] "запись без пароля пропущена"
@@ -2722,6 +3284,9 @@ msgstr "вращающийся (HDD)"
 
 msgid "seen"
 msgstr "просмотрено"
+
+msgid "sent:"
+msgstr "отправлено:"
 
 msgid "solid-state"
 msgstr "твердотельный"
@@ -2877,6 +3442,10 @@ msgid_plural "{} words"
 msgstr[0] "{} слово"
 msgstr[1] "{} слова"
 msgstr[2] "{} слов"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "«{}» будет удалено навсегда. Это действие нельзя отменить."
 
 msgid "…"
 msgstr "…"

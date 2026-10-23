@@ -1,0 +1,716 @@
+{
+  "extName": {
+    "message": "Ashy Pass",
+    "description": "Extension name. Product name, do not translate."
+  },
+  "extDescription": {
+    "message": "Vul aanmeldgegevens in en kopieer ze vanuit Ashy Pass, de wachtwoordbeheerder voor Linux.",
+    "description": "Extension description shown in the browser's extension list and in the store."
+  },
+  "loading": {
+    "message": "Verbinden met Ashy Pass…",
+    "description": "Shown while the popup waits for the desktop app."
+  },
+  "notInstalledTitle": {
+    "message": "Ashy Pass is niet verbonden",
+    "description": "Title when the desktop app (native host) cannot be reached."
+  },
+  "notInstalledBody": {
+    "message": "Installeer Ashy Pass en verbind deze browser via Ashy Pass → Instellingen → Browser.",
+    "description": "Explains how to connect the desktop app. 'Settings' and 'Browser' are the names of the app's settings page and section."
+  },
+  "disabledTitle": {
+    "message": "De browserextensie staat uit",
+    "description": "Title when browser integration is disabled in the desktop app."
+  },
+  "disabledBody": {
+    "message": "Zet de browserextensie aan via Ashy Pass → Instellingen → Browser.",
+    "description": "How to enable the browser integration in the desktop app."
+  },
+  "noVaultTitle": {
+    "message": "Nog geen kluis",
+    "description": "Title when the user has not created a vault in the desktop app."
+  },
+  "noVaultBody": {
+    "message": "Maak eerst uw kluis aan in Ashy Pass.",
+    "description": "Asks the user to create a vault in the desktop app."
+  },
+  "errorTitle": {
+    "message": "Er is iets misgegaan",
+    "description": "Title for an unexpected error."
+  },
+  "retryButton": {
+    "message": "Opnieuw proberen",
+    "description": "Button that retries connecting to the desktop app."
+  },
+  "lockedTitle": {
+    "message": "Uw kluis is vergrendeld",
+    "description": "Title above the master password field."
+  },
+  "masterPasswordLabel": {
+    "message": "Hoofdwachtwoord",
+    "description": "Label of the master password field."
+  },
+  "unlockButton": {
+    "message": "Ontgrendelen",
+    "description": "Button that unlocks the vault."
+  },
+  "unlocking": {
+    "message": "Ontgrendelen…",
+    "description": "Shown while the vault is being unlocked."
+  },
+  "badPassword": {
+    "message": "Verkeerd hoofdwachtwoord.",
+    "description": "Error after a wrong master password."
+  },
+  "rateLimited": {
+    "message": "Te veel pogingen. Wacht even en probeer het opnieuw.",
+    "description": "Error after too many wrong master passwords."
+  },
+  "searchLabel": {
+    "message": "Alle items doorzoeken",
+    "description": "Label and placeholder of the search field."
+  },
+  "searchResultsHeading": {
+    "message": "Zoekresultaten",
+    "description": "Heading of the list of search results."
+  },
+  "noEntriesForSite": {
+    "message": "Geen aanmeldgegevens opgeslagen voor deze site.",
+    "description": "Shown when no entry matches the current site."
+  },
+  "noSearchResults": {
+    "message": "Geen items gevonden.",
+    "description": "Shown when a search has no results."
+  },
+  "notAWebPage": {
+    "message": "Invullen werkt alleen op webpagina's.",
+    "description": "Shown when the current tab is not an http or https page."
+  },
+  "noUsername": {
+    "message": "Geen gebruikersnaam",
+    "description": "Shown in an entry row when the entry has no username."
+  },
+  "untitled": {
+    "message": "Naamloos",
+    "description": "Shown in an entry row when the entry has no title."
+  },
+  "fillButton": {
+    "message": "Invullen",
+    "description": "Button that fills the login form on the page. Keep it short."
+  },
+  "copyUsernameButton": {
+    "message": "Gebruiker kopiëren",
+    "description": "Button that copies the username. Keep it short."
+  },
+  "copyPasswordButton": {
+    "message": "Wachtwoord kopiëren",
+    "description": "Button that copies the password. Keep it short."
+  },
+  "copyCodeButton": {
+    "message": "Code kopiëren",
+    "description": "Button that copies the verification (TOTP) code. Keep it short."
+  },
+  "fillLabel": {
+    "message": "$TITLE$ invullen op deze pagina",
+    "description": "Accessible label of the Fill button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyUsernameLabel": {
+    "message": "Gebruikersnaam van $TITLE$ kopiëren",
+    "description": "Accessible label of the Copy user button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyPasswordLabel": {
+    "message": "Wachtwoord van $TITLE$ kopiëren",
+    "description": "Accessible label of the Copy password button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "copyCodeLabel": {
+    "message": "Verificatiecode van $TITLE$ kopiëren",
+    "description": "Accessible label of the Copy code button.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "usernameCopied": {
+    "message": "Gebruikersnaam gekopieerd",
+    "description": "Short confirmation after copying a username."
+  },
+  "passwordCopied": {
+    "message": "Wachtwoord gekopieerd",
+    "description": "Short confirmation after copying a password."
+  },
+  "codeCopied": {
+    "message": "Code gekopieerd",
+    "description": "Short confirmation after copying a verification code."
+  },
+  "filled": {
+    "message": "Ingevuld",
+    "description": "Short confirmation after filling a login form."
+  },
+  "noLoginForm": {
+    "message": "Geen aanmeldformulier gevonden op deze pagina",
+    "description": "Shown when the page has no field that can be filled."
+  },
+  "copyFailed": {
+    "message": "Kopiëren naar het klembord mislukt",
+    "description": "Shown when writing to the clipboard fails."
+  },
+  "generateButton": {
+    "message": "Wachtwoord genereren",
+    "description": "Button that generates a new password and copies it."
+  },
+  "revealPassword": {
+    "message": "Wachtwoord tonen",
+    "description": "Button that reveals the generated password."
+  },
+  "hidePassword": {
+    "message": "Wachtwoord verbergen",
+    "description": "Button that hides the generated password again."
+  },
+  "lockButton": {
+    "message": "Vergrendelen",
+    "description": "Button that locks the vault."
+  },
+  "vaultLocked": {
+    "message": "Kluis vergrendeld",
+    "description": "Short confirmation after locking the vault."
+  },
+  "errorTimeout": {
+    "message": "Ashy Pass heeft niet op tijd geantwoord.",
+    "description": "Error when the desktop app takes too long to answer."
+  },
+  "errorDisconnected": {
+    "message": "De verbinding met Ashy Pass is verbroken.",
+    "description": "Error when the connection to the desktop app closes."
+  },
+  "errorNoMatch": {
+    "message": "Deze aanmeldgegevens horen niet bij deze site.",
+    "description": "Error when trying to fill an entry on a different site."
+  },
+  "errorNotFound": {
+    "message": "Dit item bestaat niet meer.",
+    "description": "Error when the entry was deleted."
+  },
+  "errorNoTotp": {
+    "message": "Dit item heeft geen verificatiecode.",
+    "description": "Error when the entry has no TOTP secret."
+  },
+  "errorCannotAccess": {
+    "message": "Deze pagina staat invullen niet toe.",
+    "description": "Error when the browser refuses to run the filler on the page."
+  },
+  "errorDetail": {
+    "message": "Ashy Pass meldde: $DETAIL$",
+    "description": "Generic error with the English text sent by the desktop app.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "Malformed request"
+      }
+    }
+  },
+  "backButton": {
+    "message": "Terug",
+    "description": "Header button that goes back to the list."
+  },
+  "addButton": {
+    "message": "Toevoegen",
+    "description": "Header button that adds a new login. Keep it short."
+  },
+  "openAppButton": {
+    "message": "Ashy Pass openen",
+    "description": "Button that brings up the Ashy Pass desktop app."
+  },
+  "tabVault": {
+    "message": "Kluis",
+    "description": "Bottom tab and header title for the list of logins (the vault)."
+  },
+  "tabGenerator": {
+    "message": "Generator",
+    "description": "Bottom tab and header title for the password generator."
+  },
+  "tabSettings": {
+    "message": "Instellingen",
+    "description": "Bottom tab and header title for the extension settings."
+  },
+  "sectionsLabel": {
+    "message": "Onderdelen",
+    "description": "Accessible name of the bottom tab bar."
+  },
+  "pinLabel": {
+    "message": "Pincode",
+    "description": "Label of the PIN field on the locked screen."
+  },
+  "unlockWithPinButton": {
+    "message": "Ontgrendelen met pincode",
+    "description": "Button that unlocks the vault with the PIN."
+  },
+  "useMasterPassword": {
+    "message": "Hoofdwachtwoord gebruiken",
+    "description": "Link that switches the locked screen from PIN to master password."
+  },
+  "usePin": {
+    "message": "Pincode gebruiken",
+    "description": "Link that switches the locked screen from master password to PIN."
+  },
+  "badPin": {
+    "message": "Verkeerde pincode.",
+    "description": "Error after a wrong PIN."
+  },
+  "badPinAttempts": {
+    "message": "Verkeerde pincode. Resterende pogingen: $COUNT$.",
+    "description": "Error after a wrong PIN, with the number of attempts left before the PIN is turned off.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "pinDisabledNote": {
+    "message": "De pincode is uitgeschakeld na te veel mislukte pogingen. Gebruik uw hoofdwachtwoord.",
+    "description": "Shown when the PIN can no longer be used."
+  },
+  "pinUnavailableNote": {
+    "message": "Er is geen pincode ingesteld op deze computer. Gebruik uw hoofdwachtwoord.",
+    "description": "Shown when the PIN is not available."
+  },
+  "inlineHintTitle": {
+    "message": "Suggesties tonen in aanmeldvelden?",
+    "description": "Title of a card that offers to turn on the suggestions inside the login fields of websites."
+  },
+  "inlineHintBody": {
+    "message": "Ashy Pass kan uw aanmeldgegevens direct onder de gebruikersnaam- en wachtwoordvelden van websites tonen.",
+    "description": "Text of the card that offers inline suggestions."
+  },
+  "notNowButton": {
+    "message": "Niet nu",
+    "description": "Button that dismisses an offer."
+  },
+  "enableButton": {
+    "message": "Inschakelen",
+    "description": "Button that turns a feature on."
+  },
+  "folderFilterLabel": {
+    "message": "Map",
+    "description": "Accessible label of the folder filter."
+  },
+  "typeFilterLabel": {
+    "message": "Type",
+    "description": "Accessible label of the item type filter."
+  },
+  "filterAllItems": {
+    "message": "Alle items",
+    "description": "Type filter option: no filter."
+  },
+  "filterWithCodes": {
+    "message": "Aanmeldgegevens met codes",
+    "description": "Type filter option: only logins that have a verification (TOTP) code."
+  },
+  "filterFavorites": {
+    "message": "Favorieten",
+    "description": "Type filter option: only favorite logins."
+  },
+  "filterAllFolders": {
+    "message": "Alle mappen",
+    "description": "Folder filter option: every folder."
+  },
+  "noFolder": {
+    "message": "Geen map",
+    "description": "Folder filter option and value for logins that are not in a folder."
+  },
+  "autofillSuggestions": {
+    "message": "Suggesties voor invullen",
+    "description": "Heading of the logins that belong to the current website."
+  },
+  "favoritesHeading": {
+    "message": "Favorieten",
+    "description": "Heading of the favorite logins."
+  },
+  "allItemsHeading": {
+    "message": "Alle items",
+    "description": "Heading of the list with every login."
+  },
+  "filteredHeading": {
+    "message": "Items",
+    "description": "Heading of the list when a filter is set."
+  },
+  "noFilterResults": {
+    "message": "Geen items komen overeen met deze filters.",
+    "description": "Shown when the filters hide every login."
+  },
+  "emptyVault": {
+    "message": "Uw kluis is leeg.",
+    "description": "Shown when the vault has no logins."
+  },
+  "viewDetailsLabel": {
+    "message": "Details van $TITLE$ tonen",
+    "description": "Accessible label of a row in the list.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "openWebsiteLabel": {
+    "message": "Website van $TITLE$ openen",
+    "description": "Accessible label of the Open website button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "Meer opties voor $TITLE$",
+    "description": "Accessible label of the ⋮ menu button of a row.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "favoriteButton": {
+    "message": "Toevoegen aan favorieten",
+    "description": "Menu item that marks the login as favorite."
+  },
+  "unfavoriteButton": {
+    "message": "Verwijderen uit favorieten",
+    "description": "Menu item that removes the favorite mark."
+  },
+  "openWebsiteButton": {
+    "message": "Website openen",
+    "description": "Button that opens the login's website in a new tab."
+  },
+  "copyWebsiteButton": {
+    "message": "Websiteadres kopiëren",
+    "description": "Button that copies the login's website address."
+  },
+  "viewDetailsButton": {
+    "message": "Details bekijken",
+    "description": "Menu item that shows the details of a login."
+  },
+  "websiteCopied": {
+    "message": "Websiteadres gekopieerd",
+    "description": "Short confirmation after copying a website address."
+  },
+  "addedToFavorites": {
+    "message": "Toegevoegd aan favorieten",
+    "description": "Short confirmation after marking a favorite."
+  },
+  "removedFromFavorites": {
+    "message": "Verwijderd uit favorieten",
+    "description": "Short confirmation after removing a favorite."
+  },
+  "detailsTitle": {
+    "message": "Itemdetails",
+    "description": "Header title of the details view of a login."
+  },
+  "usernameLabel": {
+    "message": "Gebruikersnaam",
+    "description": "Label of the username field."
+  },
+  "passwordLabel": {
+    "message": "Wachtwoord",
+    "description": "Label of the password field."
+  },
+  "totpLabel": {
+    "message": "Verificatiecode",
+    "description": "Label of the time-based verification (TOTP) code."
+  },
+  "websiteLabel": {
+    "message": "Website",
+    "description": "Label of the website address field."
+  },
+  "folderLabel": {
+    "message": "Map",
+    "description": "Label of the folder field."
+  },
+  "nameLabel": {
+    "message": "Naam",
+    "description": "Label of the name (title) field of a new login."
+  },
+  "newLoginTitle": {
+    "message": "Nieuwe aanmelding",
+    "description": "Header title of the view that adds a login."
+  },
+  "cancelButton": {
+    "message": "Annuleren",
+    "description": "Button that cancels a form."
+  },
+  "saveButton": {
+    "message": "Opslaan",
+    "description": "Button that saves a new login."
+  },
+  "nameRequired": {
+    "message": "Voer een naam in.",
+    "description": "Error when the name of a new login is empty."
+  },
+  "passwordRequired": {
+    "message": "Voer een wachtwoord in.",
+    "description": "Error when the password of a new login is empty."
+  },
+  "saved": {
+    "message": "Opgeslagen",
+    "description": "Short confirmation after saving a login."
+  },
+  "passwordGenerated": {
+    "message": "Wachtwoord gegenereerd",
+    "description": "Short confirmation after a password was generated into the form."
+  },
+  "errorInvalid": {
+    "message": "Ashy Pass kon dit verzoek niet accepteren.",
+    "description": "Error when the desktop app rejects a request as malformed."
+  },
+  "regenerateButton": {
+    "message": "Opnieuw genereren",
+    "description": "Button that generates a new value."
+  },
+  "copyButton": {
+    "message": "Kopiëren",
+    "description": "Button that copies the generated value."
+  },
+  "generatorTypeLabel": {
+    "message": "Soort waarde om te genereren",
+    "description": "Accessible label of the Password / Passphrase / PIN switcher."
+  },
+  "kindPassword": {
+    "message": "Wachtwoord",
+    "description": "Generator type: random password."
+  },
+  "kindPassphrase": {
+    "message": "Wachtwoordzin",
+    "description": "Generator type: passphrase made of words."
+  },
+  "kindPin": {
+    "message": "Pincode",
+    "description": "Generator type: numeric PIN."
+  },
+  "lengthLabel": {
+    "message": "Lengte",
+    "description": "Label of the length slider."
+  },
+  "optUppercase": {
+    "message": "Hoofdletters (A-Z)",
+    "description": "Generator option."
+  },
+  "optLowercase": {
+    "message": "Kleine letters (a-z)",
+    "description": "Generator option."
+  },
+  "optDigits": {
+    "message": "Cijfers (0-9)",
+    "description": "Generator option."
+  },
+  "optSymbols": {
+    "message": "Symbolen (!@#)",
+    "description": "Generator option."
+  },
+  "optAvoidAmbiguous": {
+    "message": "Dubbelzinnige tekens vermijden",
+    "description": "Generator option: leaves out characters that look alike (l, 1, O, 0)."
+  },
+  "wordsLabel": {
+    "message": "Woorden",
+    "description": "Label of the number of words of a passphrase."
+  },
+  "separatorLabel": {
+    "message": "Scheidingsteken",
+    "description": "Label of the text placed between the words of a passphrase."
+  },
+  "optCapitalize": {
+    "message": "Hoofdletter aan begin",
+    "description": "Passphrase option: capitalize each word."
+  },
+  "optIncludeNumber": {
+    "message": "Cijfer toevoegen",
+    "description": "Passphrase option: add a number."
+  },
+  "oneClassRequired": {
+    "message": "Houd minstens één soort teken aan.",
+    "description": "Shown when the user tries to turn off every character type."
+  },
+  "fillOnPageButton": {
+    "message": "Invullen op deze pagina",
+    "description": "Button that fills the generated password into the password fields of the page."
+  },
+  "noPasswordField": {
+    "message": "Geen wachtwoordveld gevonden op deze pagina",
+    "description": "Shown when the page has no password field to fill."
+  },
+  "settingsVaultHeading": {
+    "message": "Kluis",
+    "description": "Settings section heading."
+  },
+  "lockNowButton": {
+    "message": "Nu vergrendelen",
+    "description": "Settings button that locks the vault."
+  },
+  "settingsAutofillHeading": {
+    "message": "Automatisch invullen",
+    "description": "Settings section heading."
+  },
+  "inlineSettingLabel": {
+    "message": "Suggesties tonen in aanmeldvelden",
+    "description": "Settings switch that turns on the menu of logins under the login fields of websites."
+  },
+  "inlineSettingHint": {
+    "message": "Vereist toegang tot de websites die u bezoekt. De pagina ziet uw aanmeldgegevens nooit; er wordt pas iets ingevuld als u er een kiest.",
+    "description": "Explains the permission needed by the inline suggestions."
+  },
+  "inlineEnabledToast": {
+    "message": "Suggesties staan aan. Herlaad geopende pagina's om ze te zien.",
+    "description": "Confirmation after turning on the inline suggestions."
+  },
+  "permissionDenied": {
+    "message": "Toestemming is niet verleend.",
+    "description": "Shown when the browser permission request was refused."
+  },
+  "shortcutLabel": {
+    "message": "Sneltoets",
+    "description": "Settings row that shows the shortcut that opens the extension."
+  },
+  "shortcutNotSet": {
+    "message": "Niet ingesteld",
+    "description": "Shown when no keyboard shortcut is set."
+  },
+  "settingsAboutHeading": {
+    "message": "Over",
+    "description": "Settings section heading."
+  },
+  "versionLabel": {
+    "message": "Versie",
+    "description": "Label of the extension version."
+  },
+  "helpLink": {
+    "message": "Help",
+    "description": "Link to the help page."
+  },
+  "privacyLink": {
+    "message": "Privacy",
+    "description": "Link to the privacy information."
+  },
+  "inlineMenuTitle": {
+    "message": "Suggesties van Ashy Pass",
+    "description": "Accessible title of the suggestions menu shown under login fields."
+  },
+  "inlineButtonLabel": {
+    "message": "Suggesties van Ashy Pass tonen",
+    "description": "Accessible label of the small Ashy Pass button inside login fields."
+  },
+  "inlineLocked": {
+    "message": "Ashy Pass is vergrendeld",
+    "description": "Shown in the suggestions menu when the vault is locked."
+  },
+  "inlineNoLogins": {
+    "message": "Geen aanmeldgegevens voor deze site",
+    "description": "Shown in the suggestions menu when nothing matches the site."
+  },
+  "addLoginButton": {
+    "message": "Aanmelding toevoegen",
+    "description": "Button in the suggestions menu that adds a login for the site."
+  },
+  "inlineClickIcon": {
+    "message": "Klik op het Ashy Pass-pictogram in de werkbalk om door te gaan.",
+    "description": "Shown when the extension window cannot be opened automatically."
+  },
+  "inlineExpired": {
+    "message": "Dit menu is verlopen. Klik opnieuw op het veld.",
+    "description": "Shown when the suggestions menu can no longer be used."
+  },
+  "browserPmLabel": {
+    "message": "Wachtwoordbeheer van de browser uitschakelen"
+  },
+  "browserPmHint": {
+    "message": "Zijn eigen lijst verschijnt over de pagina en bedekt de suggesties van Ashy Pass. Staat het uit, dan opent Ashy Pass zodra je in een inlogveld klikt."
+  },
+  "browserPmOffToast": {
+    "message": "Het wachtwoordbeheer van de browser staat uit"
+  },
+  "browserPmOnToast": {
+    "message": "Het wachtwoordbeheer van de browser staat weer aan"
+  },
+  "shortcutOpens": {
+    "message": "Opent dit venster."
+  },
+  "shortcutChange": {
+    "message": "Wijzigen"
+  },
+  "shortcutRecord": {
+    "message": "Druk op de nieuwe toetscombinatie…"
+  },
+  "shortcutRecordHint": {
+    "message": "Ctrl of Alt, eventueel met Shift, en een letter of cijfer. Esc annuleert."
+  },
+  "shortcutReset": {
+    "message": "Standaard"
+  },
+  "shortcutSaved": {
+    "message": "Sneltoets opgeslagen"
+  },
+  "shortcutInvalid": {
+    "message": "Die combinatie kan niet worden gebruikt. Probeer Ctrl of Alt met een letter."
+  },
+  "shortcutOpenFailed": {
+    "message": "De sneltoetsinstellingen van de browser konden niet worden geopend."
+  },
+  "editButton": {
+    "message": "Bewerken"
+  },
+  "deleteButton": {
+    "message": "Verwijderen"
+  },
+  "deleteConfirmTitle": {
+    "message": "“$TITLE$” verwijderen?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "deleteConfirmHint": {
+    "message": "Als de prullenbak in Ashy Pass aan staat, kunt u het daar terugzetten. Gesynchroniseerde apparaten verwijderen het ook."
+  },
+  "editLoginTitle": {
+    "message": "Inloggegevens bewerken"
+  },
+  "movedToTrash": {
+    "message": "Verplaatst naar de prullenbak van Ashy Pass"
+  },
+  "loginDeleted": {
+    "message": "Inloggegevens verwijderd"
+  },
+  "errorChanged": {
+    "message": "Deze inloggegevens zijn intussen in Ashy Pass gewijzigd. Open ze opnieuw om de nieuwste versie te zien."
+  },
+  "errorHostOutdated": {
+    "message": "Werk Ashy Pass op deze computer bij om dit te gebruiken."
+  },
+  "notesLabel": {
+    "message": "Notities"
+  }
+}

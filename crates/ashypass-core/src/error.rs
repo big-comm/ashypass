@@ -41,6 +41,15 @@ pub enum Error {
     #[error("unsupported crypto version: {0}")]
     UnsupportedCryptoVersion(i64),
 
+    /// A Nextcloud sync would delete `count` of the `mapped` synced entries
+    /// locally at once. Refused until the user confirms with
+    /// `nextcloud_engine::approve_mass_delete`.
+    #[error(
+        "{count} of the {mapped} entries previously synced are missing on the server; \
+         refusing to delete that many locally without confirmation"
+    )]
+    MassDelete { count: usize, mapped: usize },
+
     #[error("{0}")]
     Other(String),
 }

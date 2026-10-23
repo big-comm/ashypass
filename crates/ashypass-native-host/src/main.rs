@@ -9,27 +9,17 @@
 //! [u32 length, little-endian] [UTF-8 JSON payload]
 //! ```
 //!
-//! Messages are JSON objects with a `cmd` field. Supported commands:
-//!
-//! | cmd        | request fields              | response                        |
-//! |------------|------------------------------|----------------------------------|
-//! | `ping`     | —                            | `{ok, version}`                  |
-//! | `list`     | `query?`                     | `{ok, entries: [Summary]}`       |
-//! | `search`   | `query`                      | `{ok, entries: [Summary]}`       |
-//! | `match_url`| `url`                        | `{ok, entries: [Summary]}`       |
-//! | `get`      | `id`                         | `{ok, entry: Full}`              |
-//! | `generate` | `length?, kind?`             | `{ok, password}`                 |
-//!
-//! On error, every response is `{ok: false, error: string}`.
+//! Messages are JSON objects with a `cmd` field and an optional `rid` that
+//! the response echoes. The full protocol (commands, fields, error codes) is
+//! in `browser-extension/PROTOCOL.md`.
 //!
 //! ## Unlock policy
 //!
-//! There is no TTY — the host is launched by the browser. We therefore only
-//! attempt to unlock the vault via the Secret Service keyring item that the
-//! GUI populates (`ashypass_core::keyring::load_master`). If keyring unlock
-//! fails (no item, wrong master, or D-Bus unavailable), we reply with
-//! `{ok: false, error: "vault locked — open the desktop app to unlock"}`
-//! and the extension surfaces that to the user.
+//! There is no TTY — the host is launched by the browser. The vault opens
+//! either with the master password the user types in the extension
+//! (`unlock`), or by itself when the GUI stored the master password in the
+//! Secret Service keyring ("Open automatically at login"). Wrong passwords
+//! pause `unlock` for a while after a few attempts.
 //!
 //! Unlocking is *lazy and expiring*, mirroring the desktop auto-lock:
 //!
@@ -40,26 +30,57 @@
 //! - After `lock_timeout` seconds without a vault-touching request the key is
 //!   dropped again, so a long-lived browser process does not hold the vault
 //!   key in memory all day.
-//! - The `browser_integration` setting gates everything: when the user turns
-//!   it off, vault commands are refused without consulting the keyring.
+//! - The `browser_extension` setting (off by default) gates everything:
+//!   while it is off, vault commands are refused without consulting the
+//!   keyring.
+//! - With `lock_on_screen_lock` on, vault commands are refused (and the key
+//!   dropped) while logind reports the session's screen as locked.
 //!
 //! ## Installing the manifest
 //!
-//! Run `ashypass-native-host --install` once after building. That writes the
-//! Chrome / Firefox manifest files pointing at the current binary into the
-//! per-user directories where each browser expects them.
+//! The package installs system-wide manifests (Firefox, Chrome, Chromium,
+//! Edge). `ashypass-native-host --install` (Settings → Browser → Connect
+//! browsers) writes per-user manifests for every installed browser, which
+//! also covers Brave, Vivaldi, LibreWolf and Waterfox.
 
 use anyhow::{anyhow, bail, Context, Result};
 use ashypass_core::db::vault::{PasswordEntry, Vault};
 use ashypass_core::generator::{
     generate_passphrase, generate_password, generate_pin, PasswordConfig,
 };
+use ashypass_core::settings::Settings;
+use ashypass_core::url_match::{entry_matches_page, url_host};
 use serde::{Deserialize, Serialize};
 use std::io::{Read, Write};
 use std::time::{Duration, Instant};
 
 const EXTENSION_NAME: &str = "com.bigcommunity.ashypass";
+/// Firefox id of the extension (`browser_specific_settings.gecko.id`).
+const FIREFOX_EXTENSION_ID: &str = "ashypass@big-comm.github.io";
+/// Chrome-family ids allowed to connect: the Chrome Web Store's (add it here
+/// once the store assigns it, on the first upload).
+const CHROME_EXTENSION_IDS: &[&str] = &[];
+/// The development build's id, fixed by the public `key` in its manifest.
+/// Anyone can make an extension with that key, so release builds don't
+/// allow it; `--install --chrome-id` adds it for testing an unpacked build.
+const CHROME_DEV_EXTENSION_ID: &str = "opelfkfheadglgamfephkfejfpcnlbck";
 const VERSION: &str = ashypass_core::config::APP_VERSION;
+/// Profile folders of the Chromium-family browsers, under ~/.config.
+const CHROME_PROFILE_DIRS: &[&str] = &[
+    "google-chrome",
+    "google-chrome-beta",
+    "google-chrome-unstable",
+    "chromium",
+    "BraveSoftware/Brave-Browser",
+    "BraveSoftware/Brave-Origin",
+    "BraveSoftware/Brave-Browser-Beta",
+    "BraveSoftware/Brave-Browser-Nightly",
+    "microsoft-edge",
+    "microsoft-edge-beta",
+    "microsoft-edge-dev",
+    "vivaldi",
+    "vivaldi-snapshot",
+];
 /// Maximum incoming payload accepted. Mirrors the Chrome limit (~1 MiB),
 /// guarding against a runaway extension stream.
 const MAX_MESSAGE_BYTES: u32 = 1024 * 1024;
@@ -73,7 +94,11 @@ fn main() {
     // when the binary is invoked from a terminal rather than by the browser
     // wire protocol.
     let args: Vec<String> = std::env::args().skip(1).collect();
-    if let Some(first) = args.first().map(|s| s.as_str()) {
+    if let Some(first) = args
+        .first()
+        .map(|s| s.as_str())
+        .filter(|a| is_cli_command(a))
+    {
         match first {
             "--install" => {
                 if let Err(e) = install_manifests(&args[1..]) {
@@ -83,19 +108,26 @@ fn main() {
                 return;
             }
             "--print-manifest" => {
-                let allowed = args.get(1).cloned().unwrap_or_default();
-                println!("{}", manifest_chrome(&current_exe_path_str(), &allowed));
+                // --print-manifest <chrome|firefox> [host path]: for packaging
+                // the system-wide manifests.
+                let path = args.get(2).cloned().unwrap_or_else(current_exe_path_str);
+                match args.get(1).map(String::as_str) {
+                    Some("chrome") => print!("{}", manifest_chrome(&path, &default_chrome_ids())),
+                    Some("firefox") => {
+                        print!("{}", manifest_firefox(&path, &default_firefox_ids()))
+                    }
+                    _ => {
+                        eprintln!("usage: --print-manifest <chrome|firefox> [host path]");
+                        std::process::exit(2);
+                    }
+                }
                 return;
             }
             "--help" | "-h" => {
                 print_help();
                 return;
             }
-            _ => {
-                eprintln!("unknown argument: {first}\n");
-                print_help();
-                std::process::exit(2);
-            }
+            _ => unreachable!("is_cli_command"),
         }
     }
 
@@ -112,22 +144,38 @@ fn main() {
     }
 }
 
+/// Terminal commands. Anything else is what a browser passes when it starts
+/// the host — Chrome the caller's origin (`chrome-extension://…/`), Firefox
+/// the manifest path and the extension id — and means: serve.
+fn is_cli_command(arg: &str) -> bool {
+    matches!(arg, "--install" | "--print-manifest" | "--help" | "-h")
+}
+
 fn print_help() {
     println!("ashypass-native-host {VERSION}");
     println!();
     println!("Browser native messaging host for the Ashy Pass extension.");
     println!();
     println!("Usage:");
-    println!("  ashypass-native-host                    # browser wire mode (stdin/stdout)");
-    println!("  ashypass-native-host --install <ext-id>... # write manifests into Chrome/Firefox profile dirs");
-    println!(
-        "  ashypass-native-host --print-manifest <ext-id>  # print Chrome-style manifest to stdout"
-    );
-    println!();
-    println!(
-        "Extension id is the Chrome/Firefox extension id that's allowed to talk to this host."
-    );
-    println!("You can pass multiple ids to allow several builds (dev, beta, prod).");
+    println!("  ashypass-native-host                         # browser wire mode (stdin/stdout)");
+    println!("  ashypass-native-host --install [--chrome-id ID]... [--firefox-id ID]...");
+    println!("        write the host manifests for this user into every installed browser");
+    println!("        (built-in extension ids are always included; for an unpacked");
+    println!("        development build add --chrome-id {CHROME_DEV_EXTENSION_ID})");
+    println!("  ashypass-native-host --print-manifest <chrome|firefox> [host path]");
+    println!("        print a manifest, e.g. for system-wide packaging");
+}
+
+fn default_chrome_ids() -> Vec<String> {
+    let mut ids: Vec<String> = CHROME_EXTENSION_IDS.iter().map(|s| s.to_string()).collect();
+    if cfg!(debug_assertions) {
+        ids.push(CHROME_DEV_EXTENSION_ID.to_string());
+    }
+    ids
+}
+
+fn default_firefox_ids() -> Vec<String> {
+    vec![FIREFOX_EXTENSION_ID.to_string()]
 }
 
 // ---------------------------------------------------------------------------
@@ -138,6 +186,14 @@ fn print_help() {
 #[serde(tag = "cmd", rename_all = "snake_case")]
 enum Request {
     Ping,
+    Status,
+    Unlock {
+        password: Secret,
+    },
+    UnlockPin {
+        pin: Secret,
+    },
+    Lock,
     List {
         query: Option<String>,
     },
@@ -147,13 +203,140 @@ enum Request {
     MatchUrl {
         url: String,
     },
+    Fill {
+        id: i64,
+        url: String,
+    },
     Get {
         id: i64,
+        /// Also send the notes (only the edit form asks for them).
+        #[serde(default)]
+        notes: bool,
     },
-    Generate {
-        length: Option<usize>,
-        kind: Option<String>,
+    Totp {
+        id: i64,
     },
+    Generate(GenerateOptions),
+    Folders,
+    Favicons {
+        hosts: Vec<String>,
+    },
+    Add(NewLogin),
+    Update(EditedLogin),
+    Delete {
+        id: i64,
+    },
+    ToggleFavorite {
+        id: i64,
+    },
+    OpenApp,
+}
+
+/// Options for `generate`. Every field is optional; the defaults match the
+/// desktop generator.
+#[derive(Debug, Default, Deserialize)]
+struct GenerateOptions {
+    kind: Option<String>,
+    length: Option<usize>,
+    words: Option<usize>,
+    separator: Option<String>,
+    capitalize: Option<bool>,
+    number: Option<bool>,
+    uppercase: Option<bool>,
+    lowercase: Option<bool>,
+    digits: Option<bool>,
+    symbols: Option<bool>,
+    avoid_ambiguous: Option<bool>,
+}
+
+/// A login saved from the browser.
+#[derive(Debug, Deserialize)]
+struct NewLogin {
+    title: String,
+    username: Option<String>,
+    password: Secret,
+    url: Option<String>,
+    category: Option<String>,
+    notes: Option<String>,
+}
+
+/// A login edited in the browser. Every editable field is sent: an absent
+/// username, address or folder clears it. `notes` is kept when absent and
+/// replaced when present (blank clears it). `updated_at` is the value `get`
+/// returned, so an edit made meanwhile (desktop app, sync) is never
+/// overwritten.
+#[derive(Debug, Deserialize)]
+struct EditedLogin {
+    id: i64,
+    updated_at: i64,
+    title: String,
+    username: Option<String>,
+    password: Secret,
+    url: Option<String>,
+    category: Option<String>,
+    notes: Option<String>,
+}
+
+/// A password received from the extension: wiped from memory when dropped
+/// and never printed by `Debug`.
+#[derive(Deserialize)]
+#[serde(transparent)]
+struct Secret(String);
+
+impl Drop for Secret {
+    fn drop(&mut self) {
+        zeroize::Zeroize::zeroize(&mut self.0);
+    }
+}
+
+impl std::fmt::Debug for Secret {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("Secret(<redacted>)")
+    }
+}
+
+/// Version of the request/response format (see browser-extension/PROTOCOL.md).
+const PROTOCOL_VERSION: u32 = 4;
+
+/// Machine-readable error kinds, so the extension can show its own
+/// translated messages.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ErrorCode {
+    Disabled,
+    NoVault,
+    Locked,
+    BadPassword,
+    BadPin,
+    PinDisabled,
+    PinUnavailable,
+    RateLimited,
+    NotFound,
+    NoMatch,
+    NoTotp,
+    Changed,
+    Invalid,
+    Internal,
+}
+
+impl ErrorCode {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Disabled => "disabled",
+            Self::NoVault => "no_vault",
+            Self::Locked => "locked",
+            Self::BadPassword => "bad_password",
+            Self::BadPin => "bad_pin",
+            Self::PinDisabled => "pin_disabled",
+            Self::PinUnavailable => "pin_unavailable",
+            Self::RateLimited => "rate_limited",
+            Self::NotFound => "not_found",
+            Self::NoMatch => "no_match",
+            Self::NoTotp => "no_totp",
+            Self::Changed => "changed",
+            Self::Invalid => "invalid",
+            Self::Internal => "internal",
+        }
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -164,18 +347,24 @@ struct EntrySummary {
     url: Option<String>,
     category: Option<String>,
     has_totp: bool,
+    favorite: bool,
 }
 
-#[derive(Debug, Serialize)]
+/// What `get` returns. Notes often hold recovery codes, so they are only
+/// sent when asked for (the edit form), never for copying or filling.
+#[derive(Serialize)]
 struct EntryFull {
     id: i64,
     title: String,
     username: Option<String>,
     url: Option<String>,
     password: Option<String>,
-    notes: Option<String>,
     has_totp: bool,
     category: Option<String>,
+    favorite: bool,
+    updated_at: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    notes: Option<String>,
 }
 
 impl From<&PasswordEntry> for EntrySummary {
@@ -187,120 +376,503 @@ impl From<&PasswordEntry> for EntrySummary {
             url: e.url.clone(),
             category: e.category.clone(),
             has_totp: e.has_totp,
+            favorite: e.favorite,
         }
     }
 }
 
+/// Wrong master passwords accepted in a row before `unlock` pauses.
+const UNLOCK_ATTEMPTS: u32 = 5;
+/// How long `unlock` refuses after too many wrong passwords.
+const UNLOCK_PAUSE: Duration = Duration::from_secs(30);
+
 /// Vault handle plus the expiring-unlock bookkeeping described in the module
 /// docs. `last_used` is the timestamp of the last request that needed the key.
+///
+/// Settings and the keyring are reached through the two functions below,
+/// so tests run against a throwaway vault without touching the user's real
+/// configuration or keyring.
 struct HostSession {
     vault: Vault,
     last_used: Option<Instant>,
+    screen_lock: ScreenLockProbe,
+    load_settings: fn() -> Settings,
+    keyring_master: fn() -> Option<zeroize::Zeroizing<String>>,
+    stored_pin: fn(&Settings) -> Option<ashypass_core::quick_unlock::StoredPin>,
+    save_settings: SaveSettings,
+    failed_unlocks: u32,
+    paused_until: Option<Instant>,
+}
+
+/// Writes a change to the settings file.
+type SaveSettings = fn(&dyn Fn(&mut Settings));
+
+/// Apply a change to the settings file (the PIN record of older versions
+/// lives there).
+fn save_settings_file(change: &dyn Fn(&mut Settings)) {
+    let mut settings = Settings::load();
+    change(&mut settings);
+    if let Err(error) = settings.save() {
+        log::warn!("could not save settings: {error}");
+    }
+}
+
+fn keyring_master_password() -> Option<zeroize::Zeroizing<String>> {
+    match ashypass_core::keyring::load_master() {
+        Ok(Some(master)) => Some(zeroize::Zeroizing::new(master)),
+        _ => None,
+    }
 }
 
 impl HostSession {
     fn open() -> Result<Self> {
         let db_path = ashypass_core::config::database_path();
         let vault = Vault::open(&db_path).context("opening vault")?;
-        Ok(Self {
+        let mut session = Self::with_vault(vault, Settings::load, keyring_master_password);
+        session.stored_pin = ashypass_core::quick_unlock::stored_pin;
+        session.save_settings = save_settings_file;
+        Ok(session)
+    }
+
+    /// A session with no PIN record and no settings writes; `open` swaps in
+    /// the real keyring and settings file.
+    fn with_vault(
+        vault: Vault,
+        load_settings: fn() -> Settings,
+        keyring_master: fn() -> Option<zeroize::Zeroizing<String>>,
+    ) -> Self {
+        Self {
             vault,
             last_used: None,
-        })
+            screen_lock: ScreenLockProbe::default(),
+            load_settings,
+            keyring_master,
+            stored_pin: |_| None,
+            save_settings: |_| {},
+            failed_unlocks: 0,
+            paused_until: None,
+        }
     }
 
     /// Idle window before the key is dropped. Follows the desktop auto-lock
     /// setting so the browser never outlives the policy the user chose, with a
     /// floor that keeps a normal fill-then-submit flow from re-deriving.
-    fn idle_timeout() -> Duration {
-        let seconds = ashypass_core::settings::Settings::load()
-            .lock_timeout
-            .max(30);
-        Duration::from_secs(seconds)
+    fn idle_timeout(settings: &Settings) -> Duration {
+        Duration::from_secs(settings.lock_timeout.max(30))
     }
 
-    /// True when the vault is usable for this request. Drops an expired key
-    /// first, then unlocks from the keyring on demand.
-    fn ensure_unlocked(&mut self) -> bool {
-        if !ashypass_core::settings::Settings::load().browser_integration {
+    /// Why vault data cannot be served right now, if it cannot. Applies the
+    /// policy first (integration switch, screen lock, idle expiry), then
+    /// tries the keyring copy of the master password.
+    fn access(&mut self) -> std::result::Result<(), ErrorCode> {
+        let settings = (self.load_settings)();
+        if !settings.browser_extension {
             self.relock();
-            return false;
+            return Err(ErrorCode::Disabled);
+        }
+        if !self.vault.has_master_password().unwrap_or(false) {
+            return Err(ErrorCode::NoVault);
+        }
+
+        // Mirror the desktop "lock when the screen locks" policy. The host
+        // cannot listen for signals between requests, so it asks logind on
+        // each vault request instead; sleep is covered by the idle timeout.
+        if settings.lock_on_screen_lock && self.screen_lock.is_locked() {
+            self.relock();
+            return Err(ErrorCode::Locked);
         }
 
         if let Some(last) = self.last_used {
-            if last.elapsed() >= Self::idle_timeout() {
+            if last.elapsed() >= Self::idle_timeout(&settings) {
                 self.relock();
             }
         }
 
         if !self.vault.is_unlocked() && !self.unlock_from_keyring() {
-            return false;
+            return Err(ErrorCode::Locked);
         }
 
         self.last_used = Some(Instant::now());
-        true
+        Ok(())
     }
 
     fn unlock_from_keyring(&mut self) -> bool {
-        if !self.vault.has_master_password().unwrap_or(false) {
-            return false;
-        }
-        let Ok(Some(master)) = ashypass_core::keyring::load_master() else {
+        let Some(master) = (self.keyring_master)() else {
             return false;
         };
         self.vault.unlock(&master).is_ok()
+    }
+
+    /// Unlock with a master password typed in the extension.
+    fn unlock_with_password(&mut self, password: &str) -> std::result::Result<(), ErrorCode> {
+        let settings = (self.load_settings)();
+        if !settings.browser_extension {
+            return Err(ErrorCode::Disabled);
+        }
+        if !self.vault.has_master_password().unwrap_or(false) {
+            return Err(ErrorCode::NoVault);
+        }
+        if let Some(until) = self.paused_until {
+            if Instant::now() < until {
+                return Err(ErrorCode::RateLimited);
+            }
+            self.paused_until = None;
+            self.failed_unlocks = 0;
+        }
+        match self.vault.unlock(password) {
+            Ok(()) => {
+                self.failed_unlocks = 0;
+                self.last_used = Some(Instant::now());
+                Ok(())
+            }
+            Err(ashypass_core::Error::InvalidMasterPassword) => {
+                self.failed_unlocks += 1;
+                if self.failed_unlocks >= UNLOCK_ATTEMPTS {
+                    self.paused_until = Some(Instant::now() + UNLOCK_PAUSE);
+                }
+                Err(ErrorCode::BadPassword)
+            }
+            Err(_) => Err(ErrorCode::Internal),
+        }
+    }
+
+    /// Unlock with the PIN set up in Ashy Pass, under the same rules as the
+    /// desktop app (attempts counted in the stored record, turned off at the
+    /// limit): see `ashypass_core::quick_unlock`.
+    fn unlock_with_pin(&mut self, pin: &str) -> std::result::Result<(), (ErrorCode, Option<u32>)> {
+        let settings = (self.load_settings)();
+        if !settings.browser_extension {
+            return Err((ErrorCode::Disabled, None));
+        }
+        if !self.vault.has_master_password().unwrap_or(false) {
+            return Err((ErrorCode::NoVault, None));
+        }
+        let Some(stored) = (self.stored_pin)(&settings) else {
+            return Err((ErrorCode::PinUnavailable, None));
+        };
+        let derived = ashypass_core::db::derive_quick_unlock_key(pin, &stored.prefs);
+        let save = self.save_settings;
+        let mut update = |change: &dyn Fn(&mut Settings)| save(change);
+        use ashypass_core::quick_unlock::PinOutcome;
+        match ashypass_core::quick_unlock::finish_pin_attempt(
+            &mut self.vault,
+            stored,
+            derived,
+            &mut update,
+        ) {
+            PinOutcome::Unlocked => {
+                self.last_used = Some(Instant::now());
+                Ok(())
+            }
+            PinOutcome::Wrong { remaining } => Err((ErrorCode::BadPin, Some(remaining))),
+            PinOutcome::TurnedOff | PinOutcome::Stale => Err((ErrorCode::PinDisabled, None)),
+            PinOutcome::Unusable => Err((ErrorCode::PinUnavailable, None)),
+        }
     }
 
     fn relock(&mut self) {
         self.vault.full_lock();
         self.last_used = None;
     }
+
+    /// Between requests: drop the key once the vault has been idle for the
+    /// auto-lock delay, or when the screen locks (if that option is on), so
+    /// it does not stay in memory while the browser keeps the port open.
+    fn lock_if_idle(&mut self) {
+        if !self.vault.is_unlocked() {
+            return;
+        }
+        let settings = (self.load_settings)();
+        let idle = self
+            .last_used
+            .is_none_or(|last| last.elapsed() >= Self::idle_timeout(&settings));
+        if !settings.browser_extension
+            || idle
+            || (settings.lock_on_screen_lock && self.screen_lock.is_locked())
+        {
+            self.relock();
+        }
+    }
+
+    /// Answer one request.
+    fn respond(&mut self, request: Request) -> serde_json::Value {
+        use serde_json::json;
+        // Ping, status and generate never need the key, so they must not
+        // trigger a keyring unlock either.
+        match request {
+            Request::Ping => {
+                return json!({"ok": true, "version": VERSION, "protocol": PROTOCOL_VERSION})
+            }
+            Request::Status => {
+                let settings = (self.load_settings)();
+                return json!({
+                    "ok": true,
+                    "enabled": settings.browser_extension,
+                    "has_vault": self.vault.has_master_password().unwrap_or(false),
+                    "unlocked": settings.browser_extension && self.access().is_ok(),
+                    "pin_available": settings.browser_extension
+                        && (self.stored_pin)(&settings).is_some(),
+                });
+            }
+            Request::Generate(options) => {
+                return match handle_generate(&options) {
+                    Ok(pw) => json!({"ok": true, "password": pw}),
+                    Err(e) => error_response(ErrorCode::Invalid, &e.to_string()),
+                }
+            }
+            Request::OpenApp => return handle_open_app(),
+            Request::UnlockPin { pin } => {
+                return match self.unlock_with_pin(&pin.0) {
+                    Ok(()) => json!({"ok": true}),
+                    Err((code, remaining)) => {
+                        let mut reply = error_for(code);
+                        if let Some(remaining) = remaining {
+                            reply["attempts_left"] = json!(remaining);
+                        }
+                        reply
+                    }
+                }
+            }
+            Request::Lock => {
+                self.relock();
+                return json!({"ok": true});
+            }
+            Request::Unlock { password } => {
+                return match self.unlock_with_password(&password.0) {
+                    Ok(()) => json!({"ok": true}),
+                    Err(code) => error_for(code),
+                }
+            }
+            _ => {}
+        }
+        if let Err(code) = self.access() {
+            return error_for(code);
+        }
+        match request {
+            Request::List { query } => handle_list(&self.vault, query.as_deref()),
+            Request::Search { query } => handle_list(&self.vault, Some(&query)),
+            Request::MatchUrl { url } => handle_match_url(&self.vault, &url),
+            Request::Fill { id, url } => handle_fill(&self.vault, id, &url),
+            Request::Get { id, notes } => handle_get(&self.vault, id, notes),
+            Request::Totp { id } => handle_totp(&self.vault, id),
+            Request::Folders => match self.vault.categories() {
+                Ok(folders) => json!({"ok": true, "folders": folders}),
+                Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+            },
+            Request::Favicons { hosts } => handle_favicons(&hosts),
+            Request::Add(login) => handle_add(&self.vault, login),
+            Request::Update(login) => handle_update(&self.vault, login),
+            Request::Delete { id } => handle_delete(&self.vault, id),
+            Request::ToggleFavorite { id } => match self.vault.toggle_favorite(id) {
+                Ok(Some(favorite)) => json!({"ok": true, "favorite": favorite}),
+                Ok(None) => error_for(ErrorCode::NotFound),
+                Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+            },
+            Request::Ping
+            | Request::Status
+            | Request::Generate(_)
+            | Request::OpenApp
+            | Request::Lock
+            | Request::Unlock { .. }
+            | Request::UnlockPin { .. } => unreachable!("answered above"),
+        }
+    }
 }
+
+/// How long to wait for the system bus (connect, or one property read)
+/// before treating the screen-lock state as unknown.
+const SCREEN_LOCK_TIMEOUT: Duration = Duration::from_secs(2);
+
+/// Reads logind's `LockedHint` for the caller's session over the system bus.
+///
+/// Desktop environments (GNOME, KDE, …) set the hint while the screen is
+/// locked. When the bus or logind is unreachable the state is reported as
+/// unlocked, matching the desktop app, which also has nothing to react to
+/// then; the idle timeout still applies.
+#[derive(Default)]
+struct ScreenLockProbe {
+    connection: Option<zbus::blocking::Connection>,
+    /// When connecting or a call last failed. Until [`SCREEN_LOCK_RETRY`]
+    /// has passed, requests skip the probe instead of waiting again for a
+    /// bus that is not there; after that it is tried again.
+    failed_at: Option<Instant>,
+}
+
+/// How long to wait after a failed probe before trying the bus again.
+const SCREEN_LOCK_RETRY: Duration = Duration::from_secs(30);
+
+impl ScreenLockProbe {
+    fn is_locked(&mut self) -> bool {
+        if !self.should_probe(Instant::now()) {
+            return false;
+        }
+        if self.connection.is_none() {
+            self.connection = Self::connect();
+        }
+        let Some(connection) = &self.connection else {
+            self.failed_at = Some(Instant::now());
+            return false;
+        };
+        match Self::locked_hint(connection) {
+            Ok(locked) => {
+                self.failed_at = None;
+                locked
+            }
+            Err(HintError::Call) => {
+                // The connection may be dead (bus restarted, timed out):
+                // drop it and reconnect on the next probe after the backoff.
+                self.connection = None;
+                self.failed_at = Some(Instant::now());
+                false
+            }
+            Err(HintError::Reply) => {
+                self.failed_at = None;
+                false
+            }
+        }
+    }
+
+    /// Whether to query the bus now, given the last failure.
+    fn should_probe(&self, now: Instant) -> bool {
+        self.failed_at
+            .is_none_or(|failed| now.saturating_duration_since(failed) >= SCREEN_LOCK_RETRY)
+    }
+
+    fn connect() -> Option<zbus::blocking::Connection> {
+        // Connecting performs an authentication handshake with no timeout of
+        // its own, so run it on a helper thread and give up after a while.
+        let (sender, receiver) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            let connection = zbus::blocking::connection::Builder::system()
+                .map(|b| b.method_timeout(SCREEN_LOCK_TIMEOUT))
+                .and_then(|b| b.build());
+            let _ = sender.send(connection);
+        });
+        receiver.recv_timeout(SCREEN_LOCK_TIMEOUT).ok()?.ok()
+    }
+
+    fn locked_hint(connection: &zbus::blocking::Connection) -> Result<bool, HintError> {
+        let reply = connection
+            .call_method(
+                Some("org.freedesktop.login1"),
+                "/org/freedesktop/login1/session/auto",
+                Some("org.freedesktop.DBus.Properties"),
+                "Get",
+                &("org.freedesktop.login1.Session", "LockedHint"),
+            )
+            .map_err(|_| HintError::Call)?;
+        let value: zbus::zvariant::OwnedValue =
+            reply.body().deserialize().map_err(|_| HintError::Reply)?;
+        bool::try_from(value).map_err(|_| HintError::Reply)
+    }
+}
+
+/// Why `LockedHint` could not be read.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum HintError {
+    /// The call itself failed (timeout, bus gone, no session): back off and
+    /// reconnect.
+    Call,
+    /// logind answered with something unexpected.
+    Reply,
+}
+
+/// How often the idle and screen-lock policy is checked between requests.
+const IDLE_CHECK: Duration = Duration::from_secs(15);
 
 fn serve() -> Result<()> {
     let mut session = HostSession::open()?;
-    let stdin = std::io::stdin();
-    let mut input = stdin.lock();
+    // Requests arrive on a thread of their own, so the auto-lock also runs
+    // while the browser sends nothing.
+    let (tx, rx) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        let stdin = std::io::stdin();
+        let mut input = stdin.lock();
+        loop {
+            let message = read_message::<serde_json::Value>(&mut input);
+            let last = !matches!(message, Ok(Incoming::Message(_) | Incoming::Malformed(_)));
+            if tx.send(message).is_err() || last {
+                return;
+            }
+        }
+    });
 
     loop {
-        let req = match read_message::<Request>(&mut input)? {
-            Incoming::Message(req) => req,
+        let message = match rx.recv_timeout(IDLE_CHECK) {
+            Ok(message) => message?,
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+                session.lock_if_idle();
+                continue;
+            }
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => return Ok(()),
+        };
+        let raw = match message {
+            Incoming::Message(raw) => raw,
             Incoming::Eof => return Ok(()), // EOF: browser closed the port.
             Incoming::Malformed(e) => {
                 // The frame was consumed in full, so the stream is still in
                 // sync: report and keep serving.
-                write_error(&format!("malformed request: {e}"))?;
+                write_message(&error_response(
+                    ErrorCode::Invalid,
+                    &format!("malformed request: {e}"),
+                ))?;
                 continue;
             }
         };
-
-        // Ping and generate work even when locked — they don't touch the
-        // vault contents, so they must not trigger an unlock either.
-        let resp = match &req {
-            Request::Ping => serde_json::json!({"ok": true, "version": VERSION}),
-            Request::Generate { length, kind } => match handle_generate(length, kind) {
-                Ok(pw) => serde_json::json!({"ok": true, "password": pw}),
-                Err(e) => error_response(&e.to_string()),
-            },
-            _ if !session.ensure_unlocked() => error_response(
-                "vault locked — open the desktop app, enable browser integration, and store the master password in the system keyring",
-            ),
-            Request::List { query } => handle_list(&session.vault, query.as_deref()),
-            Request::Search { query } => handle_list(&session.vault, Some(query)),
-            Request::MatchUrl { url } => handle_match_url(&session.vault, url),
-            Request::Get { id } => handle_get(&session.vault, *id),
-        };
-
-        write_message(&resp)?;
+        let response = answer(&mut session, raw);
+        if let Err(e) = write_message(&response) {
+            // Too big for the browser: say so instead of ending the session.
+            let mut error = error_response(ErrorCode::Internal, &e.to_string());
+            if let (Some(rid), Some(object)) = (response.get("rid"), error.as_object_mut()) {
+                object.insert("rid".into(), rid.clone());
+            }
+            write_message(&error)?;
+        }
     }
+}
+
+/// Decode one request (keeping its `rid`), answer it, and tag the response
+/// with the same `rid` so the extension can match replies to requests.
+fn answer(session: &mut HostSession, raw: serde_json::Value) -> serde_json::Value {
+    let rid = raw.get("rid").filter(|r| r.is_number()).cloned();
+    let mut response = match serde_json::from_value::<Request>(raw) {
+        Ok(request) => session.respond(request),
+        Err(e) => error_response(ErrorCode::Invalid, &format!("malformed request: {e}")),
+    };
+    if let (Some(rid), Some(object)) = (rid, response.as_object_mut()) {
+        object.insert("rid".into(), rid);
+    }
+    response
+}
+
+/// Room for the entries of one reply: browsers take at most 1 MiB from the
+/// host, and the reply carries a little more than the entries.
+const ENTRIES_BUDGET_BYTES: usize = 900 * 1024;
+
+/// `{ok, entries}` with as many entries as fit in a message; `truncated`
+/// tells the rest were left out (a vault of several thousand logins).
+fn entries_reply(summaries: Vec<EntrySummary>) -> serde_json::Value {
+    let mut used = 0;
+    let mut kept = Vec::with_capacity(summaries.len());
+    let total = summaries.len();
+    for summary in summaries {
+        let size = serde_json::to_vec(&summary)
+            .map(|b| b.len() + 1)
+            .unwrap_or(usize::MAX);
+        if used + size > ENTRIES_BUDGET_BYTES {
+            break;
+        }
+        used += size;
+        kept.push(summary);
+    }
+    let truncated = kept.len() < total;
+    serde_json::json!({"ok": true, "entries": kept, "truncated": truncated})
 }
 
 fn handle_list(vault: &Vault, query: Option<&str>) -> serde_json::Value {
     match vault.list(query) {
-        Ok(entries) => {
-            let summaries: Vec<EntrySummary> = entries.iter().map(EntrySummary::from).collect();
-            serde_json::json!({"ok": true, "entries": summaries})
-        }
-        Err(e) => error_response(&e.to_string()),
+        Ok(entries) => entries_reply(entries.iter().map(EntrySummary::from).collect()),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
     }
 }
 
@@ -315,14 +887,16 @@ fn handle_match_url(vault: &Vault, url: &str) -> serde_json::Value {
                 .filter(|e| e.url.as_deref().is_some_and(|u| entry_matches_page(u, url)))
                 .map(EntrySummary::from)
                 .collect();
-            serde_json::json!({"ok": true, "entries": matches})
+            entries_reply(matches)
         }
-        Err(e) => error_response(&e.to_string()),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
     }
 }
 
-fn handle_get(vault: &Vault, id: i64) -> serde_json::Value {
-    match vault.get(id) {
+fn handle_get(vault: &Vault, id: i64, with_notes: bool) -> serde_json::Value {
+    // Browser reads must not bump `last_accessed`: that would write to the
+    // vault on every autofill and skew the desktop app's "recently used".
+    match vault.get_without_touch(id) {
         Ok(Some(e)) => {
             let full = EntryFull {
                 id: e.id,
@@ -330,27 +904,123 @@ fn handle_get(vault: &Vault, id: i64) -> serde_json::Value {
                 username: e.username,
                 url: e.url,
                 password: e.password,
-                notes: e.notes,
                 has_totp: e.has_totp,
                 category: e.category,
+                favorite: e.favorite,
+                updated_at: e.updated_at,
+                notes: if with_notes {
+                    Some(e.notes.unwrap_or_default())
+                } else {
+                    None
+                },
             };
             serde_json::json!({"ok": true, "entry": full})
         }
-        Ok(None) => error_response("entry not found"),
-        Err(e) => error_response(&e.to_string()),
+        Ok(None) => error_for(ErrorCode::NotFound),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
     }
 }
 
-fn handle_generate(length: &Option<usize>, kind: &Option<String>) -> Result<String> {
-    match kind.as_deref() {
-        Some("passphrase") => Ok(generate_passphrase(6, "-", true, true)),
+/// Credentials for filling the page at `url`, only when the entry belongs
+/// to that site: a page can never obtain another site's password, even if
+/// the extension were asked to.
+fn handle_fill(vault: &Vault, id: i64, url: &str) -> serde_json::Value {
+    match vault.get_without_touch(id) {
+        Ok(Some(e)) => {
+            let belongs = e
+                .url
+                .as_deref()
+                .is_some_and(|entry_url| entry_matches_page(entry_url, url));
+            if !belongs {
+                return error_for(ErrorCode::NoMatch);
+            }
+            serde_json::json!({
+                "ok": true,
+                "username": e.username.unwrap_or_default(),
+                "password": e.password.unwrap_or_default(),
+            })
+        }
+        Ok(None) => error_for(ErrorCode::NotFound),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+/// The current verification code of an entry.
+fn handle_totp(vault: &Vault, id: i64) -> serde_json::Value {
+    let entry = match vault.get_without_touch(id) {
+        Ok(Some(e)) => e,
+        Ok(None) => return error_for(ErrorCode::NotFound),
+        Err(e) => return error_response(ErrorCode::Internal, &e.to_string()),
+    };
+    let Some(secret) = entry.totp_secret.filter(|s| !s.is_empty()) else {
+        return error_for(ErrorCode::NoTotp);
+    };
+    let secret = zeroize::Zeroizing::new(secret);
+    let algorithm = ashypass_core::totp::Algorithm::parse(&entry.totp_algorithm)
+        .unwrap_or(ashypass_core::totp::Algorithm::Sha1);
+    let period = entry.totp_period.max(1);
+    let now = chrono_now_secs();
+    match ashypass_core::totp::generate_totp(&secret, algorithm, entry.totp_digits, period, now) {
+        Ok(code) => serde_json::json!({
+            "ok": true,
+            "code": code,
+            "remaining": ashypass_core::totp::remaining_seconds(period, now),
+            "period": period,
+        }),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+fn chrono_now_secs() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0)
+}
+
+/// Bounds that keep a request from asking for absurd values.
+const PASSWORD_MAX_LENGTH: usize = 128;
+const WORDS_MIN: usize = 3;
+const WORDS_MAX: usize = 12;
+
+fn handle_generate(options: &GenerateOptions) -> Result<String> {
+    match options.kind.as_deref() {
+        Some("passphrase") => {
+            let separator: String = options
+                .separator
+                .as_deref()
+                .unwrap_or("-")
+                .chars()
+                .take(3)
+                .collect();
+            Ok(generate_passphrase(
+                options.words.unwrap_or(6).clamp(WORDS_MIN, WORDS_MAX),
+                &separator,
+                options.capitalize.unwrap_or(true),
+                options.number.unwrap_or(true),
+            ))
+        }
         Some("pin") => Ok(generate_pin(
-            length.unwrap_or(6).clamp(PIN_MIN_LENGTH, PIN_MAX_LENGTH),
+            options
+                .length
+                .unwrap_or(6)
+                .clamp(PIN_MIN_LENGTH, PIN_MAX_LENGTH),
         )),
         Some("password") | None => {
+            let defaults = PasswordConfig::default();
             let cfg = PasswordConfig {
-                length: length.unwrap_or(PasswordConfig::default().length),
-                ..Default::default()
+                length: options
+                    .length
+                    .unwrap_or(defaults.length)
+                    .min(PASSWORD_MAX_LENGTH),
+                use_uppercase: options.uppercase.unwrap_or(defaults.use_uppercase),
+                use_lowercase: options.lowercase.unwrap_or(defaults.use_lowercase),
+                use_digits: options.digits.unwrap_or(defaults.use_digits),
+                use_symbols: options.symbols.unwrap_or(defaults.use_symbols),
+                exclude_ambiguous: options
+                    .avoid_ambiguous
+                    .unwrap_or(defaults.exclude_ambiguous),
+                ..defaults
             };
             generate_password(&cfg).map_err(|e| anyhow!("{e}"))
         }
@@ -358,12 +1028,211 @@ fn handle_generate(length: &Option<usize>, kind: &Option<String>) -> Result<Stri
     }
 }
 
-fn error_response(msg: &str) -> serde_json::Value {
-    serde_json::json!({"ok": false, "error": msg})
+/// Most icons answered by one `favicons` request.
+const FAVICONS_PER_REQUEST: usize = 40;
+/// Larger cached files are skipped (keeps replies far below the 1 MiB limit).
+const FAVICON_MAX_BYTES: u64 = 24 * 1024;
+
+/// Whether `host` is a plain host name, so it cannot reach outside the icon
+/// cache when turned into a file name.
+fn is_plain_host(host: &str) -> bool {
+    !host.is_empty()
+        && host.len() <= 253
+        && !host.starts_with('.')
+        && !host.contains("..")
+        && host
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '-')
 }
 
-fn write_error(msg: &str) -> Result<()> {
-    write_message(&error_response(msg))
+/// Site icons from the desktop app's cache, as data URLs. Never fetches
+/// anything: sites the app has not shown yet simply have no icon.
+fn handle_favicons(hosts: &[String]) -> serde_json::Value {
+    use base64::Engine as _;
+    let mut icons = serde_json::Map::new();
+    for host in hosts.iter().take(FAVICONS_PER_REQUEST) {
+        if !is_plain_host(host) {
+            continue;
+        }
+        let Some(path) = ashypass_core::favicons::lookup(host) else {
+            continue;
+        };
+        if !std::fs::metadata(&path).is_ok_and(|m| m.len() <= FAVICON_MAX_BYTES) {
+            continue;
+        }
+        let Ok(bytes) = std::fs::read(&path) else {
+            continue;
+        };
+        let mime = if bytes.starts_with(&[0, 0, 1, 0]) {
+            "image/x-icon"
+        } else {
+            "image/png"
+        };
+        icons.insert(
+            host.clone(),
+            serde_json::Value::String(format!(
+                "data:{mime};base64,{}",
+                base64::engine::general_purpose::STANDARD.encode(&bytes)
+            )),
+        );
+    }
+    serde_json::json!({"ok": true, "icons": icons})
+}
+
+/// Save a login created in the browser.
+fn handle_add(vault: &Vault, login: NewLogin) -> serde_json::Value {
+    let title = login.title.trim().to_string();
+    if title.is_empty() || login.password.0.is_empty() {
+        return error_response(ErrorCode::Invalid, "a name and a password are required");
+    }
+    let clean = |value: Option<String>| {
+        value
+            .map(|v| v.trim().to_string())
+            .filter(|v| !v.is_empty())
+    };
+    let entry = ashypass_core::db::vault::NewEntry {
+        title,
+        username: clean(login.username),
+        password: login.password.0.clone(),
+        url: clean(login.url),
+        category: clean(login.category),
+        notes: login.notes.filter(|n| !n.trim().is_empty()),
+        ..Default::default()
+    };
+    match vault.add(entry) {
+        Ok(id) => serde_json::json!({"ok": true, "id": id}),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+/// A trimmed optional field: blank means none.
+fn clean_field(value: Option<String>) -> Option<String> {
+    value
+        .map(|v| v.trim().to_string())
+        .filter(|v| !v.is_empty())
+}
+
+/// Save a login edited in the browser. Only the fields that differ are
+/// written, so an unchanged password adds no history entry.
+fn handle_update(vault: &Vault, login: EditedLogin) -> serde_json::Value {
+    let title = login.title.trim().to_string();
+    if title.is_empty() || login.password.0.is_empty() {
+        return error_response(ErrorCode::Invalid, "a name and a password are required");
+    }
+    let current = match vault.get_without_touch(login.id) {
+        Ok(Some(e)) => e,
+        Ok(None) => return error_for(ErrorCode::NotFound),
+        Err(e) => return error_response(ErrorCode::Internal, &e.to_string()),
+    };
+    if current.updated_at != login.updated_at {
+        return error_for(ErrorCode::Changed);
+    }
+    let username = clean_field(login.username);
+    let url = clean_field(login.url);
+    let category = clean_field(login.category);
+    let mut change = ashypass_core::db::vault::UpdateEntry::default();
+    if title != current.title {
+        change.title = Some(title);
+    }
+    if username != clean_field(current.username.clone()) {
+        change.username = Some(username.unwrap_or_default());
+    }
+    if current.password.as_deref() != Some(login.password.0.as_str()) {
+        change.password = Some(login.password.0.clone());
+    }
+    if url != clean_field(current.url.clone()) {
+        change.url = Some(url);
+    }
+    if category != clean_field(current.category.clone()) {
+        change.category = Some(category);
+    }
+    // Notes keep their own spacing; only an all-blank text means none.
+    if let Some(notes) = login.notes {
+        let notes = Some(notes).filter(|n| !n.trim().is_empty());
+        if notes != current.notes.clone().filter(|n| !n.is_empty()) {
+            change.notes = Some(notes);
+        }
+    }
+    let unchanged = change.title.is_none()
+        && change.username.is_none()
+        && change.password.is_none()
+        && change.url.is_none()
+        && change.category.is_none()
+        && change.notes.is_none();
+    if unchanged {
+        return serde_json::json!({"ok": true, "id": login.id});
+    }
+    match vault.update_if_unchanged(login.id, login.updated_at, change) {
+        Ok(Some(_)) => serde_json::json!({"ok": true, "id": login.id}),
+        // Changed or deleted between the read above and the write.
+        Ok(None) => match vault.get_without_touch(login.id) {
+            Ok(Some(_)) => error_for(ErrorCode::Changed),
+            Ok(None) => error_for(ErrorCode::NotFound),
+            Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+        },
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+/// Delete a login the way the desktop app does: to the trash when it is on
+/// (Settings → Protection), for good otherwise. A synced login is also
+/// deleted from Nextcloud on the next sync.
+fn handle_delete(vault: &Vault, id: i64) -> serde_json::Value {
+    let trashed = ashypass_core::settings::Settings::load().trash_retention_days > 0;
+    match vault.delete(id) {
+        Ok(true) => serde_json::json!({"ok": true, "trashed": trashed}),
+        Ok(false) => error_for(ErrorCode::NotFound),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+/// Bring up the desktop app (a second launch just presents the open window).
+fn handle_open_app() -> serde_json::Value {
+    let candidates = [
+        std::env::current_exe()
+            .ok()
+            .and_then(|exe| exe.parent().map(|dir| dir.join("ashypass"))),
+        Some(std::path::PathBuf::from("/usr/bin/ashypass")),
+    ];
+    let Some(app) = candidates.into_iter().flatten().find(|p| p.is_file()) else {
+        return error_response(ErrorCode::Internal, "the Ashy Pass app was not found");
+    };
+    match std::process::Command::new(app)
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+    {
+        Ok(_) => serde_json::json!({"ok": true}),
+        Err(e) => error_response(ErrorCode::Internal, &e.to_string()),
+    }
+}
+
+fn error_response(code: ErrorCode, msg: &str) -> serde_json::Value {
+    serde_json::json!({"ok": false, "error": msg, "code": code.as_str()})
+}
+
+/// The standard English text for `code`.
+fn error_for(code: ErrorCode) -> serde_json::Value {
+    let message = match code {
+        ErrorCode::Disabled => {
+            "browser integration is off — turn it on in Ashy Pass → Settings → Browser"
+        }
+        ErrorCode::NoVault => "no vault yet — create it in Ashy Pass first",
+        ErrorCode::Locked => "vault locked — enter the master password",
+        ErrorCode::BadPassword => "wrong master password",
+        ErrorCode::BadPin => "wrong PIN",
+        ErrorCode::PinDisabled => "the PIN was turned off — use the master password",
+        ErrorCode::PinUnavailable => "no PIN is set up on this computer",
+        ErrorCode::RateLimited => "too many wrong passwords — wait 30 seconds and try again",
+        ErrorCode::NotFound => "entry not found",
+        ErrorCode::NoMatch => "this entry does not belong to the page",
+        ErrorCode::NoTotp => "this entry has no verification code",
+        ErrorCode::Changed => "the entry was changed meanwhile — open it again",
+        ErrorCode::Invalid => "invalid request",
+        ErrorCode::Internal => "internal error",
+    };
+    error_response(code, message)
 }
 
 /// Outcome of reading one native-messaging frame.
@@ -423,268 +1292,6 @@ fn write_message<T: Serialize>(value: &T) -> Result<()> {
 }
 
 // ---------------------------------------------------------------------------
-// URL matching
-// ---------------------------------------------------------------------------
-
-/// Pull the hostname out of a URL, stripping the scheme and any path. Returns
-/// `None` only if the input is empty.
-fn url_host(input: &str) -> Option<String> {
-    let s = input.trim();
-    if s.is_empty() {
-        return None;
-    }
-    let no_scheme = s.split_once("://").map(|(_, r)| r).unwrap_or(s);
-    // The authority ends at the first `/`, `?` or `#`. Missing `#` here let
-    // `https://evil.com#@example.com` resolve to `example.com`.
-    let authority_end = no_scheme
-        .find(['/', '?', '#', '\\'])
-        .unwrap_or(no_scheme.len());
-    let authority = no_scheme[..authority_end].rsplit('@').next().unwrap_or("");
-    // A bracketed IPv6 literal is full of colons, so strip the port only after
-    // the closing bracket; splitting on ':' first would reduce it to "[".
-    let host = match authority.strip_prefix('[') {
-        Some(rest) => rest.split_once(']').map(|(h, _)| h).unwrap_or(rest),
-        None => authority.split(':').next().unwrap_or(""),
-    };
-    if host.is_empty() {
-        None
-    } else {
-        Some(host.to_ascii_lowercase())
-    }
-}
-
-/// Lower-case scheme of `input` (`https`, `http`, …), or `None` when the
-/// string has no `scheme://` prefix (a bare host saved by the user).
-fn url_scheme(input: &str) -> Option<String> {
-    let (scheme, _) = input.trim().split_once("://")?;
-    let mut chars = scheme.chars();
-    let valid = chars.next().is_some_and(|c| c.is_ascii_alphabetic())
-        && chars.all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '-' | '.'));
-    valid.then(|| scheme.to_ascii_lowercase())
-}
-
-/// Whether an entry saved with `entry` scheme may be offered on a page loaded
-/// with `page` scheme.
-///
-/// Downgrades are refused: a credential saved for `https://` (or saved as a
-/// bare host, which we treat as `https`) is never offered on an `http://`
-/// page, where a network attacker controls the content. An `http://` entry
-/// may be offered on the `https://` version of the site. Any other scheme
-/// must match exactly, and a page without a recognisable scheme only matches
-/// bare-host entries.
-fn scheme_compatible(entry: Option<&str>, page: Option<&str>) -> bool {
-    match (entry, page) {
-        (None, None) => true,
-        (None | Some("https"), Some(page)) => page == "https",
-        (Some("http"), Some(page)) => page == "http" || page == "https",
-        (Some(entry), Some(page)) => entry == page,
-        (Some(_), None) => false,
-    }
-}
-
-/// Full matching rule for `match_url`: compatible scheme and same site.
-fn entry_matches_page(entry_url: &str, page_url: &str) -> bool {
-    let (Some(entry_host), Some(page_host)) = (url_host(entry_url), url_host(page_url)) else {
-        return false;
-    };
-    scheme_compatible(
-        url_scheme(entry_url).as_deref(),
-        url_scheme(page_url).as_deref(),
-    ) && host_match(&entry_host, &page_host)
-}
-
-/// Top-level domains under which registrations happen directly at the second
-/// level (`example.com`), once the second-level public suffixes listed in
-/// [`MULTI_LABEL_SUFFIXES`] are accounted for. Hosts under any other TLD
-/// fail closed: they only ever match exactly (after `www.` shedding).
-const FLAT_TLDS: &[&str] = &[
-    "com", "org", "net", "edu", "gov", "mil", "int", "info", "biz", "dev", "app", "page", "xyz",
-    "online", "site", "shop", "store", "tech", "cloud", "io", "me", "ai", "co", "de", "nl", "ch",
-    "eu", "be", "dk", "fi", "cz", "es", "pt",
-];
-
-/// Multi-label public suffixes common enough to matter here. Without this a
-/// suffix match would treat `github.io` or `com.br` as a registrable domain and
-/// happily offer one tenant's credentials on another tenant's subdomain.
-///
-/// This is deliberately a short list rather than a bundled Public Suffix List,
-/// so it must fail closed: a host whose suffix is neither listed here nor
-/// under one of the [`FLAT_TLDS`] has no registrable domain and only matches
-/// exactly. A missing entry therefore means a *refused* subdomain match,
-/// never a credential offered to the wrong site.
-const MULTI_LABEL_SUFFIXES: &[&str] = &[
-    "co.uk",
-    "org.uk",
-    "gov.uk",
-    "ac.uk",
-    "co.jp",
-    "com.br",
-    "net.br",
-    "org.br",
-    "gov.br",
-    "com.au",
-    "com.mx",
-    "com.ar",
-    "co.za",
-    "co.in",
-    "com.tr",
-    "github.io",
-    "gitlab.io",
-    "pages.dev",
-    "workers.dev",
-    "vercel.app",
-    "netlify.app",
-    "herokuapp.com",
-    "azurewebsites.net",
-    "cloudfront.net",
-    "s3.amazonaws.com",
-    "blogspot.com",
-    "wordpress.com",
-    "firebaseapp.com",
-    "web.app",
-    "appspot.com",
-    "glitch.me",
-    "onrender.com",
-    "fly.dev",
-    "duckdns.org",
-    "ngrok.io",
-    // Second-level registries of TLDs listed in FLAT_TLDS.
-    "com.io",
-    "net.io",
-    "org.io",
-    "edu.io",
-    "gov.io",
-    "mil.io",
-    "co.me",
-    "net.me",
-    "org.me",
-    "edu.me",
-    "ac.me",
-    "gov.me",
-    "its.me",
-    "priv.me",
-    "com.ai",
-    "net.ai",
-    "off.ai",
-    "org.ai",
-    "com.co",
-    "net.co",
-    "org.co",
-    "edu.co",
-    "gov.co",
-    "mil.co",
-    "nom.co",
-    "com.es",
-    "nom.es",
-    "org.es",
-    "gob.es",
-    "edu.es",
-    "com.pt",
-    "edu.pt",
-    "gov.pt",
-    "int.pt",
-    "net.pt",
-    "nome.pt",
-    "org.pt",
-    "publ.pt",
-    "ac.be",
-    "bv.nl",
-    "aland.fi",
-    // Common second-level registries of other ccTLDs.
-    "co.nz",
-    "org.nz",
-    "net.nz",
-    "ac.nz",
-    "govt.nz",
-    "ne.jp",
-    "or.jp",
-    "ac.jp",
-    "go.jp",
-    "co.kr",
-    "com.cn",
-    "net.cn",
-    "org.cn",
-    "com.hk",
-    "com.sg",
-    "com.tw",
-    "co.il",
-    "edu.au",
-    "net.au",
-    "org.au",
-    "gov.au",
-    "org.mx",
-    "gob.mx",
-    "edu.br",
-    "art.br",
-    // Shared hosting under flat TLDs.
-    "readthedocs.io",
-    "ngrok.app",
-    "ngrok-free.app",
-    "trycloudflare.com",
-    "r2.dev",
-    "azurestaticapps.net",
-    "cloudapp.azure.com",
-    "elasticbeanstalk.com",
-    "github.dev",
-    "dyndns.org",
-];
-
-/// Number of trailing labels that belong to the public suffix plus one, i.e.
-/// the minimum label count of a registrable domain under `host`. `None` when
-/// the suffix is unknown — the caller must then require an exact match.
-fn registrable_label_count(host: &str) -> Option<usize> {
-    // Longest listed suffix wins (`s3.amazonaws.com` before a shorter entry).
-    let listed = MULTI_LABEL_SUFFIXES
-        .iter()
-        .filter(|suffix| host == **suffix || host.ends_with(&format!(".{suffix}")))
-        .map(|suffix| suffix.split('.').count())
-        .max();
-    if let Some(labels) = listed {
-        return Some(labels + 1);
-    }
-    let tld = host.rsplit('.').next()?;
-    FLAT_TLDS.contains(&tld).then_some(2)
-}
-
-/// The registrable domain of `host` (`mail.corp.example.co.uk` →
-/// `example.co.uk`). Returns `None` when `host` is itself a public suffix or
-/// otherwise has too few labels to own credentials.
-fn registrable_domain(host: &str) -> Option<String> {
-    // IP literals have no registrable domain; treating the last two octets as
-    // one would make 192.168.1.10 and 10.0.1.10 "the same site".
-    if host.parse::<std::net::IpAddr>().is_ok() || host.contains(':') {
-        return None;
-    }
-    let labels: Vec<&str> = host.split('.').filter(|l| !l.is_empty()).collect();
-    let needed = registrable_label_count(host)?;
-    if labels.len() < needed {
-        return None;
-    }
-    Some(labels[labels.len() - needed..].join("."))
-}
-
-/// Match `candidate` against `target`, allowing `www.` shedding and
-/// subdomain-style matches within one registrable domain (so a stored
-/// `example.com` entry is offered on `mail.example.com`).
-///
-/// Crossing a public-suffix boundary is refused: `github.io` must not match
-/// `attacker.github.io`, and two hosts that merely share a public suffix
-/// (`a.com.br` / `b.com.br`) are unrelated.
-fn host_match(candidate: &str, target: &str) -> bool {
-    let c = candidate.trim_start_matches("www.");
-    let t = target.trim_start_matches("www.");
-    if c == t {
-        return true;
-    }
-    // Both sides must resolve to the same registrable domain. IP literals and
-    // bare public suffixes yield `None` and so only ever match exactly.
-    match (registrable_domain(c), registrable_domain(t)) {
-        (Some(cd), Some(td)) => cd == td,
-        _ => false,
-    }
-}
-
-// ---------------------------------------------------------------------------
 // Manifest installation
 // ---------------------------------------------------------------------------
 
@@ -695,12 +1302,12 @@ fn current_exe_path_str() -> String {
         .unwrap_or_else(|| "/usr/bin/ashypass-native-host".to_string())
 }
 
-fn manifest_chrome(exe_path: &str, allowed_extensions: &str) -> String {
-    // `allowed_origins` for Chromium-family, comma-separated chrome-extension://
-    // URIs. The caller passes the bare extension IDs and we wrap them.
+fn manifest_chrome(exe_path: &str, allowed_extensions: &[String]) -> String {
+    // `allowed_origins` for Chromium-family: chrome-extension:// URIs. The
+    // caller passes the bare extension ids and we wrap them.
     let origins: Vec<String> = allowed_extensions
-        .split(',')
-        .map(str::trim)
+        .iter()
+        .map(|s| s.trim())
         .filter(|s| !s.is_empty())
         .map(|s| format!("chrome-extension://{s}/"))
         .collect();
@@ -732,48 +1339,95 @@ fn render_manifest(exe_path: &str, allow_key: &str, allowed: Vec<String>) -> Str
     out
 }
 
-fn install_manifests(extension_ids: &[String]) -> Result<()> {
-    if extension_ids.is_empty() {
-        bail!("at least one extension id is required");
+/// Extension ids from `--install` arguments, on top of the built-in ones.
+/// Bare ids (the old form) are allowed for both browser families.
+fn parse_install_args(args: &[String]) -> Result<(Vec<String>, Vec<String>)> {
+    let mut chrome = default_chrome_ids();
+    let mut firefox = default_firefox_ids();
+    let mut iter = args.iter();
+    while let Some(arg) = iter.next() {
+        match arg.as_str() {
+            "--chrome-id" => chrome.push(
+                iter.next()
+                    .ok_or_else(|| anyhow!("--chrome-id needs a value"))?
+                    .clone(),
+            ),
+            "--firefox-id" => firefox.push(
+                iter.next()
+                    .ok_or_else(|| anyhow!("--firefox-id needs a value"))?
+                    .clone(),
+            ),
+            other if other.starts_with("--") => bail!("unknown option: {other}"),
+            id => {
+                chrome.push(id.to_string());
+                firefox.push(id.to_string());
+            }
+        }
     }
+    for ids in [&mut chrome, &mut firefox] {
+        ids.retain(|id| !id.trim().is_empty());
+        ids.sort();
+        ids.dedup();
+    }
+    Ok((chrome, firefox))
+}
+
+fn install_manifests(args: &[String]) -> Result<()> {
+    let (chrome_ids, firefox_ids) = parse_install_args(args)?;
     let exe = current_exe_path_str();
-    let chrome = manifest_chrome(&exe, &extension_ids.join(","));
-    let firefox = manifest_firefox(&exe, extension_ids);
+    let chrome = manifest_chrome(&exe, &chrome_ids);
+    let firefox = manifest_firefox(&exe, &firefox_ids);
 
     let home = std::env::var_os("HOME")
         .map(std::path::PathBuf::from)
         .ok_or_else(|| anyhow!("HOME not set"))?;
 
-    // Chromium-family per-user host manifest directories. Chrome, Chromium,
-    // Brave, Edge, Vivaldi each look in their own directory; install to all
-    // of them that exist so the user doesn't have to think about which fork
-    // they're running.
-    let chrome_targets = [
-        home.join(".config/google-chrome/NativeMessagingHosts"),
-        home.join(".config/chromium/NativeMessagingHosts"),
-        home.join(".config/BraveSoftware/Brave-Browser/NativeMessagingHosts"),
-        home.join(".config/microsoft-edge/NativeMessagingHosts"),
-        home.join(".config/vivaldi/NativeMessagingHosts"),
-    ];
-    let firefox_target = home.join(".mozilla/native-messaging-hosts");
+    // Per-user host manifest directories. Each browser looks in its own;
+    // install into every one whose browser is set up for this user, so the
+    // user does not have to know which fork they run.
+    // Each channel and edition keeps its own profile folder (Brave Origin,
+    // Beta and Nightly; Chrome Beta and Dev): a manifest in Brave-Browser is
+    // never read by Brave Origin.
+    let chrome_targets = CHROME_PROFILE_DIRS
+        .iter()
+        .map(|dir| home.join(".config").join(dir).join("NativeMessagingHosts"))
+        .collect::<Vec<_>>();
+    // Firefox-family browsers read user manifests from ~/.<name>/ even when
+    // they keep the profile in the XDG folder (~/.config/<name>), as recent
+    // Firefox does; ~/.mozilla may then not exist yet. Checked with Firefox
+    // 157: ~/.config/mozilla/native-messaging-hosts is not read.
+    let config = std::env::var_os("XDG_CONFIG_HOME")
+        .map(std::path::PathBuf::from)
+        .filter(|p| p.is_absolute())
+        .unwrap_or_else(|| home.join(".config"));
+    let firefox_family: Vec<(std::path::PathBuf, bool)> = [
+        (".mozilla", "mozilla"),
+        (".librewolf", "librewolf"),
+        (".waterfox", "waterfox"),
+    ]
+    .iter()
+    .map(|(legacy, xdg)| {
+        let installed = home.join(legacy).exists() || config.join(xdg).exists();
+        (home.join(legacy).join("native-messaging-hosts"), installed)
+    })
+    .collect();
 
     let mut written = 0;
-    for dir in &chrome_targets {
-        if let Some(parent) = dir.parent() {
-            if !parent.exists() {
-                continue; // Browser not installed for this user — skip.
-            }
+    let targets = chrome_targets
+        .iter()
+        .map(|dir| (dir, &chrome, dir.parent().is_some_and(|p| p.exists())))
+        .chain(
+            firefox_family
+                .iter()
+                .map(|(dir, installed)| (dir, &firefox, *installed)),
+        );
+    for (dir, manifest, installed) in targets {
+        if !installed {
+            continue; // Browser not set up for this user — skip.
         }
         std::fs::create_dir_all(dir)?;
         let path = dir.join(format!("{EXTENSION_NAME}.json"));
-        std::fs::write(&path, chrome.as_bytes())?;
-        println!("wrote {}", path.display());
-        written += 1;
-    }
-    if firefox_target.parent().map(|p| p.exists()).unwrap_or(false) {
-        std::fs::create_dir_all(&firefox_target)?;
-        let path = firefox_target.join(format!("{EXTENSION_NAME}.json"));
-        std::fs::write(&path, firefox.as_bytes())?;
+        std::fs::write(&path, manifest.as_bytes())?;
         println!("wrote {}", path.display());
         written += 1;
     }
@@ -782,13 +1436,9 @@ fn install_manifests(extension_ids: &[String]) -> Result<()> {
             "no supported browser config directories found under {}",
             home.display()
         );
-        println!("install Chrome/Chromium/Brave/Edge/Vivaldi or Firefox first, then re-run.");
+        println!("open Chrome, Chromium, Brave, Edge, Vivaldi, Firefox, LibreWolf or Waterfox once, then re-run.");
     } else {
         println!("\n{written} manifest file(s) installed.");
-        println!(
-            "The browser will now allow extension(s) {:?} to spawn this binary.",
-            extension_ids
-        );
     }
     Ok(())
 }
@@ -798,82 +1448,12 @@ mod tests {
     use super::*;
 
     #[test]
-    fn url_host_strips_scheme_and_path() {
-        assert_eq!(
-            url_host("https://example.com/login?next=/x"),
-            Some("example.com".into())
-        );
-        assert_eq!(url_host("example.com"), Some("example.com".into()));
-        assert_eq!(
-            url_host("https://USER:PW@host.tld:8443/x"),
-            Some("host.tld".into())
-        );
-        assert_eq!(url_host(""), None);
-    }
-
-    #[test]
-    fn url_host_ignores_userinfo_lookalikes_after_the_authority() {
-        assert_eq!(
-            url_host("https://evil.com#@example.com/"),
-            Some("evil.com".into())
-        );
-        assert_eq!(
-            url_host("https://evil.com?@example.com"),
-            Some("evil.com".into())
-        );
-        assert_eq!(
-            url_host("https://evil.com\\@example.com"),
-            Some("evil.com".into())
-        );
-    }
-
-    #[test]
-    fn url_host_keeps_ipv6_literals_intact() {
-        assert_eq!(url_host("http://[::1]:8080/x"), Some("::1".into()));
-        assert_eq!(
-            url_host("http://[2001:db8::5]/"),
-            Some("2001:db8::5".into())
-        );
-    }
-
-    #[test]
-    fn host_match_handles_www_and_subdomains() {
-        assert!(host_match("example.com", "example.com"));
-        assert!(host_match("www.example.com", "example.com"));
-        assert!(host_match("example.com", "www.example.com"));
-        assert!(host_match("mail.example.com", "example.com"));
-        assert!(host_match("example.com", "mail.example.com"));
-        assert!(host_match("a.corp.example.com", "b.example.com"));
-        assert!(!host_match("attacker.com", "example.com"));
-        assert!(!host_match("example.org", "example.com"));
-    }
-
-    #[test]
-    fn host_match_respects_public_suffix_boundaries() {
-        // A bare public suffix must not vouch for its tenants.
-        assert!(!host_match("github.io", "attacker.github.io"));
-        assert!(!host_match("attacker.github.io", "victim.github.io"));
-        assert!(!host_match("com.br", "banco.com.br"));
-        assert!(!host_match("a.com.br", "b.com.br"));
-        // …but real registrable domains under a multi-label suffix still work.
-        assert!(host_match("banco.com.br", "www.banco.com.br"));
-        assert!(host_match("login.banco.com.br", "banco.com.br"));
-        assert!(host_match("shop.co.uk", "www.shop.co.uk"));
-        assert!(!host_match("shop.co.uk", "other.co.uk"));
-    }
-
-    #[test]
-    fn host_match_rejects_ip_literal_confusion() {
-        assert!(host_match("192.168.1.10", "192.168.1.10"));
-        assert!(!host_match("192.168.1.10", "10.0.1.10"));
-        assert!(!host_match("192.168.1.10", "168.1.10"));
-        assert!(!host_match("2001:db8::5", "2001:db8::6"));
-    }
-
-    #[test]
     fn manifest_chrome_lists_origins() {
-        let m: serde_json::Value =
-            serde_json::from_str(&manifest_chrome("/bin/host", "abc, def,")).unwrap();
+        let m: serde_json::Value = serde_json::from_str(&manifest_chrome(
+            "/bin/host",
+            &["abc".into(), " def".into(), "".into()],
+        ))
+        .unwrap();
         assert_eq!(m["name"], EXTENSION_NAME);
         assert_eq!(m["path"], "/bin/host");
         assert_eq!(m["type"], "stdio");
@@ -900,7 +1480,7 @@ mod tests {
     fn manifest_escapes_hostile_input() {
         let path = r#"/opt/we"ird\path"#;
         let m: serde_json::Value =
-            serde_json::from_str(&manifest_chrome(path, r#"x"]}{"evil":["#)).unwrap();
+            serde_json::from_str(&manifest_chrome(path, &[r#"x"]}{"evil":["#.into()])).unwrap();
         assert_eq!(m["path"], path);
         assert_eq!(m["allowed_origins"].as_array().unwrap().len(), 1);
         assert!(m.get("evil").is_none());
@@ -910,95 +1490,39 @@ mod tests {
     }
 
     #[test]
-    fn unknown_public_suffixes_fail_closed() {
-        // `school.nz` is not in the built-in list and `nz` is not flat: the
-        // old two-label fallback made these "the same site".
-        assert!(!host_match("a.school.nz", "evil.school.nz"));
-        assert!(!host_match("login.example.zz", "example.zz"));
-        assert!(!host_match("a.example.zz", "b.example.zz"));
-        assert!(!host_match("a.gov.pl", "evil.gov.pl"));
-        // …but exact matches (and `www.`) still work there.
-        assert!(host_match("example.zz", "example.zz"));
-        assert!(host_match("www.example.zz", "example.zz"));
-        assert!(host_match("bank.school.nz", "bank.school.nz"));
-        // Listed second-level registries behave like a public suffix.
-        assert!(!host_match("a.co.nz", "evil.co.nz"));
-        assert!(host_match("shop.co.nz", "login.shop.co.nz"));
-        assert!(!host_match("a.com.io", "b.com.io"));
-        assert!(!host_match("a.edu.br", "b.edu.br"));
-        // Flat TLDs keep subdomain matching.
-        assert!(host_match("accounts.example.de", "example.de"));
-        assert_eq!(
-            registrable_domain("x.y.example.com").as_deref(),
-            Some("example.com")
-        );
-        assert_eq!(registrable_domain("x.example.zz"), None);
-        assert_eq!(registrable_domain("com"), None);
-    }
-
-    #[test]
-    fn longest_listed_suffix_wins() {
-        assert_eq!(
-            registrable_domain("bucket.s3.amazonaws.com").as_deref(),
-            Some("bucket.s3.amazonaws.com")
-        );
-        assert!(!host_match("a.s3.amazonaws.com", "b.s3.amazonaws.com"));
-    }
-
-    #[test]
-    fn scheme_rules() {
-        assert_eq!(url_scheme("HTTPS://example.com").as_deref(), Some("https"));
-        assert_eq!(url_scheme("example.com"), None);
-        assert_eq!(url_scheme("1x://example.com"), None);
-        // No downgrade.
-        assert!(!scheme_compatible(Some("https"), Some("http")));
-        assert!(!scheme_compatible(None, Some("http")));
-        // Same scheme or upgrade.
-        assert!(scheme_compatible(Some("https"), Some("https")));
-        assert!(scheme_compatible(None, Some("https")));
-        assert!(scheme_compatible(Some("http"), Some("http")));
-        assert!(scheme_compatible(Some("http"), Some("https")));
-        // Other schemes match exactly only.
-        assert!(scheme_compatible(Some("ftp"), Some("ftp")));
-        assert!(!scheme_compatible(Some("ftp"), Some("https")));
-        assert!(!scheme_compatible(None, Some("chrome-extension")));
-        assert!(!scheme_compatible(Some("https"), None));
-    }
-
-    #[test]
-    fn entry_matching_combines_scheme_and_host() {
-        assert!(entry_matches_page(
-            "https://example.com",
-            "https://login.example.com/x"
-        ));
-        assert!(entry_matches_page("example.com", "https://example.com/"));
-        assert!(!entry_matches_page(
-            "https://example.com",
-            "http://example.com/"
-        ));
-        assert!(!entry_matches_page("example.com", "http://example.com/"));
-        assert!(entry_matches_page(
-            "http://intranet.example.com",
-            "http://intranet.example.com/"
-        ));
-        assert!(entry_matches_page(
-            "http://example.com",
-            "https://example.com/"
-        ));
-        assert!(!entry_matches_page(
-            "https://example.com",
-            "https://evil.com#@example.com"
-        ));
-        assert!(!entry_matches_page("", "https://example.com"));
+    fn screen_lock_probe_retries_after_a_backoff() {
+        let start = Instant::now();
+        let mut probe = ScreenLockProbe::default();
+        assert!(probe.should_probe(start));
+        probe.failed_at = Some(start);
+        assert!(!probe.should_probe(start));
+        assert!(!probe.should_probe(start + SCREEN_LOCK_RETRY - Duration::from_secs(1)));
+        assert!(probe.should_probe(start + SCREEN_LOCK_RETRY));
+        assert!(probe.should_probe(start + SCREEN_LOCK_RETRY * 3));
     }
 
     #[test]
     fn pin_length_is_clamped() {
-        let pin = handle_generate(&Some(10_000_000), &Some("pin".into())).unwrap();
+        let pin = handle_generate(&GenerateOptions {
+            kind: Some("pin".into()),
+            length: Some(10_000_000),
+            ..Default::default()
+        })
+        .unwrap();
         assert_eq!(pin.len(), PIN_MAX_LENGTH);
-        let pin = handle_generate(&Some(0), &Some("pin".into())).unwrap();
+        let pin = handle_generate(&GenerateOptions {
+            kind: Some("pin".into()),
+            length: Some(0),
+            ..Default::default()
+        })
+        .unwrap();
         assert_eq!(pin.len(), PIN_MIN_LENGTH);
-        let pin = handle_generate(&None, &Some("pin".into())).unwrap();
+        let pin = handle_generate(&GenerateOptions {
+            kind: Some("pin".into()),
+            length: None,
+            ..Default::default()
+        })
+        .unwrap();
         assert_eq!(pin.len(), 6);
         assert!(pin.chars().all(|c| c.is_ascii_digit()));
     }
@@ -1020,7 +1544,10 @@ mod tests {
         ));
         assert!(matches!(
             read_message::<Request>(&mut input).unwrap(),
-            Incoming::Message(Request::Get { id: 7 })
+            Incoming::Message(Request::Get {
+                id: 7,
+                notes: false
+            })
         ));
         assert!(matches!(
             read_message::<Request>(&mut input).unwrap(),
@@ -1062,5 +1589,475 @@ mod tests {
             read_message::<Request>(&mut input).unwrap(),
             Incoming::Malformed(_)
         ));
+    }
+
+    // --- Protocol, against a throwaway vault (never the real settings or
+    // keyring).
+
+    const MASTER: &str = "correct horse battery";
+
+    fn enabled() -> Settings {
+        Settings {
+            browser_extension: true,
+            lock_on_screen_lock: false,
+            ..Settings::default()
+        }
+    }
+
+    fn disabled() -> Settings {
+        Settings {
+            browser_extension: false,
+            ..Settings::default()
+        }
+    }
+
+    fn no_keyring() -> Option<zeroize::Zeroizing<String>> {
+        None
+    }
+
+    fn session_with(settings: fn() -> Settings) -> (tempfile::TempDir, HostSession, i64, i64) {
+        let dir = tempfile::tempdir().unwrap();
+        let mut vault = Vault::open(dir.path().join("vault.db")).unwrap();
+        vault.set_master_password(MASTER).unwrap();
+        let mail = vault
+            .add(ashypass_core::db::vault::NewEntry {
+                title: "Mail".into(),
+                username: Some("ana".into()),
+                password: "mail-secret".into(),
+                url: Some("https://mail.example.com/login".into()),
+                notes: Some("recovery codes".into()),
+                totp_secret: Some("JBSWY3DPEHPK3PXP".into()),
+                ..Default::default()
+            })
+            .unwrap();
+        let bank = vault
+            .add(ashypass_core::db::vault::NewEntry {
+                title: "Bank".into(),
+                password: "bank-secret".into(),
+                url: Some("https://bank.example.org".into()),
+                ..Default::default()
+            })
+            .unwrap();
+        vault.full_lock();
+        (
+            dir,
+            HostSession::with_vault(vault, settings, no_keyring),
+            mail,
+            bank,
+        )
+    }
+
+    fn call(session: &mut HostSession, request: serde_json::Value) -> serde_json::Value {
+        answer(session, request)
+    }
+
+    #[test]
+    fn locked_until_the_master_password_is_sent() {
+        let (_dir, mut s, _, _) = session_with(enabled);
+        let status = call(&mut s, serde_json::json!({"cmd": "status"}));
+        assert_eq!(status["enabled"], true);
+        assert_eq!(status["has_vault"], true);
+        assert_eq!(status["unlocked"], false);
+        let listed = call(&mut s, serde_json::json!({"cmd": "list"}));
+        assert_eq!(listed["code"], "locked");
+        let wrong = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": "nope"}),
+        );
+        assert_eq!(wrong["code"], "bad_password");
+        let right = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        assert_eq!(right["ok"], true);
+        let listed = call(&mut s, serde_json::json!({"cmd": "list"}));
+        assert_eq!(listed["entries"].as_array().unwrap().len(), 2);
+        let locked = call(&mut s, serde_json::json!({"cmd": "lock"}));
+        assert_eq!(locked["ok"], true);
+        let listed = call(&mut s, serde_json::json!({"cmd": "list"}));
+        assert_eq!(listed["code"], "locked");
+    }
+
+    #[test]
+    fn repeated_wrong_passwords_pause_unlocking() {
+        let (_dir, mut s, _, _) = session_with(enabled);
+        for _ in 0..UNLOCK_ATTEMPTS {
+            let r = call(
+                &mut s,
+                serde_json::json!({"cmd": "unlock", "password": "x"}),
+            );
+            assert_eq!(r["code"], "bad_password");
+        }
+        // Even the right password waits now.
+        let r = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        assert_eq!(r["code"], "rate_limited");
+    }
+
+    #[test]
+    fn disabled_integration_refuses_everything_but_ping() {
+        let (_dir, mut s, _, _) = session_with(disabled);
+        assert_eq!(
+            call(&mut s, serde_json::json!({"cmd": "ping"}))["protocol"],
+            PROTOCOL_VERSION
+        );
+        let r = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        assert_eq!(r["code"], "disabled");
+        let r = call(&mut s, serde_json::json!({"cmd": "list"}));
+        assert_eq!(r["code"], "disabled");
+    }
+
+    #[test]
+    fn fill_only_answers_for_the_entry_site() {
+        let (_dir, mut s, mail, bank) = session_with(enabled);
+        call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        let page = "https://mail.example.com/inbox";
+        let matched = call(&mut s, serde_json::json!({"cmd": "match_url", "url": page}));
+        let ids: Vec<i64> = matched["entries"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|e| e["id"].as_i64().unwrap())
+            .collect();
+        assert_eq!(ids, vec![mail]);
+        let fill = call(
+            &mut s,
+            serde_json::json!({"cmd": "fill", "id": mail, "url": page}),
+        );
+        assert_eq!(fill["username"], "ana");
+        assert_eq!(fill["password"], "mail-secret");
+        // Another site's password is never handed to this page.
+        let other = call(
+            &mut s,
+            serde_json::json!({"cmd": "fill", "id": bank, "url": page}),
+        );
+        assert_eq!(other["code"], "no_match");
+        assert!(other.get("password").is_none());
+    }
+
+    #[test]
+    fn get_leaves_notes_out_and_totp_gives_a_code() {
+        let (_dir, mut s, mail, bank) = session_with(enabled);
+        call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        let got = call(&mut s, serde_json::json!({"cmd": "get", "id": mail}));
+        assert_eq!(got["entry"]["password"], "mail-secret");
+        assert!(got["entry"].get("notes").is_none());
+        let code = call(&mut s, serde_json::json!({"cmd": "totp", "id": mail}));
+        assert_eq!(code["code"].as_str().unwrap().len(), 6);
+        assert!(code["remaining"].as_u64().unwrap() <= 30);
+        let none = call(&mut s, serde_json::json!({"cmd": "totp", "id": bank}));
+        assert_eq!(none["code"], "no_totp");
+        let missing = call(&mut s, serde_json::json!({"cmd": "get", "id": 9999}));
+        assert_eq!(missing["code"], "not_found");
+    }
+
+    #[test]
+    fn responses_carry_the_request_id() {
+        let (_dir, mut s, _, _) = session_with(enabled);
+        let r = call(&mut s, serde_json::json!({"cmd": "ping", "rid": 41}));
+        assert_eq!(r["rid"], 41);
+        let r = call(&mut s, serde_json::json!({"cmd": "nonsense", "rid": 42}));
+        assert_eq!(r["rid"], 42);
+        assert_eq!(r["code"], "invalid");
+    }
+
+    #[test]
+    fn an_idle_vault_locks_between_requests() {
+        let (_dir, mut s, _, _) = session_with(enabled);
+        let reply = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        assert_eq!(reply["ok"], true);
+        s.lock_if_idle();
+        assert!(s.vault.is_unlocked(), "just used");
+        s.last_used = Instant::now().checked_sub(Duration::from_secs(3600));
+        s.lock_if_idle();
+        assert!(!s.vault.is_unlocked(), "idle past the auto-lock delay");
+    }
+
+    #[test]
+    fn long_lists_are_cut_to_fit_a_message() {
+        let summary = |i: i64| EntrySummary {
+            id: i,
+            title: format!("Login {i} {}", "x".repeat(200)),
+            username: Some("user@example.com".into()),
+            url: Some("https://example.com/login".into()),
+            category: None,
+            has_totp: false,
+            favorite: false,
+        };
+        let small = entries_reply((0..10).map(summary).collect());
+        assert_eq!(small["entries"].as_array().unwrap().len(), 10);
+        assert_eq!(small["truncated"], false);
+        let big = entries_reply((0..20_000).map(summary).collect());
+        let kept = big["entries"].as_array().unwrap().len();
+        assert!(kept > 1000 && kept < 20_000, "{kept}");
+        assert_eq!(big["truncated"], true);
+        assert!(serde_json::to_vec(&big).unwrap().len() < MAX_MESSAGE_BYTES as usize);
+    }
+
+    #[test]
+    fn install_arguments_keep_the_built_in_ids() {
+        let (chrome, firefox) = parse_install_args(&[
+            "--chrome-id".into(),
+            "storeid".into(),
+            "--firefox-id".into(),
+            "other@example.org".into(),
+        ])
+        .unwrap();
+        assert!(chrome.contains(&"storeid".to_string()));
+        assert!(CHROME_EXTENSION_IDS
+            .iter()
+            .all(|id| chrome.contains(&id.to_string())));
+        // Only debug builds allow the development extension; release builds
+        // (the package runs its tests with --release) never do.
+        assert_eq!(
+            chrome.contains(&CHROME_DEV_EXTENSION_ID.to_string()),
+            cfg!(debug_assertions)
+        );
+        assert!(firefox.contains(&FIREFOX_EXTENSION_ID.to_string()));
+        assert!(firefox.contains(&"other@example.org".to_string()));
+        assert!(parse_install_args(&["--chrome-id".into()]).is_err());
+    }
+
+    #[test]
+    fn browser_launch_arguments_are_not_cli_commands() {
+        // What Chrome and Firefox pass as argv[1]: none of them is a CLI mode.
+        for arg in [
+            "chrome-extension://opelfkfheadglgamfephkfejfpcnlbck/",
+            "/usr/lib/mozilla/native-messaging-hosts/com.bigcommunity.ashypass.json",
+            "ashypass@big-comm.github.io",
+        ] {
+            assert!(!is_cli_command(arg), "{arg}");
+        }
+        assert!(is_cli_command("--install"));
+    }
+
+    #[test]
+    fn protocol_3_commands() {
+        let (_dir, mut s, mail, _) = session_with(enabled);
+        let status = call(&mut s, serde_json::json!({"cmd": "status"}));
+        assert_eq!(status["pin_available"], false);
+        let pin = call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock_pin", "pin": "1234"}),
+        );
+        assert_eq!(pin["code"], "pin_unavailable");
+        call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+
+        let added = call(
+            &mut s,
+            serde_json::json!({"cmd": "add", "title": "Shop", "username": "ana",
+                "password": "s3cret!", "url": "https://shop.example.net", "category": "Personal"}),
+        );
+        let id = added["id"].as_i64().unwrap();
+        let fill = call(
+            &mut s,
+            serde_json::json!({"cmd": "fill", "id": id, "url": "https://shop.example.net/login"}),
+        );
+        assert_eq!(fill["password"], "s3cret!");
+        let empty = call(
+            &mut s,
+            serde_json::json!({"cmd": "add", "title": " ", "password": "x"}),
+        );
+        assert_eq!(empty["code"], "invalid");
+
+        let folders = call(&mut s, serde_json::json!({"cmd": "folders"}));
+        assert!(folders["folders"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|f| f == "Personal"));
+
+        let fav = call(
+            &mut s,
+            serde_json::json!({"cmd": "toggle_favorite", "id": mail}),
+        );
+        assert_eq!(fav["favorite"], true);
+        let listed = call(&mut s, serde_json::json!({"cmd": "list"}));
+        let mail_row = listed["entries"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|e| e["id"] == mail)
+            .unwrap()
+            .clone();
+        assert_eq!(mail_row["favorite"], true);
+
+        let words = call(
+            &mut s,
+            serde_json::json!({"cmd": "generate", "kind": "passphrase", "words": 4, "separator": ".", "number": false}),
+        );
+        assert_eq!(words["password"].as_str().unwrap().split('.').count(), 4);
+        let digits_only = call(
+            &mut s,
+            serde_json::json!({"cmd": "generate", "length": 30, "uppercase": false,
+                "lowercase": false, "symbols": false, "digits": true}),
+        );
+        let value = digits_only["password"].as_str().unwrap();
+        assert_eq!(value.len(), 30);
+        assert!(value.chars().all(|c| c.is_ascii_digit()));
+        let huge = call(
+            &mut s,
+            serde_json::json!({"cmd": "generate", "length": 100000}),
+        );
+        assert_eq!(
+            huge["password"].as_str().unwrap().len(),
+            PASSWORD_MAX_LENGTH
+        );
+    }
+
+    #[test]
+    fn protocol_4_update_and_delete() {
+        let (_dir, mut s, mail, bank) = session_with(enabled);
+        call(
+            &mut s,
+            serde_json::json!({"cmd": "unlock", "password": MASTER}),
+        );
+        let get = |s: &mut HostSession, id: i64| {
+            call(s, serde_json::json!({"cmd": "get", "id": id}))["entry"].clone()
+        };
+        let before = get(&mut s, mail);
+        let stamp = before["updated_at"].as_i64().unwrap();
+        let old_password = before["password"].as_str().unwrap().to_string();
+
+        // Changing only the folder keeps the password out of the history.
+        let moved = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": stamp,
+                "title": before["title"], "username": before["username"],
+                "password": old_password, "url": before["url"], "category": "Work"}),
+        );
+        assert_eq!(moved["ok"], true, "{moved}");
+        assert!(s.vault.password_history(mail).unwrap().is_empty());
+
+        // A stale `updated_at` (an edit made meanwhile) is refused.
+        let after_move = get(&mut s, mail);
+        assert_eq!(after_move["category"], "Work");
+        let stale = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": stamp - 10,
+                "title": "Other", "password": "x"}),
+        );
+        assert_eq!(stale["code"], "changed");
+        assert_eq!(get(&mut s, mail)["title"], after_move["title"]);
+
+        // A full edit: a new password goes to the history, absent fields clear.
+        let stamp = after_move["updated_at"].as_i64().unwrap();
+        let edited = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": stamp,
+                "title": "  Mail (work) ", "password": "n3w-pass"}),
+        );
+        assert_eq!(edited["ok"], true, "{edited}");
+        let now = get(&mut s, mail);
+        assert_eq!(now["title"], "Mail (work)");
+        assert_eq!(now["password"], "n3w-pass");
+        assert!(now["username"].is_null() || now["username"] == "");
+        assert!(now["url"].is_null());
+        assert!(now["category"].is_null());
+        assert_eq!(s.vault.password_history(mail).unwrap().len(), 1);
+
+        let blank = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail,
+                "updated_at": now["updated_at"], "title": " ", "password": "x"}),
+        );
+        assert_eq!(blank["code"], "invalid");
+        let gone = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": 9999, "updated_at": 0,
+                "title": "x", "password": "x"}),
+        );
+        assert_eq!(gone["code"], "not_found");
+
+        // Notes: only sent when asked for; absent keeps them, blank clears.
+        assert!(now.get("notes").is_none());
+        let with_notes = |s: &mut HostSession| {
+            call(
+                s,
+                serde_json::json!({"cmd": "get", "id": mail, "notes": true}),
+            )["entry"]
+                .clone()
+        };
+        let noted = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": now["updated_at"],
+                "title": "Mail (work)", "password": "n3w-pass", "notes": "Recovery:\n  1234-5678"}),
+        );
+        assert_eq!(noted["ok"], true, "{noted}");
+        let read = with_notes(&mut s);
+        assert_eq!(read["notes"], "Recovery:\n  1234-5678");
+        let kept = call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": read["updated_at"],
+                "title": "Mail", "password": "n3w-pass"}),
+        );
+        assert_eq!(kept["ok"], true, "{kept}");
+        let read = with_notes(&mut s);
+        assert_eq!(read["notes"], "Recovery:\n  1234-5678");
+        call(
+            &mut s,
+            serde_json::json!({"cmd": "update", "id": mail, "updated_at": read["updated_at"],
+                "title": "Mail", "password": "n3w-pass", "notes": "  "}),
+        );
+        assert_eq!(with_notes(&mut s)["notes"], "");
+        let added = call(
+            &mut s,
+            serde_json::json!({"cmd": "add", "title": "Noted", "password": "x", "notes": "hello"}),
+        );
+        let added_notes = call(
+            &mut s,
+            serde_json::json!({"cmd": "get", "id": added["id"], "notes": true}),
+        );
+        assert_eq!(added_notes["entry"]["notes"], "hello");
+
+        let deleted = call(&mut s, serde_json::json!({"cmd": "delete", "id": bank}));
+        assert_eq!(deleted["ok"], true, "{deleted}");
+        assert!(deleted["trashed"].is_boolean());
+        assert_eq!(get_code(&mut s, bank), "not_found");
+        let again = call(&mut s, serde_json::json!({"cmd": "delete", "id": bank}));
+        assert_eq!(again["code"], "not_found");
+
+        // Both need an unlocked vault.
+        call(&mut s, serde_json::json!({"cmd": "lock"}));
+        let locked = call(&mut s, serde_json::json!({"cmd": "delete", "id": mail}));
+        assert_eq!(locked["code"], "locked");
+    }
+
+    fn get_code(s: &mut HostSession, id: i64) -> serde_json::Value {
+        call(s, serde_json::json!({"cmd": "get", "id": id}))["code"].clone()
+    }
+
+    #[test]
+    fn favicon_hosts_cannot_leave_the_cache() {
+        assert!(is_plain_host("github.com"));
+        assert!(is_plain_host("mail.example-site.org"));
+        for bad in [
+            "",
+            "../etc/passwd",
+            "a/b",
+            ".hidden",
+            "a..b",
+            "x y",
+            "host\\x",
+        ] {
+            assert!(!is_plain_host(bad), "{bad}");
+        }
     }
 }

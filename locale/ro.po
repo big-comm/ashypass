@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 19:49-0300\n"
+"POT-Creation-Date: 2026-10-23 15:11-0300\n"
 "PO-Revision-Date: 2026-05-12 19:43\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -100,6 +100,9 @@ msgstr ""
 msgid "Address copied"
 msgstr "Adresă copiată"
 
+msgid "Address, user and password are required"
+msgstr "Adresa, utilizatorul și parola sunt obligatorii"
+
 msgid "Adjust length and characters"
 msgstr "Ajustează lungimea și caracterele"
 
@@ -111,6 +114,9 @@ msgstr "Ajustează cuvintele și separatorul"
 
 msgid "Algorithm"
 msgstr "Algoritm"
+
+msgid "All"
+msgstr "Toate"
 
 msgid "All clear"
 msgstr "Totul este în regulă"
@@ -131,11 +137,23 @@ msgstr ""
 "Toate partițiile, fișierele și semnăturile sistemelor de fișiere vor fi "
 "distruse permanent."
 
+msgid "Allow Ashy Pass in Dropbox"
+msgstr "Permite Ashy Pass în Dropbox"
+
 msgid "Allow TRIM through encrypted mapping"
 msgstr "Permite TRIM prin maparea criptată"
 
 msgid "Allow the browser extension"
 msgstr "Permite extensia de navigator"
+
+msgid ""
+"Another device deleted them from the encrypted sync folder. If that was you, "
+"they move to Deleted items here. If not, keep them: they are sent to the "
+"folder again."
+msgstr ""
+"Un alt dispozitiv le-a șters din folderul de sincronizare criptat. Dacă ați "
+"fost dvs., sunt mutate aici în Elemente șterse. Dacă nu, păstrați-le: vor fi "
+"trimise din nou în folder."
 
 msgid ""
 "Another device uploaded a newer snapshot since this device last synced. "
@@ -145,8 +163,8 @@ msgstr ""
 "sincronizare a acestui dispozitiv. Încărcarea acum ar orfana modificările de "
 "la distanță."
 
-msgid "Answer requests from the installed extension"
-msgstr "Răspunde la cererile extensiei instalate"
+msgid "Another example"
+msgstr "Alt exemplu"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -233,6 +251,9 @@ msgstr "Atașamente"
 msgid "Audit failed"
 msgstr "Audit eșuat"
 
+msgid "Authentication was cancelled"
+msgstr "Autentificarea a fost anulată"
+
 msgid "Auto-tune"
 msgstr "Ajustare automată"
 
@@ -305,6 +326,12 @@ msgstr "Caps Lock este activat"
 msgid "Capture from screen…"
 msgstr "Capturează de pe ecran…"
 
+msgid "Change PIN"
+msgstr "Schimbă PIN-ul"
+
+msgid "Change how the vault key is protected?"
+msgstr "Schimbați protecția cheii seifului?"
+
 msgid "Change master password"
 msgstr "Schimbă parola principală"
 
@@ -314,8 +341,14 @@ msgstr "Schimbă parola principală…"
 msgid "Change only if the site shows different values"
 msgstr "Modificați doar dacă site-ul afișează alte valori"
 
+msgid "Changed"
+msgstr "Modificat"
+
 msgid "Changes saved to the vault"
 msgstr "Modificări salvate în seif"
+
+msgid "Changes waiting to be sent"
+msgstr "Modificări în așteptare pentru trimitere"
 
 msgid "Check known data breaches (online)"
 msgstr "Verifică scurgerile de date cunoscute (online)"
@@ -325,6 +358,12 @@ msgstr "Verifică-mi parolele"
 
 msgid "Check now"
 msgstr "Verifică acum"
+
+msgid "Check the server every"
+msgstr "Verifică serverul la fiecare"
+
+msgid "Checking the drive…"
+msgstr "Se verifică unitatea…"
 
 msgid "Choose a backup"
 msgstr "Alege o copie de rezervă"
@@ -360,6 +399,9 @@ msgstr "Alegeți baza de date KeePass"
 msgid "Choose the andOTP export"
 msgstr "Alegeți exportul andOTP"
 
+msgid "Choose the folder"
+msgstr "Alegeți dosarul"
+
 msgid "Choose this folder when adding or editing a password."
 msgstr "Alegeți acest dosar când adăugați sau editați o parolă."
 
@@ -369,11 +411,17 @@ msgstr "Alege…"
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Export de parole din Chrome, Edge, Brave sau Firefox (CSV)"
 
+msgid "Classic"
+msgstr "Clasic"
+
 msgid "Clear copied passwords after"
 msgstr "Golește parolele copiate după"
 
 msgid "Clear history"
 msgstr "Șterge istoricul"
+
+msgid "Clear the password history?"
+msgstr "Ștergeți istoricul parolelor?"
 
 msgid "Client ID"
 msgstr "ID client"
@@ -402,8 +450,14 @@ msgstr "Închiderea mapării"
 msgid "Code copied"
 msgstr "Cod copiat"
 
+msgid "Code from Dropbox"
+msgstr "Cod de la Dropbox"
+
 msgid "Code settings"
 msgstr "Setările codului"
+
+msgid "Coffee"
+msgstr "Cafea"
 
 msgid "Columns such as name, url, username, password"
 msgstr "Coloane precum name, url, username, password"
@@ -463,8 +517,48 @@ msgstr "Confirmați parola principală pentru a exporta datele."
 msgid "Conflicts"
 msgstr "Conflicte"
 
-msgid "Connecting the extension"
-msgstr "Conectarea extensiei"
+msgid "Connect"
+msgstr "Conectează"
+
+msgid "Connect a phone"
+msgstr "Conectează un telefon"
+
+msgid "Connect a phone…"
+msgstr "Conectează un telefon…"
+
+msgid "Connect browsers"
+msgstr "Conectează browserele"
+
+msgid "Connect failed"
+msgstr "Conectarea a eșuat"
+
+msgid "Connect the sync folder"
+msgstr "Conectați folderul de sincronizare"
+
+msgid "Connect your browsers"
+msgstr "Conectați-vă browserele"
+
+msgid "Connected"
+msgstr "Conectat"
+
+#, rust-format
+msgid "Connected to {} browser. Restart it if it is open."
+msgid_plural "Connected to {} browsers. Restart them if they are open."
+msgstr[0] "Conectat la browsere ({}). Reporniți-le dacă sunt deschise."
+msgstr[1] "Conectat la browsere ({}). Reporniți-le dacă sunt deschise."
+msgstr[2] "Conectat la browsere ({}). Reporniți-le dacă sunt deschise."
+
+msgid "Connected. Received:"
+msgstr "Conectat. Primite:"
+
+msgid "Connecting and syncing…"
+msgstr "Se conectează și se sincronizează…"
+
+msgid "Connection QR code"
+msgstr "Cod QR de conectare"
+
+msgid "Connect…"
+msgstr "Conectare…"
 
 msgid "Continue"
 msgstr "Continuă"
@@ -502,8 +596,14 @@ msgstr "Nu s-a putut adăuga atașamentul"
 msgid "Could not change the favorite"
 msgstr "Nu s-a putut modifica favoritul"
 
+msgid "Could not check"
+msgstr "Verificarea nu a reușit"
+
 msgid "Could not clear the history"
 msgstr "Nu s-a putut goli istoricul"
+
+msgid "Could not connect the browsers"
+msgstr "Browserele nu au putut fi conectate"
 
 msgid "Could not create the folder"
 msgstr "Nu s-a putut crea dosarul"
@@ -519,6 +619,15 @@ msgstr "Nu s-a putut șterge"
 
 msgid "Could not lock the drive"
 msgstr "Nu s-a putut bloca unitatea"
+
+msgid "Could not make the QR code"
+msgstr "Codul QR nu a putut fi creat"
+
+msgid "Could not merge"
+msgstr "Îmbinarea nu a reușit"
+
+msgid "Could not open the vault"
+msgstr "Seiful nu a putut fi deschis"
 
 msgid "Could not open this access"
 msgstr "Nu s-a putut deschide această intrare"
@@ -549,6 +658,9 @@ msgstr "Nu s-a putut redenumi dosarul"
 
 msgid "Could not restore. Look in Deleted items."
 msgstr "Nu s-a putut restaura. Căutați în Elemente șterse."
+
+msgid "Could not save"
+msgstr "Nu s-a putut salva"
 
 msgid "Could not save the file"
 msgstr "Nu s-a putut salva fișierul"
@@ -634,8 +746,18 @@ msgstr "Șterge intrarea…"
 msgid "Delete permanently"
 msgstr "Șterge definitiv"
 
+msgid "Delete permanently?"
+msgstr "Ștergeți definitiv?"
+
 msgid "Delete the export file if it was not protected by a password."
 msgstr "Ștergeți fișierul exportat dacă nu era protejat cu parolă."
+
+#, rust-format
+msgid "Delete {} entry here too?"
+msgid_plural "Delete {} entries here too?"
+msgstr[0] "Ștergeți și aici elementele ({})?"
+msgstr[1] "Ștergeți și aici elementele ({})?"
+msgstr[2] "Ștergeți și aici elementele ({})?"
 
 msgid ""
 "Deleted entries stay in the trash for this many days, then are permanently "
@@ -674,6 +796,18 @@ msgstr "Calea dispozitivului"
 msgid "Digits"
 msgstr "Cifre"
 
+msgid "Digits and symbols in color, easier to read and type"
+msgstr "Cifre și simboluri colorate, mai ușor de citit și de tastat"
+
+msgid "Disconnect"
+msgstr "Deconectare"
+
+msgid "Disconnect failed"
+msgstr "Deconectarea a eșuat"
+
+msgid "Disconnect the sync folder?"
+msgstr "Deconectați folderul de sincronizare?"
+
 msgid "Done"
 msgstr "Finalizat"
 
@@ -688,6 +822,9 @@ msgstr "Se descarcă modificările de la distanță"
 
 msgid "Drive locked"
 msgstr "Unitate blocată"
+
+msgid "Duplicate items"
+msgstr "Elemente duplicate"
 
 msgid "Easier to type and remember."
 msgstr "Mai ușor de tastat și de reținut."
@@ -710,6 +847,9 @@ msgstr "Fraza de acces goală"
 msgid "Empty trash"
 msgstr "Golește coșul de gunoi"
 
+msgid "Empty trash?"
+msgstr "Goliți coșul de gunoi?"
+
 msgid "Encrypt"
 msgstr "Criptează"
 
@@ -719,11 +859,20 @@ msgstr "Criptează unitatea"
 msgid "Encrypt KeePass export"
 msgstr "Criptați exportul KeePass"
 
+msgid "Encrypt again"
+msgstr "Criptează din nou"
+
 msgid "Encrypted as"
 msgstr "Criptat ca"
 
 msgid "Encrypted device"
 msgstr "Dispozitiv criptat"
+
+msgid "Encrypted folder sync"
+msgstr "Sincronizare criptată a folderului"
+
+msgid "Encrypted folder sync failed"
+msgstr "Sincronizarea criptată a folderului a eșuat"
 
 msgid "Encrypted snapshot upload with conflict detection"
 msgstr "Încărcare instantanee criptată cu detectare conflicte"
@@ -747,6 +896,9 @@ msgstr ""
 "Criptarea șterge toată unitatea. Deblocarea și blocarea funcționează pentru "
 "unități LUKS."
 
+msgid "Encrypting the vault again…"
+msgstr "Se criptează din nou seiful…"
+
 msgid "Encrypting…"
 msgstr "Se criptează…"
 
@@ -764,6 +916,9 @@ msgstr "Introduceți o etichetă."
 
 msgid "Enter the PIN set up on this computer."
 msgstr "Introduceți PIN-ul configurat pe acest calculator."
+
+msgid "Enter the master password"
+msgstr "Introduceți parola principală"
 
 msgid "Enter the password, or add a verification code below."
 msgstr "Introduceți parola sau adăugați mai jos un cod de verificare."
@@ -790,11 +945,27 @@ msgid "Estimated strength"
 msgstr "Putere estimată"
 
 msgid ""
+"Everything in the vault is encrypted again with a key derived using the "
+"costs above. Older versions of Ashy Pass will not open the vault with the "
+"master password. The PIN must be set up again."
+msgstr ""
+"Tot conținutul seifului este criptat din nou cu o cheie derivată folosind "
+"costurile de mai sus. Versiunile mai vechi Ashy Pass nu vor deschide seiful "
+"cu parola principală. PIN-ul trebuie configurat din nou."
+
+msgid ""
 "Everything in the vault is encrypted again with the new password. Backups "
 "made earlier still open with the password they were made with."
 msgstr ""
 "Tot ce este în seif este criptat din nou cu noua parolă. Copiile de rezervă "
 "făcute anterior se deschid în continuare cu parola cu care au fost făcute."
+
+msgid ""
+"Everything in the vault is encrypted again with the standard costs, which "
+"every version of Ashy Pass 3 opens. The PIN must be set up again."
+msgstr ""
+"Tot conținutul seifului este criptat din nou cu costurile standard, pe care "
+"le deschide orice versiune Ashy Pass 3. PIN-ul trebuie configurat din nou."
 
 msgid "Everything is in sync"
 msgstr "Totul în sincronie"
@@ -865,8 +1036,20 @@ msgstr "Fișierele sunt criptate și stocate în seif."
 msgid "Filesystem"
 msgstr "Sistem de fișiere"
 
+msgid ""
+"Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and "
+"LibreWolf. The extension never stores anything: it asks Ashy Pass each time, "
+"and only fills a page after you click."
+msgstr ""
+"Completați și copiați parolele în Chrome, Brave, Edge, Vivaldi, Firefox și "
+"LibreWolf. Extensia nu păstrează nimic: întreabă Ashy Pass de fiecare dată "
+"și completează o pagină doar după ce dați clic."
+
 msgid "Fill in all three fields."
 msgstr "Completați toate cele trei câmpuri."
+
+msgid "Find duplicate items"
+msgstr "Găsește elemente duplicate"
 
 msgid "Findings"
 msgstr "Constatări"
@@ -892,6 +1075,9 @@ msgstr "Dosar creat"
 msgid "Folder name"
 msgstr "Numele dosarului"
 
+msgid "Folder on this computer"
+msgstr "Dosar pe acest computer"
+
 msgid "Folder removed. Its passwords were kept."
 msgstr "Dosar eliminat. Parolele din el au fost păstrate."
 
@@ -915,6 +1101,12 @@ msgid ""
 msgstr ""
 "Pentru Nextcloud, URL-ul de bază arată ca https://cloud.example.com/"
 "remote.php/dav/files/NUME_UTILIZATOR"
+
+msgid "For the browsers installed for this user"
+msgstr "Pentru browserele instalate pentru acest utilizator"
+
+msgid "Forest"
+msgstr "Pădure"
 
 msgid "Forgot the master password"
 msgstr "Am uitat parola principală"
@@ -950,17 +1142,52 @@ msgstr "Generează parolă"
 msgid "Generated password"
 msgstr "Parolă generată"
 
+msgid "Get the extension for Chrome, Brave, Edge and Vivaldi"
+msgstr "Obțineți extensia pentru Chrome, Brave, Edge și Vivaldi"
+
+msgid "Get the extension for Firefox"
+msgstr "Obțineți extensia pentru Firefox"
+
 msgid "Give this access a name, for example the site or app."
 msgstr "Dați un nume acestei intrări, de exemplu site-ul sau aplicația."
 
 msgid "Go to search"
 msgstr "Mergi la căutare"
 
+msgid ""
+"Good for 10 minutes. The QR code alone is no use without this code, and "
+"neither opens your passwords without the master password."
+msgstr ""
+"Valabil 10 minute. Codul QR singur nu folosește la nimic fără acest cod și "
+"niciunul nu îți deschide parolele fără parola principală."
+
 msgid "Google Drive"
 msgstr "Google Drive"
 
 msgid "Google Drive and WebDAV"
 msgstr "Google Drive și WebDAV"
+
+msgid "Google account"
+msgstr "Cont Google"
+
+msgid "Google sign-in failed"
+msgstr "Conectarea la Google a eșuat"
+
+msgid "Grape"
+msgstr "Struguri"
+
+msgid ""
+"Group the codes as in Aegis. Groups are the item's tags: they sync to your "
+"other devices."
+msgstr ""
+"Grupați codurile ca în Aegis. Grupurile sunt etichetele elementului: se "
+"sincronizează cu celelalte dispozitive ale dvs."
+
+msgid "Groups"
+msgstr "Grupuri"
+
+msgid "Groups…"
+msgstr "Grupuri…"
 
 msgid "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgstr ""
@@ -973,15 +1200,16 @@ msgstr "Ascunde parolele copiate din istoricul clipboardului"
 msgid "Hide password"
 msgstr "Ascunde parola"
 
+msgid "High contrast"
+msgstr "Contrast ridicat"
+
 msgid ""
 "Higher costs slow down guessing attacks and also slow down unlocking. Auto-"
-"tune picks values for about half a second on this computer; they apply the "
-"next time the master password is set or changed."
+"tune picks values for about half a second on this computer."
 msgstr ""
 "Costurile mai mari încetinesc atacurile de ghicire, dar și deblocarea. "
 "Reglarea automată alege valori de aproximativ o jumătate de secundă pe acest "
-"calculator; ele se aplică data viitoare când parola principală este setată "
-"sau schimbată."
+"calculator."
 
 msgid "History cleared"
 msgstr "Istoric șters"
@@ -1023,6 +1251,15 @@ msgstr "Importă parole"
 msgid "Import passwords…"
 msgstr "Importă parole…"
 
+msgid ""
+"In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
+"“Scan the computer's QR code”. Then type the code below and your master "
+"password."
+msgstr ""
+"În Ashy Pass pentru Android, deschide Setări → Sincronizare prin dosar "
+"criptat și atinge „Scanează codul QR de pe computer”. Apoi scrie codul de "
+"mai jos și parola principală."
+
 msgid "Incorrect PIN"
 msgstr "PIN incorect"
 
@@ -1039,6 +1276,9 @@ msgstr[2] "PIN incorect. Au mai rămas {} de încercări."
 msgid "Incorrect master password"
 msgstr "Parolă principală incorectă"
 
+msgid "Incorrect master password. Nothing was changed."
+msgstr "Parolă principală incorectă. Nu s-a modificat nimic."
+
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Parolă principală incorectă. Nu s-a exportat nimic."
 
@@ -1051,15 +1291,11 @@ msgstr ""
 "dispozitiv când vi se solicită. Fraza de acces curentă este necesară pentru "
 "a autoriza noul slot cheie."
 
-msgid ""
-"Install the extension in Chrome or Firefox, then register this computer "
-"with:  ashypass-native-host --install <extension-id>"
-msgstr ""
-"Instalați extensia în Chrome sau Firefox, apoi înregistrați acest calculator "
-"cu:  ashypass-native-host --install <id-extensie>"
-
 msgid "Internal error: no passphrase set"
 msgstr "Eroare internă: nicio frază de acces setată"
+
+msgid "Internal error: the drive was not checked"
+msgstr "Eroare internă: unitatea nu a fost verificată"
 
 msgid "It can be restored from Deleted items."
 msgstr "Poate fi restaurat din Elemente șterse."
@@ -1070,6 +1306,9 @@ msgid ""
 msgstr ""
 "Ea deschide seiful pe acest calculator. Nimeni nu o poate recupera pentru "
 "dumneavoastră — nici măcar Ashy Pass."
+
+msgid "Items stay here and in the folder; connecting again merges them"
+msgstr "Elementele rămân aici și în folder; reconectarea le îmbină"
 
 msgid "Its user, password and other details appear here."
 msgstr "Utilizatorul, parola și celelalte detalii apar aici."
@@ -1096,6 +1335,9 @@ msgstr ""
 
 msgid "Keep deleted entries for (days)"
 msgstr "Păstrează intrările șterse pentru (zile)"
+
+msgid "Keep them"
+msgstr "Păstrează-le"
 
 msgid "Keep using"
 msgstr "Continuă"
@@ -1163,6 +1405,9 @@ msgstr "Ultima copie de rezervă făcută pe acest calculator"
 msgid "Last changed:"
 msgstr "Ultima modificare:"
 
+msgid "Last sync:"
+msgstr "Ultima sincronizare:"
+
 msgid "Launch the encryption wizard"
 msgstr "Lansați expertul de criptare"
 
@@ -1183,6 +1428,31 @@ msgstr "Blochează seiful acum (Ctrl+L)"
 
 msgid "Lock when the screen locks or the computer sleeps"
 msgstr "Blochează când ecranul se blochează sau calculatorul intră în repaus"
+
+msgid "Login name"
+msgstr "Nume de autentificare"
+
+msgid ""
+"Logins of the same site and account, or items with the same verification "
+"code, left by imports or by two syncs. Merging keeps one, brings into it "
+"what only the others had (code, notes, other websites, groups; other "
+"passwords go to its history) and moves the others to Deleted items."
+msgstr ""
+"Autentificări ale aceluiași site și cont sau elemente cu același cod de "
+"verificare, rămase în urma importurilor sau a două sincronizări. Îmbinarea "
+"păstrează unul, aduce în el ce aveau doar celelalte (cod, note, alte site-"
+"uri, grupuri; celelalte parole merg în istoricul lui) și mută celelalte în "
+"Elemente șterse."
+
+msgid ""
+"Logins, cards, identities, notes and passkeys, encrypted on this computer "
+"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
+"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+msgstr ""
+"Autentificări, carduri, identități, note și chei de acces, criptate pe acest "
+"computer înainte de a pleca, printr-un dosar pe Nextcloud, pCloud, WebDAV, "
+"Dropbox, Google Drive sau pe acest computer. Ashy Pass pentru Android "
+"folosește același dosar."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1217,8 +1487,20 @@ msgstr "Măsoară acest calculator (aproximativ 5 secunde)"
 msgid "Medium"
 msgstr "Medie"
 
+msgid "Merge, keeping the selected one"
+msgstr "Îmbină, păstrând elementul selectat"
+
+msgid "Merged"
+msgstr "Îmbinat"
+
+msgid "Merged; the others are in Deleted items"
+msgstr "Îmbinat; celelalte sunt în Elemente șterse"
+
 msgid "Minimum length:"
 msgstr "Lungime minimă:"
+
+msgid "Mint"
+msgstr "Mentă"
 
 msgid "Model"
 msgstr "Model"
@@ -1226,11 +1508,17 @@ msgstr "Model"
 msgid "Modern password generator and encrypted password vault"
 msgstr "Generator modern de parole și seif de parole criptat"
 
+msgid "Monochrome"
+msgstr "Monocrom"
+
 msgid "More actions"
 msgstr "Mai multe acțiuni"
 
 msgid "More options"
 msgstr "Mai multe opțiuni"
+
+msgid "Move to Deleted items"
+msgstr "Mută în Elemente șterse"
 
 msgid "Moved to Deleted items"
 msgstr "Mutat în Elemente șterse"
@@ -1272,6 +1560,9 @@ msgstr "Numele noului dosar"
 msgid "New folder…"
 msgstr "Dosar nou…"
 
+msgid "New group"
+msgstr "Grup nou"
+
 msgid "New master password"
 msgstr "Parolă principală nouă"
 
@@ -1298,6 +1589,9 @@ msgstr ""
 "Nextcloud Passwords necesită un câmp de parolă completat. Editați aceste "
 "intrări în Ashy Pass adăugând o parolă pentru a fi trimise."
 
+msgid "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or a local folder"
+msgstr "Nextcloud, pCloud, WebDAV, Dropbox, Google Drive sau un dosar local"
+
 msgid ""
 "No QR code was found. Make sure the whole code is visible and not too small."
 msgstr ""
@@ -1310,8 +1604,17 @@ msgstr "Fără atașamente"
 msgid "No backup made on this computer yet"
 msgstr "Nicio copie de rezervă făcută încă pe acest calculator"
 
+msgid "No browser found yet"
+msgstr "Niciun browser găsit încă"
+
 msgid "No codes found for"
 msgstr "Nu s-au găsit coduri pentru"
+
+msgid "No colors"
+msgstr "Fără culori"
+
+msgid "No duplicate items"
+msgstr "Niciun element duplicat"
 
 msgid "No external drives detected"
 msgstr "Nu s-au detectat unități externe"
@@ -1342,14 +1645,28 @@ msgstr ""
 "În această versiune nu se pot modifica cheia de securitate sau fraza de "
 "recuperare."
 
+msgid "No stable device link"
+msgstr "Nicio legătură stabilă către dispozitiv"
+
+msgid "No supported browser was found. Open your browser once, then try again."
+msgstr ""
+"Nu a fost găsit niciun browser compatibil. Deschideți browserul o dată și "
+"încercați din nou."
+
 msgid "No verification codes yet"
 msgstr "Încă nu există coduri de verificare"
 
 msgid "None — quick, leaves prior data recoverable"
 msgstr "Niciuna — rapid, lasă datele anterioare recuperabile"
 
+msgid "Not chosen"
+msgstr "Nealeasă"
+
 msgid "Not configured"
 msgstr "Neconfigurat"
+
+msgid "Not connected"
+msgstr "Neconectat"
 
 msgid "Not run yet"
 msgstr "Nu a fost rulat încă"
@@ -1372,8 +1689,16 @@ msgstr "Nimic nu s-a schimbat — Ashy Pass și Nextcloud erau deja aliniate."
 msgid "Nothing is removed. Entries already in the vault are skipped."
 msgstr "Nu se elimină nimic. Intrările care sunt deja în seif sunt omise."
 
+msgid "Nothing was changed"
+msgstr "Nu s-a modificat nimic"
+
 msgid "Nothing was changed."
 msgstr "Nu s-a modificat nimic."
+
+msgid "Nothing was changed. Close other copies of Ashy Pass and try again."
+msgstr ""
+"Nu s-a modificat nimic. Închideți celelalte copii Ashy Pass și încercați din "
+"nou."
 
 msgid "Nothing was imported"
 msgstr "Nu s-a importat nimic"
@@ -1405,6 +1730,9 @@ msgstr "Client OAuth neconfigurat la momentul compilării"
 
 msgid "OK"
 msgstr "OK"
+
+msgid "Ocean"
+msgstr "Ocean"
 
 msgid "Off"
 msgstr "Dezactivat"
@@ -1446,6 +1774,12 @@ msgstr "Necesar doar când un site are reguli specifice"
 msgid "Only when some entries come from Nextcloud Passwords and others do not"
 msgstr "Doar când unele intrări provin din Nextcloud Passwords și altele nu"
 
+msgid "Open Dropbox"
+msgstr "Deschide Dropbox"
+
+msgid "Open Dropbox, allow Ashy Pass and paste the code it shows"
+msgstr "Deschideți Dropbox, permiteți Ashy Pass și lipiți codul afișat"
+
 msgid "Open a password and mark the star to find it faster."
 msgstr "Deschideți o parolă și marcați steaua pentru a o găsi mai repede."
 
@@ -1467,8 +1801,14 @@ msgstr "Deschide volumul criptat"
 msgid "Open website"
 msgstr "Deschide site-ul"
 
+msgid "Open your browser once, then connect"
+msgstr "Deschide browserul o dată, apoi conectează"
+
 msgid "Opening encrypted mapping"
 msgstr "Deschiderea mapării criptate"
+
+msgid "Opens Dropbox in the browser; copy the code it shows"
+msgstr "Deschide Dropbox în browser; copiați codul afișat"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Deschide browserul pentru consimțământ OAuth"
@@ -1532,6 +1872,9 @@ msgstr "Parolă"
 msgid "Password / app-password"
 msgstr "Parolă / parolă aplicație"
 
+msgid "Password colors"
+msgstr "Culorile parolei"
+
 msgid "Password copied"
 msgstr "Parolă copiată"
 
@@ -1546,6 +1889,9 @@ msgstr "Istoricul parolelor…"
 
 msgid "Password list"
 msgstr "Lista de parole"
+
+msgid "Password of the Aegis vault"
+msgstr "Parola seifului Aegis"
 
 msgid "Password of the KeePass database"
 msgstr "Parola bazei de date KeePass"
@@ -1759,8 +2105,18 @@ msgstr "Se restaurează copia…"
 msgid "Retention"
 msgstr "Păstrare"
 
+msgid "Rose"
+msgstr "Trandafir"
+
 msgid "Run"
 msgstr "Rulează"
+
+msgid ""
+"Run this once after installing a browser, so it can find Ashy Pass. It only "
+"adds a small file to each browser's settings folder."
+msgstr ""
+"Faceți asta o dată după instalarea unui browser, ca să găsească Ashy Pass. "
+"Adaugă doar un fișier mic în dosarul de setări al fiecărui browser."
 
 msgid "Running audit..."
 msgstr "Se execută auditul..."
@@ -1776,6 +2132,12 @@ msgstr "Verificări de siguranță eșuate"
 
 msgid "Safety checks passed"
 msgstr "Verificări de siguranță trecute"
+
+msgid "Same site and account"
+msgstr "Același site și cont"
+
+msgid "Same verification code"
+msgstr "Același cod de verificare"
 
 msgid "Save"
 msgstr "Salvare"
@@ -1797,6 +2159,9 @@ msgstr "Salvează copia de rezervă"
 
 msgid "Save in"
 msgstr "Salvează în"
+
+msgid "Save new PIN"
+msgstr "Salvează noul PIN"
 
 msgid "Save to vault"
 msgstr "Salvează în seif"
@@ -1855,6 +2220,11 @@ msgstr "Vezi parolele mele"
 msgid "Select an access"
 msgstr "Selectați o intrare"
 
+msgid "Send changes shortly after each edit and check the server regularly"
+msgstr ""
+"Trimite modificările la scurt timp după fiecare editare și verifică regulat "
+"serverul"
+
 msgid "Sending local changes"
 msgstr "Se trimit modificările locale"
 
@@ -1880,11 +2250,17 @@ msgstr "URL server, nume utilizator, parolă aplicație"
 msgid "Server URL, username, app-password"
 msgstr "URL server, nume utilizator, parolă aplicație"
 
+msgid "Server address"
+msgstr "Adresa serverului"
+
 msgid ""
 "Server address (for example cloud.example.com), username and an app password."
 msgstr ""
 "URL-ul serverului (de ex. cloud.example.com), numele de utilizator și o "
 "parolă pentru aplicație."
+
+msgid "Service"
+msgstr "Serviciu"
 
 msgid "Set PIN"
 msgstr "Setează PIN"
@@ -1922,6 +2298,9 @@ msgstr "Afișează un dosar"
 msgid "Show favicons"
 msgstr "Afișează favicon-uri"
 
+msgid "Show icons beside the codes"
+msgstr "Afișează pictograme lângă coduri"
+
 msgid "Show only favorites"
 msgstr "Afișează doar favoritele"
 
@@ -1934,11 +2313,17 @@ msgstr "Afișează bara laterală"
 msgid "Show technical details"
 msgstr "Vezi detaliul tehnic"
 
+msgid "Shows a QR code to scan with Ashy Pass for Android"
+msgstr "Afișează un cod QR de scanat cu Ashy Pass pentru Android"
+
 msgid "Sign in failed"
 msgstr "Autentificarea a eșuat"
 
 msgid "Sign in to Google"
 msgstr "Autentificare în Google"
+
+msgid "Sign in to Google to use your Drive"
+msgstr "Conectează-te la Google pentru a folosi Drive-ul tău"
 
 msgid "Sign out"
 msgstr "Deconectare"
@@ -1976,14 +2361,27 @@ msgstr "Putere"
 msgid "Strong"
 msgstr "Puternică"
 
+msgid ""
+"Stronger against guessing the master password. While this is on, older "
+"versions of Ashy Pass cannot open the vault with the master password."
+msgstr ""
+"Mai rezistent la ghicirea parolei principale. Cât timp este activat, "
+"versiunile mai vechi Ashy Pass nu pot deschide seiful cu parola principală."
+
 msgid "Style"
 msgstr "Stil"
 
 msgid "Summary"
 msgstr "Rezumat"
 
+msgid "Sunset"
+msgstr "Apus"
+
 msgid "Symbols (!@#$…)"
 msgstr "Simboluri (!@#$…)"
+
+msgid "Sync automatically"
+msgstr "Sincronizare automată"
 
 msgid "Sync completed"
 msgstr "Sincronizare finalizată"
@@ -1994,17 +2392,24 @@ msgstr "Sincronizare cu probleme"
 msgid "Sync completed with warnings"
 msgstr "Sincronizare finalizată cu avertismente"
 
-msgid "Sync conflict"
-msgstr "Conflict de sincronizare"
-
 msgid "Sync conflict detected"
 msgstr "Conflict de sincronizare detectat"
+
+#, rust-format
+msgid "Sync conflict: the server has a newer copy (generation {})"
+msgstr "Conflict de sincronizare: serverul are o copie mai nouă (generația {})"
 
 msgid "Sync failed"
 msgstr "Sincronizare eșuată"
 
+msgid "Sync folder disconnected"
+msgstr "Folderul de sincronizare a fost deconectat"
+
 msgid "Sync now"
 msgstr "Sincronizează acum"
+
+msgid "Sync when the vault is unlocked"
+msgstr "Sincronizare la deblocarea seifului"
 
 msgid "Synchronization"
 msgstr "Sincronizare"
@@ -2036,6 +2441,9 @@ msgstr "Se sincronizează..."
 msgid "Syncing folders"
 msgstr "Se sincronizează dosarele"
 
+msgid "Syncing…"
+msgstr "Se sincronizează…"
+
 msgid "Tags"
 msgstr "Etichete"
 
@@ -2056,6 +2464,13 @@ msgstr "Detalii tehnice"
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr ""
 "PIN-ul nu a putut fi folosit pe acest calculator. Folosiți parola principală."
+
+msgid ""
+"The PIN is not stored anywhere, so it cannot be shown. To change it, set a "
+"new one."
+msgstr ""
+"PIN-ul nu este stocat nicăieri, deci nu poate fi afișat. Pentru a-l schimba, "
+"setați unul nou."
 
 msgid "The PIN must have at least 4 characters"
 msgstr "PIN-ul trebuie să aibă cel puțin 4 caractere"
@@ -2078,6 +2493,9 @@ msgstr ""
 msgid "The backup was not created"
 msgstr "Copia de rezervă nu a fost creată"
 
+msgid "The browser connector of Ashy Pass is not installed"
+msgstr "Conectorul de browser Ashy Pass nu este instalat"
+
 msgid "The copy could not be downloaded"
 msgstr "Copia nu a putut fi descărcată"
 
@@ -2090,6 +2508,16 @@ msgstr[2] "Copia a fost verificată și are {} de intrări."
 
 msgid "The current master password is incorrect. Nothing was changed."
 msgstr "Parola principală actuală este incorectă. Nu s-a modificat nimic."
+
+msgid ""
+"The extension asks for your master password and keeps the vault open only "
+"until the automatic lock. If “Open automatically at login” is on, it opens "
+"without asking. Locking the screen locks it too, when that option is on."
+msgstr ""
+"Extensia cere parola principală și ține seiful deschis doar până la blocarea "
+"automată. Dacă „Deschide automat la autentificare” este activat, îl deschide "
+"fără să întrebe. Blocarea ecranului îl blochează și pe el, când opțiunea "
+"este activată."
 
 msgid ""
 "The file is overwritten and deleted. Your current vault is not affected."
@@ -2116,6 +2544,9 @@ msgid ""
 msgstr ""
 "Eticheta nu poate începe cu \"-\" și nu poate conține \"/\" sau caractere de "
 "control."
+
+msgid "The last sync failed"
+msgstr "Ultima sincronizare a eșuat"
 
 msgid "The master password is too short. Minimum length:"
 msgstr "Parola principală este prea scurtă. Lungime minimă:"
@@ -2148,6 +2579,13 @@ msgstr "Parola nu a fost schimbată"
 msgid "The passwords do not match"
 msgstr "Parolele nu se potrivesc"
 
+msgid ""
+"The previous passwords of this access are deleted for good. This cannot be "
+"undone."
+msgstr ""
+"Parolele anterioare ale acestui acces vor fi șterse definitiv. Acțiunea nu "
+"poate fi anulată."
+
 msgid "The previous vault was kept at:"
 msgstr "Seiful anterior a fost păstrat în:"
 
@@ -2162,6 +2600,9 @@ msgstr "Căutarea este limitată la parolele fără dosar."
 
 msgid "The search is limited to the folder"
 msgstr "Căutarea este limitată la dosarul"
+
+msgid "The site's icon, when the code has a site saved"
+msgstr "Pictograma site-ului, când codul are un site salvat"
 
 msgid "The sync finished, but some items reported errors."
 msgstr "Sincronizarea s-a încheiat, dar unele elemente au raportat erori."
@@ -2195,6 +2636,20 @@ msgid "The vault will open automatically at login"
 msgstr "Seiful se va deschide automat la autentificare"
 
 #, rust-format
+msgid "The {} entry in the trash is deleted for good. This cannot be undone."
+msgid_plural ""
+"The {} entries in the trash are deleted for good. This cannot be undone."
+msgstr[0] ""
+"Elementele din coș ({}) vor fi șterse definitiv. Acțiunea nu poate fi "
+"anulată."
+msgstr[1] ""
+"Elementele din coș ({}) vor fi șterse definitiv. Acțiunea nu poate fi "
+"anulată."
+msgstr[2] ""
+"Elementele din coș ({}) vor fi șterse definitiv. Acțiunea nu poate fi "
+"anulată."
+
+#, rust-format
 msgid "The {} password in it stays in the vault and moves to “No folder”."
 msgid_plural ""
 "The {} passwords in it stay in the vault and move to “No folder”."
@@ -2211,6 +2666,17 @@ msgstr "Nu există nimic nou de importat."
 
 msgid "These options cannot produce a password."
 msgstr "Aceste opțiuni nu pot genera o parolă."
+
+msgid ""
+"They were synchronized with Nextcloud Passwords and are no longer on the "
+"server. If you deleted them there, they move to Deleted items here. If you "
+"did not, the server may have answered only in part: keep them and the next "
+"sync tries again."
+msgstr ""
+"Erau sincronizate cu Nextcloud Passwords și nu mai sunt pe server. Dacă le-"
+"ați șters acolo, aici ajung în Elemente șterse. Dacă nu, serverul poate a "
+"răspuns doar parțial: păstrați-le și următoarea sincronizare va încerca din "
+"nou."
 
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Acest PIN nu mai corespunde seifului. Nu s-a modificat nimic."
@@ -2231,6 +2697,12 @@ msgstr "Această intrare nu are utilizator"
 msgid "This access no longer exists"
 msgstr "Această intrare nu mai există"
 
+msgid "This build has no Dropbox app key"
+msgstr "Această versiune nu are cheie de aplicație Dropbox"
+
+msgid "This build has no Google sign-in configured"
+msgstr "Această versiune nu are configurată conectarea la Google"
+
 msgid "This cannot be undone."
 msgstr "Acțiunea nu poate fi anulată."
 
@@ -2243,17 +2715,35 @@ msgstr "Se șterge întreaga intrare: codul de verificare, parola și notițele.
 msgid "This device generation:"
 msgstr "Generația acestui dispozitiv:"
 
+msgid ""
+"This drive has no /dev/disk/by-id link, so Ashy Pass cannot make sure it is "
+"still the same drive when erasing it. It cannot be encrypted here."
+msgstr ""
+"Această unitate nu are o legătură în /dev/disk/by-id, așa că Ashy Pass nu se "
+"poate asigura că este aceeași unitate atunci când o șterge. Nu poate fi "
+"criptată aici."
+
 msgid "This file can be read without a password"
 msgstr "Acest fișier va putea fi citit fără parolă"
 
 msgid "This file could not be read"
 msgstr "Acest fișier nu a putut fi citit"
 
+msgid "This file is too large to attach. The limit is 64 MB."
+msgstr "Acest fișier este prea mare pentru a fi atașat. Limita este de 64 MB."
+
 msgid "This folder already exists"
 msgstr "Acest dosar există deja"
 
 msgid "This folder is empty"
 msgstr "Acest dosar este gol"
+
+msgid ""
+"This image could not be opened. Use a PNG, JPEG or WebP picture of up to 20 "
+"MB."
+msgstr ""
+"Imaginea nu a putut fi deschisă. Folosiți o imagine PNG, JPEG sau WebP de "
+"cel mult 20 MB."
 
 msgid ""
 "This is a Google Authenticator export with several accounts. Show the QR "
@@ -2399,6 +2889,9 @@ msgstr "Deblocat la"
 msgid "Unlocked by another application. Lock it from your file manager."
 msgstr "Deblocată de altă aplicație. Blocați-o din managerul de fișiere."
 
+msgid "Unlocking"
+msgstr "Deblocare"
+
 msgid "Unlocking…"
 msgstr "Deblocare…"
 
@@ -2445,8 +2938,18 @@ msgstr "Folosește parola principală"
 msgid "Use the + button to create one."
 msgstr "Folosiți butonul + pentru a crea unul."
 
+msgid ""
+"Use the same master password on all your devices: it opens the folder's key. "
+"You type it once here, to join."
+msgstr ""
+"Folosiți aceeași parolă principală pe toate dispozitivele: ea deschide cheia "
+"folderului. O introduceți o singură dată aici, pentru a vă alătura."
+
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Folosiți aceste coduri când un site cere verificarea în doi pași."
+
+msgid "Use these costs for the vault key"
+msgstr "Folosește aceste costuri pentru cheia seifului"
 
 msgid "Use this password"
 msgstr "Folosește această parolă"
@@ -2463,6 +2966,9 @@ msgstr "Utilizator"
 msgid "User copied"
 msgstr "Utilizator copiat"
 
+msgid "User name"
+msgstr "Nume de utilizator"
+
 msgid "User or e-mail (optional)"
 msgstr "Utilizator sau e-mail (opțional)"
 
@@ -2477,6 +2983,9 @@ msgstr ""
 "Folosește Have I Been Pwned. Se trimit doar primele 5 caractere ale unui "
 "hash al fiecărei parole, niciodată parola. Rezultatele sunt păstrate pe "
 "acest calculator timp de 7 zile."
+
+msgid "Uses your Google Drive sign-in from Backups"
+msgstr "Folosește autentificarea dvs. Google Drive din Copii de rezervă"
 
 msgid ""
 "Usually the same master password you use today. After replacing, the vault "
@@ -2498,6 +3007,11 @@ msgstr ""
 
 msgid "Vault already in sync"
 msgstr "Seiful este deja sincronizat"
+
+msgid "Vault encrypted again. Set up the PIN again if you used one."
+msgstr ""
+"Seiful a fost criptat din nou. Configurați din nou PIN-ul dacă foloseați "
+"unul."
 
 msgid "Vault locked after a period of inactivity"
 msgstr "Seif blocat după o perioadă de inactivitate"
@@ -2528,6 +3042,9 @@ msgstr "Cod de verificare salvat în seif"
 msgid "Verification codes"
 msgstr "Coduri de verificare"
 
+msgid "Verification codes (JSON, encrypted or not)"
+msgstr "Coduri de verificare (JSON, criptat sau nu)"
+
 msgid "Verification codes (unencrypted JSON)"
 msgstr "Coduri de verificare (JSON necriptat)"
 
@@ -2537,14 +3054,26 @@ msgstr "Foarte puternică"
 msgid "Very Weak"
 msgstr "Foarte slabă"
 
+msgid "Wait for the sync to finish, then sign out."
+msgstr "Așteptați finalizarea sincronizării, apoi deconectați-vă."
+
+msgid "Waiting for Google in the browser…"
+msgstr "Se așteaptă Google în browser…"
+
 msgid "Waiting for Nextcloud..."
 msgstr "Se așteaptă Nextcloud..."
 
 msgid "Weak"
 msgstr "Slabă"
 
+msgid "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+msgstr "WebDAV (ownCloud, Synology, Seafile, Koofr…)"
+
 msgid "WebDAV / Nextcloud"
 msgstr "WebDAV / Nextcloud"
+
+msgid "WebDAV address"
+msgstr "Adresă WebDAV"
 
 msgid "WebDAV configured"
 msgstr "WebDAV configurat"
@@ -2565,15 +3094,8 @@ msgstr ""
 "Când un site oferă verificare în doi pași, adăugați aici cheia de "
 "configurare pentru a primi codurile."
 
-msgid ""
-"When on, the Ashy Pass browser extension can read vault entries by unlocking "
-"from the system keyring, even while this window is locked. The key is "
-"dropped again after the auto-lock delay."
-msgstr ""
-"Când este activat, extensia de navigator Ashy Pass poate citi intrări din "
-"seif deblocând prin portcheiul sistemului, chiar dacă această fereastră este "
-"blocată. Cheia este eliminată din nou din memorie după intervalul de blocare "
-"automată."
+msgid "When off, the extension cannot see anything in the vault"
+msgstr "Când este dezactivat, extensia nu vede nimic din seif"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "De unde doriți să vă aduceți parolele?"
@@ -2603,6 +3125,13 @@ msgstr "Șterge dispozitivul"
 msgid "Wiping device"
 msgstr "Ștergerea dispozitivului"
 
+msgid ""
+"With two-step verification on, pCloud e-mails you about the new sign-in: "
+"approve it there and connect again."
+msgstr ""
+"Cu verificarea în doi pași activă, pCloud îți trimite un e-mail despre noua "
+"conectare: aprob-o acolo și conectează-te din nou."
+
 msgid "Working..."
 msgstr "Se procesează..."
 
@@ -2625,6 +3154,12 @@ msgstr "Scrierea antetului LUKS2"
 msgid "Wrong master password"
 msgstr "Parolă principală greșită"
 
+msgid "Wrong master password. The folder belongs to a vault with another one."
+msgstr "Parolă principală greșită. Folderul aparține unui seif cu altă parolă."
+
+msgid "Wrong password. Password of the Aegis vault"
+msgstr "Parolă greșită. Parola seifului Aegis"
+
 msgid ""
 "You choose it when creating the copy. Without it the copy cannot be opened — "
 "Ashy Pass cannot recover it."
@@ -2642,8 +3177,18 @@ msgstr ""
 msgid "Your entries are still available on this computer."
 msgstr "Intrările sunt în continuare disponibile pe acest calculator."
 
+msgid ""
+"Your items stay on this computer and in the folder. Connecting again later "
+"merges them instead of duplicating."
+msgstr ""
+"Elementele dvs. rămân pe acest computer și în folder. Reconectarea "
+"ulterioară le îmbină în loc să le dubleze."
+
 msgid "Your most used accesses can be here"
 msgstr "Intrările cele mai folosite pot sta aici"
+
+msgid "Your pCloud e-mail and password"
+msgstr "E-mailul și parola ta pCloud"
 
 msgid "Your vault is ready"
 msgstr "Seiful este gata"
@@ -2659,6 +3204,9 @@ msgstr "alocat"
 
 msgid "breached"
 msgstr "compromisă"
+
+msgid "different password"
+msgstr "altă parolă"
 
 msgid "duplicate"
 msgstr "duplicat"
@@ -2693,6 +3241,12 @@ msgstr "scăzută"
 msgid "medium"
 msgstr "medie"
 
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minut"
+msgstr[1] "minute"
+msgstr[2] "minute"
+
 msgid "more"
 msgstr "în plus"
 
@@ -2715,6 +3269,15 @@ msgstr "nemontat"
 msgid "old"
 msgstr "veche"
 
+msgid "pCloud (data in Europe)"
+msgstr "pCloud (date în Europa)"
+
+msgid "pCloud (data in the US)"
+msgstr "pCloud (date în SUA)"
+
+msgid "pCloud e-mail"
+msgstr "E-mail pCloud"
+
 msgid "passwordless entry was skipped"
 msgid_plural "passwordless entries were skipped"
 msgstr[0] "intrare fără parolă a fost omisă"
@@ -2735,6 +3298,9 @@ msgstr "rotativ (HDD)"
 
 msgid "seen"
 msgstr "vizualizată"
+
+msgid "sent:"
+msgstr "trimise:"
 
 msgid "solid-state"
 msgstr "stare solidă"
@@ -2890,6 +3456,10 @@ msgid_plural "{} words"
 msgstr[0] "{} cuvânt"
 msgstr[1] "{} cuvinte"
 msgstr[2] "{} de cuvinte"
+
+#, rust-format
+msgid "“{}” is deleted for good. This cannot be undone."
+msgstr "„{}” va fi șters definitiv. Acțiunea nu poate fi anulată."
 
 msgid "…"
 msgstr "…"

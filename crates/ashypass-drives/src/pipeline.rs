@@ -11,13 +11,13 @@
 
 use crate::fs::{mkfs, Filesystem};
 use crate::helper_client::HelperClient;
-use crate::luks::{luks_close, luks_format, luks_open, FormatOptions};
+use crate::luks::{luks_close_settled, luks_format, luks_open, FormatOptions};
 use crate::mapper::{device_tag, mapper_state, pick_mapper, MapperState};
 use crate::passphrase::Passphrase;
 use crate::runner::Runner;
 use crate::safety::{inspect, DeviceIdentity, SafetyPolicy, SafetyReport};
 use crate::validate::{validate_label_for_fs, validate_mapper_name, validate_passphrase};
-use crate::wipe::{wipe_with_progress, WipeMode};
+use crate::wipe::{is_wipe_mapper, wipe_with_progress, WipeMode};
 use crate::{Error, Result};
 use std::path::{Path, PathBuf};
 
@@ -152,8 +152,10 @@ pub fn encrypt_new_drive(
     let mkfs_result = mkfs(runner, &mapped, request.filesystem, &request.label);
     on_progress(Progress::Finished(Step::MkFs));
 
+    // mkfs makes udev probe the new filesystem; let it finish so the close
+    // is not refused with "device is still in use".
     on_progress(Progress::Started(Step::LuksClose));
-    let close_result = luks_close(runner, &mapper_name);
+    let close_result = luks_close_settled(runner, &mapper_name);
     on_progress(Progress::Finished(Step::LuksClose));
 
     // Surface mkfs failure first; if both failed, mkfs is the more useful
@@ -183,6 +185,13 @@ pub fn encrypt_via_helper(
 ) -> Result<EncryptOutcome> {
     on_progress(Progress::Started(Step::Safety));
     let (report, mapper_name) = preflight(request, passphrase)?;
+    // The helper only accepts `/dev/disk/by-id` paths; refuse here, before
+    // the polkit prompt, rather than after it.
+    if !report.pinned_by_id() {
+        return Err(Error::Refused(
+            "device has no stable /dev/disk/by-id path".into(),
+        ));
+    }
     on_progress(Progress::Finished(Step::Safety));
 
     let pinned: &Path = &report.canonical_path;
@@ -308,6 +317,41 @@ pub fn unlock_existing_with(
     passphrase: &Passphrase,
     allow_discards: bool,
 ) -> Result<PathBuf> {
+    unlock_with(device, choice, passphrase, |mapper_name| {
+        luks_open(runner, device, mapper_name, passphrase, allow_discards)
+    })
+}
+
+/// Same as [`unlock_existing`], but the `cryptsetup open` runs inside the
+/// privileged helper, which re-validates the device (a LUKS volume on a
+/// detected removable drive, addressed by its `/dev/disk/by-id` link) and
+/// the mapper name before opening it. The mapping outlives the helper
+/// session. The polkit prompt only appears once the cheap local checks
+/// (block device, mapper name, passphrase) have passed.
+pub fn unlock_via_helper(
+    device: &Path,
+    label: &str,
+    passphrase: &Passphrase,
+    allow_discards: bool,
+) -> Result<PathBuf> {
+    unlock_with(
+        device,
+        MapperChoice::FromLabel(label),
+        passphrase,
+        |mapper_name| {
+            HelperClient::spawn()?.luks_unlock(device, mapper_name, passphrase, allow_discards)
+        },
+    )
+}
+
+/// Shared unlock flow: local checks and mapper choice, then `open` for the
+/// actual `cryptsetup open` (direct runner or helper).
+fn unlock_with(
+    device: &Path,
+    choice: MapperChoice<'_>,
+    passphrase: &Passphrase,
+    open: impl FnOnce(&str) -> Result<PathBuf>,
+) -> Result<PathBuf> {
     use std::os::unix::fs::FileTypeExt;
 
     let node = std::fs::canonicalize(device)
@@ -321,6 +365,13 @@ pub fn unlock_existing_with(
     }
 
     let candidates = unlock_candidates(choice, &node, crate::mapper::uuid_of(&node).as_deref());
+    if let Some(reserved) = candidates.iter().find(|name| is_wipe_mapper(name)) {
+        // A leftover wipe mapping must never be handed out as the unlocked
+        // volume.
+        return Err(Error::Refused(format!(
+            "mapper name {reserved} is reserved for the wipe step"
+        )));
+    }
     let (mapper_name, state) = pick_mapper(&candidates, |name| mapper_state(name, &node))?;
     if state == MapperState::SameDevice {
         // Already unlocked from this very device (previous click, CLI
@@ -329,7 +380,7 @@ pub fn unlock_existing_with(
     }
     validate_passphrase(passphrase)?;
     validate_mapper_name(&mapper_name)?;
-    luks_open(runner, device, &mapper_name, passphrase, allow_discards)
+    open(&mapper_name)
 }
 
 fn unlock_candidates(choice: MapperChoice<'_>, node: &Path, uuid: Option<&str>) -> Vec<String> {
@@ -412,5 +463,27 @@ mod tests {
         // A regular file is not a block device.
         let file = tempfile::NamedTempFile::new().unwrap();
         assert!(unlock_existing(&NoRunner, file.path(), "x", &pp, false).is_err());
+
+        // Same checks on the helper route: refused before pkexec is spawned.
+        assert!(
+            unlock_via_helper(Path::new("/dev/does-not-exist-ashypass"), "x", &pp, false).is_err()
+        );
+        assert!(unlock_via_helper(file.path(), "x", &pp, false).is_err());
+    }
+
+    #[test]
+    fn mkfs_session_closes_through_udev_settle() {
+        use crate::runner::fake::FakeRunner;
+        // The CLI pipeline close goes through the settled close; the helper
+        // uses the same function for its `luks-close` request.
+        let runner = FakeRunner::default();
+        luks_close_settled(&runner, "ashypass_vault").unwrap();
+        assert_eq!(
+            runner.calls(),
+            [
+                "udevadm settle --timeout=10",
+                "cryptsetup close ashypass_vault"
+            ]
+        );
     }
 }
