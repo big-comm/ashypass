@@ -55,6 +55,9 @@ pub struct Settings {
     pub show_sync_badges: bool,
     pub compact_vault_list: bool,
     pub large_totp_codes: bool,
+    /// Site icons beside the verification codes. Off by default: most codes
+    /// have no site saved, and a column of identical icons only adds noise.
+    pub totp_icons: bool,
     pub lock_timeout: u64,
     pub clipboard_clear: u64,
     pub generator: GeneratorPrefs,
@@ -145,6 +148,7 @@ impl Default for Settings {
             show_sync_badges: true,
             compact_vault_list: false,
             large_totp_codes: true,
+            totp_icons: false,
             lock_timeout: SESSION_TIMEOUT_SECONDS,
             clipboard_clear: CLIPBOARD_CLEAR_SECONDS,
             generator: GeneratorPrefs::default(),
@@ -313,6 +317,8 @@ mod tests {
         )
         .unwrap();
         let settings = Settings::load_from(&path);
+        // A setting the file predates takes its default.
+        assert!(!settings.totp_icons);
         // Non-round values chosen in the old seconds-based UI stay as they were.
         assert_eq!(settings.lock_timeout, 45);
         assert_eq!(settings.clipboard_clear, 20);

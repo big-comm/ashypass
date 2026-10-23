@@ -225,6 +225,24 @@ pub(super) fn populate_appearance(
         });
     }
     two_factor_group.add(&large_totp_row);
+    let totp_icons_row = adw::SwitchRow::builder()
+        .title(tr!("Show icons beside the codes"))
+        .subtitle(tr!("The site's icon, when the code has a site saved"))
+        .active(settings.borrow().totp_icons)
+        .build();
+    {
+        let settings = settings.clone();
+        let state = state.clone();
+        totp_icons_row.connect_active_notify(move |row| {
+            let value = row.is_active();
+            settings.borrow_mut().totp_icons = value;
+            if let Err(e) = state.update_settings(|s| s.totp_icons = value) {
+                log::warn!("could not save settings: {e}");
+            }
+            state.events.emit(crate::events::AppEvent::DisplayChanged);
+        });
+    }
+    two_factor_group.add(&totp_icons_row);
     page.add(&two_factor_group);
 }
 

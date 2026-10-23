@@ -120,7 +120,7 @@ The suite covers the following:
 5. Allow that id in the native host. Debug builds of the host allow it by
    themselves; a packaged (release) Ashy Pass does not, because anyone can
    make an extension with the public development key. Run once:
-   `ashypass-native-host --install --chrome-id opelfkfheadglgamfephkfejfpcnlbck`.
+   `/usr/lib/ashypass/ashypass-native-host --install --chrome-id opelfkfheadglgamfephkfejfpcnlbck`.
 
 **Firefox**
 

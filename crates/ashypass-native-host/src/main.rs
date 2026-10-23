@@ -65,6 +65,22 @@ const CHROME_EXTENSION_IDS: &[&str] = &[];
 /// allow it; `--install --chrome-id` adds it for testing an unpacked build.
 const CHROME_DEV_EXTENSION_ID: &str = "opelfkfheadglgamfephkfejfpcnlbck";
 const VERSION: &str = ashypass_core::config::APP_VERSION;
+/// Profile folders of the Chromium-family browsers, under ~/.config.
+const CHROME_PROFILE_DIRS: &[&str] = &[
+    "google-chrome",
+    "google-chrome-beta",
+    "google-chrome-unstable",
+    "chromium",
+    "BraveSoftware/Brave-Browser",
+    "BraveSoftware/Brave-Origin",
+    "BraveSoftware/Brave-Browser-Beta",
+    "BraveSoftware/Brave-Browser-Nightly",
+    "microsoft-edge",
+    "microsoft-edge-beta",
+    "microsoft-edge-dev",
+    "vivaldi",
+    "vivaldi-snapshot",
+];
 /// Maximum incoming payload accepted. Mirrors the Chrome limit (~1 MiB),
 /// guarding against a runaway extension stream.
 const MAX_MESSAGE_BYTES: u32 = 1024 * 1024;
@@ -1369,13 +1385,13 @@ fn install_manifests(args: &[String]) -> Result<()> {
     // Per-user host manifest directories. Each browser looks in its own;
     // install into every one whose browser is set up for this user, so the
     // user does not have to know which fork they run.
-    let chrome_targets = [
-        home.join(".config/google-chrome/NativeMessagingHosts"),
-        home.join(".config/chromium/NativeMessagingHosts"),
-        home.join(".config/BraveSoftware/Brave-Browser/NativeMessagingHosts"),
-        home.join(".config/microsoft-edge/NativeMessagingHosts"),
-        home.join(".config/vivaldi/NativeMessagingHosts"),
-    ];
+    // Each channel and edition keeps its own profile folder (Brave Origin,
+    // Beta and Nightly; Chrome Beta and Dev): a manifest in Brave-Browser is
+    // never read by Brave Origin.
+    let chrome_targets = CHROME_PROFILE_DIRS
+        .iter()
+        .map(|dir| home.join(".config").join(dir).join("NativeMessagingHosts"))
+        .collect::<Vec<_>>();
     // Firefox-family browsers read user manifests from ~/.<name>/ even when
     // they keep the profile in the XDG folder (~/.config/<name>), as recent
     // Firefox does; ~/.mozilla may then not exist yet. Checked with Firefox

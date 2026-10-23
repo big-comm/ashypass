@@ -269,24 +269,28 @@ fn browser_connections(paths: &BrowserPaths) -> Vec<(&'static str, bool)> {
         manifests.extend(system_dir.map(|d| system.join(d).join(HOST_MANIFEST)));
         (name, installed, manifests, "allowed_extensions")
     };
+    const CHROME: Option<&str> = Some("etc/opt/chrome/native-messaging-hosts");
+    const EDGE: Option<&str> = Some("etc/opt/edge/native-messaging-hosts");
+    // Each channel and edition has its own profile folder (as in
+    // `ashypass-native-host --install`).
     let browsers = [
-        chrome(
-            "Google Chrome",
-            "google-chrome",
-            Some("etc/opt/chrome/native-messaging-hosts"),
-        ),
+        chrome("Google Chrome", "google-chrome", CHROME),
+        chrome("Google Chrome Beta", "google-chrome-beta", CHROME),
+        chrome("Google Chrome Dev", "google-chrome-unstable", CHROME),
         chrome(
             "Chromium",
             "chromium",
             Some("etc/chromium/native-messaging-hosts"),
         ),
         chrome("Brave", "BraveSoftware/Brave-Browser", None),
-        chrome(
-            "Microsoft Edge",
-            "microsoft-edge",
-            Some("etc/opt/edge/native-messaging-hosts"),
-        ),
+        chrome("Brave Origin", "BraveSoftware/Brave-Origin", None),
+        chrome("Brave Beta", "BraveSoftware/Brave-Browser-Beta", None),
+        chrome("Brave Nightly", "BraveSoftware/Brave-Browser-Nightly", None),
+        chrome("Microsoft Edge", "microsoft-edge", EDGE),
+        chrome("Microsoft Edge Beta", "microsoft-edge-beta", EDGE),
+        chrome("Microsoft Edge Dev", "microsoft-edge-dev", EDGE),
         chrome("Vivaldi", "vivaldi", None),
+        chrome("Vivaldi Snapshot", "vivaldi-snapshot", None),
         firefox(
             "Firefox",
             ".mozilla",
@@ -374,16 +378,33 @@ mod tests {
                 .join(HOST_MANIFEST),
             &manifest("allowed_extensions", r#"["ashypass@big-comm.github.io"]"#),
         );
+        write(
+            &paths
+                .config
+                .join("BraveSoftware/Brave-Origin/NativeMessagingHosts")
+                .join(HOST_MANIFEST),
+            &manifest("allowed_origins", r#"["chrome-extension://abc/"]"#),
+        );
         let found = browser_connections(&paths);
         assert_eq!(
             found,
-            vec![("Chromium", false), ("Brave", true), ("Firefox", true)]
+            vec![
+                ("Chromium", false),
+                ("Brave", true),
+                ("Brave Origin", true),
+                ("Firefox", true)
+            ]
         );
         // A manifest whose program is gone does not count.
         std::fs::remove_file(&host).unwrap();
         assert_eq!(
             browser_connections(&paths),
-            vec![("Chromium", false), ("Brave", false), ("Firefox", false)]
+            vec![
+                ("Chromium", false),
+                ("Brave", false),
+                ("Brave Origin", false),
+                ("Firefox", false)
+            ]
         );
         let _ = std::fs::remove_dir_all(&dir);
     }

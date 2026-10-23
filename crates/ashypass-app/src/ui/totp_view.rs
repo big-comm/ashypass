@@ -347,10 +347,13 @@ impl Inner {
             return;
         }
         self.content_stack.set_visible_child_name("list");
-        let large = self.state.settings().large_totp_codes;
-        let favicons = self.state.settings().show_favicons;
+        let settings = self.state.settings();
+        let large = settings.large_totp_codes;
+        // Off: no icon column at all. On: the site's icon when site icons
+        // are on (Password list), else a plain one.
+        let icons = settings.totp_icons.then_some(settings.show_favicons);
         for (entry, secret) in entries {
-            let row = self.build_row(&entry, secret, large, favicons);
+            let row = self.build_row(&entry, secret, large, icons);
             self.list_box.append(&row);
         }
         self.last_tick.set(None);
@@ -498,7 +501,7 @@ impl Inner {
         entry: &PasswordEntry,
         secret: Zeroizing<String>,
         large: bool,
-        favicons: bool,
+        icons: Option<bool>,
     ) -> gtk::ListBoxRow {
         let id = entry.id;
         let row = gtk::ListBoxRow::builder().activatable(false).build();
@@ -511,16 +514,18 @@ impl Inner {
             .margin_end(8)
             .build();
 
-        let icon = gtk::Image::new();
-        if favicons {
-            crate::favicons::apply(&icon, entry.url.as_deref(), 32);
-        } else {
-            icon.set_pixel_size(32);
-            icon.set_icon_name(Some("security-high-symbolic"));
+        if let Some(favicons) = icons {
+            let icon = gtk::Image::new();
+            if favicons {
+                crate::favicons::apply(&icon, entry.url.as_deref(), 32);
+            } else {
+                icon.set_pixel_size(32);
+                icon.set_icon_name(Some("security-high-symbolic"));
+            }
+            icon.add_css_class("ashy-entry-icon");
+            icon.set_accessible_role(gtk::AccessibleRole::Presentation);
+            content.append(&icon);
         }
-        icon.add_css_class("ashy-entry-icon");
-        icon.set_accessible_role(gtk::AccessibleRole::Presentation);
-        content.append(&icon);
 
         let text = gtk::Box::builder()
             .orientation(gtk::Orientation::Vertical)
