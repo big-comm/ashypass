@@ -62,7 +62,7 @@ image = { version = "0.25", default-features = false, features = ["png", "jpeg",
 dirs = "5"
 bip39 = "2"
 zxcvbn = { version = "3", default-features = false }
-zip = { version = "2", default-features = false, features = ["deflate"] }
+zip = { version = "9", default-features = false, features = ["deflate"] }
 keepass = { version = "0.13", features = ["save_kdbx4"] }
 secret-service = { version = "5", features = ["rt-tokio-crypto-rust"] }
 

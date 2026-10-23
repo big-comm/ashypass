@@ -77,7 +77,11 @@ pub fn parse_archive(reader: impl Read + Seek) -> Result<ParsedImport> {
 
     // Attach files referenced by documentAttributes.
     let mut total = 0u64;
-    let names: Vec<String> = zip.file_names().map(str::to_string).collect();
+    // An entry name that cannot be read is not an attachment we look for.
+    let names: Vec<String> = zip
+        .file_names()
+        .filter_map(|name| name.ok().map(|name| name.into_owned()))
+        .collect();
     for (candidate, documents) in parsed.candidates.iter_mut().zip(documents) {
         for (document_id, file_name) in documents {
             let wanted = format!("{document_id}__{file_name}");
