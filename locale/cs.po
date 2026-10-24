@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:20\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
+msgid "1. Install the extension"
+msgstr "1. Nainstalujte rozšíření"
+
 msgid "1PUX export file"
 msgstr "Exportní soubor 1PUX"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Propojte ho s Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Povolte ho"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -118,6 +127,9 @@ msgstr "Upravit počet číslic"
 
 msgid "Adjust words and separator"
 msgstr "Upravit slova a oddělovač"
+
+msgid "Advanced"
+msgstr "Pokročilé"
 
 msgid "Algorithm"
 msgstr "Algoritmus"
@@ -321,6 +333,9 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Přeneste svá hesla"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Stáhne změny ze serveru a odešle ty vaše; vyhrává nejnovější verze"
 
 msgid "Browser"
 msgstr "Prohlížeč"
@@ -565,9 +580,6 @@ msgstr "Připojení se nezdařilo"
 msgid "Connect the sync folder"
 msgstr "Připojit synchronizační složku"
 
-msgid "Connect your browsers"
-msgstr "Připojte své prohlížeče"
-
 msgid "Connected"
 msgstr "Připojeno"
 
@@ -577,6 +589,9 @@ msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Připojeno prohlížečů: {}. Pokud jsou otevřené, restartujte je."
 msgstr[1] "Připojeno prohlížečů: {}. Pokud jsou otevřené, restartujte je."
 msgstr[2] "Připojeno prohlížečů: {}. Pokud jsou otevřené, restartujte je."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Připojeno, ale zablokováno (krok 3)"
 
 msgid "Connected. Received:"
 msgstr "Připojeno. Přijato:"
@@ -912,9 +927,6 @@ msgstr "Zašifrováno jako"
 msgid "Encrypted device"
 msgstr "Zašifrované zařízení"
 
-msgid "Encrypted folder sync"
-msgstr "Šifrovaná synchronizace složky"
-
 msgid "Encrypted folder sync failed"
 msgstr "Šifrovaná synchronizace složky se nezdařila"
 
@@ -1166,6 +1178,10 @@ msgid ""
 msgstr ""
 "Pro Nextcloud vypadá základní URL jako https://cloud.example.com/remote.php/"
 "dav/files/UŽIVATELSKÉ_JMÉNO"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr ""
+"Pro lidi, kteří na svém serveru Nextcloud používají aplikaci „Passwords“"
 
 msgid "For the browsers installed for this user"
 msgstr "Pro prohlížeče tohoto uživatele"
@@ -1538,14 +1554,17 @@ msgstr ""
 "Smazané položky."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Přihlášení, karty, identity, poznámky a přístupové klíče, zašifrované na "
-"tomto počítači dříve, než ho opustí, přes složku na Nextcloudu, pCloudu, "
-"WebDAV, Dropboxu, Google Disku nebo na tomto počítači. Ashy Pass pro Android "
-"používá stejnou složku."
+"Přihlašovací údaje, karty, identity, poznámky, přístupové klíče a ověřovací "
+"kódy se v tomto počítači před odesláním zašifrují, a to přes složku na "
+"Nextcloudu, pCloudu, WebDAV, Dropboxu, Google Drive nebo v tomto počítači. "
+"Služba vidí jen zašifrované soubory, nikdy jejich obsah. Ashy Pass pro "
+"Android používá stejnou složku."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1671,6 +1690,9 @@ msgstr ""
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Aplikace Nextcloud Passwords"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords připojeno"
 
@@ -1759,6 +1781,9 @@ msgstr "Nepřipojeno"
 
 msgid "Not done yet"
 msgstr "Zatím nehotovo"
+
+msgid "Not in the extension stores yet"
+msgstr "Zatím není v obchodech s rozšířeními"
 
 msgid "Not now"
 msgstr "Teď ne"
@@ -2344,6 +2369,9 @@ msgstr "Bezpečnostní klíče"
 msgid "See all folders"
 msgstr "Zobrazit všechny složky"
 
+msgid "See how to install it by hand"
+msgstr "Podívejte se, jak ho nainstalovat ručně"
+
 msgid "See my passwords"
 msgstr "Zobrazit moje hesla"
 
@@ -2555,6 +2583,9 @@ msgstr "Synchronizovat nyní"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Synchronizovat při odemknutí trezoru"
+
+msgid "Sync with your phone or another computer"
+msgstr "Synchronizace s telefonem nebo jiným počítačem"
 
 msgid "Synchronization"
 msgstr "Synchronizace"
@@ -2967,6 +2998,12 @@ msgstr "Vypnout"
 msgid "Turn on"
 msgstr "Zapnout"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Zapne se při připojení. Když je vypnuto, rozšíření nevidí v trezoru nic"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Obousměrné sladění: stáhnout vzdálené, nahrát místní, řešit podle poslední "
@@ -2976,11 +3013,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Obousměrné sladění úspěšně dokončeno."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Obousměrná synchronizace s oficiální aplikací 'Passwords' na vašem serveru "
-"Nextcloud. Použijte heslo aplikace z Nastavení → Zabezpečení."
+"Obousměrná synchronizace s oficiální aplikací „Passwords“ na vašem serveru "
+"Nextcloud. Server tyto položky uchovává v čitelné podobě: používejte ji jen "
+"se serverem, kterému důvěřujete. Přihlaste se heslem aplikace z Nastavení → "
+"Zabezpečení."
 
 msgid "Type of password"
 msgstr "Typ hesla"
@@ -3252,9 +3292,6 @@ msgid ""
 msgstr ""
 "Když web nabízí dvoufázové ověření, přidejte sem jeho klíč pro nastavení a "
 "budete dostávat kódy."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Když je vypnuto, rozšíření nevidí nic z trezoru"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Odkud chcete hesla přenést?"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n%10!=1 || n%100==11);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Settu upp viðbótina"
+
 msgid "1PUX export file"
 msgstr "1PUX-útflutningsskrá"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Tengdu hana við Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Leyfðu hana"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -116,6 +125,9 @@ msgstr "Stilla fjölda tölustafa"
 
 msgid "Adjust words and separator"
 msgstr "Stilla orð og skiltákn"
+
+msgid "Advanced"
+msgstr "Ítarlegt"
 
 msgid "Algorithm"
 msgstr "Reiknirit"
@@ -320,6 +332,9 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Taktu lykilorðin þín með"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Sækir breytingar þjónsins og sendir þínar; nýjasta útgáfan gildir"
 
 msgid "Browser"
 msgstr "Vafri"
@@ -565,9 +580,6 @@ msgstr "Tenging mistókst"
 msgid "Connect the sync folder"
 msgstr "Tengja samstillingarmöppuna"
 
-msgid "Connect your browsers"
-msgstr "Tengdu vafrana þína"
-
 msgid "Connected"
 msgstr "Tengt"
 
@@ -576,6 +588,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Tengt við {} vafra. Endurræstu hann ef hann er opinn."
 msgstr[1] "Tengt við {} vafra. Endurræstu þá ef þeir eru opnir."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Tengt, en lokað (skref 3)"
 
 msgid "Connected. Received:"
 msgstr "Tengt. Móttekið:"
@@ -912,9 +927,6 @@ msgstr "Dulritað sem"
 msgid "Encrypted device"
 msgstr "Dulkóðað tæki"
 
-msgid "Encrypted folder sync"
-msgstr "Dulkóðuð möppusamstilling"
-
 msgid "Encrypted folder sync failed"
 msgstr "Dulkóðuð möppusamstilling mistókst"
 
@@ -1163,6 +1175,9 @@ msgid ""
 msgstr ""
 "Fyrir Nextcloud lítur grunnslóðin svona út: https://cloud.example.com/"
 "remote.php/dav/files/NOTANDANAFN"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Fyrir fólk sem notar „Passwords“ forritið á Nextcloud-þjóninum sínum"
 
 msgid "For the browsers installed for this user"
 msgstr "Fyrir vafra sem eru settir upp fyrir þennan notanda"
@@ -1532,14 +1547,17 @@ msgstr ""
 "Eydd atriði."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Innskráningar, kort, auðkenni, minnispunktar og aðgangslyklar, dulkóðuð á "
-"þessari tölvu áður en þau fara, í gegnum möppu á Nextcloud, pCloud, WebDAV, "
-"Dropbox, Google Drive eða þessari tölvu. Ashy Pass fyrir Android notar sömu "
-"möppu."
+"Innskráningar, kort, auðkenni, minnismiðar, lykilkóðar og staðfestingarkóðar "
+"eru dulkóðaðir á þessari tölvu áður en þeir fara frá henni, í gegnum möppu á "
+"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive eða þessari tölvu. "
+"Þjónustan sér aðeins dulkóðaðar skrár, aldrei innihald þeirra. Ashy Pass "
+"fyrir Android notar sömu möppu."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1665,6 +1683,9 @@ msgstr "Nýtt aðallykilorð stillt. Skrifaðu það niður á öruggan stað."
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords forritið"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords tengt"
 
@@ -1756,6 +1777,9 @@ msgstr "Ekki tengt"
 
 msgid "Not done yet"
 msgstr "Ekki lokið enn"
+
+msgid "Not in the extension stores yet"
+msgstr "Ekki enn í viðbótaverslunum"
 
 msgid "Not now"
 msgstr "Ekki núna"
@@ -2342,6 +2366,9 @@ msgstr "Öryggislyklar"
 msgid "See all folders"
 msgstr "Sjá allar möppur"
 
+msgid "See how to install it by hand"
+msgstr "Sjáðu hvernig á að setja hana upp handvirkt"
+
 msgid "See my passwords"
 msgstr "Sjá lykilorðin mín"
 
@@ -2555,6 +2582,9 @@ msgstr "Samstilla núna"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Samstilla þegar hvelfingin er aflæst"
+
+msgid "Sync with your phone or another computer"
+msgstr "Samstilltu við símann þinn eða aðra tölvu"
 
 msgid "Synchronization"
 msgstr "Samstilling"
@@ -2966,6 +2996,13 @@ msgstr "Slökkva"
 msgid "Turn on"
 msgstr "Kveikja"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Kveikt þegar þú tengir. Þegar slökkt er getur viðbótin ekki séð neitt í "
+"hvelfingunni"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Tvíhliða sátt: draga fjartengt, ýta staðvært, leysa með því að nýjasta vinnur"
@@ -2974,11 +3011,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Tvíhliða samræmingu lauk með góðum árangri."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Tvíhliða samstilling við opinbera 'Passwords' forritið á Nextcloud-þjóninum "
-"þínum. Notaðu forritslykilorð frá Stillingar → Öryggi."
+"Tvíátta samstilling við opinbera „Passwords“ forritið á Nextcloud-þjóninum "
+"þínum. Þjónninn geymir þessar færslur á læsilegu formi: notaðu það aðeins "
+"með þjóni sem þú treystir. Skráðu þig inn með forritslykilorði úr Stillingar "
+"→ Öryggi."
 
 msgid "Type of password"
 msgstr "Tegund lykilorðs"
@@ -3253,9 +3293,6 @@ msgid ""
 msgstr ""
 "Þegar vefsvæði býður upp á tveggja þrepa staðfestingu skaltu bæta "
 "uppsetningarlykli þess við hér til að fá kóðana."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Þegar slökkt er á þessu sér viðbótin ekkert í hvelfingunni"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Hvaðan viltu sækja lykilorðin þín?"

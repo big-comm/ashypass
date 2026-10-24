@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Telepítse a bővítményt"
+
 msgid "1PUX export file"
 msgstr "1PUX exportfájl"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Kapcsolja össze az Ashy Passal"
+
+msgid "3. Allow it"
+msgstr "3. Engedélyezze"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -119,6 +128,9 @@ msgstr "Számjegyek számának beállítása"
 
 msgid "Adjust words and separator"
 msgstr "Szavak és elválasztó beállítása"
+
+msgid "Advanced"
+msgstr "Speciális"
 
 msgid "Algorithm"
 msgstr "Algoritmus"
@@ -327,6 +339,11 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Hozza át a jelszavait"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"Letölti a kiszolgáló módosításait, és elküldi a sajátjait; a legújabb verzió "
+"nyer"
 
 msgid "Browser"
 msgstr "Böngésző"
@@ -573,9 +590,6 @@ msgstr "A csatlakozás sikertelen"
 msgid "Connect the sync folder"
 msgstr "Szinkronizálási mappa csatlakoztatása"
 
-msgid "Connect your browsers"
-msgstr "Csatlakoztassa böngészőit"
-
 msgid "Connected"
 msgstr "Csatlakoztatva"
 
@@ -584,6 +598,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "{} böngésző csatlakoztatva. Indítsa újra, ha nyitva van."
 msgstr[1] "{} böngésző csatlakoztatva. Indítsa újra őket, ha nyitva vannak."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Csatlakoztatva, de letiltva (3. lépés)"
 
 msgid "Connected. Received:"
 msgstr "Csatlakoztatva. Fogadva:"
@@ -921,9 +938,6 @@ msgstr "Titkosítva mint"
 msgid "Encrypted device"
 msgstr "Titkosított eszköz"
 
-msgid "Encrypted folder sync"
-msgstr "Titkosított mappaszinkronizálás"
-
 msgid "Encrypted folder sync failed"
 msgstr "A titkosított mappaszinkronizálás sikertelen"
 
@@ -1178,6 +1192,11 @@ msgid ""
 msgstr ""
 "Nextcloud esetén az alap URL így néz ki: https://cloud.example.com/"
 "remote.php/dav/files/FELHASZNÁLÓNÉV"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr ""
+"Azoknak, akik a „Passwords” alkalmazást használják a Nextcloud-"
+"kiszolgálójukon"
 
 msgid "For the browsers installed for this user"
 msgstr "Az ehhez a felhasználóhoz telepített böngészőkhöz"
@@ -1552,14 +1571,18 @@ msgstr ""
 "többit pedig a Törölt elemek közé helyezi."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Bejelentkezések, kártyák, identitások, jegyzetek és hozzáférési kulcsok, "
-"ezen a számítógépen titkosítva, mielőtt elhagynák, egy mappán keresztül a "
-"Nextcloudon, pCloudon, WebDAV-on, Dropboxon, Google Drive-on vagy ezen a "
-"számítógépen. Az Androidos Ashy Pass ugyanazt a mappát használja."
+"A bejelentkezések, kártyák, személyazonosságok, jegyzetek, hozzáférési "
+"kulcsok és ellenőrző kódok titkosítva vannak ezen a számítógépen, mielőtt "
+"elhagynák, egy Nextcloudon, pCloudon, WebDAV-on, Dropboxon, Google Drive-on "
+"vagy ezen a számítógépen lévő mappán keresztül. A szolgáltatás csak "
+"titkosított fájlokat lát, soha nem a tartalmukat. Az Ashy Pass Androidra "
+"ugyanezt a mappát használja."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1684,6 +1707,9 @@ msgstr "Az új fő jelszó beállítva. Jegyezze fel biztonságos helyre."
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords alkalmazás"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords csatlakoztatva"
 
@@ -1776,6 +1802,9 @@ msgstr "Nincs csatlakoztatva"
 
 msgid "Not done yet"
 msgstr "Még nincs kész"
+
+msgid "Not in the extension stores yet"
+msgstr "Még nincs a bővítményboltokban"
 
 msgid "Not now"
 msgstr "Most nem"
@@ -2375,6 +2404,9 @@ msgstr "Biztonsági kulcsok"
 msgid "See all folders"
 msgstr "Minden mappa megtekintése"
 
+msgid "See how to install it by hand"
+msgstr "Nézze meg, hogyan telepítheti kézzel"
+
 msgid "See my passwords"
 msgstr "Jelszavaim megtekintése"
 
@@ -2590,6 +2622,9 @@ msgstr "Szinkronizálás most"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Szinkronizálás a széf feloldásakor"
+
+msgid "Sync with your phone or another computer"
+msgstr "Szinkronizálás a telefonnal vagy másik számítógéppel"
 
 msgid "Synchronization"
 msgstr "Szinkronizálás"
@@ -2999,6 +3034,12 @@ msgstr "Kikapcsolás"
 msgid "Turn on"
 msgstr "Bekapcsolás"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Csatlakozáskor bekapcsol. Kikapcsolva a bővítmény semmit sem lát a tárban"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Kétirányú egyeztetés: távoli letöltése, helyi feltöltése, megoldás a "
@@ -3008,11 +3049,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Kétirányú egyeztetés sikeresen befejezve."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Kétirányú szinkronizálás a hivatalos 'Passwords' alkalmazással a Nextcloud "
-"szerveren. Használj alkalmazásjelszót a Beállítások → Biztonság menüpontból."
+"Kétirányú szinkronizálás a Nextcloud-kiszolgáló hivatalos „Passwords” "
+"alkalmazásával. A kiszolgáló olvasható formában tárolja ezeket a "
+"bejegyzéseket: csak megbízható kiszolgálóval használja. Jelentkezzen be "
+"alkalmazásjelszóval a Beállítások → Biztonság oldalról."
 
 msgid "Type of password"
 msgstr "Jelszó típusa"
@@ -3289,9 +3333,6 @@ msgid ""
 msgstr ""
 "Ha egy webhely kétlépcsős azonosítást kínál, itt adja meg a beállítási "
 "kulcsát a kódok megkapásához."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Kikapcsolva a bővítmény semmit sem lát a széfből"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Honnan szeretné áthozni a jelszavait?"

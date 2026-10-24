@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:31\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -14,8 +14,17 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Instalirajte proširenje"
+
 msgid "1PUX export file"
 msgstr "Datoteka izvoza 1PUX"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Povežite ga s Ashy Passom"
+
+msgid "3. Allow it"
+msgstr "3. Dopustite ga"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -120,6 +129,9 @@ msgstr "Prilagodi broj znamenki"
 
 msgid "Adjust words and separator"
 msgstr "Prilagodi riječi i razdjelnik"
+
+msgid "Advanced"
+msgstr "Napredno"
 
 msgid "Algorithm"
 msgstr "Algoritam"
@@ -326,6 +338,10 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Prenesite svoje lozinke"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"Donosi promjene s poslužitelja i šalje vaše; pobjeđuje najnovija verzija"
 
 msgid "Browser"
 msgstr "Preglednik"
@@ -571,9 +587,6 @@ msgstr "Povezivanje nije uspjelo"
 msgid "Connect the sync folder"
 msgstr "Poveži mapu za sinkronizaciju"
 
-msgid "Connect your browsers"
-msgstr "Povežite svoje preglednike"
-
 msgid "Connected"
 msgstr "Povezano"
 
@@ -583,6 +596,9 @@ msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Povezani preglednici: {}. Ponovno ih pokrenite ako su otvoreni."
 msgstr[1] "Povezani preglednici: {}. Ponovno ih pokrenite ako su otvoreni."
 msgstr[2] "Povezani preglednici: {}. Ponovno ih pokrenite ako su otvoreni."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Povezano, ali blokirano (korak 3)"
 
 msgid "Connected. Received:"
 msgstr "Povezano. Primljeno:"
@@ -919,9 +935,6 @@ msgstr "Šifrirano kao"
 msgid "Encrypted device"
 msgstr "Šifrirani uređaj"
 
-msgid "Encrypted folder sync"
-msgstr "Šifrirana sinkronizacija mape"
-
 msgid "Encrypted folder sync failed"
 msgstr "Šifrirana sinkronizacija mape nije uspjela"
 
@@ -1174,6 +1187,10 @@ msgid ""
 msgstr ""
 "Za Nextcloud, osnovni URL izgleda poput https://cloud.example.com/remote.php/"
 "dav/files/KORISNIČKO_IME"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr ""
+"Za ljude koji koriste aplikaciju „Passwords“ na svom Nextcloud poslužitelju"
 
 msgid "For the browsers installed for this user"
 msgstr "Za preglednike ovog korisnika"
@@ -1547,14 +1564,17 @@ msgstr ""
 "premještaju u Izbrisane stavke."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Prijave, kartice, identiteti, bilješke i pristupni ključevi, šifrirani na "
-"ovom računalu prije nego što ga napuste, putem mape na Nextcloudu, pCloudu, "
-"WebDAV-u, Dropboxu, Google Disku ili ovom računalu. Ashy Pass za Android "
-"koristi istu mapu."
+"Prijave, kartice, identiteti, bilješke, pristupni ključevi i kodovi za "
+"provjeru šifriraju se na ovom računalu prije nego ga napuste, putem mape na "
+"Nextcloudu, pCloudu, WebDAV-u, Dropboxu, Google Driveu ili na ovom računalu. "
+"Usluga vidi samo šifrirane datoteke, nikad što je u njima. Ashy Pass za "
+"Android koristi istu mapu."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1680,6 +1700,9 @@ msgstr "Nova glavna lozinka je postavljena. Zapišite je na sigurno mjesto."
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Aplikacija Nextcloud Passwords"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords povezan"
 
@@ -1769,6 +1792,9 @@ msgstr "Nije povezano"
 
 msgid "Not done yet"
 msgstr "Još nije gotovo"
+
+msgid "Not in the extension stores yet"
+msgstr "Još nije u trgovinama proširenja"
 
 msgid "Not now"
 msgstr "Ne sada"
@@ -2359,6 +2385,9 @@ msgstr "Sigurnosni ključevi"
 msgid "See all folders"
 msgstr "Prikaži sve mape"
 
+msgid "See how to install it by hand"
+msgstr "Pogledajte kako ga ručno instalirati"
+
 msgid "See my passwords"
 msgstr "Prikaži moje lozinke"
 
@@ -2573,6 +2602,9 @@ msgstr "Sinkroniziraj sada"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Sinkroniziraj pri otključavanju trezora"
+
+msgid "Sync with your phone or another computer"
+msgstr "Sinkronizirajte s telefonom ili drugim računalom"
 
 msgid "Synchronization"
 msgstr "Sinkronizacija"
@@ -2986,6 +3018,13 @@ msgstr "Isključi"
 msgid "Turn on"
 msgstr "Uključi"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Uključuje se pri povezivanju. Kad je isključeno, proširenje ne vidi ništa u "
+"trezoru"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Dvosmjerno usklađivanje: povuci udaljeno, gurni lokalno, riješi po načelu "
@@ -2995,11 +3034,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Dvosmjerno usklađivanje uspješno dovršeno."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Dvosmjerna sinkronizacija sa službenom aplikacijom 'Passwords' na vašem "
-"Nextcloud poslužitelju. Koristite lozinku aplikacije iz Postavke → Sigurnost."
+"Dvosmjerna sinkronizacija sa službenom aplikacijom „Passwords“ na vašem "
+"Nextcloud poslužitelju. Poslužitelj čuva ove unose u obliku koji može "
+"pročitati: koristite je samo s poslužiteljem kojem vjerujete. Prijavite se "
+"lozinkom aplikacije iz Postavke → Sigurnost."
 
 msgid "Type of password"
 msgstr "Vrsta lozinke"
@@ -3276,9 +3318,6 @@ msgid ""
 msgstr ""
 "Kada web-mjesto nudi provjeru u dva koraka, ovdje dodajte njegov ključ za "
 "postavljanje da biste dobivali kodove."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Kada je isključeno, proširenje ne vidi ništa iz trezora"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Odakle želite prenijeti svoje lozinke?"

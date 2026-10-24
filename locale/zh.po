@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgid "1. Install the extension"
+msgstr "1. 安装扩展程序"
+
 msgid "1PUX export file"
 msgstr "1PUX 导出文件"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. 将其连接到 Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. 允许它"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -110,6 +119,9 @@ msgstr "调整位数"
 
 msgid "Adjust words and separator"
 msgstr "调整单词和分隔符"
+
+msgid "Advanced"
+msgstr "高级"
 
 msgid "Algorithm"
 msgstr "算法"
@@ -304,6 +316,9 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "导入你的密码"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "获取服务器的更改并发送您的更改;以最新版本为准"
 
 msgid "Browser"
 msgstr "浏览器"
@@ -545,9 +560,6 @@ msgstr "连接失败"
 msgid "Connect the sync folder"
 msgstr "连接同步文件夹"
 
-msgid "Connect your browsers"
-msgstr "连接您的浏览器"
-
 msgid "Connected"
 msgstr "已连接"
 
@@ -555,6 +567,9 @@ msgstr "已连接"
 msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "已连接 {} 个浏览器。如果它们已打开，请重新启动。"
+
+msgid "Connected, but blocked (step 3)"
+msgstr "已连接,但被阻止(第 3 步)"
 
 msgid "Connected. Received:"
 msgstr "已连接。已接收："
@@ -887,9 +902,6 @@ msgstr "加密方式"
 msgid "Encrypted device"
 msgstr "已加密设备"
 
-msgid "Encrypted folder sync"
-msgstr "加密文件夹同步"
-
 msgid "Encrypted folder sync failed"
 msgstr "加密文件夹同步失败"
 
@@ -1130,6 +1142,9 @@ msgid ""
 msgstr ""
 "对于 Nextcloud，基础地址格式为 https://cloud.example.com/remote.php/dav/"
 "files/用户名"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "适合在自己的 Nextcloud 服务器上使用“Passwords”应用的用户"
 
 msgid "For the browsers installed for this user"
 msgstr "适用于此用户安装的浏览器"
@@ -1477,13 +1492,16 @@ msgstr ""
 "密码进入其历史记录）并入其中，并将其他项目移至“已删除项目”。"
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"登录信息、卡片、身份、笔记和通行密钥会先在这台电脑上加密，再通过 Nextcloud、"
-"pCloud、WebDAV、Dropbox、Google 云端硬盘或这台电脑上的文件夹同步。Android 版 "
-"Ashy Pass 使用同一个文件夹。"
+"登录信息、银行卡、身份信息、笔记、通行密钥和验证码会先在这台电脑上加密,再通"
+"过 Nextcloud、pCloud、WebDAV、Dropbox、Google Drive 或这台电脑上的文件夹保"
+"存。服务只能看到加密文件,看不到其中的内容。Android 版 Ashy Pass 使用同一个文"
+"件夹。"
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1604,6 +1622,9 @@ msgstr "已设置新的主密码。请把它记在安全的地方。"
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords 应用"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords 已连接"
 
@@ -1689,6 +1710,9 @@ msgstr "未连接"
 
 msgid "Not done yet"
 msgstr "尚未完成"
+
+msgid "Not in the extension stores yet"
+msgstr "尚未上架扩展程序商店"
 
 msgid "Not now"
 msgstr "暂时不要"
@@ -2253,6 +2277,9 @@ msgstr "安全密钥"
 msgid "See all folders"
 msgstr "查看所有文件夹"
 
+msgid "See how to install it by hand"
+msgstr "查看如何手动安装"
+
 msgid "See my passwords"
 msgstr "查看我的密码"
 
@@ -2462,6 +2489,9 @@ msgstr "立即同步"
 
 msgid "Sync when the vault is unlocked"
 msgstr "解锁密码库时同步"
+
+msgid "Sync with your phone or another computer"
+msgstr "与手机或另一台电脑同步"
 
 msgid "Synchronization"
 msgstr "同步"
@@ -2831,6 +2861,11 @@ msgstr "关闭"
 msgid "Turn on"
 msgstr "开启"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr "连接时开启。关闭后,扩展程序看不到保险库中的任何内容"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "双向协调：拉取远程、推送本地、以最新版本为准解决冲突"
 
@@ -2838,11 +2873,12 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "双向同步已成功完成。"
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"与 Nextcloud 服务器上的官方“Passwords”应用进行双向同步。请使用设置 → 安全中的"
-"应用密码。"
+"与您 Nextcloud 服务器上的官方“Passwords”应用双向同步。服务器以可读的形式保存"
+"这些条目:请只在您信任的服务器上使用。使用“设置 → 安全”中的应用密码登录。"
 
 msgid "Type of password"
 msgstr "密码类型"
@@ -3108,9 +3144,6 @@ msgid ""
 "When a site offers two-step verification, add its setup key here to get the "
 "codes."
 msgstr "当网站提供两步验证时，在此添加其设置密钥以获取验证码。"
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "关闭时，扩展无法看到密码库中的任何内容"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "你想从哪里导入密码？"

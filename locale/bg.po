@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:19\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Инсталирайте разширението"
+
 msgid "1PUX export file"
 msgstr "Файл за експорт 1PUX"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Свържете го с Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Разрешете го"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -118,6 +127,9 @@ msgstr "Брой цифри"
 
 msgid "Adjust words and separator"
 msgstr "Думи и разделител"
+
+msgid "Advanced"
+msgstr "Разширени"
 
 msgid "Algorithm"
 msgstr "Алгоритъм"
@@ -325,6 +337,9 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Пренесете паролите си"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Взема промените от сървъра и изпраща вашите; печели най-новата версия"
 
 msgid "Browser"
 msgstr "Браузър"
@@ -570,9 +585,6 @@ msgstr "Свързването неуспешно"
 msgid "Connect the sync folder"
 msgstr "Свържете папката за синхронизиране"
 
-msgid "Connect your browsers"
-msgstr "Свържете браузърите си"
-
 msgid "Connected"
 msgstr "Свързан"
 
@@ -581,6 +593,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Свързан с {} браузър. Рестартирайте го, ако е отворен."
 msgstr[1] "Свързан с {} браузъра. Рестартирайте ги, ако са отворени."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Свързано, но блокирано (стъпка 3)"
 
 msgid "Connected. Received:"
 msgstr "Свързано. Получени:"
@@ -917,9 +932,6 @@ msgstr "Криптирано като"
 msgid "Encrypted device"
 msgstr "Шифровано устройство"
 
-msgid "Encrypted folder sync"
-msgstr "Шифровано синхронизиране на папка"
-
 msgid "Encrypted folder sync failed"
 msgstr "Шифрованото синхронизиране на папка неуспешно"
 
@@ -1172,6 +1184,10 @@ msgid ""
 msgstr ""
 "За Nextcloud, основният URL изглежда като https://cloud.example.com/"
 "remote.php/dav/files/USERNAME"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr ""
+"За хора, които използват приложението „Passwords“ на своя Nextcloud сървър"
 
 msgid "For the browsers installed for this user"
 msgstr "За браузърите, инсталирани за този потребител"
@@ -1545,14 +1561,17 @@ msgstr ""
 "останалите в Изтрити елементи."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Записи, карти, самоличности, бележки и ключове за достъп, шифровани на този "
-"компютър, преди да го напуснат, чрез папка в Nextcloud, pCloud, WebDAV, "
-"Dropbox, Google Drive или на този компютър. Ashy Pass за Android използва "
-"същата папка."
+"Данните за вход, картите, самоличностите, бележките, passkey ключовете и "
+"кодовете за потвърждение се криптират на този компютър, преди да го "
+"напуснат, чрез папка в Nextcloud, pCloud, WebDAV, Dropbox, Google Drive или "
+"на този компютър. Услугата вижда само криптирани файлове, никога "
+"съдържанието им. Ashy Pass за Android използва същата папка."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1676,6 +1695,9 @@ msgstr "Новата главна парола е зададена. Запише
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Приложението Nextcloud Passwords"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords свързан"
 
@@ -1765,6 +1787,9 @@ msgstr "Не е свързано"
 
 msgid "Not done yet"
 msgstr "Още не е готово"
+
+msgid "Not in the extension stores yet"
+msgstr "Още не е в магазините за разширения"
 
 msgid "Not now"
 msgstr "Не сега"
@@ -2354,6 +2379,9 @@ msgstr "Ключове за сигурност"
 msgid "See all folders"
 msgstr "Всички папки"
 
+msgid "See how to install it by hand"
+msgstr "Вижте как да го инсталирате ръчно"
+
 msgid "See my passwords"
 msgstr "Към паролите ми"
 
@@ -2567,6 +2595,9 @@ msgstr "Синхронизирай сега"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Синхронизиране при отключване на трезора"
+
+msgid "Sync with your phone or another computer"
+msgstr "Синхронизирайте с телефона или друг компютър"
 
 msgid "Synchronization"
 msgstr "Синхронизация"
@@ -2983,6 +3014,13 @@ msgstr "Изключване"
 msgid "Turn on"
 msgstr "Включване"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Включва се при свързване. Когато е изключено, разширението не вижда нищо в "
+"хранилището"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Двупосочно съгласуване: изтегляне от отдалеченото, качване на локалното, "
@@ -2992,11 +3030,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Двупосочната синхронизация завърши успешно."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
 "Двупосочна синхронизация с официалното приложение „Passwords“ на вашия "
-"Nextcloud сървър. Използвайте парола за приложение от Настройки → Сигурност."
+"Nextcloud сървър. Сървърът пази тези записи във вид, който може да чете: "
+"използвайте го само със сървър, на който се доверявате. Влезте с парола за "
+"приложение от Настройки → Сигурност."
 
 msgid "Type of password"
 msgstr "Вид парола"
@@ -3276,9 +3317,6 @@ msgid ""
 msgstr ""
 "Когато сайт предлага двустъпкова проверка, добавете ключа му за настройка "
 "тук, за да получавате кодовете."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Когато е изключено, разширението не вижда нищо от трезора"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Откъде искате да пренесете паролите си?"

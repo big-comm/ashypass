@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:28\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Asenna laajennus"
+
 msgid "1PUX export file"
 msgstr "1PUX-vientitiedosto"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Yhdistä se Ashy Passiin"
+
+msgid "3. Allow it"
+msgstr "3. Salli se"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -117,6 +126,9 @@ msgstr "Säädä numeroiden määrää"
 
 msgid "Adjust words and separator"
 msgstr "Säädä sanoja ja erotinta"
+
+msgid "Advanced"
+msgstr "Lisäasetukset"
 
 msgid "Algorithm"
 msgstr "Algoritmi"
@@ -324,6 +336,9 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Tuo salasanasi"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Hakee palvelimen muutokset ja lähettää omasi; uusin versio voittaa"
 
 msgid "Browser"
 msgstr "Selain"
@@ -569,9 +584,6 @@ msgstr "Yhdistäminen epäonnistui"
 msgid "Connect the sync folder"
 msgstr "Yhdistä synkronointikansio"
 
-msgid "Connect your browsers"
-msgstr "Yhdistä selaimesi"
-
 msgid "Connected"
 msgstr "Yhdistetty"
 
@@ -580,6 +592,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Yhdistetty {} selaimeen. Käynnistä se uudelleen, jos se on auki."
 msgstr[1] "Yhdistetty {} selaimeen. Käynnistä ne uudelleen, jos ne ovat auki."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Yhdistetty, mutta estetty (vaihe 3)"
 
 msgid "Connected. Received:"
 msgstr "Yhdistetty. Vastaanotettu:"
@@ -915,9 +930,6 @@ msgstr "Salattuna"
 msgid "Encrypted device"
 msgstr "Salattu laite"
 
-msgid "Encrypted folder sync"
-msgstr "Salattu kansiosynkronointi"
-
 msgid "Encrypted folder sync failed"
 msgstr "Salattu kansiosynkronointi epäonnistui"
 
@@ -1167,6 +1179,9 @@ msgid ""
 msgstr ""
 "Nextcloudin perus-URL on muotoa https://cloud.example.com/remote.php/dav/"
 "files/KÄYTTÄJÄTUNNUS"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Niille, jotka käyttävät Nextcloud-palvelimellaan Passwords-sovellusta"
 
 msgid "For the browsers installed for this user"
 msgstr "Tälle käyttäjälle asennetuille selaimille"
@@ -1540,14 +1555,17 @@ msgstr ""
 "historiaan) ja siirtää muut kohtaan Poistetut kohteet."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Kirjautumistiedot, kortit, henkilöllisyydet, muistiinpanot ja pääsyavaimet "
-"salattuina tällä tietokoneella ennen lähtöä, kansion kautta Nextcloudissa, "
-"pCloudissa, WebDAVissa, Dropboxissa, Google Drivessa tai tällä "
-"tietokoneella. Ashy Pass Androidille käyttää samaa kansiota."
+"Kirjautumistiedot, kortit, henkilöllisyydet, muistiinpanot, avainkoodit ja "
+"vahvistuskoodit salataan tässä tietokoneessa ennen kuin ne poistuvat, "
+"kansion kautta Nextcloudissa, pCloudissa, WebDAVissa, Dropboxissa, Google "
+"Drivessa tai tässä tietokoneessa. Palvelu näkee vain salattuja tiedostoja, "
+"ei koskaan niiden sisältöä. Ashy Pass Androidille käyttää samaa kansiota."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1672,6 +1690,9 @@ msgstr "Uusi pääsalasana asetettu. Kirjoita se muistiin turvalliseen paikkaan.
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords -sovellus"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords yhdistetty"
 
@@ -1761,6 +1782,9 @@ msgstr "Ei yhdistetty"
 
 msgid "Not done yet"
 msgstr "Ei vielä tehty"
+
+msgid "Not in the extension stores yet"
+msgstr "Ei vielä laajennuskaupoissa"
 
 msgid "Not now"
 msgstr "Ei nyt"
@@ -2347,6 +2371,9 @@ msgstr "Turva-avaimet"
 msgid "See all folders"
 msgstr "Näytä kaikki kansiot"
 
+msgid "See how to install it by hand"
+msgstr "Katso, miten sen asentaa käsin"
+
 msgid "See my passwords"
 msgstr "Näytä salasanani"
 
@@ -2561,6 +2588,9 @@ msgstr "Synkronoi nyt"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Synkronoi, kun holvin lukitus avataan"
+
+msgid "Sync with your phone or another computer"
+msgstr "Synkronoi puhelimesi tai toisen tietokoneen kanssa"
 
 msgid "Synchronization"
 msgstr "Synkronointi"
@@ -2970,6 +3000,13 @@ msgstr "Poista käytöstä"
 msgid "Turn on"
 msgstr "Ota käyttöön"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Kytkeytyy päälle yhdistettäessä. Kun pois päältä, laajennus ei näe holvista "
+"mitään"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Kaksisuuntainen täsmäytys: hae etätiedot, lähetä paikalliset, ratkaise "
@@ -2979,12 +3016,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Kaksisuuntainen täsmäytys onnistui."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Kaksisuuntainen synkronointi virallisen 'Passwords'-sovelluksen kanssa "
-"Nextcloud-palvelimellasi. Käytä sovellussalasanaa kohdasta Asetukset → "
-"Turvallisuus."
+"Kaksisuuntainen synkronointi Nextcloud-palvelimesi virallisen Passwords-"
+"sovelluksen kanssa. Palvelin tallentaa nämä tiedot luettavassa muodossa: "
+"käytä sitä vain luotettavan palvelimen kanssa. Kirjaudu sovelluskohtaisella "
+"salasanalla kohdasta Asetukset → Turvallisuus."
 
 msgid "Type of password"
 msgstr "Salasanan tyyppi"
@@ -3261,9 +3300,6 @@ msgid ""
 msgstr ""
 "Kun sivusto tarjoaa kaksivaiheista vahvistusta, lisää sen asetusavain tähän "
 "saadaksesi koodit."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Kun tämä on pois, laajennus ei näe holvista mitään"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Mistä haluat tuoda salasanasi?"

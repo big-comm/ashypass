@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:23\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Εγκαταστήστε την επέκταση"
+
 msgid "1PUX export file"
 msgstr "Αρχείο εξαγωγής 1PUX"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Συνδέστε την με το Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Επιτρέψτε την"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -121,6 +130,9 @@ msgstr "Ρύθμιση πλήθους ψηφίων"
 
 msgid "Adjust words and separator"
 msgstr "Ρύθμιση λέξεων και διαχωριστικού"
+
+msgid "Advanced"
+msgstr "Σύνθετες"
 
 msgid "Algorithm"
 msgstr "Αλγόριθμος"
@@ -332,6 +344,11 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Φέρτε τους κωδικούς σας"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"Φέρνει τις αλλαγές του διακομιστή και στέλνει τις δικές σας· κερδίζει η "
+"νεότερη έκδοση"
 
 msgid "Browser"
 msgstr "Πρόγραμμα περιήγησης"
@@ -582,9 +599,6 @@ msgstr "Η σύνδεση απέτυχε"
 msgid "Connect the sync folder"
 msgstr "Σύνδεση του φακέλου συγχρονισμού"
 
-msgid "Connect your browsers"
-msgstr "Συνδέστε τους φυλλομετρητές σας"
-
 msgid "Connected"
 msgstr "Συνδεδεμένο"
 
@@ -594,6 +608,9 @@ msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Συνδέθηκε με {} φυλλομετρητή. Επανεκκινήστε τον αν είναι ανοιχτός."
 msgstr[1] ""
 "Συνδέθηκε με {} φυλλομετρητές. Επανεκκινήστε τους αν είναι ανοιχτοί."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Συνδεδεμένο, αλλά αποκλεισμένο (βήμα 3)"
 
 msgid "Connected. Received:"
 msgstr "Συνδέθηκε. Ελήφθησαν:"
@@ -933,9 +950,6 @@ msgstr "Κρυπτογραφήθηκε ως"
 msgid "Encrypted device"
 msgstr "Κρυπτογραφημένη συσκευή"
 
-msgid "Encrypted folder sync"
-msgstr "Κρυπτογραφημένος συγχρονισμός φακέλου"
-
 msgid "Encrypted folder sync failed"
 msgstr "Ο κρυπτογραφημένος συγχρονισμός φακέλου απέτυχε"
 
@@ -1194,6 +1208,11 @@ msgid ""
 msgstr ""
 "Για το Nextcloud, η βασική URL μοιάζει με https://cloud.example.com/"
 "remote.php/dav/files/USERNAME"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr ""
+"Για όσους χρησιμοποιούν την εφαρμογή «Passwords» στον διακομιστή Nextcloud "
+"τους"
 
 msgid "For the browsers installed for this user"
 msgstr "Για τους φυλλομετρητές αυτού του χρήστη"
@@ -1575,14 +1594,18 @@ msgstr ""
 "του) και μεταφέρει τα άλλα στα Διαγραμμένα στοιχεία."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Συνδέσεις, κάρτες, ταυτότητες, σημειώσεις και κλειδιά πρόσβασης, "
-"κρυπτογραφημένα σε αυτόν τον υπολογιστή πριν φύγουν, μέσω ενός φακέλου στο "
-"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive ή σε αυτόν τον υπολογιστή. "
-"Το Ashy Pass για Android χρησιμοποιεί τον ίδιο φάκελο."
+"Τα στοιχεία σύνδεσης, οι κάρτες, οι ταυτότητες, οι σημειώσεις, τα passkeys "
+"και οι κωδικοί επαλήθευσης κρυπτογραφούνται σε αυτόν τον υπολογιστή πριν "
+"φύγουν από αυτόν, μέσω ενός φακέλου στο Nextcloud, pCloud, WebDAV, Dropbox, "
+"Google Drive ή σε αυτόν τον υπολογιστή. Η υπηρεσία βλέπει μόνο "
+"κρυπτογραφημένα αρχεία, ποτέ το περιεχόμενό τους. Το Ashy Pass για Android "
+"χρησιμοποιεί τον ίδιο φάκελο."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1713,6 +1736,9 @@ msgstr ""
 msgid "Nextcloud Passwords"
 msgstr "Κωδικοί πρόσβασης Nextcloud"
 
+msgid "Nextcloud Passwords app"
+msgstr "Εφαρμογή Nextcloud Passwords"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Το Nextcloud Passwords συνδέθηκε"
 
@@ -1805,6 +1831,9 @@ msgstr "Μη συνδεδεμένο"
 
 msgid "Not done yet"
 msgstr "Δεν έχει γίνει ακόμα"
+
+msgid "Not in the extension stores yet"
+msgstr "Δεν είναι ακόμα στα καταστήματα επεκτάσεων"
 
 msgid "Not now"
 msgstr "Όχι τώρα"
@@ -2417,6 +2446,9 @@ msgstr "Κλειδιά ασφαλείας"
 msgid "See all folders"
 msgstr "Προβολή όλων των φακέλων"
 
+msgid "See how to install it by hand"
+msgstr "Δείτε πώς να την εγκαταστήσετε χειροκίνητα"
+
 msgid "See my passwords"
 msgstr "Προβολή των κωδικών μου"
 
@@ -2634,6 +2666,9 @@ msgstr "Συγχρονισμός τώρα"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Συγχρονισμός στο ξεκλείδωμα του θησαυροφυλακίου"
+
+msgid "Sync with your phone or another computer"
+msgstr "Συγχρονισμός με το κινητό σας ή άλλον υπολογιστή"
 
 msgid "Synchronization"
 msgstr "Συγχρονισμός"
@@ -3065,6 +3100,13 @@ msgstr "Απενεργοποίηση"
 msgid "Turn on"
 msgstr "Ενεργοποίηση"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Ενεργοποιείται όταν συνδέεστε. Όταν είναι απενεργοποιημένο, η επέκταση δεν "
+"βλέπει τίποτα στη θυρίδα"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Αμφίδρομη εναρμόνιση: λήψη από απομακρυσμένο, αποστολή τοπικού, επίλυση με "
@@ -3074,12 +3116,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Η αμφίδρομη αντιστοίχιση ολοκληρώθηκε με επιτυχία."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
 "Αμφίδρομος συγχρονισμός με την επίσημη εφαρμογή «Passwords» στον διακομιστή "
-"σας Nextcloud. Χρησιμοποιήστε έναν κωδικό πρόσβασης εφαρμογής από τις "
-"Ρυθμίσεις → Ασφάλεια."
+"Nextcloud σας. Ο διακομιστής κρατά αυτές τις καταχωρίσεις σε μορφή που "
+"μπορεί να διαβάσει: χρησιμοποιήστε το μόνο με διακομιστή που εμπιστεύεστε. "
+"Συνδεθείτε με κωδικό εφαρμογής από Ρυθμίσεις → Ασφάλεια."
 
 msgid "Type of password"
 msgstr "Τύπος κωδικού"
@@ -3366,10 +3410,6 @@ msgid ""
 msgstr ""
 "Όταν ένας ιστότοπος προσφέρει επαλήθευση δύο βημάτων, προσθέστε εδώ το "
 "κλειδί ρύθμισης για να λαμβάνετε τους κωδικούς."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr ""
-"Όταν είναι ανενεργό, η επέκταση δεν βλέπει τίποτα από το θησαυροφυλάκιο"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Από πού θέλετε να φέρετε τους κωδικούς σας;"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. התקינו את התוסף"
+
 msgid "1PUX export file"
 msgstr "קובץ ייצוא 1PUX"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. חברו אותו ל-Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. אשרו אותו"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -111,6 +120,9 @@ msgstr "התאמת מספר הספרות"
 
 msgid "Adjust words and separator"
 msgstr "התאמת מילים ומפריד"
+
+msgid "Advanced"
+msgstr "מתקדם"
 
 msgid "Algorithm"
 msgstr "אלגוריתם"
@@ -308,6 +320,9 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "הבאת הסיסמאות שלך"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "מביא את השינויים מהשרת ושולח את שלכם; הגרסה החדשה ביותר מנצחת"
 
 msgid "Browser"
 msgstr "דפדפן"
@@ -549,9 +564,6 @@ msgstr "החיבור נכשל"
 msgid "Connect the sync folder"
 msgstr "חיבור תיקיית הסנכרון"
 
-msgid "Connect your browsers"
-msgstr "חברו את הדפדפנים שלכם"
-
 msgid "Connected"
 msgstr "מחובר"
 
@@ -560,6 +572,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "חוברו דפדפנים: {}. הפעילו אותם מחדש אם הם פתוחים."
 msgstr[1] "חוברו דפדפנים: {}. הפעילו אותם מחדש אם הם פתוחים."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "מחובר, אבל חסום (שלב 3)"
 
 msgid "Connected. Received:"
 msgstr "מחובר. התקבלו:"
@@ -893,9 +908,6 @@ msgstr "מוצפן כ-"
 msgid "Encrypted device"
 msgstr "מכשיר מוצפן"
 
-msgid "Encrypted folder sync"
-msgstr "סנכרון תיקייה מוצפן"
-
 msgid "Encrypted folder sync failed"
 msgstr "סנכרון התיקייה המוצפן נכשל"
 
@@ -1137,6 +1149,9 @@ msgid ""
 msgstr ""
 "עבור Nextcloud, כתובת הבסיס נראית כך: https://cloud.example.com/remote.php/"
 "dav/files/שם_משתמש"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "לאנשים שמשתמשים ביישום „Passwords“ בשרת ה-Nextcloud שלהם"
 
 msgid "For the browsers installed for this user"
 msgstr "לדפדפנים המותקנים עבור משתמש זה"
@@ -1495,13 +1510,16 @@ msgstr ""
 "האחרים אל פריטים שנמחקו."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"כניסות, כרטיסים, זהויות, פתקים ומפתחות גישה, מוצפנים במחשב הזה לפני שהם "
-"יוצאים ממנו, דרך תיקייה ב־Nextcloud,‏ pCloud,‏ WebDAV,‏ Dropbox,‏ Google Drive "
-"או במחשב הזה. Ashy Pass ל־Android משתמש באותה תיקייה."
+"פרטי התחברות, כרטיסים, זהויות, הערות, מפתחות גישה וקודי אימות מוצפנים במחשב "
+"הזה לפני שהם יוצאים ממנו, דרך תיקייה ב-Nextcloud, pCloud, WebDAV, Dropbox, "
+"Google Drive או במחשב הזה. השירות רואה רק קבצים מוצפנים, לעולם לא את תוכנם. "
+"Ashy Pass ל-Android משתמש באותה תיקייה."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1624,6 +1642,9 @@ msgstr "סיסמת אב חדשה הוגדרה. יש לרשום אותה במקו
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "יישום Nextcloud Passwords"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords מחובר"
 
@@ -1709,6 +1730,9 @@ msgstr "לא מחובר"
 
 msgid "Not done yet"
 msgstr "עדיין לא בוצע"
+
+msgid "Not in the extension stores yet"
+msgstr "עדיין לא בחנויות התוספים"
 
 msgid "Not now"
 msgstr "לא עכשיו"
@@ -2283,6 +2307,9 @@ msgstr "מפתחות אבטחה"
 msgid "See all folders"
 msgstr "הצגת כל התיקיות"
 
+msgid "See how to install it by hand"
+msgstr "ראו איך להתקין אותו ידנית"
+
 msgid "See my passwords"
 msgstr "הצגת הסיסמאות שלי"
 
@@ -2493,6 +2520,9 @@ msgstr "סנכרן עכשיו"
 
 msgid "Sync when the vault is unlocked"
 msgstr "סנכרון בעת שחרור נעילת הכספת"
+
+msgid "Sync with your phone or another computer"
+msgstr "סנכרון עם הטלפון או עם מחשב אחר"
 
 msgid "Synchronization"
 msgstr "סנכרון"
@@ -2877,6 +2907,11 @@ msgstr "כיבוי"
 msgid "Turn on"
 msgstr "הפעלה"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr "מופעל בעת החיבור. כשהוא כבוי, התוסף לא יכול לראות דבר בכספת"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "איחוד דו-כיווני: משוך מרחוק, דחף מקומי, פתור לפי המאוחר ביותר"
 
@@ -2884,11 +2919,13 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "התאמה דו-כיוונית הושלמה בהצלחה."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"סנכרון דו-כיווני עם אפליקציית 'Passwords' הרשמית בשרת ה-Nextcloud שלך. השתמש "
-"בסיסמת אפליקציה מהגדרות ← אבטחה."
+"סנכרון דו-כיווני עם היישום הרשמי „Passwords“ בשרת ה-Nextcloud שלכם. השרת "
+"שומר רשומות אלה בצורה שהוא יכול לקרוא: השתמשו בו רק עם שרת שאתם סומכים עליו. "
+"היכנסו עם סיסמת יישום מתוך הגדרות ← אבטחה."
 
 msgid "Type of password"
 msgstr "סוג סיסמה"
@@ -3159,9 +3196,6 @@ msgid ""
 msgstr ""
 "כשאתר מציע אימות דו־שלבי, יש להוסיף כאן את מפתח ההגדרה שלו כדי לקבל את "
 "הקודים."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "כשכבוי, ההרחבה לא רואה דבר מהכספת"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "מאיפה להביא את הסיסמאות שלך?"

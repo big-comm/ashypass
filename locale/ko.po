@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:37\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgid "1. Install the extension"
+msgstr "1. 확장 프로그램 설치"
+
 msgid "1PUX export file"
 msgstr "1PUX 내보내기 파일"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Ashy Pass에 연결"
+
+msgid "3. Allow it"
+msgstr "3. 허용"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -114,6 +123,9 @@ msgstr "자릿수 조정"
 
 msgid "Adjust words and separator"
 msgstr "단어와 구분자 조정"
+
+msgid "Advanced"
+msgstr "고급"
 
 msgid "Algorithm"
 msgstr "알고리즘"
@@ -313,6 +325,10 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "비밀번호 가져오기"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"서버의 변경 사항을 가져오고 내 변경 사항을 보냅니다. 최신 버전이 우선합니다"
 
 msgid "Browser"
 msgstr "브라우저"
@@ -558,9 +574,6 @@ msgstr "연결 실패"
 msgid "Connect the sync folder"
 msgstr "동기화 폴더 연결"
 
-msgid "Connect your browsers"
-msgstr "브라우저 연결하기"
-
 msgid "Connected"
 msgstr "연결됨"
 
@@ -568,6 +581,9 @@ msgstr "연결됨"
 msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "브라우저 {}개에 연결했습니다. 열려 있다면 다시 시작하세요."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "연결됨, 하지만 차단됨(3단계)"
 
 msgid "Connected. Received:"
 msgstr "연결됨. 받음:"
@@ -900,9 +916,6 @@ msgstr "암호화됨:"
 msgid "Encrypted device"
 msgstr "암호화된 장치"
 
-msgid "Encrypted folder sync"
-msgstr "암호화된 폴더 동기화"
-
 msgid "Encrypted folder sync failed"
 msgstr "암호화된 폴더 동기화 실패"
 
@@ -1150,6 +1163,9 @@ msgid ""
 msgstr ""
 "Nextcloud의 경우 기본 URL은 https://cloud.example.com/remote.php/dav/files/"
 "USERNAME 형식입니다"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Nextcloud 서버에서 Passwords 앱을 사용하는 분들을 위한 기능"
 
 msgid "For the browsers installed for this user"
 msgstr "이 사용자에게 설치된 브라우저용"
@@ -1513,13 +1529,16 @@ msgstr ""
 "에 가져온 뒤 나머지는 삭제된 항목으로 옮깁니다."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"로그인, 카드, 신원, 메모, 패스키는 이 컴퓨터에서 암호화된 후 Nextcloud, "
-"pCloud, WebDAV, Dropbox, Google Drive 또는 이 컴퓨터의 폴더를 통해 동기화됩니"
-"다. Android용 Ashy Pass도 같은 폴더를 사용합니다."
+"로그인 정보, 카드, 신원 정보, 메모, 패스키, 인증 코드는 이 컴퓨터를 떠나기 전"
+"에 암호화되어 Nextcloud, pCloud, WebDAV, Dropbox, Google Drive 또는 이 컴퓨터"
+"의 폴더를 통해 저장됩니다. 서비스는 암호화된 파일만 볼 수 있고 내용은 절대 "
+"볼 수 없습니다. Android용 Ashy Pass도 같은 폴더를 사용합니다."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1642,6 +1661,9 @@ msgstr "새 마스터 비밀번호가 설정되었습니다. 안전한 곳에 �
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords 앱"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords 연결됨"
 
@@ -1730,6 +1752,9 @@ msgstr "연결되지 않음"
 
 msgid "Not done yet"
 msgstr "아직 하지 않음"
+
+msgid "Not in the extension stores yet"
+msgstr "아직 확장 프로그램 스토어에 없음"
 
 msgid "Not now"
 msgstr "나중에"
@@ -2306,6 +2331,9 @@ msgstr "보안 키"
 msgid "See all folders"
 msgstr "모든 폴더 보기"
 
+msgid "See how to install it by hand"
+msgstr "직접 설치하는 방법 보기"
+
 msgid "See my passwords"
 msgstr "내 비밀번호 보기"
 
@@ -2516,6 +2544,9 @@ msgstr "지금 동기화"
 
 msgid "Sync when the vault is unlocked"
 msgstr "보관함 잠금 해제 시 동기화"
+
+msgid "Sync with your phone or another computer"
+msgstr "휴대폰이나 다른 컴퓨터와 동기화"
 
 msgid "Synchronization"
 msgstr "동기화"
@@ -2910,6 +2941,13 @@ msgstr "끄기"
 msgid "Turn on"
 msgstr "켜기"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"연결하면 켜집니다. 꺼져 있으면 확장 프로그램은 보관함의 어떤 것도 볼 수 없습"
+"니다"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "양방향 조정: 원격 가져오기, 로컬 밀어넣기, 최신 항목 우선으로 해결"
 
@@ -2917,11 +2955,13 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "양방향 조정이 성공적으로 완료되었습니다."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Nextcloud 서버의 공식 'Passwords' 앱과 양방향 동기화합니다. 설정 → 보안에서 "
-"앱 비밀번호를 사용하세요."
+"Nextcloud 서버의 공식 'Passwords' 앱과 양방향으로 동기화합니다. 서버는 이 항"
+"목을 읽을 수 있는 형태로 보관합니다. 신뢰하는 서버에서만 사용하세요. 설정 → "
+"보안에서 만든 앱 비밀번호로 로그인하세요."
 
 msgid "Type of password"
 msgstr "비밀번호 유형"
@@ -3195,9 +3235,6 @@ msgid ""
 "codes."
 msgstr ""
 "사이트에서 2단계 인증을 제공하면 여기에 설정 키를 추가해 코드를 받으세요."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "끄면 확장 프로그램은 보관함의 어떤 것도 볼 수 없습니다"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "어디에서 비밀번호를 가져올까요?"

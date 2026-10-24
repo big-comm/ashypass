@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:47\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Eklentiyi kurun"
+
 msgid "1PUX export file"
 msgstr "1PUX dışa aktarma dosyası"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Ashy Pass'e bağlayın"
+
+msgid "3. Allow it"
+msgstr "3. İzin verin"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -120,6 +129,9 @@ msgstr "Basamak sayısını ayarla"
 
 msgid "Adjust words and separator"
 msgstr "Kelimeleri ve ayırıcıyı ayarla"
+
+msgid "Advanced"
+msgstr "Gelişmiş"
 
 msgid "Algorithm"
 msgstr "Algoritma"
@@ -327,6 +339,11 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Parolalarınızı getirin"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"Sunucudaki değişiklikleri getirir ve sizinkileri gönderir; en yeni sürüm "
+"kazanır"
 
 msgid "Browser"
 msgstr "Tarayıcı"
@@ -572,9 +589,6 @@ msgstr "Bağlanılamadı"
 msgid "Connect the sync folder"
 msgstr "Eşitleme klasörünü bağla"
 
-msgid "Connect your browsers"
-msgstr "Tarayıcılarınızı bağlayın"
-
 msgid "Connected"
 msgstr "Bağlı"
 
@@ -583,6 +597,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "{} tarayıcıya bağlandı. Açıksa yeniden başlatın."
 msgstr[1] "{} tarayıcıya bağlandı. Açıksa yeniden başlatın."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Bağlı, ancak engellendi (adım 3)"
 
 msgid "Connected. Received:"
 msgstr "Bağlandı. Alınan:"
@@ -917,9 +934,6 @@ msgstr "Şifrelenmiş olarak"
 msgid "Encrypted device"
 msgstr "Şifrelenmiş cihaz"
 
-msgid "Encrypted folder sync"
-msgstr "Şifreli klasör eşitleme"
-
 msgid "Encrypted folder sync failed"
 msgstr "Şifreli klasör eşitleme başarısız oldu"
 
@@ -1171,6 +1185,9 @@ msgid ""
 msgstr ""
 "Nextcloud için temel URL şuna benzer: https://cloud.example.com/remote.php/"
 "dav/files/KULLANICIADI"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Nextcloud sunucusunda “Passwords” uygulamasını kullananlar için"
 
 msgid "For the browsers installed for this user"
 msgstr "Bu kullanıcı için kurulu tarayıcılar için"
@@ -1543,14 +1560,17 @@ msgstr ""
 "öğeler bölümüne taşır."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Girişler, kartlar, kimlikler, notlar ve geçiş anahtarları, bu bilgisayardan "
-"çıkmadan önce şifrelenir ve Nextcloud, pCloud, WebDAV, Dropbox, Google Drive "
-"veya bu bilgisayardaki bir klasör üzerinden eşitlenir. Android için Ashy "
-"Pass aynı klasörü kullanır."
+"Girişler, kartlar, kimlikler, notlar, geçiş anahtarları ve doğrulama kodları "
+"bu bilgisayardan çıkmadan önce şifrelenir; Nextcloud, pCloud, WebDAV, "
+"Dropbox, Google Drive veya bu bilgisayardaki bir klasör üzerinden saklanır. "
+"Hizmet yalnızca şifreli dosyaları görür, içlerindekini asla görmez. Android "
+"için Ashy Pass aynı klasörü kullanır."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1673,6 +1693,9 @@ msgstr "Yeni ana parola ayarlandı. Güvenli bir yere not edin."
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords uygulaması"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords bağlandı"
 
@@ -1762,6 +1785,9 @@ msgstr "Bağlı değil"
 
 msgid "Not done yet"
 msgstr "Henüz yapılmadı"
+
+msgid "Not in the extension stores yet"
+msgstr "Henüz eklenti mağazalarında yok"
 
 msgid "Not now"
 msgstr "Şimdi değil"
@@ -2352,6 +2378,9 @@ msgstr "Güvenlik Anahtarları"
 msgid "See all folders"
 msgstr "Tüm klasörleri gör"
 
+msgid "See how to install it by hand"
+msgstr "Elle nasıl kurulacağına bakın"
+
 msgid "See my passwords"
 msgstr "Parolalarımı gör"
 
@@ -2565,6 +2594,9 @@ msgstr "Şimdi senkronize et"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Kasa kilidi açılınca eşitle"
+
+msgid "Sync with your phone or another computer"
+msgstr "Telefonunuzla veya başka bir bilgisayarla eşitleyin"
 
 msgid "Synchronization"
 msgstr "Eşitleme"
@@ -2965,6 +2997,11 @@ msgstr "Kapat"
 msgid "Turn on"
 msgstr "Aç"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr "Bağlandığınızda açılır. Kapalıyken eklenti kasada hiçbir şey göremez"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Çift yönlü uzlaştırma: uzaktakini çek, yerel olanı gönder, en son kazananla "
@@ -2974,11 +3011,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Çift yönlü mutabakat başarıyla tamamlandı."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Nextcloud sunucunuzdaki resmi 'Passwords' uygulamasıyla çift yönlü "
-"senkronizasyon. Ayarlar → Güvenlik bölümünden bir uygulama parolası kullanın."
+"Nextcloud sunucunuzdaki resmî “Passwords” uygulamasıyla çift yönlü eşitleme. "
+"Sunucu bu kayıtları okuyabileceği biçimde tutar: yalnızca güvendiğiniz bir "
+"sunucuyla kullanın. Ayarlar → Güvenlik bölümündeki bir uygulama parolasıyla "
+"oturum açın."
 
 msgid "Type of password"
 msgstr "Parola türü"
@@ -3254,9 +3294,6 @@ msgid ""
 msgstr ""
 "Bir site iki adımlı doğrulama sunduğunda, kodları almak için kurulum "
 "anahtarını buraya ekleyin."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Kapalıyken uzantı kasadaki hiçbir şeyi göremez"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Parolalarınızı nereden getirmek istiyorsunuz?"

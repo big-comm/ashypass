@@ -273,12 +273,47 @@ pub(super) fn populate_sync(
         state.clone(),
         toast.clone(),
     ));
-    page.add(&build_nextcloud_passwords_group(
-        state,
-        toast,
-        parent,
-        dialog_slot,
-    ));
+    // The Passwords app is for people who already run it: a subpage, so the
+    // main choice on this page stays the encrypted folder.
+    let advanced = adw::PreferencesGroup::builder()
+        .title(tr!("Advanced"))
+        .build();
+    let nextcloud_row = adw::ActionRow::builder()
+        .title(tr!("Nextcloud Passwords app"))
+        .subtitle(if state.nextcloud.borrow().is_logged_in() {
+            tr!("Connected")
+        } else {
+            tr!("For people who use the Passwords app on their Nextcloud server")
+        })
+        .activatable(true)
+        .build();
+    nextcloud_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+    nextcloud_row.connect_activated(move |row| {
+        let Some(dialog) = row
+            .ancestor(adw::PreferencesDialog::static_type())
+            .and_downcast::<adw::PreferencesDialog>()
+        else {
+            return;
+        };
+        let content = adw::PreferencesPage::new();
+        content.add(&build_nextcloud_passwords_group(
+            state.clone(),
+            toast.clone(),
+            parent.clone(),
+            dialog_slot.clone(),
+        ));
+        let toolbar = adw::ToolbarView::new();
+        toolbar.add_top_bar(&adw::HeaderBar::new());
+        toolbar.set_content(Some(&content));
+        dialog.push_subpage(
+            &adw::NavigationPage::builder()
+                .title(tr!("Nextcloud Passwords"))
+                .child(&toolbar)
+                .build(),
+        );
+    });
+    advanced.add(&nextcloud_row);
+    page.add(&advanced);
     let note = adw::PreferencesGroup::builder()
         .description(tr!(
             "Synchronization keeps the same entries on several devices. It is not a backup: a deletion is synchronized too. Encrypted copies to Google Drive or WebDAV are in Backups."

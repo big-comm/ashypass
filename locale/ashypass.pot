@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:46-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid "1. Install the extension"
+msgstr ""
+
 msgid "1PUX export file"
+msgstr ""
+
+msgid "2. Connect it to Ashy Pass"
+msgstr ""
+
+msgid "3. Allow it"
 msgstr ""
 
 msgid ""
@@ -114,6 +123,9 @@ msgid "Adjust number of digits"
 msgstr ""
 
 msgid "Adjust words and separator"
+msgstr ""
+
+msgid "Advanced"
 msgstr ""
 
 msgid "Algorithm"
@@ -294,6 +306,9 @@ msgid ""
 msgstr ""
 
 msgid "Bring your passwords"
+msgstr ""
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
 msgstr ""
 
 msgid "Browser"
@@ -532,9 +547,6 @@ msgstr ""
 msgid "Connect the sync folder"
 msgstr ""
 
-msgid "Connect your browsers"
-msgstr ""
-
 msgid "Connected"
 msgstr ""
 
@@ -543,6 +555,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Connected, but blocked (step 3)"
+msgstr ""
 
 msgid "Connected. Received:"
 msgstr ""
@@ -872,9 +887,6 @@ msgstr ""
 msgid "Encrypted device"
 msgstr ""
 
-msgid "Encrypted folder sync"
-msgstr ""
-
 msgid "Encrypted folder sync failed"
 msgstr ""
 
@@ -1098,6 +1110,9 @@ msgstr ""
 msgid ""
 "For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
 "dav/files/USERNAME"
+msgstr ""
+
+msgid "For people who use the Passwords app on their Nextcloud server"
 msgstr ""
 
 msgid "For the browsers installed for this user"
@@ -1426,9 +1441,11 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
 
 msgid ""
@@ -1549,6 +1566,9 @@ msgstr ""
 msgid "Nextcloud Passwords"
 msgstr ""
 
+msgid "Nextcloud Passwords app"
+msgstr ""
+
 msgid "Nextcloud Passwords connected"
 msgstr ""
 
@@ -1631,6 +1651,9 @@ msgid "Not connected"
 msgstr ""
 
 msgid "Not done yet"
+msgstr ""
+
+msgid "Not in the extension stores yet"
 msgstr ""
 
 msgid "Not now"
@@ -2185,6 +2208,9 @@ msgstr ""
 msgid "See all folders"
 msgstr ""
 
+msgid "See how to install it by hand"
+msgstr ""
+
 msgid "See my passwords"
 msgstr ""
 
@@ -2392,6 +2418,9 @@ msgid "Sync now"
 msgstr ""
 
 msgid "Sync when the vault is unlocked"
+msgstr ""
+
+msgid "Sync with your phone or another computer"
 msgstr ""
 
 msgid "Synchronization"
@@ -2747,6 +2776,11 @@ msgstr ""
 msgid "Turn on"
 msgstr ""
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 
@@ -2754,8 +2788,9 @@ msgid "Two-way reconciliation completed successfully."
 msgstr ""
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
 
 msgid "Type of password"
@@ -3012,9 +3047,6 @@ msgstr ""
 msgid ""
 "When a site offers two-step verification, add its setup key here to get the "
 "codes."
-msgstr ""
-
-msgid "When off, the extension cannot see anything in the vault"
 msgstr ""
 
 msgid "Where do you want to bring your passwords from?"

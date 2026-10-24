@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:26\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Paigalda laiendus"
+
 msgid "1PUX export file"
 msgstr "1PUX-ekspordifail"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Ühenda see Ashy Passiga"
+
+msgid "3. Allow it"
+msgstr "3. Luba see"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -116,6 +125,9 @@ msgstr "Muuda numbrite arvu"
 
 msgid "Adjust words and separator"
 msgstr "Muuda sõnu ja eraldajat"
+
+msgid "Advanced"
+msgstr "Täpsemad"
 
 msgid "Algorithm"
 msgstr "Algoritm"
@@ -321,6 +333,9 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Too oma paroolid"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Toob serveri muudatused ja saadab sinu omad; võidab uusim versioon"
 
 msgid "Browser"
 msgstr "Brauser"
@@ -565,9 +580,6 @@ msgstr "Ühendamine ebaõnnestus"
 msgid "Connect the sync folder"
 msgstr "Ühenda sünkroonimiskaust"
 
-msgid "Connect your browsers"
-msgstr "Ühenda oma brauserid"
-
 msgid "Connected"
 msgstr "Ühendatud"
 
@@ -576,6 +588,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Ühendatud {} brauseriga. Taaskäivita see, kui see on avatud."
 msgstr[1] "Ühendatud {} brauseriga. Taaskäivita need, kui need on avatud."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Ühendatud, aga blokeeritud (3. samm)"
 
 msgid "Connected. Received:"
 msgstr "Ühendatud. Vastu võetud:"
@@ -910,9 +925,6 @@ msgstr "Krüptitud kujul"
 msgid "Encrypted device"
 msgstr "Krüpteeritud seade"
 
-msgid "Encrypted folder sync"
-msgstr "Krüptitud kausta sünkroonimine"
-
 msgid "Encrypted folder sync failed"
 msgstr "Krüptitud kausta sünkroonimine ebaõnnestus"
 
@@ -1163,6 +1175,9 @@ msgid ""
 msgstr ""
 "Nextcloudi puhul näeb baas-URL välja selline: https://cloud.example.com/"
 "remote.php/dav/files/KASUTAJANIMI"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Neile, kes kasutavad oma Nextcloudi serveris rakendust „Passwords“"
 
 msgid "For the browsers installed for this user"
 msgstr "Selle kasutaja brauseritele"
@@ -1533,14 +1548,17 @@ msgstr ""
 "teised kausta Kustutatud üksused."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Sisselogimised, kaardid, identiteedid, märkmed ja pääsuvõtmed, krüpteeritud "
-"selles arvutis enne lahkumist, kausta kaudu Nextcloudis, pCloudis, WebDAV-"
-"is, Dropboxis, Google Drive'is või selles arvutis. Ashy Pass Androidile "
-"kasutab sama kausta."
+"Sisselogimised, kaardid, identiteedid, märkmed, pääsuvõtmed ja "
+"kinnituskoodid krüpteeritakse selles arvutis enne selle jätmist, kausta "
+"kaudu Nextcloudis, pCloudis, WebDAV-is, Dropboxis, Google Drive'is või "
+"selles arvutis. Teenus näeb ainult krüpteeritud faile, mitte kunagi nende "
+"sisu. Ashy Pass Androidile kasutab sama kausta."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1664,6 +1682,9 @@ msgstr "Uus põhiparool on määratud. Kirjuta see kindlasse kohta üles."
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords rakendus"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords ühendatud"
 
@@ -1750,6 +1771,9 @@ msgstr "Ühendamata"
 
 msgid "Not done yet"
 msgstr "Veel tegemata"
+
+msgid "Not in the extension stores yet"
+msgstr "Pole veel laienduste poodides"
 
 msgid "Not now"
 msgstr "Mitte praegu"
@@ -2333,6 +2357,9 @@ msgstr "Turvavõtmed"
 msgid "See all folders"
 msgstr "Kuva kõik kaustad"
 
+msgid "See how to install it by hand"
+msgstr "Vaata, kuidas seda käsitsi paigaldada"
+
 msgid "See my passwords"
 msgstr "Kuva minu paroolid"
 
@@ -2545,6 +2572,9 @@ msgstr "Sünkrooni kohe"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Sünkrooni seifi lukust avamisel"
+
+msgid "Sync with your phone or another computer"
+msgstr "Sünkrooni telefoni või teise arvutiga"
 
 msgid "Synchronization"
 msgstr "Sünkroonimine"
@@ -2948,6 +2978,12 @@ msgstr "Lülita välja"
 msgid "Turn on"
 msgstr "Lülita sisse"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Lülitub ühendamisel sisse. Kui see on väljas, ei näe laiendus varamus midagi"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Kahesuunaline ühitamine: tõmba kaugandmed, lüka kohalikud, lahenda uusima "
@@ -2957,11 +2993,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Kahesuunaline vastavusse viimine õnnestus."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Kahesuunaline sünkroonimine ametliku 'Passwords' rakendusega teie Nextcloudi "
-"serveris. Kasutage rakenduse parooli jaotises Seaded → Turvalisus."
+"Kahesuunaline sünkroonimine Nextcloudi serveri ametliku rakendusega "
+"„Passwords“. Server hoiab neid kirjeid kujul, mida ta saab lugeda: kasuta "
+"seda ainult serveriga, mida usaldad. Logi sisse rakenduse parooliga "
+"jaotisest Seaded → Turvalisus."
 
 msgid "Type of password"
 msgstr "Parooli tüüp"
@@ -3234,9 +3273,6 @@ msgid ""
 msgstr ""
 "Kui sait pakub kaheastmelist kinnitamist, lisa koodide saamiseks selle "
 "seadistusvõti siia."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Kui see on väljas, ei näe laiendus seifist midagi"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Kust soovid oma paroolid tuua?"

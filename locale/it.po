@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:35\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Installa l'estensione"
+
 msgid "1PUX export file"
 msgstr "File di esportazione 1PUX"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Collegala ad Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Consentila"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -119,6 +128,9 @@ msgstr "Regola il numero di cifre"
 
 msgid "Adjust words and separator"
 msgstr "Regola parole e separatore"
+
+msgid "Advanced"
+msgstr "Avanzate"
 
 msgid "Algorithm"
 msgstr "Algoritmo"
@@ -327,6 +339,11 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Importa le tue password"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"Recupera le modifiche del server e invia le tue; vince la versione più "
+"recente"
 
 msgid "Browser"
 msgstr "Browser"
@@ -573,9 +590,6 @@ msgstr "Connessione non riuscita"
 msgid "Connect the sync folder"
 msgstr "Connetti la cartella di sincronizzazione"
 
-msgid "Connect your browsers"
-msgstr "Connetti i tuoi browser"
-
 msgid "Connected"
 msgstr "Collegato"
 
@@ -584,6 +598,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Connesso a {} browser. Riavvialo se è aperto."
 msgstr[1] "Connesso a {} browser. Riavviali se sono aperti."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Connessa, ma bloccata (passo 3)"
 
 msgid "Connected. Received:"
 msgstr "Connesso. Ricevuti:"
@@ -920,9 +937,6 @@ msgstr "Crittografato come"
 msgid "Encrypted device"
 msgstr "Dispositivo crittografato"
 
-msgid "Encrypted folder sync"
-msgstr "Sincronizzazione cartella cifrata"
-
 msgid "Encrypted folder sync failed"
 msgstr "Sincronizzazione cartella cifrata non riuscita"
 
@@ -1178,6 +1192,9 @@ msgid ""
 msgstr ""
 "Per Nextcloud, l'URL di base è simile a https://cloud.example.com/remote.php/"
 "dav/files/NOMEUTENTE"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Per chi usa l'app «Passwords» sul proprio server Nextcloud"
 
 msgid "For the browsers installed for this user"
 msgstr "Per i browser installati per questo utente"
@@ -1550,13 +1567,17 @@ msgstr ""
 "altri in Elementi eliminati."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Accessi, carte, identità, note e passkey, cifrati su questo computer prima "
-"di uscire, tramite una cartella su Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive o questo computer. Ashy Pass per Android usa la stessa cartella."
+"Credenziali, carte, identità, note, passkey e codici di verifica vengono "
+"cifrati su questo computer prima di lasciarlo, tramite una cartella su "
+"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive o su questo computer. Il "
+"servizio vede solo file cifrati, mai il loro contenuto. Ashy Pass per "
+"Android usa la stessa cartella."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1680,6 +1701,9 @@ msgstr "Nuova password principale impostata. Annotala in un luogo sicuro."
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "App Nextcloud Passwords"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords connesso"
 
@@ -1770,6 +1794,9 @@ msgstr "Non connesso"
 
 msgid "Not done yet"
 msgstr "Non ancora fatto"
+
+msgid "Not in the extension stores yet"
+msgstr "Non ancora negli store delle estensioni"
 
 msgid "Not now"
 msgstr "Non ora"
@@ -2361,6 +2388,9 @@ msgstr "Chiavi di sicurezza"
 msgid "See all folders"
 msgstr "Mostra tutte le cartelle"
 
+msgid "See how to install it by hand"
+msgstr "Scopri come installarla a mano"
+
 msgid "See my passwords"
 msgstr "Vedi le mie password"
 
@@ -2579,6 +2609,9 @@ msgstr "Sincronizza ora"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Sincronizza allo sblocco della cassaforte"
+
+msgid "Sync with your phone or another computer"
+msgstr "Sincronizza con il telefono o un altro computer"
 
 msgid "Synchronization"
 msgstr "Sincronizzazione"
@@ -3003,6 +3036,13 @@ msgstr "Disattiva"
 msgid "Turn on"
 msgstr "Attiva"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Si attiva quando ti connetti. Se è disattivato, l'estensione non vede nulla "
+"nel vault"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Riconciliazione bidirezionale: scarica remoto, carica locale, risolvi con il "
@@ -3012,11 +3052,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Riconciliazione bidirezionale completata con successo."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Sincronizzazione bidirezionale con l'app ufficiale 'Passwords' sul tuo "
-"server Nextcloud. Utilizza una password dell'app da Impostazioni → Sicurezza."
+"Sincronizzazione bidirezionale con l'app ufficiale «Passwords» sul tuo "
+"server Nextcloud. Il server conserva queste voci in una forma che può "
+"leggere: usala solo con un server di cui ti fidi. Accedi con una password "
+"per app da Impostazioni → Sicurezza."
 
 msgid "Type of password"
 msgstr "Tipo di password"
@@ -3293,9 +3336,6 @@ msgid ""
 msgstr ""
 "Quando un sito offre la verifica in due passaggi, aggiungi qui la sua chiave "
 "di configurazione per ottenere i codici."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Se disattivato, l’estensione non vede nulla della cassaforte"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Da dove vuoi importare le password?"

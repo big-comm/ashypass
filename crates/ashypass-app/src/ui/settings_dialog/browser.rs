@@ -8,38 +8,54 @@
 use super::*;
 
 /// Store pages of the published extension. Empty until it is published;
-/// the rows are hidden while empty.
+/// until then the first step points at the instructions to load it by hand.
 const FIREFOX_STORE_URL: &str = "";
 const CHROME_STORE_URL: &str = "";
+const MANUAL_INSTALL_URL: &str =
+    "https://github.com/big-comm/ashypass/blob/main/browser-extension/README.md#load-the-unpacked-extension";
 
+/// Three numbered steps, in the order they are done: install the extension,
+/// connect the browsers (which also allows the extension), and the switch
+/// that allows it. Each browser found says whether it is connected, and
+/// whether the switch blocks it.
 pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, toast: Toaster) {
-    let group = adw::PreferencesGroup::builder()
+    let intro = adw::PreferencesGroup::builder()
         .title(tr!("Browser extension"))
         .description(tr!(
             "Fill and copy your passwords in Chrome, Brave, Edge, Vivaldi, Firefox and LibreWolf. The extension never stores anything: it asks Ashy Pass each time, and only fills a page after you click."
         ))
         .build();
-    let switch = adw::SwitchRow::builder()
-        .title(tr!("Allow the browser extension"))
-        .subtitle(tr!(
-            "When off, the extension cannot see anything in the vault"
-        ))
-        .active(state.settings().browser_extension)
-        .build();
-    {
-        let state = state.clone();
-        switch.connect_active_notify(move |row| {
-            let active = row.is_active();
-            if let Err(e) = state.update_settings(|s| s.browser_extension = active) {
-                log::warn!("could not save settings: {e}");
-            }
-        });
-    }
-    group.add(&switch);
-    page.add(&group);
+    page.add(&intro);
 
+    // ---- 1. Install ----------------------------------------------------
+    let install_group = adw::PreferencesGroup::builder()
+        .title(tr!("1. Install the extension"))
+        .build();
+    let stores: Vec<(&str, &str)> = [
+        (
+            tr!("Get the extension for Chrome, Brave, Edge and Vivaldi"),
+            CHROME_STORE_URL,
+        ),
+        (tr!("Get the extension for Firefox"), FIREFOX_STORE_URL),
+    ]
+    .into_iter()
+    .filter(|(_, url)| !url.is_empty())
+    .collect();
+    if stores.is_empty() {
+        install_group.add(&link_row(
+            tr!("Not in the extension stores yet"),
+            Some(tr!("See how to install it by hand")),
+            MANUAL_INSTALL_URL,
+        ));
+    }
+    for (title, url) in stores {
+        install_group.add(&link_row(title, None, url));
+    }
+    page.add(&install_group);
+
+    // ---- 2. Connect ----------------------------------------------------
     let connect_group = adw::PreferencesGroup::builder()
-        .title(tr!("Connect your browsers"))
+        .title(tr!("2. Connect it to Ashy Pass"))
         .description(tr!(
             "Run this once after installing a browser, so it can find Ashy Pass. It only adds a small file to each browser's settings folder."
         ))
@@ -52,19 +68,36 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
         .label(tr!("Connect"))
         .valign(gtk::Align::Center)
         .build();
+    connect.add_css_class("suggested-action");
     connect_row.add_suffix(&connect);
     connect_group.add(&connect_row);
 
-    // One row per browser set up for this user: connected or not.
+    // ---- 3. Allow ------------------------------------------------------
+    let allow_group = adw::PreferencesGroup::builder()
+        .title(tr!("3. Allow it"))
+        .build();
+    let switch = adw::SwitchRow::builder()
+        .title(tr!("Allow the browser extension"))
+        .subtitle(tr!(
+            "Turned on when you connect. When off, the extension cannot see anything in the vault"
+        ))
+        .active(state.settings().browser_extension)
+        .build();
+    allow_group.add(&switch);
+
+    // One row per browser set up for this user: connected or not, and
+    // blocked while the switch is off.
     let status_rows: Rc<RefCell<Vec<adw::ActionRow>>> = Rc::default();
     let refresh_status: Rc<dyn Fn()> = {
-        // Weak: the Connect button, inside the group, calls it.
+        // Weak: the Connect button and the switch, inside the page, call it.
         let group = connect_group.downgrade();
+        let switch = switch.downgrade();
         let rows = status_rows.clone();
         Rc::new(move || {
-            let Some(group) = group.upgrade() else {
+            let (Some(group), Some(switch)) = (group.upgrade(), switch.upgrade()) else {
                 return;
             };
+            let allowed = switch.is_active();
             for row in rows.borrow_mut().drain(..) {
                 group.remove(&row);
             }
@@ -79,13 +112,14 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
             }
             for (name, connected) in found {
                 let row = adw::ActionRow::builder().title(name).build();
-                let label = gtk::Label::new(Some(if connected {
-                    tr!("Connected")
-                } else {
-                    tr!("Not connected")
-                }));
-                label.add_css_class(if connected { "success" } else { "dim-label" });
-                if connected {
+                let (text, class) = match (connected, allowed) {
+                    (true, true) => (tr!("Connected"), "success"),
+                    (true, false) => (tr!("Connected, but blocked (step 3)"), "warning"),
+                    (false, _) => (tr!("Not connected"), "dim-label"),
+                };
+                let label = gtk::Label::new(Some(text));
+                label.add_css_class(class);
+                if connected && allowed {
                     row.add_suffix(&gtk::Image::from_icon_name("object-select-symbolic"));
                 }
                 row.add_suffix(&label);
@@ -96,8 +130,20 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
     };
     refresh_status();
     {
+        let state = state.clone();
+        let refresh_status = refresh_status.clone();
+        switch.connect_active_notify(move |row| {
+            let active = row.is_active();
+            if let Err(e) = state.update_settings(|s| s.browser_extension = active) {
+                log::warn!("could not save settings: {e}");
+            }
+            refresh_status();
+        });
+    }
+    {
         let toast = toast.clone();
         let refresh_status = refresh_status.clone();
+        let switch = switch.downgrade();
         connect.connect_clicked(move |button| {
             let Some(host) = native_host_path() else {
                 toast.add_toast(
@@ -112,6 +158,7 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
             let button = button.clone();
             let toast = toast.clone();
             let refresh_status = refresh_status.clone();
+            let switch = switch.clone();
             run_background(
                 move || {
                     let mut command = std::process::Command::new(host);
@@ -145,6 +192,13 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
                 },
                 move |result| {
                     button.set_sensitive(true);
+                    // Connecting is asking for the extension: allow it too
+                    // (this refreshes the list through the switch).
+                    if let (Ok(count), Some(switch)) = (&result, switch.upgrade()) {
+                        if *count > 0 {
+                            switch.set_active(true);
+                        }
+                    }
                     refresh_status();
                     let message = match result {
                         Ok(0) => tr!("No supported browser was found. Open your browser once, then try again.").to_string(),
@@ -162,6 +216,7 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
         });
     }
     page.add(&connect_group);
+    page.add(&allow_group);
 
     let unlock_group = adw::PreferencesGroup::builder()
         .title(tr!("Unlocking"))
@@ -170,38 +225,24 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
         ))
         .build();
     page.add(&unlock_group);
+}
 
-    let stores: Vec<(&str, &str)> = [
-        (tr!("Get the extension for Firefox"), FIREFOX_STORE_URL),
-        (
-            tr!("Get the extension for Chrome, Brave, Edge and Vivaldi"),
-            CHROME_STORE_URL,
-        ),
-    ]
-    .into_iter()
-    .filter(|(_, url)| !url.is_empty())
-    .collect();
-    if !stores.is_empty() {
-        let store_group = adw::PreferencesGroup::new();
-        for (title, url) in stores {
-            let row = adw::ActionRow::builder()
-                .title(title)
-                .activatable(true)
-                .build();
-            row.add_suffix(&gtk::Image::from_icon_name("adw-external-link-symbolic"));
-            let url = url.to_string();
-            row.connect_activated(move |row| {
-                let parent = row.root().and_then(|r| r.downcast::<gtk::Window>().ok());
-                gtk::UriLauncher::new(&url).launch(
-                    parent.as_ref(),
-                    None::<&gio::Cancellable>,
-                    |_| {},
-                );
-            });
-            store_group.add(&row);
-        }
-        page.add(&store_group);
+/// A row that opens `url` in the browser.
+fn link_row(title: &str, subtitle: Option<&str>, url: &str) -> adw::ActionRow {
+    let row = adw::ActionRow::builder()
+        .title(title)
+        .activatable(true)
+        .build();
+    if let Some(subtitle) = subtitle {
+        row.set_subtitle(subtitle);
     }
+    row.add_suffix(&gtk::Image::from_icon_name("adw-external-link-symbolic"));
+    let url = url.to_string();
+    row.connect_activated(move |row| {
+        let parent = row.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+        gtk::UriLauncher::new(&url).launch(parent.as_ref(), None::<&gio::Cancellable>, |_| {});
+    });
+    row
 }
 
 /// The native host program: next to this executable (development builds,

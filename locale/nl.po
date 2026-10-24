@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:38\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Installeer de extensie"
+
 msgid "1PUX export file"
 msgstr "1PUX-exportbestand"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Koppel hem aan Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Sta hem toe"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -119,6 +128,9 @@ msgstr "Aantal cijfers aanpassen"
 
 msgid "Adjust words and separator"
 msgstr "Woorden en scheidingsteken aanpassen"
+
+msgid "Advanced"
+msgstr "Geavanceerd"
 
 msgid "Algorithm"
 msgstr "Algoritme"
@@ -327,6 +339,11 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Breng uw wachtwoorden mee"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"Haalt de wijzigingen van de server op en stuurt de jouwe; de nieuwste versie "
+"wint"
 
 msgid "Browser"
 msgstr "Browser"
@@ -572,9 +589,6 @@ msgstr "Verbinden mislukt"
 msgid "Connect the sync folder"
 msgstr "De synchronisatiemap verbinden"
 
-msgid "Connect your browsers"
-msgstr "Verbind je browsers"
-
 msgid "Connected"
 msgstr "Verbonden"
 
@@ -583,6 +597,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Verbonden met {} browser. Herstart hem als hij open is."
 msgstr[1] "Verbonden met {} browsers. Herstart ze als ze open zijn."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Verbonden, maar geblokkeerd (stap 3)"
 
 msgid "Connected. Received:"
 msgstr "Verbonden. Ontvangen:"
@@ -921,9 +938,6 @@ msgstr "Versleuteld als"
 msgid "Encrypted device"
 msgstr "Versleuteld apparaat"
 
-msgid "Encrypted folder sync"
-msgstr "Versleutelde mapsynchronisatie"
-
 msgid "Encrypted folder sync failed"
 msgstr "Versleutelde mapsynchronisatie mislukt"
 
@@ -1177,6 +1191,9 @@ msgid ""
 msgstr ""
 "Voor Nextcloud ziet de basis-URL eruit als https://cloud.example.com/"
 "remote.php/dav/files/GEBRUIKERSNAAM"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Voor mensen die de app 'Passwords' op hun Nextcloud-server gebruiken"
 
 msgid "For the browsers installed for this user"
 msgstr "Voor de browsers van deze gebruiker"
@@ -1550,14 +1567,17 @@ msgstr ""
 "geschiedenis) en de andere gaan naar Verwijderde items."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Logins, kaarten, identiteiten, notities en passkeys, versleuteld op deze "
-"computer voordat ze vertrekken, via een map op Nextcloud, pCloud, WebDAV, "
-"Dropbox, Google Drive of deze computer. Ashy Pass voor Android gebruikt "
-"dezelfde map."
+"Inloggegevens, kaarten, identiteiten, notities, passkeys en verificatiecodes "
+"worden op deze computer versleuteld voordat ze hem verlaten, via een map op "
+"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive of deze computer. De dienst "
+"ziet alleen versleutelde bestanden, nooit wat erin staat. Ashy Pass voor "
+"Android gebruikt dezelfde map."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1684,6 +1704,9 @@ msgstr "Nieuw hoofdwachtwoord ingesteld. Noteer het op een veilige plek."
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords-app"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords verbonden"
 
@@ -1775,6 +1798,9 @@ msgstr "Niet verbonden"
 
 msgid "Not done yet"
 msgstr "Nog niet gedaan"
+
+msgid "Not in the extension stores yet"
+msgstr "Nog niet in de extensiewinkels"
 
 msgid "Not now"
 msgstr "Niet nu"
@@ -2371,6 +2397,9 @@ msgstr "Beveiligingssleutels"
 msgid "See all folders"
 msgstr "Alle mappen bekijken"
 
+msgid "See how to install it by hand"
+msgstr "Bekijk hoe je hem handmatig installeert"
+
 msgid "See my passwords"
 msgstr "Mijn wachtwoorden bekijken"
 
@@ -2588,6 +2617,9 @@ msgstr "Nu synchroniseren"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Synchroniseren bij het ontgrendelen van de kluis"
+
+msgid "Sync with your phone or another computer"
+msgstr "Synchroniseren met je telefoon of een andere computer"
 
 msgid "Synchronization"
 msgstr "Synchronisatie"
@@ -3016,6 +3048,13 @@ msgstr "Uitschakelen"
 msgid "Turn on"
 msgstr "Inschakelen"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Wordt ingeschakeld als je verbindt. Als dit uit staat, kan de extensie niets "
+"in de kluis zien"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Tweerichtingsafstemming: extern ophalen, lokaal pushen, oplossen op basis "
@@ -3025,11 +3064,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Bidirectionele reconciliatie succesvol voltooid."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Tweerichtingssynchronisatie met de officiële 'Passwords'-app op uw Nextcloud-"
-"server. Gebruik een app-wachtwoord via Instellingen → Beveiliging."
+"Tweerichtingssynchronisatie met de officiële app 'Passwords' op je Nextcloud-"
+"server. De server bewaart deze items in een vorm die hij kan lezen: gebruik "
+"dit alleen met een server die je vertrouwt. Log in met een app-wachtwoord "
+"uit Instellingen → Beveiliging."
 
 msgid "Type of password"
 msgstr "Soort wachtwoord"
@@ -3311,9 +3353,6 @@ msgid ""
 msgstr ""
 "Als een website tweestapsverificatie aanbiedt, voeg dan hier de "
 "configuratiesleutel toe om de codes te krijgen."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Als dit uit staat, ziet de extensie niets van de kluis"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Waar wilt u uw wachtwoorden vandaan halen?"

@@ -11,9 +11,9 @@ use ashypass_core::sync::pairing;
 
 pub(super) fn build_folder_sync_group(state: SharedState, toast: Toaster) -> adw::PreferencesGroup {
     let group = adw::PreferencesGroup::builder()
-        .title(tr!("Encrypted folder sync"))
+        .title(tr!("Sync with your phone or another computer"))
         .description(tr!(
-            "Logins, cards, identities, notes and passkeys, encrypted on this computer before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or this computer. Ashy Pass for Android uses the same folder."
+            "Logins, cards, identities, notes, passkeys and verification codes are encrypted on this computer before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only sees encrypted files, never what is in them. Ashy Pass for Android uses the same folder."
         ))
         .build();
 

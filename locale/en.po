@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: English\n"
@@ -17,8 +17,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Install the extension"
+
 msgid "1PUX export file"
 msgstr "1PUX export file"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Connect it to Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Allow it"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -119,6 +128,9 @@ msgstr "Adjust number of digits"
 
 msgid "Adjust words and separator"
 msgstr "Adjust words and separator"
+
+msgid "Advanced"
+msgstr "Advanced"
 
 msgid "Algorithm"
 msgstr "Algorithm"
@@ -325,6 +337,9 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Bring your passwords"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Brings the server's changes and sends yours; the newest version wins"
 
 msgid "Browser"
 msgstr "Browser"
@@ -574,9 +589,6 @@ msgstr "Connect failed"
 msgid "Connect the sync folder"
 msgstr "Connect the sync folder"
 
-msgid "Connect your browsers"
-msgstr "Connect your browsers"
-
 msgid "Connected"
 msgstr "Connected"
 
@@ -585,6 +597,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Connected to {} browser. Restart it if it is open."
 msgstr[1] "Connected to {} browsers. Restart them if they are open."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Connected, but blocked (step 3)"
 
 msgid "Connected. Received:"
 msgstr "Connected. Received:"
@@ -923,9 +938,6 @@ msgstr "Encrypted as"
 msgid "Encrypted device"
 msgstr "Encrypted device"
 
-msgid "Encrypted folder sync"
-msgstr "Encrypted folder sync"
-
 msgid "Encrypted folder sync failed"
 msgstr "Encrypted folder sync failed"
 
@@ -1174,6 +1186,9 @@ msgid ""
 msgstr ""
 "For Nextcloud, the base URL looks like https://cloud.example.com/remote.php/"
 "dav/files/USERNAME"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "For people who use the Passwords app on their Nextcloud server"
 
 msgid "For the browsers installed for this user"
 msgstr "For the browsers installed for this user"
@@ -1548,13 +1563,17 @@ msgstr ""
 "passwords go to its history) and moves the others to Deleted items."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1681,6 +1700,9 @@ msgstr "New master password set. Write it down somewhere safe."
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords app"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords connected"
 
@@ -1769,6 +1791,9 @@ msgstr "Not connected"
 
 msgid "Not done yet"
 msgstr "Not done yet"
+
+msgid "Not in the extension stores yet"
+msgstr "Not in the extension stores yet"
 
 msgid "Not now"
 msgstr "Not now"
@@ -2373,6 +2398,9 @@ msgstr "Security Keys"
 msgid "See all folders"
 msgstr "See all folders"
 
+msgid "See how to install it by hand"
+msgstr "See how to install it by hand"
+
 msgid "See my passwords"
 msgstr "See my passwords"
 
@@ -2594,6 +2622,9 @@ msgstr "Sync now"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Sync when the vault is unlocked"
+
+msgid "Sync with your phone or another computer"
+msgstr "Sync with your phone or another computer"
 
 msgid "Synchronization"
 msgstr "Synchronization"
@@ -2998,6 +3029,13 @@ msgstr "Turn off"
 msgid "Turn on"
 msgstr "Turn on"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 
@@ -3005,11 +3043,13 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Two-way reconciliation completed successfully."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 
 msgid "Type of password"
 msgstr "Type of password"
@@ -3293,9 +3333,6 @@ msgid ""
 msgstr ""
 "When a site offers two-step verification, add its setup key here to get the "
 "codes."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "When off, the extension cannot see anything in the vault"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Where do you want to bring your passwords from?"

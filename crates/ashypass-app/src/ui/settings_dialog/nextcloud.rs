@@ -18,7 +18,7 @@ pub(super) fn build_nextcloud_passwords_group(
     let group = adw::PreferencesGroup::builder()
         .title(tr!("Nextcloud Passwords"))
         .description(tr!(
-            "Two-way sync with the official 'Passwords' app on your Nextcloud server. Use an app password from Settings → Security."
+            "Two-way sync with the official 'Passwords' app on your Nextcloud server. The server keeps these entries in a form it can read: use it only with a server you trust. Sign in with an app password from Settings → Security."
         ))
         .build();
 
@@ -113,7 +113,7 @@ pub(super) fn build_nextcloud_passwords_group(
     let sync_row = adw::ActionRow::builder()
         .title(tr!("Sync now"))
         .subtitle(tr!(
-            "Two-way reconcile: pull remote, push local, resolve by latest-wins"
+            "Brings the server's changes and sends yours; the newest version wins"
         ))
         .activatable(true)
         .build();

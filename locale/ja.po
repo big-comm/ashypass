@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgid "1. Install the extension"
+msgstr "1. 拡張機能をインストール"
+
 msgid "1PUX export file"
 msgstr "1PUX エクスポートファイル"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Ashy Passに接続"
+
+msgid "3. Allow it"
+msgstr "3. 許可する"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -117,6 +126,9 @@ msgstr "桁数を調整"
 
 msgid "Adjust words and separator"
 msgstr "単語と区切り文字を調整"
+
+msgid "Advanced"
+msgstr "詳細設定"
 
 msgid "Algorithm"
 msgstr "アルゴリズム"
@@ -322,6 +334,10 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "パスワードを取り込む"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"サーバーの変更を取り込み、こちらの変更を送信します。新しいほうが優先されます"
 
 msgid "Browser"
 msgstr "ブラウザー"
@@ -567,9 +583,6 @@ msgstr "接続に失敗しました"
 msgid "Connect the sync folder"
 msgstr "同期フォルダに接続"
 
-msgid "Connect your browsers"
-msgstr "ブラウザーを接続する"
-
 msgid "Connected"
 msgstr "接続済み"
 
@@ -578,6 +591,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] ""
 "{} 個のブラウザーに接続しました。開いている場合は再起動してください。"
+
+msgid "Connected, but blocked (step 3)"
+msgstr "接続済みですが、ブロックされています(ステップ3)"
 
 msgid "Connected. Received:"
 msgstr "接続しました。受信:"
@@ -913,9 +929,6 @@ msgstr "暗号化形式"
 msgid "Encrypted device"
 msgstr "暗号化されたデバイス"
 
-msgid "Encrypted folder sync"
-msgstr "暗号化フォルダ同期"
-
 msgid "Encrypted folder sync failed"
 msgstr "暗号化フォルダ同期に失敗しました"
 
@@ -1168,6 +1181,9 @@ msgid ""
 msgstr ""
 "Nextcloudの場合、ベースURLは https://cloud.example.com/remote.php/dav/files/"
 "USERNAME のようになります"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "NextcloudサーバーでPasswordsアプリを使っている方向け"
 
 msgid "For the browsers installed for this user"
 msgstr "このユーザーにインストールされたブラウザー"
@@ -1536,14 +1552,17 @@ msgstr ""
 "歴に入ります）をそこに取り込み、他のアイテムは削除済みアイテムに移動します。"
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"ログイン、カード、ID、メモ、パスキーは、このコンピューターで暗号化されてか"
-"ら、Nextcloud、pCloud、WebDAV、Dropbox、Google ドライブ、またはこのコンピュー"
-"ター上のフォルダーを通じて同期されます。Android 版 Ashy Pass も同じフォルダー"
-"を使用します。"
+"ログイン情報、カード、ID、メモ、パスキー、確認コードは、このコンピューターか"
+"ら出る前に暗号化され、Nextcloud、pCloud、WebDAV、Dropbox、Google Drive、また"
+"はこのコンピューター上のフォルダー経由で保存されます。サービス側には暗号化さ"
+"れたファイルしか見えず、中身は見えません。Android版Ashy Passも同じフォルダー"
+"を使います。"
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1669,6 +1688,9 @@ msgstr ""
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwordsアプリ"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords に接続しました"
 
@@ -1759,6 +1781,9 @@ msgstr "未接続"
 
 msgid "Not done yet"
 msgstr "まだ完了していません"
+
+msgid "Not in the extension stores yet"
+msgstr "拡張機能ストアにはまだありません"
 
 msgid "Not now"
 msgstr "今はしない"
@@ -2344,6 +2369,9 @@ msgstr "セキュリティキー"
 msgid "See all folders"
 msgstr "すべてのフォルダを表示"
 
+msgid "See how to install it by hand"
+msgstr "手動でインストールする方法を見る"
+
 msgid "See my passwords"
 msgstr "マイパスワードを見る"
 
@@ -2557,6 +2585,9 @@ msgstr "今すぐ同期"
 
 msgid "Sync when the vault is unlocked"
 msgstr "保管庫のロック解除時に同期"
+
+msgid "Sync with your phone or another computer"
+msgstr "スマートフォンや別のコンピューターと同期"
 
 msgid "Synchronization"
 msgstr "同期"
@@ -2966,6 +2997,13 @@ msgstr "オフにする"
 msgid "Turn on"
 msgstr "オンにする"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"接続すると有効になります。オフにすると、拡張機能はボールト内の何も見られませ"
+"ん"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "双方向調整: リモートをプル、ローカルをプッシュ、最新の更新で解決"
 
@@ -2973,11 +3011,13 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "双方向の調整が正常に完了しました。"
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Nextcloudサーバー上の公式「Passwords」アプリとの双方向同期。設定→セキュリティ"
-"からアプリパスワードを使用してください。"
+"Nextcloudサーバーの公式「Passwords」アプリと双方向で同期します。サーバーはこ"
+"れらの項目を読み取れる形で保持します。信頼できるサーバーでのみ使ってくださ"
+"い。設定 → セキュリティ のアプリパスワードでサインインします。"
 
 msgid "Type of password"
 msgstr "パスワードの種類"
@@ -3255,9 +3295,6 @@ msgid ""
 msgstr ""
 "サイトが 2 段階認証に対応している場合は、ここにセットアップキーを追加すると"
 "コードを取得できます。"
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "オフのとき、拡張機能は保管庫の内容を一切参照できません"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "どこからパスワードを取り込みますか？"

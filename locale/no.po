@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:44-0300\n"
+"POT-Creation-Date: 2026-10-24 18:58-0300\n"
 "PO-Revision-Date: 2026-05-12 19:39\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Installer utvidelsen"
+
 msgid "1PUX export file"
 msgstr "1PUX-eksportfil"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Koble den til Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Tillat den"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -117,6 +126,9 @@ msgstr "Juster antall sifre"
 
 msgid "Adjust words and separator"
 msgstr "Juster ord og skilletegn"
+
+msgid "Advanced"
+msgstr "Avansert"
 
 msgid "Algorithm"
 msgstr "Algoritme"
@@ -323,6 +335,9 @@ msgstr ""
 
 msgid "Bring your passwords"
 msgstr "Ta med passordene dine"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Henter serverens endringer og sender dine; den nyeste versjonen vinner"
 
 msgid "Browser"
 msgstr "Nettleser"
@@ -568,9 +583,6 @@ msgstr "Tilkobling mislyktes"
 msgid "Connect the sync folder"
 msgstr "Koble til synkroniseringsmappen"
 
-msgid "Connect your browsers"
-msgstr "Koble til nettleserne dine"
-
 msgid "Connected"
 msgstr "Tilkoblet"
 
@@ -579,6 +591,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Koblet til {} nettleser. Start den på nytt hvis den er åpen."
 msgstr[1] "Koblet til {} nettlesere. Start dem på nytt hvis de er åpne."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Tilkoblet, men blokkert (steg 3)"
 
 msgid "Connected. Received:"
 msgstr "Tilkoblet. Mottatt:"
@@ -914,9 +929,6 @@ msgstr "Kryptert som"
 msgid "Encrypted device"
 msgstr "Kryptert enhet"
 
-msgid "Encrypted folder sync"
-msgstr "Kryptert mappesynkronisering"
-
 msgid "Encrypted folder sync failed"
 msgstr "Kryptert mappesynkronisering mislyktes"
 
@@ -1169,6 +1181,9 @@ msgid ""
 msgstr ""
 "For Nextcloud ser grunn-URL-en slik ut: https://cloud.example.com/remote.php/"
 "dav/files/BRUKERNAVN"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "For folk som bruker appen «Passwords» på Nextcloud-serveren sin"
 
 msgid "For the browsers installed for this user"
 msgstr "For nettleserne installert for denne brukeren"
@@ -1541,14 +1556,17 @@ msgstr ""
 "flytter de andre til Slettede elementer."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Pålogginger, kort, identiteter, notater og tilgangsnøkler, kryptert på denne "
-"datamaskinen før de forlater den, via en mappe på Nextcloud, pCloud, WebDAV, "
-"Dropbox, Google Disk eller denne datamaskinen. Ashy Pass for Android bruker "
-"samme mappe."
+"Innlogginger, kort, identiteter, notater, passnøkler og bekreftelseskoder "
+"krypteres på denne datamaskinen før de forlater den, via en mappe på "
+"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive eller denne datamaskinen. "
+"Tjenesten ser bare krypterte filer, aldri innholdet. Ashy Pass for Android "
+"bruker den samme mappen."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1673,6 +1691,9 @@ msgstr "Nytt hovedpassord er satt. Skriv det ned et trygt sted."
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
 
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords-appen"
+
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords tilkoblet"
 
@@ -1761,6 +1782,9 @@ msgstr "Ikke tilkoblet"
 
 msgid "Not done yet"
 msgstr "Ikke gjort ennå"
+
+msgid "Not in the extension stores yet"
+msgstr "Ikke i utvidelsesbutikkene ennå"
 
 msgid "Not now"
 msgstr "Ikke nå"
@@ -2349,6 +2373,9 @@ msgstr "Sikkerhetsnøkler"
 msgid "See all folders"
 msgstr "Se alle mapper"
 
+msgid "See how to install it by hand"
+msgstr "Se hvordan du installerer den manuelt"
+
 msgid "See my passwords"
 msgstr "Se passordene mine"
 
@@ -2560,6 +2587,9 @@ msgstr "Synkroniser nå"
 
 msgid "Sync when the vault is unlocked"
 msgstr "Synkroniser når hvelvet låses opp"
+
+msgid "Sync with your phone or another computer"
+msgstr "Synkroniser med telefonen din eller en annen datamaskin"
 
 msgid "Synchronization"
 msgstr "Synkronisering"
@@ -2970,6 +3000,13 @@ msgstr "Slå av"
 msgid "Turn on"
 msgstr "Slå på"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Slås på når du kobler til. Når den er av, kan ikke utvidelsen se noe i "
+"hvelvet"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "Toveis avstemming: hent ekstern, push lokal, løs med siste vinner"
 
@@ -2977,11 +3014,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Toveis avstemming fullført."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Toveis synkronisering med den offisielle «Passwords»-appen på Nextcloud-"
-"serveren din. Bruk et app-passord fra Innstillinger → Sikkerhet."
+"Toveissynkronisering med den offisielle appen «Passwords» på Nextcloud-"
+"serveren din. Serveren lagrer disse oppføringene i en form den kan lese: "
+"bruk den bare med en server du stoler på. Logg inn med et appassord fra "
+"Innstillinger → Sikkerhet."
 
 msgid "Type of password"
 msgstr "Passordtype"
@@ -3258,9 +3298,6 @@ msgid ""
 msgstr ""
 "Når et nettsted tilbyr totrinnsbekreftelse, legg til oppsettnøkkelen her for "
 "å få kodene."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Når den er av, ser utvidelsen ingenting i hvelvet"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Hvor vil du hente passordene dine fra?"
