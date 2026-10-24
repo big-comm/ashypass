@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:58-0300\n"
+"POT-Creation-Date: 2026-10-24 19:09-0300\n"
 "PO-Revision-Date: 2026-05-12 19:23\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -187,6 +187,11 @@ msgstr ""
 
 msgid "Another example"
 msgstr "Άλλο παράδειγμα"
+
+msgid "Anyone who gets the file can read every password in it"
+msgstr ""
+"Όποιος αποκτήσει το αρχείο μπορεί να διαβάσει κάθε κωδικό πρόσβασης μέσα σε "
+"αυτό"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -982,6 +987,9 @@ msgstr "Νέα κρυπτογράφηση του θησαυροφυλακίου�
 msgid "Encrypting…"
 msgstr "Γίνεται κρυπτογράφηση…"
 
+msgid "Encryption"
+msgstr "Κρυπτογράφηση"
+
 msgid "Encrypt…"
 msgstr "Κρυπτογράφηση…"
 
@@ -1031,6 +1039,13 @@ msgid "Every code in this export is already in the vault."
 msgstr "Όλοι οι κωδικοί αυτής της εξαγωγής βρίσκονται ήδη στη θυρίδα."
 
 msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Κάθε καταχώριση κρυπτογραφείται με AES-256-GCM με κλειδί που προκύπτει από "
+"τον κύριο κωδικό πρόσβασης"
+
+msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
 "master password. The PIN must be set up again."
@@ -1078,6 +1093,9 @@ msgstr ""
 "αυτόν τον υπολογιστή. Μόνο ο κύριος κωδικός πρόσβασής σας την ανοίγει και το "
 "Ashy Pass δεν μπορεί να τον ανακτήσει αν τον χάσετε."
 
+msgid "Export an unprotected file (CSV)"
+msgstr "Εξαγωγή μη προστατευμένου αρχείου (CSV)"
+
 msgid "Export complete"
 msgstr "Η εξαγωγή ολοκληρώθηκε"
 
@@ -1087,8 +1105,8 @@ msgstr "Η εξαγωγή απέτυχε"
 msgid "Export to KeePass"
 msgstr "Εξαγωγή σε KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Εξαγωγή σε KeePass ή σε αρχείο που μπορεί να διαβάσει οποιοσδήποτε"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Εξαγωγή σε KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Εξαγωγή μη προστατευμένου αρχείου"
@@ -1458,18 +1476,8 @@ msgid "Its user, password and other details appear here."
 msgstr ""
 "Ο χρήστης, ο κωδικός πρόσβασης και οι άλλες λεπτομέρειες εμφανίζονται εδώ."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "Η εξαγωγή KeePass ολοκληρώθηκε"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"Το KeePass προστατεύει το αρχείο με κωδικό πρόσβασης. Ένα αρχείο CSV μπορεί "
-"να το διαβάσει όποιος το αποκτήσει."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -2191,6 +2199,11 @@ msgstr "Προηγούμενοι κωδικοί που κράτησε το Ashy 
 msgid "Protected by a password you choose"
 msgstr "Προστατεύεται με κωδικό της επιλογής σας"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"Προστατεύεται με κωδικό πρόσβασης. Ανοίγει στο KeePass, στο KeePassXC και σε "
+"άλλες εφαρμογές"
+
 msgid "Protection"
 msgstr "Προστασία"
 
@@ -2709,9 +2722,6 @@ msgstr "Ετικέτες"
 msgid "Tags (separated by commas)"
 msgstr "Ετικέτες (χωρισμένες με κόμμα)"
 
-msgid "Take my data to another app"
-msgstr "Μεταφορά των δεδομένων μου σε άλλη εφαρμογή"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Επικοινωνία με το διακριτικό σας… ελέγξτε τη συσκευή για προτροπή αφής."
@@ -3201,9 +3211,6 @@ msgstr "Ξεκλείδωμα"
 
 msgid "Unlocking…"
 msgstr "Ξεκλείδωμα…"
-
-msgid "Unprotected CSV…"
-msgstr "Μη προστατευμένο CSV…"
 
 msgid "Updated locally"
 msgstr "Ενημερώθηκε τοπικά"

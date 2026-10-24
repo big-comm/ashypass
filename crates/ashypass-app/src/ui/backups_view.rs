@@ -118,6 +118,13 @@ impl BackupsView {
         actions.append(&restore);
         content.append(&actions);
 
+        // Importing comes up right after the backup itself: it is what
+        // people arriving from another app look for here.
+        let data_group = adw::PreferencesGroup::builder()
+            .title(tr!("Other apps"))
+            .build();
+        content.append(&data_group);
+
         let about = adw::PreferencesGroup::builder()
             .title(tr!("About the backup"))
             .build();
@@ -148,9 +155,6 @@ impl BackupsView {
         }
         content.append(&about);
 
-        let data_group = adw::PreferencesGroup::builder()
-            .title(tr!("Other apps"))
-            .build();
         let import_row = adw::ActionRow::builder()
             .title(tr!("Import passwords"))
             .subtitle(tr!("Bring passwords from another app or browser"))
@@ -159,15 +163,30 @@ impl BackupsView {
         import_row.add_prefix(&gtk::Image::from_icon_name("document-open-symbolic"));
         import_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
         data_group.add(&import_row);
+        // The protected export first; the readable one apart, marked, and
+        // behind the master password (see `export_csv_with_warning`).
         let export_row = adw::ActionRow::builder()
-            .title(tr!("Take my data to another app"))
-            .subtitle(tr!("Export to KeePass or to a file anyone can read"))
+            .title(tr!("Export to KeePass (.kdbx)"))
+            .subtitle(tr!(
+                "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+            ))
             .activatable(true)
             .build();
-        export_row.add_prefix(&gtk::Image::from_icon_name("document-send-symbolic"));
+        export_row.add_prefix(&gtk::Image::from_icon_name("channel-secure-symbolic"));
         export_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
         data_group.add(&export_row);
-        content.append(&data_group);
+        let csv_row = adw::ActionRow::builder()
+            .title(tr!("Export an unprotected file (CSV)"))
+            .subtitle(tr!(
+                "Anyone who gets the file can read every password in it"
+            ))
+            .activatable(true)
+            .build();
+        let csv_icon = gtk::Image::from_icon_name("dialog-warning-symbolic");
+        csv_icon.add_css_class("warning");
+        csv_row.add_prefix(&csv_icon);
+        csv_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+        data_group.add(&csv_row);
 
         let cloud_group = adw::PreferencesGroup::builder()
             .title(tr!("Copies in the cloud"))
@@ -244,7 +263,19 @@ impl BackupsView {
             let weak = Rc::downgrade(&inner);
             export_row.connect_activated(move |row| {
                 if let Some(inner) = weak.upgrade() {
-                    inner.choose_export(row);
+                    inner.export_kdbx(row);
+                }
+            });
+        }
+        {
+            let weak = Rc::downgrade(&inner);
+            csv_row.connect_activated(move |row| {
+                if let Some(inner) = weak.upgrade() {
+                    settings_dialog::export_csv_with_warning(
+                        inner.state.clone(),
+                        inner.toast.clone(),
+                        row.clone().upcast(),
+                    );
                 }
             });
         }
@@ -755,51 +786,18 @@ impl Inner {
         dialog.present();
     }
 
-    fn choose_export(self: &Rc<Self>, anchor: &adw::ActionRow) {
-        let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
-            .heading(tr!("Take my data to another app"))
-            .body(tr!(
-                "KeePass keeps the file protected by a password. A CSV file can be read by anyone who gets hold of it."
-            ))
-            .close_response("cancel")
-            .build();
-        dialog.add_response("cancel", tr!("Cancel"));
-        dialog.add_response("csv", tr!("Unprotected CSV…"));
-        dialog.add_response("kdbx", tr!("KeePass (.kdbx)…"));
-        dialog.set_response_appearance("kdbx", adw::ResponseAppearance::Suggested);
-        dialog.set_default_response(Some("kdbx"));
+    fn export_kdbx(&self, anchor: &adw::ActionRow) {
         let state = self.state.clone();
         let toast = self.toast.clone();
-        let anchor_widget: gtk::Widget = anchor.clone().upcast();
-        dialog.connect_response(None, move |_, response| match response {
-            "kdbx" => {
-                let state_cl = state.clone();
-                let toast = toast.clone();
-                let anchor_cl = anchor_widget.clone();
-                settings_dialog::confirm_master_password(
-                    &state,
-                    &anchor_cl.clone(),
-                    tr!("Export to KeePass"),
-                    tr!("Confirm your master password to export your data."),
-                    move || {
-                        settings_dialog::export_kdbx(
-                            state_cl.clone(),
-                            toast.clone(),
-                            anchor_cl.clone(),
-                        )
-                    },
-                );
-            }
-            "csv" => {
-                settings_dialog::export_csv_with_warning(
-                    state.clone(),
-                    toast.clone(),
-                    anchor_widget.clone(),
-                );
-            }
-            _ => {}
-        });
-        dialog.present();
+        let anchor: gtk::Widget = anchor.clone().upcast();
+        let prompt_anchor = anchor.clone();
+        settings_dialog::confirm_master_password(
+            &self.state,
+            &prompt_anchor,
+            tr!("Export to KeePass"),
+            tr!("Confirm your master password to export your data."),
+            move || settings_dialog::export_kdbx(state.clone(), toast.clone(), anchor.clone()),
+        );
     }
 }
 

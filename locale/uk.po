@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:58-0300\n"
+"POT-Creation-Date: 2026-10-24 19:09-0300\n"
 "PO-Revision-Date: 2026-05-12 19:48\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -182,6 +182,9 @@ msgstr ""
 
 msgid "Another example"
 msgstr "Інший приклад"
+
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Будь-хто, хто отримає файл, зможе прочитати всі паролі в ньому"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -962,6 +965,9 @@ msgstr "Повторне шифрування сховища…"
 msgid "Encrypting…"
 msgstr "Шифрування…"
 
+msgid "Encryption"
+msgstr "Шифрування"
+
 msgid "Encrypt…"
 msgstr "Зашифрувати…"
 
@@ -1006,6 +1012,13 @@ msgstr "Оцінка надійності"
 
 msgid "Every code in this export is already in the vault."
 msgstr "Усі коди з цього експорту вже є в сховищі."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Кожен запис шифрується алгоритмом AES-256-GCM із ключем, отриманим із "
+"майстер-пароля"
 
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
@@ -1054,6 +1067,9 @@ msgstr ""
 "цьому комп'ютері. Відкрити його можна лише майстер-паролем, а Ashy Pass не "
 "зможе його відновити, якщо ви його втратите."
 
+msgid "Export an unprotected file (CSV)"
+msgstr "Експортувати незахищений файл (CSV)"
+
 msgid "Export complete"
 msgstr "Експорт завершено"
 
@@ -1063,8 +1079,8 @@ msgstr "Помилка експорту"
 msgid "Export to KeePass"
 msgstr "Експортувати в KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Експорт у KeePass або у файл, який може прочитати будь-хто"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Експорт до KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Експортувати незахищений файл"
@@ -1427,18 +1443,8 @@ msgstr "Елементи залишаються тут і в теці; повт�
 msgid "Its user, password and other details appear here."
 msgstr "Тут з’являться користувач, пароль та інші подробиці."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "Експорт KeePass завершено"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass захищає файл паролем. Файл CSV може прочитати будь-хто, хто його "
-"отримає."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -2133,6 +2139,10 @@ msgstr "Попередні паролі, збережені Ashy Pass під ч�
 msgid "Protected by a password you choose"
 msgstr "Захищено паролем, який ви вибираєте"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"Захищено паролем. Відкривається в KeePass, KeePassXC та інших застосунках"
+
 msgid "Protection"
 msgstr "Захист"
 
@@ -2642,9 +2652,6 @@ msgstr "Мітки"
 msgid "Tags (separated by commas)"
 msgstr "Мітки (через кому)"
 
-msgid "Take my data to another app"
-msgstr "Перенести мої дані в інший застосунок"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Взаємодія з вашим токеном… перевірте пристрій на наявність запиту на дотик."
@@ -3117,9 +3124,6 @@ msgstr "Розблокування"
 
 msgid "Unlocking…"
 msgstr "Розблокування…"
-
-msgid "Unprotected CSV…"
-msgstr "Незахищений CSV…"
 
 msgid "Updated locally"
 msgstr "Оновлено локально"

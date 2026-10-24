@@ -972,6 +972,11 @@ fn kdf_group(state: &SharedState) -> adw::PreferencesGroup {
         .title(tr!("Key derivation (Argon2id)"))
         .subtitle(tr!("How the master password becomes the encryption key"))
         .build();
+    let cipher_row = adw::ActionRow::builder()
+        .title(tr!("Encryption"))
+        .subtitle(tr!("Every entry is encrypted with AES-256-GCM under a key derived from the master password"))
+        .build();
+    group.add(&cipher_row);
     let about = adw::ActionRow::builder()
         .title(tr!(
             "Higher costs slow down guessing attacks and also slow down unlocking. Auto-tune picks values for about half a second on this computer."

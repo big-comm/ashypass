@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:58-0300\n"
+"POT-Creation-Date: 2026-10-24 19:09-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -182,6 +182,9 @@ msgstr ""
 
 msgid "Another example"
 msgstr "別の例"
+
+msgid "Anyone who gets the file can read every password in it"
+msgstr "このファイルを入手した人は、中のすべてのパスワードを読めます"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -961,6 +964,9 @@ msgstr "保管庫を再暗号化しています…"
 msgid "Encrypting…"
 msgstr "暗号化中…"
 
+msgid "Encryption"
+msgstr "暗号化"
+
 msgid "Encrypt…"
 msgstr "暗号化…"
 
@@ -1006,6 +1012,13 @@ msgstr "推定強度"
 
 msgid "Every code in this export is already in the vault."
 msgstr "このエクスポートのコードはすべてすでにボールトにあります。"
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"すべてのエントリは、マスターパスワードから導出した鍵でAES-256-GCMにより暗号化"
+"されます"
 
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
@@ -1054,6 +1067,9 @@ msgstr ""
 "保存されます。開けるのはマスターパスワードだけで、紛失してもAshy Passでは復元"
 "できません。"
 
+msgid "Export an unprotected file (CSV)"
+msgstr "保護されていないファイルをエクスポート(CSV)"
+
 msgid "Export complete"
 msgstr "エクスポートが完了しました"
 
@@ -1063,8 +1079,8 @@ msgstr "エクスポート失敗"
 msgid "Export to KeePass"
 msgstr "KeePass にエクスポート"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "KeePass、または誰でも読めるファイルにエクスポート"
+msgid "Export to KeePass (.kdbx)"
+msgstr "KeePassにエクスポート(.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "保護されていないファイルをエクスポート"
@@ -1420,18 +1436,8 @@ msgstr "アイテムはこことフォルダに残ります。再接続すると
 msgid "Its user, password and other details appear here."
 msgstr "ユーザー、パスワード、その他の詳細がここに表示されます。"
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePassエクスポートが完了しました"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass はファイルをパスワードで保護します。CSV ファイルは入手した人なら誰で"
-"も読めます。"
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -2120,6 +2126,9 @@ msgstr "このパスワードを変更したときに Ashy Pass が保存した�
 msgid "Protected by a password you choose"
 msgstr "自分で選んだパスワードで保護"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr "パスワードで保護されています。KeePass、KeePassXCなどのアプリで開けます"
+
 msgid "Protection"
 msgstr "保護"
 
@@ -2628,9 +2637,6 @@ msgstr "タグ"
 msgid "Tags (separated by commas)"
 msgstr "タグ (カンマ区切り)"
 
-msgid "Take my data to another app"
-msgstr "データを別のアプリに移す"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "トークンと通信中…タッチを促すプロンプトがデバイスに表示されていないか確認して"
@@ -3093,9 +3099,6 @@ msgstr "ロック解除"
 
 msgid "Unlocking…"
 msgstr "ロック解除中…"
-
-msgid "Unprotected CSV…"
-msgstr "保護されていない CSV…"
 
 msgid "Updated locally"
 msgstr "ローカルで更新されました"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:58-0300\n"
+"POT-Creation-Date: 2026-10-24 19:09-0300\n"
 "PO-Revision-Date: 2026-05-12 19:45\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -183,6 +183,9 @@ msgstr ""
 
 msgid "Another example"
 msgstr "Iný príklad"
+
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Ktokoľvek získa súbor, prečíta všetky heslá v ňom"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -962,6 +965,9 @@ msgstr "Trezor sa znova šifruje…"
 msgid "Encrypting…"
 msgstr "Šifruje sa…"
 
+msgid "Encryption"
+msgstr "Šifrovanie"
+
 msgid "Encrypt…"
 msgstr "Šifrovať…"
 
@@ -1006,6 +1012,13 @@ msgstr "Odhadovaná sila"
 
 msgid "Every code in this export is already in the vault."
 msgstr "Všetky kódy z tohto exportu už v trezore sú."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Každá položka je zašifrovaná pomocou AES-256-GCM kľúčom odvodeným z hlavného "
+"hesla"
 
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
@@ -1054,6 +1067,9 @@ msgstr ""
 "počítači. Otvorí ho len vaše hlavné heslo a Ashy Pass ho nedokáže obnoviť, "
 "ak ho stratíte."
 
+msgid "Export an unprotected file (CSV)"
+msgstr "Exportovať nechránený súbor (CSV)"
+
 msgid "Export complete"
 msgstr "Export dokončený"
 
@@ -1063,8 +1079,8 @@ msgstr "Export zlyhal"
 msgid "Export to KeePass"
 msgstr "Exportovať do KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Export do KeePass alebo do súboru, ktorý môže čítať ktokoľvek"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Exportovať do KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Exportovať nechránený súbor"
@@ -1427,18 +1443,8 @@ msgstr "Položky zostanú tu aj v priečinku; opätovné pripojenie ich zlúči"
 msgid "Its user, password and other details appear here."
 msgstr "Tu sa zobrazí jeho používateľ, heslo a ďalšie podrobnosti."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "Export KeePass dokončený"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass udržiava súbor chránený heslom. Súbor CSV si môže prečítať "
-"ktokoľvek, kto ho získa."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -2129,6 +2135,9 @@ msgstr "Predchádzajúce heslá, ktoré Ashy Pass uchoval pri zmene tohto hesla.
 msgid "Protected by a password you choose"
 msgstr "Chránená heslom, ktoré si zvolíte"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr "Chránené heslom. Otvorí sa v KeePass, KeePassXC a ďalších aplikáciách"
+
 msgid "Protection"
 msgstr "Ochrana"
 
@@ -2635,9 +2644,6 @@ msgstr "Štítky"
 msgid "Tags (separated by commas)"
 msgstr "Štítky (oddelené čiarkami)"
 
-msgid "Take my data to another app"
-msgstr "Preniesť moje údaje do inej aplikácie"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Komunikujem s vaším tokenom… skontrolujte zariadenie kvôli výzve na dotyk."
@@ -3105,9 +3111,6 @@ msgstr "Odomknutie"
 
 msgid "Unlocking…"
 msgstr "Odomykanie…"
-
-msgid "Unprotected CSV…"
-msgstr "Nechránený CSV…"
 
 msgid "Updated locally"
 msgstr "Aktualizované lokálne"

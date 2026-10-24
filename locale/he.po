@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:58-0300\n"
+"POT-Creation-Date: 2026-10-24 19:09-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -173,6 +173,9 @@ msgstr ""
 
 msgid "Another example"
 msgstr "דוגמה אחרת"
+
+msgid "Anyone who gets the file can read every password in it"
+msgstr "כל מי שמקבל את הקובץ יכול לקרוא כל סיסמה שבו"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -934,6 +937,9 @@ msgstr "הכספת מוצפנת מחדש…"
 msgid "Encrypting…"
 msgstr "מצפין…"
 
+msgid "Encryption"
+msgstr "הצפנה"
+
 msgid "Encrypt…"
 msgstr "הצפנה…"
 
@@ -980,6 +986,11 @@ msgid "Every code in this export is already in the vault."
 msgstr "כל הקודים בייצוא הזה כבר נמצאים בכספת."
 
 msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr "כל רשומה מוצפנת באמצעות AES-256-GCM במפתח שנגזר מסיסמת האב"
+
+msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
 "master password. The PIN must be set up again."
@@ -1023,6 +1034,9 @@ msgstr ""
 "כל מה שאתם שומרים ב-Ashy Pass נשאר בכספת מוצפנת במחשב הזה. רק סיסמת האב שלכם "
 "פותחת אותה, ו-Ashy Pass לא יכול לשחזר אותה אם תאבדו אותה."
 
+msgid "Export an unprotected file (CSV)"
+msgstr "ייצוא קובץ לא מוגן (CSV)"
+
 msgid "Export complete"
 msgstr "הייצוא הושלם"
 
@@ -1032,8 +1046,8 @@ msgstr "הייצוא נכשל"
 msgid "Export to KeePass"
 msgstr "ייצוא ל־KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "ייצוא ל־KeePass או לקובץ שכל אחד יכול לקרוא"
+msgid "Export to KeePass (.kdbx)"
+msgstr "ייצוא ל-KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "ייצוא קובץ לא מוגן"
@@ -1381,18 +1395,8 @@ msgstr "הפריטים נשארים כאן ובתיקייה; חיבור מחדש
 msgid "Its user, password and other details appear here."
 msgstr "המשתמש, הסיסמה ושאר הפרטים מופיעים כאן."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass‏ (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "ייצוא KeePass הושלם"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass שומר על הקובץ מוגן בסיסמה. קובץ CSV ניתן לקריאה על ידי כל מי שמשיג "
-"אותו."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -2060,6 +2064,9 @@ msgstr "סיסמאות קודמות ש־Ashy Pass שמר כשסיסמה זו ש�
 msgid "Protected by a password you choose"
 msgstr "מוגן בסיסמה שבחרת"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr "מוגן בסיסמה. נפתח ב-KeePass, ב-KeePassXC ובאפליקציות אחרות"
+
 msgid "Protection"
 msgstr "הגנה"
 
@@ -2562,9 +2569,6 @@ msgstr "תגיות"
 msgid "Tags (separated by commas)"
 msgstr "תגיות (מופרדות בפסיקים)"
 
-msgid "Take my data to another app"
-msgstr "העברת הנתונים שלי ליישום אחר"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "מדבר עם האסימון שלך… בדוק את המכשיר להנחיית מגע."
 
@@ -2997,9 +3001,6 @@ msgstr "שחרור נעילה"
 
 msgid "Unlocking…"
 msgstr "מבטל נעילה…"
-
-msgid "Unprotected CSV…"
-msgstr "CSV לא מוגן…"
 
 msgid "Updated locally"
 msgstr "עודכן מקומית"

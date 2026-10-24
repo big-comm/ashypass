@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:58-0300\n"
+"POT-Creation-Date: 2026-10-24 19:09-0300\n"
 "PO-Revision-Date: 2026-05-12 19:37\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -177,6 +177,9 @@ msgstr ""
 
 msgid "Another example"
 msgstr "다른 예시"
+
+msgid "Anyone who gets the file can read every password in it"
+msgstr "파일을 얻은 사람은 누구나 그 안의 모든 비밀번호를 읽을 수 있습니다"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -945,6 +948,9 @@ msgstr "보관함을 다시 암호화하는 중…"
 msgid "Encrypting…"
 msgstr "암호화 중…"
 
+msgid "Encryption"
+msgstr "암호화"
+
 msgid "Encrypt…"
 msgstr "암호화…"
 
@@ -989,6 +995,11 @@ msgstr "예상 강도"
 
 msgid "Every code in this export is already in the vault."
 msgstr "이 내보내기의 모든 코드는 이미 보관함에 있습니다."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr "모든 항목은 마스터 비밀번호에서 파생된 키로 AES-256-GCM 암호화됩니다"
 
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
@@ -1036,6 +1047,9 @@ msgstr ""
 "Ashy Pass에 보관하는 모든 내용은 이 컴퓨터의 암호화된 보관함에 저장됩니다. 마"
 "스터 비밀번호로만 열 수 있으며, 분실해도 Ashy Pass는 복구할 수 없습니다."
 
+msgid "Export an unprotected file (CSV)"
+msgstr "보호되지 않은 파일 내보내기(CSV)"
+
 msgid "Export complete"
 msgstr "내보내기 완료"
 
@@ -1045,8 +1059,8 @@ msgstr "내보내기 실패"
 msgid "Export to KeePass"
 msgstr "KeePass로 내보내기"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "KeePass 또는 누구나 읽을 수 있는 파일로 내보내기"
+msgid "Export to KeePass (.kdbx)"
+msgstr "KeePass로 내보내기(.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "보호되지 않은 파일 내보내기"
@@ -1398,18 +1412,8 @@ msgstr "항목은 여기와 폴더에 그대로 남으며, 다시 연결하면 �
 msgid "Its user, password and other details appear here."
 msgstr "사용자, 비밀번호 및 기타 세부 정보가 여기에 표시됩니다."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass 내보내기 완료"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass는 파일을 비밀번호로 보호합니다. CSV 파일은 파일을 얻은 누구나 읽을 "
-"수 있습니다."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -2083,6 +2087,10 @@ msgstr "이 비밀번호가 변경될 때 Ashy Pass가 보관한 이전 비밀�
 msgid "Protected by a password you choose"
 msgstr "직접 정한 비밀번호로 보호됨"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"비밀번호로 보호됩니다. KeePass, KeePassXC 및 다른 앱에서 열 수 있습니다"
+
 msgid "Protection"
 msgstr "보호"
 
@@ -2586,9 +2594,6 @@ msgstr "태그"
 msgid "Tags (separated by commas)"
 msgstr "태그 (쉼표로 구분)"
 
-msgid "Take my data to another app"
-msgstr "내 데이터를 다른 앱으로 옮기기"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "토큰과 통신 중입니다… 터치 프롬프트가 있는지 장치를 확인하세요."
 
@@ -3035,9 +3040,6 @@ msgstr "잠금 해제"
 
 msgid "Unlocking…"
 msgstr "잠금 해제 중…"
-
-msgid "Unprotected CSV…"
-msgstr "보호되지 않은 CSV…"
 
 msgid "Updated locally"
 msgstr "로컬에서 업데이트됨"

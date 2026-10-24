@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:58-0300\n"
+"POT-Creation-Date: 2026-10-24 19:09-0300\n"
 "PO-Revision-Date: 2026-05-12 19:31\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -184,6 +184,9 @@ msgstr ""
 
 msgid "Another example"
 msgstr "Drugi primjer"
+
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Svatko tko dobije datoteku može pročitati svaku lozinku u njoj"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -966,6 +969,9 @@ msgstr "Trezor se ponovno šifrira…"
 msgid "Encrypting…"
 msgstr "Enkriptiranje…"
 
+msgid "Encryption"
+msgstr "Šifriranje"
+
 msgid "Encrypt…"
 msgstr "Šifriraj…"
 
@@ -1010,6 +1016,12 @@ msgstr "Procijenjena jačina"
 
 msgid "Every code in this export is already in the vault."
 msgstr "Svi kodovi iz ovog izvoza već su u trezoru."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Svaki unos šifriran je pomoću AES-256-GCM ključem izvedenim iz glavne lozinke"
 
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
@@ -1058,6 +1070,9 @@ msgstr ""
 "Otvara ga samo vaša glavna lozinka, a Ashy Pass je ne može vratiti ako je "
 "izgubite."
 
+msgid "Export an unprotected file (CSV)"
+msgstr "Izvezi nezaštićenu datoteku (CSV)"
+
 msgid "Export complete"
 msgstr "Izvoz dovršen"
 
@@ -1067,8 +1082,8 @@ msgstr "Izvoz nije uspio"
 msgid "Export to KeePass"
 msgstr "Izvezi u KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Izvezite u KeePass ili u datoteku koju svatko može pročitati"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Izvezi u KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Izvezi nezaštićenu datoteku"
@@ -1430,18 +1445,8 @@ msgstr "Stavke ostaju ovdje i u mapi; ponovno povezivanje ih spaja"
 msgid "Its user, password and other details appear here."
 msgstr "Ovdje se prikazuju korisnik, lozinka i ostale pojedinosti."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass izvoz dovršen"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass drži datoteku zaštićenom lozinkom. Datoteku CSV može pročitati "
-"svatko tko je dobije."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -2137,6 +2142,10 @@ msgstr "Prethodne lozinke koje je Ashy Pass sačuvao kada je ova promijenjena."
 msgid "Protected by a password you choose"
 msgstr "Zaštićena lozinkom koju vi odaberete"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"Zaštićeno lozinkom. Otvara se u KeePassu, KeePassXC-u i drugim aplikacijama"
+
 msgid "Protection"
 msgstr "Zaštita"
 
@@ -2645,9 +2654,6 @@ msgstr "Oznake"
 msgid "Tags (separated by commas)"
 msgstr "Oznake (odvojene zarezima)"
 
-msgid "Take my data to another app"
-msgstr "Prenesi moje podatke u drugu aplikaciju"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "Razgovaram s vašim tokenom… provjerite uređaj za upit za dodirom."
 
@@ -3114,9 +3120,6 @@ msgstr "Otključavanje"
 
 msgid "Unlocking…"
 msgstr "Otključavanje…"
-
-msgid "Unprotected CSV…"
-msgstr "Nezaštićeni CSV…"
 
 msgid "Updated locally"
 msgstr "Lokalno ažurirano"

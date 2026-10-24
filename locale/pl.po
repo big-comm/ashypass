@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:58-0300\n"
+"POT-Creation-Date: 2026-10-24 19:09-0300\n"
 "PO-Revision-Date: 2026-05-12 19:40\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -185,6 +185,9 @@ msgstr ""
 
 msgid "Another example"
 msgstr "Inny przykład"
+
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Każdy, kto zdobędzie plik, może odczytać wszystkie zawarte w nim hasła"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -966,6 +969,9 @@ msgstr "Ponowne szyfrowanie sejfu…"
 msgid "Encrypting…"
 msgstr "Szyfrowanie…"
 
+msgid "Encryption"
+msgstr "Szyfrowanie"
+
 msgid "Encrypt…"
 msgstr "Szyfruj…"
 
@@ -1010,6 +1016,13 @@ msgstr "Szacowana siła"
 
 msgid "Every code in this export is already in the vault."
 msgstr "Wszystkie kody z tego eksportu są już w sejfie."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Każdy wpis jest szyfrowany algorytmem AES-256-GCM kluczem wyprowadzonym z "
+"hasła głównego"
 
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
@@ -1060,6 +1073,9 @@ msgstr ""
 "tym komputerze. Otwiera go tylko Twoje hasło główne, a Ashy Pass nie może go "
 "odzyskać, jeśli je zgubisz."
 
+msgid "Export an unprotected file (CSV)"
+msgstr "Eksportuj niechroniony plik (CSV)"
+
 msgid "Export complete"
 msgstr "Eksport zakończony"
 
@@ -1069,8 +1085,8 @@ msgstr "Eksport nie powiódł się"
 msgid "Export to KeePass"
 msgstr "Eksportuj do KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Eksportuj do KeePass lub do pliku, który każdy może odczytać"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Eksportuj do KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Eksportuj niechroniony plik"
@@ -1433,17 +1449,8 @@ msgstr "Elementy pozostają tutaj i w folderze; ponowne połączenie je scali"
 msgid "Its user, password and other details appear here."
 msgstr "Tutaj pojawią się jego użytkownik, hasło i inne szczegóły."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "Eksport KeePass zakończony"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass chroni plik hasłem. Plik CSV może odczytać każdy, kto go zdobędzie."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -2138,6 +2145,10 @@ msgstr "Poprzednie hasła zachowane przez Ashy Pass przy zmianie tego hasła."
 msgid "Protected by a password you choose"
 msgstr "Chroniona wybranym przez Ciebie hasłem"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"Chroniony hasłem. Otwiera się w KeePass, KeePassXC i innych aplikacjach"
+
 msgid "Protection"
 msgstr "Ochrona"
 
@@ -2646,9 +2657,6 @@ msgstr "Tagi"
 msgid "Tags (separated by commas)"
 msgstr "Tagi (oddzielone przecinkami)"
 
-msgid "Take my data to another app"
-msgstr "Przenieś moje dane do innej aplikacji"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Komunikacja z tokenem… sprawdź urządzenie pod kątem monitu o dotknięcie."
@@ -3127,9 +3135,6 @@ msgstr "Odblokowanie"
 
 msgid "Unlocking…"
 msgstr "Odblokowywanie…"
-
-msgid "Unprotected CSV…"
-msgstr "Niechroniony CSV…"
 
 msgid "Updated locally"
 msgstr "Zaktualizowano lokalnie"

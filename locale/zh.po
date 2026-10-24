@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:58-0300\n"
+"POT-Creation-Date: 2026-10-24 19:09-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -172,6 +172,9 @@ msgstr ""
 
 msgid "Another example"
 msgstr "换一个示例"
+
+msgid "Anyone who gets the file can read every password in it"
+msgstr "任何拿到该文件的人都可以读取其中的每个密码"
 
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
@@ -928,6 +931,9 @@ msgstr "正在重新加密密码库…"
 msgid "Encrypting…"
 msgstr "正在加密…"
 
+msgid "Encryption"
+msgstr "加密"
+
 msgid "Encrypt…"
 msgstr "加密…"
 
@@ -974,6 +980,11 @@ msgid "Every code in this export is already in the vault."
 msgstr "此导出中的所有验证码都已在保险库中。"
 
 msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr "每个条目都使用 AES-256-GCM 加密,密钥由主密码派生"
+
+msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
 "master password. The PIN must be set up again."
@@ -1017,6 +1028,9 @@ msgstr ""
 "您保存在 Ashy Pass 中的所有内容都存放在这台电脑上的加密保险库中。只有您的主密"
 "码能打开它,如果丢失,Ashy Pass 无法恢复。"
 
+msgid "Export an unprotected file (CSV)"
+msgstr "导出未受保护的文件 (CSV)"
+
 msgid "Export complete"
 msgstr "导出完成"
 
@@ -1026,8 +1040,8 @@ msgstr "导出失败"
 msgid "Export to KeePass"
 msgstr "导出到 KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "导出到 KeePass 或任何人都能读取的文件"
+msgid "Export to KeePass (.kdbx)"
+msgstr "导出到 KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "导出未受保护的文件"
@@ -1367,16 +1381,8 @@ msgstr "项目会保留在此处和文件夹中；重新连接时会合并"
 msgid "Its user, password and other details appear here."
 msgstr "它的用户、密码和其他详细信息会显示在这里。"
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass导出完成"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr "KeePass 会用密码保护文件。CSV 文件任何拿到它的人都能读取。"
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -2030,6 +2036,9 @@ msgstr "更改此密码时 Ashy Pass 保留的旧密码。"
 msgid "Protected by a password you choose"
 msgstr "由你选择的密码保护"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr "受密码保护。可在 KeePass、KeePassXC 和其他应用中打开"
+
 msgid "Protection"
 msgstr "保护"
 
@@ -2531,9 +2540,6 @@ msgstr "标签"
 msgid "Tags (separated by commas)"
 msgstr "标签（用逗号分隔）"
 
-msgid "Take my data to another app"
-msgstr "将我的数据转移到其他应用"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "正在与您的令牌通信…请检查设备是否有触摸提示。"
 
@@ -2950,9 +2956,6 @@ msgstr "解锁"
 
 msgid "Unlocking…"
 msgstr "正在解锁…"
-
-msgid "Unprotected CSV…"
-msgstr "未受保护的 CSV…"
 
 msgid "Updated locally"
 msgstr "已在本地更新"
