@@ -32,6 +32,15 @@ use zeroize::Zeroizing;
 
 const SEARCH_DEBOUNCE_MS: u64 = 80;
 
+/// What a keyboard shortcut does with the current access.
+#[derive(Debug, Clone, Copy)]
+pub enum EntryShortcut {
+    User,
+    Password,
+    Code,
+    Website,
+}
+
 /// Which part of the collection the list shows.
 #[derive(Clone, PartialEq, Eq, Debug, Default)]
 pub enum FolderFilter {
@@ -432,6 +441,68 @@ impl VaultView {
     }
 
     #[cfg(debug_assertions)]
+    /// Run a keyboard shortcut on the current access: the row with the
+    /// keyboard focus in the list, else the one open in the details.
+    pub fn run_shortcut(&self, shortcut: EntryShortcut) {
+        if !self.inner.can_show_vault_data() {
+            return;
+        }
+        let Some(id) = self.inner.shortcut_target() else {
+            self.inner.toast(tr!("Choose an access in the list first"));
+            return;
+        };
+        let Some(entry) = self.inner.state.vault.borrow().get(id).ok().flatten() else {
+            return;
+        };
+        match shortcut {
+            EntryShortcut::User => self.inner.copy_username(entry.username.as_deref()),
+            EntryShortcut::Password => self.inner.copy_password(id),
+            EntryShortcut::Code => {
+                let code = entry
+                    .totp_secret
+                    .as_deref()
+                    .filter(|_| entry.has_totp)
+                    .and_then(|secret| {
+                        let secret = Zeroizing::new(secret.to_string());
+                        let algo =
+                            Algorithm::parse(&entry.totp_algorithm).unwrap_or(Algorithm::Sha1);
+                        let now = chrono::Utc::now().timestamp().max(0) as u64;
+                        generate_totp(
+                            &secret,
+                            algo,
+                            entry.totp_digits,
+                            entry.totp_period.max(1),
+                            now,
+                        )
+                        .ok()
+                    });
+                match code {
+                    Some(code) => {
+                        copy_secret(&self.inner.state, &code);
+                        self.inner.toast(tr!("Code copied"));
+                    }
+                    None => self
+                        .inner
+                        .toast(tr!("This access has no verification code")),
+                }
+            }
+            EntryShortcut::Website => match entry.url.as_deref().and_then(openable_url) {
+                Some(target) => {
+                    let parent = self
+                        .root
+                        .root()
+                        .and_then(|r| r.downcast::<gtk::Window>().ok());
+                    gtk::UriLauncher::new(&target).launch(
+                        parent.as_ref(),
+                        None::<&gio::Cancellable>,
+                        |_| {},
+                    );
+                }
+                None => self.inner.toast(tr!("This access has no website")),
+            },
+        }
+    }
+
     pub fn dev_open_first(&self) {
         if let Some(obj) = self.inner.store.item(0) {
             if let Ok(boxed) = obj.downcast::<glib::BoxedAnyObject>() {
@@ -590,6 +661,7 @@ fn setup_factory(inner: &Rc<Inner>, factory: &gtk::SignalListItemFactory) {
             let Some(entry) = item_entry(item) else {
                 return;
             };
+            root.set_widget_name(&format!("{ROW_NAME_PREFIX}{}", entry.id));
             title.set_label(&entry.title);
             let line = account_line(
                 &entry.title,
@@ -1136,6 +1208,23 @@ impl Inner {
 
     // ---- Actions ------------------------------------------------------
 
+    fn shortcut_target(&self) -> Option<i64> {
+        let in_list = self
+            .list_view
+            .state_flags()
+            .contains(gtk::StateFlags::FOCUS_WITHIN);
+        let focused = in_list
+            .then(|| self.list_view.focus_child())
+            .flatten()
+            .and_then(|row| row.first_child())
+            .and_then(|root| {
+                root.widget_name()
+                    .strip_prefix(ROW_NAME_PREFIX)
+                    .and_then(|id| id.parse().ok())
+            });
+        focused.or(self.open_id.get())
+    }
+
     fn copy_password(&self, id: i64) {
         if !self.can_show_vault_data() {
             return;
@@ -1633,6 +1722,10 @@ fn copy_button(tooltip: &str) -> gtk::Button {
     button.update_property(&[gtk::accessible::Property::Label(tooltip)]);
     button
 }
+
+/// Row roots are named after their entry, so a keyboard shortcut can tell
+/// which access has the focus (rows are recycled; the name follows).
+const ROW_NAME_PREFIX: &str = "entry-";
 
 const HIDDEN_PASSWORD: &str = "••••••••••••";
 

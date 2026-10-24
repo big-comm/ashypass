@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:47\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -241,6 +241,14 @@ msgstr ""
 "En az 8 karakter. EFF kelime listesinden dört kelimelik bir parola güçlü bir "
 "varsayılandır."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"En az {} karakter. Rastgele birkaç sözcüğü hatırlamak kolay, tahmin etmek "
+"zordur."
+
 msgid "Attachment added"
 msgstr "Ek eklendi"
 
@@ -382,6 +390,9 @@ msgid ""
 msgstr ""
 "Bir ana parola seçin. Bu bilgisayarda Ashy Pass'te sakladığınız her şeyi "
 "korur."
+
+msgid "Choose an access in the list first"
+msgstr "Önce listeden bir kayıt seçin"
 
 msgid "Choose an image with the QR code"
 msgstr "QR kodunu içeren bir görsel seçin"
@@ -598,6 +609,15 @@ msgstr "Ashy Pass 2'den kalan kasa kopyası"
 
 msgid "Copy password"
 msgstr "Parolayı kopyala"
+
+msgid "Copy the password"
+msgstr "Parolayı kopyala"
+
+msgid "Copy the user"
+msgstr "Kullanıcıyı kopyala"
+
+msgid "Copy the verification code"
+msgstr "Doğrulama kodunu kopyala"
 
 msgid "Copy this old password"
 msgstr "Bu eski parolayı kopyala"
@@ -1510,9 +1530,6 @@ msgstr "Birleştirildi"
 msgid "Merged; the others are in Deleted items"
 msgstr "Birleştirildi; diğerleri Silinen öğeler içinde"
 
-msgid "Minimum length:"
-msgstr "Asgari uzunluk:"
-
 msgid "Mint"
 msgstr "Nane"
 
@@ -1823,6 +1840,9 @@ msgstr "Görsel aç…"
 
 msgid "Open the encrypted volume"
 msgstr "Şifreli birimi aç"
+
+msgid "Open the website"
+msgstr "Web sitesini aç"
 
 msgid "Open website"
 msgstr "Web sitesini aç"
@@ -2401,6 +2421,13 @@ msgstr ""
 msgid "Style"
 msgstr "Stil"
 
+msgid "Suggest a passphrase"
+msgstr "Parola ifadesi öner"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Öneri: {}. Devam etmeden önce not edin."
+
 msgid "Summary"
 msgstr "Özet"
 
@@ -2705,6 +2732,12 @@ msgstr "Bu kayıtta kayıtlı parola yok"
 
 msgid "This access has no user"
 msgstr "Bu kayıtta kullanıcı yok"
+
+msgid "This access has no verification code"
+msgstr "Bu kayıtta doğrulama kodu yok"
+
+msgid "This access has no website"
+msgstr "Bu kayıtta web sitesi yok"
 
 msgid "This access no longer exists"
 msgstr "Bu kayıt artık mevcut değil"

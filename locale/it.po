@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:35\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -241,6 +241,14 @@ msgstr ""
 "Almeno 8 caratteri. Una passphrase di quattro parole dall'elenco EFF è "
 "un'impostazione predefinita sicura."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Almeno {} caratteri. Poche parole casuali sono facili da ricordare e "
+"difficili da indovinare."
+
 msgid "Attachment added"
 msgstr "Allegato aggiunto"
 
@@ -382,6 +390,9 @@ msgid ""
 msgstr ""
 "Scegli una password principale. Protegge tutto ciò che conservi in Ashy Pass "
 "su questo computer."
+
+msgid "Choose an access in the list first"
+msgstr "Scegli prima una voce nell'elenco"
 
 msgid "Choose an image with the QR code"
 msgstr "Scegli un’immagine con il codice QR"
@@ -599,6 +610,15 @@ msgstr "Copia del vault da Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Copia password"
+
+msgid "Copy the password"
+msgstr "Copia la password"
+
+msgid "Copy the user"
+msgstr "Copia l'utente"
+
+msgid "Copy the verification code"
+msgstr "Copia il codice di verifica"
 
 msgid "Copy this old password"
 msgstr "Copia questa vecchia password"
@@ -1516,9 +1536,6 @@ msgstr "Unito"
 msgid "Merged; the others are in Deleted items"
 msgstr "Unito; gli altri sono in Elementi eliminati"
 
-msgid "Minimum length:"
-msgstr "Lunghezza minima:"
-
 msgid "Mint"
 msgstr "Menta"
 
@@ -1832,6 +1849,9 @@ msgstr "Apri immagine…"
 
 msgid "Open the encrypted volume"
 msgstr "Apri il volume cifrato"
+
+msgid "Open the website"
+msgstr "Apri il sito"
 
 msgid "Open website"
 msgstr "Apri sito"
@@ -2413,6 +2433,13 @@ msgstr ""
 msgid "Style"
 msgstr "Stile"
 
+msgid "Suggest a passphrase"
+msgstr "Suggerisci una frase di accesso"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Suggerimento: {}. Annotala prima di continuare."
+
 msgid "Summary"
 msgstr "Riepilogo"
 
@@ -2741,6 +2768,12 @@ msgstr "Questa voce non ha una password salvata"
 
 msgid "This access has no user"
 msgstr "Questa voce non ha un utente"
+
+msgid "This access has no verification code"
+msgstr "Questa voce non ha un codice di verifica"
+
+msgid "This access has no website"
+msgstr "Questa voce non ha un sito"
 
 msgid "This access no longer exists"
 msgstr "Questa voce non esiste più"

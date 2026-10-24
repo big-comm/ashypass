@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:31\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -240,6 +240,14 @@ msgstr ""
 "Najmanje 8 znakova. Lozinka od četiri riječi s EFF popisa riječi je jaka "
 "zadana opcija."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Najmanje {} znakova. Nekoliko nasumičnih riječi lako je zapamtiti, a teško "
+"pogoditi."
+
 msgid "Attachment added"
 msgstr "Privitak dodan"
 
@@ -381,6 +389,9 @@ msgid ""
 msgstr ""
 "Odaberite glavnu lozinku. Ona štiti sve što čuvate u Ashy Passu na ovom "
 "računalu."
+
+msgid "Choose an access in the list first"
+msgstr "Prvo odaberite unos na popisu"
 
 msgid "Choose an image with the QR code"
 msgstr "Odaberite sliku s QR kodom"
@@ -598,6 +609,15 @@ msgstr "Kopija trezora iz Ashy Passa 2"
 
 msgid "Copy password"
 msgstr "Kopiraj lozinku"
+
+msgid "Copy the password"
+msgstr "Kopiraj lozinku"
+
+msgid "Copy the user"
+msgstr "Kopiraj korisnika"
+
+msgid "Copy the verification code"
+msgstr "Kopiraj kôd za provjeru"
 
 msgid "Copy this old password"
 msgstr "Kopiraj ovu staru lozinku"
@@ -1514,9 +1534,6 @@ msgstr "Spojeno"
 msgid "Merged; the others are in Deleted items"
 msgstr "Spojeno; ostale su u Izbrisanim stavkama"
 
-msgid "Minimum length:"
-msgstr "Najmanja duljina:"
-
 msgid "Mint"
 msgstr "Metvica"
 
@@ -1831,6 +1848,9 @@ msgstr "Otvori sliku…"
 
 msgid "Open the encrypted volume"
 msgstr "Otvori šifrirani volumen"
+
+msgid "Open the website"
+msgstr "Otvori web-mjesto"
 
 msgid "Open website"
 msgstr "Otvori web-mjesto"
@@ -2408,6 +2428,13 @@ msgstr ""
 msgid "Style"
 msgstr "Stil"
 
+msgid "Suggest a passphrase"
+msgstr "Predloži lozinku (frazu)"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Prijedlog: {}. Zapišite ga prije nego nastavite."
+
 msgid "Summary"
 msgstr "Sažetak"
 
@@ -2724,6 +2751,12 @@ msgstr "Ovaj unos nema spremljenu lozinku"
 
 msgid "This access has no user"
 msgstr "Ovaj unos nema korisnika"
+
+msgid "This access has no verification code"
+msgstr "Ovaj unos nema kôd za provjeru"
+
+msgid "This access has no website"
+msgstr "Ovaj unos nema web-mjesto"
 
 msgid "This access no longer exists"
 msgstr "Ovaj unos više ne postoji"

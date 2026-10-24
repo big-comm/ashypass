@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:44\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -241,6 +241,14 @@ msgstr ""
 "Не менее 8 символов. Надежный вариант по умолчанию — парольная фраза из "
 "четырех слов из списка EFF."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Не менее {} символов. Несколько случайных слов легко запомнить, но трудно "
+"угадать."
+
 msgid "Attachment added"
 msgstr "Вложение добавлено"
 
@@ -382,6 +390,9 @@ msgid ""
 msgstr ""
 "Придумайте мастер-пароль. Он защищает всё, что вы храните в Ashy Pass на "
 "этом компьютере."
+
+msgid "Choose an access in the list first"
+msgstr "Сначала выберите запись в списке"
 
 msgid "Choose an image with the QR code"
 msgstr "Выберите изображение с QR-кодом"
@@ -599,6 +610,15 @@ msgstr "Копия хранилища из Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Копировать пароль"
+
+msgid "Copy the password"
+msgstr "Копировать пароль"
+
+msgid "Copy the user"
+msgstr "Копировать пользователя"
+
+msgid "Copy the verification code"
+msgstr "Копировать код подтверждения"
 
 msgid "Copy this old password"
 msgstr "Копировать этот старый пароль"
@@ -1516,9 +1536,6 @@ msgstr "Объединено"
 msgid "Merged; the others are in Deleted items"
 msgstr "Объединено; остальные в Удалённых"
 
-msgid "Minimum length:"
-msgstr "Минимальная длина:"
-
 msgid "Mint"
 msgstr "Мята"
 
@@ -1833,6 +1850,9 @@ msgstr "Открыть изображение…"
 
 msgid "Open the encrypted volume"
 msgstr "Открыть зашифрованный том"
+
+msgid "Open the website"
+msgstr "Открыть сайт"
 
 msgid "Open website"
 msgstr "Открыть сайт"
@@ -2411,6 +2431,13 @@ msgstr ""
 msgid "Style"
 msgstr "Стиль"
 
+msgid "Suggest a passphrase"
+msgstr "Предложить парольную фразу"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Предложение: {}. Запишите её, прежде чем продолжить."
+
 msgid "Summary"
 msgstr "Сводка"
 
@@ -2732,6 +2759,12 @@ msgstr "В этой записи нет сохранённого пароля"
 
 msgid "This access has no user"
 msgstr "В этой записи нет пользователя"
+
+msgid "This access has no verification code"
+msgstr "У этой записи нет кода подтверждения"
+
+msgid "This access has no website"
+msgstr "У этой записи нет сайта"
 
 msgid "This access no longer exists"
 msgstr "Эта запись больше не существует"

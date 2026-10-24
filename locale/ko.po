@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:37\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -229,6 +229,12 @@ msgid ""
 "strong default."
 msgstr "최소 8자 이상. EFF 단어 목록의 4단어 암호는 강력한 기본값입니다."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr "{}자 이상. 무작위 단어 몇 개는 기억하기 쉽고 추측하기 어렵습니다."
+
 msgid "Attachment added"
 msgstr "첨부 파일이 추가되었습니다"
 
@@ -370,6 +376,9 @@ msgid ""
 msgstr ""
 "마스터 비밀번호를 정하세요. 이 컴퓨터의 Ashy Pass에 보관하는 모든 것을 보호합"
 "니다."
+
+msgid "Choose an access in the list first"
+msgstr "먼저 목록에서 항목을 선택하세요"
 
 msgid "Choose an image with the QR code"
 msgstr "QR 코드가 있는 이미지 선택"
@@ -585,6 +594,15 @@ msgstr "Ashy Pass 2 보관함의 백업"
 
 msgid "Copy password"
 msgstr "비밀번호 복사"
+
+msgid "Copy the password"
+msgstr "비밀번호 복사"
+
+msgid "Copy the user"
+msgstr "사용자 복사"
+
+msgid "Copy the verification code"
+msgstr "인증 코드 복사"
 
 msgid "Copy this old password"
 msgstr "이 이전 비밀번호 복사"
@@ -1483,9 +1501,6 @@ msgstr "병합됨"
 msgid "Merged; the others are in Deleted items"
 msgstr "병합됨, 나머지는 삭제된 항목에 있습니다"
 
-msgid "Minimum length:"
-msgstr "최소 길이:"
-
 msgid "Mint"
 msgstr "민트"
 
@@ -1787,6 +1802,9 @@ msgstr "이미지 열기…"
 
 msgid "Open the encrypted volume"
 msgstr "암호화된 볼륨 열기"
+
+msgid "Open the website"
+msgstr "웹사이트 열기"
 
 msgid "Open website"
 msgstr "웹사이트 열기"
@@ -2356,6 +2374,13 @@ msgstr ""
 msgid "Style"
 msgstr "스타일"
 
+msgid "Suggest a passphrase"
+msgstr "암호문구 제안"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "제안: {}. 계속하기 전에 적어 두세요."
+
 msgid "Summary"
 msgstr "요약"
 
@@ -2655,6 +2680,12 @@ msgstr "이 항목에 저장된 비밀번호가 없습니다"
 
 msgid "This access has no user"
 msgstr "이 항목에 사용자가 없습니다"
+
+msgid "This access has no verification code"
+msgstr "이 항목에는 인증 코드가 없습니다"
+
+msgid "This access has no website"
+msgstr "이 항목에는 웹사이트가 없습니다"
 
 msgid "This access no longer exists"
 msgstr "이 항목이 더 이상 존재하지 않습니다"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -236,6 +236,14 @@ msgid ""
 msgstr ""
 "最低8文字。EFFワードリストからの4単語のパスフレーズが強力なデフォルトです。"
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"{} 文字以上。ランダムな単語をいくつか組み合わせると、覚えやすく推測されにくく"
+"なります。"
+
 msgid "Attachment added"
 msgstr "添付ファイルを追加しました"
 
@@ -377,6 +385,9 @@ msgid ""
 msgstr ""
 "マスターパスワードを決めてください。このコンピューターの Ashy Pass に保存する"
 "すべてを保護します。"
+
+msgid "Choose an access in the list first"
+msgstr "先にリストからエントリを選んでください"
 
 msgid "Choose an image with the QR code"
 msgstr "QR コードを含む画像を選択"
@@ -593,6 +604,15 @@ msgstr "Ashy Pass 2 のボールトのコピー"
 
 msgid "Copy password"
 msgstr "パスワードをコピー"
+
+msgid "Copy the password"
+msgstr "パスワードをコピー"
+
+msgid "Copy the user"
+msgstr "ユーザーをコピー"
+
+msgid "Copy the verification code"
+msgstr "確認コードをコピー"
 
 msgid "Copy this old password"
 msgstr "この古いパスワードをコピー"
@@ -1505,9 +1525,6 @@ msgstr "統合しました"
 msgid "Merged; the others are in Deleted items"
 msgstr "統合しました。他のアイテムは削除済みアイテムにあります"
 
-msgid "Minimum length:"
-msgstr "最小の長さ:"
-
 msgid "Mint"
 msgstr "ミント"
 
@@ -1816,6 +1833,9 @@ msgstr "画像を開く…"
 
 msgid "Open the encrypted volume"
 msgstr "暗号化ボリュームを開く"
+
+msgid "Open the website"
+msgstr "Web サイトを開く"
 
 msgid "Open website"
 msgstr "Web サイトを開く"
@@ -2393,6 +2413,13 @@ msgstr ""
 msgid "Style"
 msgstr "スタイル"
 
+msgid "Suggest a passphrase"
+msgstr "パスフレーズを提案"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "提案: {}。続ける前に書き留めてください。"
+
 msgid "Summary"
 msgstr "概要"
 
@@ -2705,6 +2732,12 @@ msgstr "このエントリにはパスワードが保存されていません"
 
 msgid "This access has no user"
 msgstr "このエントリにはユーザーがありません"
+
+msgid "This access has no verification code"
+msgstr "このエントリには確認コードがありません"
+
+msgid "This access has no website"
+msgstr "このエントリには Web サイトがありません"
 
 msgid "This access no longer exists"
 msgstr "このエントリはもう存在しません"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:43\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -243,6 +243,14 @@ msgstr ""
 "Cel puțin 8 caractere. O frază de acces de patru cuvinte din lista EFF este "
 "o opțiune implicită sigură."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Cel puțin {} caractere. Câteva cuvinte aleatorii sunt ușor de ținut minte și "
+"greu de ghicit."
+
 msgid "Attachment added"
 msgstr "Atașament adăugat"
 
@@ -384,6 +392,9 @@ msgid ""
 msgstr ""
 "Alegeți o parolă principală. Ea protejează tot ce păstrați în Ashy Pass pe "
 "acest calculator."
+
+msgid "Choose an access in the list first"
+msgstr "Alege mai întâi o intrare din listă"
 
 msgid "Choose an image with the QR code"
 msgstr "Alegeți o imagine cu codul QR"
@@ -602,6 +613,15 @@ msgstr "Copie a seifului din Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Copiază parola"
+
+msgid "Copy the password"
+msgstr "Copiază parola"
+
+msgid "Copy the user"
+msgstr "Copiază utilizatorul"
+
+msgid "Copy the verification code"
+msgstr "Copiază codul de verificare"
 
 msgid "Copy this old password"
 msgstr "Copiază această parolă veche"
@@ -1523,9 +1543,6 @@ msgstr "Îmbinat"
 msgid "Merged; the others are in Deleted items"
 msgstr "Îmbinat; celelalte sunt în Elemente șterse"
 
-msgid "Minimum length:"
-msgstr "Lungime minimă:"
-
 msgid "Mint"
 msgstr "Mentă"
 
@@ -1842,6 +1859,9 @@ msgstr "Deschide imaginea…"
 
 msgid "Open the encrypted volume"
 msgstr "Deschide volumul criptat"
+
+msgid "Open the website"
+msgstr "Deschide site-ul"
 
 msgid "Open website"
 msgstr "Deschide site-ul"
@@ -2422,6 +2442,13 @@ msgstr ""
 msgid "Style"
 msgstr "Stil"
 
+msgid "Suggest a passphrase"
+msgstr "Sugerează o frază de acces"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Sugestie: {}. Notează-o înainte de a continua."
+
 msgid "Summary"
 msgstr "Rezumat"
 
@@ -2749,6 +2776,12 @@ msgstr "Această intrare nu are nicio parolă salvată"
 
 msgid "This access has no user"
 msgstr "Această intrare nu are utilizator"
+
+msgid "This access has no verification code"
+msgstr "Această intrare nu are cod de verificare"
+
+msgid "This access has no website"
+msgstr "Această intrare nu are site"
 
 msgid "This access no longer exists"
 msgstr "Această intrare nu mai există"

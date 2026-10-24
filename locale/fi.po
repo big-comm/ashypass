@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:28\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -238,6 +238,14 @@ msgstr ""
 "Vähintään 8 merkkiä. Neljän sanan salalause EFF-sanaluettelosta on vahva "
 "oletus."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Vähintään {} merkkiä. Muutama satunnainen sana on helppo muistaa ja vaikea "
+"arvata."
+
 msgid "Attachment added"
 msgstr "Liite lisätty"
 
@@ -379,6 +387,9 @@ msgid ""
 msgstr ""
 "Valitse pääsalasana. Se suojaa kaiken, mitä säilytät Ashy Passissa tällä "
 "tietokoneella."
+
+msgid "Choose an access in the list first"
+msgstr "Valitse ensin kirjautumistieto luettelosta"
 
 msgid "Choose an image with the QR code"
 msgstr "Valitse kuva, jossa on QR-koodi"
@@ -595,6 +606,15 @@ msgstr "Kopio Ashy Pass 2:n holvista"
 
 msgid "Copy password"
 msgstr "Kopioi salasana"
+
+msgid "Copy the password"
+msgstr "Kopioi salasana"
+
+msgid "Copy the user"
+msgstr "Kopioi käyttäjä"
+
+msgid "Copy the verification code"
+msgstr "Kopioi vahvistuskoodi"
 
 msgid "Copy this old password"
 msgstr "Kopioi tämä vanha salasana"
@@ -1508,9 +1528,6 @@ msgstr "Yhdistetty"
 msgid "Merged; the others are in Deleted items"
 msgstr "Yhdistetty; muut ovat kohdassa Poistetut kohteet"
 
-msgid "Minimum length:"
-msgstr "Vähimmäispituus:"
-
 msgid "Mint"
 msgstr "Minttu"
 
@@ -1819,6 +1836,9 @@ msgstr "Avaa kuva…"
 
 msgid "Open the encrypted volume"
 msgstr "Avaa salattu taltio"
+
+msgid "Open the website"
+msgstr "Avaa sivusto"
 
 msgid "Open website"
 msgstr "Avaa sivusto"
@@ -2397,6 +2417,13 @@ msgstr ""
 msgid "Style"
 msgstr "Tyyli"
 
+msgid "Suggest a passphrase"
+msgstr "Ehdota tunnuslausetta"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Ehdotus: {}. Kirjoita se muistiin, ennen kuin jatkat."
+
 msgid "Summary"
 msgstr "Yhteenveto"
 
@@ -2707,6 +2734,12 @@ msgstr "Tällä kirjautumistiedolla ei ole tallennettua salasanaa"
 
 msgid "This access has no user"
 msgstr "Tällä kirjautumistiedolla ei ole käyttäjää"
+
+msgid "This access has no verification code"
+msgstr "Tällä kirjautumistiedolla ei ole vahvistuskoodia"
+
+msgid "This access has no website"
+msgstr "Tällä kirjautumistiedolla ei ole sivustoa"
 
 msgid "This access no longer exists"
 msgstr "Tätä kirjautumistietoa ei enää ole"

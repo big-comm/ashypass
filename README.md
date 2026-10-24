@@ -144,6 +144,8 @@ ASHYPASS_GOOGLE_CLIENT_SECRET=xxx \
 | <kbd>Ctrl</kbd>+<kbd>1</kbd> … <kbd>Ctrl</kbd>+<kbd>4</kbd> | My passwords, Verification codes, Password generator, Backups |
 | <kbd>Ctrl</kbd>+<kbd>F</kbd> | Search the current page |
 | <kbd>Ctrl</kbd>+<kbd>N</kbd> | Add a password (or a code on the codes page) |
+| <kbd>Ctrl</kbd>+<kbd>B</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> | Copy the user / the password of the access focused in the list or open |
+| <kbd>Ctrl</kbd>+<kbd>T</kbd> / <kbd>Ctrl</kbd>+<kbd>U</kbd> | Copy its verification code / open its website |
 | <kbd>Ctrl</kbd>+<kbd>L</kbd> | Lock |
 | <kbd>Ctrl</kbd>+<kbd>,</kbd> | Settings |
 | <kbd>F1</kbd> | All shortcuts |

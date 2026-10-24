@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:20\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -237,6 +237,12 @@ msgstr ""
 "Alespoň 8 znaků. Čtyřslovné heslo ze seznamu EFF je silným výchozím "
 "nastavením."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr "Alespoň {} znaků. Pár náhodných slov se snadno pamatuje a těžko hádá."
+
 msgid "Attachment added"
 msgstr "Příloha přidána"
 
@@ -377,6 +383,9 @@ msgid ""
 "this computer."
 msgstr ""
 "Zvolte hlavní heslo. Chrání vše, co v Ashy Pass na tomto počítači uchováváte."
+
+msgid "Choose an access in the list first"
+msgstr "Nejprve vyberte položku v seznamu"
 
 msgid "Choose an image with the QR code"
 msgstr "Vyberte obrázek s QR kódem"
@@ -594,6 +603,15 @@ msgstr "Kopie trezoru z Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Kopírovat heslo"
+
+msgid "Copy the password"
+msgstr "Kopírovat heslo"
+
+msgid "Copy the user"
+msgstr "Kopírovat uživatele"
+
+msgid "Copy the verification code"
+msgstr "Kopírovat ověřovací kód"
 
 msgid "Copy this old password"
 msgstr "Kopírovat toto staré heslo"
@@ -1506,9 +1524,6 @@ msgstr "Sloučeno"
 msgid "Merged; the others are in Deleted items"
 msgstr "Sloučeno; ostatní jsou ve Smazané položky"
 
-msgid "Minimum length:"
-msgstr "Minimální délka:"
-
 msgid "Mint"
 msgstr "Máta"
 
@@ -1820,6 +1835,9 @@ msgstr "Otevřít obrázek…"
 
 msgid "Open the encrypted volume"
 msgstr "Otevřít šifrovaný svazek"
+
+msgid "Open the website"
+msgstr "Otevřít web"
 
 msgid "Open website"
 msgstr "Otevřít web"
@@ -2392,6 +2410,13 @@ msgstr ""
 msgid "Style"
 msgstr "Styl"
 
+msgid "Suggest a passphrase"
+msgstr "Navrhnout heslo (frázi)"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Návrh: {}. Zapište si ho, než budete pokračovat."
+
 msgid "Summary"
 msgstr "Souhrn"
 
@@ -2707,6 +2732,12 @@ msgstr "Tato položka nemá uložené heslo"
 
 msgid "This access has no user"
 msgstr "Tato položka nemá uživatele"
+
+msgid "This access has no verification code"
+msgstr "Tato položka nemá ověřovací kód"
+
+msgid "This access has no website"
+msgstr "Tato položka nemá web"
 
 msgid "This access no longer exists"
 msgstr "Tato položka už neexistuje"

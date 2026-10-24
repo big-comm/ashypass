@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -224,6 +224,12 @@ msgstr ""
 "לפחות 8 תווים. משפט סיסמה בן ארבע מילים מרשימת המילים של EFF הוא ברירת מחדל "
 "חזקה."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr "לפחות {} תווים. כמה מילים אקראיות קל לזכור וקשה לנחש."
+
 msgid "Attachment added"
 msgstr "הקובץ המצורף נוסף"
 
@@ -363,6 +369,9 @@ msgid ""
 "Choose a master password. It protects everything you keep in Ashy Pass on "
 "this computer."
 msgstr "יש לבחור סיסמת אב. היא מגינה על כל מה שנשמר ב־Ashy Pass במחשב זה."
+
+msgid "Choose an access in the list first"
+msgstr "בחרו תחילה רשומה מהרשימה"
 
 msgid "Choose an image with the QR code"
 msgstr "בחירת תמונה עם קוד ה־QR"
@@ -577,6 +586,15 @@ msgstr "עותק של הכספת מ־Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "העתקת הסיסמה"
+
+msgid "Copy the password"
+msgstr "העתקת הסיסמה"
+
+msgid "Copy the user"
+msgstr "העתקת המשתמש"
+
+msgid "Copy the verification code"
+msgstr "העתקת קוד האימות"
 
 msgid "Copy this old password"
 msgstr "העתקת הסיסמה הישנה הזו"
@@ -1467,9 +1485,6 @@ msgstr "מוזג"
 msgid "Merged; the others are in Deleted items"
 msgstr "מוזג; האחרים נמצאים ב״פריטים שנמחקו״"
 
-msgid "Minimum length:"
-msgstr "אורך מינימלי:"
-
 msgid "Mint"
 msgstr "נענע"
 
@@ -1768,6 +1783,9 @@ msgstr "פתיחת תמונה…"
 
 msgid "Open the encrypted volume"
 msgstr "פתיחת הכרך המוצפן"
+
+msgid "Open the website"
+msgstr "פתיחת האתר"
 
 msgid "Open website"
 msgstr "פתיחת האתר"
@@ -2336,6 +2354,13 @@ msgstr ""
 msgid "Style"
 msgstr "סגנון"
 
+msgid "Suggest a passphrase"
+msgstr "הצעת משפט סיסמה"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "הצעה: {}. רשמו אותה לפני שממשיכים."
+
 msgid "Summary"
 msgstr "סיכום"
 
@@ -2629,6 +2654,12 @@ msgstr "לרשומה זו אין סיסמה שמורה"
 
 msgid "This access has no user"
 msgstr "לרשומה זו אין משתמש"
+
+msgid "This access has no verification code"
+msgstr "לרשומה זו אין קוד אימות"
+
+msgid "This access has no website"
+msgstr "לרשומה זו אין אתר"
 
 msgid "This access no longer exists"
 msgstr "רשומה זו כבר לא קיימת"

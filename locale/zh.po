@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -220,6 +220,12 @@ msgid ""
 msgstr ""
 "至少8个字符。使用EFF词表中的四个单词组成的密码短语是一个强密码默认选项。"
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr "至少 {} 个字符。几个随机单词既容易记住,又难以猜到。"
+
 msgid "Attachment added"
 msgstr "附件已添加"
 
@@ -359,6 +365,9 @@ msgid ""
 "Choose a master password. It protects everything you keep in Ashy Pass on "
 "this computer."
 msgstr "设置一个主密码。它保护你在此电脑上保存在 Ashy Pass 中的所有内容。"
+
+msgid "Choose an access in the list first"
+msgstr "请先在列表中选择一个条目"
 
 msgid "Choose an image with the QR code"
 msgstr "选择包含二维码的图片"
@@ -572,6 +581,15 @@ msgstr "来自 Ashy Pass 2 的保险库副本"
 
 msgid "Copy password"
 msgstr "复制密码"
+
+msgid "Copy the password"
+msgstr "复制密码"
+
+msgid "Copy the user"
+msgstr "复制用户"
+
+msgid "Copy the verification code"
+msgstr "复制验证码"
 
 msgid "Copy this old password"
 msgstr "复制此旧密码"
@@ -1449,9 +1467,6 @@ msgstr "已合并"
 msgid "Merged; the others are in Deleted items"
 msgstr "已合并；其他项目在“已删除项目”中"
 
-msgid "Minimum length:"
-msgstr "最小长度："
-
 msgid "Mint"
 msgstr "薄荷"
 
@@ -1742,6 +1757,9 @@ msgstr "打开图片…"
 
 msgid "Open the encrypted volume"
 msgstr "打开加密卷"
+
+msgid "Open the website"
+msgstr "打开网站"
 
 msgid "Open website"
 msgstr "打开网站"
@@ -2305,6 +2323,13 @@ msgstr ""
 msgid "Style"
 msgstr "样式"
 
+msgid "Suggest a passphrase"
+msgstr "建议密码短语"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "建议:{}。继续之前请先记下。"
+
 msgid "Summary"
 msgstr "摘要"
 
@@ -2589,6 +2614,12 @@ msgstr "此条目没有保存密码"
 
 msgid "This access has no user"
 msgstr "此条目没有用户"
+
+msgid "This access has no verification code"
+msgstr "此条目没有验证码"
+
+msgid "This access has no website"
+msgstr "此条目没有网站"
 
 msgid "This access no longer exists"
 msgstr "此条目已不存在"

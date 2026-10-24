@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -241,6 +241,14 @@ msgstr ""
 "Legalább 8 karakter. Az EFF szólistából vett négy szavas jelszó erős "
 "alapértelmezés."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Legalább {} karakter. Néhány véletlenszerű szót könnyű megjegyezni és nehéz "
+"kitalálni."
+
 msgid "Attachment added"
 msgstr "Melléklet hozzáadva"
 
@@ -382,6 +390,9 @@ msgid ""
 msgstr ""
 "Válasszon fő jelszót. Ez véd mindent, amit az Ashy Passban tárol ezen a "
 "számítógépen."
+
+msgid "Choose an access in the list first"
+msgstr "Először válassz egy bejegyzést a listából"
 
 msgid "Choose an image with the QR code"
 msgstr "Válasszon egy QR-kódot tartalmazó képet"
@@ -599,6 +610,15 @@ msgstr "A tár másolata az Ashy Pass 2-ből"
 
 msgid "Copy password"
 msgstr "Jelszó másolása"
+
+msgid "Copy the password"
+msgstr "Jelszó másolása"
+
+msgid "Copy the user"
+msgstr "Felhasználó másolása"
+
+msgid "Copy the verification code"
+msgstr "Ellenőrző kód másolása"
 
 msgid "Copy this old password"
 msgstr "A régi jelszó másolása"
@@ -1518,9 +1538,6 @@ msgstr "Egyesítve"
 msgid "Merged; the others are in Deleted items"
 msgstr "Egyesítve; a többi a Törölt elemek között van"
 
-msgid "Minimum length:"
-msgstr "Minimális hossz:"
-
 msgid "Mint"
 msgstr "Menta"
 
@@ -1841,6 +1858,9 @@ msgstr "Kép megnyitása…"
 
 msgid "Open the encrypted volume"
 msgstr "A titkosított kötet megnyitása"
+
+msgid "Open the website"
+msgstr "Webhely megnyitása"
 
 msgid "Open website"
 msgstr "Webhely megnyitása"
@@ -2423,6 +2443,13 @@ msgstr ""
 msgid "Style"
 msgstr "Stílus"
 
+msgid "Suggest a passphrase"
+msgstr "Jelszókifejezés javaslása"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Javaslat: {}. Írd fel, mielőtt folytatod."
+
 msgid "Summary"
 msgstr "Összegzés"
 
@@ -2736,6 +2763,12 @@ msgstr "Ehhez a bejegyzéshez nincs mentett jelszó"
 
 msgid "This access has no user"
 msgstr "Ehhez a bejegyzéshez nincs felhasználó"
+
+msgid "This access has no verification code"
+msgstr "Ennek a bejegyzésnek nincs ellenőrző kódja"
+
+msgid "This access has no website"
+msgstr "Ennek a bejegyzésnek nincs webhelye"
 
 msgid "This access no longer exists"
 msgstr "Ez a bejegyzés már nem létezik"

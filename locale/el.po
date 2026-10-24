@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:23\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -246,6 +246,14 @@ msgstr ""
 "Τουλάχιστον 8 χαρακτήρες. Μια φράση πρόσβασης τεσσάρων λέξεων από τη λίστα "
 "λέξεων EFF αποτελεί ισχυρή προεπιλογή."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Τουλάχιστον {} χαρακτήρες. Μερικές τυχαίες λέξεις θυμούνται εύκολα και "
+"μαντεύονται δύσκολα."
+
 msgid "Attachment added"
 msgstr "Το συνημμένο προστέθηκε"
 
@@ -387,6 +395,9 @@ msgid ""
 msgstr ""
 "Επιλέξτε κύριο κωδικό πρόσβασης. Προστατεύει ό,τι φυλάτε στο Ashy Pass σε "
 "αυτόν τον υπολογιστή."
+
+msgid "Choose an access in the list first"
+msgstr "Επιλέξτε πρώτα μια καταχώρηση από τη λίστα"
 
 msgid "Choose an image with the QR code"
 msgstr "Επιλέξτε εικόνα με τον κωδικό QR"
@@ -609,6 +620,15 @@ msgstr "Αντίγραφο του θησαυροφυλακίου από το Ash
 
 msgid "Copy password"
 msgstr "Αντιγραφή κωδικού πρόσβασης"
+
+msgid "Copy the password"
+msgstr "Αντιγραφή του κωδικού πρόσβασης"
+
+msgid "Copy the user"
+msgstr "Αντιγραφή του χρήστη"
+
+msgid "Copy the verification code"
+msgstr "Αντιγραφή του κωδικού επαλήθευσης"
 
 msgid "Copy this old password"
 msgstr "Αντιγραφή αυτού του παλιού κωδικού"
@@ -1542,9 +1562,6 @@ msgstr "Συγχωνεύτηκε"
 msgid "Merged; the others are in Deleted items"
 msgstr "Συγχωνεύτηκε· τα υπόλοιπα είναι στα Διαγραμμένα στοιχεία"
 
-msgid "Minimum length:"
-msgstr "Ελάχιστο μήκος:"
-
 msgid "Mint"
 msgstr "Μέντα"
 
@@ -1873,6 +1890,9 @@ msgstr "Άνοιγμα εικόνας…"
 
 msgid "Open the encrypted volume"
 msgstr "Άνοιγμα του κρυπτογραφημένου τόμου"
+
+msgid "Open the website"
+msgstr "Άνοιγμα του ιστότοπου"
 
 msgid "Open website"
 msgstr "Άνοιγμα ιστοτόπου"
@@ -2467,6 +2487,13 @@ msgstr ""
 msgid "Style"
 msgstr "Στυλ"
 
+msgid "Suggest a passphrase"
+msgstr "Πρόταση φράσης πρόσβασης"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Πρόταση: {}. Σημειώστε την πριν συνεχίσετε."
+
 msgid "Summary"
 msgstr "Σύνοψη"
 
@@ -2796,6 +2823,12 @@ msgstr "Αυτή η καταχώρηση δεν έχει αποθηκευμέν�
 
 msgid "This access has no user"
 msgstr "Αυτή η καταχώρηση δεν έχει χρήστη"
+
+msgid "This access has no verification code"
+msgstr "Αυτή η καταχώρηση δεν έχει κωδικό επαλήθευσης"
+
+msgid "This access has no website"
+msgstr "Αυτή η καταχώρηση δεν έχει ιστότοπο"
 
 msgid "This access no longer exists"
 msgstr "Αυτή η καταχώρηση δεν υπάρχει πια"

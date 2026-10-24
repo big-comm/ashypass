@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -234,6 +234,14 @@ msgstr ""
 "Að minnsta kosti 8 stafir. Fjögurra orða aðgangsorð úr EFF orðalistanum er "
 "öflugur sjálfgefinn valkostur."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Að minnsta kosti {} stafir. Fáein tilviljanakennd orð eru auðveld að muna og "
+"erfið að giska á."
+
 msgid "Attachment added"
 msgstr "Viðhengi bætt við"
 
@@ -375,6 +383,9 @@ msgid ""
 msgstr ""
 "Veldu aðallykilorð. Það verndar allt sem þú geymir í Ashy Pass á þessari "
 "tölvu."
+
+msgid "Choose an access in the list first"
+msgstr "Veldu fyrst færslu á listanum"
 
 msgid "Choose an image with the QR code"
 msgstr "Veldu mynd með QR-kóðanum"
@@ -591,6 +602,15 @@ msgstr "Afrit af hvelfingunni úr Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Afrita lykilorð"
+
+msgid "Copy the password"
+msgstr "Afrita lykilorðið"
+
+msgid "Copy the user"
+msgstr "Afrita notandann"
+
+msgid "Copy the verification code"
+msgstr "Afrita staðfestingarkóðann"
 
 msgid "Copy this old password"
 msgstr "Afrita þetta gamla lykilorð"
@@ -1501,9 +1521,6 @@ msgstr "Sameinað"
 msgid "Merged; the others are in Deleted items"
 msgstr "Sameinað; hin eru í Eydd atriði"
 
-msgid "Minimum length:"
-msgstr "Lágmarkslengd:"
-
 msgid "Mint"
 msgstr "Minta"
 
@@ -1813,6 +1830,9 @@ msgstr "Opna mynd…"
 
 msgid "Open the encrypted volume"
 msgstr "Opna dulkóðaða gagnasvæðið"
+
+msgid "Open the website"
+msgstr "Opna vefsvæðið"
 
 msgid "Open website"
 msgstr "Opna vefsvæði"
@@ -2391,6 +2411,13 @@ msgstr ""
 msgid "Style"
 msgstr "Stíll"
 
+msgid "Suggest a passphrase"
+msgstr "Leggja til setningarlykilorð"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Tillaga: {}. Skrifaðu það niður áður en þú heldur áfram."
+
 msgid "Summary"
 msgstr "Samantekt"
 
@@ -2704,6 +2731,12 @@ msgstr "Þessi færsla hefur ekkert vistað lykilorð"
 
 msgid "This access has no user"
 msgstr "Þessi færsla hefur engan notanda"
+
+msgid "This access has no verification code"
+msgstr "Þessi færsla hefur engan staðfestingarkóða"
+
+msgid "This access has no website"
+msgstr "Þessi færsla hefur ekkert vefsvæði"
 
 msgid "This access no longer exists"
 msgstr "Þessi færsla er ekki lengur til"

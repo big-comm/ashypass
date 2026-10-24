@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:10-0300\n"
+"POT-Creation-Date: 2026-10-24 18:23-0300\n"
 "PO-Revision-Date: 2026-05-12 19:29\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -243,6 +243,14 @@ msgstr ""
 "Au moins 8 caractères. Une phrase de passe de quatre mots issue de la liste "
 "de mots EFF constitue un bon choix par défaut."
 
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Au moins {} caractères. Quelques mots aléatoires sont faciles à retenir et "
+"difficiles à deviner."
+
 msgid "Attachment added"
 msgstr "Pièce jointe ajoutée"
 
@@ -385,6 +393,9 @@ msgid ""
 msgstr ""
 "Choisissez un mot de passe maître. Il protège tout ce que vous conservez "
 "dans Ashy Pass sur cet ordinateur."
+
+msgid "Choose an access in the list first"
+msgstr "Choisissez d’abord une entrée dans la liste"
 
 msgid "Choose an image with the QR code"
 msgstr "Choisir une image contenant le code QR"
@@ -604,6 +615,15 @@ msgstr "Copie du coffre d’Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Copier le mot de passe"
+
+msgid "Copy the password"
+msgstr "Copier le mot de passe"
+
+msgid "Copy the user"
+msgstr "Copier l’utilisateur"
+
+msgid "Copy the verification code"
+msgstr "Copier le code de vérification"
 
 msgid "Copy this old password"
 msgstr "Copier cet ancien mot de passe"
@@ -1532,9 +1552,6 @@ msgstr "Fusionné"
 msgid "Merged; the others are in Deleted items"
 msgstr "Fusionné ; les autres sont dans Éléments supprimés"
 
-msgid "Minimum length:"
-msgstr "Longueur minimale :"
-
 msgid "Mint"
 msgstr "Menthe"
 
@@ -1855,6 +1872,9 @@ msgstr "Ouvrir une image…"
 
 msgid "Open the encrypted volume"
 msgstr "Ouvrir le volume chiffré"
+
+msgid "Open the website"
+msgstr "Ouvrir le site web"
 
 msgid "Open website"
 msgstr "Ouvrir le site web"
@@ -2448,6 +2468,13 @@ msgstr ""
 msgid "Style"
 msgstr "Style"
 
+msgid "Suggest a passphrase"
+msgstr "Suggérer une phrase de passe"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Suggestion : {}. Notez-la avant de continuer."
+
 msgid "Summary"
 msgstr "Résumé"
 
@@ -2777,6 +2804,12 @@ msgstr "Cette entrée n’a pas de mot de passe enregistré"
 
 msgid "This access has no user"
 msgstr "Cette entrée n’a pas d’utilisateur"
+
+msgid "This access has no verification code"
+msgstr "Cette entrée n’a pas de code de vérification"
+
+msgid "This access has no website"
+msgstr "Cette entrée n’a pas de site web"
 
 msgid "This access no longer exists"
 msgstr "Cette entrée n’existe plus"

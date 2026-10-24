@@ -21,6 +21,7 @@ use crate::tr;
 use crate::trn;
 use crate::ui::backups_view::BackupsView;
 use crate::ui::unlock_view::UnlockView;
+use crate::ui::vault_view::EntryShortcut;
 use crate::ui::widgets::Chrome;
 use crate::ui::{
     drives_view::DrivesView, generator_view::GeneratorView, settings_dialog, totp_view::TotpView,
@@ -615,6 +616,24 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
         &["<Primary>4"],
         Box::new(|i| i.show_page("backups")),
     );
+    // On the access focused in the list or open in the details. Not plain
+    // Ctrl+C: that copies selected text everywhere else.
+    for (name, accel, shortcut) in [
+        ("copy-user", "<Primary>b", EntryShortcut::User),
+        (
+            "copy-password",
+            "<Primary><Shift>c",
+            EntryShortcut::Password,
+        ),
+        ("copy-code", "<Primary>t", EntryShortcut::Code),
+        ("open-website", "<Primary>u", EntryShortcut::Website),
+    ] {
+        add_action(
+            name,
+            &[accel],
+            Box::new(move |i| i.entry_shortcut(shortcut)),
+        );
+    }
     add_action("drives", &[], Box::new(|i| i.show_page("drives")));
     add_action(
         "shortcuts",
@@ -869,6 +888,16 @@ impl MainWindowInner {
         true
     }
 
+    fn entry_shortcut(self: &Rc<Self>, shortcut: EntryShortcut) {
+        if !self.unlocked()
+            || self.window.visible_dialog().is_some()
+            || self.current.get() != "vault"
+        {
+            return;
+        }
+        self.vault_view.run_shortcut(shortcut);
+    }
+
     fn focus_search(self: &Rc<Self>) {
         // Not behind an open dialog: Ctrl+N inside the entry form would
         // stack a second form.
@@ -1043,7 +1072,14 @@ fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
         ),
         (
             tr!("Vault"),
-            &[("Ctrl+N", tr!("Add password")), ("Ctrl+L", tr!("Lock"))],
+            &[
+                ("Ctrl+N", tr!("Add password")),
+                ("Ctrl+B", tr!("Copy the user")),
+                ("Ctrl+Shift+C", tr!("Copy the password")),
+                ("Ctrl+T", tr!("Copy the verification code")),
+                ("Ctrl+U", tr!("Open the website")),
+                ("Ctrl+L", tr!("Lock")),
+            ],
         ),
         (
             tr!("Application"),
