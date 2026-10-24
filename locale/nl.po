@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:38\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -70,6 +70,9 @@ msgstr "Bijlage toevoegen"
 msgid "Add code"
 msgstr "Code toevoegen"
 
+msgid "Add codes"
+msgstr "Codes toevoegen"
+
 msgid "Add file"
 msgstr "Bestand toevoegen"
 
@@ -87,6 +90,12 @@ msgstr "Aan favorieten toevoegen"
 
 msgid "Add verification code"
 msgstr "Verificatiecode toevoegen"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "{} code uit Google Authenticator toevoegen?"
+msgstr[1] "{} codes uit Google Authenticator toevoegen?"
 
 msgid "Added to favorites"
 msgstr "Aan favorieten toegevoegd"
@@ -461,6 +470,15 @@ msgstr "Koffie"
 msgid "Columns such as name, url, username, password"
 msgstr "Kolommen zoals name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Kom je van Google Authenticator? Open daar het menu, kies Accounts "
+"overzetten → Accounts exporteren en lees hier de getoonde QR-code in: al "
+"zijn codes komen in één keer binnen."
+
 msgid "Compact vault list"
 msgstr "Compacte kluislijst"
 
@@ -698,9 +716,6 @@ msgstr "Map aanmaken…"
 msgid "Create my vault"
 msgstr "Mijn kluis aanmaken"
 
-msgid "Create password"
-msgstr "Wachtwoord aanmaken"
-
 msgid "Create your vault"
 msgstr "Maak uw kluis aan"
 
@@ -824,6 +839,13 @@ msgstr "Schijf vergrendeld"
 msgid "Duplicate items"
 msgstr "Dubbele items"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Elk pictogram wordt van de site zelf gedownload, die je internetadres ziet. "
+"Sites in je lokale netwerk worden nooit benaderd."
+
 msgid "Easier to type and remember."
 msgstr "Makkelijker te typen en te onthouden."
 
@@ -941,6 +963,9 @@ msgstr "Foutdetails"
 msgid "Estimated strength"
 msgstr "Geschatte sterkte"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Alle codes in deze export staan al in de kluis."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1023,9 +1048,6 @@ msgstr "Favoriet"
 msgid "Favorites"
 msgstr "Favorieten"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Site-pictogrammen ophalen en weergeven naast kluisitems"
-
 msgid "Fetching remote passwords"
 msgstr "Externe wachtwoorden ophalen"
 
@@ -1067,6 +1089,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Map"
+
+msgid "Folder and tags"
+msgstr "Map en labels"
 
 msgid "Folder created"
 msgstr "Map aangemaakt"
@@ -1749,14 +1774,29 @@ msgstr "Aan"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Open op de site die u wilt beveiligen de instellingen voor "
-"tweestapsverificatie en kies een authenticator-app. Lees de getoonde QR-code "
-"of kopieer de configuratiesleutel en plak die hieronder."
+"Open op de site die je wilt beveiligen de instellingen voor verificatie in "
+"twee stappen en kies een authenticatie-app. Lees de getoonde QR-code in, of "
+"kopieer de configuratiesleutel (de letters en cijfers onder de QR-code, vaak "
+"achter „Kun je niet scannen?”) en plak die hieronder."
 
 msgid "On until Ashy Pass closes"
 msgstr "Aan tot Ashy Pass sluit"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Eén code gebruikt een teller of een algoritme dat Ashy Pass niet ondersteunt "
+"en is overgeslagen."
+msgstr[1] ""
+"Sommige codes gebruiken een teller of een algoritme dat Ashy Pass niet "
+"ondersteunt en zijn overgeslagen."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1812,6 +1852,9 @@ msgstr "Opent Dropbox in de browser; kopieer de getoonde code"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Opent de browser voor OAuth-toestemming"
+
+msgid "Optional, to organize the list"
+msgstr "Optioneel, om de lijst te ordenen"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1881,6 +1924,9 @@ msgstr "Wachtwoord gekopieerd"
 
 msgid "Password for this backup"
 msgstr "Wachtwoord voor deze back-up"
+
+msgid "Password generator"
+msgstr "Wachtwoordgenerator"
 
 msgid "Password history"
 msgstr "Wachtwoordgeschiedenis"
@@ -2684,6 +2730,11 @@ msgstr ""
 "Zo niet, dan heeft de server misschien maar gedeeltelijk geantwoord: behoud "
 "ze, de volgende synchronisatie probeert het opnieuw."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Deze export uit Google Authenticator bevat geen codes die hier te gebruiken "
+"zijn."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Deze pincode past niet meer bij de kluis. Er is niets gewijzigd."
 
@@ -2754,11 +2805,12 @@ msgstr ""
 "afbeelding van maximaal 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Dit is een export van Google Authenticator met meerdere accounts. Toon in "
-"plaats daarvan de QR-code van elk account op de bijbehorende site."
+"Dit is een export uit Google Authenticator met meerdere accounts. Lees hem "
+"in bij Verificatiecodes → Code toevoegen om ze allemaal in één keer binnen "
+"te halen."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3324,6 +3376,11 @@ msgid "weak"
 msgstr "zwak"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr ""
+"{added} van {total} codes toegevoegd; de andere konden niet worden opgeslagen"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} kan niet worden geïmporteerd."
@@ -3334,6 +3391,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} teken"
 msgstr[1] "{} tekens"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} code toegevoegd"
+msgstr[1] "{} codes toegevoegd"
 
 #, rust-format
 msgid "{} day."

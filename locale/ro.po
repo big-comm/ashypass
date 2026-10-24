@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:43\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -70,6 +70,9 @@ msgstr "Adaugă atașament"
 msgid "Add code"
 msgstr "Adaugă cod"
 
+msgid "Add codes"
+msgstr "Adaugă coduri"
+
 msgid "Add file"
 msgstr "Adaugă fișier"
 
@@ -87,6 +90,13 @@ msgstr "Adaugă la favorite"
 
 msgid "Add verification code"
 msgstr "Adaugă cod de verificare"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Adaugi {} cod din Google Authenticator?"
+msgstr[1] "Adaugi {} coduri din Google Authenticator?"
+msgstr[2] "Adaugi {} de coduri din Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Adăugat la favorite"
@@ -462,6 +472,15 @@ msgstr "Cafea"
 msgid "Columns such as name, url, username, password"
 msgstr "Coloane precum name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Vii din Google Authenticator? Acolo, deschide meniul, alege Transferă "
+"conturi → Exportă conturi și citește aici codul QR afișat: toate codurile "
+"sale vin deodată."
+
 msgid "Compact vault list"
 msgstr "Listă compactă a seifului"
 
@@ -701,9 +720,6 @@ msgstr "Creează dosar…"
 msgid "Create my vault"
 msgstr "Creează-mi seiful"
 
-msgid "Create password"
-msgstr "Creează parolă"
-
 msgid "Create your vault"
 msgstr "Creați-vă seiful"
 
@@ -826,6 +842,14 @@ msgstr "Unitate blocată"
 msgid "Duplicate items"
 msgstr "Elemente duplicate"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Fiecare pictogramă este descărcată de pe site-ul în sine, care îți vede "
+"adresa de internet. Site-urile din rețeaua ta locală nu sunt contactate "
+"niciodată."
+
 msgid "Easier to type and remember."
 msgstr "Mai ușor de tastat și de reținut."
 
@@ -944,6 +968,9 @@ msgstr "Detalii erori"
 msgid "Estimated strength"
 msgstr "Putere estimată"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Toate codurile din acest export sunt deja în seif."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1024,9 +1051,6 @@ msgstr "Favorit"
 msgid "Favorites"
 msgstr "Favorite"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Preia și afișează pictogramele site-urilor lângă intrările din seif"
-
 msgid "Fetching remote passwords"
 msgstr "Se preiau parolele de la distanță"
 
@@ -1068,6 +1092,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Dosar"
+
+msgid "Folder and tags"
+msgstr "Dosar și etichete"
 
 msgid "Folder created"
 msgstr "Dosar creat"
@@ -1749,14 +1776,32 @@ msgstr "Activat"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Pe site-ul pe care doriți să-l protejați, deschideți setările de verificare "
-"în doi pași și alegeți o aplicație de autentificare. Citiți codul QR afișat "
-"sau copiați cheia de configurare și lipiți-o mai jos."
+"Pe site-ul pe care vrei să-l protejezi, deschide setările verificării în doi "
+"pași și alege o aplicație de autentificare. Citește codul QR afișat sau "
+"copiază cheia de configurare (literele și cifrele de sub codul QR, adesea în "
+"spatele opțiunii „Nu poți scana?”) și lipește-o mai jos."
 
 msgid "On until Ashy Pass closes"
 msgstr "Activat până la închiderea Ashy Pass"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Un cod folosește un contor sau un algoritm pe care Ashy Pass nu le acceptă "
+"și a fost omis."
+msgstr[1] ""
+"Unele coduri folosesc un contor sau un algoritm pe care Ashy Pass nu le "
+"acceptă și au fost omise."
+msgstr[2] ""
+"Unele coduri folosesc un contor sau un algoritm pe care Ashy Pass nu le "
+"acceptă și au fost omise."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1812,6 +1857,9 @@ msgstr "Deschide Dropbox în browser; copiați codul afișat"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Deschide browserul pentru consimțământ OAuth"
+
+msgid "Optional, to organize the list"
+msgstr "Opțional, pentru a organiza lista"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1880,6 +1928,9 @@ msgstr "Parolă copiată"
 
 msgid "Password for this backup"
 msgstr "Parola pentru această copie de rezervă"
+
+msgid "Password generator"
+msgstr "Generator de parole"
 
 msgid "Password history"
 msgstr "Istoric parole"
@@ -2678,6 +2729,11 @@ msgstr ""
 "răspuns doar parțial: păstrați-le și următoarea sincronizare va încerca din "
 "nou."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Acest export din Google Authenticator nu are coduri care pot fi folosite "
+"aici."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Acest PIN nu mai corespunde seifului. Nu s-a modificat nimic."
 
@@ -2746,11 +2802,11 @@ msgstr ""
 "cel mult 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Acesta este un export Google Authenticator cu mai multe conturi. Afișați în "
-"schimb codul QR al fiecărui cont pe site-ul său."
+"Acesta este un export din Google Authenticator cu mai multe conturi. Citește-"
+"l în Coduri de verificare → Adaugă cod pentru a le aduce pe toate deodată."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3315,6 +3371,10 @@ msgid "weak"
 msgstr "slab"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{added} din {total} coduri adăugate; celelalte nu au putut fi salvate"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} intrare nu poate fi importată."
@@ -3327,6 +3387,13 @@ msgid_plural "{} characters"
 msgstr[0] "{} caracter"
 msgstr[1] "{} caractere"
 msgstr[2] "{} de caractere"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} cod adăugat"
+msgstr[1] "{} coduri adăugate"
+msgstr[2] "{} de coduri adăugate"
 
 #, rust-format
 msgid "{} day."

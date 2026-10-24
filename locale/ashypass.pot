@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,6 +67,9 @@ msgstr ""
 msgid "Add code"
 msgstr ""
 
+msgid "Add codes"
+msgstr ""
+
 msgid "Add file"
 msgstr ""
 
@@ -84,6 +87,12 @@ msgstr ""
 
 msgid "Add verification code"
 msgstr ""
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Added to favorites"
 msgstr ""
@@ -431,6 +440,12 @@ msgstr ""
 msgid "Columns such as name, url, username, password"
 msgstr ""
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+
 msgid "Compact vault list"
 msgstr ""
 
@@ -665,9 +680,6 @@ msgstr ""
 msgid "Create my vault"
 msgstr ""
 
-msgid "Create password"
-msgstr ""
-
 msgid "Create your vault"
 msgstr ""
 
@@ -784,6 +796,11 @@ msgstr ""
 msgid "Duplicate items"
 msgstr ""
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+
 msgid "Easier to type and remember."
 msgstr ""
 
@@ -897,6 +914,9 @@ msgstr ""
 msgid "Estimated strength"
 msgstr ""
 
+msgid "Every code in this export is already in the vault."
+msgstr ""
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -967,9 +987,6 @@ msgstr ""
 msgid "Favorites"
 msgstr ""
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr ""
-
 msgid "Fetching remote passwords"
 msgstr ""
 
@@ -1004,6 +1021,9 @@ msgid ""
 msgstr ""
 
 msgid "Folder"
+msgstr ""
+
+msgid "Folder and tags"
 msgstr ""
 
 msgid "Folder created"
@@ -1617,11 +1637,21 @@ msgstr ""
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
 
 msgid "On until Ashy Pass closes"
 msgstr ""
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1672,6 +1702,9 @@ msgid "Opens Dropbox in the browser; copy the code it shows"
 msgstr ""
 
 msgid "Opens the browser for OAuth consent"
+msgstr ""
+
+msgid "Optional, to organize the list"
 msgstr ""
 
 msgid ""
@@ -1734,6 +1767,9 @@ msgid "Password copied"
 msgstr ""
 
 msgid "Password for this backup"
+msgstr ""
+
+msgid "Password generator"
 msgstr ""
 
 msgid "Password history"
@@ -2467,6 +2503,9 @@ msgid ""
 "sync tries again."
 msgstr ""
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr ""
 
@@ -2528,8 +2567,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
 
 msgid ""
@@ -3043,6 +3082,10 @@ msgid "weak"
 msgstr ""
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr ""
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] ""
@@ -3051,6 +3094,12 @@ msgstr[1] ""
 #, rust-format
 msgid "{} character"
 msgid_plural "{} characters"
+msgstr[0] ""
+msgstr[1] ""
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
 msgstr[0] ""
 msgstr[1] ""
 

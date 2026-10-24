@@ -2,11 +2,13 @@
 //! screen.
 //!
 //! The sidebar lists destinations only — *My passwords*, *Verification
-//! codes*, *Create password*, then *Backups* and *Settings*. Locking is a
+//! codes*, *Password generator*, then *Backups* and *Settings*. Locking is a
 //! button, not a page; external drives live under *Tools* in the main menu.
+//! Before a vault exists the sidebar is hidden: the first-run screen stands
+//! alone, with nothing to wander off to.
 //!
 //! Pages that need the vault show the shared unlock screen while it is
-//! locked; *Create password* keeps working. A password created on that page
+//! locked; *Password generator* keeps working. A password created on that page
 //! survives the unlock: *Save to vault…* asks to unlock and then opens the
 //! entry form with the same value.
 //!
@@ -50,7 +52,7 @@ fn nav_label(name: &str) -> &'static str {
     match name {
         "vault" => tr!("My passwords"),
         "totp" => tr!("Verification codes"),
-        "generator" => tr!("Create password"),
+        "generator" => tr!("Password generator"),
         "backups" => tr!("Backups"),
         "settings" => tr!("Settings"),
         "drives" => tr!("External drives"),
@@ -321,6 +323,10 @@ impl MainWindow {
         {
             let s = state.settings();
             state.session.borrow_mut().timeout_seconds = s.lock_timeout.max(15);
+        }
+
+        if !inner.has_vault() {
+            inner.split.set_show_sidebar(false);
         }
 
         // Startup: one try at the opt-in keyring unlock, then the vault.
@@ -618,6 +624,14 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
 }
 
 impl MainWindowInner {
+    fn has_vault(&self) -> bool {
+        self.state
+            .vault
+            .borrow()
+            .has_master_password()
+            .unwrap_or(false)
+    }
+
     fn unlocked(&self) -> bool {
         self.state.session.borrow().is_authenticated() && self.state.vault.borrow().is_unlocked()
     }
@@ -682,6 +696,11 @@ impl MainWindowInner {
 
     fn on_unlocked(self: &Rc<Self>) {
         self.lock_button.set_visible(true);
+        // The vault was just created: bring the sidebar in (collapsed, it
+        // stays an overlay opened by its button).
+        if !self.split.is_collapsed() {
+            self.split.set_show_sidebar(true);
+        }
         self.vault_view.on_unlocked();
         self.totp_view.on_unlocked();
         self.backups_view.on_unlocked();
@@ -1017,7 +1036,7 @@ fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
             &[
                 ("Ctrl+1", tr!("My passwords")),
                 ("Ctrl+2", tr!("Verification codes")),
-                ("Ctrl+3", tr!("Create password")),
+                ("Ctrl+3", tr!("Password generator")),
                 ("Ctrl+4", tr!("Backups")),
                 ("Ctrl+F", tr!("Go to search")),
             ],

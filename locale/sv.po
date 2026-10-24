@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:46\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -67,6 +67,9 @@ msgstr "Lägg till bilaga"
 msgid "Add code"
 msgstr "Lägg till kod"
 
+msgid "Add codes"
+msgstr "Lägg till koder"
+
 msgid "Add file"
 msgstr "Lägg till fil"
 
@@ -84,6 +87,12 @@ msgstr "Lägg till i favoriter"
 
 msgid "Add verification code"
 msgstr "Lägg till verifieringskod"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Lägga till {} kod från Google Authenticator?"
+msgstr[1] "Lägga till {} koder från Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Tillagd i favoriter"
@@ -456,6 +465,15 @@ msgstr "Kaffe"
 msgid "Columns such as name, url, username, password"
 msgstr "Kolumner som name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Kommer du från Google Authenticator? Öppna menyn där, välj Överför konton → "
+"Exportera konton och läs av QR-koden som visas här: alla dess koder kommer "
+"på en gång."
+
 msgid "Compact vault list"
 msgstr "Kompakt vault-lista"
 
@@ -693,9 +711,6 @@ msgstr "Skapa mapp…"
 msgid "Create my vault"
 msgstr "Skapa mitt valv"
 
-msgid "Create password"
-msgstr "Skapa lösenord"
-
 msgid "Create your vault"
 msgstr "Skapa ditt valv"
 
@@ -816,6 +831,13 @@ msgstr "Enheten låst"
 msgid "Duplicate items"
 msgstr "Dubblettobjekt"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Varje ikon hämtas från själva webbplatsen, som ser din internetadress. "
+"Webbplatser i ditt lokala nätverk kontaktas aldrig."
+
 msgid "Easier to type and remember."
 msgstr "Lättare att skriva och komma ihåg."
 
@@ -933,6 +955,9 @@ msgstr "Information om fel"
 msgid "Estimated strength"
 msgstr "Uppskattad styrka"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Alla koder i den här exporten finns redan i valvet."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1013,9 +1038,6 @@ msgstr "Favorit"
 msgid "Favorites"
 msgstr "Favoriter"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Hämta och visa webbplatsikoner bredvid valvposter"
-
 msgid "Fetching remote passwords"
 msgstr "Hämtar fjärrlösenord"
 
@@ -1057,6 +1079,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Mapp"
+
+msgid "Folder and tags"
+msgstr "Mapp och etiketter"
 
 msgid "Folder created"
 msgstr "Mapp skapad"
@@ -1733,14 +1758,29 @@ msgstr "På"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
 "Öppna inställningarna för tvåstegsverifiering på webbplatsen du vill skydda "
-"och välj en autentiseringsapp. Läs in QR-koden som visas eller kopiera "
-"installationsnyckeln och klistra in den nedan."
+"och välj en autentiseringsapp. Läs av QR-koden som visas, eller kopiera "
+"installationsnyckeln (bokstäverna och siffrorna under QR-koden, ofta bakom "
+"”Kan du inte skanna den?”) och klistra in den nedan."
 
 msgid "On until Ashy Pass closes"
 msgstr "På tills Ashy Pass stängs"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"En kod använder en räknare eller en algoritm som Ashy Pass inte stöder och "
+"har utelämnats."
+msgstr[1] ""
+"Vissa koder använder en räknare eller en algoritm som Ashy Pass inte stöder "
+"och har utelämnats."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1795,6 +1835,9 @@ msgstr "Öppnar Dropbox i webbläsaren; kopiera koden som visas"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Öppnar webbläsaren för OAuth-godkännande"
+
+msgid "Optional, to organize the list"
+msgstr "Valfritt, för att ordna listan"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1862,6 +1905,9 @@ msgstr "Lösenord kopierat"
 
 msgid "Password for this backup"
 msgstr "Lösenord för denna säkerhetskopia"
+
+msgid "Password generator"
+msgstr "Lösenordsgenerator"
 
 msgid "Password history"
 msgstr "Lösenordshistorik"
@@ -2641,6 +2687,11 @@ msgstr ""
 "inte kan servern ha svarat bara delvis: behåll dem så försöker nästa "
 "synkronisering igen."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Den här exporten från Google Authenticator har inga koder som kan användas "
+"här."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Den här PIN-koden passar inte längre valvet. Inget ändrades."
 
@@ -2710,11 +2761,11 @@ msgstr ""
 "MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Det här är en export från Google Authenticator med flera konton. Visa i "
-"stället QR-koden för varje konto på dess webbplats."
+"Det här är en export från Google Authenticator med flera konton. Läs av den "
+"i Verifieringskoder → Lägg till kod för att hämta alla på en gång."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3270,6 +3321,10 @@ msgid "weak"
 msgstr "svag"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{added} av {total} koder tillagda; de andra kunde inte sparas"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} kan inte importeras."
@@ -3280,6 +3335,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} tecken"
 msgstr[1] "{} tecken"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kod tillagd"
+msgstr[1] "{} koder tillagda"
 
 #, rust-format
 msgid "{} day."

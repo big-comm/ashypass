@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:31\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -70,6 +70,9 @@ msgstr "Dodaj privitak"
 msgid "Add code"
 msgstr "Dodaj kôd"
 
+msgid "Add codes"
+msgstr "Dodaj kodove"
+
 msgid "Add file"
 msgstr "Dodaj datoteku"
 
@@ -87,6 +90,13 @@ msgstr "Dodaj u favorite"
 
 msgid "Add verification code"
 msgstr "Dodaj kôd za provjeru"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Dodati {} kôd iz Google Authenticatora?"
+msgstr[1] "Dodati {} kôda iz Google Authenticatora?"
+msgstr[2] "Dodati {} kodova iz Google Authenticatora?"
 
 msgid "Added to favorites"
 msgstr "Dodano u favorite"
@@ -459,6 +469,15 @@ msgstr "Kava"
 msgid "Columns such as name, url, username, password"
 msgstr "Stupci poput name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Dolazite iz Google Authenticatora? Tamo otvorite izbornik, odaberite "
+"Prijenos računa → Izvoz računa i očitajte ovdje prikazani QR kôd: svi "
+"njegovi kodovi stižu odjednom."
+
 msgid "Compact vault list"
 msgstr "Sažeti popis trezora"
 
@@ -697,9 +716,6 @@ msgstr "Stvori mapu…"
 msgid "Create my vault"
 msgstr "Stvori moj trezor"
 
-msgid "Create password"
-msgstr "Stvori lozinku"
-
 msgid "Create your vault"
 msgstr "Stvorite svoj trezor"
 
@@ -821,6 +837,13 @@ msgstr "Pogon zaključan"
 msgid "Duplicate items"
 msgstr "Duplicirane stavke"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Svaka se ikona preuzima s same web stranice, koja vidi vašu internetsku "
+"adresu. Stranice u vašoj lokalnoj mreži nikad se ne kontaktiraju."
+
 msgid "Easier to type and remember."
 msgstr "Lakše za upisivanje i pamćenje."
 
@@ -939,6 +962,9 @@ msgstr "Pojedinosti o pogreškama"
 msgid "Estimated strength"
 msgstr "Procijenjena jačina"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Svi kodovi iz ovog izvoza već su u trezoru."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1019,9 +1045,6 @@ msgstr "Omiljeno"
 msgid "Favorites"
 msgstr "Favoriti"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Dohvati i prikaži ikone web stranica pored unosa u trezoru"
-
 msgid "Fetching remote passwords"
 msgstr "Dohvaćanje udaljenih lozinki"
 
@@ -1063,6 +1086,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Mapa"
+
+msgid "Folder and tags"
+msgstr "Mapa i oznake"
 
 msgid "Folder created"
 msgstr "Mapa stvorena"
@@ -1740,14 +1766,32 @@ msgstr "Uključeno"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Na stranici koju želite zaštititi otvorite postavke provjere u dva koraka i "
-"odaberite aplikaciju za autentifikaciju. Očitajte prikazani QR kod ili "
-"kopirajte ključ za postavljanje i zalijepite ga ispod."
+"Na web stranici koju želite zaštititi otvorite postavke dvostupanjske "
+"provjere i odaberite aplikaciju za autentifikaciju. Očitajte prikazani QR "
+"kôd ili kopirajte ključ za postavljanje (slova i brojeve ispod QR kôda, "
+"često iza „Ne možete skenirati?“) i zalijepite ga ispod."
 
 msgid "On until Ashy Pass closes"
 msgstr "Uključeno dok se Ashy Pass ne zatvori"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Jedan kôd koristi brojač ili algoritam koji Ashy Pass ne podržava i "
+"izostavljen je."
+msgstr[1] ""
+"Neki kodovi koriste brojač ili algoritam koji Ashy Pass ne podržava i "
+"izostavljeni su."
+msgstr[2] ""
+"Neki kodovi koriste brojač ili algoritam koji Ashy Pass ne podržava i "
+"izostavljeni su."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1802,6 +1846,9 @@ msgstr "Otvara Dropbox u pregledniku; kopirajte prikazani kod"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Otvara preglednik za OAuth pristanak"
+
+msgid "Optional, to organize the list"
+msgstr "Neobavezno, za organiziranje popisa"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1870,6 +1917,9 @@ msgstr "Lozinka kopirana"
 
 msgid "Password for this backup"
 msgstr "Lozinka za ovu kopiju"
+
+msgid "Password generator"
+msgstr "Generator lozinki"
 
 msgid "Password history"
 msgstr "Povijest lozinki"
@@ -2654,6 +2704,11 @@ msgstr ""
 "poslužitelj je možda odgovorio samo djelomično: zadržite ih i sljedeća "
 "sinkronizacija pokušat će ponovno."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Ovaj izvoz iz Google Authenticatora nema kodova koji se ovdje mogu "
+"upotrijebiti."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Ovaj PIN više ne odgovara trezoru. Ništa nije promijenjeno."
 
@@ -2720,11 +2775,11 @@ msgstr ""
 "Slika se ne može otvoriti. Upotrijebite PNG, JPEG ili WebP sliku do 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Ovo je izvoz iz Google Authenticatora s više računa. Umjesto toga prikažite "
-"QR kod svakog računa na njegovoj stranici."
+"Ovo je izvoz iz Google Authenticatora s nekoliko računa. Očitajte ga u "
+"Kodovi za provjeru → Dodaj kôd da biste ih sve dodali odjednom."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3289,6 +3344,10 @@ msgid "weak"
 msgstr "slabo"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "Dodano {added} od {total} kodova; ostale nije bilo moguće spremiti"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} se ne može uvesti."
@@ -3301,6 +3360,13 @@ msgid_plural "{} characters"
 msgstr[0] "{} znak"
 msgstr[1] "{} znaka"
 msgstr[2] "{} znakova"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "Dodan {} kôd"
+msgstr[1] "Dodana {} kôda"
+msgstr[2] "Dodano {} kodova"
 
 #, rust-format
 msgid "{} day."

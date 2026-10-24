@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -69,6 +69,9 @@ msgstr "Melléklet hozzáadása"
 msgid "Add code"
 msgstr "Kód hozzáadása"
 
+msgid "Add codes"
+msgstr "Kódok hozzáadása"
+
 msgid "Add file"
 msgstr "Fájl hozzáadása"
 
@@ -86,6 +89,12 @@ msgstr "Hozzáadás a kedvencekhez"
 
 msgid "Add verification code"
 msgstr "Ellenőrző kód hozzáadása"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Hozzáadsz {} kódot a Google Authenticatorból?"
+msgstr[1] "Hozzáadsz {} kódot a Google Authenticatorból?"
 
 msgid "Added to favorites"
 msgstr "Hozzáadva a kedvencekhez"
@@ -462,6 +471,15 @@ msgstr "Kávé"
 msgid "Columns such as name, url, username, password"
 msgstr "Oszlopok, például name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"A Google Authenticatorból érkezel? Ott nyisd meg a menüt, válaszd az Fiókok "
+"átvitele → Fiókok exportálása lehetőséget, és olvasd be itt a megjelenő QR-"
+"kódot: az összes kódja egyszerre érkezik."
+
 msgid "Compact vault list"
 msgstr "Tömör tárolólista"
 
@@ -699,9 +717,6 @@ msgstr "Mappa létrehozása…"
 msgid "Create my vault"
 msgstr "Tár létrehozása"
 
-msgid "Create password"
-msgstr "Jelszó létrehozása"
-
 msgid "Create your vault"
 msgstr "Hozza létre a tárát"
 
@@ -824,6 +839,13 @@ msgstr "Meghajtó zárolva"
 msgid "Duplicate items"
 msgstr "Ismétlődő elemek"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Minden ikont maga a webhely tölt le, amely látja az internetcímedet. A helyi "
+"hálózatod webhelyeivel soha nem veszi fel a kapcsolatot."
+
 msgid "Easier to type and remember."
 msgstr "Könnyebb begépelni és megjegyezni."
 
@@ -943,6 +965,9 @@ msgstr "Hibák részletei"
 msgid "Estimated strength"
 msgstr "Becsült erősség"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Az exportálás minden kódja már a tárban van."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1024,9 +1049,6 @@ msgstr "Kedvenc"
 msgid "Favorites"
 msgstr "Kedvencek"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Webhelyikonok lekérése és megjelenítése a tárolóbejegyzések mellett"
-
 msgid "Fetching remote passwords"
 msgstr "Távoli jelszavak lekérése"
 
@@ -1068,6 +1090,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Mappa"
+
+msgid "Folder and tags"
+msgstr "Mappa és címkék"
 
 msgid "Folder created"
 msgstr "Mappa létrehozva"
@@ -1747,14 +1772,29 @@ msgstr "Be"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"A védeni kívánt oldalon nyissa meg a kétlépcsős azonosítás beállításait, és "
-"válasszon hitelesítő alkalmazást. Olvassa be a megjelenő QR-kódot, vagy "
-"másolja ki a beállítási kulcsot, és illessze be lent."
+"A védeni kívánt webhelyen nyisd meg a kétlépcsős azonosítás beállításait, és "
+"válassz hitelesítő alkalmazást. Olvasd be a megjelenő QR-kódot, vagy másold "
+"ki a beállítási kulcsot (a QR-kód alatti betűk és számok, gyakran a „Nem "
+"tudja beolvasni?” mögött), és illeszd be alább."
 
 msgid "On until Ashy Pass closes"
 msgstr "Bekapcsolva az Ashy Pass bezárásáig"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Egy kód olyan számlálót vagy algoritmust használ, amelyet az Ashy Pass nem "
+"támogat, ezért kimaradt."
+msgstr[1] ""
+"Néhány kód olyan számlálót vagy algoritmust használ, amelyet az Ashy Pass "
+"nem támogat, ezért kimaradt."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1816,6 +1856,9 @@ msgstr "Megnyitja a Dropboxot a böngészőben; másolja ki a megjelenő kódot"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Megnyitja a böngészőt az OAuth hozzájáruláshoz"
+
+msgid "Optional, to organize the list"
+msgstr "Nem kötelező, a lista rendezéséhez"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1884,6 +1927,9 @@ msgstr "Jelszó másolva"
 
 msgid "Password for this backup"
 msgstr "A mentés jelszava"
+
+msgid "Password generator"
+msgstr "Jelszógenerátor"
 
 msgid "Password history"
 msgstr "Jelszó előzmények"
@@ -2671,6 +2717,10 @@ msgstr ""
 "kerülnek. Ha nem, a kiszolgáló talán csak részben válaszolt: tartsa meg "
 "őket, és a következő szinkronizálás újra próbálkozik."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Ez a Google Authenticator-exportálás nem tartalmaz itt használható kódot."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Ez a PIN már nem illik a tárhoz. Semmi sem változott."
 
@@ -2739,11 +2789,11 @@ msgstr ""
 "képet."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Ez egy több fiókot tartalmazó Google Authenticator-export. Ehelyett "
-"jelenítse meg minden fiók QR-kódját a saját oldalán."
+"Ez egy több fiókot tartalmazó Google Authenticator-exportálás. Olvasd be az "
+"Ellenőrző kódok → Kód hozzáadása menüben, hogy mindet egyszerre hozd át."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3302,6 +3352,10 @@ msgid "weak"
 msgstr "gyenge"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{added} / {total} kód hozzáadva; a többit nem sikerült menteni"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} nem importálható."
@@ -3312,6 +3366,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} karakter"
 msgstr[1] "{} karakter"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kód hozzáadva"
+msgstr[1] "{} kód hozzáadva"
 
 #, rust-format
 msgid "{} day."

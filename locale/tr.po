@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:47\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -70,6 +70,9 @@ msgstr "Ek ekle"
 msgid "Add code"
 msgstr "Kod ekle"
 
+msgid "Add codes"
+msgstr "Kod ekle"
+
 msgid "Add file"
 msgstr "Dosya ekle"
 
@@ -87,6 +90,12 @@ msgstr "Favorilere ekle"
 
 msgid "Add verification code"
 msgstr "Doğrulama kodu ekle"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Google Authenticator'dan {} kod eklensin mi?"
+msgstr[1] "Google Authenticator'dan {} kod eklensin mi?"
 
 msgid "Added to favorites"
 msgstr "Favorilere eklendi"
@@ -461,6 +470,15 @@ msgstr "Kahve"
 msgid "Columns such as name, url, username, password"
 msgstr "name, url, username, password gibi sütunlar"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Google Authenticator'dan mı geliyorsunuz? Orada menüyü açın, Hesapları aktar "
+"→ Hesapları dışa aktar'ı seçin ve gösterilen QR kodunu burada okutun: tüm "
+"kodları bir anda gelir."
+
 msgid "Compact vault list"
 msgstr "Kompakt kasa listesi"
 
@@ -698,9 +716,6 @@ msgstr "Klasör oluştur…"
 msgid "Create my vault"
 msgstr "Kasamı oluştur"
 
-msgid "Create password"
-msgstr "Parola oluştur"
-
 msgid "Create your vault"
 msgstr "Kasanızı oluşturun"
 
@@ -820,6 +835,13 @@ msgstr "Sürücü kilitlendi"
 msgid "Duplicate items"
 msgstr "Yinelenen öğeler"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Her simge, internet adresinizi gören sitenin kendisinden indirilir. Yerel "
+"ağınızdaki sitelerle asla iletişim kurulmaz."
+
 msgid "Easier to type and remember."
 msgstr "Yazması ve hatırlaması daha kolay."
 
@@ -937,6 +959,9 @@ msgstr "Hata ayrıntıları"
 msgid "Estimated strength"
 msgstr "Tahmini güç"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Bu dışa aktarmadaki tüm kodlar zaten kasada."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1017,9 +1042,6 @@ msgstr "Favori"
 msgid "Favorites"
 msgstr "Favoriler"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Kasa girişlerinin yanında site simgelerini getir ve görüntüle"
-
 msgid "Fetching remote passwords"
 msgstr "Uzak şifreler getiriliyor"
 
@@ -1061,6 +1083,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Klasör"
+
+msgid "Folder and tags"
+msgstr "Klasör ve etiketler"
 
 msgid "Folder created"
 msgstr "Klasör oluşturuldu"
@@ -1734,14 +1759,30 @@ msgstr "Açık"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
 "Korumak istediğiniz sitede iki adımlı doğrulama ayarlarını açın ve bir "
-"kimlik doğrulama uygulaması seçin. Gösterilen QR kodunu okutun ya da kurulum "
-"anahtarını kopyalayıp aşağıya yapıştırın."
+"kimlik doğrulayıcı uygulaması seçin. Gösterilen QR kodunu okutun veya "
+"kurulum anahtarını (QR kodunun altındaki harf ve rakamlar, çoğu zaman "
+"“Tarayamıyor musunuz?” seçeneğinin arkasındadır) kopyalayıp aşağıya "
+"yapıştırın."
 
 msgid "On until Ashy Pass closes"
 msgstr "Ashy Pass kapanana kadar açık"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Bir kod, Ashy Pass'in desteklemediği bir sayaç veya algoritma kullanıyor ve "
+"dışarıda bırakıldı."
+msgstr[1] ""
+"Bazı kodlar, Ashy Pass'in desteklemediği bir sayaç veya algoritma kullanıyor "
+"ve dışarıda bırakıldı."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1797,6 +1838,9 @@ msgstr "Dropbox'ı tarayıcıda açar; gösterilen kodu kopyalayın"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "OAuth izni için tarayıcıyı açar"
+
+msgid "Optional, to organize the list"
+msgstr "İsteğe bağlı, listeyi düzenlemek için"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1865,6 +1909,9 @@ msgstr "Parola kopyalandı"
 
 msgid "Password for this backup"
 msgstr "Bu yedeğin parolası"
+
+msgid "Password generator"
+msgstr "Parola oluşturucu"
 
 msgid "Password history"
 msgstr "Şifre geçmişi"
@@ -2639,6 +2686,10 @@ msgstr ""
 "yalnızca kısmen yanıt vermiş olabilir: saklayın, sonraki eşitleme yeniden "
 "dener."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Bu Google Authenticator dışa aktarmasında burada kullanılabilecek kod yok."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Bu PIN artık kasayla eşleşmiyor. Hiçbir şey değişmedi."
 
@@ -2706,11 +2757,11 @@ msgstr ""
 "kullanın."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Bu, birden çok hesap içeren bir Google Authenticator dışa aktarımı. Bunun "
-"yerine her hesabın QR kodunu kendi sitesinde gösterin."
+"Bu, birden çok hesap içeren bir Google Authenticator dışa aktarmasıdır. "
+"Hepsini bir anda getirmek için Doğrulama kodları → Kod ekle bölümünde okutun."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3267,6 +3318,10 @@ msgid "weak"
 msgstr "zayıf"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{total} koddan {added} tanesi eklendi; diğerleri kaydedilemedi"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} kayıt içe aktarılamıyor."
@@ -3277,6 +3332,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} karakter"
 msgstr[1] "{} karakter"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kod eklendi"
+msgstr[1] "{} kod eklendi"
 
 #, rust-format
 msgid "{} day."

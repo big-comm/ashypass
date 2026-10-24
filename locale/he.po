@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -63,6 +63,9 @@ msgstr "הוסף קובץ מצורף"
 msgid "Add code"
 msgstr "הוספת קוד"
 
+msgid "Add codes"
+msgstr "הוספת קודים"
+
 msgid "Add file"
 msgstr "הוסף קובץ"
 
@@ -80,6 +83,12 @@ msgstr "הוספה למועדפים"
 
 msgid "Add verification code"
 msgstr "הוספת קוד אימות"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "להוסיף {} קוד מ-Google Authenticator?"
+msgstr[1] "להוסיף {} קודים מ-Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "נוסף למועדפים"
@@ -442,6 +451,14 @@ msgstr "קפה"
 msgid "Columns such as name, url, username, password"
 msgstr "עמודות כמו name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"עוברים מ-Google Authenticator? שם, פתחו את התפריט, בחרו העברת חשבונות ← "
+"ייצוא חשבונות, וסרקו כאן את קוד ה-QR שמוצג: כל הקודים שלו מגיעים בבת אחת."
+
 msgid "Compact vault list"
 msgstr "רשימת כספת קומפקטית"
 
@@ -678,9 +695,6 @@ msgstr "יצירת תיקייה…"
 msgid "Create my vault"
 msgstr "יצירת הכספת שלי"
 
-msgid "Create password"
-msgstr "יצירת סיסמה"
-
 msgid "Create your vault"
 msgstr "יצירת הכספת שלך"
 
@@ -799,6 +813,13 @@ msgstr "הכונן ננעל"
 msgid "Duplicate items"
 msgstr "פריטים כפולים"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"כל סמל מורד מהאתר עצמו, שרואה את כתובת האינטרנט שלכם. אתרים ברשת המקומית "
+"שלכם אינם נוצרים איתם קשר לעולם."
+
 msgid "Easier to type and remember."
 msgstr "קל יותר להקליד ולזכור."
 
@@ -912,6 +933,9 @@ msgstr "פרטי השגיאות"
 msgid "Estimated strength"
 msgstr "חוזק משוער"
 
+msgid "Every code in this export is already in the vault."
+msgstr "כל הקודים בייצוא הזה כבר נמצאים בכספת."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -990,9 +1014,6 @@ msgstr "מועדף"
 msgid "Favorites"
 msgstr "מועדפים"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "שלוף והצג סמלי אתרים לצד רשומות הכספת"
-
 msgid "Fetching remote passwords"
 msgstr "מאחזר סיסמאות מרוחקות"
 
@@ -1033,6 +1054,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "תיקייה"
+
+msgid "Folder and tags"
+msgstr "תיקייה ותגיות"
 
 msgid "Folder created"
 msgstr "התיקייה נוצרה"
@@ -1684,13 +1708,27 @@ msgstr "פעיל"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"באתר שברצונך להגן עליו, יש לפתוח את הגדרות האימות הדו־שלבי ולבחור אפליקציית "
-"אימות. יש לסרוק את קוד ה־QR המוצג או להעתיק את מפתח ההגדרה ולהדביק אותו למטה."
+"באתר שברצונכם להגן עליו, פתחו את הגדרות האימות הדו-שלבי ובחרו באפליקציית "
+"אימות. סרקו את קוד ה-QR שמוצג, או העתיקו את מפתח ההגדרה (האותיות והמספרים "
+"שמתחת לקוד ה-QR, לעיתים מאחורי „לא ניתן לסרוק?“) והדביקו אותו למטה."
 
 msgid "On until Ashy Pass closes"
 msgstr "פעיל עד לסגירת Ashy Pass"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"קוד אחד משתמש במונה או באלגוריתם ש-Ashy Pass אינו תומך בהם, ולכן הוא הושמט."
+msgstr[1] ""
+"חלק מהקודים משתמשים במונה או באלגוריתם ש-Ashy Pass אינו תומך בהם, ולכן הם "
+"הושמטו."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1745,6 +1783,9 @@ msgstr "פותח את Dropbox בדפדפן; העתק את הקוד שמוצג"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "פותח את הדפדפן לאישור OAuth"
+
+msgid "Optional, to organize the list"
+msgstr "אופציונלי, לארגון הרשימה"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1811,6 +1852,9 @@ msgstr "הסיסמה הועתקה"
 
 msgid "Password for this backup"
 msgstr "סיסמה לגיבוי זה"
+
+msgid "Password generator"
+msgstr "מחולל סיסמאות"
 
 msgid "Password history"
 msgstr "היסטוריית סיסמאות"
@@ -2567,6 +2611,9 @@ msgstr ""
 "יועברו כאן לפריטים שנמחקו. אם לא, ייתכן שהשרת ענה רק חלקית: שמרו אותם "
 "והסנכרון הבא ינסה שוב."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr "בייצוא הזה מ-Google Authenticator אין קודים שאפשר להשתמש בהם כאן."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "ה־PIN הזה כבר אינו תואם את הכספת. דבר לא שונה."
 
@@ -2632,11 +2679,11 @@ msgid ""
 msgstr "לא ניתן לפתוח את התמונה. השתמשו בתמונת PNG, JPEG או WebP של עד 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"זהו ייצוא של Google Authenticator עם כמה חשבונות. במקום זאת יש להציג את קוד "
-"ה־QR של כל חשבון באתר שלו."
+"זהו ייצוא מ-Google Authenticator עם כמה חשבונות. סרקו אותו ב-קודי אימות ← "
+"הוספת קוד כדי להביא את כולם בבת אחת."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3182,6 +3229,10 @@ msgid "weak"
 msgstr "חלש"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "נוספו {added} מתוך {total} קודים; את השאר לא ניתן היה לשמור"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "לא ניתן לייבא {}."
@@ -3192,6 +3243,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "תו {}"
 msgstr[1] "{} תווים"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "נוסף {} קוד"
+msgstr[1] "נוספו {} קודים"
 
 #, rust-format
 msgid "{} day."

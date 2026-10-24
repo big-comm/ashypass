@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -63,6 +63,9 @@ msgstr "添加附件"
 msgid "Add code"
 msgstr "添加验证码"
 
+msgid "Add codes"
+msgstr "添加验证码"
+
 msgid "Add file"
 msgstr "添加文件"
 
@@ -80,6 +83,11 @@ msgstr "添加到收藏"
 
 msgid "Add verification code"
 msgstr "添加验证码"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "要从 Google Authenticator 添加 {} 个验证码吗?"
 
 msgid "Added to favorites"
 msgstr "已添加到收藏"
@@ -439,6 +447,14 @@ msgstr "咖啡"
 msgid "Columns such as name, url, username, password"
 msgstr "包含 name、url、username、password 等列"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"从 Google Authenticator 迁移?请在那里打开菜单,选择“转移帐号”→“导出帐号”,然后"
+"在此处扫描显示的二维码:其中所有验证码会一次性导入。"
+
 msgid "Compact vault list"
 msgstr "紧凑型保险库列表"
 
@@ -674,9 +690,6 @@ msgstr "创建文件夹…"
 msgid "Create my vault"
 msgstr "创建我的保险库"
 
-msgid "Create password"
-msgstr "创建密码"
-
 msgid "Create your vault"
 msgstr "创建你的保险库"
 
@@ -794,6 +807,13 @@ msgstr "驱动器已锁定"
 msgid "Duplicate items"
 msgstr "重复项目"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"每个图标都从网站本身下载,网站会看到您的互联网地址。绝不会联系本地网络中的网"
+"站。"
+
 msgid "Easier to type and remember."
 msgstr "更易于输入和记忆。"
 
@@ -907,6 +927,9 @@ msgstr "错误详情"
 msgid "Estimated strength"
 msgstr "预估强度"
 
+msgid "Every code in this export is already in the vault."
+msgstr "此导出中的所有验证码都已在保险库中。"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -985,9 +1008,6 @@ msgstr "收藏"
 msgid "Favorites"
 msgstr "收藏夹"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "获取并显示密码库条目旁的网站图标"
-
 msgid "Fetching remote passwords"
 msgstr "正在获取远程密码"
 
@@ -1027,6 +1047,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "文件夹"
+
+msgid "Folder and tags"
+msgstr "文件夹和标签"
 
 msgid "Folder created"
 msgstr "文件夹已创建"
@@ -1665,13 +1688,22 @@ msgstr "开"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"在要保护的网站上打开两步验证设置，并选择身份验证器应用。读取显示的二维码，或"
-"复制设置密钥并粘贴到下方。"
+"在您想保护的网站上,打开两步验证设置并选择身份验证器应用。扫描显示的二维码,或"
+"复制设置密钥(二维码下方的字母和数字,通常在“无法扫描?”之后),并粘贴到下方。"
 
 msgid "On until Ashy Pass closes"
 msgstr "开启，直到 Ashy Pass 关闭"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] "有验证码使用了 Ashy Pass 不支持的计数器或算法,已被忽略。"
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1725,6 +1757,9 @@ msgstr "在浏览器中打开 Dropbox；复制显示的代码"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "打开浏览器进行OAuth授权"
+
+msgid "Optional, to organize the list"
+msgstr "可选,用于整理列表"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1790,6 +1825,9 @@ msgstr "密码已复制"
 
 msgid "Password for this backup"
 msgstr "此备份的密码"
+
+msgid "Password generator"
+msgstr "密码生成器"
 
 msgid "Password history"
 msgstr "密码历史"
@@ -2535,6 +2573,9 @@ msgstr ""
 "的，它们会在这里移到已删除项目。如果不是，服务器可能只返回了部分数据：请保留"
 "它们，下次同步会再次尝试。"
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr "此 Google Authenticator 导出中没有可在此处使用的验证码。"
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "此 PIN 已与保险库不匹配。未做任何更改。"
 
@@ -2598,11 +2639,11 @@ msgid ""
 msgstr "无法打开此图片。请使用不超过 20 MB 的 PNG、JPEG 或 WebP 图片。"
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"这是包含多个账户的 Google Authenticator 导出。请改为在各账户的网站上分别显示"
-"其二维码。"
+"这是包含多个帐号的 Google Authenticator 导出。请在 验证码 → 添加验证码 中扫"
+"描,即可一次性全部导入。"
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3125,6 +3166,10 @@ msgid "weak"
 msgstr "弱密码"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "已添加 {total} 个验证码中的 {added} 个;其余的无法保存"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} 个无法导入。"
@@ -3133,6 +3178,11 @@ msgstr[0] "{} 个无法导入。"
 msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} 个字符"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "已添加 {} 个验证码"
 
 #, rust-format
 msgid "{} day."

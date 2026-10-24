@@ -106,7 +106,9 @@ pub(super) fn populate_appearance(
 
     let favicons_row = adw::SwitchRow::builder()
         .title(tr!("Show favicons"))
-        .subtitle(tr!("Fetch and display site icons next to vault entries"))
+        .subtitle(tr!(
+            "Each icon is downloaded from the site itself, which sees your internet address. Sites on your local network are never contacted."
+        ))
         .active(settings.borrow().show_favicons)
         .build();
     {

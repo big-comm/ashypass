@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:23\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -69,6 +69,9 @@ msgstr "Προσθήκη συνημμένου"
 msgid "Add code"
 msgstr "Προσθήκη κωδικού"
 
+msgid "Add codes"
+msgstr "Προσθήκη κωδικών"
+
 msgid "Add file"
 msgstr "Προσθήκη αρχείου"
 
@@ -88,6 +91,12 @@ msgstr "Προσθήκη στα αγαπημένα"
 
 msgid "Add verification code"
 msgstr "Προσθήκη κωδικού επαλήθευσης"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Προσθήκη {} κωδικού από το Google Authenticator;"
+msgstr[1] "Προσθήκη {} κωδικών από το Google Authenticator;"
 
 msgid "Added to favorites"
 msgstr "Προστέθηκε στα αγαπημένα"
@@ -467,6 +476,15 @@ msgstr "Καφές"
 msgid "Columns such as name, url, username, password"
 msgstr "Στήλες όπως name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Έρχεστε από το Google Authenticator; Εκεί, ανοίξτε το μενού, επιλέξτε "
+"Μεταφορά λογαριασμών → Εξαγωγή λογαριασμών και σαρώστε εδώ τον κωδικό QR που "
+"εμφανίζεται: όλοι οι κωδικοί του έρχονται ταυτόχρονα."
+
 msgid "Compact vault list"
 msgstr "Συμπαγής λίστα θησαυροφυλακίου"
 
@@ -709,9 +727,6 @@ msgstr "Δημιουργία φακέλου…"
 msgid "Create my vault"
 msgstr "Δημιουργία του θησαυροφυλακίου μου"
 
-msgid "Create password"
-msgstr "Δημιουργία κωδικού πρόσβασης"
-
 msgid "Create your vault"
 msgstr "Δημιουργήστε το θησαυροφυλάκιό σας"
 
@@ -835,6 +850,14 @@ msgstr "Η μονάδα κλειδώθηκε"
 msgid "Duplicate items"
 msgstr "Διπλότυπα στοιχεία"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Κάθε εικονίδιο λαμβάνεται από τον ίδιο τον ιστότοπο, ο οποίος βλέπει τη "
+"διεύθυνση διαδικτύου σας. Οι ιστότοποι του τοπικού σας δικτύου δεν "
+"επικοινωνούνται ποτέ."
+
 msgid "Easier to type and remember."
 msgstr "Πιο εύκολος στην πληκτρολόγηση και στην απομνημόνευση."
 
@@ -957,6 +980,9 @@ msgstr "Λεπτομέρειες σφαλμάτων"
 msgid "Estimated strength"
 msgstr "Εκτιμώμενη ισχύς"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Όλοι οι κωδικοί αυτής της εξαγωγής βρίσκονται ήδη στη θυρίδα."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1038,10 +1064,6 @@ msgstr "Αγαπημένο"
 msgid "Favorites"
 msgstr "Αγαπημένα"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr ""
-"Λήψη και εμφάνιση εικονιδίων ιστοσελίδων δίπλα στις καταχωρήσεις της θυρίδας"
-
 msgid "Fetching remote passwords"
 msgstr "Λήψη απομακρυσμένων κωδικών πρόσβασης"
 
@@ -1083,6 +1105,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Φάκελος"
+
+msgid "Folder and tags"
+msgstr "Φάκελος και ετικέτες"
 
 msgid "Folder created"
 msgstr "Ο φάκελος δημιουργήθηκε"
@@ -1779,15 +1804,30 @@ msgstr "Ενεργό"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Στον ιστότοπο που θέλετε να προστατέψετε, ανοίξτε τις ρυθμίσεις επαλήθευσης "
-"σε δύο βήματα και επιλέξτε εφαρμογή ελέγχου ταυτότητας. Διαβάστε τον κωδικό "
-"QR που εμφανίζεται ή αντιγράψτε το κλειδί ρύθμισης και επικολλήστε το "
-"παρακάτω."
+"Στον ιστότοπο που θέλετε να προστατεύσετε, ανοίξτε τις ρυθμίσεις επαλήθευσης "
+"σε δύο βήματα και επιλέξτε μια εφαρμογή ελέγχου ταυτότητας. Σαρώστε τον "
+"κωδικό QR που εμφανίζεται ή αντιγράψτε το κλειδί ρύθμισης (τα γράμματα και "
+"οι αριθμοί κάτω από τον κωδικό QR, συχνά πίσω από το «Δεν μπορείτε να "
+"σαρώσετε;») και επικολλήστε το παρακάτω."
 
 msgid "On until Ashy Pass closes"
 msgstr "Ενεργό μέχρι να κλείσει το Ashy Pass"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Ένας κωδικός χρησιμοποιεί μετρητή ή αλγόριθμο που το Ashy Pass δεν "
+"υποστηρίζει και παραλείφθηκε."
+msgstr[1] ""
+"Ορισμένοι κωδικοί χρησιμοποιούν μετρητή ή αλγόριθμο που το Ashy Pass δεν "
+"υποστηρίζει και παραλείφθηκαν."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1850,6 +1890,9 @@ msgstr ""
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Ανοίγει το πρόγραμμα περιήγησης για συγκατάθεση OAuth"
+
+msgid "Optional, to organize the list"
+msgstr "Προαιρετικό, για την οργάνωση της λίστας"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1921,6 +1964,9 @@ msgstr "Ο κωδικός πρόσβασης αντιγράφηκε"
 
 msgid "Password for this backup"
 msgstr "Κωδικός για αυτό το αντίγραφο ασφαλείας"
+
+msgid "Password generator"
+msgstr "Γεννήτρια κωδικών πρόσβασης"
 
 msgid "Password history"
 msgstr "Ιστορικό κωδικών πρόσβασης"
@@ -2730,6 +2776,11 @@ msgstr ""
 "ο διακομιστής ίσως απάντησε μόνο εν μέρει: κρατήστε τα και ο επόμενος "
 "συγχρονισμός θα ξαναδοκιμάσει."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Αυτή η εξαγωγή του Google Authenticator δεν έχει κωδικούς που μπορούν να "
+"χρησιμοποιηθούν εδώ."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Αυτό το PIN δεν ταιριάζει πια με το θησαυροφυλάκιο. Δεν άλλαξε τίποτα."
 
@@ -2800,11 +2851,12 @@ msgstr ""
 "WebP έως 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
 "Πρόκειται για εξαγωγή του Google Authenticator με πολλούς λογαριασμούς. "
-"Εμφανίστε αντί γι’ αυτό τον κωδικό QR κάθε λογαριασμού στον ιστότοπό του."
+"Σαρώστε την στις Κωδικοί επαλήθευσης → Προσθήκη κωδικού για να τους "
+"προσθέσετε όλους ταυτόχρονα."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3379,6 +3431,12 @@ msgid "weak"
 msgstr "αδύναμος"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr ""
+"Προστέθηκαν {added} από {total} κωδικούς· οι υπόλοιποι δεν μπόρεσαν να "
+"αποθηκευτούν"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} δεν μπορεί να εισαχθεί."
@@ -3389,6 +3447,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} χαρακτήρας"
 msgstr[1] "{} χαρακτήρες"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "Προστέθηκε {} κωδικός"
+msgstr[1] "Προστέθηκαν {} κωδικοί"
 
 #, rust-format
 msgid "{} day."

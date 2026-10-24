@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:39\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -67,6 +67,9 @@ msgstr "Legg til vedlegg"
 msgid "Add code"
 msgstr "Legg til kode"
 
+msgid "Add codes"
+msgstr "Legg til koder"
+
 msgid "Add file"
 msgstr "Legg til fil"
 
@@ -84,6 +87,12 @@ msgstr "Legg til i favoritter"
 
 msgid "Add verification code"
 msgstr "Legg til bekreftelseskode"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Legge til {} kode fra Google Authenticator?"
+msgstr[1] "Legge til {} koder fra Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Lagt til i favoritter"
@@ -457,6 +466,15 @@ msgstr "Kaffe"
 msgid "Columns such as name, url, username, password"
 msgstr "Kolonner som name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Kommer du fra Google Authenticator? Åpne menyen der, velg Overfør kontoer → "
+"Eksporter kontoer, og skann QR-koden som vises, her: alle kodene kommer på "
+"én gang."
+
 msgid "Compact vault list"
 msgstr "Kompakt hvelvliste"
 
@@ -694,9 +712,6 @@ msgstr "Opprett mappe…"
 msgid "Create my vault"
 msgstr "Opprett hvelvet mitt"
 
-msgid "Create password"
-msgstr "Opprett passord"
-
 msgid "Create your vault"
 msgstr "Opprett hvelvet ditt"
 
@@ -817,6 +832,13 @@ msgstr "Stasjon låst"
 msgid "Duplicate items"
 msgstr "Dupliserte elementer"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Hvert ikon lastes ned fra selve nettstedet, som ser internettadressen din. "
+"Nettsteder på ditt lokale nettverk kontaktes aldri."
+
 msgid "Easier to type and remember."
 msgstr "Enklere å skrive og huske."
 
@@ -935,6 +957,9 @@ msgstr "Feildetaljer"
 msgid "Estimated strength"
 msgstr "Anslått styrke"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Alle kodene i denne eksporten ligger allerede i hvelvet."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1015,9 +1040,6 @@ msgstr "Favoritt"
 msgid "Favorites"
 msgstr "Favoritter"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Hent og vis nettstedsikoner ved siden av hvelvposter"
-
 msgid "Fetching remote passwords"
 msgstr "Henter eksterne passord"
 
@@ -1059,6 +1081,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Mappe"
+
+msgid "Folder and tags"
+msgstr "Mappe og etiketter"
 
 msgid "Folder created"
 msgstr "Mappe opprettet"
@@ -1730,14 +1755,29 @@ msgstr "På"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Åpne innstillingene for totrinnsbekreftelse på nettstedet du vil beskytte, "
-"og velg en autentiseringsapp. Les inn QR-koden som vises, eller kopier "
-"oppsettnøkkelen og lim den inn nedenfor."
+"På nettstedet du vil beskytte, åpner du innstillingene for "
+"tofaktorautentisering og velger en autentiseringsapp. Skann QR-koden som "
+"vises, eller kopier oppsettnøkkelen (bokstavene og tallene under QR-koden, "
+"ofte bak «Kan du ikke skanne den?») og lim den inn nedenfor."
 
 msgid "On until Ashy Pass closes"
 msgstr "På til Ashy Pass lukkes"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Én kode bruker en teller eller en algoritme som Ashy Pass ikke støtter, og "
+"er utelatt."
+msgstr[1] ""
+"Noen koder bruker en teller eller en algoritme som Ashy Pass ikke støtter, "
+"og er utelatt."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1792,6 +1832,9 @@ msgstr "Åpner Dropbox i nettleseren; kopier koden som vises"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Åpner nettleseren for OAuth-samtykke"
+
+msgid "Optional, to organize the list"
+msgstr "Valgfritt, for å organisere listen"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1859,6 +1902,9 @@ msgstr "Passord kopiert"
 
 msgid "Password for this backup"
 msgstr "Passord for denne sikkerhetskopien"
+
+msgid "Password generator"
+msgstr "Passordgenerator"
 
 msgid "Password history"
 msgstr "Passordhistorikk"
@@ -2641,6 +2687,10 @@ msgstr ""
 "Hvis ikke, kan serveren ha svart bare delvis: behold dem, så prøver neste "
 "synkronisering igjen."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Denne eksporten fra Google Authenticator har ingen koder som kan brukes her."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Denne PIN-koden passer ikke lenger til hvelvet. Ingenting ble endret."
 
@@ -2709,11 +2759,11 @@ msgstr ""
 "MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Dette er en eksport fra Google Authenticator med flere kontoer. Vis i stedet "
-"QR-koden for hver konto på nettstedet."
+"Dette er en eksport fra Google Authenticator med flere kontoer. Les den i "
+"Bekreftelseskoder → Legg til kode for å hente dem alle på én gang."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3270,6 +3320,10 @@ msgid "weak"
 msgstr "svak"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{added} av {total} koder lagt til; de andre kunne ikke lagres"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} kan ikke importeres."
@@ -3280,6 +3334,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} tegn"
 msgstr[1] "{} tegn"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kode lagt til"
+msgstr[1] "{} koder lagt til"
 
 #, rust-format
 msgid "{} day."

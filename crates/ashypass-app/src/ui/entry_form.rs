@@ -252,10 +252,14 @@ pub fn present(
         password_row.set_text(prefill);
     }
 
-    // ---- More options ------------------------------------------------
-    let more_group = adw::PreferencesGroup::builder()
-        .title(tr!("More options"))
+    // ---- Folder and tags --------------------------------------------
+    // Folded away unless the entry already uses them: most people never do.
+    let more_group = adw::PreferencesGroup::new();
+    let more_expander = adw::ExpanderRow::builder()
+        .title(tr!("Folder and tags"))
+        .subtitle(tr!("Optional, to organize the list"))
         .build();
+    more_group.add(&more_expander);
 
     let existing_folders = state.vault.borrow().categories().unwrap_or_default();
     let current_folder = entry
@@ -298,8 +302,8 @@ pub fn present(
             }
         });
     }
-    more_group.add(&folder_row);
-    more_group.add(&new_folder_row);
+    more_expander.add_row(&folder_row);
+    more_expander.add_row(&new_folder_row);
 
     let tags_row = adw::EntryRow::builder()
         .title(tr!("Tags (separated by commas)"))
@@ -322,7 +326,8 @@ pub fn present(
     }) {
         tags_row.add_suffix(&picker);
     }
-    more_group.add(&tags_row);
+    more_expander.add_row(&tags_row);
+    more_expander.set_expanded(current_folder.is_some() || !tags_row.text().is_empty());
     content.append(&more_group);
 
     let notes_group = adw::PreferencesGroup::builder()
@@ -417,6 +422,10 @@ pub fn present(
     describe(&totp_row, &totp_error);
     content.append(&totp_group);
     content.append(&totp_error);
+    // Right under the main fields, before folder, tags and notes: a site's
+    // setup key is the field people came for, not one to scroll down to.
+    content.reorder_child_after(&totp_group, Some(&password_note));
+    content.reorder_child_after(&totp_error, Some(&totp_group));
     if let Some(e) = entry.as_ref() {
         if let Some(secret) = e.totp_secret.as_deref() {
             totp_row.set_text(secret);

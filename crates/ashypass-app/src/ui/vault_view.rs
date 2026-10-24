@@ -1615,9 +1615,17 @@ impl Inner {
 // Details content
 // ============================================================================
 
+/// "Copy" in words beside the icon: an icon alone was missed by people who
+/// do not know the symbol. The tooltip and accessible name say what is copied.
 fn copy_button(tooltip: &str) -> gtk::Button {
     let button = gtk::Button::builder()
-        .icon_name("edit-copy-symbolic")
+        .child(
+            &adw::ButtonContent::builder()
+                .icon_name("edit-copy-symbolic")
+                .label(tr!("Copy"))
+                .can_shrink(true)
+                .build(),
+        )
         .tooltip_text(tooltip)
         .valign(gtk::Align::Center)
         .build();

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -66,6 +66,9 @@ msgstr "Bæta við viðhengi"
 msgid "Add code"
 msgstr "Bæta við kóða"
 
+msgid "Add codes"
+msgstr "Bæta við kóðum"
+
 msgid "Add file"
 msgstr "Bæta við skrá"
 
@@ -83,6 +86,12 @@ msgstr "Bæta við eftirlæti"
 
 msgid "Add verification code"
 msgstr "Bæta við staðfestingarkóða"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Bæta við {} kóða úr Google Authenticator?"
+msgstr[1] "Bæta við {} kóðum úr Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Bætt við eftirlæti"
@@ -454,6 +463,15 @@ msgstr "Kaffi"
 msgid "Columns such as name, url, username, password"
 msgstr "Dálkar eins og name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Kemurðu úr Google Authenticator? Opnaðu valmyndina þar, veldu Flytja "
+"reikninga → Flytja út reikninga og lestu QR-kóðann sem birtist hér: allir "
+"kóðarnir koma í einu."
+
 msgid "Compact vault list"
 msgstr "Þéttur lyklageymslulisti"
 
@@ -691,9 +709,6 @@ msgstr "Búa til möppu…"
 msgid "Create my vault"
 msgstr "Búa til hvelfinguna mína"
 
-msgid "Create password"
-msgstr "Búa til lykilorð"
-
 msgid "Create your vault"
 msgstr "Búðu til hvelfinguna þína"
 
@@ -815,6 +830,13 @@ msgstr "Drif læst"
 msgid "Duplicate items"
 msgstr "Tvítekin atriði"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Hvert tákn er sótt af vefsvæðinu sjálfu, sem sér netfangið þitt. Aldrei er "
+"haft samband við vefsvæði á staðarnetinu þínu."
+
 msgid "Easier to type and remember."
 msgstr "Auðveldara að slá inn og muna."
 
@@ -930,6 +952,9 @@ msgstr "Upplýsingar um villur"
 msgid "Estimated strength"
 msgstr "Áætlaður styrkur"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Allir kóðar í þessum útflutningi eru þegar í hvelfingunni."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1010,9 +1035,6 @@ msgstr "Eftirlæti"
 msgid "Favorites"
 msgstr "Eftirlæti"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Sækja og birta táknmyndir vefsvæða við hlið hvelfingarfærslna"
-
 msgid "Fetching remote passwords"
 msgstr "Sæki fjarlæg lykilorð"
 
@@ -1053,6 +1075,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Mappa"
+
+msgid "Folder and tags"
+msgstr "Mappa og merki"
 
 msgid "Folder created"
 msgstr "Mappa búin til"
@@ -1726,14 +1751,29 @@ msgstr "Kveikt"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Opnaðu stillingar tveggja þrepa staðfestingar á vefnum sem þú vilt verja og "
-"veldu auðkenningarforrit. Lestu QR-kóðann sem birtist eða afritaðu "
-"uppsetningarlykilinn og límdu hann hér fyrir neðan."
+"Opnaðu stillingar tveggja þrepa staðfestingar á vefsvæðinu sem þú vilt verja "
+"og veldu auðkenningarforrit. Lestu QR-kóðann sem birtist, eða afritaðu "
+"uppsetningarlykilinn (stafina og tölurnar undir QR-kóðanum, oft á bak við "
+"„Geturðu ekki skannað?“) og límdu hann hér fyrir neðan."
 
 msgid "On until Ashy Pass closes"
 msgstr "Kveikt þar til Ashy Pass er lokað"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Einn kóði notar teljara eða reiknirit sem Ashy Pass styður ekki og var "
+"sleppt."
+msgstr[1] ""
+"Sumir kóðar nota teljara eða reiknirit sem Ashy Pass styður ekki og var "
+"sleppt."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1788,6 +1828,9 @@ msgstr "Opnar Dropbox í vafranum; afritaðu kóðann sem birtist"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Opnar vafra fyrir OAuth-samþykki"
+
+msgid "Optional, to organize the list"
+msgstr "Valfrjálst, til að skipuleggja listann"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1856,6 +1899,9 @@ msgstr "Lykilorð afritað"
 
 msgid "Password for this backup"
 msgstr "Lykilorð þessa öryggisafrits"
+
+msgid "Password generator"
+msgstr "Lykilorðasmiður"
 
 msgid "Password history"
 msgstr "Lykilorðasaga"
@@ -2639,6 +2685,10 @@ msgstr ""
 "Ef þú eyddir þeim þar fara þær í Eyddar færslur hér. Ef ekki gæti þjónninn "
 "hafa svarað aðeins að hluta: haltu þeim og næsta samstilling reynir aftur."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Í þessum útflutningi úr Google Authenticator eru engir kóðar sem nota má hér."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Þetta PIN-númer passar ekki lengur við hvelfinguna. Engu var breytt."
 
@@ -2708,11 +2758,11 @@ msgstr ""
 "hámarki 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Þetta er útflutningur úr Google Authenticator með mörgum reikningum. Sýndu "
-"frekar QR-kóða hvers reiknings á vef hans."
+"Þetta er útflutningur úr Google Authenticator með nokkrum reikningum. Lestu "
+"hann í Staðfestingarkóðar → Bæta við kóða til að koma með þá alla í einu."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3267,6 +3317,10 @@ msgid "weak"
 msgstr "veikt"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{added} af {total} kóðum bætt við; hinir voru ekki vistaðir"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "Ekki er hægt að flytja inn {} atriði."
@@ -3277,6 +3331,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} stafur"
 msgstr[1] "{} stafir"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kóða bætt við"
+msgstr[1] "{} kóðum bætt við"
 
 #, rust-format
 msgid "{} day."

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -68,6 +68,9 @@ msgstr "添付ファイルを追加"
 msgid "Add code"
 msgstr "コードを追加"
 
+msgid "Add codes"
+msgstr "コードを追加"
+
 msgid "Add file"
 msgstr "ファイルを追加"
 
@@ -85,6 +88,11 @@ msgstr "お気に入りに追加"
 
 msgid "Add verification code"
 msgstr "確認コードを追加"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Google Authenticator から {} 個のコードを追加しますか?"
 
 msgid "Added to favorites"
 msgstr "お気に入りに追加しました"
@@ -457,6 +465,15 @@ msgstr "コーヒー"
 msgid "Columns such as name, url, username, password"
 msgstr "name、url、username、password などの列"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Google Authenticator からお引っ越しですか? あちらでメニューを開き、「アカウン"
+"トを転送」→「アカウントをエクスポート」を選んで、表示される QR コードをここで"
+"読み取ってください。すべてのコードを一度に取り込めます。"
+
 msgid "Compact vault list"
 msgstr "コンパクトなボールトリスト"
 
@@ -694,9 +711,6 @@ msgstr "フォルダを作成…"
 msgid "Create my vault"
 msgstr "ボールトを作成"
 
-msgid "Create password"
-msgstr "パスワードを作成"
-
 msgid "Create your vault"
 msgstr "ボールトを作成しましょう"
 
@@ -816,6 +830,13 @@ msgstr "ドライブをロックしました"
 
 msgid "Duplicate items"
 msgstr "重複アイテム"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"各アイコンはサイト自体からダウンロードされ、サイトにはあなたのインターネット"
+"アドレスが見えます。ローカルネットワーク上のサイトには一切接続しません。"
 
 msgid "Easier to type and remember."
 msgstr "入力しやすく覚えやすい。"
@@ -937,6 +958,9 @@ msgstr "エラーの詳細"
 msgid "Estimated strength"
 msgstr "推定強度"
 
+msgid "Every code in this export is already in the vault."
+msgstr "このエクスポートのコードはすべてすでにボールトにあります。"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1017,9 +1041,6 @@ msgstr "お気に入り"
 msgid "Favorites"
 msgstr "お気に入り"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "サイトアイコンを取得し、保管庫エントリの横に表示します"
-
 msgid "Fetching remote passwords"
 msgstr "リモートパスワードを取得中"
 
@@ -1061,6 +1082,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "フォルダ"
+
+msgid "Folder and tags"
+msgstr "フォルダとタグ"
 
 msgid "Folder created"
 msgstr "フォルダを作成しました"
@@ -1732,14 +1756,26 @@ msgstr "オン"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"保護したいサイトで 2 段階認証の設定を開き、認証アプリを選択します。表示され"
-"た QR コードを読み取るか、セットアップキーをコピーして下に貼り付けてくださ"
+"保護したいサイトで 2 段階認証の設定を開き、認証アプリを選びます。表示される "
+"QR コードを読み取るか、セットアップキー(QR コードの下に表示される英数字。多く"
+"は「スキャンできませんか?」の先にあります)をコピーして、下に貼り付けてくださ"
 "い。"
 
 msgid "On until Ashy Pass closes"
 msgstr "Ashy Pass を閉じるまでオン"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Ashy Pass が対応していないカウンターまたはアルゴリズムを使うコードがあるた"
+"め、そのコードは除外されました。"
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1795,6 +1831,9 @@ msgstr "ブラウザーで Dropbox を開きます。表示されたコードを
 
 msgid "Opens the browser for OAuth consent"
 msgstr "OAuth同意のためにブラウザを開きます"
+
+msgid "Optional, to organize the list"
+msgstr "任意。リストを整理するためのものです"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1862,6 +1901,9 @@ msgstr "パスワードをコピーしました"
 
 msgid "Password for this backup"
 msgstr "このバックアップのパスワード"
+
+msgid "Password generator"
+msgstr "パスワードジェネレーター"
 
 msgid "Password history"
 msgstr "パスワード履歴"
@@ -2643,6 +2685,11 @@ msgstr ""
 "い場合はサーバーの応答が一部だけだった可能性があります。残しておけば次回の同"
 "期で再試行します。"
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"この Google Authenticator のエクスポートには、ここで使えるコードがありませ"
+"ん。"
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "この PIN はもうボールトと一致しません。何も変更されていません。"
 
@@ -2710,11 +2757,11 @@ msgstr ""
 "い。"
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"これは複数のアカウントを含む Google Authenticator のエクスポートです。代わり"
-"に各アカウントの QR コードをそれぞれのサイトで表示してください。"
+"これは複数のアカウントを含む Google Authenticator のエクスポートです。確認"
+"コード → コードを追加 で読み取ると、すべて一度に取り込めます。"
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3269,6 +3316,11 @@ msgid "weak"
 msgstr "脆弱"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr ""
+"{total} 個中 {added} 個のコードを追加しました。残りは保存できませんでした"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} 件はインポートできません。"
@@ -3277,6 +3329,11 @@ msgstr[0] "{} 件はインポートできません。"
 msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} 文字"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} 個のコードを追加しました"
 
 #, rust-format
 msgid "{} day."

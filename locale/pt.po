@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: Portuguese\n"
@@ -74,6 +74,9 @@ msgstr "Adicionar anexo"
 msgid "Add code"
 msgstr "Adicionar código"
 
+msgid "Add codes"
+msgstr "Adicionar códigos"
+
 msgid "Add file"
 msgstr "Adicionar ficheiro"
 
@@ -91,6 +94,12 @@ msgstr "Adicionar aos favoritos"
 
 msgid "Add verification code"
 msgstr "Adicionar código de verificação"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Adicionar {} código do Google Authenticator?"
+msgstr[1] "Adicionar {} códigos do Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Adicionado aos favoritos"
@@ -471,6 +480,15 @@ msgstr "Café"
 msgid "Columns such as name, url, username, password"
 msgstr "Colunas como name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Vem do Google Authenticator? Aí, abra o menu, escolha Transferir contas → "
+"Exportar contas e leia aqui o código QR apresentado: todos os seus códigos "
+"chegam de uma só vez."
+
 msgid "Compact vault list"
 msgstr "Lista compacta de palavras-passe"
 
@@ -712,9 +730,6 @@ msgstr "Criar pasta…"
 msgid "Create my vault"
 msgstr "Criar o meu cofre"
 
-msgid "Create password"
-msgstr "Criar palavra-passe"
-
 msgid "Create your vault"
 msgstr "Crie o seu cofre"
 
@@ -840,6 +855,13 @@ msgstr "Unidade bloqueada"
 msgid "Duplicate items"
 msgstr "Itens duplicados"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Cada ícone é transferido do próprio site, que vê o seu endereço de internet. "
+"Os sites da sua rede local nunca são contactados."
+
 msgid "Easier to type and remember."
 msgstr "Mais fácil de escrever e memorizar."
 
@@ -959,6 +981,9 @@ msgstr "Detalhes dos erros"
 msgid "Estimated strength"
 msgstr "Força estimada"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Todos os códigos desta exportação já estão no cofre."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1041,9 +1066,6 @@ msgstr "Favorito"
 msgid "Favorites"
 msgstr "Favoritos"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Obter e mostrar o ícone de cada site ao lado dos acessos"
-
 msgid "Fetching remote passwords"
 msgstr "A obter palavras-passe remotas"
 
@@ -1085,6 +1107,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Pasta"
+
+msgid "Folder and tags"
+msgstr "Pasta e etiquetas"
 
 msgid "Folder created"
 msgstr "Pasta criada"
@@ -1780,14 +1805,29 @@ msgstr "Ativado"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"No site que pretende proteger, abra as definições de verificação em dois "
+"No site que pretende proteger, abra as definições da verificação em dois "
 "passos e escolha uma aplicação de autenticação. Leia o código QR apresentado "
-"ou copie a chave de configuração e cole-a abaixo."
+"ou copie a chave de configuração (as letras e os números por baixo do código "
+"QR, muitas vezes atrás de «Não consegue ler?») e cole-a abaixo."
 
 msgid "On until Ashy Pass closes"
 msgstr "Ativado até fechar o Ashy Pass"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Um código usa um contador ou um algoritmo que o Ashy Pass não suporta e foi "
+"deixado de fora."
+msgstr[1] ""
+"Alguns códigos usam um contador ou um algoritmo que o Ashy Pass não suporta "
+"e foram deixados de fora."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1844,6 +1884,9 @@ msgstr "Abre o Dropbox no navegador; copie o código apresentado"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Abre o navegador para o consentimento OAuth"
+
+msgid "Optional, to organize the list"
+msgstr "Opcional, para organizar a lista"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1928,6 +1971,9 @@ msgstr "Palavra-passe copiada"
 
 msgid "Password for this backup"
 msgstr "Palavra-passe desta cópia"
+
+msgid "Password generator"
+msgstr "Gerador de palavras-passe"
 
 msgid "Password history"
 msgstr "Histórico de palavras-passe"
@@ -2732,6 +2778,11 @@ msgstr ""
 "servidor pode ter respondido só em parte: mantenha-os e a próxima "
 "sincronização tenta de novo."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Esta exportação do Google Authenticator não tem códigos que possam ser "
+"usados aqui."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Este PIN já não corresponde ao cofre. Nada foi alterado."
 
@@ -2801,11 +2852,11 @@ msgstr ""
 "20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Isto é uma exportação do Google Authenticator com várias contas. Mostre "
-"antes o código QR de cada conta no respetivo site."
+"Esta é uma exportação do Google Authenticator com várias contas. Leia-a em "
+"Códigos de verificação → Adicionar código para trazer todas de uma só vez."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3374,6 +3425,12 @@ msgid "weak"
 msgstr "fraca"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr ""
+"{added} de {total} códigos adicionados; os restantes não puderam ser "
+"guardados"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} não pode ser importado."
@@ -3384,6 +3441,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} carácter"
 msgstr[1] "{} caracteres"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} código adicionado"
+msgstr[1] "{} códigos adicionados"
 
 #, rust-format
 msgid "{} day."

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:45\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -68,6 +68,9 @@ msgstr "Pridať prílohu"
 msgid "Add code"
 msgstr "Pridať kód"
 
+msgid "Add codes"
+msgstr "Pridať kódy"
+
 msgid "Add file"
 msgstr "Pridať súbor"
 
@@ -85,6 +88,13 @@ msgstr "Pridať do obľúbených"
 
 msgid "Add verification code"
 msgstr "Pridať overovací kód"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Pridať {} kód z Google Authenticator?"
+msgstr[1] "Pridať {} kódy z Google Authenticator?"
+msgstr[2] "Pridať {} kódov z Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Pridané do obľúbených"
@@ -457,6 +467,15 @@ msgstr "Káva"
 msgid "Columns such as name, url, username, password"
 msgstr "Stĺpce ako name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Prichádzate z Google Authenticator? Tam otvorte ponuku, vyberte Preniesť "
+"účty → Exportovať účty a načítajte tu zobrazený QR kód: všetky jeho kódy "
+"prídu naraz."
+
 msgid "Compact vault list"
 msgstr "Kompaktný zoznam trezoru"
 
@@ -695,9 +714,6 @@ msgstr "Vytvoriť priečinok…"
 msgid "Create my vault"
 msgstr "Vytvoriť môj trezor"
 
-msgid "Create password"
-msgstr "Vytvoriť heslo"
-
 msgid "Create your vault"
 msgstr "Vytvorte si trezor"
 
@@ -819,6 +835,13 @@ msgstr "Jednotka uzamknutá"
 msgid "Duplicate items"
 msgstr "Duplicitné položky"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Každá ikona sa sťahuje priamo z webu, ktorý tak vidí vašu internetovú "
+"adresu. Weby vo vašej lokálnej sieti sa nikdy nekontaktujú."
+
 msgid "Easier to type and remember."
 msgstr "Ľahšie sa píše a pamätá."
 
@@ -938,6 +961,9 @@ msgstr "Podrobnosti o chybách"
 msgid "Estimated strength"
 msgstr "Odhadovaná sila"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Všetky kódy z tohto exportu už v trezore sú."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1018,9 +1044,6 @@ msgstr "Obľúbené"
 msgid "Favorites"
 msgstr "Obľúbené"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Načítať a zobraziť ikony stránok pri položkách v trezore"
-
 msgid "Fetching remote passwords"
 msgstr "Načítavanie vzdialených hesiel"
 
@@ -1062,6 +1085,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Priečinok"
+
+msgid "Folder and tags"
+msgstr "Priečinok a štítky"
 
 msgid "Folder created"
 msgstr "Priečinok vytvorený"
@@ -1737,14 +1763,32 @@ msgstr "Zapnuté"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Na stránke, ktorú chcete chrániť, otvorte nastavenia dvojstupňového overenia "
-"a zvoľte overovaciu aplikáciu. Načítajte zobrazený QR kód alebo skopírujte "
-"kľúč nastavenia a vložte ho nižšie."
+"Na webe, ktorý chcete chrániť, otvorte nastavenia dvojstupňového overenia a "
+"vyberte overovaciu aplikáciu. Načítajte zobrazený QR kód alebo skopírujte "
+"kľúč nastavenia (písmená a čísla pod QR kódom, často ukryté za „Nedá sa "
+"naskenovať?“) a vložte ho nižšie."
 
 msgid "On until Ashy Pass closes"
 msgstr "Zapnuté, kým sa Ashy Pass nezatvorí"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Jeden kód používa počítadlo alebo algoritmus, ktorý Ashy Pass nepodporuje, a "
+"bol vynechaný."
+msgstr[1] ""
+"Niektoré kódy používajú počítadlo alebo algoritmus, ktorý Ashy Pass "
+"nepodporuje, a boli vynechané."
+msgstr[2] ""
+"Niektoré kódy používajú počítadlo alebo algoritmus, ktorý Ashy Pass "
+"nepodporuje, a boli vynechané."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1799,6 +1843,9 @@ msgstr "Otvorí Dropbox v prehliadači; skopírujte zobrazený kód"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Otvorí prehliadač pre OAuth súhlas"
+
+msgid "Optional, to organize the list"
+msgstr "Voliteľné, na usporiadanie zoznamu"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1866,6 +1913,9 @@ msgstr "Heslo skopírované"
 
 msgid "Password for this backup"
 msgstr "Heslo pre túto zálohu"
+
+msgid "Password generator"
+msgstr "Generátor hesiel"
 
 msgid "Password history"
 msgstr "História hesiel"
@@ -2650,6 +2700,11 @@ msgstr ""
 "možno odpovedal len čiastočne: ponechajte ich a ďalšia synchronizácia to "
 "skúsi znova."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Tento export z Google Authenticator neobsahuje žiadne kódy, ktoré možno "
+"použiť tu."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Tento PIN už k trezoru nepatrí. Nič sa nezmenilo."
 
@@ -2717,11 +2772,11 @@ msgstr ""
 "veľkosťou do 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Ide o export z Google Authenticator s viacerými účtami. Namiesto toho "
-"zobrazte QR kód každého účtu na jeho stránke."
+"Toto je export z Google Authenticator s viacerými účtami. Načítajte ho v "
+"časti Overovacie kódy → Pridať kód a pridáte ich všetky naraz."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3281,6 +3336,10 @@ msgid "weak"
 msgstr "slabé"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "Pridané {added} z {total} kódov; ostatné sa nepodarilo uložiť"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} nemožno importovať."
@@ -3293,6 +3352,13 @@ msgid_plural "{} characters"
 msgstr[0] "{} znak"
 msgstr[1] "{} znaky"
 msgstr[2] "{} znakov"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "Pridaný {} kód"
+msgstr[1] "Pridané {} kódy"
+msgstr[2] "Pridaných {} kódov"
 
 #, rust-format
 msgid "{} day."

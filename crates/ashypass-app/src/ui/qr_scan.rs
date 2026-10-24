@@ -32,8 +32,8 @@ pub enum ScanResult {
     /// An `otpauth://` link, ready for the setup-key field.
     Otpauth(String),
     /// A Google Authenticator export (`otpauth-migration://`): several
-    /// accounts packed together, not supported here.
-    Migration,
+    /// accounts packed together. *Add verification code* adds them all.
+    Migration(String),
     /// A QR code with something else in it.
     Other,
     /// No QR code in the image.
@@ -81,12 +81,12 @@ pub fn classify(contents: &[String]) -> ScanResult {
     {
         return ScanResult::Otpauth(uri.to_string());
     }
-    if contents.iter().any(|c| {
-        c.trim()
-            .to_ascii_lowercase()
-            .starts_with("otpauth-migration://")
-    }) {
-        return ScanResult::Migration;
+    if let Some(uri) = contents
+        .iter()
+        .map(|c| c.trim())
+        .find(|c| c.to_ascii_lowercase().starts_with("otpauth-migration://"))
+    {
+        return ScanResult::Migration(uri.to_string());
     }
     if contents.is_empty() {
         ScanResult::NotFound
@@ -145,8 +145,8 @@ where
 pub fn message_for(result: &ScanResult) -> &'static str {
     match result {
         ScanResult::Otpauth(_) => tr!("QR code read. Check the details and save."),
-        ScanResult::Migration => tr!(
-            "This is a Google Authenticator export with several accounts. Show the QR code of each account on its site instead."
+        ScanResult::Migration(_) => tr!(
+            "This is a Google Authenticator export with several accounts. Read it in Verification codes → Add code to bring them all at once."
         ),
         ScanResult::Other => {
             tr!("This QR code is not a verification-code setup. Use the one shown by the site's two-step verification settings.")
@@ -396,7 +396,7 @@ mod tests {
         );
         assert_eq!(
             classify(&["otpauth-migration://offline?data=abc".to_string()]),
-            ScanResult::Migration
+            ScanResult::Migration("otpauth-migration://offline?data=abc".to_string())
         );
         assert_eq!(classify(&["hello".to_string()]), ScanResult::Other);
         assert_eq!(classify(&[]), ScanResult::NotFound);

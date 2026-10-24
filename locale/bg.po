@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:19\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -69,6 +69,9 @@ msgstr "Добавяне на прикачен файл"
 msgid "Add code"
 msgstr "Добавяне на код"
 
+msgid "Add codes"
+msgstr "Добавяне на кодове"
+
 msgid "Add file"
 msgstr "Добавяне на файл"
 
@@ -86,6 +89,12 @@ msgstr "Добавяне към любими"
 
 msgid "Add verification code"
 msgstr "Добавяне на код за потвърждение"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Да се добави ли {} код от Google Authenticator?"
+msgstr[1] "Да се добавят ли {} кода от Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Добавено към любими"
@@ -460,6 +469,15 @@ msgstr "Кафе"
 msgid "Columns such as name, url, username, password"
 msgstr "Колони като name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Идвате от Google Authenticator? Там отворете менюто, изберете Прехвърляне на "
+"акаунти → Експортиране на акаунти и прочетете показания QR код тук: всички "
+"кодове му идват наведнъж."
+
 msgid "Compact vault list"
 msgstr "Компактен списък на хранилището"
 
@@ -697,9 +715,6 @@ msgstr "Създаване на папка…"
 msgid "Create my vault"
 msgstr "Създаване на хранилището ми"
 
-msgid "Create password"
-msgstr "Създаване на парола"
-
 msgid "Create your vault"
 msgstr "Създайте хранилището си"
 
@@ -821,6 +836,13 @@ msgstr "Устройството е заключено"
 msgid "Duplicate items"
 msgstr "Дублирани елементи"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Всяка иконка се изтегля от самия сайт, който вижда вашия интернет адрес. "
+"Сайтове във вашата локална мрежа никога не се контактуват."
+
 msgid "Easier to type and remember."
 msgstr "По-лесна за въвеждане и запомняне."
 
@@ -938,6 +960,9 @@ msgstr "Подробности за грешките"
 msgid "Estimated strength"
 msgstr "Оценена сила"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Всички кодове от този експорт вече са в хранилището."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1019,9 +1044,6 @@ msgstr "Любими"
 msgid "Favorites"
 msgstr "Любими"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Извличане и показване на икони на сайтове до записите в хранилището"
-
 msgid "Fetching remote passwords"
 msgstr "Извличане на отдалечени пароли"
 
@@ -1063,6 +1085,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Папка"
+
+msgid "Folder and tags"
+msgstr "Папка и етикети"
 
 msgid "Folder created"
 msgstr "Папката е създадена"
@@ -1738,14 +1763,29 @@ msgstr "Включено"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"В сайта, който искате да защитите, отворете настройките за потвърждаване в "
-"две стъпки и изберете приложение за удостоверяване. Прочетете показания QR "
-"код или копирайте ключа за настройка и го поставете по-долу."
+"В сайта, който искате да защитите, отворете настройките за двустепенна "
+"проверка и изберете приложение за удостоверяване. Прочетете показания QR код "
+"или копирайте ключа за настройка (буквите и цифрите под QR кода, често зад "
+"„Не можете да сканирате?“) и го поставете по-долу."
 
 msgid "On until Ashy Pass closes"
 msgstr "Включено до затваряне на Ashy Pass"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Един код използва брояч или алгоритъм, които Ashy Pass не поддържа, и е "
+"пропуснат."
+msgstr[1] ""
+"Някои кодове използват брояч или алгоритъм, които Ashy Pass не поддържа, и "
+"са пропуснати."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1802,6 +1842,9 @@ msgstr "Отваря Dropbox в браузъра; копирайте показ�
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Отваря браузъра за OAuth съгласие"
+
+msgid "Optional, to organize the list"
+msgstr "По избор, за подреждане на списъка"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1869,6 +1912,9 @@ msgstr "Паролата е копирана"
 
 msgid "Password for this backup"
 msgstr "Парола за това копие"
+
+msgid "Password generator"
+msgstr "Генератор на пароли"
 
 msgid "Password history"
 msgstr "История на паролите"
@@ -2656,6 +2702,11 @@ msgstr ""
 "отговорил само частично: запазете ги и следващото синхронизиране ще опита "
 "отново."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Този експорт от Google Authenticator няма кодове, които могат да се "
+"използват тук."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Този PIN вече не съответства на хранилището. Нищо не е променено."
 
@@ -2724,11 +2775,11 @@ msgstr ""
 "изображение до 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Това е експорт от Google Authenticator с няколко акаунта. Вместо това "
-"покажете QR кода на всеки акаунт в неговия сайт."
+"Това е експорт от Google Authenticator с няколко акаунта. Прочетете го в "
+"Кодове за потвърждение → Добавяне на код, за да ги добавите всички наведнъж."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3290,6 +3341,11 @@ msgid "weak"
 msgstr "слаба"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr ""
+"Добавени са {added} от {total} кода; останалите не можаха да бъдат запазени"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} не може да бъде импортиран."
@@ -3300,6 +3356,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} знак"
 msgstr[1] "{} знака"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "Добавен е {} код"
+msgstr[1] "Добавени са {} кода"
 
 #, rust-format
 msgid "{} day."

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:37\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -67,6 +67,9 @@ msgstr "첨부 파일 추가"
 msgid "Add code"
 msgstr "코드 추가"
 
+msgid "Add codes"
+msgstr "코드 추가"
+
 msgid "Add file"
 msgstr "파일 추가"
 
@@ -84,6 +87,11 @@ msgstr "즐겨찾기에 추가"
 
 msgid "Add verification code"
 msgstr "인증 코드 추가"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Google Authenticator에서 코드 {}개를 추가할까요?"
 
 msgid "Added to favorites"
 msgstr "즐겨찾기에 추가됨"
@@ -450,6 +458,15 @@ msgstr "커피"
 msgid "Columns such as name, url, username, password"
 msgstr "name, url, username, password 같은 열"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Google Authenticator에서 오셨나요? 그곳에서 메뉴를 열고 계정 전송 → 계정 내보"
+"내기를 선택한 뒤, 표시되는 QR 코드를 여기서 읽으세요. 모든 코드가 한 번에 들"
+"어옵니다."
+
 msgid "Compact vault list"
 msgstr "간결한 볼트 목록"
 
@@ -686,9 +703,6 @@ msgstr "폴더 만들기…"
 msgid "Create my vault"
 msgstr "내 보관함 만들기"
 
-msgid "Create password"
-msgstr "비밀번호 만들기"
-
 msgid "Create your vault"
 msgstr "보관함 만들기"
 
@@ -806,6 +820,13 @@ msgstr "드라이브 잠김"
 msgid "Duplicate items"
 msgstr "중복 항목"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"각 아이콘은 사이트에서 직접 다운로드되며, 사이트는 사용자의 인터넷 주소를 볼 "
+"수 있습니다. 로컬 네트워크의 사이트에는 절대 연결하지 않습니다."
+
 msgid "Easier to type and remember."
 msgstr "입력하고 기억하기 쉽습니다."
 
@@ -922,6 +943,9 @@ msgstr "오류 세부정보"
 msgid "Estimated strength"
 msgstr "예상 강도"
 
+msgid "Every code in this export is already in the vault."
+msgstr "이 내보내기의 모든 코드는 이미 보관함에 있습니다."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1002,9 +1026,6 @@ msgstr "즐겨찾기"
 msgid "Favorites"
 msgstr "즐겨찾기"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "보관함 항목 옆에 사이트 아이콘을 가져와서 표시합니다"
-
 msgid "Fetching remote passwords"
 msgstr "원격 비밀번호 가져오는 중"
 
@@ -1046,6 +1067,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "폴더"
+
+msgid "Folder and tags"
+msgstr "폴더 및 태그"
 
 msgid "Folder created"
 msgstr "폴더 생성됨"
@@ -1705,13 +1729,25 @@ msgstr "켜짐"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"보호할 사이트에서 2단계 인증 설정을 열고 인증 앱을 선택하세요. 표시된 QR 코드"
-"를 읽거나 설정 키를 복사해 아래에 붙여 넣으세요."
+"보호하려는 사이트에서 2단계 인증 설정을 열고 인증 앱을 선택하세요. 표시되는 "
+"QR 코드를 읽거나, 설정 키(QR 코드 아래의 영문자와 숫자로, 보통 “스캔할 수 없"
+"나요?” 뒤에 있음)를 복사해 아래에 붙여넣으세요."
 
 msgid "On until Ashy Pass closes"
 msgstr "Ashy Pass를 닫을 때까지 켜짐"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Ashy Pass가 지원하지 않는 카운터 또는 알고리즘을 쓰는 코드가 있어 제외되었습"
+"니다."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1766,6 +1802,9 @@ msgstr "브라우저에서 Dropbox를 엽니다. 표시된 코드를 복사하�
 
 msgid "Opens the browser for OAuth consent"
 msgstr "OAuth 동의를 위해 브라우저를 엽니다"
+
+msgid "Optional, to organize the list"
+msgstr "선택 사항, 목록을 정리하는 데 사용"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1832,6 +1871,9 @@ msgstr "비밀번호 복사됨"
 
 msgid "Password for this backup"
 msgstr "이 백업의 비밀번호"
+
+msgid "Password generator"
+msgstr "비밀번호 생성기"
 
 msgid "Password history"
 msgstr "비밀번호 기록"
@@ -2593,6 +2635,10 @@ msgstr ""
 "했다면 여기서도 삭제된 항목으로 이동합니다. 그렇지 않다면 서버가 일부만 응답"
 "했을 수 있습니다. 유지하면 다음 동기화에서 다시 시도합니다."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"이 Google Authenticator 내보내기에는 여기서 사용할 수 있는 코드가 없습니다."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr ""
 "이 PIN은 더 이상 보관함과 일치하지 않습니다. 아무것도 변경되지 않았습니다."
@@ -2661,11 +2707,11 @@ msgstr ""
 "요."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"여러 계정이 담긴 Google Authenticator 내보내기입니다. 대신 각 계정의 QR 코드"
-"를 해당 사이트에서 표시하세요."
+"여러 계정이 들어 있는 Google Authenticator 내보내기입니다. 인증 코드 → 코드 "
+"추가에서 읽으면 한 번에 모두 가져옵니다."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3213,6 +3259,11 @@ msgid "weak"
 msgstr "약함"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr ""
+"코드 {total}개 중 {added}개를 추가했습니다. 나머지는 저장하지 못했습니다"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{}개는 가져올 수 없습니다."
@@ -3221,6 +3272,11 @@ msgstr[0] "{}개는 가져올 수 없습니다."
 msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{}자"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "코드 {}개를 추가했습니다"
 
 #, rust-format
 msgid "{} day."

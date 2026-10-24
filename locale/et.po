@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-24 18:10-0300\n"
 "PO-Revision-Date: 2026-05-12 19:26\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -67,6 +67,9 @@ msgstr "Lisa manus"
 msgid "Add code"
 msgstr "Lisa kood"
 
+msgid "Add codes"
+msgstr "Lisa koodid"
+
 msgid "Add file"
 msgstr "Lisa fail"
 
@@ -84,6 +87,12 @@ msgstr "Lisa lemmikutesse"
 
 msgid "Add verification code"
 msgstr "Lisa kinnituskood"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Kas lisada {} kood rakendusest Google Authenticator?"
+msgstr[1] "Kas lisada {} koodi rakendusest Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Lisatud lemmikutesse"
@@ -454,6 +463,15 @@ msgstr "Kohv"
 msgid "Columns such as name, url, username, password"
 msgstr "Veerud nagu name, url, username, password"
 
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Tuled rakendusest Google Authenticator? Ava seal menüü, vali Teisalda kontod "
+"→ Ekspordi kontod ja loe siin ette kuvatav QR-kood: kõik selle koodid "
+"tulevad korraga."
+
 msgid "Compact vault list"
 msgstr "Kompaktne võlvkonna loend"
 
@@ -691,9 +709,6 @@ msgstr "Loo kaust…"
 msgid "Create my vault"
 msgstr "Loo minu hoidla"
 
-msgid "Create password"
-msgstr "Loo parool"
-
 msgid "Create your vault"
 msgstr "Loo oma hoidla"
 
@@ -813,6 +828,13 @@ msgstr "Ketas lukustatud"
 msgid "Duplicate items"
 msgstr "Dubleeritud üksused"
 
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Iga ikoon laaditakse alla saidilt endalt, mis näeb sinu internetiaadressi. "
+"Sinu kohtvõrgus olevate saitidega ei ühenduta kunagi."
+
 msgid "Easier to type and remember."
 msgstr "Lihtsam sisestada ja meelde jätta."
 
@@ -931,6 +953,9 @@ msgstr "Vigade üksikasjad"
 msgid "Estimated strength"
 msgstr "Hinnanguline tugevus"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Kõik selle ekspordi koodid on juba varamus."
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -1011,9 +1036,6 @@ msgstr "Lemmik"
 msgid "Favorites"
 msgstr "Lemmikud"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Hangivad ja kuvavad saidiikoonid võlviku kirjete kõrval"
-
 msgid "Fetching remote passwords"
 msgstr "Kaugparoolide toomine"
 
@@ -1054,6 +1076,9 @@ msgstr ""
 
 msgid "Folder"
 msgstr "Kaust"
+
+msgid "Folder and tags"
+msgstr "Kaust ja sildid"
 
 msgid "Folder created"
 msgstr "Kaust loodud"
@@ -1720,14 +1745,29 @@ msgstr "Sees"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Ava kaitstava saidi kaheastmelise kinnitamise seaded ja vali "
-"autentimisrakendus. Loe kuvatud QR-kood või kopeeri seadistusvõti ja kleebi "
-"see allpool."
+"Ava kaitstaval saidil kaheastmelise kinnitamise seaded ja vali "
+"autentimisrakendus. Loe kuvatav QR-kood või kopeeri seadistusvõti (tähed ja "
+"numbrid QR-koodi all, sageli valiku „Ei saa skannida?“ taga) ja kleebi see "
+"allpool."
 
 msgid "On until Ashy Pass closes"
 msgstr "Sees kuni Ashy Passi sulgemiseni"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Üks kood kasutab loendurit või algoritmi, mida Ashy Pass ei toeta, ja jäeti "
+"välja."
+msgstr[1] ""
+"Mõned koodid kasutavad loendurit või algoritmi, mida Ashy Pass ei toeta, ja "
+"jäeti välja."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1783,6 +1823,9 @@ msgstr "Avab Dropboxi brauseris; kopeeri kuvatav kood"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Avab brauseri OAuth-nõusoleku jaoks"
+
+msgid "Optional, to organize the list"
+msgstr "Valikuline, loendi korrastamiseks"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1850,6 +1893,9 @@ msgstr "Parool kopeeritud"
 
 msgid "Password for this backup"
 msgstr "Selle varukoopia parool"
+
+msgid "Password generator"
+msgstr "Paroolide generaator"
 
 msgid "Password history"
 msgstr "Parooli ajalugu"
@@ -2622,6 +2668,10 @@ msgstr ""
 "server vastata vaid osaliselt: jäta need alles ja järgmine sünkroonimine "
 "proovib uuesti."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Selles Google Authenticatori ekspordis pole koode, mida siin saaks kasutada."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "See PIN-kood ei sobi enam hoidlaga. Midagi ei muudetud."
 
@@ -2689,11 +2739,11 @@ msgstr ""
 "Pilti ei saanud avada. Kasuta kuni 20 MB suurust PNG-, JPEG- või WebP-pilti."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"See on mitme kontoga Google Authenticatori eksport. Kuva selle asemel iga "
-"konto QR-kood selle saidil."
+"See on mitme kontoga Google Authenticatori eksport. Loe see jaotises "
+"Kinnituskoodid → Lisa kood, et tuua kõik korraga."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -3248,6 +3298,10 @@ msgid "weak"
 msgstr "nõrk"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{added} koodi {total}-st lisatud; teisi ei saanud salvestada"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} kirjet ei saa importida."
@@ -3258,6 +3312,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} märk"
 msgstr[1] "{} märki"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kood lisatud"
+msgstr[1] "{} koodi lisatud"
 
 #, rust-format
 msgid "{} day."

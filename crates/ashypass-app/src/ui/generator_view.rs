@@ -1,4 +1,4 @@
-//! "Create password": a good password ready at once, adjustments tucked away.
+//! "Password generator": a good password ready at once, adjustments tucked away.
 //!
 //! The same `GeneratorPanel` serves two places:
 //! - the standalone page, where the main actions are *Copy password* and
@@ -675,7 +675,7 @@ impl GeneratorView {
             .spacing(20)
             .build();
         content.append(&page_heading(
-            tr!("Create password"),
+            tr!("Password generator"),
             Some(tr!("A new password to use on a website or app.")),
         ));
         content.append(&panel.root);
