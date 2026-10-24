@@ -160,6 +160,7 @@ struct Inner {
 
     store: gio::ListStore,
     list_view: gtk::ListView,
+    list_body: gtk::Box,
     content_stack: gtk::Stack,
     empty: EmptyState,
 
@@ -344,6 +345,7 @@ impl VaultView {
             sync_label,
             store,
             list_view: list_view.clone(),
+            list_body: list_body.clone(),
             content_stack,
             empty,
             cache: RefCell::new(None),
@@ -416,6 +418,12 @@ impl VaultView {
         inner.favorites_toggle.set_active(false);
         inner.folder_menu.remove_all();
         inner.close_details();
+    }
+
+    /// Put a widget at the top of the list pane, above the filters (newest
+    /// first): the first-steps card, the backup reminder.
+    pub fn add_top(&self, widget: &impl IsA<gtk::Widget>) {
+        self.inner.list_body.prepend(widget);
     }
 
     pub fn focus_search(&self) {

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:23-0300\n"
+"POT-Creation-Date: 2026-10-24 18:44-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -307,8 +307,18 @@ msgstr "バックアップ"
 msgid "Before importing"
 msgstr "インポートの前に"
 
+msgid "Bring or add your passwords"
+msgstr "パスワードを持ち込むか追加しましょう"
+
 msgid "Bring passwords from another app or browser"
 msgstr "別のアプリやブラウザーからパスワードを取り込む"
+
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"ブラウザー(Chrome、Edge、Brave、Firefox)や他のパスワードマネージャー"
+"(Bitwarden、1Password、KeePass)から取り込めます。"
 
 msgid "Bring your passwords"
 msgstr "パスワードを取り込む"
@@ -833,6 +843,9 @@ msgstr "切断に失敗しました"
 msgid "Disconnect the sync folder?"
 msgstr "同期フォルダを切断しますか？"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "ほかの場所にパスワードを保管していますか?"
+
 msgid "Done"
 msgstr "完了"
 
@@ -1019,6 +1032,15 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "すべて既に同期済みでした"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Ashy Passに保管した内容はすべて、このコンピューター上の暗号化されたボールトに"
+"保存されます。開けるのはマスターパスワードだけで、紛失してもAshy Passでは復元"
+"できません。"
+
 msgid "Export complete"
 msgstr "エクスポートが完了しました"
 
@@ -1082,6 +1104,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "3 つの欄すべてに入力してください。"
 
+msgid "Fill passwords in the browser"
+msgstr "ブラウザーでパスワードを入力"
+
 msgid "Find duplicate items"
 msgstr "重複アイテムを探す"
 
@@ -1099,6 +1124,12 @@ msgstr ""
 "まず別のアプリでパスワードをエクスポートし、そのファイルをここで選択します。"
 "インポートの前に、認識された内容を確認できます。保護されていないエクスポート"
 "ファイルは後で削除してください。"
+
+msgid "First steps"
+msgstr "はじめの一歩"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "「はじめの一歩」を非表示にしました。メインメニューから再表示できます。"
 
 msgid "Folder"
 msgstr "フォルダ"
@@ -1233,6 +1264,9 @@ msgstr ""
 msgid "Hide copied passwords from clipboard history"
 msgstr "コピーしたパスワードをクリップボード履歴に残さない"
 
+msgid "Hide first steps"
+msgstr "「はじめの一歩」を非表示"
+
 msgid "Hide password"
 msgstr "パスワードを隠す"
 
@@ -1261,6 +1295,9 @@ msgstr "すでに別の場所にパスワードを保存している"
 msgid "I understand — Continue"
 msgstr "理解しました — 続行"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "マスターパスワードを安全な場所に書き留めました"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1277,6 +1314,9 @@ msgstr "インポート"
 msgid "Import complete"
 msgstr "インポート完了"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "ブラウザーや他のアプリからインポートするか、1件ずつ追加します"
+
 msgid "Import partly complete"
 msgstr "インポートは一部のみ完了"
 
@@ -1287,6 +1327,13 @@ msgid "Import passwords…"
 msgstr "パスワードをインポート…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"重要:このコンピューターが故障した場合、すべてを取り戻せる方法はバックアップだ"
+"けです"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1294,6 +1341,15 @@ msgstr ""
 "Android 版 Ashy Pass で 設定 → 暗号化フォルダ同期 を開き、「パソコンの QR "
 "コードを読み取る」をタップします。次に下のコードとマスターパスワードを入力し"
 "ます。"
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"Chromeの場合:設定 → 自動入力とパスワード → Googleパスワードマネージャー → 設"
+"定 → パスワードをエクスポート。インポート後は、エクスポートしたファイルを削除"
+"してください。保護されていません。"
 
 msgid "Incorrect PIN"
 msgstr "PINが正しくありません"
@@ -1322,6 +1378,9 @@ msgid ""
 msgstr ""
 "FIDO2トークン（Yubikey、Nitrokeyなど）を挿入し、デバイスで認証を行ってくださ"
 "い。新しいキースロットを認証するには、現在のパスフレーズが必要です。"
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Ashy Passの拡張機能をインストールして接続"
 
 msgid "Internal error: no passphrase set"
 msgstr "内部エラー：パスフレーズが設定されていません"
@@ -1373,6 +1432,9 @@ msgstr "残す"
 
 msgid "Keep using"
 msgstr "使い続ける"
+
+msgid "Keep verification codes (2FA)"
+msgstr "確認コード(2FA)を保管"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1495,6 +1557,9 @@ msgstr "小文字 (a–z)"
 
 msgid "Main menu"
 msgstr "メインメニュー"
+
+msgid "Make a backup"
+msgstr "バックアップを作成"
 
 msgid "Master Password"
 msgstr "マスターパスワード"
@@ -1692,6 +1757,12 @@ msgstr "未設定"
 msgid "Not connected"
 msgstr "未接続"
 
+msgid "Not done yet"
+msgstr "まだ完了していません"
+
+msgid "Not now"
+msgstr "今はしない"
+
 msgid "Not run yet"
 msgstr "未実行"
 
@@ -1783,6 +1854,15 @@ msgstr ""
 
 msgid "On until Ashy Pass closes"
 msgstr "Ashy Pass を閉じるまでオン"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"パスワードを取り込んだら、「バックアップ」でバックアップを作成し、このコン"
+"ピューターの外(たとえばUSBドライブ)に保管してください。このコンピューターが故"
+"障したり紛失したりした場合、取り戻せる唯一の方法です。"
 
 msgid ""
 "One code uses a counter or an algorithm Ashy Pass does not support and is "
@@ -2021,6 +2101,9 @@ msgstr "保護"
 msgid "QR code read. Check the details and save."
 msgstr "QR コードを読み取りました。内容を確認して保存してください。"
 
+msgid "Quicker than the master password on this computer"
+msgstr "このコンピューターでマスターパスワードを使うより手早く開けます"
+
 msgid "Quit"
 msgstr "終了"
 
@@ -2059,6 +2142,9 @@ msgstr "登録に失敗しました"
 
 msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr "最大2つの物理FIDO2認証器（YubiKey、SoloKeyなど）を登録する"
+
+msgid "Remember the backup"
+msgstr "バックアップを忘れずに"
 
 msgid "Remote generation:"
 msgstr "リモートの世代:"
@@ -2391,11 +2477,23 @@ msgstr "サイズ"
 msgid "Snapshot uploaded"
 msgstr "スナップショットがアップロードされました"
 
+msgid "Start using Ashy Pass"
+msgstr "Ashy Passを使い始める"
+
 msgid "Starting..."
 msgstr "起動中..."
 
 msgid "Status"
 msgstr "ステータス"
+
+msgid "Step 1 of 3"
+msgstr "ステップ 1/3"
+
+msgid "Step 2 of 3"
+msgstr "ステップ 2/3"
+
+msgid "Step 3 of 3"
+msgstr "ステップ 3/3"
 
 msgid "Strength"
 msgstr "強度"
@@ -2603,6 +2701,13 @@ msgid "The new passwords do not match."
 msgstr "新しいパスワードが一致しません。"
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"ほかのステップ(ブラウザー、スマートフォン、確認コード)は、パスワード一覧の上"
+"の「はじめの一歩」で待っています。"
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2648,6 +2753,9 @@ msgstr "検索は次のフォルダに限定されています:"
 
 msgid "The site's icon, when the code has a site saved"
 msgstr "コードにサイトが保存されているときは、そのサイトのアイコン"
+
+msgid "The six-digit codes sites ask for after the password"
+msgstr "パスワードの次にサイトから求められる6桁のコード"
 
 msgid "The sync finished, but some items reported errors."
 msgstr "同期は終了しましたが、一部の項目でエラーが報告されました。"
@@ -2823,6 +2931,9 @@ msgstr ""
 msgid "This will erase everything on the drive"
 msgstr "これによりドライブ上のすべてのデータが消去されます"
 
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "クラウドやドライブ上の暗号化フォルダー経由"
+
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
 "this file."
@@ -2912,6 +3023,9 @@ msgstr ""
 msgid "Unlock with PIN"
 msgstr "PINでロック解除"
 
+msgid "Unlock with a PIN"
+msgstr "PINでロック解除"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2989,6 +3103,9 @@ msgid ""
 msgstr ""
 "すべてのデバイスで同じマスターパスワードを使用してください。フォルダの鍵を開"
 "くために使われます。参加するために、ここで一度だけ入力します。"
+
+msgid "Use them on your phone or another computer"
+msgstr "スマートフォンや別のコンピューターで使う"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "サイトで 2 段階認証を求められたら、これらのコードを使ってください。"
@@ -3125,6 +3242,9 @@ msgstr "Web サイト"
 
 msgid "Website (optional)"
 msgstr "Web サイト (任意)"
+
+msgid "Welcome to Ashy Pass"
+msgstr "Ashy Passへようこそ"
 
 msgid "What it contains"
 msgstr "含まれるもの"
@@ -3352,6 +3472,10 @@ msgstr "脆弱"
 msgid "{added} of {total} codes added; the others could not be saved"
 msgstr ""
 "{total} 個中 {added} 個のコードを追加しました。残りは保存できませんでした"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{total}件中{done}件完了"
 
 #, rust-format
 msgid "{} cannot be imported."

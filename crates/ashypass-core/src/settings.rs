@@ -95,6 +95,10 @@ pub struct Settings {
     /// Colour theme for shown passwords (digits and symbols stand out):
     /// "classic", "ocean", … or "off". Same themes as the Android app.
     pub password_colors: String,
+    /// The "First steps" card above the password list. Turned on when a vault
+    /// is created (so people who set Ashy Pass up before it existed never get
+    /// it unasked), off when hidden or when every step is done.
+    pub show_first_steps: bool,
 }
 
 /// Wrapping-KDF generation for `QuickUnlockPrefs::encrypted_key`.
@@ -167,6 +171,7 @@ impl Default for Settings {
             color_scheme: "system".to_string(),
             clipboard_hide_from_history: true,
             password_colors: "classic".to_string(),
+            show_first_steps: false,
         }
     }
 }

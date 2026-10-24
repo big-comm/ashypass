@@ -2,6 +2,7 @@ pub mod backups_view;
 pub mod drives_view;
 pub mod drives_wizard;
 pub mod entry_form;
+pub mod first_steps;
 pub mod folders;
 pub mod generator_view;
 pub mod i18n;

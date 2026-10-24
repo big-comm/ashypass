@@ -60,11 +60,22 @@ struct NextcloudProgressUi {
     progress: gtk::ProgressBar,
 }
 
+/// Pages Settings can open on.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Page {
+    Protection,
+    Sync,
+    Browser,
+}
+
+/// Open Settings on `page`. Returns the dialog, so a caller can follow its
+/// closing.
 pub fn present(
     parent: &impl IsA<gtk::Widget>,
     state: SharedState,
     window_toast: adw::ToastOverlay,
-) {
+    page: Page,
+) -> adw::PreferencesDialog {
     let dialog = adw::PreferencesDialog::builder()
         .title(tr!("Settings"))
         .search_enabled(true)
@@ -133,6 +144,11 @@ pub fn present(
     dialog.add(&sync);
     dialog.add(&browser);
     dialog.add(&appearance);
+    dialog.set_visible_page(match page {
+        Page::Protection => &protection,
+        Page::Sync => &sync,
+        Page::Browser => &browser,
+    });
 
     // Reading or changing settings is not idle time: hold off auto-lock
     // while the dialog is open (capped in SessionManager). The lock warning
@@ -144,6 +160,7 @@ pub fn present(
     }
     state.track_sensitive_dialog(&dialog);
     dialog.present(Some(parent));
+    dialog
 }
 
 /// The open settings dialog, for sub-dialogs that close or reopen it; weak,
@@ -418,7 +435,12 @@ fn show_settings_unlock_dialog(
                     if let Some(settings_dialog) = open_settings {
                         settings_dialog.close();
                     }
-                    present(&anchor, state.clone(), toast.window_overlay());
+                    present(
+                        &anchor,
+                        state.clone(),
+                        toast.window_overlay(),
+                        Page::Protection,
+                    );
                 }
                 Err(ashypass_core::Error::InvalidMasterPassword) => {
                     show_toast(&toast, tr!("Incorrect master password"));

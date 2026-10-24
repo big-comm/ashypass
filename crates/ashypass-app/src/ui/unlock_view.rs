@@ -66,6 +66,9 @@ struct Inner {
     prefer_password: Cell<bool>,
     on_unlocked: RefCell<Option<Callback>>,
     on_import_help: RefCell<Option<Callback>>,
+    /// The vault was just created here (not unlocked): the window shows the
+    /// welcome once.
+    created: Cell<bool>,
 }
 
 impl UnlockView {
@@ -258,6 +261,7 @@ impl UnlockView {
             prefer_password: Cell::new(false),
             on_unlocked: RefCell::new(None),
             on_import_help: RefCell::new(None),
+            created: Cell::new(false),
         });
 
         wire(&inner, &import_help);
@@ -271,6 +275,11 @@ impl UnlockView {
 
     pub fn set_on_unlocked(&self, cb: Callback) {
         *self.inner.on_unlocked.borrow_mut() = Some(cb);
+    }
+
+    /// Whether the last unlock created the vault; asking clears it.
+    pub fn take_created(&self) -> bool {
+        self.inner.created.replace(false)
     }
 
     pub fn set_on_import_help(&self, cb: Callback) {
@@ -655,6 +664,7 @@ impl Inner {
                         if let Err(error) = inner.state.update_settings(|s| s.quick_unlock = None) {
                             log::warn!("could not save settings: {error}");
                         }
+                        inner.created.set(true);
                         inner.finish_unlock();
                     }
                     Err(e) => {

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:23-0300\n"
+"POT-Creation-Date: 2026-10-24 18:44-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -289,8 +289,18 @@ msgstr "备份"
 msgid "Before importing"
 msgstr "导入之前"
 
+msgid "Bring or add your passwords"
+msgstr "导入或添加您的密码"
+
 msgid "Bring passwords from another app or browser"
 msgstr "从其他应用或浏览器导入密码"
+
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"从浏览器(Chrome、Edge、Brave、Firefox)或其他密码管理器(Bitwarden、1Password、"
+"KeePass)导入。"
 
 msgid "Bring your passwords"
 msgstr "导入你的密码"
@@ -807,6 +817,9 @@ msgstr "断开连接失败"
 msgid "Disconnect the sync folder?"
 msgstr "断开同步文件夹？"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "您的密码保存在别的地方吗?"
+
 msgid "Done"
 msgstr "完成"
 
@@ -984,6 +997,14 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "所有内容均已同步"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"您保存在 Ashy Pass 中的所有内容都存放在这台电脑上的加密保险库中。只有您的主密"
+"码能打开它,如果丢失,Ashy Pass 无法恢复。"
+
 msgid "Export complete"
 msgstr "导出完成"
 
@@ -1046,6 +1067,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "请填写全部三个字段。"
 
+msgid "Fill passwords in the browser"
+msgstr "在浏览器中填写密码"
+
 msgid "Find duplicate items"
 msgstr "查找重复项目"
 
@@ -1062,6 +1086,12 @@ msgid ""
 msgstr ""
 "先在其他应用中导出密码，然后在此选择该文件。导入前你会看到识别出的内容。之后"
 "请删除未受保护的导出文件。"
+
+msgid "First steps"
+msgstr "入门步骤"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "入门步骤已隐藏。可以从主菜单恢复。"
 
 msgid "Folder"
 msgstr "文件夹"
@@ -1190,6 +1220,9 @@ msgstr "有助于SSD磨损均衡，但会将空闲空间模式泄露给设备。
 msgid "Hide copied passwords from clipboard history"
 msgstr "在剪贴板历史中隐藏复制的密码"
 
+msgid "Hide first steps"
+msgstr "隐藏入门步骤"
+
 msgid "Hide password"
 msgstr "隐藏密码"
 
@@ -1218,6 +1251,9 @@ msgstr "我已在其他地方保存了密码"
 msgid "I understand — Continue"
 msgstr "我了解 — 继续"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "我已把主密码记在安全的地方"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1232,6 +1268,9 @@ msgstr "导入"
 msgid "Import complete"
 msgstr "导入完成"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "从浏览器或其他应用导入,或逐个添加"
+
 msgid "Import partly complete"
 msgstr "部分导入完成"
 
@@ -1242,12 +1281,25 @@ msgid "Import passwords…"
 msgstr "导入密码…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr "重要:如果这台电脑坏了,备份是找回全部内容的唯一方法"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
 msgstr ""
 "在 Android 版 Ashy Pass 中打开 设置 → 加密文件夹同步，点按“扫描电脑上的二维"
 "码”。然后输入下方的代码和主密码。"
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"在 Chrome 中:设置 → 自动填充和密码 → Google 密码管理工具 → 设置 → 导出密码。"
+"导入后请删除导出的文件:它没有受到保护。"
 
 msgid "Incorrect PIN"
 msgstr "PIN码错误"
@@ -1276,6 +1328,9 @@ msgid ""
 msgstr ""
 "插入您的 FIDO2 令牌（Yubikey、Nitrokey 等），并在提示时在设备上授权。需要您当"
 "前的密码短语来授权新的密钥槽。"
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "安装 Ashy Pass 扩展程序并连接"
 
 msgid "Internal error: no passphrase set"
 msgstr "内部错误：未设置密码短语"
@@ -1321,6 +1376,9 @@ msgstr "保留"
 
 msgid "Keep using"
 msgstr "继续使用"
+
+msgid "Keep verification codes (2FA)"
+msgstr "保存验证码(2FA)"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1439,6 +1497,9 @@ msgstr "小写字母（a–z）"
 
 msgid "Main menu"
 msgstr "主菜单"
+
+msgid "Make a backup"
+msgstr "创建备份"
 
 msgid "Master Password"
 msgstr "主密码"
@@ -1626,6 +1687,12 @@ msgstr "未配置"
 msgid "Not connected"
 msgstr "未连接"
 
+msgid "Not done yet"
+msgstr "尚未完成"
+
+msgid "Not now"
+msgstr "暂时不要"
+
 msgid "Not run yet"
 msgstr "尚未运行"
 
@@ -1711,6 +1778,14 @@ msgstr ""
 
 msgid "On until Ashy Pass closes"
 msgstr "开启，直到 Ashy Pass 关闭"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"密码导入后,请在“备份”中创建备份,并保存在这台电脑之外,例如 U 盘。如果这台电脑"
+"损坏或丢失,这是找回密码的唯一方法。"
 
 msgid ""
 "One code uses a counter or an algorithm Ashy Pass does not support and is "
@@ -1937,6 +2012,9 @@ msgstr "保护"
 msgid "QR code read. Check the details and save."
 msgstr "已读取二维码。请检查信息后保存。"
 
+msgid "Quicker than the master password on this computer"
+msgstr "在这台电脑上比主密码更快"
+
 msgid "Quit"
 msgstr "退出"
 
@@ -1975,6 +2053,9 @@ msgstr "注册失败"
 
 msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr "最多注册2个物理FIDO2验证器（YubiKey、SoloKey等）"
+
+msgid "Remember the backup"
+msgstr "别忘了备份"
 
 msgid "Remote generation:"
 msgstr "远程版本："
@@ -2302,11 +2383,23 @@ msgstr "大小"
 msgid "Snapshot uploaded"
 msgstr "快照已上传"
 
+msgid "Start using Ashy Pass"
+msgstr "开始使用 Ashy Pass"
+
 msgid "Starting..."
 msgstr "正在启动..."
 
 msgid "Status"
 msgstr "状态"
+
+msgid "Step 1 of 3"
+msgstr "第 1 步,共 3 步"
+
+msgid "Step 2 of 3"
+msgstr "第 2 步,共 3 步"
+
+msgid "Step 3 of 3"
+msgstr "第 3 步,共 3 步"
 
 msgid "Strength"
 msgstr "强度"
@@ -2499,6 +2592,11 @@ msgid "The new passwords do not match."
 msgstr "两次输入的新密码不一致。"
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr "其余步骤(浏览器、手机、验证码)都在密码列表上方的“入门步骤”中等着您。"
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2539,6 +2637,9 @@ msgstr "搜索仅限于文件夹"
 
 msgid "The site's icon, when the code has a site saved"
 msgstr "验证码保存了网站时显示该网站的图标"
+
+msgid "The six-digit codes sites ask for after the password"
+msgstr "网站在输入密码后要求的六位数验证码"
 
 msgid "The sync finished, but some items reported errors."
 msgstr "同步已结束，但部分项目报告了错误。"
@@ -2699,6 +2800,9 @@ msgstr "此设置密钥无效。请从网站的两步验证设置中重新复制
 msgid "This will erase everything on the drive"
 msgstr "此操作将擦除驱动器上的所有数据"
 
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "通过您云端或驱动器中的加密文件夹"
+
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
 "this file."
@@ -2782,6 +2886,9 @@ msgstr "解锁保险库以保存新密码。它不会丢失。"
 msgid "Unlock with PIN"
 msgstr "使用PIN码解锁"
 
+msgid "Unlock with a PIN"
+msgstr "使用 PIN 码解锁"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2856,6 +2963,9 @@ msgid ""
 msgstr ""
 "请在所有设备上使用相同的主密码：它用于打开文件夹的密钥。加入时只需在此输入一"
 "次。"
+
+msgid "Use them on your phone or another computer"
+msgstr "在手机或另一台电脑上使用"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "当网站要求两步验证时，使用这些验证码。"
@@ -2987,6 +3097,9 @@ msgstr "网站"
 
 msgid "Website (optional)"
 msgstr "网站（可选）"
+
+msgid "Welcome to Ashy Pass"
+msgstr "欢迎使用 Ashy Pass"
 
 msgid "What it contains"
 msgstr "包含内容"
@@ -3199,6 +3312,10 @@ msgstr "弱密码"
 #, rust-format
 msgid "{added} of {total} codes added; the others could not be saved"
 msgstr "已添加 {total} 个验证码中的 {added} 个;其余的无法保存"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "已完成 {done}/{total}"
 
 #, rust-format
 msgid "{} cannot be imported."

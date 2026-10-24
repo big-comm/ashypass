@@ -91,3 +91,8 @@ close = [{ do = "action", name = "nav-vault", settle = 1.5 }]
 name = "backups-page"
 open = [{ do = "action", name = "nav-backups", settle = 1.5 }]
 close = [{ do = "action", name = "nav-vault", settle = 1.5 }]
+
+[[surface]]
+name = "welcome"
+open = [{ do = "action", name = "first-steps", settle = 1.5 }]
+close = [{ do = "dismiss" }]

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 18:23-0300\n"
+"POT-Creation-Date: 2026-10-24 18:44-0300\n"
 "PO-Revision-Date: 2026-07-09 21:42-0300\n"
 "Last-Translator: Ashy Pass contributors\n"
 "Language-Team: English\n"
@@ -310,8 +310,18 @@ msgstr "Backups"
 msgid "Before importing"
 msgstr "Before importing"
 
+msgid "Bring or add your passwords"
+msgstr "Bring or add your passwords"
+
 msgid "Bring passwords from another app or browser"
 msgstr "Bring passwords from another app or browser"
+
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
 
 msgid "Bring your passwords"
 msgstr "Bring your passwords"
@@ -842,6 +852,9 @@ msgstr "Disconnect failed"
 msgid "Disconnect the sync folder?"
 msgstr "Disconnect the sync folder?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "Do you keep passwords somewhere else?"
+
 msgid "Done"
 msgstr "Done"
 
@@ -1024,6 +1037,15 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "Everything was already synced"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+
 msgid "Export complete"
 msgstr "Export complete"
 
@@ -1087,6 +1109,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Fill in all three fields."
 
+msgid "Fill passwords in the browser"
+msgstr "Fill passwords in the browser"
+
 msgid "Find duplicate items"
 msgstr "Find duplicate items"
 
@@ -1104,6 +1129,12 @@ msgstr ""
 "First export your passwords from the other app, then choose that file here. "
 "Before importing you will see what was recognized. Delete unprotected export "
 "files afterwards."
+
+msgid "First steps"
+msgstr "First steps"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "First steps hidden. The main menu brings them back."
 
 msgid "Folder"
 msgstr "Folder"
@@ -1237,6 +1268,9 @@ msgstr "Helps SSD wear-leveling but leaks free-space patterns to the device."
 msgid "Hide copied passwords from clipboard history"
 msgstr "Hide copied passwords from clipboard history"
 
+msgid "Hide first steps"
+msgstr "Hide first steps"
+
 msgid "Hide password"
 msgstr "Hide password"
 
@@ -1265,6 +1299,9 @@ msgstr "I already keep passwords somewhere else"
 msgid "I understand — Continue"
 msgstr "I understand — Continue"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "I wrote my master password down somewhere safe"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1281,6 +1318,9 @@ msgstr "Import"
 msgid "Import complete"
 msgstr "Import complete"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "Import from a browser or another app, or add them one by one"
+
 msgid "Import partly complete"
 msgstr "Import partly complete"
 
@@ -1291,6 +1331,13 @@ msgid "Import passwords…"
 msgstr "Import passwords…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1298,6 +1345,15 @@ msgstr ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
 
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
@@ -1329,6 +1385,9 @@ msgstr ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
 "new keyslot."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Install the Ashy Pass extension and connect it"
 
 msgid "Internal error: no passphrase set"
 msgstr "Internal error: no passphrase set"
@@ -1380,6 +1439,9 @@ msgstr "Keep them"
 
 msgid "Keep using"
 msgstr "Keep using"
+
+msgid "Keep verification codes (2FA)"
+msgstr "Keep verification codes (2FA)"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1506,6 +1568,9 @@ msgstr "Lowercase letters (a–z)"
 
 msgid "Main menu"
 msgstr "Main menu"
+
+msgid "Make a backup"
+msgstr "Make a backup"
 
 # File: usr/share/ashypass/ui/vault_view.py, line: 100
 msgid "Master Password"
@@ -1702,6 +1767,12 @@ msgstr "Not configured"
 msgid "Not connected"
 msgstr "Not connected"
 
+msgid "Not done yet"
+msgstr "Not done yet"
+
+msgid "Not now"
+msgstr "Not now"
+
 msgid "Not run yet"
 msgstr "Not run yet"
 
@@ -1795,6 +1866,15 @@ msgstr ""
 
 msgid "On until Ashy Pass closes"
 msgstr "On until Ashy Pass closes"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
 
 msgid ""
 "One code uses a counter or an algorithm Ashy Pass does not support and is "
@@ -2049,6 +2129,9 @@ msgstr "Protection"
 msgid "QR code read. Check the details and save."
 msgstr "QR code read. Check the details and save."
 
+msgid "Quicker than the master password on this computer"
+msgstr "Quicker than the master password on this computer"
+
 # File: usr/share/ashypass/ui/window.py, line: 112
 msgid "Quit"
 msgstr "Quit"
@@ -2089,6 +2172,9 @@ msgstr "Register failed"
 msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr ""
 "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
+
+msgid "Remember the backup"
+msgstr "Remember the backup"
 
 msgid "Remote generation:"
 msgstr "Remote generation:"
@@ -2425,12 +2511,24 @@ msgstr "Size"
 msgid "Snapshot uploaded"
 msgstr "Snapshot uploaded"
 
+msgid "Start using Ashy Pass"
+msgstr "Start using Ashy Pass"
+
 msgid "Starting..."
 msgstr "Starting..."
 
 # File: usr/share/ashypass/ui/settings_dialog.py, line: 42
 msgid "Status"
 msgstr "Status"
+
+msgid "Step 1 of 3"
+msgstr "Step 1 of 3"
+
+msgid "Step 2 of 3"
+msgstr "Step 2 of 3"
+
+msgid "Step 3 of 3"
+msgstr "Step 3 of 3"
 
 # File: usr/share/ashypass/ui/generator_view.py, line: 68
 msgid "Strength"
@@ -2636,6 +2734,13 @@ msgid "The new passwords do not match."
 msgstr "The new passwords do not match."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2681,6 +2786,9 @@ msgstr "The search is limited to the folder"
 
 msgid "The site's icon, when the code has a site saved"
 msgstr "The site's icon, when the code has a site saved"
+
+msgid "The six-digit codes sites ask for after the password"
+msgstr "The six-digit codes sites ask for after the password"
 
 msgid "The sync finished, but some items reported errors."
 msgstr "The sync finished, but some items reported errors."
@@ -2855,6 +2963,9 @@ msgstr ""
 msgid "This will erase everything on the drive"
 msgstr "This will erase everything on the drive"
 
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "Through an encrypted folder in your cloud or on a drive"
+
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
 "this file."
@@ -2944,6 +3055,9 @@ msgstr "Unlock the vault to save the new password. It will not be lost."
 msgid "Unlock with PIN"
 msgstr "Unlock with PIN"
 
+msgid "Unlock with a PIN"
+msgstr "Unlock with a PIN"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -3020,6 +3134,9 @@ msgid ""
 msgstr ""
 "Use the same master password on all your devices: it opens the folder's key. "
 "You type it once here, to join."
+
+msgid "Use them on your phone or another computer"
+msgstr "Use them on your phone or another computer"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Use these codes when a site asks for two-step verification."
@@ -3163,6 +3280,9 @@ msgstr "Website"
 
 msgid "Website (optional)"
 msgstr "Website (optional)"
+
+msgid "Welcome to Ashy Pass"
+msgstr "Welcome to Ashy Pass"
 
 msgid "What it contains"
 msgstr "What it contains"
@@ -3392,6 +3512,10 @@ msgstr "weak"
 #, rust-format
 msgid "{added} of {total} codes added; the others could not be saved"
 msgstr "{added} of {total} codes added; the others could not be saved"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{done} of {total} done"
 
 #, rust-format
 msgid "{} cannot be imported."

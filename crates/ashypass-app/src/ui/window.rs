@@ -20,6 +20,7 @@ use crate::state::SharedState;
 use crate::tr;
 use crate::trn;
 use crate::ui::backups_view::BackupsView;
+use crate::ui::first_steps::{self, FirstStepsCard, Progress, Step};
 use crate::ui::unlock_view::UnlockView;
 use crate::ui::vault_view::EntryShortcut;
 use crate::ui::widgets::Chrome;
@@ -91,6 +92,9 @@ struct MainWindowInner {
     totp_view: Rc<TotpView>,
     generator_view: GeneratorView,
     backups_view: Rc<BackupsView>,
+    first_steps: FirstStepsCard,
+    /// "No backup yet", above the list once there is something to lose.
+    backup_banner: adw::Banner,
     auto_sync: crate::auto_sync::Handle,
     folder_sync: crate::folder_sync::Handle,
 }
@@ -121,6 +125,7 @@ impl MainWindow {
         });
         big_gtk_kit::menu::append_shared_section(&menu, None, "main-help", || {
             let help = gio::Menu::new();
+            help.append(Some(tr!("First steps")), Some("win.first-steps"));
             help.append(Some(tr!("Keyboard shortcuts")), Some("win.shortcuts"));
             help.append(Some(tr!("About Ashy Pass")), Some("app.about"));
             help
@@ -141,6 +146,14 @@ impl MainWindow {
         let totp_view = TotpView::new(state.clone(), toast_overlay.clone(), &chrome);
         let generator_view = GeneratorView::new(state.clone(), toast_overlay.clone(), &chrome);
         let backups_view = BackupsView::new(state.clone(), toast_overlay.clone(), &chrome);
+        let first_steps = FirstStepsCard::new();
+        let backup_banner = adw::Banner::builder()
+            .title(tr!("No backup made on this computer yet"))
+            .button_label(tr!("Make a backup"))
+            .revealed(false)
+            .build();
+        vault_view.add_top(&backup_banner);
+        vault_view.add_top(&first_steps.root);
         let drives_view = DrivesView::new(toast_overlay.clone());
         let drives_page = adw::ToolbarView::new();
         let drives_title = gtk::Label::new(Some(tr!("External drives")));
@@ -314,6 +327,8 @@ impl MainWindow {
             totp_view: totp_view.clone(),
             generator_view,
             backups_view,
+            first_steps,
+            backup_banner,
             auto_sync,
             folder_sync,
         });
@@ -380,6 +395,49 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
         inner.lock_button.connect_clicked(move |_| {
             if let Some(inner) = weak.upgrade() {
                 inner.lock_now(false);
+            }
+        });
+    }
+
+    // First steps: each step opens its place; hiding is remembered.
+    {
+        let weak = Rc::downgrade(inner);
+        inner.first_steps.set_on_step(move |step| {
+            if let Some(inner) = weak.upgrade() {
+                inner.open_step(step);
+            }
+        });
+        let weak = Rc::downgrade(inner);
+        inner.first_steps.set_on_hide(move || {
+            let Some(inner) = weak.upgrade() else { return };
+            if let Err(e) = inner.state.update_settings(|s| s.show_first_steps = false) {
+                log::warn!("could not save settings: {e}");
+            }
+            inner.refresh_first_steps();
+            inner.toast(
+                tr!("First steps hidden. The main menu brings them back."),
+                5,
+            );
+        });
+        let weak = Rc::downgrade(inner);
+        inner.backup_banner.connect_button_clicked(move |_| {
+            if let Some(inner) = weak.upgrade() {
+                inner.show_page("backups");
+            }
+        });
+        let weak = Rc::downgrade(inner);
+        let _permanent = inner.state.events.subscribe(move |event| {
+            use crate::events::AppEvent;
+            if matches!(
+                event,
+                AppEvent::VaultChanged
+                    | AppEvent::VaultChangedBySync
+                    | AppEvent::FolderSyncChanged
+                    | AppEvent::SyncStatusChanged
+            ) {
+                if let Some(inner) = weak.upgrade() {
+                    inner.refresh_first_steps();
+                }
             }
         });
     }
@@ -636,6 +694,15 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
     }
     add_action("drives", &[], Box::new(|i| i.show_page("drives")));
     add_action(
+        "first-steps",
+        &[],
+        Box::new(|i| {
+            if i.unlocked() && i.window.visible_dialog().is_none() {
+                i.show_first_steps();
+            }
+        }),
+    );
+    add_action(
         "shortcuts",
         &["<Primary>question", "F1"],
         Box::new(|i| show_shortcuts_window(&i.window)),
@@ -707,6 +774,10 @@ impl MainWindowInner {
         }
         self.window
             .set_title(Some(&format!("{} — Ashy Pass", nav_label(page))));
+        if page == "vault" {
+            // Back from making a backup or an import.
+            self.refresh_first_steps();
+        }
         if self.split.is_collapsed() {
             self.split.set_show_sidebar(false);
         }
@@ -727,6 +798,10 @@ impl MainWindowInner {
         self.folder_sync.on_vault_unlocked();
         let target = self.pending_page.take().unwrap_or(self.current.get());
         self.show_page(target);
+        self.refresh_first_steps();
+        if self.unlock_view.take_created() {
+            self.show_first_steps();
+        }
         if let Some(password) = self.pending_password.borrow_mut().take() {
             self.show_page("vault");
             self.vault_view.show_add_dialog(Some(password));
@@ -914,11 +989,100 @@ impl MainWindowInner {
     }
 
     fn open_settings(self: &Rc<Self>) {
+        self.open_settings_page(settings_dialog::Page::Protection);
+    }
+
+    fn open_settings_page(self: &Rc<Self>, page: settings_dialog::Page) {
         // Ctrl+, twice, or over the entry form, must not stack dialogs.
         if self.window.visible_dialog().is_some() {
             return;
         }
-        settings_dialog::present(&self.window, self.state.clone(), self.toast_overlay.clone());
+        let dialog = settings_dialog::present(
+            &self.window,
+            self.state.clone(),
+            self.toast_overlay.clone(),
+            page,
+        );
+        // The browser, sync and PIN steps are set up in there.
+        let weak = Rc::downgrade(self);
+        dialog.connect_closed(move |_| {
+            if let Some(inner) = weak.upgrade() {
+                inner.refresh_first_steps();
+            }
+        });
+    }
+
+    /// What is set up already, for the first-steps card.
+    fn first_steps_progress(&self) -> Progress {
+        let entries = self.state.vault.borrow().list(None).unwrap_or_default();
+        let settings = self.state.settings();
+        Progress {
+            backup: crate::ui::backups_view::load_status().is_some(),
+            passwords: !entries.is_empty(),
+            browser: settings.browser_extension,
+            sync: self.state.folder_account.borrow().is_some()
+                || self.state.nextcloud.borrow().is_logged_in(),
+            codes: entries.iter().any(|e| e.has_totp),
+            pin: self.state.vault.borrow().is_quick_unlock_available()
+                || settings
+                    .quick_unlock
+                    .as_ref()
+                    .is_some_and(|p| p.is_configured()),
+        }
+    }
+
+    /// Show the first-steps card while it is wanted and not finished, and
+    /// otherwise the backup reminder when there is something to lose.
+    fn refresh_first_steps(&self) {
+        if !self.unlocked() {
+            return;
+        }
+        let mut show_card = self.state.settings().show_first_steps;
+        let progress = self.first_steps_progress();
+        if show_card && progress.all_done() {
+            show_card = false;
+            if let Err(e) = self.state.update_settings(|s| s.show_first_steps = false) {
+                log::warn!("could not save settings: {e}");
+            }
+        }
+        if show_card {
+            self.first_steps.update(&progress);
+        }
+        self.first_steps.root.set_visible(show_card);
+        self.backup_banner
+            .set_revealed(!show_card && progress.passwords && !progress.backup);
+    }
+
+    fn open_step(self: &Rc<Self>, step: Step) {
+        match step {
+            Step::Backup => self.show_page("backups"),
+            Step::Passwords => {
+                self.show_page("backups");
+                self.backups_view.show_import();
+            }
+            Step::Browser => self.open_settings_page(settings_dialog::Page::Browser),
+            Step::Sync => self.open_settings_page(settings_dialog::Page::Sync),
+            Step::Codes => self.show_page("totp"),
+            Step::Pin => self.open_settings_page(settings_dialog::Page::Protection),
+        }
+    }
+
+    /// After creating a vault, or from the main menu: the welcome, and the
+    /// card back above the list.
+    fn show_first_steps(self: &Rc<Self>) {
+        if let Err(e) = self.state.update_settings(|s| s.show_first_steps = true) {
+            log::warn!("could not save settings: {e}");
+        }
+        self.show_page("vault");
+        self.refresh_first_steps();
+        // Asked for: open, whatever the vault holds.
+        self.first_steps.set_expanded(true);
+        let weak = Rc::downgrade(self);
+        first_steps::show_welcome(&self.window, move || {
+            if let Some(inner) = weak.upgrade() {
+                inner.open_step(Step::Passwords);
+            }
+        });
     }
 
     fn show_import_help(self: &Rc<Self>) {
@@ -1205,14 +1369,22 @@ impl DevHandle {
                 }
             }
             "click" => {
-                // click:<button label> — anywhere in the window, dialogs included.
+                // click:<button label> — anywhere in the window, dialogs
+                // included. A check button is toggled.
                 match find_widget(&inner.window.clone().upcast(), &|w| {
                     button_label(w).as_deref() == Some(arg)
                         || w.downcast_ref::<gtk::MenuButton>()
                             .is_some_and(|m| m.tooltip_text().as_deref() == Some(arg))
+                        || w.downcast_ref::<gtk::Button>()
+                            .is_some_and(|b| b.tooltip_text().as_deref() == Some(arg))
+                        || w.downcast_ref::<gtk::CheckButton>()
+                            .is_some_and(|c| c.label().as_deref() == Some(arg))
                 }) {
                     Some(w) => {
-                        if let Some(menu) = w.downcast_ref::<gtk::MenuButton>() {
+                        if let Some(check) = w.downcast_ref::<gtk::CheckButton>() {
+                            check.set_active(!check.is_active());
+                            eprintln!("dev: toggled {arg}");
+                        } else if let Some(menu) = w.downcast_ref::<gtk::MenuButton>() {
                             menu.popup();
                             eprintln!("dev: opened menu {arg}");
                         } else if let Ok(button) = w.downcast::<gtk::Button>() {
