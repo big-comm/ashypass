@@ -448,7 +448,6 @@ impl VaultView {
         self.inner.search_entry.clone()
     }
 
-    #[cfg(debug_assertions)]
     /// Run a keyboard shortcut on the current access: the row with the
     /// keyboard focus in the list, else the one open in the details.
     pub fn run_shortcut(&self, shortcut: EntryShortcut) {
@@ -511,6 +510,7 @@ impl VaultView {
         }
     }
 
+    #[cfg(debug_assertions)]
     pub fn dev_open_first(&self) {
         if let Some(obj) = self.inner.store.item(0) {
             if let Ok(boxed) = obj.downcast::<glib::BoxedAnyObject>() {
