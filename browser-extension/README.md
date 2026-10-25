@@ -121,6 +121,8 @@ The suite covers the following:
    themselves; a packaged (release) Ashy Pass does not, because anyone can
    make an extension with the public development key. Run once:
    `/usr/lib/ashypass/ashypass-native-host --install --chrome-id opelfkfheadglgamfephkfejfpcnlbck`.
+   It stays allowed when *Connect* in Ashy Pass runs again later: connecting
+   adds ids, it never drops one already in the browser's manifest.
 
 **Firefox**
 

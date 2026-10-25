@@ -1372,11 +1372,50 @@ fn parse_install_args(args: &[String]) -> Result<(Vec<String>, Vec<String>)> {
     Ok((chrome, firefox))
 }
 
+/// The Chromium extension ids an existing manifest allows: well-formed ids
+/// only (32 letters a–p), so a damaged file cannot carry junk forward.
+fn kept_chrome_ids(manifest: &str) -> Vec<String> {
+    allowed_list(manifest, "allowed_origins")
+        .filter_map(|origin| {
+            origin
+                .strip_prefix("chrome-extension://")
+                .map(|id| id.trim_end_matches('/').to_string())
+        })
+        .filter(|id| id.len() == 32 && id.bytes().all(|b| (b'a'..=b'p').contains(&b)))
+        .collect()
+}
+
+/// The Firefox extension ids an existing manifest allows (no spaces or
+/// control characters, of a sane length).
+fn kept_firefox_ids(manifest: &str) -> Vec<String> {
+    allowed_list(manifest, "allowed_extensions")
+        .filter(|id| {
+            !id.is_empty()
+                && id.len() <= 255
+                && !id.chars().any(|c| c.is_whitespace() || c.is_control())
+        })
+        .collect()
+}
+
+fn allowed_list(manifest: &str, key: &str) -> impl Iterator<Item = String> {
+    serde_json::from_str::<serde_json::Value>(manifest)
+        .ok()
+        .and_then(|value| value.get(key).and_then(|list| list.as_array().cloned()))
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|item| item.as_str().map(str::to_string))
+}
+
+fn merged_ids(ours: &[String], kept: Vec<String>) -> Vec<String> {
+    let mut ids: Vec<String> = ours.iter().cloned().chain(kept).collect();
+    ids.sort();
+    ids.dedup();
+    ids
+}
+
 fn install_manifests(args: &[String]) -> Result<()> {
     let (chrome_ids, firefox_ids) = parse_install_args(args)?;
     let exe = current_exe_path_str();
-    let chrome = manifest_chrome(&exe, &chrome_ids);
-    let firefox = manifest_firefox(&exe, &firefox_ids);
 
     let home = std::env::var_os("HOME")
         .map(std::path::PathBuf::from)
@@ -1415,18 +1454,26 @@ fn install_manifests(args: &[String]) -> Result<()> {
     let mut written = 0;
     let targets = chrome_targets
         .iter()
-        .map(|dir| (dir, &chrome, dir.parent().is_some_and(|p| p.exists())))
+        .map(|dir| (dir, true, dir.parent().is_some_and(|p| p.exists())))
         .chain(
             firefox_family
                 .iter()
-                .map(|(dir, installed)| (dir, &firefox, *installed)),
+                .map(|(dir, installed)| (dir, false, *installed)),
         );
-    for (dir, manifest, installed) in targets {
+    for (dir, is_chrome, installed) in targets {
         if !installed {
             continue; // Browser not set up for this user — skip.
         }
         std::fs::create_dir_all(dir)?;
         let path = dir.join(format!("{EXTENSION_NAME}.json"));
+        // Connecting again (the app's Connect button) must not drop an id
+        // added before, such as an unpacked test build's.
+        let existing = std::fs::read_to_string(&path).unwrap_or_default();
+        let manifest = if is_chrome {
+            manifest_chrome(&exe, &merged_ids(&chrome_ids, kept_chrome_ids(&existing)))
+        } else {
+            manifest_firefox(&exe, &merged_ids(&firefox_ids, kept_firefox_ids(&existing)))
+        };
         std::fs::write(&path, manifest.as_bytes())?;
         println!("wrote {}", path.display());
         written += 1;
@@ -1806,6 +1853,30 @@ mod tests {
         assert!(kept > 1000 && kept < 20_000, "{kept}");
         assert_eq!(big["truncated"], true);
         assert!(serde_json::to_vec(&big).unwrap().len() < MAX_MESSAGE_BYTES as usize);
+    }
+
+    #[test]
+    fn connecting_again_keeps_ids_added_before() {
+        let dev = "opelfkfheadglgamfephkfejfpcnlbck";
+        let before = manifest_chrome(
+            "/usr/lib/ashypass/ashypass-native-host",
+            &[
+                "aaffaajejkomddnihpblnkolkhcgaoom".to_string(),
+                dev.to_string(),
+            ],
+        );
+        let kept = kept_chrome_ids(&before);
+        assert!(kept.contains(&dev.to_string()));
+        let ids = merged_ids(&default_chrome_ids(), kept);
+        assert_eq!(ids.iter().filter(|id| id.as_str() == dev).count(), 1);
+        assert!(ids.contains(&"aaffaajejkomddnihpblnkolkhcgaoom".to_string()));
+        // Junk in a damaged or edited file is not carried forward.
+        let junk = r#"{"allowed_origins": ["chrome-extension://NOT-AN-ID/", "https://evil/", 3]}"#;
+        assert!(kept_chrome_ids(junk).is_empty());
+        assert!(kept_chrome_ids("not json").is_empty());
+        let firefox = manifest_firefox("/x", &["ashypass@big-comm.github.io".to_string()]);
+        assert_eq!(kept_firefox_ids(&firefox), ["ashypass@big-comm.github.io"]);
+        assert!(kept_firefox_ids(r#"{"allowed_extensions": ["a b", ""]}"#).is_empty());
     }
 
     #[test]
