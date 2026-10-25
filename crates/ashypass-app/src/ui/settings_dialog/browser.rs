@@ -208,7 +208,7 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
                             count
                         )
                         .replace("{}", &count.to_string()),
-                        Err(e) => format!("{}: {e}", tr!("Could not connect the browsers")),
+                        Err(e) => format!("{}: {}", tr!("Could not connect the browsers"), crate::ui::errors::describe(&e)),
                     };
                     toast.add_toast(adw::Toast::builder().title(message).timeout(6).build());
                 },

@@ -500,7 +500,11 @@ impl Inner {
             }
             let saved = inner.state.vault.borrow().set_tags(id, &chosen);
             if let Err(e) = saved {
-                inner.toast(&format!("{}: {e}", tr!("Could not save")));
+                inner.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not save"),
+                    crate::ui::errors::describe(&e)
+                ));
             }
         });
         self.state.track_sensitive_dialog(&dialog);
@@ -825,7 +829,11 @@ impl Inner {
             };
             match inner.state.vault.borrow().update(id, change) {
                 Ok(_) => inner.toast(tr!("Verification code removed")),
-                Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not remove the code"))),
+                Err(e) => inner.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not remove the code"),
+                    crate::ui::errors::describe(&e)
+                )),
             }
             inner.reload();
         });
@@ -886,7 +894,11 @@ impl Inner {
                     tr!("Permanently deleted")
                 }),
                 Ok(false) => inner.toast(tr!("This access no longer exists")),
-                Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not delete"))),
+                Err(e) => inner.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not delete"),
+                    crate::ui::errors::describe(&e)
+                )),
             }
             inner.reload();
         });
@@ -1238,8 +1250,9 @@ impl Inner {
                 }
                 Err(e) => {
                     error.set_label(&format!(
-                        "{} ({e})",
-                        tr!("Could not save. Nothing was changed in the vault")
+                        "{} ({})",
+                        tr!("Could not save. Nothing was changed in the vault"),
+                        crate::ui::errors::describe(&e)
                     ));
                     error.set_visible(true);
                 }

@@ -1146,7 +1146,14 @@ impl MainWindowInner {
         let placeholder = match ashypass_core::db::Vault::open(&placeholder_path) {
             Ok(v) => v,
             Err(e) => {
-                self.toast(&format!("{}: {e}", tr!("Nothing was restored")), 6);
+                self.toast(
+                    &format!(
+                        "{}: {}",
+                        tr!("Nothing was restored"),
+                        crate::ui::errors::describe(&e)
+                    ),
+                    6,
+                );
                 return;
             }
         };
@@ -1183,10 +1190,7 @@ impl MainWindowInner {
                         log::error!("could not reopen the vault after restore: {e}");
                         let dialog = big_gtk_kit::alert::Alert::builder(Some(&inner.window))
                             .heading(tr!("The vault could not be reopened"))
-                            .body(format!(
-                                "{}\n\n{e}",
-                                tr!("Ashy Pass will close. Open it again to continue; your vault file was not deleted.")
-                            ))
+                            .body(format!("{}\n\n{}", tr!("Ashy Pass will close. Open it again to continue; your vault file was not deleted."), crate::ui::errors::describe(&e)))
                             .build();
                         dialog.add_response("quit", tr!("Close Ashy Pass"));
                         let window = inner.window.clone();
@@ -1220,7 +1224,11 @@ impl MainWindowInner {
                     ),
                     Err(e) => (
                         tr!("Nothing was restored").to_string(),
-                        format!("{}\n\n{e}", tr!("Your vault was not changed.")),
+                        format!(
+                            "{}\n\n{}",
+                            tr!("Your vault was not changed."),
+                            crate::ui::errors::describe(&e)
+                        ),
                     ),
                 };
                 let dialog = big_gtk_kit::alert::Alert::builder(Some(&inner.window))

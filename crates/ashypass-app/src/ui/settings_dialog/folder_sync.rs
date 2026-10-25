@@ -175,7 +175,14 @@ fn confirm_disconnect(row: &adw::ActionRow, state: SharedState, toast: Toaster) 
     dialog.set_response_appearance("disconnect", adw::ResponseAppearance::Destructive);
     dialog.connect_response(Some("disconnect"), move |_, _| {
         if let Err(e) = folder::forget(&state.vault.borrow()) {
-            show_toast(&toast, &format!("{}: {e}", tr!("Disconnect failed")));
+            show_toast(
+                &toast,
+                &format!(
+                    "{}: {}",
+                    tr!("Disconnect failed"),
+                    crate::ui::errors::describe(&e)
+                ),
+            );
             return;
         }
         if let Err(e) = FolderSyncAccount::delete() {
@@ -326,7 +333,14 @@ fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast:
                         }
                         Err(e) => {
                             google_row.set_subtitle(tr!("Sign in to Google to use your Drive"));
-                            show_toast(&toast, &format!("{}: {e}", tr!("Google sign-in failed")))
+                            show_toast(
+                                &toast,
+                                &format!(
+                                    "{}: {}",
+                                    tr!("Google sign-in failed"),
+                                    crate::ui::errors::describe(&e)
+                                ),
+                            )
                         }
                     }
                 },
@@ -606,7 +620,7 @@ fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast:
         let parts = match state.vault.borrow().session_reopen_parts() {
             Ok(parts) => parts,
             Err(e) => {
-                show(&format!("{}: {e}", tr!("Connect failed")), false);
+                show(&format!("{}: {}", tr!("Connect failed"), crate::ui::errors::describe(&e)), false);
                 return;
             }
         };
@@ -683,7 +697,7 @@ fn show_connect_page(dialog: &adw::PreferencesDialog, state: SharedState, toast:
                                 tr!("Wrong master password. The folder belongs to a vault with another one.")
                                     .to_string()
                             }
-                            e => format!("{}: {e}", tr!("Connect failed")),
+                            e => format!("{}: {}", tr!("Connect failed"), crate::ui::errors::describe(&e)),
                         };
                         show(&message, false);
                     }
@@ -780,7 +794,11 @@ fn show_pairing_dialog(row: &adw::ActionRow, account: FolderSyncAccount, toast: 
                     dialog.close();
                     show_toast(
                         &toast,
-                        &format!("{}: {e}", tr!("Could not make the QR code")),
+                        &format!(
+                            "{}: {}",
+                            tr!("Could not make the QR code"),
+                            crate::ui::errors::describe(&e)
+                        ),
                     );
                 }
             }

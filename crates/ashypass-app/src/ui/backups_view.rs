@@ -739,10 +739,7 @@ impl Inner {
                                 error.set_visible(true);
                             }
                             Err(e) => {
-                                error.set_label(&format!(
-                                    "{} ({e})",
-                                    tr!("This copy cannot be restored. Nothing was changed")
-                                ));
+                                error.set_label(&format!("{} ({})", tr!("This copy cannot be restored. Nothing was changed"), crate::ui::errors::describe(&e)));
                                 error.set_visible(true);
                             }
                         }

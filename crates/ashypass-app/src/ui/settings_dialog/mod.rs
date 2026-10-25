@@ -446,7 +446,14 @@ fn show_settings_unlock_dialog(
                     show_toast(&toast, tr!("Incorrect master password"));
                 }
                 Err(e) => {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Failed to unlock vault")));
+                    show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Failed to unlock vault"),
+                            crate::ui::errors::describe(&e)
+                        ),
+                    );
                 }
             };
             // Argon2 runs on a worker; the vault is updated back here.

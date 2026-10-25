@@ -936,7 +936,7 @@ impl Inner {
                 self.empty.set(
                     "dialog-error-symbolic",
                     tr!("Could not read the vault"),
-                    &e.to_string(),
+                    &crate::ui::errors::describe(&e),
                 );
                 self.content_stack.set_visible_child_name("empty");
                 return;
@@ -1274,7 +1274,11 @@ impl Inner {
             Ok(Some(true)) => self.toast(tr!("Added to favorites")),
             Ok(Some(false)) => self.toast(tr!("Removed from favorites")),
             Ok(None) => self.toast(tr!("This access no longer exists")),
-            Err(e) => self.toast(&format!("{}: {e}", tr!("Could not change the favorite"))),
+            Err(e) => self.toast(&format!(
+                "{}: {}",
+                tr!("Could not change the favorite"),
+                crate::ui::errors::describe(&e)
+            )),
         }
         self.invalidate_caches();
         SessionManager::on_activity(&self.state.session);
@@ -1349,7 +1353,11 @@ impl Inner {
         let history = match self.state.vault.borrow().password_history(id) {
             Ok(h) => h,
             Err(e) => {
-                self.toast(&format!("{}: {e}", tr!("Could not read the history")));
+                self.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not read the history"),
+                    crate::ui::errors::describe(&e)
+                ));
                 return;
             }
         };
@@ -1457,7 +1465,7 @@ impl Inner {
                                 dialog.close();
                             }
                             Err(e) => inner
-                                .toast(&format!("{}: {e}", tr!("Could not clear the history"))),
+                                .toast(&format!("{}: {}", tr!("Could not clear the history"), crate::ui::errors::describe(&e))),
                         }
                     });
                     confirm.present();
@@ -1526,7 +1534,11 @@ impl Inner {
                     }
                 }
                 Ok(false) => inner.toast(tr!("This access no longer exists")),
-                Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not delete"))),
+                Err(e) => inner.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not delete"),
+                    crate::ui::errors::describe(&e)
+                )),
             }
             SessionManager::on_activity(&inner.state.session);
         });
@@ -1622,7 +1634,11 @@ impl Inner {
                     inner.reload();
                     inner.set_folder_filter(FolderFilter::Named(name));
                 }
-                Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not create the folder"))),
+                Err(e) => inner.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not create the folder"),
+                    crate::ui::errors::describe(&e)
+                )),
             }
         });
         self.state.track_sensitive_dialog(&dialog);
@@ -1692,7 +1708,11 @@ impl Inner {
                 return;
             }
             Err(e) => {
-                self.toast(&format!("{}: {e}", tr!("Could not open this access")));
+                self.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not open this access"),
+                    crate::ui::errors::describe(&e)
+                ));
                 return;
             }
         };
@@ -2217,10 +2237,18 @@ pub(crate) fn save_attachment_copy(
         let message = match state.vault.borrow().get_attachment(att_id) {
             Ok(Some((_info, data))) => match write_private(&path, &data) {
                 Ok(()) => tr!("Attachment saved").to_string(),
-                Err(e) => format!("{}: {e}", tr!("Could not save the file")),
+                Err(e) => format!(
+                    "{}: {}",
+                    tr!("Could not save the file"),
+                    crate::ui::errors::describe(&e)
+                ),
             },
             Ok(None) => tr!("Attachment not found").to_string(),
-            Err(e) => format!("{}: {e}", tr!("Could not decrypt the attachment")),
+            Err(e) => format!(
+                "{}: {}",
+                tr!("Could not decrypt the attachment"),
+                crate::ui::errors::describe(&e)
+            ),
         };
         toast.add_toast(
             adw::Toast::builder()

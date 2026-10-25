@@ -66,11 +66,25 @@ pub(super) fn build_nextcloud_passwords_group(
                 // a different account on the next sign-in.
                 let reset = state.vault.borrow_mut().nc_reset_sync_state();
                 if let Err(e) = reset {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Sign out failed")));
+                    show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Sign out failed"),
+                            crate::ui::errors::describe(&e)
+                        ),
+                    );
                     return;
                 }
                 if let Err(e) = state.nextcloud.borrow_mut().logout() {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Sign out failed")));
+                    show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Sign out failed"),
+                            crate::ui::errors::describe(&e)
+                        ),
+                    );
                     return;
                 }
                 status.set_subtitle(tr!("Not configured"));
@@ -334,9 +348,14 @@ pub(super) fn show_nextcloud_dialog<F>(
                                 dialog_slot_done.clone(),
                             );
                         }
-                        Err(e) => {
-                            show_toast(&toast_done, &format!("{}: {e}", tr!("Configure failed")))
-                        }
+                        Err(e) => show_toast(
+                            &toast_done,
+                            &format!(
+                                "{}: {}",
+                                tr!("Configure failed"),
+                                crate::ui::errors::describe(&e)
+                            ),
+                        ),
                     }
                 },
             );
@@ -411,7 +430,11 @@ pub(super) fn run_nextcloud_sync(
     let (db_path, session_key) = match state.vault.borrow().session_reopen_parts() {
         Ok(parts) => parts,
         Err(e) => {
-            let msg = format!("{}: {e}", tr!("Sync failed"));
+            let msg = format!(
+                "{}: {}",
+                tr!("Sync failed"),
+                crate::ui::errors::describe(&e)
+            );
             show_toast(&toast, &msg);
             show_message_dialog(parent, tr!("Sync failed"), &msg);
             return;

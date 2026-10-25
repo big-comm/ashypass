@@ -707,8 +707,9 @@ pub fn present(
                 Err(e) => {
                     log::error!("saving entry failed: {e}");
                     save_banner.set_title(&format!(
-                        "{} ({e})",
-                        tr!("Could not save. Nothing was changed in the vault")
+                        "{} ({})",
+                        tr!("Could not save. Nothing was changed in the vault"),
+                        crate::ui::errors::describe(&e)
                     ));
                     save_banner.set_revealed(true);
                 }
@@ -902,8 +903,9 @@ fn build_attachments_group(
                                     adw::Toast::builder()
                                         .use_markup(false)
                                         .title(format!(
-                                            "{}: {e}",
-                                            tr!("Could not remove the attachment")
+                                            "{}: {}",
+                                            tr!("Could not remove the attachment"),
+                                            crate::ui::errors::describe(&e)
                                         ))
                                         .timeout(5)
                                         .build(),
@@ -990,7 +992,11 @@ fn build_attachments_group(
                             Err(e) => {
                                 toast.add_toast(
                                     adw::Toast::builder()
-                                        .title(format!("{}: {e}", tr!("Could not read the file")))
+                                        .title(format!(
+                                            "{}: {}",
+                                            tr!("Could not read the file"),
+                                            crate::ui::errors::describe(&e)
+                                        ))
                                         .use_markup(false)
                                         .timeout(5)
                                         .build(),
@@ -1025,7 +1031,11 @@ fn build_attachments_group(
                             }
                             Err(e) => toast.add_toast(
                                 adw::Toast::builder()
-                                    .title(format!("{}: {e}", tr!("Could not add the attachment")))
+                                    .title(format!(
+                                        "{}: {}",
+                                        tr!("Could not add the attachment"),
+                                        crate::ui::errors::describe(&e)
+                                    ))
                                     .use_markup(false)
                                     .timeout(5)
                                     .build(),

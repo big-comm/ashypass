@@ -667,9 +667,11 @@ impl Inner {
                         inner.created.set(true);
                         inner.finish_unlock();
                     }
-                    Err(e) => {
-                        inner.show_error(&format!("{}: {e}", tr!("Could not create the vault")))
-                    }
+                    Err(e) => inner.show_error(&format!(
+                        "{}: {}",
+                        tr!("Could not create the vault"),
+                        crate::ui::errors::describe(&e)
+                    )),
                 }
             },
         );
@@ -733,7 +735,11 @@ impl Inner {
                 self.show_error(tr!("Incorrect master password"));
                 self.focus();
             }
-            Err(e) => self.show_error(&format!("{}: {e}", tr!("Could not unlock the vault"))),
+            Err(e) => self.show_error(&format!(
+                "{}: {}",
+                tr!("Could not unlock the vault"),
+                crate::ui::errors::describe(&e)
+            )),
         }
     }
 

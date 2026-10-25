@@ -104,7 +104,14 @@ pub(super) fn populate_audit(
         let (db_path, session_key) = match state.vault.borrow().session_reopen_parts() {
             Ok(parts) => parts,
             Err(e) => {
-                show_toast(&toast, &format!("{}: {e}", tr!("Audit failed")));
+                show_toast(
+                    &toast,
+                    &format!(
+                        "{}: {}",
+                        tr!("Audit failed"),
+                        crate::ui::errors::describe(&e)
+                    ),
+                );
                 trigger.set_title(tr!("Check now"));
                 trigger.set_subtitle("");
                 trigger.set_sensitive(true);
@@ -153,7 +160,14 @@ pub(super) fn populate_audit(
                     glib::ControlFlow::Break
                 }
                 Ok(Err(e)) => {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Audit failed")));
+                    show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Audit failed"),
+                            crate::ui::errors::describe(&e)
+                        ),
+                    );
                     summary_row.set_title(tr!("Audit failed"));
                     summary_row.set_subtitle(&e);
                     trigger.set_title(tr!("Check now"));
@@ -207,7 +221,14 @@ fn build_duplicates_group(state: SharedState, toast: Toaster) -> adw::Preference
         match found {
             Ok(groups) if groups.is_empty() => show_toast(&toast, tr!("No duplicate items")),
             Ok(groups) => present_duplicates(row, state.clone(), toast.clone(), groups),
-            Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Could not check"))),
+            Err(e) => show_toast(
+                &toast,
+                &format!(
+                    "{}: {}",
+                    tr!("Could not check"),
+                    crate::ui::errors::describe(&e)
+                ),
+            ),
         }
     });
     group.add(&row);
@@ -293,7 +314,14 @@ fn present_duplicates(
                         }
                         show_toast(&toast, tr!("Merged; the others are in Deleted items"));
                     }
-                    Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Could not merge"))),
+                    Err(e) => show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Could not merge"),
+                            crate::ui::errors::describe(&e)
+                        ),
+                    ),
                 }
             });
         }

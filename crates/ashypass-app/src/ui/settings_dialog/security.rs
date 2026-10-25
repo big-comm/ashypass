@@ -406,7 +406,7 @@ fn reset_master_page(
                         "This PIN no longer matches the vault. Nothing was changed."
                     ));
                 }
-                Err(e) => show(&format!("{} ({e})", tr!("The password was not changed"))),
+                Err(e) => show(&format!("{} ({})", tr!("The password was not changed"), crate::ui::errors::describe(&e))),
             }
                 },
             );
@@ -518,7 +518,11 @@ fn change_master_page(
                 Ok(master) => master,
                 Err(e) => {
                     show(
-                        &format!("{} ({e})", tr!("The password was not changed")),
+                        &format!(
+                            "{} ({})",
+                            tr!("The password was not changed"),
+                            crate::ui::errors::describe(&e)
+                        ),
                         false,
                     );
                     return;
@@ -584,7 +588,11 @@ fn change_master_page(
                     );
                         }
                         Err(e) => show(
-                            &format!("{} ({e})", tr!("The password was not changed")),
+                            &format!(
+                                "{} ({})",
+                                tr!("The password was not changed"),
+                                crate::ui::errors::describe(&e)
+                            ),
                             false,
                         ),
                     }
@@ -756,29 +764,31 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
                 },
                 move |outcome| {
                     button.set_sensitive(true);
-                    let result =
-                        match outcome {
-                            Outcome::Saved(wrapped) => {
-                                let cached = state
-                                    .vault
-                                    .borrow_mut()
-                                    .cache_key_for_quick_unlock(&wrapped);
-                                // Locked or re-keyed meanwhile: the stored
-                                // record must not stay behind.
-                                if cached.is_err() {
-                                    let _ = ashypass_core::keyring::delete_quick_unlock();
-                                }
-                                cached
+                    let result = match outcome {
+                        Outcome::Saved(wrapped) => {
+                            let cached = state
+                                .vault
+                                .borrow_mut()
+                                .cache_key_for_quick_unlock(&wrapped);
+                            // Locked or re-keyed meanwhile: the stored
+                            // record must not stay behind.
+                            if cached.is_err() {
+                                let _ = ashypass_core::keyring::delete_quick_unlock();
                             }
-                            Outcome::Keyring(error) => {
-                                notify(&format!(
-                        "{}: {error}",
-                        tr!("The system keyring is not available, so the PIN was not saved")
-                    ));
-                                return;
-                            }
-                            Outcome::Failed(e) => Err(e),
-                        };
+                            cached
+                        }
+                        Outcome::Keyring(error) => {
+                            notify(&format!(
+                                "{}: {}",
+                                tr!(
+                                    "The system keyring is not available, so the PIN was not saved"
+                                ),
+                                crate::ui::errors::describe(&error)
+                            ));
+                            return;
+                        }
+                        Outcome::Failed(e) => Err(e),
+                    };
                     match result {
                         Ok(()) => {
                             if let Err(error) = state.update_settings(|s| s.quick_unlock = None) {
@@ -793,7 +803,11 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
                         Err(ashypass_core::Error::InvalidInput(_)) => {
                             notify(tr!("The PIN must have at least 4 characters"))
                         }
-                        Err(e) => notify(&format!("{}: {e}", tr!("The PIN was not set"))),
+                        Err(e) => notify(&format!(
+                            "{}: {}",
+                            tr!("The PIN was not set"),
+                            crate::ui::errors::describe(&e)
+                        )),
                     }
                 },
             );
@@ -804,7 +818,11 @@ fn pin_group(state: &SharedState, toast: &Toaster, unlocked: bool) -> adw::Prefe
         let editing = editing.clone();
         disable.connect_clicked(move |_| {
             if let Err(error) = ashypass_core::keyring::delete_quick_unlock() {
-                notify(&format!("{}: {error}", tr!("Could not turn off the PIN")));
+                notify(&format!(
+                    "{}: {}",
+                    tr!("Could not turn off the PIN"),
+                    crate::ui::errors::describe(&error)
+                ));
                 return;
             }
             state.vault.borrow_mut().disable_quick_unlock();
@@ -929,7 +947,11 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
                             tr!("The vault will open automatically at login").to_string()
                         }
                         Ok(false) => tr!("Incorrect master password").to_string(),
-                        Err(e) => format!("{}: {e}", tr!("Keyring error")),
+                        Err(e) => format!(
+                            "{}: {}",
+                            tr!("Keyring error"),
+                            crate::ui::errors::describe(&e)
+                        ),
                     };
                     toast.add_toast(
                         adw::Toast::builder()
@@ -950,7 +972,11 @@ fn keyring_group(state: &SharedState, toast: &Toaster) -> adw::PreferencesGroup 
                     layout();
                     tr!("Removed from the keyring").to_string()
                 }
-                Err(e) => format!("{}: {e}", tr!("Keyring error")),
+                Err(e) => format!(
+                    "{}: {}",
+                    tr!("Keyring error"),
+                    crate::ui::errors::describe(&e)
+                ),
             };
             toast.add_toast(
                 adw::Toast::builder()
@@ -1193,7 +1219,11 @@ fn ask_key_format_change(
                     Err(ashypass_core::Error::InvalidMasterPassword) => {
                         show(tr!("Incorrect master password. Nothing was changed."));
                     }
-                    Err(e) => show(&format!("{} ({e})", tr!("Nothing was changed"))),
+                    Err(e) => show(&format!(
+                        "{} ({})",
+                        tr!("Nothing was changed"),
+                        crate::ui::errors::describe(&e)
+                    )),
                 }
             },
         );
@@ -1266,7 +1296,11 @@ fn legacy_backup_group(state: &SharedState, toast: &Toaster) -> Option<adw::Pref
                     button_cl.set_sensitive(false);
                     tr!("Old copy removed").to_string()
                 }
-                Err(e) => format!("{}: {e}", tr!("Could not remove the old copy")),
+                Err(e) => format!(
+                    "{}: {}",
+                    tr!("Could not remove the old copy"),
+                    crate::ui::errors::describe(&e)
+                ),
             };
             toast.add_toast(
                 adw::Toast::builder()

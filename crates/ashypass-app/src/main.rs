@@ -65,10 +65,7 @@ fn main() -> glib::ExitCode {
                     // the app is not opening before quitting.
                     let dialog = big_gtk_kit::alert::Alert::builder(None::<&gtk::Widget>)
                         .heading(tr!("Could not open the vault"))
-                        .body(format!(
-                            "{}\n\n{e}",
-                            tr!("Nothing was changed. Close other copies of Ashy Pass and try again.")
-                        ))
+                        .body(format!("{}\n\n{}", tr!("Nothing was changed. Close other copies of Ashy Pass and try again."), crate::ui::errors::describe(&e)))
                         .close_response("close")
                         .default_response("close")
                         .build();

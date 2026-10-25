@@ -65,7 +65,7 @@ pub(super) fn populate_trash(
                 Ok(v) => v,
                 Err(e) => {
                     let row = adw::ActionRow::builder()
-                        .title(format!("{e}"))
+                        .title(crate::ui::errors::describe(&e))
                         .use_markup(false)
                         .build();
                     group.add(&row);
@@ -143,7 +143,7 @@ pub(super) fn populate_trash(
                                 toast.add_toast(
                                     adw::Toast::builder()
                                         .use_markup(false)
-                                        .title(format!("{e}"))
+                                        .title(crate::ui::errors::describe(&e))
                                         .timeout(3)
                                         .build(),
                                 );
@@ -186,7 +186,7 @@ pub(super) fn populate_trash(
                                     Err(e) => {
                                         toast.add_toast(
                                             adw::Toast::builder()
-                                                .title(format!("{e}"))
+                                                .title(crate::ui::errors::describe(&e))
                                                 .use_markup(false)
                                                 .timeout(3)
                                                 .build(),
@@ -268,7 +268,7 @@ pub(super) fn populate_trash(
                     Err(e) => {
                         toast.add_toast(
                             adw::Toast::builder()
-                                .title(format!("{e}"))
+                                .title(crate::ui::errors::describe(&e))
                                 .timeout(3)
                                 .use_markup(false)
                                 .build(),
