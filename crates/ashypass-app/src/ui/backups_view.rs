@@ -9,6 +9,7 @@
 //! Backups are not synchronization: Nextcloud Passwords and WebDAV sync live
 //! in Settings → Synchronization.
 
+use crate::session::{InhibitGuard, SessionManager};
 use crate::state::SharedState;
 use crate::tr;
 use crate::trn;
@@ -363,6 +364,10 @@ impl Inner {
     /// Protected copy: master password check, a password for the file, a
     /// destination, then the result that was really written.
     fn create_backup(self: &Rc<Self>, anchor: &gtk::Button) {
+        // From the first prompt to the file written: choosing where to save
+        // happens in the desktop's file chooser, which this window cannot
+        // see as activity, and an auto-lock there lost the backup.
+        let hold = Rc::new(SessionManager::hold(&self.state.session));
         let weak = Rc::downgrade(self);
         let anchor_widget: gtk::Widget = anchor.clone().upcast();
         let prompt_anchor = anchor_widget.clone();
@@ -374,20 +379,25 @@ impl Inner {
             move || {
                 let Some(inner) = weak.upgrade() else { return };
                 let weak = Rc::downgrade(&inner);
+                let hold = hold.clone();
                 settings_dialog::ask_new_password(
                     &anchor_widget,
                     tr!("Password for this backup"),
                     tr!("You will need this password to restore the copy. You may reuse your master password; Ashy Pass cannot recover it."),
                     move |password| {
                         let Some(inner) = weak.upgrade() else { return };
-                        inner.save_backup_file(password);
+                        inner.save_backup_file(password, hold.clone());
                     },
                 );
             },
         );
     }
 
-    fn save_backup_file(self: &Rc<Self>, password: zeroize::Zeroizing<String>) {
+    fn save_backup_file(
+        self: &Rc<Self>,
+        password: zeroize::Zeroizing<String>,
+        hold: Rc<InhibitGuard>,
+    ) {
         let name = format!(
             "ashypass-backup-{}.ashy",
             glib::DateTime::now_local()
@@ -413,18 +423,20 @@ impl Inner {
             let parts = match inner.state.vault.borrow().session_reopen_parts() {
                 Ok(parts) => parts,
                 Err(e) => {
-                    inner.toast(&format!("{}: {e}", tr!("The backup was not created")));
+                    inner.toast(&not_created(&e));
                     return;
                 }
             };
             let weak = Rc::downgrade(&inner);
             let target = path.clone();
+            let hold = hold.clone();
             settings_dialog::run_background_task(
                 move || {
                     let vault = ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
                     ashypass_core::importers::ashy::export_vault(&vault, &target, &password)
                 },
                 move |outcome: ashypass_core::Result<usize>| {
+                    drop(hold);
                     let Some(inner) = weak.upgrade() else { return };
                     match outcome {
                         Ok(entries) => {
@@ -436,9 +448,7 @@ impl Inner {
                             inner.refresh_status();
                             inner.toast(&format!("{} {}", tr!("Backup created:"), path.display()));
                         }
-                        Err(e) => {
-                            inner.toast(&format!("{}: {e}", tr!("The backup was not created")))
-                        }
+                        Err(e) => inner.toast(&not_created(&e)),
                     }
                 },
             );
@@ -612,6 +622,7 @@ impl Inner {
             let chosen = chosen.clone();
             let file_row = file_row.downgrade();
             let update = update.clone();
+            let state = self.state.clone();
             choose.connect_clicked(move |button| {
                 let filter = gtk::FileFilter::new();
                 filter.set_name(Some(tr!("Ashy Pass backups")));
@@ -628,7 +639,9 @@ impl Inner {
                 let chosen = chosen.clone();
                 let file_row = file_row.clone();
                 let update = update.clone();
+                let hold = SessionManager::hold(&state.session);
                 picker.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+                    drop(hold);
                     let Ok(file) = result else { return };
                     let Some(path) = file.path() else { return };
                     let Some(file_row) = file_row.upgrade() else {
@@ -798,6 +811,18 @@ impl Inner {
             tr!("Confirm your master password to export your data."),
             move || settings_dialog::export_kdbx(state.clone(), toast.clone(), anchor.clone()),
         );
+    }
+}
+
+/// Why a backup was not made, in words: a vault locked midway (screen lock,
+/// the lock button) is the likely case and says what to do.
+fn not_created(error: &ashypass_core::Error) -> String {
+    match error {
+        ashypass_core::Error::Locked => tr!(
+            "The vault was locked before the backup was saved. Unlock it and create the backup again."
+        )
+        .to_string(),
+        other => format!("{}: {other}", tr!("The backup was not created")),
     }
 }
 

@@ -2206,7 +2206,10 @@ pub(crate) fn save_attachment_copy(
         .build();
     let state = state.clone();
     let toast = toast.clone();
+    // The file chooser is the desktop's window: no activity here.
+    let hold = SessionManager::hold(&state.session);
     dialog.save(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+        drop(hold);
         let Ok(file) = result else { return };
         let Some(path) = file.path() else { return };
         let message = match state.vault.borrow().get_attachment(att_id) {

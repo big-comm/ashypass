@@ -95,6 +95,16 @@ impl SessionManager {
         s.inhibitors += 1;
     }
 
+    /// Hold auto-lock off for as long as the returned guard lives. For flows
+    /// that leave this window — a file chooser is the desktop's own window,
+    /// so moving around in it is no activity here — and span several
+    /// callbacks: move the guard into them, and it is released however the
+    /// flow ends (done, cancelled, failed).
+    pub fn hold(this: &Rc<RefCell<Self>>) -> InhibitGuard {
+        Self::inhibit(this);
+        InhibitGuard(this.clone())
+    }
+
     pub fn release(this: &Rc<RefCell<Self>>) {
         {
             let mut s = this.borrow_mut();
@@ -219,9 +229,32 @@ impl SessionManager {
     }
 }
 
+/// See [`SessionManager::hold`].
+pub struct InhibitGuard(Rc<RefCell<SessionManager>>);
+
+impl Drop for InhibitGuard {
+    fn drop(&mut self) {
+        SessionManager::release(&self.0);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_hold_lasts_while_any_copy_of_it_lives() {
+        let session = Rc::new(RefCell::new(SessionManager::default()));
+        let hold = Rc::new(SessionManager::hold(&session));
+        let in_a_callback = hold.clone();
+        assert!(session.borrow().is_held_off());
+        drop(hold);
+        assert!(session.borrow().is_held_off());
+        // The last callback is done (or was never called): released.
+        drop(in_a_callback);
+        assert!(!session.borrow().is_held_off());
+        assert_eq!(session.borrow().inhibitors, 0);
+    }
 
     #[test]
     fn inhibition_is_capped_but_generous() {

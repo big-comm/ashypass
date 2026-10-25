@@ -9,6 +9,7 @@
 //!    a complete import from a partial one: "imported" never hides skipped
 //!    items.
 
+use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
 use crate::trn;
@@ -56,7 +57,10 @@ pub fn start(
         .filters(&filters)
         .build();
     let parent = anchor.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+    // The file chooser is the desktop's window: no activity here.
+    let hold = SessionManager::hold(&state.session);
     dialog.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+        drop(hold);
         let Ok(file) = result else { return };
         let Some(path) = file.path() else { return };
         match source {
