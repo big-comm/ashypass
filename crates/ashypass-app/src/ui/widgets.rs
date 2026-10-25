@@ -79,6 +79,19 @@ pub fn page_heading(title: &str, subtitle: Option<&str>) -> gtk::Box {
     heading
 }
 
+/// Buttons side by side that wrap onto a new line when the window is too
+/// narrow for them (a phone's width): a row of buttons must never set the
+/// window's minimum width. `Fill` stretches them to the line, like a
+/// homogeneous box when they fit.
+pub fn button_row(justify: adw::JustifyMode) -> adw::WrapBox {
+    adw::WrapBox::builder()
+        .child_spacing(12)
+        .line_spacing(12)
+        .justify(justify)
+        .justify_last_line(true)
+        .build()
+}
+
 /// A compact empty state: small icon, title, explanation and an optional
 /// row of actions. `adw::StatusPage` defaults to a 128 px icon that fills a
 /// small window without telling the user what to do next.
@@ -87,7 +100,7 @@ pub struct EmptyState {
     pub icon: gtk::Image,
     pub title: gtk::Label,
     pub description: gtk::Label,
-    pub actions: gtk::Box,
+    pub actions: adw::WrapBox,
 }
 
 impl EmptyState {
@@ -117,12 +130,10 @@ impl EmptyState {
             .max_width_chars(48)
             .build();
         description.add_css_class("dim-label");
-        let actions = gtk::Box::builder()
-            .orientation(gtk::Orientation::Horizontal)
-            .spacing(12)
-            .halign(gtk::Align::Center)
-            .margin_top(8)
-            .build();
+        let actions = button_row(adw::JustifyMode::None);
+        actions.set_halign(gtk::Align::Center);
+        actions.set_align(0.5);
+        actions.set_margin_top(8);
         root.append(&icon);
         root.append(&title);
         root.append(&description);

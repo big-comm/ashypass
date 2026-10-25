@@ -31,6 +31,8 @@ pub struct TotpView {
 struct Inner {
     state: SharedState,
     toast: adw::ToastOverlay,
+    /// A phone-width window: each code row on two lines.
+    narrow: Cell<bool>,
     root: adw::ToolbarView,
     search_entry: gtk::SearchEntry,
     search_reload_id: RefCell<Option<glib::SourceId>>,
@@ -82,8 +84,8 @@ impl TotpView {
             .spacing(16)
             .margin_top(12)
             .margin_bottom(24)
-            .margin_start(18)
-            .margin_end(18)
+            .margin_start(12)
+            .margin_end(12)
             .build();
         content.append(&page_heading(
             tr!("Verification codes"),
@@ -140,6 +142,7 @@ impl TotpView {
         let inner = Rc::new(Inner {
             state,
             toast,
+            narrow: Cell::new(false),
             root: root.clone(),
             search_entry,
             search_reload_id: RefCell::new(None),
@@ -230,6 +233,14 @@ impl TotpView {
         inner.stop_timer();
         inner.rows.borrow_mut().clear();
         inner.list_box.remove_all();
+    }
+
+    /// Lay the rows out for a phone-width window (or not), from the
+    /// window's narrow breakpoint.
+    pub fn set_narrow(&self, narrow: bool) {
+        if self.inner.narrow.replace(narrow) != narrow && self.inner.root.is_mapped() {
+            self.inner.reload();
+        }
     }
 
     pub fn on_unlocked(&self) {
@@ -507,12 +518,25 @@ impl Inner {
         let row = gtk::ListBoxRow::builder().activatable(false).build();
         let content = gtk::Box::builder()
             .orientation(gtk::Orientation::Horizontal)
-            .spacing(12)
+            .spacing(8)
             .margin_top(10)
             .margin_bottom(10)
             .margin_start(12)
             .margin_end(8)
             .build();
+        // Narrow window: the name on its own line, the code and its buttons
+        // under it, so neither gets squeezed into "…".
+        let (head, tail) = if self.narrow.get() {
+            content.set_orientation(gtk::Orientation::Vertical);
+            content.set_spacing(4);
+            let head = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+            let tail = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+            content.append(&head);
+            content.append(&tail);
+            (head, tail)
+        } else {
+            (content.clone(), content.clone())
+        };
 
         if let Some(favicons) = icons {
             let icon = gtk::Image::new();
@@ -528,7 +552,7 @@ impl Inner {
             }
             icon.add_css_class("ashy-entry-icon");
             icon.set_accessible_role(gtk::AccessibleRole::Presentation);
-            content.append(&icon);
+            head.append(&icon);
         }
 
         let text = gtk::Box::builder()
@@ -559,7 +583,7 @@ impl Inner {
             account.add_css_class("caption");
             text.append(&account);
         }
-        content.append(&text);
+        head.append(&text);
 
         // Not selectable: Ctrl+C on the label would skip the clipboard
         // auto-clear that the Copy button applies.
@@ -569,7 +593,12 @@ impl Inner {
         if large {
             code_label.add_css_class("ashy-code-large");
         }
-        content.append(&code_label);
+        if self.narrow.get() {
+            // Pushes the buttons to the end of their line.
+            code_label.set_hexpand(true);
+            code_label.set_xalign(0.0);
+        }
+        tail.append(&code_label);
 
         let timer_box = gtk::Box::builder()
             .orientation(gtk::Orientation::Vertical)
@@ -589,10 +618,20 @@ impl Inner {
         countdown_label.add_css_class("numeric");
         timer_box.append(&progress);
         timer_box.append(&countdown_label);
-        content.append(&timer_box);
+        tail.append(&timer_box);
 
+        // Icon and words; the icon alone on a phone-width window, where the
+        // words would be cut to "Co…" (the tooltip still names it).
+        let copy_content = adw::ButtonContent::builder()
+            .icon_name("edit-copy-symbolic")
+            .can_shrink(true)
+            .build();
+        if !self.narrow.get() {
+            copy_content.set_label(tr!("Copy code"));
+        }
         let copy = gtk::Button::builder()
-            .label(tr!("Copy code"))
+            .child(&copy_content)
+            .tooltip_text(tr!("Copy code"))
             .valign(gtk::Align::Center)
             .build();
         copy.add_css_class("ashy-row-action");
@@ -620,7 +659,7 @@ impl Inner {
                 SessionManager::on_activity(&inner.state.session);
             });
         }
-        content.append(&copy);
+        tail.append(&copy);
 
         let menu = gio::Menu::new();
         menu.append(Some(tr!("Edit access…")), Some("code.edit"));
@@ -643,7 +682,7 @@ impl Inner {
             tr!("More actions"),
             entry.title
         ))]);
-        content.append(&more);
+        tail.append(&more);
 
         let group = gio::SimpleActionGroup::new();
         for (name, run) in [

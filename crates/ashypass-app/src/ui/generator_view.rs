@@ -221,11 +221,7 @@ impl GeneratorPanel {
         root.append(&card);
 
         // ---- Actions: one primary per context.
-        let actions = gtk::Box::builder()
-            .orientation(gtk::Orientation::Horizontal)
-            .spacing(12)
-            .homogeneous(true)
-            .build();
+        let actions = crate::ui::widgets::button_row(adw::JustifyMode::Fill);
         let (primary, secondary) = match mode {
             PanelMode::Standalone => (
                 gtk::Button::with_label(tr!("Copy password")),

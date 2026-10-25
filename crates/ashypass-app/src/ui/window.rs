@@ -161,9 +161,13 @@ impl MainWindow {
         drives_page.add_top_bar(&chrome.header(Some(drives_title.upcast_ref())));
         drives_page.set_content(Some(&drives_view.root));
 
+        // Not homogeneous: a stack asks for the width of its widest page,
+        // hidden ones included, and one wide page kept the whole window
+        // from narrowing to a phone's width.
         let pages = gtk::Stack::builder()
             .transition_type(gtk::StackTransitionType::Crossfade)
             .transition_duration(150)
+            .hhomogeneous(false)
             .build();
         pages.add_named(&vault_view.root, Some("vault"));
         pages.add_named(&totp_view.root, Some("totp"));
@@ -178,6 +182,7 @@ impl MainWindow {
         let gate = gtk::Stack::builder()
             .transition_type(gtk::StackTransitionType::Crossfade)
             .transition_duration(150)
+            .hhomogeneous(false)
             .vexpand(true)
             .build();
         gate.add_named(&unlock_page, Some("unlock"));
@@ -302,6 +307,21 @@ impl MainWindow {
         ));
         narrow.add_setter(&vault_view.root, "collapsed", Some(&true.to_value()));
         narrow.add_setter(&split, "collapsed", Some(&true.to_value()));
+        {
+            // Code rows go on two lines (not a setter: rows are rebuilt).
+            let totp = Rc::downgrade(&totp_view);
+            narrow.connect_apply(move |_| {
+                if let Some(totp) = totp.upgrade() {
+                    totp.set_narrow(true);
+                }
+            });
+            let totp = Rc::downgrade(&totp_view);
+            narrow.connect_unapply(move |_| {
+                if let Some(totp) = totp.upgrade() {
+                    totp.set_narrow(false);
+                }
+            });
+        }
         big_gtk_kit::breakpoint::add(&window, medium);
         big_gtk_kit::breakpoint::add(&window, narrow);
 
@@ -1377,8 +1397,12 @@ impl DevHandle {
                             .is_some_and(|m| m.tooltip_text().as_deref() == Some(arg))
                         || w.downcast_ref::<gtk::Button>()
                             .is_some_and(|b| b.tooltip_text().as_deref() == Some(arg))
-                        || w.downcast_ref::<gtk::CheckButton>()
-                            .is_some_and(|c| c.label().as_deref() == Some(arg))
+                        || w.downcast_ref::<gtk::CheckButton>().is_some_and(|c| {
+                            c.label().as_deref() == Some(arg)
+                                || c.child()
+                                    .and_downcast::<gtk::Label>()
+                                    .is_some_and(|l| l.label() == arg)
+                        })
                 }) {
                     Some(w) => {
                         if let Some(check) = w.downcast_ref::<gtk::CheckButton>() {
@@ -1517,6 +1541,32 @@ impl DevHandle {
             "dark" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceDark),
             "light" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceLight),
             "sidebar" => inner.split.set_show_sidebar(arg != "0"),
+            "minw" => {
+                // minw:<px> — print every shown widget whose minimum width
+                // is above <px> (default: the window's), to find what keeps
+                // the window from narrowing.
+                fn walk(widget: &gtk::Widget, limit: i32, depth: usize) {
+                    if !widget.is_mapped() {
+                        return;
+                    }
+                    let (min, _, _, _) = widget.measure(gtk::Orientation::Horizontal, -1);
+                    if min > limit {
+                        eprintln!(
+                            "dev: minw {:depth$}{} {min} (has {})",
+                            "",
+                            widget.type_().name(),
+                            widget.width()
+                        );
+                    }
+                    let mut child = widget.first_child();
+                    while let Some(current) = child {
+                        walk(&current, limit, depth + 1);
+                        child = current.next_sibling();
+                    }
+                }
+                let limit = arg.parse().unwrap_or(inner.window.width());
+                walk(inner.window.upcast_ref(), limit, 0);
+            }
             other => log::warn!("unknown dev step: {other}"),
         }
     }

@@ -271,8 +271,10 @@ impl VaultView {
             .build();
 
         let empty = EmptyState::new();
+        // Not homogeneous: the empty state's buttons must not widen the list.
         let content_stack = gtk::Stack::builder()
             .transition_type(gtk::StackTransitionType::Crossfade)
+            .hhomogeneous(false)
             .vexpand(true)
             .build();
         content_stack.add_named(&list_scrolled, Some("list"));

@@ -163,16 +163,12 @@ pub fn message_for(result: &ScanResult) -> &'static str {
 type Done = Rc<dyn Fn(ScanResult)>;
 
 /// Buttons to read a QR code; `done` receives the result of each attempt.
-pub fn scan_buttons<F>(done: F) -> gtk::Box
+pub fn scan_buttons<F>(done: F) -> adw::WrapBox
 where
     F: Fn(ScanResult) + 'static,
 {
     let done: Done = Rc::new(done);
-    let row = gtk::Box::builder()
-        .orientation(gtk::Orientation::Horizontal)
-        .spacing(8)
-        .homogeneous(true)
-        .build();
+    let row = crate::ui::widgets::button_row(adw::JustifyMode::Fill);
 
     let open = button("image-x-generic-symbolic", tr!("Open image…"));
     let capture = button("camera-photo-symbolic", tr!("Capture from screen…"));

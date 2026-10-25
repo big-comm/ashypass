@@ -105,11 +105,7 @@ impl BackupsView {
         status_group.add(&status_row);
         content.append(&status_group);
 
-        let actions = gtk::Box::builder()
-            .orientation(gtk::Orientation::Horizontal)
-            .spacing(12)
-            .homogeneous(true)
-            .build();
+        let actions = crate::ui::widgets::button_row(adw::JustifyMode::Fill);
         let create = gtk::Button::with_label(tr!("Create backup"));
         create.add_css_class("pill");
         create.add_css_class("suggested-action");

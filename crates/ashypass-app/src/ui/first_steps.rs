@@ -265,8 +265,15 @@ pub fn show_welcome(parent: &impl IsA<gtk::Widget>, on_import: impl Fn() + 'stat
         None,
         tr!("Step 1 of 3"),
     );
-    let written =
-        gtk::CheckButton::with_label(tr!("I wrote my master password down somewhere safe"));
+    // Its own label, so a long translation wraps instead of widening the
+    // dialog past a phone's width.
+    let written = gtk::CheckButton::new();
+    written.set_child(Some(
+        &gtk::Label::builder()
+            .label(tr!("I wrote my master password down somewhere safe"))
+            .wrap(true)
+            .build(),
+    ));
     written.set_halign(gtk::Align::Center);
     vault_actions.append(&written);
     let next_1 = pill(tr!("Continue"), true);
