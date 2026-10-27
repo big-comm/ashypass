@@ -32,6 +32,17 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
     let install_group = adw::PreferencesGroup::builder()
         .title(tr!("1. Install the extension"))
         .build();
+    if !CHROME_STORE_URL.is_empty() {
+        install_group.add(&store_card(CHROME_STORE_URL));
+        page.add(&install_group);
+    }
+    // Rows go in a group of their own: in one group with the card they
+    // would come before it (a group lists its rows first).
+    let install_rows = if CHROME_STORE_URL.is_empty() {
+        install_group
+    } else {
+        adw::PreferencesGroup::new()
+    };
     // A browser family whose store page is not out yet points at the
     // instructions to load the extension by hand.
     for (title, url) in [
@@ -41,21 +52,24 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
         ),
         (tr!("Get the extension for Firefox"), FIREFOX_STORE_URL),
     ] {
+        if url == CHROME_STORE_URL && !url.is_empty() {
+            continue; // The card above.
+        }
         if url.is_empty() {
-            install_group.add(&link_row(
+            install_rows.add(&link_row(
                 title,
                 Some(tr!("Not in the store yet: see how to install it by hand")),
                 MANUAL_INSTALL_URL,
             ));
         } else {
-            install_group.add(&link_row(
+            install_rows.add(&link_row(
                 title,
                 Some(tr!("Opens the extension store")),
                 url,
             ));
         }
     }
-    page.add(&install_group);
+    page.add(&install_rows);
 
     // ---- 2. Connect ----------------------------------------------------
     let connect_group = adw::PreferencesGroup::builder()
@@ -229,6 +243,110 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
         ))
         .build();
     page.add(&unlock_group);
+}
+
+/// What the extension looks like in a page (a login field and its
+/// suggestions), from the store's own screenshots. Built in: showing it
+/// fetches nothing.
+const PREVIEW_EN: &[u8] = include_bytes!("../../../assets/extension-preview-en.png");
+const PREVIEW_PT_BR: &[u8] = include_bytes!("../../../assets/extension-preview-pt_BR.png");
+
+/// The extension's store page as a card: a picture of it at work, what it
+/// does, and one button to add it. Side by side, or stacked on a narrow
+/// window.
+fn store_card(url: &str) -> gtk::Widget {
+    let portuguese = glib::language_names()
+        .first()
+        .is_some_and(|lang| lang.starts_with("pt"));
+    let bytes = glib::Bytes::from_static(if portuguese {
+        PREVIEW_PT_BR
+    } else {
+        PREVIEW_EN
+    });
+    let picture = gtk::Picture::builder()
+        .can_shrink(true)
+        .content_fit(gtk::ContentFit::Contain)
+        .width_request(220)
+        .height_request(197)
+        .build();
+    if let Ok(texture) = gdk::Texture::from_bytes(&bytes) {
+        picture.set_paintable(Some(&texture));
+    }
+    picture.set_alternative_text(Some(tr!(
+        "A login form with the Ashy Pass suggestions under the email field"
+    )));
+
+    let text = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(8)
+        .valign(gtk::Align::Center)
+        .width_request(220)
+        .build();
+    let title = gtk::Label::builder()
+        .label(tr!("Ashy Pass for the browser"))
+        .xalign(0.0)
+        .wrap(true)
+        .max_width_chars(26)
+        .build();
+    title.add_css_class("title-4");
+    text.append(&title);
+    let body = gtk::Label::builder()
+        .label(tr!(
+            "Click a login field and pick your login: it fills only on the site it belongs to."
+        ))
+        .xalign(0.0)
+        .wrap(true)
+        // A natural width that leaves room for the picture beside it.
+        .max_width_chars(32)
+        .build();
+    body.add_css_class("dim-label");
+    text.append(&body);
+    let add = gtk::Button::builder()
+        .label(tr!("Add to the browser"))
+        .halign(gtk::Align::Start)
+        .margin_top(4)
+        .build();
+    add.add_css_class("pill");
+    add.add_css_class("suggested-action");
+    text.append(&add);
+    let browsers = gtk::Label::builder()
+        .label(tr!("Chrome Web Store · Chrome, Brave, Edge and Vivaldi"))
+        .xalign(0.0)
+        .wrap(true)
+        .max_width_chars(32)
+        .build();
+    browsers.add_css_class("caption");
+    browsers.add_css_class("dim-label");
+    text.append(&browsers);
+    {
+        let url = url.to_string();
+        add.connect_clicked(move |button| {
+            let parent = button.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+            gtk::UriLauncher::new(&url).launch(parent.as_ref(), None::<&gio::Cancellable>, |_| {});
+        });
+    }
+
+    let card = adw::WrapBox::builder()
+        .child_spacing(18)
+        .line_spacing(12)
+        .margin_top(12)
+        .margin_bottom(12)
+        .margin_start(12)
+        .margin_end(12)
+        .build();
+    // The picture's own size (480 px) would be its natural width and push
+    // the text under it even on a wide window.
+    card.append(
+        &adw::Clamp::builder()
+            .maximum_size(220)
+            .child(&picture)
+            .build(),
+    );
+    card.append(&text);
+    let frame = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    frame.add_css_class("card");
+    frame.append(&card);
+    frame.upcast()
 }
 
 /// A row that opens `url` in the browser.
