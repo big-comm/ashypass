@@ -40,6 +40,8 @@ const DEFAULT_WIDTH: i32 = 960;
 const DEFAULT_HEIGHT: i32 = 720;
 const MIN_WIDTH: i32 = 360;
 const MIN_HEIGHT: i32 = 480;
+/// Window class registered in Big Gnome Center's window blur profiles.
+const WINDOW_CSS_CLASS: &str = "ashypass";
 
 /// Destinations shown in the sidebar, in order.
 const NAV: &[(&str, &str)] = &[
@@ -109,6 +111,9 @@ impl MainWindow {
             .width_request(MIN_WIDTH)
             .height_request(MIN_HEIGHT)
             .build();
+        // Big Gnome Center applies its window blur to windows registered by
+        // this class (GNOME 51); it has no effect anywhere else.
+        window.add_css_class(WINDOW_CSS_CLASS);
 
         let toast_overlay = adw::ToastOverlay::new();
         let split = adw::OverlaySplitView::builder()
