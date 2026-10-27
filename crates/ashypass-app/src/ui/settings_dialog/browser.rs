@@ -7,10 +7,11 @@
 
 use super::*;
 
-/// Store pages of the published extension. Empty until it is published;
-/// until then the first step points at the instructions to load it by hand.
+/// Store pages of the published extension; empty until it is published
+/// there, and the first step then points at the instructions instead.
 const FIREFOX_STORE_URL: &str = "";
-const CHROME_STORE_URL: &str = "";
+const CHROME_STORE_URL: &str =
+    "https://chromewebstore.google.com/detail/ashy-pass/aaffaajejkomddnihpblnkolkhcgaoom";
 const MANUAL_INSTALL_URL: &str =
     "https://github.com/big-comm/ashypass/blob/main/browser-extension/README.md#load-the-unpacked-extension";
 
@@ -31,25 +32,28 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
     let install_group = adw::PreferencesGroup::builder()
         .title(tr!("1. Install the extension"))
         .build();
-    let stores: Vec<(&str, &str)> = [
+    // A browser family whose store page is not out yet points at the
+    // instructions to load the extension by hand.
+    for (title, url) in [
         (
             tr!("Get the extension for Chrome, Brave, Edge and Vivaldi"),
             CHROME_STORE_URL,
         ),
         (tr!("Get the extension for Firefox"), FIREFOX_STORE_URL),
-    ]
-    .into_iter()
-    .filter(|(_, url)| !url.is_empty())
-    .collect();
-    if stores.is_empty() {
-        install_group.add(&link_row(
-            tr!("Not in the extension stores yet"),
-            Some(tr!("See how to install it by hand")),
-            MANUAL_INSTALL_URL,
-        ));
-    }
-    for (title, url) in stores {
-        install_group.add(&link_row(title, None, url));
+    ] {
+        if url.is_empty() {
+            install_group.add(&link_row(
+                title,
+                Some(tr!("Not in the store yet: see how to install it by hand")),
+                MANUAL_INSTALL_URL,
+            ));
+        } else {
+            install_group.add(&link_row(
+                title,
+                Some(tr!("Opens the extension store")),
+                url,
+            ));
+        }
     }
     page.add(&install_group);
 
