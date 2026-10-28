@@ -467,7 +467,13 @@ fn browser_connections(paths: &BrowserPaths) -> Vec<(&'static str, bool)> {
         .into_iter()
         .filter(|(_, installed, _, _)| *installed)
         .map(|(name, _, manifests, allowed)| {
-            let connected = manifests.iter().any(|path| manifest_works(path, allowed));
+            // The browser reads this user's manifest first: when there is
+            // one it decides, even if the package's system-wide one would
+            // work (a manifest that allows no extension blocks them all).
+            let connected = manifests
+                .iter()
+                .find(|path| path.exists())
+                .is_some_and(|path| manifest_works(path, allowed));
             (name, connected)
         })
         .collect()
@@ -548,10 +554,27 @@ mod tests {
                 .join(HOST_MANIFEST),
             &manifest("allowed_origins", r#"["chrome-extension://abc/"]"#),
         );
+        // Chrome: the package's system manifest works, but an older Connect
+        // left this user's manifest allowing nothing, and that one wins.
+        write(
+            &paths
+                .config
+                .join("google-chrome/NativeMessagingHosts")
+                .join(HOST_MANIFEST),
+            &manifest("allowed_origins", "[]"),
+        );
+        write(
+            &paths
+                .system
+                .join("etc/opt/chrome/native-messaging-hosts")
+                .join(HOST_MANIFEST),
+            &manifest("allowed_origins", r#"["chrome-extension://abc/"]"#),
+        );
         let found = browser_connections(&paths);
         assert_eq!(
             found,
             vec![
+                ("Google Chrome", false),
                 ("Chromium", false),
                 ("Brave", true),
                 ("Brave Origin", true),
@@ -563,6 +586,7 @@ mod tests {
         assert_eq!(
             browser_connections(&paths),
             vec![
+                ("Google Chrome", false),
                 ("Chromium", false),
                 ("Brave", false),
                 ("Brave Origin", false),
