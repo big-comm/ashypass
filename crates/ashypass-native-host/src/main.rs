@@ -33,8 +33,10 @@
 //! - The `browser_extension` setting (off by default) gates everything:
 //!   while it is off, vault commands are refused without consulting the
 //!   keyring.
-//! - With `lock_on_screen_lock` on, vault commands are refused (and the key
-//!   dropped) while logind reports the session's screen as locked.
+//! - With `lock_on_screen_lock` on, the key is dropped when logind reports
+//!   that the session's screen locked after it had been seen unlocked: the
+//!   change, as the desktop app hears it from the screensaver, not the
+//!   state, which some compositors leave set while the session is in use.
 //!
 //! ## Installing the manifest
 //!
@@ -396,6 +398,7 @@ struct HostSession {
     vault: Vault,
     last_used: Option<Instant>,
     screen_lock: ScreenLockProbe,
+    screen_edge: ScreenLockEdge,
     load_settings: fn() -> Settings,
     keyring_master: fn() -> Option<zeroize::Zeroizing<String>>,
     stored_pin: fn(&Settings) -> Option<ashypass_core::quick_unlock::StoredPin>,
@@ -445,6 +448,7 @@ impl HostSession {
             vault,
             last_used: None,
             screen_lock: ScreenLockProbe::default(),
+            screen_edge: ScreenLockEdge::default(),
             load_settings,
             keyring_master,
             stored_pin: |_| None,
@@ -477,7 +481,7 @@ impl HostSession {
         // Mirror the desktop "lock when the screen locks" policy. The host
         // cannot listen for signals between requests, so it asks logind on
         // each vault request instead; sleep is covered by the idle timeout.
-        if settings.lock_on_screen_lock && self.screen_lock.is_locked() {
+        if settings.lock_on_screen_lock && self.screen_locked() {
             self.relock();
             return Err(ErrorCode::Locked);
         }
@@ -573,6 +577,13 @@ impl HostSession {
     fn relock(&mut self) {
         self.vault.full_lock();
         self.last_used = None;
+        self.screen_edge = ScreenLockEdge::default();
+    }
+
+    /// Whether the screen locked (see [`ScreenLockEdge`]).
+    fn screen_locked(&mut self) -> bool {
+        let locked = self.screen_lock.is_locked();
+        self.screen_edge.observe(locked)
     }
 
     /// Between requests: drop the key once the vault has been idle for the
@@ -588,7 +599,7 @@ impl HostSession {
             .is_none_or(|last| last.elapsed() >= Self::idle_timeout(&settings));
         if !settings.browser_extension
             || idle
-            || (settings.lock_on_screen_lock && self.screen_lock.is_locked())
+            || (settings.lock_on_screen_lock && self.screen_locked())
         {
             self.relock();
         }
@@ -676,6 +687,27 @@ impl HostSession {
             | Request::Unlock { .. }
             | Request::UnlockPin { .. } => unreachable!("answered above"),
         }
+    }
+}
+
+/// Turns logind's `LockedHint` into "the screen locked": true only once the
+/// hint has been seen false and then reads true. Some compositors leave the
+/// hint set while the session is in use (it read true on a desktop someone
+/// was typing on), and reacting to the state then dropped the key right
+/// after every unlock. Someone who just typed the master password in the
+/// extension is looking at an unlocked screen; the desktop app, too,
+/// reacts to the screensaver's change, not to a state.
+#[derive(Debug, Default, Clone, Copy)]
+struct ScreenLockEdge {
+    seen_unlocked: bool,
+}
+
+impl ScreenLockEdge {
+    fn observe(&mut self, locked: bool) -> bool {
+        if !locked {
+            self.seen_unlocked = true;
+        }
+        locked && self.seen_unlocked
     }
 }
 
@@ -1534,6 +1566,23 @@ mod tests {
         let m: serde_json::Value =
             serde_json::from_str(&manifest_firefox(path, &[r#"a"]}"#.into()])).unwrap();
         assert_eq!(m["allowed_extensions"][0], r#"a"]}"#);
+    }
+
+    #[test]
+    fn screen_lock_counts_the_change_not_a_stuck_hint() {
+        // A hint stuck on "locked" while the session is in use never locks.
+        let mut stuck = ScreenLockEdge::default();
+        assert!(!stuck.observe(true));
+        assert!(!stuck.observe(true));
+        // A working hint: unlocked, then locked — that is a screen lock.
+        let mut working = ScreenLockEdge::default();
+        assert!(!working.observe(false));
+        assert!(working.observe(true));
+        // After the vault relocks, the next change has to be seen again.
+        let mut after_relock = ScreenLockEdge::default();
+        assert!(!after_relock.observe(true));
+        assert!(!after_relock.observe(false));
+        assert!(after_relock.observe(true));
     }
 
     #[test]
