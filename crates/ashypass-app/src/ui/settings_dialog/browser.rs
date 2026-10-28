@@ -421,10 +421,14 @@ fn browser_connections(paths: &BrowserPaths) -> Vec<(&'static str, bool)> {
         let profile = config.join(dir);
         let mut manifests = vec![profile.join("NativeMessagingHosts").join(HOST_MANIFEST)];
         manifests.extend(system_dir.map(|d| system.join(d).join(HOST_MANIFEST)));
-        (name, profile.exists(), manifests, "allowed_origins")
+        let in_use = ashypass_core::browser_profiles::chromium_in_use(&profile);
+        (name, in_use, manifests, "allowed_origins")
     };
     let firefox = |name, legacy: &str, xdg: &str, system_dir: Option<&str>| {
-        let installed = home.join(legacy).exists() || config.join(xdg).exists();
+        let installed = ashypass_core::browser_profiles::firefox_in_use(&[
+            &home.join(legacy),
+            &config.join(xdg),
+        ]);
         let mut manifests = vec![home
             .join(legacy)
             .join("native-messaging-hosts")
@@ -539,7 +543,6 @@ mod tests {
                 .join(HOST_MANIFEST),
             &manifest("allowed_origins", "[]"),
         );
-        std::fs::create_dir_all(paths.home.join(".mozilla/firefox")).unwrap();
         write(
             &paths
                 .system
@@ -569,6 +572,26 @@ mod tests {
                 .join("etc/opt/chrome/native-messaging-hosts")
                 .join(HOST_MANIFEST),
             &manifest("allowed_origins", r#"["chrome-extension://abc/"]"#),
+        );
+        // Each of them ran (Local State, a Firefox profile). Vivaldi's
+        // folder only holds another program's host manifest: not listed.
+        for folder in [
+            "google-chrome",
+            "chromium",
+            "BraveSoftware/Brave-Browser",
+            "BraveSoftware/Brave-Origin",
+        ] {
+            write(&paths.config.join(folder).join("Local State"), "{}");
+        }
+        write(
+            &paths.home.join(".mozilla/firefox/profiles.ini"),
+            "[General]",
+        );
+        write(
+            &paths
+                .config
+                .join("vivaldi/NativeMessagingHosts/com.example.other.json"),
+            "{}",
         );
         let found = browser_connections(&paths);
         assert_eq!(

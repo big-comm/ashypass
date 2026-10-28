@@ -1478,7 +1478,12 @@ fn install_manifests(args: &[String]) -> Result<()> {
     ]
     .iter()
     .map(|(legacy, xdg)| {
-        let installed = home.join(legacy).exists() || config.join(xdg).exists();
+        // A profile, not a folder: ~/.mozilla exists as soon as a
+        // manifest was written there once.
+        let installed = ashypass_core::browser_profiles::firefox_in_use(&[
+            &home.join(legacy),
+            &config.join(xdg),
+        ]);
         (home.join(legacy).join("native-messaging-hosts"), installed)
     })
     .collect();
@@ -1486,7 +1491,14 @@ fn install_manifests(args: &[String]) -> Result<()> {
     let mut written = 0;
     let targets = chrome_targets
         .iter()
-        .map(|dir| (dir, true, dir.parent().is_some_and(|p| p.exists())))
+        .map(|dir| {
+            // A browser that ran, not a leftover folder (see
+            // ashypass_core::browser_profiles).
+            let installed = dir
+                .parent()
+                .is_some_and(ashypass_core::browser_profiles::chromium_in_use);
+            (dir, true, installed)
+        })
         .chain(
             firefox_family
                 .iter()
