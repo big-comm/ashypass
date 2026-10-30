@@ -87,10 +87,10 @@ Nothing leaves your machine unless you turn on a sync or backup service. The vau
 - **Command line:** `ashypass-cli` shares the vault and keyring with the desktop app.
 - **Adaptive layout** from narrow to wide windows, keyboard shortcuts, and accessible names on icon buttons.
 - **29 languages:** bg, cs, da, de, el, en, es, et, fi, fr, he, hr, hu, is, it, ja, ko, nl, no, pl, pt, pt_BR, ro, ru, sk, sv, tr, uk, zh.
+- **Browser extension** for [Chrome, Brave, Edge and Vivaldi](https://chromewebstore.google.com/detail/ashy-pass/aaffaajejkomddnihpblnkolkhcgaoom) and [Firefox and LibreWolf](https://addons.mozilla.org/firefox/addon/ashy-pass/); then *Settings → Browser → Connect* in Ashy Pass.
 
 ## Not available yet
 
-- **Browser extension in the stores.** The extension is complete and can be loaded unpacked; it is not yet published on the Chrome Web Store and Firefox Add-ons.
 - **Security keys (FIDO2) for the vault.** Kept out of the interface until registration and verification are fully implemented. External drives can already use FIDO2 keyslots.
 
 ## Requirements

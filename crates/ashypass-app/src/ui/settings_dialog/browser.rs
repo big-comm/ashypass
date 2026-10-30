@@ -9,7 +9,7 @@ use super::*;
 
 /// Store pages of the published extension; empty until it is published
 /// there, and the first step then points at the instructions instead.
-const FIREFOX_STORE_URL: &str = "";
+const FIREFOX_STORE_URL: &str = "https://addons.mozilla.org/firefox/addon/ashy-pass/";
 const CHROME_STORE_URL: &str =
     "https://chromewebstore.google.com/detail/ashy-pass/aaffaajejkomddnihpblnkolkhcgaoom";
 const MANUAL_INSTALL_URL: &str =
@@ -32,44 +32,30 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
     let install_group = adw::PreferencesGroup::builder()
         .title(tr!("1. Install the extension"))
         .build();
-    if !CHROME_STORE_URL.is_empty() {
-        install_group.add(&store_card(CHROME_STORE_URL));
-        page.add(&install_group);
-    }
-    // Rows go in a group of their own: in one group with the card they
-    // would come before it (a group lists its rows first).
-    let install_rows = if CHROME_STORE_URL.is_empty() {
-        install_group
-    } else {
-        adw::PreferencesGroup::new()
-    };
-    // A browser family whose store page is not out yet points at the
-    // instructions to load the extension by hand.
-    for (title, url) in [
-        (
-            tr!("Get the extension for Chrome, Brave, Edge and Vivaldi"),
-            CHROME_STORE_URL,
-        ),
-        (tr!("Get the extension for Firefox"), FIREFOX_STORE_URL),
-    ] {
-        if url == CHROME_STORE_URL && !url.is_empty() {
-            continue; // The card above.
-        }
-        if url.is_empty() {
-            install_rows.add(&link_row(
-                title,
+    // A store card per browser family; a family whose store page is not
+    // out yet gets a row to the instructions to load the extension by hand.
+    let mut manual_rows = Vec::new();
+    for store in [&CHROME_STORE, &FIREFOX_STORE] {
+        if store.url.is_empty() {
+            manual_rows.push(link_row(
+                store.fallback_title(),
                 Some(tr!("Not in the store yet: see how to install it by hand")),
                 MANUAL_INSTALL_URL,
             ));
         } else {
-            install_rows.add(&link_row(
-                title,
-                Some(tr!("Opens the extension store")),
-                url,
-            ));
+            install_group.add(&store_card(store));
         }
     }
-    page.add(&install_rows);
+    page.add(&install_group);
+    if !manual_rows.is_empty() {
+        // Rows in a group of their own: in one group with the cards they
+        // would come before them (a group lists its rows first).
+        let rows = adw::PreferencesGroup::new();
+        for row in &manual_rows {
+            rows.add(row);
+        }
+        page.add(&rows);
+    }
 
     // ---- 2. Connect ----------------------------------------------------
     let connect_group = adw::PreferencesGroup::builder()
@@ -245,23 +231,100 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
     page.add(&unlock_group);
 }
 
-/// What the extension looks like in a page (a login field and its
-/// suggestions), from the store's own screenshots. Built in: showing it
-/// fetches nothing.
-const PREVIEW_EN: &[u8] = include_bytes!("../../../assets/extension-preview-en.png");
-const PREVIEW_PT_BR: &[u8] = include_bytes!("../../../assets/extension-preview-pt_BR.png");
+/// One store's card: its page, a picture of the extension at work (from the
+/// store's own screenshots, built in: showing it fetches nothing) and its
+/// words. Texts are source strings, translated when shown.
+struct StoreCard {
+    url: &'static str,
+    picture_en: &'static [u8],
+    picture_pt_br: &'static [u8],
+    family: Family,
+}
+
+#[derive(Clone, Copy)]
+enum Family {
+    Chromium,
+    Firefox,
+}
+
+const CHROME_STORE: StoreCard = StoreCard {
+    url: CHROME_STORE_URL,
+    picture_en: include_bytes!("../../../assets/extension-preview-en.png"),
+    picture_pt_br: include_bytes!("../../../assets/extension-preview-pt_BR.png"),
+    family: Family::Chromium,
+};
+
+const FIREFOX_STORE: StoreCard = StoreCard {
+    url: FIREFOX_STORE_URL,
+    picture_en: include_bytes!("../../../assets/extension-popup-en.png"),
+    picture_pt_br: include_bytes!("../../../assets/extension-popup-pt_BR.png"),
+    family: Family::Firefox,
+};
+
+impl StoreCard {
+    fn title(&self) -> &'static str {
+        match self.family {
+            Family::Chromium => tr!("Ashy Pass for Chrome"),
+            Family::Firefox => tr!("Ashy Pass for Firefox"),
+        }
+    }
+
+    fn body(&self) -> &'static str {
+        match self.family {
+            Family::Chromium => tr!(
+                "Click a login field and pick your login: it fills only on the site it belongs to."
+            ),
+            Family::Firefox => tr!(
+                "Your logins for the site you are on, one click to fill. Search the vault and make new passwords too."
+            ),
+        }
+    }
+
+    fn button(&self) -> &'static str {
+        match self.family {
+            Family::Chromium => tr!("Add to the browser"),
+            Family::Firefox => tr!("Add to Firefox"),
+        }
+    }
+
+    fn caption(&self) -> &'static str {
+        match self.family {
+            Family::Chromium => tr!("Chrome Web Store · Chrome, Brave, Edge and Vivaldi"),
+            Family::Firefox => tr!("Firefox Add-ons · Firefox and LibreWolf"),
+        }
+    }
+
+    fn alternative_text(&self) -> &'static str {
+        match self.family {
+            Family::Chromium => {
+                tr!("A login form with the Ashy Pass suggestions under the email field")
+            }
+            Family::Firefox => {
+                tr!("The Ashy Pass window in the browser, with the logins for the site")
+            }
+        }
+    }
+
+    /// The row title while the store page is not out.
+    fn fallback_title(&self) -> &'static str {
+        match self.family {
+            Family::Chromium => tr!("Get the extension for Chrome, Brave, Edge and Vivaldi"),
+            Family::Firefox => tr!("Get the extension for Firefox"),
+        }
+    }
+}
 
 /// The extension's store page as a card: a picture of it at work, what it
 /// does, and one button to add it. Side by side, or stacked on a narrow
 /// window.
-fn store_card(url: &str) -> gtk::Widget {
+fn store_card(store: &StoreCard) -> gtk::Widget {
     let portuguese = glib::language_names()
         .first()
         .is_some_and(|lang| lang.starts_with("pt"));
     let bytes = glib::Bytes::from_static(if portuguese {
-        PREVIEW_PT_BR
+        store.picture_pt_br
     } else {
-        PREVIEW_EN
+        store.picture_en
     });
     let picture = gtk::Picture::builder()
         .can_shrink(true)
@@ -272,9 +335,7 @@ fn store_card(url: &str) -> gtk::Widget {
     if let Ok(texture) = gdk::Texture::from_bytes(&bytes) {
         picture.set_paintable(Some(&texture));
     }
-    picture.set_alternative_text(Some(tr!(
-        "A login form with the Ashy Pass suggestions under the email field"
-    )));
+    picture.set_alternative_text(Some(store.alternative_text()));
 
     let text = gtk::Box::builder()
         .orientation(gtk::Orientation::Vertical)
@@ -283,7 +344,7 @@ fn store_card(url: &str) -> gtk::Widget {
         .width_request(220)
         .build();
     let title = gtk::Label::builder()
-        .label(tr!("Ashy Pass for the browser"))
+        .label(store.title())
         .xalign(0.0)
         .wrap(true)
         .max_width_chars(26)
@@ -291,9 +352,7 @@ fn store_card(url: &str) -> gtk::Widget {
     title.add_css_class("title-4");
     text.append(&title);
     let body = gtk::Label::builder()
-        .label(tr!(
-            "Click a login field and pick your login: it fills only on the site it belongs to."
-        ))
+        .label(store.body())
         .xalign(0.0)
         .wrap(true)
         // A natural width that leaves room for the picture beside it.
@@ -302,7 +361,7 @@ fn store_card(url: &str) -> gtk::Widget {
     body.add_css_class("dim-label");
     text.append(&body);
     let add = gtk::Button::builder()
-        .label(tr!("Add to the browser"))
+        .label(store.button())
         .halign(gtk::Align::Start)
         .margin_top(4)
         .build();
@@ -310,7 +369,7 @@ fn store_card(url: &str) -> gtk::Widget {
     add.add_css_class("suggested-action");
     text.append(&add);
     let browsers = gtk::Label::builder()
-        .label(tr!("Chrome Web Store · Chrome, Brave, Edge and Vivaldi"))
+        .label(store.caption())
         .xalign(0.0)
         .wrap(true)
         .max_width_chars(32)
@@ -319,10 +378,10 @@ fn store_card(url: &str) -> gtk::Widget {
     browsers.add_css_class("dim-label");
     text.append(&browsers);
     {
-        let url = url.to_string();
+        let url = store.url;
         add.connect_clicked(move |button| {
             let parent = button.root().and_then(|r| r.downcast::<gtk::Window>().ok());
-            gtk::UriLauncher::new(&url).launch(parent.as_ref(), None::<&gio::Cancellable>, |_| {});
+            gtk::UriLauncher::new(url).launch(parent.as_ref(), None::<&gio::Cancellable>, |_| {});
         });
     }
 
@@ -345,6 +404,8 @@ fn store_card(url: &str) -> gtk::Widget {
     card.append(&text);
     let frame = gtk::Box::new(gtk::Orientation::Vertical, 0);
     frame.add_css_class("card");
+    // Room between one store's card and the next.
+    frame.set_margin_bottom(12);
     frame.append(&card);
     frame.upcast()
 }
