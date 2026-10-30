@@ -43,7 +43,8 @@ pub(super) fn populate_browser(page: &adw::PreferencesPage, state: SharedState, 
                 MANUAL_INSTALL_URL,
             ));
         } else {
-            install_group.add(&store_card(store));
+            let installed = browsers_with_extension(&BrowserPaths::current(), store.family);
+            install_group.add(&store_card(store, &installed));
         }
     }
     page.add(&install_group);
@@ -241,7 +242,7 @@ struct StoreCard {
     family: Family,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 enum Family {
     Chromium,
     Firefox,
@@ -317,7 +318,9 @@ impl StoreCard {
 /// The extension's store page as a card: a picture of it at work, what it
 /// does, and one button to add it. Side by side, or stacked on a narrow
 /// window.
-fn store_card(store: &StoreCard) -> gtk::Widget {
+/// `installed_in`: the browsers that already have the extension, said on
+/// the card (the button then only shows the store page).
+fn store_card(store: &StoreCard, installed_in: &[&str]) -> gtk::Widget {
     let portuguese = glib::language_names()
         .first()
         .is_some_and(|lang| lang.starts_with("pt"));
@@ -366,7 +369,27 @@ fn store_card(store: &StoreCard) -> gtk::Widget {
         .margin_top(4)
         .build();
     add.add_css_class("pill");
-    add.add_css_class("suggested-action");
+    if installed_in.is_empty() {
+        add.add_css_class("suggested-action");
+    } else {
+        let status = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .spacing(6)
+            .build();
+        status.append(&gtk::Image::from_icon_name("object-select-symbolic"));
+        let names = installed_in.join(", ");
+        status.append(
+            &gtk::Label::builder()
+                .label(tr!("Installed in {}").replace("{}", &names))
+                .xalign(0.0)
+                .wrap(true)
+                .max_width_chars(30)
+                .build(),
+        );
+        status.add_css_class("success");
+        text.append(&status);
+        add.set_label(tr!("Open in the store"));
+    }
     text.append(&add);
     let browsers = gtk::Label::builder()
         .label(store.caption())
@@ -379,10 +402,8 @@ fn store_card(store: &StoreCard) -> gtk::Widget {
     text.append(&browsers);
     {
         let url = store.url;
-        add.connect_clicked(move |button| {
-            let parent = button.root().and_then(|r| r.downcast::<gtk::Window>().ok());
-            gtk::UriLauncher::new(url).launch(parent.as_ref(), None::<&gio::Cancellable>, |_| {});
-        });
+        let family = store.family;
+        add.connect_clicked(move |button| open_store(button, url, family));
     }
 
     let card = adw::WrapBox::builder()
@@ -408,6 +429,38 @@ fn store_card(store: &StoreCard) -> gtk::Widget {
     frame.set_margin_bottom(12);
     frame.append(&card);
     frame.upcast()
+}
+
+/// Desktop files of the Firefox-family browsers, the usual first.
+const FIREFOX_APPS: &[&str] = &[
+    "firefox.desktop",
+    "org.mozilla.firefox.desktop",
+    "firefox-esr.desktop",
+    "librewolf.desktop",
+    "io.gitlab.librewolf-community.desktop",
+    "waterfox.desktop",
+];
+
+/// Open a store page. Firefox Add-ons opens in a Firefox-family browser:
+/// in the default browser (Brave, Chrome) it only offers to download
+/// Firefox. The Chrome Web Store serves several browsers, so it opens in
+/// the default one.
+fn open_store(button: &gtk::Button, url: &str, family: Family) {
+    if family == Family::Firefox {
+        let firefox = gio::AppInfo::all().into_iter().find(|app| {
+            app.id()
+                .is_some_and(|id| FIREFOX_APPS.contains(&id.as_str()))
+        });
+        if let Some(app) = firefox {
+            let context = button.display().app_launch_context();
+            match app.launch_uris(&[url], Some(&context)) {
+                Ok(()) => return,
+                Err(e) => log::warn!("could not open {url} in {}: {e}", app.name()),
+            }
+        }
+    }
+    let parent = button.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+    gtk::UriLauncher::new(url).launch(parent.as_ref(), None::<&gio::Cancellable>, |_| {});
 }
 
 /// A row that opens `url` in the browser.
@@ -472,7 +525,64 @@ const HOST_MANIFEST: &str = "com.bigcommunity.ashypass.json";
 /// manifest (its own, or the package's) that points at an existing host and
 /// allows an extension. The folders are the ones `ashypass-native-host
 /// --install` writes to.
-fn browser_connections(paths: &BrowserPaths) -> Vec<(&'static str, bool)> {
+/// The extension's ids in the two stores (as allowed by the native host).
+const CHROME_EXTENSION_ID: &str = "aaffaajejkomddnihpblnkolkhcgaoom";
+const FIREFOX_EXTENSION_ID: &str = "ashypass@big-comm.github.io";
+
+/// A browser this user may have: where it keeps its data, and where it
+/// looks for the host manifest (this user's first, then the system's).
+struct Browser {
+    name: &'static str,
+    family: Family,
+    folders: Vec<std::path::PathBuf>,
+    manifests: Vec<std::path::PathBuf>,
+}
+
+impl Browser {
+    /// Set up for this user: it ran at least once (see
+    /// `ashypass_core::browser_profiles`).
+    fn in_use(&self) -> bool {
+        use ashypass_core::browser_profiles::{chromium_in_use, firefox_in_use};
+        match self.family {
+            Family::Chromium => self.folders.iter().any(|f| chromium_in_use(f)),
+            Family::Firefox => firefox_in_use(&self.folder_refs()),
+        }
+    }
+
+    /// The Ashy Pass extension is installed in it.
+    fn has_extension(&self) -> bool {
+        use ashypass_core::browser_profiles::{chromium_has_extension, firefox_has_extension};
+        match self.family {
+            Family::Chromium => self
+                .folders
+                .iter()
+                .any(|f| chromium_has_extension(f, CHROME_EXTENSION_ID)),
+            Family::Firefox => firefox_has_extension(&self.folder_refs(), FIREFOX_EXTENSION_ID),
+        }
+    }
+
+    /// The browser reads this user's manifest first: when there is one it
+    /// decides, even if the package's system-wide one would work (a
+    /// manifest that allows no extension blocks them all).
+    fn connected(&self) -> bool {
+        let allowed = match self.family {
+            Family::Chromium => "allowed_origins",
+            Family::Firefox => "allowed_extensions",
+        };
+        self.manifests
+            .iter()
+            .find(|path| path.exists())
+            .is_some_and(|path| manifest_works(path, allowed))
+    }
+
+    fn folder_refs(&self) -> Vec<&std::path::Path> {
+        self.folders.iter().map(|f| f.as_path()).collect()
+    }
+}
+
+/// Every browser Ashy Pass knows, set up or not. Each channel and edition
+/// has its own profile folder (as in `ashypass-native-host --install`).
+fn known_browsers(paths: &BrowserPaths) -> Vec<Browser> {
     let BrowserPaths {
         home,
         config,
@@ -482,26 +592,29 @@ fn browser_connections(paths: &BrowserPaths) -> Vec<(&'static str, bool)> {
         let profile = config.join(dir);
         let mut manifests = vec![profile.join("NativeMessagingHosts").join(HOST_MANIFEST)];
         manifests.extend(system_dir.map(|d| system.join(d).join(HOST_MANIFEST)));
-        let in_use = ashypass_core::browser_profiles::chromium_in_use(&profile);
-        (name, in_use, manifests, "allowed_origins")
+        Browser {
+            name,
+            family: Family::Chromium,
+            folders: vec![profile],
+            manifests,
+        }
     };
     let firefox = |name, legacy: &str, xdg: &str, system_dir: Option<&str>| {
-        let installed = ashypass_core::browser_profiles::firefox_in_use(&[
-            &home.join(legacy),
-            &config.join(xdg),
-        ]);
         let mut manifests = vec![home
             .join(legacy)
             .join("native-messaging-hosts")
             .join(HOST_MANIFEST)];
         manifests.extend(system_dir.map(|d| system.join(d).join(HOST_MANIFEST)));
-        (name, installed, manifests, "allowed_extensions")
+        Browser {
+            name,
+            family: Family::Firefox,
+            folders: vec![home.join(legacy), config.join(xdg)],
+            manifests,
+        }
     };
     const CHROME: Option<&str> = Some("etc/opt/chrome/native-messaging-hosts");
     const EDGE: Option<&str> = Some("etc/opt/edge/native-messaging-hosts");
-    // Each channel and edition has its own profile folder (as in
-    // `ashypass-native-host --install`).
-    let browsers = [
+    vec![
         chrome("Google Chrome", "google-chrome", CHROME),
         chrome("Google Chrome Beta", "google-chrome-beta", CHROME),
         chrome("Google Chrome Dev", "google-chrome-unstable", CHROME),
@@ -527,20 +640,24 @@ fn browser_connections(paths: &BrowserPaths) -> Vec<(&'static str, bool)> {
         ),
         firefox("LibreWolf", ".librewolf", "librewolf", None),
         firefox("Waterfox", ".waterfox", "waterfox", None),
-    ];
-    browsers
+    ]
+}
+
+/// The browsers set up for this user, and whether each finds Ashy Pass.
+fn browser_connections(paths: &BrowserPaths) -> Vec<(&'static str, bool)> {
+    known_browsers(paths)
         .into_iter()
-        .filter(|(_, installed, _, _)| *installed)
-        .map(|(name, _, manifests, allowed)| {
-            // The browser reads this user's manifest first: when there is
-            // one it decides, even if the package's system-wide one would
-            // work (a manifest that allows no extension blocks them all).
-            let connected = manifests
-                .iter()
-                .find(|path| path.exists())
-                .is_some_and(|path| manifest_works(path, allowed));
-            (name, connected)
-        })
+        .filter(Browser::in_use)
+        .map(|browser| (browser.name, browser.connected()))
+        .collect()
+}
+
+/// The browsers of `family` that already have the extension.
+fn browsers_with_extension(paths: &BrowserPaths, family: Family) -> Vec<&'static str> {
+    known_browsers(paths)
+        .into_iter()
+        .filter(|browser| browser.family == family && browser.in_use() && browser.has_extension())
+        .map(|browser| browser.name)
         .collect()
 }
 
