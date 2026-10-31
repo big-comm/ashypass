@@ -370,6 +370,12 @@ fn run_dev_script(window: &ui::MainWindow) {
             "wait" => delay = arg.parse().unwrap_or(500),
             "seed" => dev_seed(&dev.state()),
             "shot" => dev_screenshot(&dev.window(), arg),
+            // shot-popover:<path> — the open popover, a surface of its own
+            // that the window's picture leaves out.
+            "shot-popover" => match dev.open_popover() {
+                Some(popover) => dev_screenshot(&popover, arg),
+                None => eprintln!("dev: no open popover"),
+            },
             "quit" => {
                 if let Some(app) = dev.window().application() {
                     app.quit();
@@ -496,7 +502,8 @@ fn dev_seed(state: &SharedState) {
 }
 
 #[cfg(debug_assertions)]
-fn dev_screenshot(window: &adw::ApplicationWindow, path: &str) {
+fn dev_screenshot(window: &impl IsA<gtk::Widget>, path: &str) {
+    let window = window.as_ref();
     let width = window.width();
     let height = window.height();
     let paintable = gtk::WidgetPaintable::new(Some(window));
@@ -506,7 +513,7 @@ fn dev_screenshot(window: &adw::ApplicationWindow, path: &str) {
         eprintln!("dev screenshot: nothing to render");
         return;
     };
-    let Some(renderer) = window.renderer() else {
+    let Some(renderer) = window.native().and_then(|native| native.renderer()) else {
         eprintln!("dev screenshot: no renderer");
         return;
     };

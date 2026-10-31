@@ -149,11 +149,11 @@ struct Inner {
 
     search_entry: gtk::SearchEntry,
     folder_button: gtk::MenuButton,
-    folder_menu: gio::Menu,
+    folder_popover: gtk::Popover,
+    folder_search: gtk::SearchEntry,
+    folder_list: gtk::ListBox,
     folder_filter: RefCell<FolderFilter>,
-    /// The stateful `vault.folder` actions, so the menu's radio mark follows
     /// changes made outside the menu (reset on lock, "Search all folders").
-    folder_actions: RefCell<Vec<gio::SimpleAction>>,
     favorites_toggle: gtk::ToggleButton,
     count_label: gtk::Label,
     sync_label: gtk::Label,
@@ -231,10 +231,10 @@ impl VaultView {
             .margin_start(12)
             .margin_end(12)
             .build();
-        let folder_menu = gio::Menu::new();
+        let (folder_popover, folder_search, folder_list) = folder_picker();
         let folder_button = gtk::MenuButton::builder()
             .label(tr!("All folders"))
-            .menu_model(&folder_menu)
+            .popover(&folder_popover)
             .tooltip_text(tr!("Show a folder"))
             .build();
         folder_button.add_css_class("flat");
@@ -339,9 +339,10 @@ impl VaultView {
             split: split.clone(),
             search_entry,
             folder_button,
-            folder_menu,
+            folder_popover,
+            folder_search,
+            folder_list,
             folder_filter: RefCell::new(FolderFilter::All),
-            folder_actions: RefCell::new(Vec::new()),
             favorites_toggle,
             count_label,
             sync_label,
@@ -416,9 +417,9 @@ impl VaultView {
         inner.invalidate_caches();
         *inner.folder_filter.borrow_mut() = FolderFilter::All;
         inner.folder_button.set_label(tr!("All folders"));
-        inner.sync_folder_actions(&FolderFilter::All);
         inner.favorites_toggle.set_active(false);
-        inner.folder_menu.remove_all();
+        inner.folder_search.set_text("");
+        inner.rebuild_folder_menu(&[]);
         inner.close_details();
     }
 
@@ -714,7 +715,169 @@ fn setup_factory(inner: &Rc<Inner>, factory: &gtk::SignalListItemFactory) {
     });
 }
 
+/// Lowercase and without accents, for matching folder names as typed.
+fn fold_for_search(text: &str) -> String {
+    use unicode_normalization::{char::is_combining_mark, UnicodeNormalization};
+    text.nfd()
+        .filter(|c| !is_combining_mark(*c))
+        .flat_map(char::to_lowercase)
+        .collect()
+}
+
+/// Rows above this height scroll: with many folders the list used to run
+/// past the bottom of the window.
+const FOLDER_LIST_MAX_HEIGHT: i32 = 360;
+
+/// The folder picker: a search field over a scrolling list of folders,
+/// then creating and organizing folders. Returns the popover, its search
+/// field and its list (filled by `rebuild_folder_menu`).
+fn folder_picker() -> (gtk::Popover, gtk::SearchEntry, gtk::ListBox) {
+    let search = gtk::SearchEntry::builder()
+        .placeholder_text(tr!("Search folders"))
+        .build();
+    search.update_property(&[gtk::accessible::Property::Label(tr!("Search folders"))]);
+    let list = gtk::ListBox::builder()
+        .selection_mode(gtk::SelectionMode::None)
+        .build();
+    list.add_css_class("navigation-sidebar");
+    list.update_property(&[gtk::accessible::Property::Label(tr!("Folders"))]);
+    let scrolled = gtk::ScrolledWindow::builder()
+        .hscrollbar_policy(gtk::PolicyType::Never)
+        .propagate_natural_height(true)
+        .max_content_height(FOLDER_LIST_MAX_HEIGHT)
+        .min_content_width(240)
+        .child(&list)
+        .build();
+
+    // While searching only folders whose name contains the text show; the
+    // "All folders" and "No folder" choices come back with an empty field.
+    {
+        let search = search.downgrade();
+        list.set_filter_func(move |row| {
+            let Some(search) = search.upgrade() else {
+                return true;
+            };
+            let typed = fold_for_search(search.text().trim());
+            if typed.is_empty() {
+                return true;
+            }
+            row.widget_name()
+                .strip_prefix("f:")
+                .is_some_and(|name| fold_for_search(name).contains(&typed))
+        });
+    }
+    // A "Folders" heading above the first named folder.
+    list.set_header_func(|row, before| {
+        let named = |r: &gtk::ListBoxRow| r.widget_name().starts_with("f:");
+        if named(row) && !before.is_some_and(named) {
+            let header = gtk::Label::builder()
+                .label(tr!("Folders"))
+                .xalign(0.0)
+                .margin_top(6)
+                .margin_start(8)
+                .build();
+            header.add_css_class("caption-heading");
+            header.add_css_class("dim-label");
+            row.set_header(Some(&header));
+        } else {
+            row.set_header(None::<&gtk::Widget>);
+        }
+    });
+    {
+        let list = list.downgrade();
+        search.connect_search_changed(move |_| {
+            if let Some(list) = list.upgrade() {
+                list.invalidate_filter();
+                list.invalidate_headers();
+            }
+        });
+    }
+
+    let content = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(6)
+        .build();
+    content.append(&search);
+    content.append(&scrolled);
+    content.append(&gtk::Separator::new(gtk::Orientation::Horizontal));
+    let popover = gtk::Popover::builder().child(&content).build();
+    for (label, action) in [
+        (tr!("Create folder…"), "vault.new-folder"),
+        (tr!("Organize folders…"), "vault.organize-folders"),
+    ] {
+        let button = gtk::Button::builder()
+            .label(label)
+            .action_name(action)
+            .build();
+        button.add_css_class("flat");
+        if let Some(text) = button.child() {
+            text.set_halign(gtk::Align::Start);
+        }
+        let popover = popover.downgrade();
+        button.connect_clicked(move |_| {
+            if let Some(popover) = popover.upgrade() {
+                popover.popdown();
+            }
+        });
+        content.append(&button);
+    }
+    (popover, search, list)
+}
+
+/// One choice of the folder picker: its name, and a check mark shown on the
+/// folder in view. The row's widget name is the filter's target.
+fn folder_row(filter: FolderFilter) -> gtk::ListBoxRow {
+    let line = gtk::Box::builder()
+        .orientation(gtk::Orientation::Horizontal)
+        .spacing(8)
+        .build();
+    line.append(
+        &gtk::Label::builder()
+            .label(filter.label())
+            .xalign(0.0)
+            .hexpand(true)
+            .ellipsize(gtk::pango::EllipsizeMode::End)
+            .build(),
+    );
+    let check = gtk::Image::from_icon_name("object-select-symbolic");
+    check.set_opacity(0.0);
+    check.set_accessible_role(gtk::AccessibleRole::Presentation);
+    line.append(&check);
+    let row = gtk::ListBoxRow::builder().child(&line).build();
+    row.set_widget_name(&filter.target());
+    row
+}
+
 fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) {
+    {
+        let weak = Rc::downgrade(inner);
+        inner.folder_list.connect_row_activated(move |_, row| {
+            if let Some(inner) = weak.upgrade() {
+                inner.choose_folder(row);
+            }
+        });
+        // Enter in the search field picks the first folder shown.
+        let weak = Rc::downgrade(inner);
+        inner.folder_search.connect_activate(move |_| {
+            let Some(inner) = weak.upgrade() else { return };
+            let mut index = 0;
+            while let Some(row) = inner.folder_list.row_at_index(index) {
+                if row.is_child_visible() {
+                    inner.choose_folder(&row);
+                    return;
+                }
+                index += 1;
+            }
+        });
+        // Each opening starts with an empty search, ready for typing.
+        let search = inner.folder_search.downgrade();
+        inner.folder_popover.connect_show(move |_| {
+            if let Some(search) = search.upgrade() {
+                search.set_text("");
+                search.grab_focus();
+            }
+        });
+    }
     let weak = Rc::downgrade(inner);
     list_view.connect_activate(move |_, position| {
         let Some(inner) = weak.upgrade() else { return };
@@ -796,26 +959,6 @@ fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) 
 
 fn install_actions(inner: &Rc<Inner>, widget: &gtk::Widget) {
     let group = gio::SimpleActionGroup::new();
-
-    let folder = gio::SimpleAction::new_stateful(
-        "folder",
-        Some(glib::VariantTy::STRING),
-        &"all".to_variant(),
-    );
-    {
-        let weak = Rc::downgrade(inner);
-        folder.connect_activate(move |action, target| {
-            let Some(target) = target.and_then(|t| t.str()) else {
-                return;
-            };
-            action.set_state(&target.to_variant());
-            if let Some(inner) = weak.upgrade() {
-                inner.set_folder_filter(FolderFilter::from_target(target));
-            }
-        });
-    }
-    group.add_action(&folder);
-    inner.folder_actions.borrow_mut().push(folder.clone());
 
     let simple = |name: &str, run: fn(&Rc<Inner>)| {
         let action = gio::SimpleAction::new(name, None);
@@ -949,7 +1092,7 @@ impl Inner {
         if stale {
             *self.folder_filter.borrow_mut() = FolderFilter::All;
             self.folder_button.set_label(tr!("All folders"));
-            self.sync_folder_actions(&FolderFilter::All);
+            self.mark_folder(&FolderFilter::All);
         }
         self.apply_filter();
         // Keep the open details in step with the data (edited, deleted…).
@@ -1042,56 +1185,46 @@ impl Inner {
         *self.synced_ids.borrow_mut() = Some(Rc::new(ids));
     }
 
+    /// Fill the folder picker: every folder, the current one marked, the
+    /// search text applied.
     fn rebuild_folder_menu(&self, categories: &[String]) {
-        self.folder_menu.remove_all();
-        let filters = gio::Menu::new();
-        let item = |label: &str, filter: FolderFilter| {
-            // `_` marks a mnemonic in menu labels: show folder names as typed.
-            let item = gio::MenuItem::new(Some(&label.replace('_', "__")), None);
-            item.set_action_and_target_value(
-                Some("vault.folder"),
-                Some(&filter.target().to_variant()),
-            );
-            item
-        };
-        filters.append_item(&item(tr!("All folders"), FolderFilter::All));
-        filters.append_item(&item(tr!("No folder"), FolderFilter::NoFolder));
-        big_gtk_kit::menu::append_shared_section(&self.folder_menu, None, "folder-filters", || {
-            filters
-        });
-        // The folder names change: one section kept and refilled (an empty
-        // one is left out).
-        big_gtk_kit::menu::append_refilled_section(
-            &self.folder_menu,
-            Some(tr!("Folders")),
-            "folder-names",
-            |named| {
-                for category in categories {
-                    named.append_item(&item(category, FolderFilter::Named(category.clone())));
-                }
-            },
-        );
-        big_gtk_kit::menu::append_shared_section(&self.folder_menu, None, "folder-manage", || {
-            let manage = gio::Menu::new();
-            manage.append(Some(tr!("Create folder…")), Some("vault.new-folder"));
-            manage.append(
-                Some(tr!("Organize folders…")),
-                Some("vault.organize-folders"),
-            );
-            manage
-        });
+        while let Some(row) = self.folder_list.row_at_index(0) {
+            self.folder_list.remove(&row);
+        }
+        self.folder_list.append(&folder_row(FolderFilter::All));
+        self.folder_list.append(&folder_row(FolderFilter::NoFolder));
+        for category in categories {
+            self.folder_list
+                .append(&folder_row(FolderFilter::Named(category.clone())));
+        }
+        self.mark_folder(&self.folder_filter.borrow());
+        self.folder_list.invalidate_filter();
     }
 
-    fn sync_folder_actions(&self, filter: &FolderFilter) {
-        let target = filter.target().to_variant();
-        for action in self.folder_actions.borrow().iter() {
-            action.set_state(&target);
+    /// The check mark beside the folder shown.
+    fn mark_folder(&self, filter: &FolderFilter) {
+        let target = filter.target();
+        let mut index = 0;
+        while let Some(row) = self.folder_list.row_at_index(index) {
+            if let Some(check) = row.child().and_then(|c| c.last_child()) {
+                check.set_opacity(if row.widget_name() == target {
+                    1.0
+                } else {
+                    0.0
+                });
+            }
+            index += 1;
         }
+    }
+
+    fn choose_folder(&self, row: &gtk::ListBoxRow) {
+        self.folder_popover.popdown();
+        self.set_folder_filter(FolderFilter::from_target(&row.widget_name()));
     }
 
     fn set_folder_filter(&self, filter: FolderFilter) {
         self.folder_button.set_label(&filter.label());
-        self.sync_folder_actions(&filter);
+        self.mark_folder(&filter);
         *self.folder_filter.borrow_mut() = filter;
         self.apply_filter();
         SessionManager::on_activity(&self.state.session);

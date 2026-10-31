@@ -1468,8 +1468,18 @@ impl DevHandle {
                 }
             }
             "fill" => {
-                // fill:<row title>=<text> — type into an entry row.
+                // fill:<row title>=<text> — type into an entry row, or into
+                // a search field by its placeholder.
                 let (title, text) = arg.split_once('=').unwrap_or((arg, ""));
+                if let Some(search) = find_widget(&inner.window.clone().upcast(), &|w| {
+                    w.downcast_ref::<gtk::SearchEntry>()
+                        .is_some_and(|e| e.placeholder_text().as_deref() == Some(title))
+                }) {
+                    if let Ok(search) = search.downcast::<gtk::SearchEntry>() {
+                        search.set_text(text);
+                    }
+                    return;
+                }
                 // The last match: a dialog on top comes after the page below.
                 let mut rows = Vec::new();
                 collect_entry_rows(&inner.window.clone().upcast(), title, &mut rows);
@@ -1554,6 +1564,41 @@ impl DevHandle {
             "dark" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceDark),
             "light" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceLight),
             "sidebar" => inner.split.set_show_sidebar(arg != "0"),
+            "folders" => {
+                // folders:<n> — n logins, each in its own folder, for lists
+                // of folders as long as real ones.
+                let count: usize = arg.parse().unwrap_or(40);
+                let names = ["Banco", "Casa", "Fórum", "Trabalho", "Projeto"];
+                for i in 0..count {
+                    let folder = format!("{} {i:02}", names[i % names.len()]);
+                    let added =
+                        inner
+                            .state
+                            .vault
+                            .borrow()
+                            .add(ashypass_core::db::vault::NewEntry {
+                                item_type: None,
+                                extra: None,
+                                title: format!("Site {i:02}"),
+                                username: Some("user".into()),
+                                password: "Pw-Long-Enough-123".into(),
+                                url: None,
+                                notes: None,
+                                totp_secret: None,
+                                totp_algorithm: None,
+                                totp_digits: None,
+                                totp_period: None,
+                                category: Some(folder),
+                            });
+                    if let Err(e) = added {
+                        eprintln!("dev: could not add: {e}");
+                    }
+                }
+                inner
+                    .state
+                    .events
+                    .emit(crate::events::AppEvent::VaultChanged);
+            }
             "minw" => {
                 // minw:<px> — print every shown widget whose minimum width
                 // is above <px> (default: the window's), to find what keeps
@@ -1582,6 +1627,15 @@ impl DevHandle {
             }
             other => log::warn!("unknown dev step: {other}"),
         }
+    }
+
+    /// The popover open in the window, if any.
+    pub fn open_popover(&self) -> Option<gtk::Popover> {
+        find_widget(&self.inner.window.clone().upcast(), &|w| {
+            w.downcast_ref::<gtk::Popover>()
+                .is_some_and(|p| p.is_visible())
+        })
+        .and_then(|w| w.downcast::<gtk::Popover>().ok())
     }
 
     pub fn window(&self) -> adw::ApplicationWindow {
