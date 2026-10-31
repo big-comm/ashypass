@@ -1564,6 +1564,21 @@ impl DevHandle {
             "dark" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceDark),
             "light" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceLight),
             "sidebar" => inner.split.set_show_sidebar(arg != "0"),
+            "type-note" => {
+                // type-note:<text> — insert at the cursor of the notes
+                // editor, as typing does (the style rules apply).
+                if let Some(view) = find_widget(&inner.window.clone().upcast(), &|w| {
+                    w.downcast_ref::<gtk::TextView>()
+                        .is_some_and(|v| v.has_css_class("ashy-notes"))
+                })
+                .and_then(|w| w.downcast::<gtk::TextView>().ok())
+                {
+                    view.grab_focus();
+                    view.buffer().insert_at_cursor(arg);
+                } else {
+                    eprintln!("dev: no notes editor");
+                }
+            }
             "note-entry" => {
                 // note-entry — a login with a formatted note, first in the list.
                 let note = "Servidor **AshyTV** na *Oracle*.\nAcesso: `ssh root@10.0.0.5`\n\n| Serviço | Porta |\n| --- | --- |\n| PostgreSQL | 5432 |\n| Caddy | 443 |\n\n```\nsudo systemctl restart caddy\n```";

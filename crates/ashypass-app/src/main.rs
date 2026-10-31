@@ -302,6 +302,9 @@ frame.ashy-notes-code {
     padding: 8px 10px;
     background-color: color-mix(in srgb, currentColor 6%, transparent);
 }
+entry.ashy-notes-header-cell {
+    font-weight: bold;
+}
 grid.ashy-notes-table {
     padding: 4px 0;
 }

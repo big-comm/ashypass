@@ -333,24 +333,14 @@ pub fn present(
     let notes_group = adw::PreferencesGroup::builder()
         .title(tr!("Notes (optional)"))
         .build();
-    let notes_view = gtk::TextView::builder()
-        .wrap_mode(gtk::WrapMode::WordChar)
-        .accepts_tab(false)
-        .top_margin(10)
-        .bottom_margin(10)
-        .left_margin(12)
-        .right_margin(12)
-        .height_request(96)
-        .build();
-    notes_view.add_css_class("ashy-notes");
-    notes_view.update_property(&[gtk::accessible::Property::Label(tr!("Notes"))]);
-    if let Some(notes) = entry.as_ref().and_then(|e| e.notes.as_deref()) {
-        notes_view.buffer().set_text(notes);
-    }
-    let notes_frame = gtk::Frame::builder().child(&notes_view).build();
-    notes_frame.add_css_class("view");
-    notes_group.add(&crate::ui::notes::toolbar(&notes_view));
-    notes_group.add(&notes_frame);
+    // Bold, italic, code and tables, edited as they look (see ui::notes).
+    let notes_editor = crate::ui::notes::NotesEditor::new(
+        entry
+            .as_ref()
+            .and_then(|e| e.notes.as_deref())
+            .unwrap_or(""),
+    );
+    notes_group.add(&notes_editor.root);
     content.append(&notes_group);
 
     // ---- Verification code -------------------------------------------
@@ -536,13 +526,7 @@ pub fn present(
             let password = Zeroizing::new(password_row.text().to_string());
             let mut username = trim_to_opt(&username_row.text());
             let url = trim_to_opt(&url_row.text());
-            let notes = {
-                let buffer = notes_view.buffer();
-                let text = buffer
-                    .text(&buffer.start_iter(), &buffer.end_iter(), false)
-                    .to_string();
-                Some(text.trim().to_string()).filter(|s| !s.is_empty())
-            };
+            let notes = { Some(notes_editor.markdown()).filter(|s| !s.is_empty()) };
 
             // Verification code first: an otpauth link can fill the name.
             let totp_text = totp_row.text().trim().to_string();
