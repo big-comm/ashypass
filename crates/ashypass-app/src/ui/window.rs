@@ -1564,6 +1564,35 @@ impl DevHandle {
             "dark" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceDark),
             "light" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceLight),
             "sidebar" => inner.split.set_show_sidebar(arg != "0"),
+            "note-entry" => {
+                // note-entry — a login with a formatted note, first in the list.
+                let note = "Servidor **AshyTV** na *Oracle*.\nAcesso: `ssh root@10.0.0.5`\n\n| Serviço | Porta |\n| --- | --- |\n| PostgreSQL | 5432 |\n| Caddy | 443 |\n\n```\nsudo systemctl restart caddy\n```";
+                let added = inner
+                    .state
+                    .vault
+                    .borrow()
+                    .add(ashypass_core::db::vault::NewEntry {
+                        item_type: None,
+                        extra: None,
+                        title: "AAA Servidor".into(),
+                        username: Some("root".into()),
+                        password: "Pw-Long-Enough-123".into(),
+                        url: None,
+                        notes: Some(note.into()),
+                        totp_secret: None,
+                        totp_algorithm: None,
+                        totp_digits: None,
+                        totp_period: None,
+                        category: None,
+                    });
+                if let Err(e) = added {
+                    eprintln!("dev: could not add: {e}");
+                }
+                inner
+                    .state
+                    .events
+                    .emit(crate::events::AppEvent::VaultChanged);
+            }
             "folders" => {
                 // folders:<n> — n logins, each in its own folder, for lists
                 // of folders as long as real ones.

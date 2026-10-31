@@ -298,6 +298,13 @@ button.ashy-source-card {
 textview.ashy-notes, textview.ashy-notes text {
     background: none;
 }
+frame.ashy-notes-code {
+    padding: 8px 10px;
+    background-color: color-mix(in srgb, currentColor 6%, transparent);
+}
+grid.ashy-notes-table {
+    padding: 4px 0;
+}
 ";
 
 const ACCENT_CONTRAST_CSS: &str = "

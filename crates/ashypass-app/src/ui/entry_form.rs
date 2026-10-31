@@ -349,6 +349,7 @@ pub fn present(
     }
     let notes_frame = gtk::Frame::builder().child(&notes_view).build();
     notes_frame.add_css_class("view");
+    notes_group.add(&crate::ui::notes::toolbar(&notes_view));
     notes_group.add(&notes_frame);
     content.append(&notes_group);
 

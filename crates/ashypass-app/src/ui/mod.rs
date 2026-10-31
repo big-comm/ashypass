@@ -8,6 +8,7 @@ pub mod folders;
 pub mod generator_view;
 pub mod i18n;
 pub mod import_flow;
+pub mod notes;
 pub mod password_colors;
 pub mod preview;
 pub mod qr_scan;

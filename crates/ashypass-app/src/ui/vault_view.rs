@@ -2260,18 +2260,10 @@ fn build_details(inner: &Rc<Inner>, entry: &PasswordEntry) -> gtk::Widget {
 
     if let Some(notes) = entry.notes.as_deref().filter(|n| !n.trim().is_empty()) {
         let group = adw::PreferencesGroup::builder().title(tr!("Notes")).build();
-        let label = gtk::Label::builder()
-            .label(notes)
-            .wrap(true)
-            .wrap_mode(gtk::pango::WrapMode::WordChar)
-            .xalign(0.0)
-            .selectable(true)
-            .margin_top(12)
-            .margin_bottom(12)
-            .margin_start(12)
-            .margin_end(12)
+        // Formatted: bold, italic, code and tables (see ui::notes).
+        let frame = gtk::Frame::builder()
+            .child(&crate::ui::notes::view(notes))
             .build();
-        let frame = gtk::Frame::builder().child(&label).build();
         frame.add_css_class("view");
         frame.add_css_class("ashy-notes");
         group.add(&frame);
