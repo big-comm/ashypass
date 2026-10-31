@@ -97,6 +97,17 @@ pub struct PasswordListCache {
 
 impl PasswordListCache {
     pub fn new(entries: Vec<PasswordEntry>, categories: Vec<String>) -> Self {
+        // A login with a verification code and no password is a code (as
+        // made by "Add verification code" or a Google Authenticator export):
+        // it lives on the codes page, not among the passwords.
+        let entries: Vec<PasswordEntry> = entries
+            .into_iter()
+            .filter(|entry| {
+                entry.has_password
+                    || !entry.has_totp
+                    || entry.item_type != ashypass_core::db::vault::ITEM_LOGIN
+            })
+            .collect();
         let search_index = entries.iter().map(password_search_text).collect();
         Self {
             entries: entries.into_iter().map(Rc::new).collect(),
@@ -2546,6 +2557,7 @@ mod tests {
         favorite: bool,
     ) -> PasswordEntry {
         PasswordEntry {
+            has_password: true,
             item_type: ashypass_core::db::vault::ITEM_LOGIN.into(),
             extra: None,
             id,
@@ -2647,6 +2659,29 @@ mod tests {
     }
 
     #[test]
+    fn codes_without_a_password_stay_off_the_password_list() {
+        let mut code_only = entry(2, "GitHub: ana@example.com", None, None, None, false);
+        code_only.has_password = false;
+        code_only.has_totp = true;
+        let mut login_with_code = entry(3, "GitLab", None, None, None, false);
+        login_with_code.has_totp = true;
+        let cache = PasswordListCache::new(
+            vec![
+                entry(1, "Bank", None, None, None, false),
+                code_only,
+                login_with_code,
+            ],
+            Vec::new(),
+        );
+        let titles: Vec<String> = cache
+            .filtered(None, &FolderFilter::All, false)
+            .iter()
+            .map(|e| e.title.clone())
+            .collect();
+        assert_eq!(titles, ["Bank", "GitLab"]);
+    }
+
+    #[test]
     fn blank_category_counts_as_no_folder() {
         assert!(FolderFilter::NoFolder.matches(Some("  ")));
         assert!(!FolderFilter::NoFolder.matches(Some("Work")));
@@ -2654,6 +2689,7 @@ mod tests {
 
     fn row(id: i64, title: &str) -> Rc<PasswordEntry> {
         Rc::new(PasswordEntry {
+            has_password: true,
             item_type: ashypass_core::db::vault::ITEM_LOGIN.into(),
             extra: None,
             id,

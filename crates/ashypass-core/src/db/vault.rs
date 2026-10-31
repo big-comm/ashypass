@@ -194,6 +194,10 @@ pub struct PasswordEntry {
     pub id: i64,
     /// `ITEM_LOGIN`, `ITEM_CARD`, `ITEM_IDENTITY` or `ITEM_NOTE`.
     pub item_type: String,
+    /// A password is saved (it may be empty: an access made for a
+    /// verification code only). Known in summaries too, from the stored
+    /// length, without decrypting.
+    pub has_password: bool,
     /// Decrypted only by `get()`; `None` in summaries.
     pub extra: Option<String>,
     pub title: String,
@@ -1065,7 +1069,7 @@ impl Vault {
     ) -> Result<Vec<PasswordEntry>> {
         let base = "SELECT id, title, username, url,
                            totp_secret_encrypted IS NOT NULL, totp_algorithm, totp_digits, totp_period,
-                           category, favorite, created_at, updated_at, last_accessed, item_type
+                           category, favorite, created_at, updated_at, last_accessed, item_type, length(password_encrypted) > 29
                     FROM passwords";
 
         let mut clauses: Vec<&str> = Vec::new();
@@ -1111,7 +1115,7 @@ impl Vault {
     ) -> Result<Vec<PasswordEntry>> {
         let base = "SELECT p.id, p.title, p.username, p.url,
                            p.totp_secret_encrypted IS NOT NULL, p.totp_algorithm, p.totp_digits, p.totp_period,
-                           p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed, p.item_type
+                           p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed, p.item_type, length(p.password_encrypted) > 29
                     FROM passwords_fts
                     JOIN passwords p ON p.id = passwords_fts.rowid
                     WHERE passwords_fts MATCH ?";
@@ -1170,7 +1174,9 @@ impl Vault {
         let totp_blob: Option<Vec<u8>> = row.get(6)?;
         let extra_blob: Option<Vec<u8>> = row.get(16)?;
 
+        let password = self.decrypt(&pw_blob)?;
         let entry = PasswordEntry {
+            has_password: !password.is_empty(),
             id: row.get(0)?,
             item_type: row
                 .get::<_, Option<String>>(15)?
@@ -1178,7 +1184,7 @@ impl Vault {
             extra: extra_blob.as_ref().map(|b| self.decrypt(b)).transpose()?,
             title: row.get(1)?,
             username: row.get(2)?,
-            password: Some(self.decrypt(&pw_blob)?),
+            password: Some(password),
             notes: notes_blob.as_ref().map(|b| self.decrypt(b)).transpose()?,
             url: row.get(5)?,
             totp_secret: totp_blob.as_ref().map(|b| self.decrypt(b)).transpose()?,
@@ -1887,7 +1893,7 @@ impl Vault {
         let mut stmt = self.conn.prepare_cached(
             "SELECT p.id, p.title, p.username, p.url,
                     p.totp_secret_encrypted IS NOT NULL, p.totp_algorithm, p.totp_digits, p.totp_period,
-                    p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed, p.item_type
+                    p.category, p.favorite, p.created_at, p.updated_at, p.last_accessed, p.item_type, length(p.password_encrypted) > 29
              FROM passwords p
              JOIN entry_tags et ON et.entry_id = p.id
              WHERE et.tag_id = ?
@@ -2543,9 +2549,14 @@ fn normalize_folder_name(name: &str) -> Result<String> {
 
 /// Map a summary row. Column 4 is `totp_secret_encrypted IS NOT NULL`, so the
 /// TOTP ciphertext is never pulled just to compute `has_totp`.
+/// Column 14 of the summary queries: `length(password_encrypted) > 29`,
+/// the length of an empty password in vault format 2
+/// (`aes_gcm_v2::EMPTY_BLOB_LEN`, checked by a test). Older formats are
+/// longer even when empty and read as having a password.
 fn password_summary_from_row(r: &Row<'_>) -> rusqlite::Result<PasswordEntry> {
     let has_totp: bool = r.get(4)?;
     Ok(PasswordEntry {
+        has_password: r.get(14)?,
         id: r.get(0)?,
         item_type: r
             .get::<_, Option<String>>(13)?
@@ -2597,6 +2608,41 @@ fn like_pattern(search: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn summaries_know_an_empty_password_without_decrypting() {
+        // The literal in the summary queries is this length.
+        assert_eq!(crate::crypto::aes_gcm_v2::EMPTY_BLOB_LEN, 29);
+        let dir = tempfile::tempdir().unwrap();
+        let mut vault = Vault::open(dir.path().join("vault.db")).unwrap();
+        vault.set_master_password("correct horse battery").unwrap();
+        let entry = |title: &str, password: &str| NewEntry {
+            item_type: None,
+            extra: None,
+            title: title.into(),
+            username: None,
+            password: password.into(),
+            url: None,
+            notes: None,
+            totp_secret: Some("JBSWY3DPEHPK3PXP".into()),
+            totp_algorithm: None,
+            totp_digits: None,
+            totp_period: None,
+            category: None,
+        };
+        vault.add(entry("Code only", "")).unwrap();
+        vault.add(entry("One letter", "x")).unwrap();
+        let listed = vault.list(None).unwrap();
+        let has = |title: &str| {
+            listed
+                .iter()
+                .find(|e| e.title == title)
+                .unwrap()
+                .has_password
+        };
+        assert!(!has("Code only"));
+        assert!(has("One letter"));
+    }
+
     use super::*;
 
     fn unlocked_vault(path: &Path) -> Vault {
