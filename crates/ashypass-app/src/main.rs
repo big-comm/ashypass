@@ -65,10 +65,7 @@ fn main() -> glib::ExitCode {
                     // the app is not opening before quitting.
                     let dialog = big_gtk_kit::alert::Alert::builder(None::<&gtk::Widget>)
                         .heading(tr!("Could not open the vault"))
-                        .body(format!(
-                            "{}\n\n{e}",
-                            tr!("Nothing was changed. Close other copies of Ashy Pass and try again.")
-                        ))
+                        .body(format!("{}\n\n{}", tr!("Nothing was changed. Close other copies of Ashy Pass and try again."), crate::ui::errors::describe(&e)))
                         .close_response("close")
                         .default_response("close")
                         .build();
@@ -301,6 +298,16 @@ button.ashy-source-card {
 textview.ashy-notes, textview.ashy-notes text {
     background: none;
 }
+frame.ashy-notes-code {
+    padding: 8px 10px;
+    background-color: color-mix(in srgb, currentColor 6%, transparent);
+}
+entry.ashy-notes-header-cell {
+    font-weight: bold;
+}
+grid.ashy-notes-table {
+    padding: 4px 0;
+}
 ";
 
 const ACCENT_CONTRAST_CSS: &str = "
@@ -373,6 +380,12 @@ fn run_dev_script(window: &ui::MainWindow) {
             "wait" => delay = arg.parse().unwrap_or(500),
             "seed" => dev_seed(&dev.state()),
             "shot" => dev_screenshot(&dev.window(), arg),
+            // shot-popover:<path> — the open popover, a surface of its own
+            // that the window's picture leaves out.
+            "shot-popover" => match dev.open_popover() {
+                Some(popover) => dev_screenshot(&popover, arg),
+                None => eprintln!("dev: no open popover"),
+            },
             "quit" => {
                 if let Some(app) = dev.window().application() {
                     app.quit();
@@ -499,7 +512,8 @@ fn dev_seed(state: &SharedState) {
 }
 
 #[cfg(debug_assertions)]
-fn dev_screenshot(window: &adw::ApplicationWindow, path: &str) {
+fn dev_screenshot(window: &impl IsA<gtk::Widget>, path: &str) {
+    let window = window.as_ref();
     let width = window.width();
     let height = window.height();
     let paintable = gtk::WidgetPaintable::new(Some(window));
@@ -509,7 +523,7 @@ fn dev_screenshot(window: &adw::ApplicationWindow, path: &str) {
         eprintln!("dev screenshot: nothing to render");
         return;
     };
-    let Some(renderer) = window.renderer() else {
+    let Some(renderer) = window.native().and_then(|native| native.renderer()) else {
         eprintln!("dev screenshot: no renderer");
         return;
     };

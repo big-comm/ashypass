@@ -42,6 +42,8 @@ impl Default for GeneratorPrefs {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Settings {
+    /// Site icons in the password list. Off by default: each icon is fetched
+    /// from the site itself, which learns the computer's address.
     pub show_favicons: bool,
     /// Allow falling back to Google's favicon service when a site serves no
     /// `/favicon.ico`. Off by default: the query string carries the hostname,
@@ -85,12 +87,18 @@ pub struct Settings {
     pub color_scheme: String,
     /// Mark copied secrets with `x-kde-passwordManagerHint` so clipboard
     /// history managers that honour it (Klipper, Big Clipboard) skip them.
-    /// Off by default: earlier versions did not mark copies, and many people
-    /// rely on their clipboard history.
+    /// On by default. A settings file without it predates the option (those
+    /// versions did not mark copies) and keeps that: `false`, not the
+    /// struct's default.
+    #[serde(default)]
     pub clipboard_hide_from_history: bool,
     /// Colour theme for shown passwords (digits and symbols stand out):
     /// "classic", "ocean", … or "off". Same themes as the Android app.
     pub password_colors: String,
+    /// The "First steps" card above the password list. Turned on when a vault
+    /// is created (so people who set Ashy Pass up before it existed never get
+    /// it unasked), off when hidden or when every step is done.
+    pub show_first_steps: bool,
 }
 
 /// Wrapping-KDF generation for `QuickUnlockPrefs::encrypted_key`.
@@ -142,7 +150,7 @@ impl QuickUnlockPrefs {
 impl Default for Settings {
     fn default() -> Self {
         Self {
-            show_favicons: true,
+            show_favicons: false,
             favicon_third_party_fallback: false,
             browser_extension: false,
             show_sync_badges: true,
@@ -161,8 +169,9 @@ impl Default for Settings {
             nextcloud_sync_on_unlock: true,
             lock_on_screen_lock: true,
             color_scheme: "system".to_string(),
-            clipboard_hide_from_history: false,
+            clipboard_hide_from_history: true,
             password_colors: "classic".to_string(),
+            show_first_steps: false,
         }
     }
 }
@@ -325,12 +334,22 @@ mod tests {
         assert!(!settings.show_favicons);
         assert!(settings.lock_on_screen_lock);
         assert_eq!(settings.color_scheme, "system");
-        // Copies stay visible to clipboard history unless the user opts out.
+        // A file from before the option keeps copies visible to clipboard
+        // history, as those versions did.
         assert!(!settings.clipboard_hide_from_history);
         settings.save_to(&path).unwrap();
         let again = Settings::load_from(&path);
         assert_eq!(again.lock_timeout, 45);
         assert_eq!(again.clipboard_clear, 20);
+    }
+
+    #[test]
+    fn a_new_install_starts_private_and_patient() {
+        let dir = tempfile::tempdir().unwrap();
+        let settings = Settings::load_from(&dir.path().join("settings.json"));
+        assert_eq!(settings.lock_timeout, 300);
+        assert!(settings.clipboard_hide_from_history);
+        assert!(!settings.show_favicons);
     }
 
     #[test]

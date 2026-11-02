@@ -180,7 +180,11 @@ impl Inner {
                 if self.failures.get() == 1 {
                     show_toast(
                         &self.toast,
-                        &format!("{}: {e}", tr!("Encrypted folder sync failed")),
+                        &format!(
+                            "{}: {}",
+                            tr!("Encrypted folder sync failed"),
+                            crate::ui::errors::describe(&e)
+                        ),
                     );
                 }
             }

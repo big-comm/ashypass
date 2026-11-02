@@ -112,7 +112,11 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                                     let message = match result {
                                         Ok(_) => tr!("Folder renamed").to_string(),
                                         Err(e) => {
-                                            format!("{}: {e}", tr!("Could not rename the folder"))
+                                            format!(
+                                                "{}: {}",
+                                                tr!("Could not rename the folder"),
+                                                crate::ui::errors::describe(&e)
+                                            )
                                         }
                                     };
                                     toast.add_toast(
@@ -169,10 +173,7 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                                 match state.vault.borrow().remove_folder_keep_entries(&name) {
                                     Ok(_) => tr!("Folder removed. Its passwords were kept.")
                                         .to_string(),
-                                    Err(e) => format!(
-                                        "{}: {e}",
-                                        tr!("Could not remove the folder")
-                                    ),
+                                    Err(e) => format!("{}: {}", tr!("Could not remove the folder"), crate::ui::errors::describe(&e)),
                                 };
                             toast.add_toast(
                                 adw::Toast::builder().use_markup(false).title(message).timeout(4).build(),
@@ -221,7 +222,11 @@ pub fn present(state: &SharedState, toast: &adw::ToastOverlay, parent: &impl IsA
                     let message = match state.vault.borrow().create_folder(name) {
                         Ok(true) => tr!("Folder created").to_string(),
                         Ok(false) => tr!("This folder already exists").to_string(),
-                        Err(e) => format!("{}: {e}", tr!("Could not create the folder")),
+                        Err(e) => format!(
+                            "{}: {}",
+                            tr!("Could not create the folder"),
+                            crate::ui::errors::describe(&e)
+                        ),
                     };
                     toast.add_toast(
                         adw::Toast::builder()

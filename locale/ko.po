@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:37\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgid "1. Install the extension"
+msgstr "1. 확장 프로그램 설치"
+
 msgid "1PUX export file"
 msgstr "1PUX 내보내기 파일"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Ashy Pass에 연결"
+
+msgid "3. Allow it"
+msgstr "3. 허용"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -26,6 +35,9 @@ msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "보안 키 없이 잠금 해제할 수 있는 12단어 BIP-39 문구입니다. 한 번만 표시됩니"
 "다."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "이메일 입력란 아래에 Ashy Pass 추천이 표시된 로그인 양식"
 
 msgid "A new access"
 msgstr "새 항목"
@@ -67,6 +79,9 @@ msgstr "첨부 파일 추가"
 msgid "Add code"
 msgstr "코드 추가"
 
+msgid "Add codes"
+msgstr "코드 추가"
+
 msgid "Add file"
 msgstr "파일 추가"
 
@@ -79,11 +94,22 @@ msgstr "백업의 항목을 현재 보관함에 추가"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr ".ashy 백업의 항목을 이 보관함에 추가"
 
+msgid "Add to Firefox"
+msgstr "Firefox에 추가"
+
 msgid "Add to favorites"
 msgstr "즐겨찾기에 추가"
 
+msgid "Add to the browser"
+msgstr "브라우저에 추가"
+
 msgid "Add verification code"
 msgstr "인증 코드 추가"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Google Authenticator에서 코드 {}개를 추가할까요?"
 
 msgid "Added to favorites"
 msgstr "즐겨찾기에 추가됨"
@@ -106,6 +132,9 @@ msgstr "자릿수 조정"
 
 msgid "Adjust words and separator"
 msgstr "단어와 구분자 조정"
+
+msgid "Advanced"
+msgstr "고급"
 
 msgid "Algorithm"
 msgstr "알고리즘"
@@ -158,6 +187,9 @@ msgstr ""
 msgid "Another example"
 msgstr "다른 예시"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "파일을 얻은 사람은 누구나 그 안의 모든 비밀번호를 읽을 수 있습니다"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -205,6 +237,12 @@ msgstr ""
 "Ashy Pass가 Nextcloud와 통신할 수 없습니다. 연결 상태, 서버 주소 및 앱 비밀번"
 "호를 확인하세요."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Chrome용 Ashy Pass"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Firefox용 Ashy Pass"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -220,6 +258,12 @@ msgid ""
 "At least 8 characters. A four-word passphrase from the EFF wordlist is a "
 "strong default."
 msgstr "최소 8자 이상. EFF 단어 목록의 4단어 암호는 강력한 기본값입니다."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr "{}자 이상. 무작위 단어 몇 개는 기억하기 쉽고 추측하기 어렵습니다."
 
 msgid "Attachment added"
 msgstr "첨부 파일이 추가되었습니다"
@@ -284,11 +328,28 @@ msgstr "백업"
 msgid "Before importing"
 msgstr "가져오기 전에"
 
+msgid "Bold (Ctrl+B)"
+msgstr "굵게 (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "비밀번호를 가져오거나 추가하세요"
+
 msgid "Bring passwords from another app or browser"
 msgstr "다른 앱이나 브라우저에서 비밀번호 가져오기"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"브라우저(Chrome, Edge, Brave, Firefox)나 다른 비밀번호 관리자(Bitwarden, "
+"1Password, KeePass)에서 가져올 수 있어요."
+
 msgid "Bring your passwords"
 msgstr "비밀번호 가져오기"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"서버의 변경 사항을 가져오고 내 변경 사항을 보냅니다. 최신 버전이 우선합니다"
 
 msgid "Browser"
 msgstr "브라우저"
@@ -363,6 +424,9 @@ msgstr ""
 "마스터 비밀번호를 정하세요. 이 컴퓨터의 Ashy Pass에 보관하는 모든 것을 보호합"
 "니다."
 
+msgid "Choose an access in the list first"
+msgstr "먼저 목록에서 항목을 선택하세요"
+
 msgid "Choose an image with the QR code"
 msgstr "QR 코드가 있는 이미지 선택"
 
@@ -396,6 +460,9 @@ msgstr "비밀번호를 추가하거나 편집할 때 이 폴더를 선택하세
 msgid "Choose…"
 msgstr "선택…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge 및 Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Chrome, Edge, Brave 또는 Firefox 비밀번호 내보내기 (CSV)"
 
@@ -410,6 +477,13 @@ msgstr "기록 지우기"
 
 msgid "Clear the password history?"
 msgstr "비밀번호 기록을 지울까요?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"로그인 입력란을 클릭하고 접속 정보를 선택하세요. 해당 정보가 속한 사이트에서"
+"만 채워집니다."
 
 msgid "Client ID"
 msgstr "클라이언트 ID"
@@ -435,6 +509,9 @@ msgstr "매핑 닫기"
 msgid "Closing mapping"
 msgstr "매핑 닫는 중"
 
+msgid "Code"
+msgstr "코드"
+
 msgid "Code copied"
 msgstr "코드 복사됨"
 
@@ -447,8 +524,26 @@ msgstr "코드 설정"
 msgid "Coffee"
 msgstr "커피"
 
+msgid "Column"
+msgstr "열"
+
+msgid "Column 1"
+msgstr "열 1"
+
+msgid "Column 2"
+msgstr "열 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "name, url, username, password 같은 열"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Google Authenticator에서 오셨나요? 그곳에서 메뉴를 열고 계정 전송 → 계정 내보"
+"내기를 선택한 뒤, 표시되는 QR 코드를 여기서 읽으세요. 모든 코드가 한 번에 들"
+"어옵니다."
 
 msgid "Compact vault list"
 msgstr "간결한 볼트 목록"
@@ -522,9 +617,6 @@ msgstr "연결 실패"
 msgid "Connect the sync folder"
 msgstr "동기화 폴더 연결"
 
-msgid "Connect your browsers"
-msgstr "브라우저 연결하기"
-
 msgid "Connected"
 msgstr "연결됨"
 
@@ -532,6 +624,9 @@ msgstr "연결됨"
 msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "브라우저 {}개에 연결했습니다. 열려 있다면 다시 시작하세요."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "연결됨, 하지만 차단됨(3단계)"
 
 msgid "Connected. Received:"
 msgstr "연결됨. 받음:"
@@ -568,6 +663,15 @@ msgstr "Ashy Pass 2 보관함의 백업"
 
 msgid "Copy password"
 msgstr "비밀번호 복사"
+
+msgid "Copy the password"
+msgstr "비밀번호 복사"
+
+msgid "Copy the user"
+msgstr "사용자 복사"
+
+msgid "Copy the verification code"
+msgstr "인증 코드 복사"
 
 msgid "Copy this old password"
 msgstr "이 이전 비밀번호 복사"
@@ -686,9 +790,6 @@ msgstr "폴더 만들기…"
 msgid "Create my vault"
 msgstr "내 보관함 만들기"
 
-msgid "Create password"
-msgstr "비밀번호 만들기"
-
 msgid "Create your vault"
 msgstr "보관함 만들기"
 
@@ -788,6 +889,9 @@ msgstr "연결 해제 실패"
 msgid "Disconnect the sync folder?"
 msgstr "동기화 폴더 연결을 해제할까요?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "다른 곳에 비밀번호를 보관하고 계신가요?"
+
 msgid "Done"
 msgstr "완료"
 
@@ -805,6 +909,13 @@ msgstr "드라이브 잠김"
 
 msgid "Duplicate items"
 msgstr "중복 항목"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"각 아이콘은 사이트에서 직접 다운로드되며, 사이트는 사용자의 인터넷 주소를 볼 "
+"수 있습니다. 로컬 네트워크의 사이트에는 절대 연결하지 않습니다."
 
 msgid "Easier to type and remember."
 msgstr "입력하고 기억하기 쉽습니다."
@@ -848,9 +959,6 @@ msgstr "암호화됨:"
 msgid "Encrypted device"
 msgstr "암호화된 장치"
 
-msgid "Encrypted folder sync"
-msgstr "암호화된 폴더 동기화"
-
 msgid "Encrypted folder sync failed"
 msgstr "암호화된 폴더 동기화 실패"
 
@@ -879,6 +987,9 @@ msgstr "보관함을 다시 암호화하는 중…"
 
 msgid "Encrypting…"
 msgstr "암호화 중…"
+
+msgid "Encryption"
+msgstr "암호화"
 
 msgid "Encrypt…"
 msgstr "암호화…"
@@ -922,6 +1033,14 @@ msgstr "오류 세부정보"
 msgid "Estimated strength"
 msgstr "예상 강도"
 
+msgid "Every code in this export is already in the vault."
+msgstr "이 내보내기의 모든 코드는 이미 보관함에 있습니다."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr "모든 항목은 마스터 비밀번호에서 파생된 키로 AES-256-GCM 암호화됩니다"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -960,6 +1079,17 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "모든 항목이 이미 동기화되었습니다"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Ashy Pass에 보관하는 모든 내용은 이 컴퓨터의 암호화된 보관함에 저장됩니다. 마"
+"스터 비밀번호로만 열 수 있으며, 분실해도 Ashy Pass는 복구할 수 없습니다."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "보호되지 않은 파일 내보내기(CSV)"
+
 msgid "Export complete"
 msgstr "내보내기 완료"
 
@@ -969,8 +1099,8 @@ msgstr "내보내기 실패"
 msgid "Export to KeePass"
 msgstr "KeePass로 내보내기"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "KeePass 또는 누구나 읽을 수 있는 파일로 내보내기"
+msgid "Export to KeePass (.kdbx)"
+msgstr "KeePass로 내보내기(.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "보호되지 않은 파일 내보내기"
@@ -1002,9 +1132,6 @@ msgstr "즐겨찾기"
 msgid "Favorites"
 msgstr "즐겨찾기"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "보관함 항목 옆에 사이트 아이콘을 가져와서 표시합니다"
-
 msgid "Fetching remote passwords"
 msgstr "원격 비밀번호 가져오는 중"
 
@@ -1026,6 +1153,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "세 칸을 모두 입력하세요."
 
+msgid "Fill passwords in the browser"
+msgstr "브라우저에서 비밀번호 자동 입력"
+
 msgid "Find duplicate items"
 msgstr "중복 항목 찾기"
 
@@ -1034,6 +1164,9 @@ msgstr "발견 사항"
 
 msgid "Finishing synchronization"
 msgstr "동기화 완료 중"
+
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox 부가 기능 · Firefox 및 LibreWolf"
 
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
@@ -1044,8 +1177,17 @@ msgstr ""
 "기 전에 인식된 내용을 보여 드립니다. 보호되지 않은 내보내기 파일은 나중에 삭"
 "제하세요."
 
+msgid "First steps"
+msgstr "시작하기"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "시작하기를 숨겼습니다. 기본 메뉴에서 다시 불러올 수 있어요."
+
 msgid "Folder"
 msgstr "폴더"
+
+msgid "Folder and tags"
+msgstr "폴더 및 태그"
 
 msgid "Folder created"
 msgstr "폴더 생성됨"
@@ -1078,6 +1220,9 @@ msgid ""
 msgstr ""
 "Nextcloud의 경우 기본 URL은 https://cloud.example.com/remote.php/dav/files/"
 "USERNAME 형식입니다"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Nextcloud 서버에서 Passwords 앱을 사용하는 분들을 위한 기능"
 
 msgid "For the browsers installed for this user"
 msgstr "이 사용자에게 설치된 브라우저용"
@@ -1171,6 +1316,9 @@ msgstr "SSD 웨어 레벨링에 도움이 되지만, 장치에 여유 공간 패
 msgid "Hide copied passwords from clipboard history"
 msgstr "복사한 비밀번호를 클립보드 기록에서 숨기기"
 
+msgid "Hide first steps"
+msgstr "시작하기 숨기기"
+
 msgid "Hide password"
 msgstr "비밀번호 숨기기"
 
@@ -1199,6 +1347,9 @@ msgstr "이미 다른 곳에 비밀번호를 보관하고 있어요"
 msgid "I understand — Continue"
 msgstr "이해했습니다 — 계속"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "마스터 비밀번호를 안전한 곳에 적어 두었습니다"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1215,6 +1366,9 @@ msgstr "가져오기"
 msgid "Import complete"
 msgstr "가져오기 완료"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "브라우저나 다른 앱에서 가져오거나 하나씩 추가하세요"
+
 msgid "Import partly complete"
 msgstr "일부만 가져옴"
 
@@ -1225,6 +1379,12 @@ msgid "Import passwords…"
 msgstr "비밀번호 가져오기…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"중요: 이 컴퓨터가 고장 나면 백업만이 모든 것을 되찾는 유일한 방법입니다"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1232,6 +1392,15 @@ msgstr ""
 "Android용 Ashy Pass에서 설정 → 암호화된 폴더 동기화을(를) 열고 “컴퓨터의 QR "
 "코드 스캔”을(를) 누르세요. 그런 다음 아래 코드와 마스터 비밀번호를 입력하세"
 "요."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"Chrome에서: 설정 → 자동 완성 및 비밀번호 → Google 비밀번호 관리자 → 설정 → 비"
+"밀번호 내보내기. 가져온 후에는 내보낸 파일을 삭제하세요. 보호되지 않은 파일입"
+"니다."
 
 msgid "Incorrect PIN"
 msgstr "잘못된 PIN"
@@ -1253,6 +1422,9 @@ msgstr "마스터 비밀번호가 올바르지 않습니다. 변경된 내용이
 msgid "Incorrect master password. Nothing was exported."
 msgstr "마스터 비밀번호가 올바르지 않습니다. 아무것도 내보내지 않았습니다."
 
+msgid "Insert a table"
+msgstr "표 삽입"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1260,6 +1432,13 @@ msgid ""
 msgstr ""
 "FIDO2 토큰(Yubikey, Nitrokey 등)을 삽입하고, 메시지가 표시되면 장치에서 인증"
 "하세요. 새 키슬롯을 승인하려면 현재 암호문구가 필요합니다."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Ashy Pass 확장 프로그램을 설치하고 연결하세요"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "설치됨: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "내부 오류: 암호가 설정되지 않음"
@@ -1277,24 +1456,17 @@ msgstr ""
 "이 컴퓨터에서 보관함을 엽니다. 누구도 대신 복구해 줄 수 없습니다 — Ashy Pass"
 "도 마찬가지입니다."
 
+msgid "Italic (Ctrl+I)"
+msgstr "기울임꼴 (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "항목은 여기와 폴더에 그대로 남으며, 다시 연결하면 병합됩니다"
 
 msgid "Its user, password and other details appear here."
 msgstr "사용자, 비밀번호 및 기타 세부 정보가 여기에 표시됩니다."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass 내보내기 완료"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass는 파일을 비밀번호로 보호합니다. CSV 파일은 파일을 얻은 누구나 읽을 "
-"수 있습니다."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1311,6 +1483,9 @@ msgstr "유지"
 
 msgid "Keep using"
 msgstr "계속 사용"
+
+msgid "Keep verification codes (2FA)"
+msgstr "인증 코드(2FA) 보관"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1411,13 +1586,16 @@ msgstr ""
 "에 가져온 뒤 나머지는 삭제된 항목으로 옮깁니다."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"로그인, 카드, 신원, 메모, 패스키는 이 컴퓨터에서 암호화된 후 Nextcloud, "
-"pCloud, WebDAV, Dropbox, Google Drive 또는 이 컴퓨터의 폴더를 통해 동기화됩니"
-"다. Android용 Ashy Pass도 같은 폴더를 사용합니다."
+"로그인 정보, 카드, 신원 정보, 메모, 패스키, 인증 코드는 이 컴퓨터를 떠나기 전"
+"에 암호화되어 Nextcloud, pCloud, WebDAV, Dropbox, Google Drive 또는 이 컴퓨터"
+"의 폴더를 통해 저장됩니다. 서비스는 암호화된 파일만 볼 수 있고 내용은 절대 "
+"볼 수 없습니다. Android용 Ashy Pass도 같은 폴더를 사용합니다."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1431,6 +1609,9 @@ msgstr "소문자 (a–z)"
 
 msgid "Main menu"
 msgstr "주 메뉴"
+
+msgid "Make a backup"
+msgstr "백업 만들기"
 
 msgid "Master Password"
 msgstr "마스터 비밀번호"
@@ -1458,9 +1639,6 @@ msgstr "병합됨"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "병합됨, 나머지는 삭제된 항목에 있습니다"
-
-msgid "Minimum length:"
-msgstr "최소 길이:"
 
 msgid "Mint"
 msgstr "민트"
@@ -1539,6 +1717,9 @@ msgstr "새 마스터 비밀번호가 설정되었습니다. 안전한 곳에 �
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords 앱"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords 연결됨"
@@ -1626,6 +1807,15 @@ msgstr "구성되지 않음"
 msgid "Not connected"
 msgstr "연결되지 않음"
 
+msgid "Not done yet"
+msgstr "아직 하지 않음"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "아직 스토어에 없음: 수동으로 설치하는 방법 보기"
+
+msgid "Not now"
+msgstr "나중에"
+
 msgid "Not run yet"
 msgstr "아직 실행되지 않음"
 
@@ -1705,13 +1895,34 @@ msgstr "켜짐"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"보호할 사이트에서 2단계 인증 설정을 열고 인증 앱을 선택하세요. 표시된 QR 코드"
-"를 읽거나 설정 키를 복사해 아래에 붙여 넣으세요."
+"보호하려는 사이트에서 2단계 인증 설정을 열고 인증 앱을 선택하세요. 표시되는 "
+"QR 코드를 읽거나, 설정 키(QR 코드 아래의 영문자와 숫자로, 보통 “스캔할 수 없"
+"나요?” 뒤에 있음)를 복사해 아래에 붙여넣으세요."
 
 msgid "On until Ashy Pass closes"
 msgstr "Ashy Pass를 닫을 때까지 켜짐"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"비밀번호를 모두 가져왔다면 백업에서 백업을 만들고, 예를 들어 USB 드라이브처"
+"럼 이 컴퓨터 밖에 보관하세요. 이 컴퓨터가 고장 나거나 분실되면 되찾을 수 있"
+"는 유일한 방법입니다."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Ashy Pass가 지원하지 않는 카운터 또는 알고리즘을 쓰는 코드가 있어 제외되었습"
+"니다."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1749,8 +1960,14 @@ msgstr "암호화된 매핑 열기"
 msgid "Open image…"
 msgstr "이미지 열기…"
 
+msgid "Open in the store"
+msgstr "스토어에서 열기"
+
 msgid "Open the encrypted volume"
 msgstr "암호화된 볼륨 열기"
+
+msgid "Open the website"
+msgstr "웹사이트 열기"
 
 msgid "Open website"
 msgstr "웹사이트 열기"
@@ -1766,6 +1983,9 @@ msgstr "브라우저에서 Dropbox를 엽니다. 표시된 코드를 복사하�
 
 msgid "Opens the browser for OAuth consent"
 msgstr "OAuth 동의를 위해 브라우저를 엽니다"
+
+msgid "Optional, to organize the list"
+msgstr "선택 사항, 목록을 정리하는 데 사용"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1832,6 +2052,9 @@ msgstr "비밀번호 복사됨"
 
 msgid "Password for this backup"
 msgstr "이 백업의 비밀번호"
+
+msgid "Password generator"
+msgstr "비밀번호 생성기"
 
 msgid "Password history"
 msgstr "비밀번호 기록"
@@ -1920,11 +2143,18 @@ msgstr "이 비밀번호가 변경될 때 Ashy Pass가 보관한 이전 비밀�
 msgid "Protected by a password you choose"
 msgstr "직접 정한 비밀번호로 보호됨"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"비밀번호로 보호됩니다. KeePass, KeePassXC 및 다른 앱에서 열 수 있습니다"
+
 msgid "Protection"
 msgstr "보호"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR 코드를 읽었습니다. 내용을 확인하고 저장하세요."
+
+msgid "Quicker than the master password on this computer"
+msgstr "이 컴퓨터에서 마스터 비밀번호보다 빠릅니다"
 
 msgid "Quit"
 msgstr "종료"
@@ -1965,6 +2195,9 @@ msgstr "등록 실패"
 msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr "최대 2개의 물리적 FIDO2 인증기(YubiKey, SoloKey 등)를 등록하세요"
 
+msgid "Remember the backup"
+msgstr "백업을 잊지 마세요"
+
 msgid "Remote generation:"
 msgstr "원격 세대:"
 
@@ -1985,6 +2218,9 @@ msgstr "폴더 제거"
 
 msgid "Remove from favorites"
 msgstr "즐겨찾기에서 제거"
+
+msgid "Remove table"
+msgstr "표 제거"
 
 msgid "Remove the old copy?"
 msgstr "이전 백업을 제거할까요?"
@@ -2055,6 +2291,9 @@ msgstr "보관 기간"
 
 msgid "Rose"
 msgstr "로즈"
+
+msgid "Row"
+msgstr "행"
 
 msgid "Run"
 msgstr "실행"
@@ -2140,6 +2379,9 @@ msgstr "이름, 계정 또는 사이트로 검색"
 
 msgid "Search codes"
 msgstr "코드 검색"
+
+msgid "Search folders"
+msgstr "폴더 검색"
 
 msgid "Search for drives"
 msgstr "드라이브 검색"
@@ -2292,11 +2534,23 @@ msgstr "크기"
 msgid "Snapshot uploaded"
 msgstr "스냅샷 업로드됨"
 
+msgid "Start using Ashy Pass"
+msgstr "Ashy Pass 사용 시작"
+
 msgid "Starting..."
 msgstr "시작 중..."
 
 msgid "Status"
 msgstr "상태"
+
+msgid "Step 1 of 3"
+msgstr "1/3단계"
+
+msgid "Step 2 of 3"
+msgstr "2/3단계"
+
+msgid "Step 3 of 3"
+msgstr "3/3단계"
 
 msgid "Strength"
 msgstr "보안 강도"
@@ -2313,6 +2567,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "스타일"
+
+msgid "Suggest a passphrase"
+msgstr "암호문구 제안"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "제안: {}. 계속하기 전에 적어 두세요."
 
 msgid "Summary"
 msgstr "요약"
@@ -2354,6 +2615,9 @@ msgstr "지금 동기화"
 msgid "Sync when the vault is unlocked"
 msgstr "보관함 잠금 해제 시 동기화"
 
+msgid "Sync with your phone or another computer"
+msgstr "휴대폰이나 다른 컴퓨터와 동기화"
+
 msgid "Synchronization"
 msgstr "동기화"
 
@@ -2392,14 +2656,14 @@ msgstr "태그"
 msgid "Tags (separated by commas)"
 msgstr "태그 (쉼표로 구분)"
 
-msgid "Take my data to another app"
-msgstr "내 데이터를 다른 앱으로 옮기기"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "토큰과 통신 중입니다… 터치 프롬프트가 있는지 장치를 확인하세요."
 
 msgid "Technical details"
 msgstr "기술 세부 정보"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "사이트의 로그인 정보가 표시된 브라우저의 Ashy Pass 창"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "이 컴퓨터에서 PIN을 사용할 수 없습니다. 마스터 비밀번호를 사용하세요."
@@ -2487,6 +2751,13 @@ msgid "The new passwords do not match."
 msgstr "새 비밀번호가 일치하지 않습니다."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"나머지 단계(브라우저, 휴대폰, 인증 코드)는 비밀번호 목록 위의 시작하기에서 기"
+"다리고 있어요."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2532,6 +2803,9 @@ msgstr "다음 폴더에서만 검색합니다:"
 msgid "The site's icon, when the code has a site saved"
 msgstr "코드에 사이트가 저장되어 있으면 그 사이트의 아이콘"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "비밀번호 다음에 사이트에서 요구하는 6자리 코드"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "동기화가 완료되었으나 일부 항목에서 오류가 발생했습니다."
 
@@ -2544,6 +2818,19 @@ msgstr "보관함을 다시 열 수 없습니다"
 msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr ""
 "보관함이 잠겨 있습니다. 저장된 내용이 없습니다 — 잠금을 해제하고 다시 시도하"
+"세요."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"백업이 저장되기 전에 보관함이 잠겼습니다. 잠금을 해제한 다음 백업을 다시 만드"
+"세요."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"내보내기가 저장되기 전에 보관함이 잠겼습니다. 잠금을 해제한 다음 다시 내보내"
 "세요."
 
 #, rust-format
@@ -2593,6 +2880,10 @@ msgstr ""
 "했다면 여기서도 삭제된 항목으로 이동합니다. 그렇지 않다면 서버가 일부만 응답"
 "했을 수 있습니다. 유지하면 다음 동기화에서 다시 시도합니다."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"이 Google Authenticator 내보내기에는 여기서 사용할 수 있는 코드가 없습니다."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr ""
 "이 PIN은 더 이상 보관함과 일치하지 않습니다. 아무것도 변경되지 않았습니다."
@@ -2609,6 +2900,12 @@ msgstr "이 항목에 저장된 비밀번호가 없습니다"
 
 msgid "This access has no user"
 msgstr "이 항목에 사용자가 없습니다"
+
+msgid "This access has no verification code"
+msgstr "이 항목에는 인증 코드가 없습니다"
+
+msgid "This access has no website"
+msgstr "이 항목에는 웹사이트가 없습니다"
 
 msgid "This access no longer exists"
 msgstr "이 항목이 더 이상 존재하지 않습니다"
@@ -2661,11 +2958,11 @@ msgstr ""
 "요."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"여러 계정이 담긴 Google Authenticator 내보내기입니다. 대신 각 계정의 QR 코드"
-"를 해당 사이트에서 표시하세요."
+"여러 계정이 들어 있는 Google Authenticator 내보내기입니다. 인증 코드 → 코드 "
+"추가에서 읽으면 한 번에 모두 가져옵니다."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2692,6 +2989,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "이 작업은 드라이브의 모든 데이터를 지웁니다"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "클라우드나 드라이브의 암호화된 폴더를 통해"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2724,6 +3024,13 @@ msgstr "끄기"
 msgid "Turn on"
 msgstr "켜기"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"연결하면 켜집니다. 꺼져 있으면 확장 프로그램은 보관함의 어떤 것도 볼 수 없습"
+"니다"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "양방향 조정: 원격 가져오기, 로컬 밀어넣기, 최신 항목 우선으로 해결"
 
@@ -2731,11 +3038,13 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "양방향 조정이 성공적으로 완료되었습니다."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Nextcloud 서버의 공식 'Passwords' 앱과 양방향 동기화합니다. 설정 → 보안에서 "
-"앱 비밀번호를 사용하세요."
+"Nextcloud 서버의 공식 'Passwords' 앱과 양방향으로 동기화합니다. 서버는 이 항"
+"목을 읽을 수 있는 형태로 보관합니다. 신뢰하는 서버에서만 사용하세요. 설정 → "
+"보안에서 만든 앱 비밀번호로 로그인하세요."
 
 msgid "Type of password"
 msgstr "비밀번호 유형"
@@ -2781,6 +3090,9 @@ msgstr ""
 msgid "Unlock with PIN"
 msgstr "PIN으로 잠금 해제"
 
+msgid "Unlock with a PIN"
+msgstr "PIN으로 잠금 해제"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2806,9 +3118,6 @@ msgstr "잠금 해제"
 
 msgid "Unlocking…"
 msgstr "잠금 해제 중…"
-
-msgid "Unprotected CSV…"
-msgstr "보호되지 않은 CSV…"
 
 msgid "Updated locally"
 msgstr "로컬에서 업데이트됨"
@@ -2856,6 +3165,9 @@ msgid ""
 msgstr ""
 "모든 기기에서 같은 마스터 비밀번호를 사용하세요. 폴더의 키를 여는 데 쓰입니"
 "다. 참여하려면 여기서 한 번만 입력하면 됩니다."
+
+msgid "Use them on your phone or another computer"
+msgstr "휴대폰이나 다른 컴퓨터에서 사용하세요"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "사이트에서 2단계 인증을 요청할 때 이 코드를 사용하세요."
@@ -2992,6 +3304,9 @@ msgstr "웹사이트"
 msgid "Website (optional)"
 msgstr "웹사이트 (선택 사항)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Ashy Pass에 오신 것을 환영합니다"
+
 msgid "What it contains"
 msgstr "포함 내용"
 
@@ -3000,9 +3315,6 @@ msgid ""
 "codes."
 msgstr ""
 "사이트에서 2단계 인증을 제공하면 여기에 설정 키를 추가해 코드를 받으세요."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "끄면 확장 프로그램은 보관함의 어떤 것도 볼 수 없습니다"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "어디에서 비밀번호를 가져올까요?"
@@ -3092,6 +3404,13 @@ msgstr ""
 "항목은 이 컴퓨터와 폴더에 남아 있습니다. 나중에 다시 연결하면 중복되지 않고 "
 "병합됩니다."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"현재 사이트의 로그인 정보를 한 번의 클릭으로 입력합니다. 보관함을 검색하고 "
+"새 비밀번호도 만들 수 있습니다."
+
 msgid "Your most used accesses can be here"
 msgstr "자주 쓰는 항목을 여기에 둘 수 있습니다"
 
@@ -3141,6 +3460,9 @@ msgstr "중 사용 가능"
 msgid "high"
 msgstr "높음"
 
+msgid "incorrect master password"
+msgstr "마스터 비밀번호가 올바르지 않습니다"
+
 msgid "low"
 msgstr "낮음"
 
@@ -3161,6 +3483,9 @@ msgstr[0] "{}초 후 새 코드"
 
 msgid "no 2FA"
 msgstr "2FA 없음"
+
+msgid "no permission to read or write there"
+msgstr "그곳에 읽거나 쓸 권한이 없습니다"
 
 msgid "none"
 msgstr "없음"
@@ -3203,6 +3528,23 @@ msgstr "보냄:"
 msgid "solid-state"
 msgstr "솔리드 스테이트"
 
+msgid "that place is read-only"
+msgstr "그 위치는 읽기 전용입니다"
+
+msgid "the disk is full"
+msgstr "디스크가 가득 찼습니다"
+
+msgid "the file or folder does not exist"
+msgstr "파일 또는 폴더가 없습니다"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "보관함이 잠겨 있습니다. 잠금을 해제한 다음 다시 시도하세요"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr ""
+"이 잠금 해제 방법으로는 더 이상 보관함을 열 수 없습니다. 마스터 비밀번호를 입"
+"력하세요"
+
 msgid "very high"
 msgstr "매우 높음"
 
@@ -3213,6 +3555,15 @@ msgid "weak"
 msgstr "약함"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr ""
+"코드 {total}개 중 {added}개를 추가했습니다. 나머지는 저장하지 못했습니다"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{total}개 중 {done}개 완료"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{}개는 가져올 수 없습니다."
@@ -3221,6 +3572,11 @@ msgstr[0] "{}개는 가져올 수 없습니다."
 msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{}자"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "코드 {}개를 추가했습니다"
 
 #, rust-format
 msgid "{} day."

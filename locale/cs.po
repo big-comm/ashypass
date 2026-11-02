@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:20\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
+msgid "1. Install the extension"
+msgstr "1. Nainstalujte rozšíření"
+
 msgid "1PUX export file"
 msgstr "Exportní soubor 1PUX"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Propojte ho s Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Povolte ho"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -27,6 +36,9 @@ msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "12slovná fráze BIP-39 pro odemknutí bez bezpečnostního klíče. Zobrazena "
 "pouze jednou."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "Přihlašovací formulář s návrhy Ashy Pass pod polem pro e-mail"
 
 msgid "A new access"
 msgstr "Nová položka"
@@ -68,6 +80,9 @@ msgstr "Přidat přílohu"
 msgid "Add code"
 msgstr "Přidat kód"
 
+msgid "Add codes"
+msgstr "Přidat kódy"
+
 msgid "Add file"
 msgstr "Přidat soubor"
 
@@ -80,11 +95,24 @@ msgstr "Přidat položky z kopie do aktuálního trezoru"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "Přidat do tohoto trezoru položky ze zálohy .ashy"
 
+msgid "Add to Firefox"
+msgstr "Přidat do Firefoxu"
+
 msgid "Add to favorites"
 msgstr "Přidat do oblíbených"
 
+msgid "Add to the browser"
+msgstr "Přidat do prohlížeče"
+
 msgid "Add verification code"
 msgstr "Přidat ověřovací kód"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Přidat {} kód z Google Authenticator?"
+msgstr[1] "Přidat {} kódy z Google Authenticator?"
+msgstr[2] "Přidat {} kódů z Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Přidáno do oblíbených"
@@ -108,6 +136,9 @@ msgstr "Upravit počet číslic"
 
 msgid "Adjust words and separator"
 msgstr "Upravit slova a oddělovač"
+
+msgid "Advanced"
+msgstr "Pokročilé"
 
 msgid "Algorithm"
 msgstr "Algoritmus"
@@ -161,6 +192,9 @@ msgstr ""
 msgid "Another example"
 msgstr "Jiný příklad"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Kdokoli, kdo soubor získá, přečte všechna hesla v něm"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -208,6 +242,12 @@ msgstr ""
 "Ashy Pass se nemohl spojit s Nextcloud. Zkontrolujte své připojení, adresu "
 "serveru a heslo aplikace."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Ashy Pass pro Chrome"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Ashy Pass pro Firefox"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -226,6 +266,12 @@ msgid ""
 msgstr ""
 "Alespoň 8 znaků. Čtyřslovné heslo ze seznamu EFF je silným výchozím "
 "nastavením."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr "Alespoň {} znaků. Pár náhodných slov se snadno pamatuje a těžko hádá."
 
 msgid "Attachment added"
 msgstr "Příloha přidána"
@@ -290,11 +336,27 @@ msgstr "Zálohy"
 msgid "Before importing"
 msgstr "Před importem"
 
+msgid "Bold (Ctrl+B)"
+msgstr "Tučně (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "Přineste nebo přidejte svá hesla"
+
 msgid "Bring passwords from another app or browser"
 msgstr "Přeneste hesla z jiné aplikace nebo prohlížeče"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"Přineste je z prohlížeče (Chrome, Edge, Brave, Firefox) nebo z jiného "
+"správce hesel (Bitwarden, 1Password, KeePass)."
+
 msgid "Bring your passwords"
 msgstr "Přeneste svá hesla"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Stáhne změny ze serveru a odešle ty vaše; vyhrává nejnovější verze"
 
 msgid "Browser"
 msgstr "Prohlížeč"
@@ -368,6 +430,9 @@ msgid ""
 msgstr ""
 "Zvolte hlavní heslo. Chrání vše, co v Ashy Pass na tomto počítači uchováváte."
 
+msgid "Choose an access in the list first"
+msgstr "Nejprve vyberte položku v seznamu"
+
 msgid "Choose an image with the QR code"
 msgstr "Vyberte obrázek s QR kódem"
 
@@ -401,6 +466,9 @@ msgstr "Tuto složku zvolíte při přidávání nebo úpravě hesla."
 msgid "Choose…"
 msgstr "Vybrat…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge a Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Export hesel z Chrome, Edge, Brave nebo Firefoxu (CSV)"
 
@@ -415,6 +483,13 @@ msgstr "Vymazat historii"
 
 msgid "Clear the password history?"
 msgstr "Vymazat historii hesel?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"Klikněte do přihlašovacího pole a vyberte svůj přístup: vyplní se jen na "
+"webu, ke kterému patří."
 
 msgid "Client ID"
 msgstr "ID klienta"
@@ -440,6 +515,9 @@ msgstr "Zavřít mapování"
 msgid "Closing mapping"
 msgstr "Zavírání mapování"
 
+msgid "Code"
+msgstr "Kód"
+
 msgid "Code copied"
 msgstr "Kód zkopírován"
 
@@ -452,8 +530,26 @@ msgstr "Nastavení kódu"
 msgid "Coffee"
 msgstr "Káva"
 
+msgid "Column"
+msgstr "Sloupec"
+
+msgid "Column 1"
+msgstr "Sloupec 1"
+
+msgid "Column 2"
+msgstr "Sloupec 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "Sloupce jako name, url, username, password"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Přecházíte z Google Authenticator? Tam otevřete nabídku, zvolte Převést účty "
+"→ Exportovat účty a přečtěte si zde zobrazený QR kód: všechny jeho kódy "
+"přijdou najednou."
 
 msgid "Compact vault list"
 msgstr "Kompaktní seznam trezoru"
@@ -527,9 +623,6 @@ msgstr "Připojení se nezdařilo"
 msgid "Connect the sync folder"
 msgstr "Připojit synchronizační složku"
 
-msgid "Connect your browsers"
-msgstr "Připojte své prohlížeče"
-
 msgid "Connected"
 msgstr "Připojeno"
 
@@ -539,6 +632,9 @@ msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Připojeno prohlížečů: {}. Pokud jsou otevřené, restartujte je."
 msgstr[1] "Připojeno prohlížečů: {}. Pokud jsou otevřené, restartujte je."
 msgstr[2] "Připojeno prohlížečů: {}. Pokud jsou otevřené, restartujte je."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Připojeno, ale zablokováno (krok 3)"
 
 msgid "Connected. Received:"
 msgstr "Připojeno. Přijato:"
@@ -575,6 +671,15 @@ msgstr "Kopie trezoru z Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Kopírovat heslo"
+
+msgid "Copy the password"
+msgstr "Kopírovat heslo"
+
+msgid "Copy the user"
+msgstr "Kopírovat uživatele"
+
+msgid "Copy the verification code"
+msgstr "Kopírovat ověřovací kód"
 
 msgid "Copy this old password"
 msgstr "Kopírovat toto staré heslo"
@@ -693,9 +798,6 @@ msgstr "Vytvořit složku…"
 msgid "Create my vault"
 msgstr "Vytvořit můj trezor"
 
-msgid "Create password"
-msgstr "Vytvořit heslo"
-
 msgid "Create your vault"
 msgstr "Vytvořte si trezor"
 
@@ -798,6 +900,9 @@ msgstr "Odpojení se nezdařilo"
 msgid "Disconnect the sync folder?"
 msgstr "Odpojit synchronizační složku?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "Ukládáte hesla někde jinde?"
+
 msgid "Done"
 msgstr "Hotovo"
 
@@ -815,6 +920,13 @@ msgstr "Jednotka zamčena"
 
 msgid "Duplicate items"
 msgstr "Duplicitní položky"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Každá ikona se stahuje přímo z webu, který tak vidí vaši internetovou "
+"adresu. Weby ve vaší místní síti se nikdy nekontaktují."
 
 msgid "Easier to type and remember."
 msgstr "Snáze se píše i pamatuje."
@@ -858,9 +970,6 @@ msgstr "Zašifrováno jako"
 msgid "Encrypted device"
 msgstr "Zašifrované zařízení"
 
-msgid "Encrypted folder sync"
-msgstr "Šifrovaná synchronizace složky"
-
 msgid "Encrypted folder sync failed"
 msgstr "Šifrovaná synchronizace složky se nezdařila"
 
@@ -891,6 +1000,9 @@ msgstr "Trezor se znovu šifruje…"
 
 msgid "Encrypting…"
 msgstr "Šifruje se…"
+
+msgid "Encryption"
+msgstr "Šifrování"
 
 msgid "Encrypt…"
 msgstr "Zašifrovat…"
@@ -934,6 +1046,16 @@ msgstr "Podrobnosti chyb"
 msgid "Estimated strength"
 msgstr "Odhadovaná síla"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Všechny kódy z tohoto exportu už v trezoru jsou."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Každá položka je zašifrována pomocí AES-256-GCM klíčem odvozeným z hlavního "
+"hesla"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -972,6 +1094,18 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "Vše již bylo synchronizováno"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Vše, co v Ashy Pass uchováváte, zůstává v zašifrovaném trezoru v tomto "
+"počítači. Otevře ho jen vaše hlavní heslo a Ashy Pass ho nedokáže obnovit, "
+"pokud ho ztratíte."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "Exportovat nechráněný soubor (CSV)"
+
 msgid "Export complete"
 msgstr "Export dokončen"
 
@@ -981,8 +1115,8 @@ msgstr "Export se nezdařil"
 msgid "Export to KeePass"
 msgstr "Exportovat do KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Exportujte do KeePass nebo do souboru, který může číst kdokoli"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Exportovat do KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Exportovat nechráněný soubor"
@@ -1014,9 +1148,6 @@ msgstr "Oblíbené"
 msgid "Favorites"
 msgstr "Oblíbené"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Načíst a zobrazit ikony stránek vedle položek v trezoru"
-
 msgid "Fetching remote passwords"
 msgstr "Načítání vzdálených hesel"
 
@@ -1038,6 +1169,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Vyplňte všechna tři pole."
 
+msgid "Fill passwords in the browser"
+msgstr "Vyplňujte hesla v prohlížeči"
+
 msgid "Find duplicate items"
 msgstr "Najít duplicitní položky"
 
@@ -1046,6 +1180,9 @@ msgstr "Nálezy"
 
 msgid "Finishing synchronization"
 msgstr "Dokončování synchronizace"
+
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox Add-ons · Firefox a LibreWolf"
 
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
@@ -1056,8 +1193,17 @@ msgstr ""
 "importem uvidíte, co bylo rozpoznáno. Nechráněné exportní soubory poté "
 "smažte."
 
+msgid "First steps"
+msgstr "První kroky"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "První kroky jsou skryté. Vrátíte je z hlavní nabídky."
+
 msgid "Folder"
 msgstr "Složka"
+
+msgid "Folder and tags"
+msgstr "Složka a štítky"
 
 msgid "Folder created"
 msgstr "Složka vytvořena"
@@ -1091,6 +1237,10 @@ msgid ""
 msgstr ""
 "Pro Nextcloud vypadá základní URL jako https://cloud.example.com/remote.php/"
 "dav/files/UŽIVATELSKÉ_JMÉNO"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr ""
+"Pro lidi, kteří na svém serveru Nextcloud používají aplikaci „Passwords“"
 
 msgid "For the browsers installed for this user"
 msgstr "Pro prohlížeče tohoto uživatele"
@@ -1186,6 +1336,9 @@ msgstr ""
 msgid "Hide copied passwords from clipboard history"
 msgstr "Skrýt zkopírovaná hesla v historii schránky"
 
+msgid "Hide first steps"
+msgstr "Skrýt první kroky"
+
 msgid "Hide password"
 msgstr "Skrýt heslo"
 
@@ -1214,6 +1367,9 @@ msgstr "Hesla už mám uložená jinde"
 msgid "I understand — Continue"
 msgstr "Rozumím – Pokračovat"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "Zapsal(a) jsem si hlavní heslo na bezpečné místo"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1230,6 +1386,10 @@ msgstr "Importovat"
 msgid "Import complete"
 msgstr "Import dokončen"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr ""
+"Importujte z prohlížeče nebo jiné aplikace, nebo je přidávejte po jednom"
+
 msgid "Import partly complete"
 msgstr "Import částečně dokončen"
 
@@ -1240,6 +1400,13 @@ msgid "Import passwords…"
 msgstr "Importovat hesla…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"Důležité: když se tento počítač pokazí, záloha je jediný způsob, jak získat "
+"vše zpět"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1247,6 +1414,15 @@ msgstr ""
 "V Ashy Pass pro Android otevřete Nastavení → Synchronizace přes šifrovanou "
 "složku a klepněte na „Naskenovat QR kód z počítače“. Potom zadejte kód níže "
 "a hlavní heslo."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"V Chrome: Nastavení → Automatické vyplňování a hesla → Správce hesel Google "
+"→ Nastavení → Exportovat hesla. Po importu exportovaný soubor smažte: není "
+"chráněný."
 
 msgid "Incorrect PIN"
 msgstr "Nesprávný PIN"
@@ -1270,6 +1446,9 @@ msgstr "Nesprávné hlavní heslo. Nic nebylo změněno."
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Nesprávné hlavní heslo. Nic nebylo exportováno."
 
+msgid "Insert a table"
+msgstr "Vložit tabulku"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1278,6 +1457,13 @@ msgstr ""
 "Vložte svůj FIDO2 token (Yubikey, Nitrokey, atd.) a autorizujte na zařízení "
 "po zobrazení výzvy. Vaše aktuální přístupová fráze je vyžadována pro "
 "autorizaci nového slotu."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Nainstalujte rozšíření Ashy Pass a propojte ho"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "Nainstalováno v: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "Interní chyba: není nastavena přístupová fráze"
@@ -1294,24 +1480,17 @@ msgid ""
 msgstr ""
 "Otevírá trezor na tomto počítači. Nikdo ho za vás neobnoví — ani Ashy Pass."
 
+msgid "Italic (Ctrl+I)"
+msgstr "Kurzíva (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "Položky zůstanou zde i ve složce; opětovné připojení je sloučí"
 
 msgid "Its user, password and other details appear here."
 msgstr "Zde se zobrazí uživatel, heslo a další podrobnosti."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "Export KeePass dokončen"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass udržuje soubor chráněný heslem. Soubor CSV může přečíst kdokoli, kdo "
-"ho získá."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1328,6 +1507,9 @@ msgstr "Ponechat"
 
 msgid "Keep using"
 msgstr "Pokračovat"
+
+msgid "Keep verification codes (2FA)"
+msgstr "Uchovávejte ověřovací kódy (2FA)"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1431,14 +1613,17 @@ msgstr ""
 "Smazané položky."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Přihlášení, karty, identity, poznámky a přístupové klíče, zašifrované na "
-"tomto počítači dříve, než ho opustí, přes složku na Nextcloudu, pCloudu, "
-"WebDAV, Dropboxu, Google Disku nebo na tomto počítači. Ashy Pass pro Android "
-"používá stejnou složku."
+"Přihlašovací údaje, karty, identity, poznámky, přístupové klíče a ověřovací "
+"kódy se v tomto počítači před odesláním zašifrují, a to přes složku na "
+"Nextcloudu, pCloudu, WebDAV, Dropboxu, Google Drive nebo v tomto počítači. "
+"Služba vidí jen zašifrované soubory, nikdy jejich obsah. Ashy Pass pro "
+"Android používá stejnou složku."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1452,6 +1637,9 @@ msgstr "Malá písmena (a–z)"
 
 msgid "Main menu"
 msgstr "Hlavní nabídka"
+
+msgid "Make a backup"
+msgstr "Vytvořte zálohu"
 
 msgid "Master Password"
 msgstr "Hlavní heslo"
@@ -1479,9 +1667,6 @@ msgstr "Sloučeno"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "Sloučeno; ostatní jsou ve Smazané položky"
-
-msgid "Minimum length:"
-msgstr "Minimální délka:"
 
 msgid "Mint"
 msgstr "Máta"
@@ -1563,6 +1748,9 @@ msgstr ""
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Aplikace Nextcloud Passwords"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords připojeno"
@@ -1650,6 +1838,15 @@ msgstr "Nenakonfigurováno"
 msgid "Not connected"
 msgstr "Nepřipojeno"
 
+msgid "Not done yet"
+msgstr "Zatím nehotovo"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "Zatím není v obchodě: podívejte se, jak ji nainstalovat ručně"
+
+msgid "Not now"
+msgstr "Teď ne"
+
 msgid "Not run yet"
 msgstr "Zatím nespouštěno"
 
@@ -1729,14 +1926,41 @@ msgstr "Zapnuto"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
 "Na webu, který chcete chránit, otevřete nastavení dvoufázového ověření a "
-"zvolte ověřovací aplikaci. Načtěte zobrazený QR kód nebo zkopírujte klíč pro "
-"nastavení a vložte ho níže."
+"zvolte aplikaci pro ověřování. Přečtěte si zobrazený QR kód, nebo zkopírujte "
+"klíč pro nastavení (písmena a čísla pod QR kódem, často skrytá za „Nelze "
+"naskenovat?“) a vložte jej níže."
 
 msgid "On until Ashy Pass closes"
 msgstr "Zapnuto do zavření Ashy Pass"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"Jakmile budou vaše hesla v aplikaci, vytvořte zálohu v části Zálohy a uložte "
+"ji mimo tento počítač, například na USB disk. Pokud se tento počítač pokazí "
+"nebo ztratí, je to jediný způsob, jak je získat zpět."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Jeden kód používá čítač nebo algoritmus, který Ashy Pass nepodporuje, a byl "
+"vynechán."
+msgstr[1] ""
+"Některé kódy používají čítač nebo algoritmus, který Ashy Pass nepodporuje, a "
+"byly vynechány."
+msgstr[2] ""
+"Některé kódy používají čítač nebo algoritmus, který Ashy Pass nepodporuje, a "
+"byly vynechány."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1774,8 +1998,14 @@ msgstr "Otevřít šifrované mapování"
 msgid "Open image…"
 msgstr "Otevřít obrázek…"
 
+msgid "Open in the store"
+msgstr "Otevřít v obchodě"
+
 msgid "Open the encrypted volume"
 msgstr "Otevřít šifrovaný svazek"
+
+msgid "Open the website"
+msgstr "Otevřít web"
 
 msgid "Open website"
 msgstr "Otevřít web"
@@ -1791,6 +2021,9 @@ msgstr "Otevře Dropbox v prohlížeči; zkopírujte zobrazený kód"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Otevře prohlížeč pro souhlas OAuth"
+
+msgid "Optional, to organize the list"
+msgstr "Volitelné, pro uspořádání seznamu"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1858,6 +2091,9 @@ msgstr "Heslo zkopírováno"
 
 msgid "Password for this backup"
 msgstr "Heslo pro tuto zálohu"
+
+msgid "Password generator"
+msgstr "Generátor hesel"
 
 msgid "Password history"
 msgstr "Historie hesel"
@@ -1947,11 +2183,17 @@ msgstr "Předchozí hesla, která Ashy Pass uchoval při změně tohoto hesla."
 msgid "Protected by a password you choose"
 msgstr "Chráněno heslem, které si zvolíte"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr "Chráněno heslem. Otevře se v KeePass, KeePassXC a dalších aplikacích"
+
 msgid "Protection"
 msgstr "Ochrana"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR kód načten. Zkontrolujte údaje a uložte."
+
+msgid "Quicker than the master password on this computer"
+msgstr "Rychlejší než hlavní heslo na tomto počítači"
 
 msgid "Quit"
 msgstr "Ukončit"
@@ -1993,6 +2235,9 @@ msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr ""
 "Zaregistrujte až 2 fyzické FIDO2 autentizátory (YubiKey, SoloKey, atd.)"
 
+msgid "Remember the backup"
+msgstr "Nezapomeňte na zálohu"
+
 msgid "Remote generation:"
 msgstr "Vzdálená generace:"
 
@@ -2013,6 +2258,9 @@ msgstr "Odebrat složku"
 
 msgid "Remove from favorites"
 msgstr "Odebrat z oblíbených"
+
+msgid "Remove table"
+msgstr "Odstranit tabulku"
 
 msgid "Remove the old copy?"
 msgstr "Odebrat starou kopii?"
@@ -2082,6 +2330,9 @@ msgstr "Uchování"
 
 msgid "Rose"
 msgstr "Růže"
+
+msgid "Row"
+msgstr "Řádek"
 
 msgid "Run"
 msgstr "Spustit"
@@ -2167,6 +2418,9 @@ msgstr "Hledat podle názvu, účtu nebo webu"
 
 msgid "Search codes"
 msgstr "Hledat kódy"
+
+msgid "Search folders"
+msgstr "Hledat složky"
 
 msgid "Search for drives"
 msgstr "Vyhledat jednotky"
@@ -2320,11 +2574,23 @@ msgstr "Velikost"
 msgid "Snapshot uploaded"
 msgstr "Snímek nahrán"
 
+msgid "Start using Ashy Pass"
+msgstr "Začněte používat Ashy Pass"
+
 msgid "Starting..."
 msgstr "Spouštění..."
 
 msgid "Status"
 msgstr "Stav"
+
+msgid "Step 1 of 3"
+msgstr "Krok 1 ze 3"
+
+msgid "Step 2 of 3"
+msgstr "Krok 2 ze 3"
+
+msgid "Step 3 of 3"
+msgstr "Krok 3 ze 3"
 
 msgid "Strength"
 msgstr "Síla"
@@ -2341,6 +2607,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "Styl"
+
+msgid "Suggest a passphrase"
+msgstr "Navrhnout heslo (frázi)"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Návrh: {}. Zapište si ho, než budete pokračovat."
 
 msgid "Summary"
 msgstr "Souhrn"
@@ -2382,6 +2655,9 @@ msgstr "Synchronizovat nyní"
 msgid "Sync when the vault is unlocked"
 msgstr "Synchronizovat při odemknutí trezoru"
 
+msgid "Sync with your phone or another computer"
+msgstr "Synchronizace s telefonem nebo jiným počítačem"
+
 msgid "Synchronization"
 msgstr "Synchronizace"
 
@@ -2421,15 +2697,15 @@ msgstr "Štítky"
 msgid "Tags (separated by commas)"
 msgstr "Štítky (oddělené čárkami)"
 
-msgid "Take my data to another app"
-msgstr "Přenést moje data do jiné aplikace"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Komunikuji s vaším tokenem… zkontrolujte zařízení kvůli výzvě k dotyku."
 
 msgid "Technical details"
 msgstr "Technické podrobnosti"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "Okno Ashy Pass v prohlížeči s přihlašovacími údaji pro daný web"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "PIN nelze na tomto počítači použít. Použijte hlavní heslo."
@@ -2521,6 +2797,13 @@ msgid "The new passwords do not match."
 msgstr "Nová hesla se neshodují."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"Ostatní kroky — prohlížeč, telefon, ověřovací kódy — na vás čekají v části "
+"První kroky nad vašimi hesly."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2565,6 +2848,9 @@ msgstr "Hledání je omezeno na složku"
 msgid "The site's icon, when the code has a site saved"
 msgstr "Ikona webu, pokud má kód uložený web"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "Šestimístné kódy, které weby žádají po zadání hesla"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "Synchronizace skončila, ale u některých položek došlo k chybě."
 
@@ -2577,6 +2863,19 @@ msgstr "Trezor se nepodařilo znovu otevřít"
 msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr ""
 "Trezor je zamčený. Nic nebylo uloženo — odemkněte ho a zkuste to znovu."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"Trezor byl zamknut dříve, než se záloha uložila. Odemkněte ho a vytvořte "
+"zálohu znovu."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"Trezor byl zamknut dříve, než se export uložil. Odemkněte ho a exportujte "
+"znovu."
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2637,6 +2936,11 @@ msgstr ""
 "možná odpověděl jen částečně: ponechte je a další synchronizace to zkusí "
 "znovu."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Tento export z Google Authenticator neobsahuje žádné kódy, které lze zde "
+"použít."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Tento PIN už k trezoru nepatří. Nic nebylo změněno."
 
@@ -2652,6 +2956,12 @@ msgstr "Tato položka nemá uložené heslo"
 
 msgid "This access has no user"
 msgstr "Tato položka nemá uživatele"
+
+msgid "This access has no verification code"
+msgstr "Tato položka nemá ověřovací kód"
+
+msgid "This access has no website"
+msgstr "Tato položka nemá web"
 
 msgid "This access no longer exists"
 msgstr "Tato položka už neexistuje"
@@ -2704,11 +3014,11 @@ msgstr ""
 "20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Jde o export z Google Authenticator s více účty. Místo toho zobrazte QR kód "
-"každého účtu na jeho webu."
+"Toto je export z Google Authenticator s několika účty. Přečtěte jej v části "
+"Ověřovací kódy → Přidat kód a přidáte je všechny najednou."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2736,6 +3046,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "Tímto se vymažou všechna data na disku"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "Přes šifrovanou složku ve vašem cloudu nebo na disku"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2769,6 +3082,12 @@ msgstr "Vypnout"
 msgid "Turn on"
 msgstr "Zapnout"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Zapne se při připojení. Když je vypnuto, rozšíření nevidí v trezoru nic"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Obousměrné sladění: stáhnout vzdálené, nahrát místní, řešit podle poslední "
@@ -2778,11 +3097,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Obousměrné sladění úspěšně dokončeno."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Obousměrná synchronizace s oficiální aplikací 'Passwords' na vašem serveru "
-"Nextcloud. Použijte heslo aplikace z Nastavení → Zabezpečení."
+"Obousměrná synchronizace s oficiální aplikací „Passwords“ na vašem serveru "
+"Nextcloud. Server tyto položky uchovává v čitelné podobě: používejte ji jen "
+"se serverem, kterému důvěřujete. Přihlaste se heslem aplikace z Nastavení → "
+"Zabezpečení."
 
 msgid "Type of password"
 msgstr "Typ hesla"
@@ -2826,6 +3148,9 @@ msgstr "Odemkněte trezor, aby se nové heslo uložilo. Neztratí se."
 msgid "Unlock with PIN"
 msgstr "Odemknout PINem"
 
+msgid "Unlock with a PIN"
+msgstr "Odemknout PINem"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2851,9 +3176,6 @@ msgstr "Odemknutí"
 
 msgid "Unlocking…"
 msgstr "Odemykání…"
-
-msgid "Unprotected CSV…"
-msgstr "Nechráněný CSV…"
 
 msgid "Updated locally"
 msgstr "Aktualizováno lokálně"
@@ -2901,6 +3223,9 @@ msgid ""
 msgstr ""
 "Používejte stejné hlavní heslo na všech svých zařízeních: otevírá klíč "
 "složky. Zde jej zadáte jednou, abyste se připojili."
+
+msgid "Use them on your phone or another computer"
+msgstr "Používejte je na telefonu nebo jiném počítači"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Tyto kódy použijte, když web požaduje dvoufázové ověření."
@@ -3036,6 +3361,9 @@ msgstr "Web"
 msgid "Website (optional)"
 msgstr "Web (volitelné)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Vítejte v Ashy Pass"
+
 msgid "What it contains"
 msgstr "Co obsahuje"
 
@@ -3045,9 +3373,6 @@ msgid ""
 msgstr ""
 "Když web nabízí dvoufázové ověření, přidejte sem jeho klíč pro nastavení a "
 "budete dostávat kódy."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Když je vypnuto, rozšíření nevidí nic z trezoru"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Odkud chcete hesla přenést?"
@@ -3136,6 +3461,13 @@ msgstr ""
 "Vaše položky zůstanou na tomto počítači i ve složce. Pozdější opětovné "
 "připojení je sloučí místo duplikace."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"Vaše přihlašovací údaje pro web, na kterém jste, vyplníte jedním kliknutím. "
+"Prohledávejte trezor a vytvářejte také nová hesla."
+
 msgid "Your most used accesses can be here"
 msgstr "Zde mohou být vaše nejpoužívanější položky"
 
@@ -3187,6 +3519,9 @@ msgstr "volné z"
 msgid "high"
 msgstr "vysoká"
 
+msgid "incorrect master password"
+msgstr "nesprávné hlavní heslo"
+
 msgid "low"
 msgstr "nízká"
 
@@ -3211,6 +3546,9 @@ msgstr[2] "nový kód za {} sekund"
 
 msgid "no 2FA"
 msgstr "bez 2FA"
+
+msgid "no permission to read or write there"
+msgstr "nemáte oprávnění tam číst ani zapisovat"
 
 msgid "none"
 msgstr "žádný"
@@ -3257,6 +3595,21 @@ msgstr "odesláno:"
 msgid "solid-state"
 msgstr "polovodičové"
 
+msgid "that place is read-only"
+msgstr "to místo je jen pro čtení"
+
+msgid "the disk is full"
+msgstr "disk je plný"
+
+msgid "the file or folder does not exist"
+msgstr "soubor nebo složka neexistuje"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "trezor je zamčený; odemkněte ho a zkuste to znovu"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr "toto odemknutí už trezor neotevře; zadejte hlavní heslo"
+
 msgid "very high"
 msgstr "velmi vysoká"
 
@@ -3265,6 +3618,14 @@ msgstr "velmi nízká"
 
 msgid "weak"
 msgstr "slabé"
+
+#, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "Přidáno {added} z {total} kódů; ostatní se nepodařilo uložit"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "Hotovo {done} z {total}"
 
 #, rust-format
 msgid "{} cannot be imported."
@@ -3279,6 +3640,13 @@ msgid_plural "{} characters"
 msgstr[0] "{} znak"
 msgstr[1] "{} znaky"
 msgstr[2] "{} znaků"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "Přidán {} kód"
+msgstr[1] "Přidány {} kódy"
+msgstr[2] "Přidáno {} kódů"
 
 #, rust-format
 msgid "{} day."

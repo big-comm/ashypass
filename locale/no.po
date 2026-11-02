@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:39\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Installer utvidelsen"
+
 msgid "1PUX export file"
 msgstr "1PUX-eksportfil"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Koble den til Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Tillat den"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -26,6 +35,9 @@ msgstr ""
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "En 12-ords BIP-39-frase for å låse opp uten sikkerhetsnøkkel. Vises én gang."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "Et påloggingsskjema med Ashy Pass-forslag under e-postfeltet"
 
 msgid "A new access"
 msgstr "En ny pålogging"
@@ -67,6 +79,9 @@ msgstr "Legg til vedlegg"
 msgid "Add code"
 msgstr "Legg til kode"
 
+msgid "Add codes"
+msgstr "Legg til koder"
+
 msgid "Add file"
 msgstr "Legg til fil"
 
@@ -79,11 +94,23 @@ msgstr "Legg til kopiens oppføringer i det gjeldende hvelvet"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "Legg til oppføringene fra en .ashy-sikkerhetskopi i dette hvelvet"
 
+msgid "Add to Firefox"
+msgstr "Legg til i Firefox"
+
 msgid "Add to favorites"
 msgstr "Legg til i favoritter"
 
+msgid "Add to the browser"
+msgstr "Legg til i nettleseren"
+
 msgid "Add verification code"
 msgstr "Legg til bekreftelseskode"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Legge til {} kode fra Google Authenticator?"
+msgstr[1] "Legge til {} koder fra Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Lagt til i favoritter"
@@ -108,6 +135,9 @@ msgstr "Juster antall sifre"
 
 msgid "Adjust words and separator"
 msgstr "Juster ord og skilletegn"
+
+msgid "Advanced"
+msgstr "Avansert"
 
 msgid "Algorithm"
 msgstr "Algoritme"
@@ -161,6 +191,9 @@ msgstr ""
 msgid "Another example"
 msgstr "Et annet eksempel"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Alle som får tak i filen, kan lese alle passordene i den"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -209,6 +242,12 @@ msgstr ""
 "Ashy Pass klarte ikke å kommunisere med Nextcloud. Sjekk tilkoblingen din, "
 "serveradressen og app-passordet."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Ashy Pass for Chrome"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Ashy Pass for Firefox"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -227,6 +266,14 @@ msgid ""
 msgstr ""
 "Minst 8 tegn. En passfrase på fire ord fra EFF-ordlisten er et sterkt "
 "standardvalg."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Minst {} tegn. Noen få tilfeldige ord er lette å huske og vanskelige å "
+"gjette."
 
 msgid "Attachment added"
 msgstr "Vedlegg lagt til"
@@ -291,11 +338,27 @@ msgstr "Sikkerhetskopier"
 msgid "Before importing"
 msgstr "Før import"
 
+msgid "Bold (Ctrl+B)"
+msgstr "Fet (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "Ta med eller legg til passordene dine"
+
 msgid "Bring passwords from another app or browser"
 msgstr "Hent passord fra en annen app eller nettleser"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"Hent dem fra en nettleser (Chrome, Edge, Brave, Firefox) eller en annen "
+"passordbehandler (Bitwarden, 1Password, KeePass)."
+
 msgid "Bring your passwords"
 msgstr "Ta med passordene dine"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Henter serverens endringer og sender dine; den nyeste versjonen vinner"
 
 msgid "Browser"
 msgstr "Nettleser"
@@ -370,6 +433,9 @@ msgstr ""
 "Velg et hovedpassord. Det beskytter alt du oppbevarer i Ashy Pass på denne "
 "datamaskinen."
 
+msgid "Choose an access in the list first"
+msgstr "Velg først en pålogging i listen"
+
 msgid "Choose an image with the QR code"
 msgstr "Velg et bilde med QR-koden"
 
@@ -403,6 +469,9 @@ msgstr "Velg denne mappen når du legger til eller redigerer et passord."
 msgid "Choose…"
 msgstr "Velg…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge og Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Passordeksport fra Chrome, Edge, Brave eller Firefox (CSV)"
 
@@ -417,6 +486,13 @@ msgstr "Tøm historikk"
 
 msgid "Clear the password history?"
 msgstr "Tømme passordhistorikken?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"Klikk på et påloggingsfelt og velg tilgangen din: den fylles bare ut på "
+"nettstedet den hører til."
 
 msgid "Client ID"
 msgstr "Klient-ID"
@@ -442,6 +518,9 @@ msgstr "Lukk tilordning"
 msgid "Closing mapping"
 msgstr "Lukker tilordning"
 
+msgid "Code"
+msgstr "Kode"
+
 msgid "Code copied"
 msgstr "Kode kopiert"
 
@@ -454,8 +533,26 @@ msgstr "Kodeinnstillinger"
 msgid "Coffee"
 msgstr "Kaffe"
 
+msgid "Column"
+msgstr "Kolonne"
+
+msgid "Column 1"
+msgstr "Kolonne 1"
+
+msgid "Column 2"
+msgstr "Kolonne 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "Kolonner som name, url, username, password"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Kommer du fra Google Authenticator? Åpne menyen der, velg Overfør kontoer → "
+"Eksporter kontoer, og skann QR-koden som vises, her: alle kodene kommer på "
+"én gang."
 
 msgid "Compact vault list"
 msgstr "Kompakt hvelvliste"
@@ -529,9 +626,6 @@ msgstr "Tilkobling mislyktes"
 msgid "Connect the sync folder"
 msgstr "Koble til synkroniseringsmappen"
 
-msgid "Connect your browsers"
-msgstr "Koble til nettleserne dine"
-
 msgid "Connected"
 msgstr "Tilkoblet"
 
@@ -540,6 +634,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Koblet til {} nettleser. Start den på nytt hvis den er åpen."
 msgstr[1] "Koblet til {} nettlesere. Start dem på nytt hvis de er åpne."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Tilkoblet, men blokkert (steg 3)"
 
 msgid "Connected. Received:"
 msgstr "Tilkoblet. Mottatt:"
@@ -576,6 +673,15 @@ msgstr "Kopi av hvelvet fra Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Kopier passord"
+
+msgid "Copy the password"
+msgstr "Kopier passordet"
+
+msgid "Copy the user"
+msgstr "Kopier brukeren"
+
+msgid "Copy the verification code"
+msgstr "Kopier bekreftelseskoden"
 
 msgid "Copy this old password"
 msgstr "Kopier dette gamle passordet"
@@ -694,9 +800,6 @@ msgstr "Opprett mappe…"
 msgid "Create my vault"
 msgstr "Opprett hvelvet mitt"
 
-msgid "Create password"
-msgstr "Opprett passord"
-
 msgid "Create your vault"
 msgstr "Opprett hvelvet ditt"
 
@@ -799,6 +902,9 @@ msgstr "Frakobling mislyktes"
 msgid "Disconnect the sync folder?"
 msgstr "Koble fra synkroniseringsmappen?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "Har du passord lagret et annet sted?"
+
 msgid "Done"
 msgstr "Fullført"
 
@@ -816,6 +922,13 @@ msgstr "Stasjon låst"
 
 msgid "Duplicate items"
 msgstr "Dupliserte elementer"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Hvert ikon lastes ned fra selve nettstedet, som ser internettadressen din. "
+"Nettsteder på ditt lokale nettverk kontaktes aldri."
 
 msgid "Easier to type and remember."
 msgstr "Enklere å skrive og huske."
@@ -859,9 +972,6 @@ msgstr "Kryptert som"
 msgid "Encrypted device"
 msgstr "Kryptert enhet"
 
-msgid "Encrypted folder sync"
-msgstr "Kryptert mappesynkronisering"
-
 msgid "Encrypted folder sync failed"
 msgstr "Kryptert mappesynkronisering mislyktes"
 
@@ -891,6 +1001,9 @@ msgstr "Krypterer hvelvet på nytt…"
 
 msgid "Encrypting…"
 msgstr "Krypterer…"
+
+msgid "Encryption"
+msgstr "Kryptering"
 
 msgid "Encrypt…"
 msgstr "Krypter…"
@@ -935,6 +1048,16 @@ msgstr "Feildetaljer"
 msgid "Estimated strength"
 msgstr "Anslått styrke"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Alle kodene i denne eksporten ligger allerede i hvelvet."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Hver oppføring er kryptert med AES-256-GCM under en nøkkel utledet fra "
+"hovedpassordet"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -973,6 +1096,18 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "Alt var allerede synkronisert"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Alt du lagrer i Ashy Pass blir værende i et kryptert hvelv på denne "
+"datamaskinen. Bare hovedpassordet ditt åpner det, og Ashy Pass kan ikke "
+"gjenopprette det hvis du mister det."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "Eksporter en ubeskyttet fil (CSV)"
+
 msgid "Export complete"
 msgstr "Eksport fullført"
 
@@ -982,8 +1117,8 @@ msgstr "Eksport mislyktes"
 msgid "Export to KeePass"
 msgstr "Eksporter til KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Eksporter til KeePass eller til en fil alle kan lese"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Eksporter til KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Eksporter ubeskyttet fil"
@@ -1015,9 +1150,6 @@ msgstr "Favoritt"
 msgid "Favorites"
 msgstr "Favoritter"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Hent og vis nettstedsikoner ved siden av hvelvposter"
-
 msgid "Fetching remote passwords"
 msgstr "Henter eksterne passord"
 
@@ -1039,6 +1171,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Fyll ut alle tre feltene."
 
+msgid "Fill passwords in the browser"
+msgstr "Fyll ut passord i nettleseren"
+
 msgid "Find duplicate items"
 msgstr "Finn dupliserte elementer"
 
@@ -1047,6 +1182,9 @@ msgstr "Funn"
 
 msgid "Finishing synchronization"
 msgstr "Fullfører synkronisering"
+
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox Add-ons · Firefox og LibreWolf"
 
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
@@ -1057,8 +1195,17 @@ msgstr ""
 "her. Før import ser du hva som ble gjenkjent. Slett ubeskyttede eksportfiler "
 "etterpå."
 
+msgid "First steps"
+msgstr "Første steg"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "Første steg er skjult. Hovedmenyen henter dem tilbake."
+
 msgid "Folder"
 msgstr "Mappe"
+
+msgid "Folder and tags"
+msgstr "Mappe og etiketter"
 
 msgid "Folder created"
 msgstr "Mappe opprettet"
@@ -1093,6 +1240,9 @@ msgid ""
 msgstr ""
 "For Nextcloud ser grunn-URL-en slik ut: https://cloud.example.com/remote.php/"
 "dav/files/BRUKERNAVN"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "For folk som bruker appen «Passwords» på Nextcloud-serveren sin"
 
 msgid "For the browsers installed for this user"
 msgstr "For nettleserne installert for denne brukeren"
@@ -1187,6 +1337,9 @@ msgstr "Hjelper SSD-utjevning, men lekker ledig plass-mønstre til enheten."
 msgid "Hide copied passwords from clipboard history"
 msgstr "Skjul kopierte passord i utklippstavlehistorikken"
 
+msgid "Hide first steps"
+msgstr "Skjul første steg"
+
 msgid "Hide password"
 msgstr "Skjul passord"
 
@@ -1216,6 +1369,9 @@ msgstr "Jeg har allerede passord et annet sted"
 msgid "I understand — Continue"
 msgstr "Jeg forstår — Fortsett"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "Jeg har skrevet ned hovedpassordet mitt på et trygt sted"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1232,6 +1388,10 @@ msgstr "Importer"
 msgid "Import complete"
 msgstr "Import fullført"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr ""
+"Importer fra en nettleser eller en annen app, eller legg dem til én og én"
+
 msgid "Import partly complete"
 msgstr "Importen er delvis fullført"
 
@@ -1242,6 +1402,13 @@ msgid "Import passwords…"
 msgstr "Importer passord…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"Viktig: hvis denne datamaskinen går i stykker, er en sikkerhetskopi den "
+"eneste måten å få alt tilbake på"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1249,6 +1416,15 @@ msgstr ""
 "I Ashy Pass for Android åpner du Innstillinger → Kryptert "
 "mappesynkronisering og trykker på «Skann QR-koden fra datamaskinen». Skriv "
 "deretter inn koden nedenfor og masterpassordet."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"I Chrome: Innstillinger → Autofyll og passord → Google Passordbehandling → "
+"Innstillinger → Eksporter passord. Etter importen sletter du den eksporterte "
+"filen: den er ikke beskyttet."
 
 msgid "Incorrect PIN"
 msgstr "Feil PIN"
@@ -1271,6 +1447,9 @@ msgstr "Feil hovedpassord. Ingenting ble endret."
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Feil hovedpassord. Ingenting ble eksportert."
 
+msgid "Insert a table"
+msgstr "Sett inn en tabell"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1279,6 +1458,13 @@ msgstr ""
 "Sett inn FIDO2-nøkkelen din (Yubikey, Nitrokey, osv.) og godkjenn på enheten "
 "når du blir bedt om det. Din nåværende passfrase kreves for å godkjenne den "
 "nye nøkkellommen."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Installer Ashy Pass-utvidelsen og koble den til"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "Installert i: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "Intern feil: ingen passfrase angitt"
@@ -1296,6 +1482,9 @@ msgstr ""
 "Det åpner hvelvet på denne datamaskinen. Ingen kan gjenopprette det for deg "
 "— ikke engang Ashy Pass."
 
+msgid "Italic (Ctrl+I)"
+msgstr "Kursiv (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr ""
 "Elementene blir liggende her og i mappen; å koble til igjen slår dem sammen"
@@ -1303,18 +1492,8 @@ msgstr ""
 msgid "Its user, password and other details appear here."
 msgstr "Brukeren, passordet og andre detaljer vises her."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass-eksport fullført"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass holder filen beskyttet med et passord. En CSV-fil kan leses av alle "
-"som får tak i den."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1331,6 +1510,9 @@ msgstr "Behold dem"
 
 msgid "Keep using"
 msgstr "Fortsett"
+
+msgid "Keep verification codes (2FA)"
+msgstr "Ta vare på bekreftelseskoder (2FA)"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1433,14 +1615,17 @@ msgstr ""
 "flytter de andre til Slettede elementer."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Pålogginger, kort, identiteter, notater og tilgangsnøkler, kryptert på denne "
-"datamaskinen før de forlater den, via en mappe på Nextcloud, pCloud, WebDAV, "
-"Dropbox, Google Disk eller denne datamaskinen. Ashy Pass for Android bruker "
-"samme mappe."
+"Innlogginger, kort, identiteter, notater, passnøkler og bekreftelseskoder "
+"krypteres på denne datamaskinen før de forlater den, via en mappe på "
+"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive eller denne datamaskinen. "
+"Tjenesten ser bare krypterte filer, aldri innholdet. Ashy Pass for Android "
+"bruker den samme mappen."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1454,6 +1639,9 @@ msgstr "Små bokstaver (a–z)"
 
 msgid "Main menu"
 msgstr "Hovedmeny"
+
+msgid "Make a backup"
+msgstr "Ta en sikkerhetskopi"
 
 msgid "Master Password"
 msgstr "Hovedpassord"
@@ -1482,9 +1670,6 @@ msgstr "Slått sammen"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "Slått sammen; de andre er i Slettede elementer"
-
-msgid "Minimum length:"
-msgstr "Minste lengde:"
 
 msgid "Mint"
 msgstr "Mynte"
@@ -1564,6 +1749,9 @@ msgstr "Nytt hovedpassord er satt. Skriv det ned et trygt sted."
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords-appen"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords tilkoblet"
@@ -1651,6 +1839,15 @@ msgstr "Ikke konfigurert"
 msgid "Not connected"
 msgstr "Ikke tilkoblet"
 
+msgid "Not done yet"
+msgstr "Ikke gjort ennå"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "Ikke i butikken ennå: se hvordan du installerer den manuelt"
+
+msgid "Not now"
+msgstr "Ikke nå"
+
 msgid "Not run yet"
 msgstr "Ikke kjørt ennå"
 
@@ -1730,14 +1927,39 @@ msgstr "På"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Åpne innstillingene for totrinnsbekreftelse på nettstedet du vil beskytte, "
-"og velg en autentiseringsapp. Les inn QR-koden som vises, eller kopier "
-"oppsettnøkkelen og lim den inn nedenfor."
+"På nettstedet du vil beskytte, åpner du innstillingene for "
+"tofaktorautentisering og velger en autentiseringsapp. Skann QR-koden som "
+"vises, eller kopier oppsettnøkkelen (bokstavene og tallene under QR-koden, "
+"ofte bak «Kan du ikke skanne den?») og lim den inn nedenfor."
 
 msgid "On until Ashy Pass closes"
 msgstr "På til Ashy Pass lukkes"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"Når passordene dine er på plass, tar du en sikkerhetskopi under "
+"Sikkerhetskopier og oppbevarer den utenfor denne datamaskinen, for eksempel "
+"på en USB-pinne. Hvis denne datamaskinen går i stykker eller blir borte, er "
+"det den eneste måten å få dem tilbake på."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Én kode bruker en teller eller en algoritme som Ashy Pass ikke støtter, og "
+"er utelatt."
+msgstr[1] ""
+"Noen koder bruker en teller eller en algoritme som Ashy Pass ikke støtter, "
+"og er utelatt."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1775,8 +1997,14 @@ msgstr "Åpne kryptert tilordning"
 msgid "Open image…"
 msgstr "Åpne bilde…"
 
+msgid "Open in the store"
+msgstr "Åpne i butikken"
+
 msgid "Open the encrypted volume"
 msgstr "Åpne det krypterte volumet"
+
+msgid "Open the website"
+msgstr "Åpne nettstedet"
 
 msgid "Open website"
 msgstr "Åpne nettsted"
@@ -1792,6 +2020,9 @@ msgstr "Åpner Dropbox i nettleseren; kopier koden som vises"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Åpner nettleseren for OAuth-samtykke"
+
+msgid "Optional, to organize the list"
+msgstr "Valgfritt, for å organisere listen"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1859,6 +2090,9 @@ msgstr "Passord kopiert"
 
 msgid "Password for this backup"
 msgstr "Passord for denne sikkerhetskopien"
+
+msgid "Password generator"
+msgstr "Passordgenerator"
 
 msgid "Password history"
 msgstr "Passordhistorikk"
@@ -1949,11 +2183,17 @@ msgstr "Tidligere passord som Ashy Pass beholdt da dette ble endret."
 msgid "Protected by a password you choose"
 msgstr "Beskyttet med et passord du velger"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr "Beskyttet av et passord. Åpnes i KeePass, KeePassXC og andre apper"
+
 msgid "Protection"
 msgstr "Beskyttelse"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR-koden er lest. Kontroller opplysningene og lagre."
+
+msgid "Quicker than the master password on this computer"
+msgstr "Raskere enn hovedpassordet på denne datamaskinen"
 
 msgid "Quit"
 msgstr "Avslutt"
@@ -1996,6 +2236,9 @@ msgstr ""
 "Registrer opptil 2 fysiske FIDO2-autentiseringsenheter (YubiKey, SoloKey, "
 "osv.)"
 
+msgid "Remember the backup"
+msgstr "Husk sikkerhetskopien"
+
 msgid "Remote generation:"
 msgstr "Ekstern generasjon:"
 
@@ -2016,6 +2259,9 @@ msgstr "Fjern mappe"
 
 msgid "Remove from favorites"
 msgstr "Fjern fra favoritter"
+
+msgid "Remove table"
+msgstr "Fjern tabell"
 
 msgid "Remove the old copy?"
 msgstr "Fjerne den gamle kopien?"
@@ -2087,6 +2333,9 @@ msgstr "Oppbevaring"
 
 msgid "Rose"
 msgstr "Rose"
+
+msgid "Row"
+msgstr "Rad"
 
 msgid "Run"
 msgstr "Kjør"
@@ -2173,6 +2422,9 @@ msgstr "Søk etter navn, konto eller nettsted"
 
 msgid "Search codes"
 msgstr "Søk i koder"
+
+msgid "Search folders"
+msgstr "Søk i mapper"
 
 msgid "Search for drives"
 msgstr "Søk etter stasjoner"
@@ -2326,11 +2578,23 @@ msgstr "Størrelse"
 msgid "Snapshot uploaded"
 msgstr "Øyeblikksbilde lastet opp"
 
+msgid "Start using Ashy Pass"
+msgstr "Begynn å bruke Ashy Pass"
+
 msgid "Starting..."
 msgstr "Starter..."
 
 msgid "Status"
 msgstr "Status"
+
+msgid "Step 1 of 3"
+msgstr "Steg 1 av 3"
+
+msgid "Step 2 of 3"
+msgstr "Steg 2 av 3"
+
+msgid "Step 3 of 3"
+msgstr "Steg 3 av 3"
 
 msgid "Strength"
 msgstr "Styrke"
@@ -2347,6 +2611,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "Stil"
+
+msgid "Suggest a passphrase"
+msgstr "Foreslå en passfrase"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Forslag: {}. Skriv den ned før du fortsetter."
 
 msgid "Summary"
 msgstr "Sammendrag"
@@ -2388,6 +2659,9 @@ msgstr "Synkroniser nå"
 msgid "Sync when the vault is unlocked"
 msgstr "Synkroniser når hvelvet låses opp"
 
+msgid "Sync with your phone or another computer"
+msgstr "Synkroniser med telefonen din eller en annen datamaskin"
+
 msgid "Synchronization"
 msgstr "Synkronisering"
 
@@ -2427,15 +2701,15 @@ msgstr "Etiketter"
 msgid "Tags (separated by commas)"
 msgstr "Etiketter (skilt med komma)"
 
-msgid "Take my data to another app"
-msgstr "Ta med dataene mine til en annen app"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Kommuniserer med nøkkelen din… sjekk enheten for en berøringsforespørsel."
 
 msgid "Technical details"
 msgstr "Tekniske detaljer"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "Ashy Pass-vinduet i nettleseren, med påloggingene for nettstedet"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr ""
@@ -2531,6 +2805,13 @@ msgid "The new passwords do not match."
 msgstr "De nye passordene er ikke like."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"De andre stegene — nettleseren, telefonen din, bekreftelseskoder — venter i "
+"Første steg, over passordene dine."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2577,6 +2858,9 @@ msgstr "Søket er begrenset til mappen"
 msgid "The site's icon, when the code has a site saved"
 msgstr "Nettstedets ikon når koden har et lagret nettsted"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "De sekssifrede kodene som nettsteder ber om etter passordet"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "Synkroniseringen er fullført, men noen elementer rapporterte feil."
 
@@ -2589,6 +2873,18 @@ msgstr "Hvelvet kunne ikke åpnes igjen"
 
 msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr "Hvelvet er låst. Ingenting ble lagret — lås det opp og prøv igjen."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"Hvelvet ble låst før sikkerhetskopien ble lagret. Lås det opp og opprett "
+"sikkerhetskopien på nytt."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"Hvelvet ble låst før eksporten ble lagret. Lås det opp og eksporter på nytt."
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2641,6 +2937,10 @@ msgstr ""
 "Hvis ikke, kan serveren ha svart bare delvis: behold dem, så prøver neste "
 "synkronisering igjen."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Denne eksporten fra Google Authenticator har ingen koder som kan brukes her."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Denne PIN-koden passer ikke lenger til hvelvet. Ingenting ble endret."
 
@@ -2656,6 +2956,12 @@ msgstr "Denne påloggingen har ikke noe lagret passord"
 
 msgid "This access has no user"
 msgstr "Denne påloggingen har ingen bruker"
+
+msgid "This access has no verification code"
+msgstr "Denne påloggingen har ingen bekreftelseskode"
+
+msgid "This access has no website"
+msgstr "Denne påloggingen har ikke noe nettsted"
 
 msgid "This access no longer exists"
 msgstr "Denne påloggingen finnes ikke lenger"
@@ -2709,11 +3015,11 @@ msgstr ""
 "MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Dette er en eksport fra Google Authenticator med flere kontoer. Vis i stedet "
-"QR-koden for hver konto på nettstedet."
+"Dette er en eksport fra Google Authenticator med flere kontoer. Les den i "
+"Bekreftelseskoder → Legg til kode for å hente dem alle på én gang."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2741,6 +3047,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "Dette vil slette alt på stasjonen"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "Via en kryptert mappe i skyen din eller på en stasjon"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2774,6 +3083,13 @@ msgstr "Slå av"
 msgid "Turn on"
 msgstr "Slå på"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Slås på når du kobler til. Når den er av, kan ikke utvidelsen se noe i "
+"hvelvet"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "Toveis avstemming: hent ekstern, push lokal, løs med siste vinner"
 
@@ -2781,11 +3097,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Toveis avstemming fullført."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Toveis synkronisering med den offisielle «Passwords»-appen på Nextcloud-"
-"serveren din. Bruk et app-passord fra Innstillinger → Sikkerhet."
+"Toveissynkronisering med den offisielle appen «Passwords» på Nextcloud-"
+"serveren din. Serveren lagrer disse oppføringene i en form den kan lese: "
+"bruk den bare med en server du stoler på. Logg inn med et appassord fra "
+"Innstillinger → Sikkerhet."
 
 msgid "Type of password"
 msgstr "Passordtype"
@@ -2829,6 +3148,9 @@ msgstr "Lås opp hvelvet for å lagre det nye passordet. Det går ikke tapt."
 msgid "Unlock with PIN"
 msgstr "Lås opp med PIN"
 
+msgid "Unlock with a PIN"
+msgstr "Lås opp med en PIN"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2855,9 +3177,6 @@ msgstr "Opplåsing"
 
 msgid "Unlocking…"
 msgstr "Låser opp…"
-
-msgid "Unprotected CSV…"
-msgstr "Ubeskyttet CSV…"
 
 msgid "Updated locally"
 msgstr "Oppdatert lokalt"
@@ -2905,6 +3224,9 @@ msgid ""
 msgstr ""
 "Bruk samme masterpassord på alle enhetene dine: det åpner mappens nøkkel. Du "
 "skriver det inn én gang her, for å bli med."
+
+msgid "Use them on your phone or another computer"
+msgstr "Bruk dem på telefonen din eller en annen datamaskin"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Bruk disse kodene når et nettsted ber om totrinnsbekreftelse."
@@ -3044,6 +3366,9 @@ msgstr "Nettsted"
 msgid "Website (optional)"
 msgstr "Nettsted (valgfritt)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Velkommen til Ashy Pass"
+
 msgid "What it contains"
 msgstr "Hva den inneholder"
 
@@ -3053,9 +3378,6 @@ msgid ""
 msgstr ""
 "Når et nettsted tilbyr totrinnsbekreftelse, legg til oppsettnøkkelen her for "
 "å få kodene."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Når den er av, ser utvidelsen ingenting i hvelvet"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Hvor vil du hente passordene dine fra?"
@@ -3144,6 +3466,13 @@ msgstr ""
 "Elementene dine blir liggende på denne datamaskinen og i mappen. Å koble til "
 "igjen senere slår dem sammen i stedet for å duplisere."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"Påloggingene dine for nettstedet du er på, fylt ut med ett klikk. Søk i "
+"hvelvet og lag også nye passord."
+
 msgid "Your most used accesses can be here"
 msgstr "De mest brukte påloggingene dine kan være her"
 
@@ -3194,6 +3523,9 @@ msgstr "ledig av"
 msgid "high"
 msgstr "høy"
 
+msgid "incorrect master password"
+msgstr "feil hovedpassord"
+
 msgid "low"
 msgstr "lav"
 
@@ -3216,6 +3548,9 @@ msgstr[1] "ny kode om {} sekunder"
 
 msgid "no 2FA"
 msgstr "ingen 2FA"
+
+msgid "no permission to read or write there"
+msgstr "ingen tillatelse til å lese eller skrive der"
 
 msgid "none"
 msgstr "ingen"
@@ -3260,6 +3595,21 @@ msgstr "sendt:"
 msgid "solid-state"
 msgstr "solid-state"
 
+msgid "that place is read-only"
+msgstr "det stedet er skrivebeskyttet"
+
+msgid "the disk is full"
+msgstr "disken er full"
+
+msgid "the file or folder does not exist"
+msgstr "filen eller mappen finnes ikke"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "hvelvet er låst; lås det opp og prøv igjen"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr "denne opplåsingen åpner ikke lenger hvelvet; skriv inn hovedpassordet"
+
 msgid "very high"
 msgstr "svært høy"
 
@@ -3268,6 +3618,14 @@ msgstr "svært lav"
 
 msgid "weak"
 msgstr "svak"
+
+#, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{added} av {total} koder lagt til; de andre kunne ikke lagres"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{done} av {total} fullført"
 
 #, rust-format
 msgid "{} cannot be imported."
@@ -3280,6 +3638,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} tegn"
 msgstr[1] "{} tegn"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kode lagt til"
+msgstr[1] "{} koder lagt til"
 
 #, rust-format
 msgid "{} day."

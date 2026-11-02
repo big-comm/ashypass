@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:32\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Telepítse a bővítményt"
+
 msgid "1PUX export file"
 msgstr "1PUX exportfájl"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Kapcsolja össze az Ashy Passal"
+
+msgid "3. Allow it"
+msgstr "3. Engedélyezze"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -27,6 +36,9 @@ msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "Egy 12 szavas BIP-39 kifejezés a feloldáshoz biztonsági kulcs nélkül. Csak "
 "egyszer jelenik meg."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "Bejelentkezési űrlap Ashy Pass javaslatokkal az e-mail mező alatt"
 
 msgid "A new access"
 msgstr "Új bejegyzés"
@@ -69,6 +81,9 @@ msgstr "Melléklet hozzáadása"
 msgid "Add code"
 msgstr "Kód hozzáadása"
 
+msgid "Add codes"
+msgstr "Kódok hozzáadása"
+
 msgid "Add file"
 msgstr "Fájl hozzáadása"
 
@@ -81,11 +96,23 @@ msgstr "A másolat bejegyzéseinek hozzáadása a jelenlegi tárhoz"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "Egy .ashy mentés bejegyzéseinek hozzáadása ehhez a tárhoz"
 
+msgid "Add to Firefox"
+msgstr "Hozzáadás a Firefoxhoz"
+
 msgid "Add to favorites"
 msgstr "Hozzáadás a kedvencekhez"
 
+msgid "Add to the browser"
+msgstr "Hozzáadás a böngészőhöz"
+
 msgid "Add verification code"
 msgstr "Ellenőrző kód hozzáadása"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Hozzáadsz {} kódot a Google Authenticatorból?"
+msgstr[1] "Hozzáadsz {} kódot a Google Authenticatorból?"
 
 msgid "Added to favorites"
 msgstr "Hozzáadva a kedvencekhez"
@@ -110,6 +137,9 @@ msgstr "Számjegyek számának beállítása"
 
 msgid "Adjust words and separator"
 msgstr "Szavak és elválasztó beállítása"
+
+msgid "Advanced"
+msgstr "Speciális"
 
 msgid "Algorithm"
 msgstr "Algoritmus"
@@ -165,6 +195,9 @@ msgstr ""
 msgid "Another example"
 msgstr "Másik példa"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Bárki, aki megszerzi a fájlt, elolvashatja benne az összes jelszót"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -212,6 +245,12 @@ msgstr ""
 "Az Ashy Pass nem tudott kapcsolódni a Nextcloudhoz. Ellenőrizze a "
 "kapcsolatot, a szerver címét és az alkalmazás jelszavát."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Ashy Pass Chrome-hoz"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Ashy Pass Firefoxhoz"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -231,6 +270,14 @@ msgid ""
 msgstr ""
 "Legalább 8 karakter. Az EFF szólistából vett négy szavas jelszó erős "
 "alapértelmezés."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Legalább {} karakter. Néhány véletlenszerű szót könnyű megjegyezni és nehéz "
+"kitalálni."
 
 msgid "Attachment added"
 msgstr "Melléklet hozzáadva"
@@ -295,11 +342,29 @@ msgstr "Biztonsági mentések"
 msgid "Before importing"
 msgstr "Importálás előtt"
 
+msgid "Bold (Ctrl+B)"
+msgstr "Félkövér (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "Hozza át vagy adja hozzá a jelszavait"
+
 msgid "Bring passwords from another app or browser"
 msgstr "Jelszavak áthozása más alkalmazásból vagy böngészőből"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"Hozza át őket böngészőből (Chrome, Edge, Brave, Firefox) vagy másik "
+"jelszókezelőből (Bitwarden, 1Password, KeePass)."
+
 msgid "Bring your passwords"
 msgstr "Hozza át a jelszavait"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"Letölti a kiszolgáló módosításait, és elküldi a sajátjait; a legújabb verzió "
+"nyer"
 
 msgid "Browser"
 msgstr "Böngésző"
@@ -374,6 +439,9 @@ msgstr ""
 "Válasszon fő jelszót. Ez véd mindent, amit az Ashy Passban tárol ezen a "
 "számítógépen."
 
+msgid "Choose an access in the list first"
+msgstr "Először válassz egy bejegyzést a listából"
+
 msgid "Choose an image with the QR code"
 msgstr "Válasszon egy QR-kódot tartalmazó képet"
 
@@ -408,6 +476,9 @@ msgstr ""
 msgid "Choose…"
 msgstr "Kiválasztás…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge és Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Chrome, Edge, Brave vagy Firefox jelszóexport (CSV)"
 
@@ -422,6 +493,13 @@ msgstr "Előzmények törlése"
 
 msgid "Clear the password history?"
 msgstr "Törli a jelszóelőzményeket?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"Kattintson egy bejelentkezési mezőre, és válassza ki a hozzáférését: csak "
+"azon az oldalon töltődik ki, amelyhez tartozik."
 
 msgid "Client ID"
 msgstr "Ügyfélazonosító"
@@ -447,6 +525,9 @@ msgstr "Leképezés bezárása"
 msgid "Closing mapping"
 msgstr "Leképezés bezárása"
 
+msgid "Code"
+msgstr "Kód"
+
 msgid "Code copied"
 msgstr "Kód másolva"
 
@@ -459,8 +540,26 @@ msgstr "Kódbeállítások"
 msgid "Coffee"
 msgstr "Kávé"
 
+msgid "Column"
+msgstr "Oszlop"
+
+msgid "Column 1"
+msgstr "1. oszlop"
+
+msgid "Column 2"
+msgstr "2. oszlop"
+
 msgid "Columns such as name, url, username, password"
 msgstr "Oszlopok, például name, url, username, password"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"A Google Authenticatorból érkezel? Ott nyisd meg a menüt, válaszd az Fiókok "
+"átvitele → Fiókok exportálása lehetőséget, és olvasd be itt a megjelenő QR-"
+"kódot: az összes kódja egyszerre érkezik."
 
 msgid "Compact vault list"
 msgstr "Tömör tárolólista"
@@ -534,9 +633,6 @@ msgstr "A csatlakozás sikertelen"
 msgid "Connect the sync folder"
 msgstr "Szinkronizálási mappa csatlakoztatása"
 
-msgid "Connect your browsers"
-msgstr "Csatlakoztassa böngészőit"
-
 msgid "Connected"
 msgstr "Csatlakoztatva"
 
@@ -545,6 +641,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "{} böngésző csatlakoztatva. Indítsa újra, ha nyitva van."
 msgstr[1] "{} böngésző csatlakoztatva. Indítsa újra őket, ha nyitva vannak."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Csatlakoztatva, de letiltva (3. lépés)"
 
 msgid "Connected. Received:"
 msgstr "Csatlakoztatva. Fogadva:"
@@ -581,6 +680,15 @@ msgstr "A tár másolata az Ashy Pass 2-ből"
 
 msgid "Copy password"
 msgstr "Jelszó másolása"
+
+msgid "Copy the password"
+msgstr "Jelszó másolása"
+
+msgid "Copy the user"
+msgstr "Felhasználó másolása"
+
+msgid "Copy the verification code"
+msgstr "Ellenőrző kód másolása"
 
 msgid "Copy this old password"
 msgstr "A régi jelszó másolása"
@@ -699,9 +807,6 @@ msgstr "Mappa létrehozása…"
 msgid "Create my vault"
 msgstr "Tár létrehozása"
 
-msgid "Create password"
-msgstr "Jelszó létrehozása"
-
 msgid "Create your vault"
 msgstr "Hozza létre a tárát"
 
@@ -806,6 +911,9 @@ msgstr "A leválasztás sikertelen"
 msgid "Disconnect the sync folder?"
 msgstr "Leválasztja a szinkronizálási mappát?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "Máshol tárolja a jelszavait?"
+
 msgid "Done"
 msgstr "Kész"
 
@@ -823,6 +931,13 @@ msgstr "Meghajtó zárolva"
 
 msgid "Duplicate items"
 msgstr "Ismétlődő elemek"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Minden ikont maga a webhely tölt le, amely látja az internetcímedet. A helyi "
+"hálózatod webhelyeivel soha nem veszi fel a kapcsolatot."
 
 msgid "Easier to type and remember."
 msgstr "Könnyebb begépelni és megjegyezni."
@@ -866,9 +981,6 @@ msgstr "Titkosítva mint"
 msgid "Encrypted device"
 msgstr "Titkosított eszköz"
 
-msgid "Encrypted folder sync"
-msgstr "Titkosított mappaszinkronizálás"
-
 msgid "Encrypted folder sync failed"
 msgstr "A titkosított mappaszinkronizálás sikertelen"
 
@@ -900,6 +1012,9 @@ msgstr "A széf újratitkosítása…"
 
 msgid "Encrypting…"
 msgstr "Titkosítás folyamatban…"
+
+msgid "Encryption"
+msgstr "Titkosítás"
 
 msgid "Encrypt…"
 msgstr "Titkosítás…"
@@ -943,6 +1058,15 @@ msgstr "Hibák részletei"
 msgid "Estimated strength"
 msgstr "Becsült erősség"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Az exportálás minden kódja már a tárban van."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Minden bejegyzést AES-256-GCM titkosít, a fő jelszóból származtatott kulccsal"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -982,6 +1106,18 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "Minden már szinkronizálva volt"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Minden, amit az Ashy Passban tárol, egy titkosított tárban marad ezen a "
+"számítógépen. Csak a fő jelszava nyitja meg, és az Ashy Pass nem tudja "
+"visszaállítani, ha elveszíti."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "Védelem nélküli fájl exportálása (CSV)"
+
 msgid "Export complete"
 msgstr "Exportálás kész"
 
@@ -991,8 +1127,8 @@ msgstr "Exportálás sikertelen"
 msgid "Export to KeePass"
 msgstr "Exportálás KeePassba"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Exportálás KeePassba vagy bárki által olvasható fájlba"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Exportálás KeePassba (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Védelem nélküli fájl exportálása"
@@ -1024,9 +1160,6 @@ msgstr "Kedvenc"
 msgid "Favorites"
 msgstr "Kedvencek"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Webhelyikonok lekérése és megjelenítése a tárolóbejegyzések mellett"
-
 msgid "Fetching remote passwords"
 msgstr "Távoli jelszavak lekérése"
 
@@ -1048,6 +1181,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Töltse ki mindhárom mezőt."
 
+msgid "Fill passwords in the browser"
+msgstr "Jelszavak kitöltése a böngészőben"
+
 msgid "Find duplicate items"
 msgstr "Ismétlődő elemek keresése"
 
@@ -1056,6 +1192,9 @@ msgstr "Eredmények"
 
 msgid "Finishing synchronization"
 msgstr "Szinkronizálás befejezése"
+
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox Add-ons · Firefox és LibreWolf"
 
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
@@ -1066,8 +1205,17 @@ msgstr ""
 "a fájlt. Importálás előtt látni fogja, mit sikerült felismerni. Utána "
 "törölje a védelem nélküli exportfájlokat."
 
+msgid "First steps"
+msgstr "Első lépések"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "Az első lépések el vannak rejtve. A főmenü visszahozza őket."
+
 msgid "Folder"
 msgstr "Mappa"
+
+msgid "Folder and tags"
+msgstr "Mappa és címkék"
 
 msgid "Folder created"
 msgstr "Mappa létrehozva"
@@ -1102,6 +1250,11 @@ msgid ""
 msgstr ""
 "Nextcloud esetén az alap URL így néz ki: https://cloud.example.com/"
 "remote.php/dav/files/FELHASZNÁLÓNÉV"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr ""
+"Azoknak, akik a „Passwords” alkalmazást használják a Nextcloud-"
+"kiszolgálójukon"
 
 msgid "For the browsers installed for this user"
 msgstr "Az ehhez a felhasználóhoz telepített böngészőkhöz"
@@ -1199,6 +1352,9 @@ msgstr ""
 msgid "Hide copied passwords from clipboard history"
 msgstr "Másolt jelszavak elrejtése a vágólap előzményeiből"
 
+msgid "Hide first steps"
+msgstr "Első lépések elrejtése"
+
 msgid "Hide password"
 msgstr "Jelszó elrejtése"
 
@@ -1228,6 +1384,9 @@ msgstr "Már máshol tárolom a jelszavaimat"
 msgid "I understand — Continue"
 msgstr "Értem – Folytatás"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "A fő jelszavamat biztonságos helyre leírtam"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1244,6 +1403,10 @@ msgstr "Importálás"
 msgid "Import complete"
 msgstr "Importálás kész"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr ""
+"Importálás böngészőből vagy másik alkalmazásból, vagy hozzáadás egyenként"
+
 msgid "Import partly complete"
 msgstr "Az importálás részben sikerült"
 
@@ -1254,6 +1417,13 @@ msgid "Import passwords…"
 msgstr "Jelszavak importálása…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"Fontos: ha ez a számítógép tönkremegy, a biztonsági mentés az egyetlen "
+"módja, hogy mindent visszakapjon"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1261,6 +1431,15 @@ msgstr ""
 "Az Androidos Ashy Passban nyissa meg: Beállítások → Titkosított mappás "
 "szinkronizálás, és koppintson ide: „A számítógép QR-kódjának beolvasása”. "
 "Ezután írja be az alábbi kódot és a fő jelszót."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"Chrome-ban: Beállítások → Automatikus kitöltés és jelszavak → Google "
+"Jelszókezelő → Beállítások → Jelszavak exportálása. Az importálás után "
+"törölje az exportált fájlt: nincs védve."
 
 msgid "Incorrect PIN"
 msgstr "Helytelen PIN-kód"
@@ -1283,6 +1462,9 @@ msgstr "Hibás mesterjelszó. Semmi sem változott."
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Hibás fő jelszó. Semmi sem lett exportálva."
 
+msgid "Insert a table"
+msgstr "Táblázat beszúrása"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1291,6 +1473,13 @@ msgstr ""
 "Helyezze be a FIDO2 tokenjét (Yubikey, Nitrokey stb.), és hagyja jóvá a "
 "műveletet az eszközön, amikor a rendszer kéri. Az új kulcstartó "
 "engedélyezéséhez meg kell adnia a jelenlegi jelszavát."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Telepítse az Ashy Pass bővítményt, és kapcsolja össze"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "Telepítve: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "Belső hiba: nincs beállítva jelszó"
@@ -1308,24 +1497,17 @@ msgstr ""
 "Ez nyitja meg a tárat ezen a számítógépen. Senki sem tudja visszaállítani "
 "Önnek — még az Ashy Pass sem."
 
+msgid "Italic (Ctrl+I)"
+msgstr "Dőlt (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "Az elemek itt és a mappában maradnak; az újracsatlakozás egyesíti őket"
 
 msgid "Its user, password and other details appear here."
 msgstr "A felhasználó, a jelszó és a többi részlet itt jelenik meg."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass exportálás kész"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"A KeePass jelszóval védi a fájlt. Egy CSV fájlt bárki elolvashat, aki "
-"hozzájut."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1342,6 +1524,9 @@ msgstr "Megtartás"
 
 msgid "Keep using"
 msgstr "Használat folytatása"
+
+msgid "Keep verification codes (2FA)"
+msgstr "Ellenőrző kódok (2FA) tárolása"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1444,14 +1629,18 @@ msgstr ""
 "többit pedig a Törölt elemek közé helyezi."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Bejelentkezések, kártyák, identitások, jegyzetek és hozzáférési kulcsok, "
-"ezen a számítógépen titkosítva, mielőtt elhagynák, egy mappán keresztül a "
-"Nextcloudon, pCloudon, WebDAV-on, Dropboxon, Google Drive-on vagy ezen a "
-"számítógépen. Az Androidos Ashy Pass ugyanazt a mappát használja."
+"A bejelentkezések, kártyák, személyazonosságok, jegyzetek, hozzáférési "
+"kulcsok és ellenőrző kódok titkosítva vannak ezen a számítógépen, mielőtt "
+"elhagynák, egy Nextcloudon, pCloudon, WebDAV-on, Dropboxon, Google Drive-on "
+"vagy ezen a számítógépen lévő mappán keresztül. A szolgáltatás csak "
+"titkosított fájlokat lát, soha nem a tartalmukat. Az Ashy Pass Androidra "
+"ugyanezt a mappát használja."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1465,6 +1654,9 @@ msgstr "Kisbetűk (a–z)"
 
 msgid "Main menu"
 msgstr "Főmenü"
+
+msgid "Make a backup"
+msgstr "Készítsen biztonsági mentést"
 
 msgid "Master Password"
 msgstr "Fő jelszó"
@@ -1492,9 +1684,6 @@ msgstr "Egyesítve"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "Egyesítve; a többi a Törölt elemek között van"
-
-msgid "Minimum length:"
-msgstr "Minimális hossz:"
 
 msgid "Mint"
 msgstr "Menta"
@@ -1575,6 +1764,9 @@ msgstr "Az új fő jelszó beállítva. Jegyezze fel biztonságos helyre."
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords alkalmazás"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords csatlakoztatva"
@@ -1666,6 +1858,15 @@ msgstr "Nincs konfigurálva"
 msgid "Not connected"
 msgstr "Nincs csatlakoztatva"
 
+msgid "Not done yet"
+msgstr "Még nincs kész"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "Még nincs az áruházban: nézze meg, hogyan telepítheti kézzel"
+
+msgid "Not now"
+msgstr "Most nem"
+
 msgid "Not run yet"
 msgstr "Még nem futott le"
 
@@ -1747,14 +1948,39 @@ msgstr "Be"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"A védeni kívánt oldalon nyissa meg a kétlépcsős azonosítás beállításait, és "
-"válasszon hitelesítő alkalmazást. Olvassa be a megjelenő QR-kódot, vagy "
-"másolja ki a beállítási kulcsot, és illessze be lent."
+"A védeni kívánt webhelyen nyisd meg a kétlépcsős azonosítás beállításait, és "
+"válassz hitelesítő alkalmazást. Olvasd be a megjelenő QR-kódot, vagy másold "
+"ki a beállítási kulcsot (a QR-kód alatti betűk és számok, gyakran a „Nem "
+"tudja beolvasni?” mögött), és illeszd be alább."
 
 msgid "On until Ashy Pass closes"
 msgstr "Bekapcsolva az Ashy Pass bezárásáig"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"Miután a jelszavai bekerültek, készítsen biztonsági mentést a Biztonsági "
+"mentések oldalon, és tartsa a számítógépen kívül, például USB-meghajtón. Ha "
+"ez a számítógép tönkremegy vagy elvész, ez az egyetlen módja, hogy "
+"visszakapja őket."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Egy kód olyan számlálót vagy algoritmust használ, amelyet az Ashy Pass nem "
+"támogat, ezért kimaradt."
+msgstr[1] ""
+"Néhány kód olyan számlálót vagy algoritmust használ, amelyet az Ashy Pass "
+"nem támogat, ezért kimaradt."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1799,8 +2025,14 @@ msgstr "Titkosított leképezés megnyitása"
 msgid "Open image…"
 msgstr "Kép megnyitása…"
 
+msgid "Open in the store"
+msgstr "Megnyitás az áruházban"
+
 msgid "Open the encrypted volume"
 msgstr "A titkosított kötet megnyitása"
+
+msgid "Open the website"
+msgstr "Webhely megnyitása"
 
 msgid "Open website"
 msgstr "Webhely megnyitása"
@@ -1816,6 +2048,9 @@ msgstr "Megnyitja a Dropboxot a böngészőben; másolja ki a megjelenő kódot"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Megnyitja a böngészőt az OAuth hozzájáruláshoz"
+
+msgid "Optional, to organize the list"
+msgstr "Nem kötelező, a lista rendezéséhez"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1884,6 +2119,9 @@ msgstr "Jelszó másolva"
 
 msgid "Password for this backup"
 msgstr "A mentés jelszava"
+
+msgid "Password generator"
+msgstr "Jelszógenerátor"
 
 msgid "Password history"
 msgstr "Jelszó előzmények"
@@ -1976,11 +2214,19 @@ msgstr ""
 msgid "Protected by a password you choose"
 msgstr "Az Ön által választott jelszóval védve"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"Jelszóval védett. Megnyitható KeePassban, KeePassXC-ben és más "
+"alkalmazásokban"
+
 msgid "Protection"
 msgstr "Védelem"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR-kód beolvasva. Ellenőrizze az adatokat, és mentsen."
+
+msgid "Quicker than the master password on this computer"
+msgstr "Gyorsabb, mint a fő jelszó ezen a számítógépen"
 
 msgid "Quit"
 msgstr "Kilépés"
@@ -2022,6 +2268,9 @@ msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr ""
 "Regisztráljon legfeljebb 2 fizikai FIDO2 hitelesítőt (YubiKey, SoloKey stb.)"
 
+msgid "Remember the backup"
+msgstr "Ne feledkezzen meg a biztonsági mentésről"
+
 msgid "Remote generation:"
 msgstr "Távoli generáció:"
 
@@ -2042,6 +2291,9 @@ msgstr "Mappa eltávolítása"
 
 msgid "Remove from favorites"
 msgstr "Eltávolítás a kedvencek közül"
+
+msgid "Remove table"
+msgstr "Táblázat eltávolítása"
 
 msgid "Remove the old copy?"
 msgstr "Eltávolítja a régi másolatot?"
@@ -2113,6 +2365,9 @@ msgstr "Megőrzés"
 
 msgid "Rose"
 msgstr "Rózsa"
+
+msgid "Row"
+msgstr "Sor"
 
 msgid "Run"
 msgstr "Futtatás"
@@ -2199,6 +2454,9 @@ msgstr "Keresés név, fiók vagy webhely szerint"
 
 msgid "Search codes"
 msgstr "Kódok keresése"
+
+msgid "Search folders"
+msgstr "Mappák keresése"
 
 msgid "Search for drives"
 msgstr "Meghajtók keresése"
@@ -2355,11 +2613,23 @@ msgstr "Méret"
 msgid "Snapshot uploaded"
 msgstr "Pillanatkép feltöltve"
 
+msgid "Start using Ashy Pass"
+msgstr "Kezdje el használni az Ashy Passt"
+
 msgid "Starting..."
 msgstr "Indítás..."
 
 msgid "Status"
 msgstr "Állapot"
+
+msgid "Step 1 of 3"
+msgstr "1. lépés / 3"
+
+msgid "Step 2 of 3"
+msgstr "2. lépés / 3"
+
+msgid "Step 3 of 3"
+msgstr "3. lépés / 3"
 
 msgid "Strength"
 msgstr "Erősség"
@@ -2376,6 +2646,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "Stílus"
+
+msgid "Suggest a passphrase"
+msgstr "Jelszókifejezés javaslása"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Javaslat: {}. Írd fel, mielőtt folytatod."
 
 msgid "Summary"
 msgstr "Összegzés"
@@ -2418,6 +2695,9 @@ msgstr "Szinkronizálás most"
 msgid "Sync when the vault is unlocked"
 msgstr "Szinkronizálás a széf feloldásakor"
 
+msgid "Sync with your phone or another computer"
+msgstr "Szinkronizálás a telefonnal vagy másik számítógéppel"
+
 msgid "Synchronization"
 msgstr "Szinkronizálás"
 
@@ -2457,15 +2737,17 @@ msgstr "Címkék"
 msgid "Tags (separated by commas)"
 msgstr "Címkék (vesszővel elválasztva)"
 
-msgid "Take my data to another app"
-msgstr "Adataim átvitele másik alkalmazásba"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Kapcsolatfelvétel a tokenjével… ellenőrizze az eszközt az érintés kéréséhez."
 
 msgid "Technical details"
 msgstr "Technikai részletek"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr ""
+"Az Ashy Pass ablaka a böngészőben, az oldalhoz tartozó bejelentkezési "
+"adatokkal"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "A PIN nem használható ezen a számítógépen. Használja a fő jelszavát."
@@ -2562,6 +2844,13 @@ msgid "The new passwords do not match."
 msgstr "Az új jelszavak nem egyeznek."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"A többi lépés — a böngésző, a telefonja, az ellenőrző kódok — az Első "
+"lépések alatt vár a jelszavai felett."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2606,6 +2895,9 @@ msgstr "A keresés erre a mappára korlátozódik:"
 msgid "The site's icon, when the code has a site saved"
 msgstr "A webhely ikonja, ha a kódhoz webhely van mentve"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "A hatjegyű kódok, amelyeket a webhelyek a jelszó után kérnek"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "A szinkronizálás befejeződött, de néhány elem hibát jelzett."
 
@@ -2618,6 +2910,19 @@ msgstr "A tárat nem sikerült újra megnyitni"
 msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr ""
 "A tár zárolva van. Semmi sem lett mentve — oldja fel, és próbálja újra."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"A tár zárolva lett, mielőtt a biztonsági mentés elmentődött volna. Oldja "
+"fel, és hozza létre újra a biztonsági mentést."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"A tár zárolva lett, mielőtt az exportálás elmentődött volna. Oldja fel, és "
+"exportáljon újra."
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2671,6 +2976,10 @@ msgstr ""
 "kerülnek. Ha nem, a kiszolgáló talán csak részben válaszolt: tartsa meg "
 "őket, és a következő szinkronizálás újra próbálkozik."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Ez a Google Authenticator-exportálás nem tartalmaz itt használható kódot."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Ez a PIN már nem illik a tárhoz. Semmi sem változott."
 
@@ -2686,6 +2995,12 @@ msgstr "Ehhez a bejegyzéshez nincs mentett jelszó"
 
 msgid "This access has no user"
 msgstr "Ehhez a bejegyzéshez nincs felhasználó"
+
+msgid "This access has no verification code"
+msgstr "Ennek a bejegyzésnek nincs ellenőrző kódja"
+
+msgid "This access has no website"
+msgstr "Ennek a bejegyzésnek nincs webhelye"
 
 msgid "This access no longer exists"
 msgstr "Ez a bejegyzés már nem létezik"
@@ -2739,11 +3054,11 @@ msgstr ""
 "képet."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Ez egy több fiókot tartalmazó Google Authenticator-export. Ehelyett "
-"jelenítse meg minden fiók QR-kódját a saját oldalán."
+"Ez egy több fiókot tartalmazó Google Authenticator-exportálás. Olvasd be az "
+"Ellenőrző kódok → Kód hozzáadása menüben, hogy mindet egyszerre hozd át."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2771,6 +3086,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "Ez mindent töröl a meghajtón"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "Titkosított mappán keresztül a felhőjében vagy egy meghajtón"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2803,6 +3121,12 @@ msgstr "Kikapcsolás"
 msgid "Turn on"
 msgstr "Bekapcsolás"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Csatlakozáskor bekapcsol. Kikapcsolva a bővítmény semmit sem lát a tárban"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Kétirányú egyeztetés: távoli letöltése, helyi feltöltése, megoldás a "
@@ -2812,11 +3136,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Kétirányú egyeztetés sikeresen befejezve."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Kétirányú szinkronizálás a hivatalos 'Passwords' alkalmazással a Nextcloud "
-"szerveren. Használj alkalmazásjelszót a Beállítások → Biztonság menüpontból."
+"Kétirányú szinkronizálás a Nextcloud-kiszolgáló hivatalos „Passwords” "
+"alkalmazásával. A kiszolgáló olvasható formában tárolja ezeket a "
+"bejegyzéseket: csak megbízható kiszolgálóval használja. Jelentkezzen be "
+"alkalmazásjelszóval a Beállítások → Biztonság oldalról."
 
 msgid "Type of password"
 msgstr "Jelszó típusa"
@@ -2860,6 +3187,9 @@ msgstr "Az új jelszó mentéséhez oldja fel a tárat. Nem fog elveszni."
 msgid "Unlock with PIN"
 msgstr "Feloldás PIN-kóddal"
 
+msgid "Unlock with a PIN"
+msgstr "Feloldás PIN-kóddal"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2885,9 +3215,6 @@ msgstr "Feloldás"
 
 msgid "Unlocking…"
 msgstr "Feloldás…"
-
-msgid "Unprotected CSV…"
-msgstr "Védelem nélküli CSV…"
 
 msgid "Updated locally"
 msgstr "Helyileg frissítve"
@@ -2935,6 +3262,9 @@ msgid ""
 msgstr ""
 "Használja ugyanazt a fő jelszót minden eszközén: ez nyitja a mappa kulcsát. "
 "Itt egyszer kell megadnia a csatlakozáshoz."
+
+msgid "Use them on your phone or another computer"
+msgstr "Használja őket a telefonján vagy másik számítógépen"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Ezeket a kódokat használja, ha egy webhely kétlépcsős azonosítást kér."
@@ -3075,6 +3405,9 @@ msgstr "Webhely"
 msgid "Website (optional)"
 msgstr "Webhely (nem kötelező)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Üdvözli az Ashy Pass"
+
 msgid "What it contains"
 msgstr "Mit tartalmaz"
 
@@ -3084,9 +3417,6 @@ msgid ""
 msgstr ""
 "Ha egy webhely kétlépcsős azonosítást kínál, itt adja meg a beállítási "
 "kulcsát a kódok megkapásához."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Kikapcsolva a bővítmény semmit sem lát a széfből"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Honnan szeretné áthozni a jelszavait?"
@@ -3176,6 +3506,13 @@ msgstr ""
 "Az elemei ezen a számítógépen és a mappában maradnak. A későbbi "
 "újracsatlakozás egyesíti őket a duplikálás helyett."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"A megnyitott webhely bejelentkezési adatai, egy kattintással kitöltve. "
+"Keressen a tárban, és hozzon létre új jelszavakat is."
+
 msgid "Your most used accesses can be here"
 msgstr "Itt lehetnek a leggyakrabban használt bejegyzései"
 
@@ -3226,6 +3563,9 @@ msgstr "szabad"
 msgid "high"
 msgstr "magas"
 
+msgid "incorrect master password"
+msgstr "helytelen fő jelszó"
+
 msgid "low"
 msgstr "alacsony"
 
@@ -3248,6 +3588,9 @@ msgstr[1] "új kód {} másodperc múlva"
 
 msgid "no 2FA"
 msgstr "nincs 2FA"
+
+msgid "no permission to read or write there"
+msgstr "nincs engedély az olvasásra vagy írásra ott"
 
 msgid "none"
 msgstr "nincs"
@@ -3292,6 +3635,21 @@ msgstr "elküldve:"
 msgid "solid-state"
 msgstr "szilárdtest"
 
+msgid "that place is read-only"
+msgstr "az a hely csak olvasható"
+
+msgid "the disk is full"
+msgstr "a lemez megtelt"
+
+msgid "the file or folder does not exist"
+msgstr "a fájl vagy mappa nem létezik"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "a tár zárolva van; oldja fel, és próbálja újra"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr "ez a feloldás már nem nyitja meg a tárat; adja meg a fő jelszót"
+
 msgid "very high"
 msgstr "nagyon magas"
 
@@ -3300,6 +3658,14 @@ msgstr "nagyon alacsony"
 
 msgid "weak"
 msgstr "gyenge"
+
+#, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{added} / {total} kód hozzáadva; a többit nem sikerült menteni"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{done} / {total} kész"
 
 #, rust-format
 msgid "{} cannot be imported."
@@ -3312,6 +3678,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} karakter"
 msgstr[1] "{} karakter"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kód hozzáadva"
+msgstr[1] "{} kód hozzáadva"
 
 #, rust-format
 msgid "{} day."

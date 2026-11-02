@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. התקינו את התוסף"
+
 msgid "1PUX export file"
 msgstr "קובץ ייצוא 1PUX"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. חברו אותו ל-Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. אשרו אותו"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -24,6 +33,9 @@ msgstr ""
 
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr "ביטוי BIP-39 בן 12 מילים לפתיחה ללא מפתח אבטחה. מוצג פעם אחת בלבד."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "טופס התחברות עם הצעות של Ashy Pass מתחת לשדה האימייל"
 
 msgid "A new access"
 msgstr "רשומה חדשה"
@@ -63,6 +75,9 @@ msgstr "הוסף קובץ מצורף"
 msgid "Add code"
 msgstr "הוספת קוד"
 
+msgid "Add codes"
+msgstr "הוספת קודים"
+
 msgid "Add file"
 msgstr "הוסף קובץ"
 
@@ -75,11 +90,23 @@ msgstr "הוספת הרשומות מהעותק לכספת הנוכחית"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "הוספת הרשומות מגיבוי .ashy לכספת זו"
 
+msgid "Add to Firefox"
+msgstr "הוספה ל-Firefox"
+
 msgid "Add to favorites"
 msgstr "הוספה למועדפים"
 
+msgid "Add to the browser"
+msgstr "הוספה לדפדפן"
+
 msgid "Add verification code"
 msgstr "הוספת קוד אימות"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "להוסיף {} קוד מ-Google Authenticator?"
+msgstr[1] "להוסיף {} קודים מ-Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "נוסף למועדפים"
@@ -102,6 +129,9 @@ msgstr "התאמת מספר הספרות"
 
 msgid "Adjust words and separator"
 msgstr "התאמת מילים ומפריד"
+
+msgid "Advanced"
+msgstr "מתקדם"
 
 msgid "Algorithm"
 msgstr "אלגוריתם"
@@ -153,6 +183,9 @@ msgstr ""
 msgid "Another example"
 msgstr "דוגמה אחרת"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "כל מי שמקבל את הקובץ יכול לקרוא כל סיסמה שבו"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -199,6 +232,12 @@ msgstr ""
 "Ashy Pass לא הצליח לתקשר עם Nextcloud. בדוק את החיבור שלך, את כתובת השרת ואת "
 "סיסמת האפליקציה."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Ashy Pass ל-Chrome"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Ashy Pass ל-Firefox"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -214,6 +253,12 @@ msgid ""
 msgstr ""
 "לפחות 8 תווים. משפט סיסמה בן ארבע מילים מרשימת המילים של EFF הוא ברירת מחדל "
 "חזקה."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr "לפחות {} תווים. כמה מילים אקראיות קל לזכור וקשה לנחש."
 
 msgid "Attachment added"
 msgstr "הקובץ המצורף נוסף"
@@ -278,11 +323,27 @@ msgstr "גיבויים"
 msgid "Before importing"
 msgstr "לפני הייבוא"
 
+msgid "Bold (Ctrl+B)"
+msgstr "מודגש (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "הביאו או הוסיפו את הסיסמאות שלכם"
+
 msgid "Bring passwords from another app or browser"
 msgstr "ייבוא סיסמאות מיישום או מדפדפן אחר"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"הביאו אותן מדפדפן (Chrome, Edge, Brave, Firefox) או ממנהל סיסמאות אחר "
+"(Bitwarden, 1Password, KeePass)."
+
 msgid "Bring your passwords"
 msgstr "הבאת הסיסמאות שלך"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "מביא את השינויים מהשרת ושולח את שלכם; הגרסה החדשה ביותר מנצחת"
 
 msgid "Browser"
 msgstr "דפדפן"
@@ -355,6 +416,9 @@ msgid ""
 "this computer."
 msgstr "יש לבחור סיסמת אב. היא מגינה על כל מה שנשמר ב־Ashy Pass במחשב זה."
 
+msgid "Choose an access in the list first"
+msgstr "בחרו תחילה רשומה מהרשימה"
+
 msgid "Choose an image with the QR code"
 msgstr "בחירת תמונה עם קוד ה־QR"
 
@@ -388,6 +452,9 @@ msgstr "ניתן לבחור תיקייה זו בעת הוספה או עריכה 
 msgid "Choose…"
 msgstr "בחירה…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge ו-Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "ייצוא סיסמאות מ־Chrome,‏ Edge,‏ Brave או Firefox‏ (CSV)"
 
@@ -402,6 +469,12 @@ msgstr "נקה היסטוריה"
 
 msgid "Clear the password history?"
 msgstr "לנקות את היסטוריית הססמאות?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"לחצו על שדה התחברות ובחרו את הגישה שלכם: היא ממלאת רק באתר שאליו היא שייכת."
 
 msgid "Client ID"
 msgstr "מזהה לקוח"
@@ -427,6 +500,9 @@ msgstr "סגירת מיפוי"
 msgid "Closing mapping"
 msgstr "סגירת מיפוי"
 
+msgid "Code"
+msgstr "קוד"
+
 msgid "Code copied"
 msgstr "הקוד הועתק"
 
@@ -439,8 +515,25 @@ msgstr "הגדרות הקוד"
 msgid "Coffee"
 msgstr "קפה"
 
+msgid "Column"
+msgstr "עמודה"
+
+msgid "Column 1"
+msgstr "עמודה 1"
+
+msgid "Column 2"
+msgstr "עמודה 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "עמודות כמו name, url, username, password"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"עוברים מ-Google Authenticator? שם, פתחו את התפריט, בחרו העברת חשבונות ← "
+"ייצוא חשבונות, וסרקו כאן את קוד ה-QR שמוצג: כל הקודים שלו מגיעים בבת אחת."
 
 msgid "Compact vault list"
 msgstr "רשימת כספת קומפקטית"
@@ -513,9 +606,6 @@ msgstr "החיבור נכשל"
 msgid "Connect the sync folder"
 msgstr "חיבור תיקיית הסנכרון"
 
-msgid "Connect your browsers"
-msgstr "חברו את הדפדפנים שלכם"
-
 msgid "Connected"
 msgstr "מחובר"
 
@@ -524,6 +614,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "חוברו דפדפנים: {}. הפעילו אותם מחדש אם הם פתוחים."
 msgstr[1] "חוברו דפדפנים: {}. הפעילו אותם מחדש אם הם פתוחים."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "מחובר, אבל חסום (שלב 3)"
 
 msgid "Connected. Received:"
 msgstr "מחובר. התקבלו:"
@@ -560,6 +653,15 @@ msgstr "עותק של הכספת מ־Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "העתקת הסיסמה"
+
+msgid "Copy the password"
+msgstr "העתקת הסיסמה"
+
+msgid "Copy the user"
+msgstr "העתקת המשתמש"
+
+msgid "Copy the verification code"
+msgstr "העתקת קוד האימות"
 
 msgid "Copy this old password"
 msgstr "העתקת הסיסמה הישנה הזו"
@@ -678,9 +780,6 @@ msgstr "יצירת תיקייה…"
 msgid "Create my vault"
 msgstr "יצירת הכספת שלי"
 
-msgid "Create password"
-msgstr "יצירת סיסמה"
-
 msgid "Create your vault"
 msgstr "יצירת הכספת שלך"
 
@@ -781,6 +880,9 @@ msgstr "הניתוק נכשל"
 msgid "Disconnect the sync folder?"
 msgstr "לנתק את תיקיית הסנכרון?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "האם אתם שומרים סיסמאות במקום אחר?"
+
 msgid "Done"
 msgstr "בוצע"
 
@@ -798,6 +900,13 @@ msgstr "הכונן ננעל"
 
 msgid "Duplicate items"
 msgstr "פריטים כפולים"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"כל סמל מורד מהאתר עצמו, שרואה את כתובת האינטרנט שלכם. אתרים ברשת המקומית "
+"שלכם אינם נוצרים איתם קשר לעולם."
 
 msgid "Easier to type and remember."
 msgstr "קל יותר להקליד ולזכור."
@@ -841,9 +950,6 @@ msgstr "מוצפן כ-"
 msgid "Encrypted device"
 msgstr "מכשיר מוצפן"
 
-msgid "Encrypted folder sync"
-msgstr "סנכרון תיקייה מוצפן"
-
 msgid "Encrypted folder sync failed"
 msgstr "סנכרון התיקייה המוצפן נכשל"
 
@@ -869,6 +975,9 @@ msgstr "הכספת מוצפנת מחדש…"
 
 msgid "Encrypting…"
 msgstr "מצפין…"
+
+msgid "Encryption"
+msgstr "הצפנה"
 
 msgid "Encrypt…"
 msgstr "הצפנה…"
@@ -912,6 +1021,14 @@ msgstr "פרטי השגיאות"
 msgid "Estimated strength"
 msgstr "חוזק משוער"
 
+msgid "Every code in this export is already in the vault."
+msgstr "כל הקודים בייצוא הזה כבר נמצאים בכספת."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr "כל רשומה מוצפנת באמצעות AES-256-GCM במפתח שנגזר מסיסמת האב"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -948,6 +1065,17 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "הכל כבר היה מסונכרן"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"כל מה שאתם שומרים ב-Ashy Pass נשאר בכספת מוצפנת במחשב הזה. רק סיסמת האב שלכם "
+"פותחת אותה, ו-Ashy Pass לא יכול לשחזר אותה אם תאבדו אותה."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "ייצוא קובץ לא מוגן (CSV)"
+
 msgid "Export complete"
 msgstr "הייצוא הושלם"
 
@@ -957,8 +1085,8 @@ msgstr "הייצוא נכשל"
 msgid "Export to KeePass"
 msgstr "ייצוא ל־KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "ייצוא ל־KeePass או לקובץ שכל אחד יכול לקרוא"
+msgid "Export to KeePass (.kdbx)"
+msgstr "ייצוא ל-KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "ייצוא קובץ לא מוגן"
@@ -990,9 +1118,6 @@ msgstr "מועדף"
 msgid "Favorites"
 msgstr "מועדפים"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "שלוף והצג סמלי אתרים לצד רשומות הכספת"
-
 msgid "Fetching remote passwords"
 msgstr "מאחזר סיסמאות מרוחקות"
 
@@ -1014,6 +1139,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "יש למלא את שלושת השדות."
 
+msgid "Fill passwords in the browser"
+msgstr "מילוי סיסמאות בדפדפן"
+
 msgid "Find duplicate items"
 msgstr "חיפוש פריטים כפולים"
 
@@ -1023,6 +1151,9 @@ msgstr "ממצאים"
 msgid "Finishing synchronization"
 msgstr "מסיים סנכרון"
 
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox Add-ons · Firefox ו-LibreWolf"
+
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
 "Before importing you will see what was recognized. Delete unprotected export "
@@ -1031,8 +1162,17 @@ msgstr ""
 "תחילה יש לייצא את הסיסמאות מהיישום האחר, ואז לבחור את הקובץ כאן. לפני הייבוא "
 "יוצג מה זוהה. לאחר מכן יש למחוק קובצי ייצוא לא מוגנים."
 
+msgid "First steps"
+msgstr "צעדים ראשונים"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "הצעדים הראשונים הוסתרו. התפריט הראשי מחזיר אותם."
+
 msgid "Folder"
 msgstr "תיקייה"
+
+msgid "Folder and tags"
+msgstr "תיקייה ותגיות"
 
 msgid "Folder created"
 msgstr "התיקייה נוצרה"
@@ -1065,6 +1205,9 @@ msgid ""
 msgstr ""
 "עבור Nextcloud, כתובת הבסיס נראית כך: https://cloud.example.com/remote.php/"
 "dav/files/שם_משתמש"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "לאנשים שמשתמשים ביישום „Passwords“ בשרת ה-Nextcloud שלהם"
 
 msgid "For the browsers installed for this user"
 msgstr "לדפדפנים המותקנים עבור משתמש זה"
@@ -1158,6 +1301,9 @@ msgstr "מסייע לאיזון שחיקה של SSD אך חושף תבניות �
 msgid "Hide copied passwords from clipboard history"
 msgstr "הסתרת סיסמאות שהועתקו מהיסטוריית הלוח"
 
+msgid "Hide first steps"
+msgstr "הסתרת הצעדים הראשונים"
+
 msgid "Hide password"
 msgstr "הסתרת הסיסמה"
 
@@ -1186,6 +1332,9 @@ msgstr "כבר יש לי סיסמאות במקום אחר"
 msgid "I understand — Continue"
 msgstr "אני מבין/ה — המשך"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "רשמתי את סיסמת האב שלי במקום בטוח"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1201,6 +1350,9 @@ msgstr "ייבוא"
 msgid "Import complete"
 msgstr "הייבוא הושלם"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "ייבוא מדפדפן או מאפליקציה אחרת, או הוספה אחת אחת"
+
 msgid "Import partly complete"
 msgstr "הייבוא הושלם חלקית"
 
@@ -1211,12 +1363,25 @@ msgid "Import passwords…"
 msgstr "ייבוא סיסמאות…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr "חשוב: אם המחשב הזה מתקלקל, גיבוי הוא הדרך היחידה להחזיר הכול"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
 msgstr ""
 "ב־Ashy Pass ל־Android, יש לפתוח את הגדרות ← סנכרון תיקייה מוצפנת ולהקיש על "
 "„סריקת קוד ה־QR מהמחשב”. אחר כך יש להקליד את הקוד שלמטה ואת סיסמת האב."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"ב-Chrome: הגדרות ← מילוי אוטומטי וסיסמאות ← מנהל הסיסמאות של Google ← הגדרות "
+"← ייצוא סיסמאות. לאחר הייבוא, מחקו את הקובץ שיוצא: הוא אינו מוגן."
 
 msgid "Incorrect PIN"
 msgstr "PIN שגוי"
@@ -1239,6 +1404,9 @@ msgstr "הססמה הראשית שגויה. דבר לא שונה."
 msgid "Incorrect master password. Nothing was exported."
 msgstr "סיסמת האב שגויה. דבר לא יוצא."
 
+msgid "Insert a table"
+msgstr "הוספת טבלה"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1246,6 +1414,13 @@ msgid ""
 msgstr ""
 "הכנס את אסימון ה-FIDO2 שלך (Yubikey, Nitrokey וכו') ואשר במכשיר כשתתבקש. "
 "נדרש ביטוי הסיסמה הנוכחי שלך כדי לאשר את חריץ המפתח החדש."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "התקינו את התוסף של Ashy Pass וחברו אותו"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "מותקן ב: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "שגיאה פנימית: לא הוגדרה סיסמה"
@@ -1263,24 +1438,17 @@ msgstr ""
 "היא פותחת את הכספת במחשב זה. אף אחד לא יכול לשחזר אותה עבורך — אפילו לא Ashy "
 "Pass."
 
+msgid "Italic (Ctrl+I)"
+msgstr "נטוי (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "הפריטים נשארים כאן ובתיקייה; חיבור מחדש ימזג אותם"
 
 msgid "Its user, password and other details appear here."
 msgstr "המשתמש, הסיסמה ושאר הפרטים מופיעים כאן."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass‏ (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "ייצוא KeePass הושלם"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass שומר על הקובץ מוגן בסיסמה. קובץ CSV ניתן לקריאה על ידי כל מי שמשיג "
-"אותו."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1295,6 +1463,9 @@ msgstr "לשמור אותם"
 
 msgid "Keep using"
 msgstr "להמשיך להשתמש"
+
+msgid "Keep verification codes (2FA)"
+msgstr "שמירת קודי אימות (2FA)"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1395,13 +1566,16 @@ msgstr ""
 "האחרים אל פריטים שנמחקו."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"כניסות, כרטיסים, זהויות, פתקים ומפתחות גישה, מוצפנים במחשב הזה לפני שהם "
-"יוצאים ממנו, דרך תיקייה ב־Nextcloud,‏ pCloud,‏ WebDAV,‏ Dropbox,‏ Google Drive "
-"או במחשב הזה. Ashy Pass ל־Android משתמש באותה תיקייה."
+"פרטי התחברות, כרטיסים, זהויות, הערות, מפתחות גישה וקודי אימות מוצפנים במחשב "
+"הזה לפני שהם יוצאים ממנו, דרך תיקייה ב-Nextcloud, pCloud, WebDAV, Dropbox, "
+"Google Drive או במחשב הזה. השירות רואה רק קבצים מוצפנים, לעולם לא את תוכנם. "
+"Ashy Pass ל-Android משתמש באותה תיקייה."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1415,6 +1589,9 @@ msgstr "אותיות קטנות (a–z)"
 
 msgid "Main menu"
 msgstr "תפריט ראשי"
+
+msgid "Make a backup"
+msgstr "יצירת גיבוי"
 
 msgid "Master Password"
 msgstr "סיסמת אב"
@@ -1442,9 +1619,6 @@ msgstr "מוזג"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "מוזג; האחרים נמצאים ב״פריטים שנמחקו״"
-
-msgid "Minimum length:"
-msgstr "אורך מינימלי:"
 
 msgid "Mint"
 msgstr "נענע"
@@ -1523,6 +1697,9 @@ msgstr "סיסמת אב חדשה הוגדרה. יש לרשום אותה במקו
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "יישום Nextcloud Passwords"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords מחובר"
@@ -1607,6 +1784,15 @@ msgstr "לא מוגדר"
 msgid "Not connected"
 msgstr "לא מחובר"
 
+msgid "Not done yet"
+msgstr "עדיין לא בוצע"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "עדיין לא בחנות: ראו כיצד להתקין אותה ידנית"
+
+msgid "Not now"
+msgstr "לא עכשיו"
+
 msgid "Not run yet"
 msgstr "טרם הופעל"
 
@@ -1684,13 +1870,35 @@ msgstr "פעיל"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"באתר שברצונך להגן עליו, יש לפתוח את הגדרות האימות הדו־שלבי ולבחור אפליקציית "
-"אימות. יש לסרוק את קוד ה־QR המוצג או להעתיק את מפתח ההגדרה ולהדביק אותו למטה."
+"באתר שברצונכם להגן עליו, פתחו את הגדרות האימות הדו-שלבי ובחרו באפליקציית "
+"אימות. סרקו את קוד ה-QR שמוצג, או העתיקו את מפתח ההגדרה (האותיות והמספרים "
+"שמתחת לקוד ה-QR, לעיתים מאחורי „לא ניתן לסרוק?“) והדביקו אותו למטה."
 
 msgid "On until Ashy Pass closes"
 msgstr "פעיל עד לסגירת Ashy Pass"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"לאחר שהסיסמאות שלכם בפנים, צרו גיבוי תחת גיבויים ושמרו אותו מחוץ למחשב הזה, "
+"למשל על כונן USB. אם המחשב הזה מתקלקל או אובד, זו הדרך היחידה להחזיר אותן."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"קוד אחד משתמש במונה או באלגוריתם ש-Ashy Pass אינו תומך בהם, ולכן הוא הושמט."
+msgstr[1] ""
+"חלק מהקודים משתמשים במונה או באלגוריתם ש-Ashy Pass אינו תומך בהם, ולכן הם "
+"הושמטו."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1728,8 +1936,14 @@ msgstr "פתיחת מיפוי מוצפן"
 msgid "Open image…"
 msgstr "פתיחת תמונה…"
 
+msgid "Open in the store"
+msgstr "פתיחה בחנות"
+
 msgid "Open the encrypted volume"
 msgstr "פתיחת הכרך המוצפן"
+
+msgid "Open the website"
+msgstr "פתיחת האתר"
 
 msgid "Open website"
 msgstr "פתיחת האתר"
@@ -1745,6 +1959,9 @@ msgstr "פותח את Dropbox בדפדפן; העתק את הקוד שמוצג"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "פותח את הדפדפן לאישור OAuth"
+
+msgid "Optional, to organize the list"
+msgstr "אופציונלי, לארגון הרשימה"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1811,6 +2028,9 @@ msgstr "הסיסמה הועתקה"
 
 msgid "Password for this backup"
 msgstr "סיסמה לגיבוי זה"
+
+msgid "Password generator"
+msgstr "מחולל סיסמאות"
 
 msgid "Password history"
 msgstr "היסטוריית סיסמאות"
@@ -1899,11 +2119,17 @@ msgstr "סיסמאות קודמות ש־Ashy Pass שמר כשסיסמה זו ש�
 msgid "Protected by a password you choose"
 msgstr "מוגן בסיסמה שבחרת"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr "מוגן בסיסמה. נפתח ב-KeePass, ב-KeePassXC ובאפליקציות אחרות"
+
 msgid "Protection"
 msgstr "הגנה"
 
 msgid "QR code read. Check the details and save."
 msgstr "קוד ה־QR נקרא. יש לבדוק את הפרטים ולשמור."
+
+msgid "Quicker than the master password on this computer"
+msgstr "מהיר יותר מסיסמת האב במחשב הזה"
 
 msgid "Quit"
 msgstr "יציאה"
@@ -1944,6 +2170,9 @@ msgstr "ההרשמה נכשלה"
 msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr "רשום עד 2 אמצעי אימות פיזיים מסוג FIDO2 (YubiKey, SoloKey וכו')"
 
+msgid "Remember the backup"
+msgstr "זכרו את הגיבוי"
+
 msgid "Remote generation:"
 msgstr "דור מרוחק:"
 
@@ -1964,6 +2193,9 @@ msgstr "הסרת התיקייה"
 
 msgid "Remove from favorites"
 msgstr "הסרה מהמועדפים"
+
+msgid "Remove table"
+msgstr "הסרת הטבלה"
 
 msgid "Remove the old copy?"
 msgstr "להסיר את העותק הישן?"
@@ -2033,6 +2265,9 @@ msgstr "שמירה"
 
 msgid "Rose"
 msgstr "ורד"
+
+msgid "Row"
+msgstr "שורה"
 
 msgid "Run"
 msgstr "הפעל"
@@ -2118,6 +2353,9 @@ msgstr "חיפוש לפי שם, חשבון או אתר"
 
 msgid "Search codes"
 msgstr "חיפוש קודים"
+
+msgid "Search folders"
+msgstr "חיפוש תיקיות"
 
 msgid "Search for drives"
 msgstr "חיפוש כוננים"
@@ -2270,11 +2508,23 @@ msgstr "גודל"
 msgid "Snapshot uploaded"
 msgstr "תמונת המצב הועלתה"
 
+msgid "Start using Ashy Pass"
+msgstr "התחילו להשתמש ב-Ashy Pass"
+
 msgid "Starting..."
 msgstr "מתחיל..."
 
 msgid "Status"
 msgstr "סטטוס"
+
+msgid "Step 1 of 3"
+msgstr "שלב 1 מתוך 3"
+
+msgid "Step 2 of 3"
+msgstr "שלב 2 מתוך 3"
+
+msgid "Step 3 of 3"
+msgstr "שלב 3 מתוך 3"
 
 msgid "Strength"
 msgstr "חוזק"
@@ -2291,6 +2541,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "סגנון"
+
+msgid "Suggest a passphrase"
+msgstr "הצעת משפט סיסמה"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "הצעה: {}. רשמו אותה לפני שממשיכים."
 
 msgid "Summary"
 msgstr "סיכום"
@@ -2332,6 +2589,9 @@ msgstr "סנכרן עכשיו"
 msgid "Sync when the vault is unlocked"
 msgstr "סנכרון בעת שחרור נעילת הכספת"
 
+msgid "Sync with your phone or another computer"
+msgstr "סנכרון עם הטלפון או עם מחשב אחר"
+
 msgid "Synchronization"
 msgstr "סנכרון"
 
@@ -2370,14 +2630,14 @@ msgstr "תגיות"
 msgid "Tags (separated by commas)"
 msgstr "תגיות (מופרדות בפסיקים)"
 
-msgid "Take my data to another app"
-msgstr "העברת הנתונים שלי ליישום אחר"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "מדבר עם האסימון שלך… בדוק את המכשיר להנחיית מגע."
 
 msgid "Technical details"
 msgstr "פרטים טכניים"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "החלון של Ashy Pass בדפדפן, עם פרטי ההתחברות של האתר"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "לא ניתן היה להשתמש ב־PIN במחשב זה. יש להשתמש בסיסמת האב."
@@ -2465,6 +2725,13 @@ msgid "The new passwords do not match."
 msgstr "הסיסמאות החדשות אינן תואמות."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"שאר השלבים — הדפדפן, הטלפון, קודי האימות — מחכים תחת צעדים ראשונים, מעל "
+"הסיסמאות שלכם."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2506,6 +2773,9 @@ msgstr "החיפוש מוגבל לתיקייה"
 msgid "The site's icon, when the code has a site saved"
 msgstr "הסמל של האתר, כשלקוד שמור אתר"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "הקודים בני שש הספרות שאתרים מבקשים אחרי הסיסמה"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "הסנכרון הסתיים, אך חלק מהפריטים דיווחו על שגיאה."
 
@@ -2517,6 +2787,15 @@ msgstr "לא ניתן היה לפתוח מחדש את הכספת"
 
 msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr "הכספת נעולה. דבר לא נשמר — יש לבטל את הנעילה ולנסות שוב."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr "הכספת ננעלה לפני שהגיבוי נשמר. פתחו אותה וצרו את הגיבוי שוב."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr "הכספת ננעלה לפני שהייצוא נשמר. פתחו אותה וייצאו שוב."
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2567,6 +2846,9 @@ msgstr ""
 "יועברו כאן לפריטים שנמחקו. אם לא, ייתכן שהשרת ענה רק חלקית: שמרו אותם "
 "והסנכרון הבא ינסה שוב."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr "בייצוא הזה מ-Google Authenticator אין קודים שאפשר להשתמש בהם כאן."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "ה־PIN הזה כבר אינו תואם את הכספת. דבר לא שונה."
 
@@ -2582,6 +2864,12 @@ msgstr "לרשומה זו אין סיסמה שמורה"
 
 msgid "This access has no user"
 msgstr "לרשומה זו אין משתמש"
+
+msgid "This access has no verification code"
+msgstr "לרשומה זו אין קוד אימות"
+
+msgid "This access has no website"
+msgstr "לרשומה זו אין אתר"
 
 msgid "This access no longer exists"
 msgstr "רשומה זו כבר לא קיימת"
@@ -2632,11 +2920,11 @@ msgid ""
 msgstr "לא ניתן לפתוח את התמונה. השתמשו בתמונת PNG, JPEG או WebP של עד 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"זהו ייצוא של Google Authenticator עם כמה חשבונות. במקום זאת יש להציג את קוד "
-"ה־QR של כל חשבון באתר שלו."
+"זהו ייצוא מ-Google Authenticator עם כמה חשבונות. סרקו אותו ב-קודי אימות ← "
+"הוספת קוד כדי להביא את כולם בבת אחת."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2663,6 +2951,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "פעולה זו תמחק את כל הנתונים בכונן"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "דרך תיקייה מוצפנת בענן שלכם או בכונן"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2693,6 +2984,11 @@ msgstr "כיבוי"
 msgid "Turn on"
 msgstr "הפעלה"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr "מופעל בעת החיבור. כשהוא כבוי, התוסף לא יכול לראות דבר בכספת"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "איחוד דו-כיווני: משוך מרחוק, דחף מקומי, פתור לפי המאוחר ביותר"
 
@@ -2700,11 +2996,13 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "התאמה דו-כיוונית הושלמה בהצלחה."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"סנכרון דו-כיווני עם אפליקציית 'Passwords' הרשמית בשרת ה-Nextcloud שלך. השתמש "
-"בסיסמת אפליקציה מהגדרות ← אבטחה."
+"סנכרון דו-כיווני עם היישום הרשמי „Passwords“ בשרת ה-Nextcloud שלכם. השרת "
+"שומר רשומות אלה בצורה שהוא יכול לקרוא: השתמשו בו רק עם שרת שאתם סומכים עליו. "
+"היכנסו עם סיסמת יישום מתוך הגדרות ← אבטחה."
 
 msgid "Type of password"
 msgstr "סוג סיסמה"
@@ -2748,6 +3046,9 @@ msgstr "יש לבטל את נעילת הכספת כדי לשמור את הסיס
 msgid "Unlock with PIN"
 msgstr "פתיחה באמצעות PIN"
 
+msgid "Unlock with a PIN"
+msgstr "פתיחה באמצעות PIN"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2773,9 +3074,6 @@ msgstr "שחרור נעילה"
 
 msgid "Unlocking…"
 msgstr "מבטל נעילה…"
-
-msgid "Unprotected CSV…"
-msgstr "CSV לא מוגן…"
 
 msgid "Updated locally"
 msgstr "עודכן מקומית"
@@ -2823,6 +3121,9 @@ msgid ""
 msgstr ""
 "השתמשו באותה סיסמת אב בכל המכשירים שלכם: היא פותחת את מפתח התיקייה. מזינים "
 "אותה פעם אחת כאן, כדי להצטרף."
+
+msgid "Use them on your phone or another computer"
+msgstr "השתמשו בהן בטלפון או במחשב אחר"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "יש להשתמש בקודים אלה כשאתר מבקש אימות דו־שלבי."
@@ -2957,6 +3258,9 @@ msgstr "אתר"
 msgid "Website (optional)"
 msgstr "אתר (רשות)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "ברוכים הבאים ל-Ashy Pass"
+
 msgid "What it contains"
 msgstr "מה הוא מכיל"
 
@@ -2966,9 +3270,6 @@ msgid ""
 msgstr ""
 "כשאתר מציע אימות דו־שלבי, יש להוסיף כאן את מפתח ההגדרה שלו כדי לקבל את "
 "הקודים."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "כשכבוי, ההרחבה לא רואה דבר מהכספת"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "מאיפה להביא את הסיסמאות שלך?"
@@ -3056,6 +3357,13 @@ msgstr ""
 "הפריטים שלכם נשארים במחשב זה ובתיקייה. חיבור מחדש מאוחר יותר ימזג אותם במקום "
 "לשכפל."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"פרטי ההתחברות שלך לאתר שבו אתה נמצא, בלחיצה אחת למילוי. חפש בכספת וצור גם "
+"סיסמאות חדשות."
+
 msgid "Your most used accesses can be here"
 msgstr "הרשומות הנפוצות שלך יכולות להופיע כאן"
 
@@ -3106,6 +3414,9 @@ msgstr "פנוי מתוך"
 msgid "high"
 msgstr "גבוה"
 
+msgid "incorrect master password"
+msgstr "סיסמת אב שגויה"
+
 msgid "low"
 msgstr "נמוך"
 
@@ -3128,6 +3439,9 @@ msgstr[1] "קוד חדש בעוד {} שניות"
 
 msgid "no 2FA"
 msgstr "ללא 2FA"
+
+msgid "no permission to read or write there"
+msgstr "אין הרשאה לקרוא או לכתוב שם"
 
 msgid "none"
 msgstr "אין"
@@ -3172,6 +3486,21 @@ msgstr "נשלחו:"
 msgid "solid-state"
 msgstr "מצב מוצק"
 
+msgid "that place is read-only"
+msgstr "המקום הזה הוא לקריאה בלבד"
+
+msgid "the disk is full"
+msgstr "הדיסק מלא"
+
+msgid "the file or folder does not exist"
+msgstr "הקובץ או התיקייה לא קיימים"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "הכספת נעולה; פתחו אותה ונסו שוב"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr "שיטת הפתיחה הזו כבר לא פותחת את הכספת; הזינו את סיסמת האב"
+
 msgid "very high"
 msgstr "גבוה מאוד"
 
@@ -3180,6 +3509,14 @@ msgstr "נמוך מאוד"
 
 msgid "weak"
 msgstr "חלש"
+
+#, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "נוספו {added} מתוך {total} קודים; את השאר לא ניתן היה לשמור"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{done} מתוך {total} הושלמו"
 
 #, rust-format
 msgid "{} cannot be imported."
@@ -3192,6 +3529,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "תו {}"
 msgstr[1] "{} תווים"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "נוסף {} קוד"
+msgstr[1] "נוספו {} קודים"
 
 #, rust-format
 msgid "{} day."

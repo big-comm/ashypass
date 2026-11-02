@@ -48,6 +48,8 @@ struct Inner {
     confirm_entry: adw::PasswordEntryRow,
     caps_warning: gtk::Label,
     strength_label: gtk::Label,
+    strength_bar: gtk::LevelBar,
+    suggest_button: gtk::Button,
     error_label: gtk::Label,
     primary_button: gtk::Button,
     spinner: gtk::Spinner,
@@ -64,6 +66,9 @@ struct Inner {
     prefer_password: Cell<bool>,
     on_unlocked: RefCell<Option<Callback>>,
     on_import_help: RefCell<Option<Callback>>,
+    /// The vault was just created here (not unlocked): the window shows the
+    /// welcome once.
+    created: Cell<bool>,
 }
 
 impl UnlockView {
@@ -127,6 +132,16 @@ impl UnlockView {
         caps_warning.add_css_class("caption");
         content.append(&caps_warning);
 
+        // Setup only: how strong the new master password is, and a way to
+        // get a good one that is still easy to write down and type.
+        let strength_bar = gtk::LevelBar::builder()
+            .min_value(0.0)
+            .max_value(1.0)
+            .visible(false)
+            .build();
+        strength_bar
+            .update_property(&[gtk::accessible::Property::Label(tr!("Estimated strength"))]);
+        content.append(&strength_bar);
         let strength_label = gtk::Label::builder()
             .xalign(0.0)
             .wrap(true)
@@ -135,6 +150,13 @@ impl UnlockView {
         strength_label.add_css_class("caption");
         strength_label.add_css_class("dim-label");
         content.append(&strength_label);
+        let suggest_button = gtk::Button::builder()
+            .label(tr!("Suggest a passphrase"))
+            .halign(gtk::Align::Start)
+            .visible(false)
+            .build();
+        suggest_button.add_css_class("flat");
+        content.append(&suggest_button);
 
         let error_label = gtk::Label::builder()
             .xalign(0.0)
@@ -227,6 +249,8 @@ impl UnlockView {
             confirm_entry,
             caps_warning,
             strength_label,
+            strength_bar,
+            suggest_button,
             error_label,
             primary_button,
             spinner,
@@ -237,6 +261,7 @@ impl UnlockView {
             prefer_password: Cell::new(false),
             on_unlocked: RefCell::new(None),
             on_import_help: RefCell::new(None),
+            created: Cell::new(false),
         });
 
         wire(&inner, &import_help);
@@ -250,6 +275,11 @@ impl UnlockView {
 
     pub fn set_on_unlocked(&self, cb: Callback) {
         *self.inner.on_unlocked.borrow_mut() = Some(cb);
+    }
+
+    /// Whether the last unlock created the vault; asking clears it.
+    pub fn take_created(&self) -> bool {
+        self.inner.created.replace(false)
     }
 
     pub fn set_on_import_help(&self, cb: Callback) {
@@ -319,6 +349,12 @@ fn wire(inner: &Rc<Inner>, import_help: &gtk::Button) {
             if inner.mode.get() == UnlockMode::Setup {
                 inner.update_setup_strength(&entry.text());
             }
+        }
+    });
+    let weak = Rc::downgrade(inner);
+    inner.suggest_button.connect_clicked(move |_| {
+        if let Some(inner) = weak.upgrade() {
+            inner.suggest_passphrase();
         }
     });
     let weak = Rc::downgrade(inner);
@@ -414,10 +450,9 @@ impl Inner {
                 self.switch_method_button.set_visible(false);
                 self.setup_help.set_visible(true);
                 self.strength_label.set_visible(true);
-                self.strength_label.set_label(&format!(
-                    "{} {MIN_MASTER_PASSWORD_LENGTH}",
-                    tr!("Minimum length:")
-                ));
+                self.strength_bar.set_visible(true);
+                self.suggest_button.set_visible(true);
+                self.update_setup_strength("");
             }
             UnlockMode::Password => {
                 self.title.set_label(tr!("Unlock your vault"));
@@ -432,6 +467,10 @@ impl Inner {
                 self.switch_method_button.set_label(tr!("Use PIN"));
                 self.setup_help.set_visible(false);
                 self.strength_label.set_visible(false);
+                // A suggested passphrase may still be written there.
+                self.strength_label.set_label("");
+                self.strength_bar.set_visible(false);
+                self.suggest_button.set_visible(false);
             }
             UnlockMode::Pin => {
                 self.title.set_label(tr!("Unlock with PIN"));
@@ -445,6 +484,10 @@ impl Inner {
                     .set_label(tr!("Use master password"));
                 self.setup_help.set_visible(false);
                 self.strength_label.set_visible(false);
+                // A suggested passphrase may still be written there.
+                self.strength_label.set_label("");
+                self.strength_bar.set_visible(false);
+                self.suggest_button.set_visible(false);
             }
         }
         self.icon.set_icon_name(Some("ashypass"));
@@ -523,13 +566,21 @@ impl Inner {
 
     fn update_setup_strength(&self, password: &str) {
         if password.is_empty() {
-            self.strength_label.set_label(&format!(
-                "{} {MIN_MASTER_PASSWORD_LENGTH}",
-                tr!("Minimum length:")
-            ));
+            self.strength_bar.set_value(0.0);
+            self.strength_label.set_label(
+                &tr!("At least {} characters. A few random words are easy to remember and hard to guess.")
+                    .replace("{}", &MIN_MASTER_PASSWORD_LENGTH.to_string()),
+            );
             return;
         }
-        let (_, level) = ashypass_core::strength::legacy_score(password);
+        let (percent, level) = ashypass_core::strength::legacy_score(password);
+        // Too short to be accepted reads as weak, whatever its characters.
+        let short = password.chars().count() < MIN_MASTER_PASSWORD_LENGTH;
+        self.strength_bar.set_value(if short {
+            0.1
+        } else {
+            f64::from(percent) / 100.0
+        });
         self.strength_label.set_label(&format!(
             "{} · {}: {}",
             trn!("{} character", "{} characters", password.chars().count())
@@ -537,6 +588,20 @@ impl Inner {
             tr!("Estimated strength"),
             crate::ui::i18n::localized_strength_label(level)
         ));
+    }
+
+    /// Four random words, filled into both fields and shown once so they can
+    /// be written down.
+    fn suggest_passphrase(&self) {
+        let phrase = Zeroizing::new(ashypass_core::generator::generate_passphrase(
+            4, "-", false, false,
+        ));
+        self.secret_entry.set_text(&phrase);
+        self.confirm_entry.set_text(&phrase);
+        self.confirm_entry.remove_css_class("error");
+        self.strength_label.set_label(
+            &tr!("Suggested: {}. Write it down before you continue.").replace("{}", &phrase),
+        );
     }
 
     fn finish_unlock(&self) {
@@ -599,11 +664,14 @@ impl Inner {
                         if let Err(error) = inner.state.update_settings(|s| s.quick_unlock = None) {
                             log::warn!("could not save settings: {error}");
                         }
+                        inner.created.set(true);
                         inner.finish_unlock();
                     }
-                    Err(e) => {
-                        inner.show_error(&format!("{}: {e}", tr!("Could not create the vault")))
-                    }
+                    Err(e) => inner.show_error(&format!(
+                        "{}: {}",
+                        tr!("Could not create the vault"),
+                        crate::ui::errors::describe(&e)
+                    )),
                 }
             },
         );
@@ -667,7 +735,11 @@ impl Inner {
                 self.show_error(tr!("Incorrect master password"));
                 self.focus();
             }
-            Err(e) => self.show_error(&format!("{}: {e}", tr!("Could not unlock the vault"))),
+            Err(e) => self.show_error(&format!(
+                "{}: {}",
+                tr!("Could not unlock the vault"),
+                crate::ui::errors::describe(&e)
+            )),
         }
     }
 

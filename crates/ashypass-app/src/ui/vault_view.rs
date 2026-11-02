@@ -32,6 +32,15 @@ use zeroize::Zeroizing;
 
 const SEARCH_DEBOUNCE_MS: u64 = 80;
 
+/// What a keyboard shortcut does with the current access.
+#[derive(Debug, Clone, Copy)]
+pub enum EntryShortcut {
+    User,
+    Password,
+    Code,
+    Website,
+}
+
 /// Which part of the collection the list shows.
 #[derive(Clone, PartialEq, Eq, Debug, Default)]
 pub enum FolderFilter {
@@ -88,6 +97,17 @@ pub struct PasswordListCache {
 
 impl PasswordListCache {
     pub fn new(entries: Vec<PasswordEntry>, categories: Vec<String>) -> Self {
+        // A login with a verification code and no password is a code (as
+        // made by "Add verification code" or a Google Authenticator export):
+        // it lives on the codes page, not among the passwords.
+        let entries: Vec<PasswordEntry> = entries
+            .into_iter()
+            .filter(|entry| {
+                entry.has_password
+                    || !entry.has_totp
+                    || entry.item_type != ashypass_core::db::vault::ITEM_LOGIN
+            })
+            .collect();
         let search_index = entries.iter().map(password_search_text).collect();
         Self {
             entries: entries.into_iter().map(Rc::new).collect(),
@@ -140,17 +160,18 @@ struct Inner {
 
     search_entry: gtk::SearchEntry,
     folder_button: gtk::MenuButton,
-    folder_menu: gio::Menu,
+    folder_popover: gtk::Popover,
+    folder_search: gtk::SearchEntry,
+    folder_list: gtk::ListBox,
     folder_filter: RefCell<FolderFilter>,
-    /// The stateful `vault.folder` actions, so the menu's radio mark follows
     /// changes made outside the menu (reset on lock, "Search all folders").
-    folder_actions: RefCell<Vec<gio::SimpleAction>>,
     favorites_toggle: gtk::ToggleButton,
     count_label: gtk::Label,
     sync_label: gtk::Label,
 
     store: gio::ListStore,
     list_view: gtk::ListView,
+    list_body: gtk::Box,
     content_stack: gtk::Stack,
     empty: EmptyState,
 
@@ -221,10 +242,10 @@ impl VaultView {
             .margin_start(12)
             .margin_end(12)
             .build();
-        let folder_menu = gio::Menu::new();
+        let (folder_popover, folder_search, folder_list) = folder_picker();
         let folder_button = gtk::MenuButton::builder()
             .label(tr!("All folders"))
-            .menu_model(&folder_menu)
+            .popover(&folder_popover)
             .tooltip_text(tr!("Show a folder"))
             .build();
         folder_button.add_css_class("flat");
@@ -261,8 +282,10 @@ impl VaultView {
             .build();
 
         let empty = EmptyState::new();
+        // Not homogeneous: the empty state's buttons must not widen the list.
         let content_stack = gtk::Stack::builder()
             .transition_type(gtk::StackTransitionType::Crossfade)
+            .hhomogeneous(false)
             .vexpand(true)
             .build();
         content_stack.add_named(&list_scrolled, Some("list"));
@@ -327,14 +350,16 @@ impl VaultView {
             split: split.clone(),
             search_entry,
             folder_button,
-            folder_menu,
+            folder_popover,
+            folder_search,
+            folder_list,
             folder_filter: RefCell::new(FolderFilter::All),
-            folder_actions: RefCell::new(Vec::new()),
             favorites_toggle,
             count_label,
             sync_label,
             store,
             list_view: list_view.clone(),
+            list_body: list_body.clone(),
             content_stack,
             empty,
             cache: RefCell::new(None),
@@ -403,10 +428,16 @@ impl VaultView {
         inner.invalidate_caches();
         *inner.folder_filter.borrow_mut() = FolderFilter::All;
         inner.folder_button.set_label(tr!("All folders"));
-        inner.sync_folder_actions(&FolderFilter::All);
         inner.favorites_toggle.set_active(false);
-        inner.folder_menu.remove_all();
+        inner.folder_search.set_text("");
+        inner.rebuild_folder_menu(&[]);
         inner.close_details();
+    }
+
+    /// Put a widget at the top of the list pane, above the filters (newest
+    /// first): the first-steps card, the backup reminder.
+    pub fn add_top(&self, widget: &impl IsA<gtk::Widget>) {
+        self.inner.list_body.prepend(widget);
     }
 
     pub fn focus_search(&self) {
@@ -429,6 +460,68 @@ impl VaultView {
             self.inner.split.set_show_content(false);
         }
         self.inner.search_entry.clone()
+    }
+
+    /// Run a keyboard shortcut on the current access: the row with the
+    /// keyboard focus in the list, else the one open in the details.
+    pub fn run_shortcut(&self, shortcut: EntryShortcut) {
+        if !self.inner.can_show_vault_data() {
+            return;
+        }
+        let Some(id) = self.inner.shortcut_target() else {
+            self.inner.toast(tr!("Choose an access in the list first"));
+            return;
+        };
+        let Some(entry) = self.inner.state.vault.borrow().get(id).ok().flatten() else {
+            return;
+        };
+        match shortcut {
+            EntryShortcut::User => self.inner.copy_username(entry.username.as_deref()),
+            EntryShortcut::Password => self.inner.copy_password(id),
+            EntryShortcut::Code => {
+                let code = entry
+                    .totp_secret
+                    .as_deref()
+                    .filter(|_| entry.has_totp)
+                    .and_then(|secret| {
+                        let secret = Zeroizing::new(secret.to_string());
+                        let algo =
+                            Algorithm::parse(&entry.totp_algorithm).unwrap_or(Algorithm::Sha1);
+                        let now = chrono::Utc::now().timestamp().max(0) as u64;
+                        generate_totp(
+                            &secret,
+                            algo,
+                            entry.totp_digits,
+                            entry.totp_period.max(1),
+                            now,
+                        )
+                        .ok()
+                    });
+                match code {
+                    Some(code) => {
+                        copy_secret(&self.inner.state, &code);
+                        self.inner.toast(tr!("Code copied"));
+                    }
+                    None => self
+                        .inner
+                        .toast(tr!("This access has no verification code")),
+                }
+            }
+            EntryShortcut::Website => match entry.url.as_deref().and_then(openable_url) {
+                Some(target) => {
+                    let parent = self
+                        .root
+                        .root()
+                        .and_then(|r| r.downcast::<gtk::Window>().ok());
+                    gtk::UriLauncher::new(&target).launch(
+                        parent.as_ref(),
+                        None::<&gio::Cancellable>,
+                        |_| {},
+                    );
+                }
+                None => self.inner.toast(tr!("This access has no website")),
+            },
+        }
     }
 
     #[cfg(debug_assertions)]
@@ -590,6 +683,7 @@ fn setup_factory(inner: &Rc<Inner>, factory: &gtk::SignalListItemFactory) {
             let Some(entry) = item_entry(item) else {
                 return;
             };
+            root.set_widget_name(&format!("{ROW_NAME_PREFIX}{}", entry.id));
             title.set_label(&entry.title);
             let line = account_line(
                 &entry.title,
@@ -632,7 +726,169 @@ fn setup_factory(inner: &Rc<Inner>, factory: &gtk::SignalListItemFactory) {
     });
 }
 
+/// Lowercase and without accents, for matching folder names as typed.
+fn fold_for_search(text: &str) -> String {
+    use unicode_normalization::{char::is_combining_mark, UnicodeNormalization};
+    text.nfd()
+        .filter(|c| !is_combining_mark(*c))
+        .flat_map(char::to_lowercase)
+        .collect()
+}
+
+/// Rows above this height scroll: with many folders the list used to run
+/// past the bottom of the window.
+const FOLDER_LIST_MAX_HEIGHT: i32 = 360;
+
+/// The folder picker: a search field over a scrolling list of folders,
+/// then creating and organizing folders. Returns the popover, its search
+/// field and its list (filled by `rebuild_folder_menu`).
+fn folder_picker() -> (gtk::Popover, gtk::SearchEntry, gtk::ListBox) {
+    let search = gtk::SearchEntry::builder()
+        .placeholder_text(tr!("Search folders"))
+        .build();
+    search.update_property(&[gtk::accessible::Property::Label(tr!("Search folders"))]);
+    let list = gtk::ListBox::builder()
+        .selection_mode(gtk::SelectionMode::None)
+        .build();
+    list.add_css_class("navigation-sidebar");
+    list.update_property(&[gtk::accessible::Property::Label(tr!("Folders"))]);
+    let scrolled = gtk::ScrolledWindow::builder()
+        .hscrollbar_policy(gtk::PolicyType::Never)
+        .propagate_natural_height(true)
+        .max_content_height(FOLDER_LIST_MAX_HEIGHT)
+        .min_content_width(240)
+        .child(&list)
+        .build();
+
+    // While searching only folders whose name contains the text show; the
+    // "All folders" and "No folder" choices come back with an empty field.
+    {
+        let search = search.downgrade();
+        list.set_filter_func(move |row| {
+            let Some(search) = search.upgrade() else {
+                return true;
+            };
+            let typed = fold_for_search(search.text().trim());
+            if typed.is_empty() {
+                return true;
+            }
+            row.widget_name()
+                .strip_prefix("f:")
+                .is_some_and(|name| fold_for_search(name).contains(&typed))
+        });
+    }
+    // A "Folders" heading above the first named folder.
+    list.set_header_func(|row, before| {
+        let named = |r: &gtk::ListBoxRow| r.widget_name().starts_with("f:");
+        if named(row) && !before.is_some_and(named) {
+            let header = gtk::Label::builder()
+                .label(tr!("Folders"))
+                .xalign(0.0)
+                .margin_top(6)
+                .margin_start(8)
+                .build();
+            header.add_css_class("caption-heading");
+            header.add_css_class("dim-label");
+            row.set_header(Some(&header));
+        } else {
+            row.set_header(None::<&gtk::Widget>);
+        }
+    });
+    {
+        let list = list.downgrade();
+        search.connect_search_changed(move |_| {
+            if let Some(list) = list.upgrade() {
+                list.invalidate_filter();
+                list.invalidate_headers();
+            }
+        });
+    }
+
+    let content = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(6)
+        .build();
+    content.append(&search);
+    content.append(&scrolled);
+    content.append(&gtk::Separator::new(gtk::Orientation::Horizontal));
+    let popover = gtk::Popover::builder().child(&content).build();
+    for (label, action) in [
+        (tr!("Create folder…"), "vault.new-folder"),
+        (tr!("Organize folders…"), "vault.organize-folders"),
+    ] {
+        let button = gtk::Button::builder()
+            .label(label)
+            .action_name(action)
+            .build();
+        button.add_css_class("flat");
+        if let Some(text) = button.child() {
+            text.set_halign(gtk::Align::Start);
+        }
+        let popover = popover.downgrade();
+        button.connect_clicked(move |_| {
+            if let Some(popover) = popover.upgrade() {
+                popover.popdown();
+            }
+        });
+        content.append(&button);
+    }
+    (popover, search, list)
+}
+
+/// One choice of the folder picker: its name, and a check mark shown on the
+/// folder in view. The row's widget name is the filter's target.
+fn folder_row(filter: FolderFilter) -> gtk::ListBoxRow {
+    let line = gtk::Box::builder()
+        .orientation(gtk::Orientation::Horizontal)
+        .spacing(8)
+        .build();
+    line.append(
+        &gtk::Label::builder()
+            .label(filter.label())
+            .xalign(0.0)
+            .hexpand(true)
+            .ellipsize(gtk::pango::EllipsizeMode::End)
+            .build(),
+    );
+    let check = gtk::Image::from_icon_name("object-select-symbolic");
+    check.set_opacity(0.0);
+    check.set_accessible_role(gtk::AccessibleRole::Presentation);
+    line.append(&check);
+    let row = gtk::ListBoxRow::builder().child(&line).build();
+    row.set_widget_name(&filter.target());
+    row
+}
+
 fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) {
+    {
+        let weak = Rc::downgrade(inner);
+        inner.folder_list.connect_row_activated(move |_, row| {
+            if let Some(inner) = weak.upgrade() {
+                inner.choose_folder(row);
+            }
+        });
+        // Enter in the search field picks the first folder shown.
+        let weak = Rc::downgrade(inner);
+        inner.folder_search.connect_activate(move |_| {
+            let Some(inner) = weak.upgrade() else { return };
+            let mut index = 0;
+            while let Some(row) = inner.folder_list.row_at_index(index) {
+                if row.is_child_visible() {
+                    inner.choose_folder(&row);
+                    return;
+                }
+                index += 1;
+            }
+        });
+        // Each opening starts with an empty search, ready for typing.
+        let search = inner.folder_search.downgrade();
+        inner.folder_popover.connect_show(move |_| {
+            if let Some(search) = search.upgrade() {
+                search.set_text("");
+                search.grab_focus();
+            }
+        });
+    }
     let weak = Rc::downgrade(inner);
     list_view.connect_activate(move |_, position| {
         let Some(inner) = weak.upgrade() else { return };
@@ -714,26 +970,6 @@ fn wire(inner: &Rc<Inner>, list_view: &gtk::ListView, add_button: &gtk::Button) 
 
 fn install_actions(inner: &Rc<Inner>, widget: &gtk::Widget) {
     let group = gio::SimpleActionGroup::new();
-
-    let folder = gio::SimpleAction::new_stateful(
-        "folder",
-        Some(glib::VariantTy::STRING),
-        &"all".to_variant(),
-    );
-    {
-        let weak = Rc::downgrade(inner);
-        folder.connect_activate(move |action, target| {
-            let Some(target) = target.and_then(|t| t.str()) else {
-                return;
-            };
-            action.set_state(&target.to_variant());
-            if let Some(inner) = weak.upgrade() {
-                inner.set_folder_filter(FolderFilter::from_target(target));
-            }
-        });
-    }
-    group.add_action(&folder);
-    inner.folder_actions.borrow_mut().push(folder.clone());
 
     let simple = |name: &str, run: fn(&Rc<Inner>)| {
         let action = gio::SimpleAction::new(name, None);
@@ -854,7 +1090,7 @@ impl Inner {
                 self.empty.set(
                     "dialog-error-symbolic",
                     tr!("Could not read the vault"),
-                    &e.to_string(),
+                    &crate::ui::errors::describe(&e),
                 );
                 self.content_stack.set_visible_child_name("empty");
                 return;
@@ -867,7 +1103,7 @@ impl Inner {
         if stale {
             *self.folder_filter.borrow_mut() = FolderFilter::All;
             self.folder_button.set_label(tr!("All folders"));
-            self.sync_folder_actions(&FolderFilter::All);
+            self.mark_folder(&FolderFilter::All);
         }
         self.apply_filter();
         // Keep the open details in step with the data (edited, deleted…).
@@ -960,56 +1196,46 @@ impl Inner {
         *self.synced_ids.borrow_mut() = Some(Rc::new(ids));
     }
 
+    /// Fill the folder picker: every folder, the current one marked, the
+    /// search text applied.
     fn rebuild_folder_menu(&self, categories: &[String]) {
-        self.folder_menu.remove_all();
-        let filters = gio::Menu::new();
-        let item = |label: &str, filter: FolderFilter| {
-            // `_` marks a mnemonic in menu labels: show folder names as typed.
-            let item = gio::MenuItem::new(Some(&label.replace('_', "__")), None);
-            item.set_action_and_target_value(
-                Some("vault.folder"),
-                Some(&filter.target().to_variant()),
-            );
-            item
-        };
-        filters.append_item(&item(tr!("All folders"), FolderFilter::All));
-        filters.append_item(&item(tr!("No folder"), FolderFilter::NoFolder));
-        big_gtk_kit::menu::append_shared_section(&self.folder_menu, None, "folder-filters", || {
-            filters
-        });
-        // The folder names change: one section kept and refilled (an empty
-        // one is left out).
-        big_gtk_kit::menu::append_refilled_section(
-            &self.folder_menu,
-            Some(tr!("Folders")),
-            "folder-names",
-            |named| {
-                for category in categories {
-                    named.append_item(&item(category, FolderFilter::Named(category.clone())));
-                }
-            },
-        );
-        big_gtk_kit::menu::append_shared_section(&self.folder_menu, None, "folder-manage", || {
-            let manage = gio::Menu::new();
-            manage.append(Some(tr!("Create folder…")), Some("vault.new-folder"));
-            manage.append(
-                Some(tr!("Organize folders…")),
-                Some("vault.organize-folders"),
-            );
-            manage
-        });
+        while let Some(row) = self.folder_list.row_at_index(0) {
+            self.folder_list.remove(&row);
+        }
+        self.folder_list.append(&folder_row(FolderFilter::All));
+        self.folder_list.append(&folder_row(FolderFilter::NoFolder));
+        for category in categories {
+            self.folder_list
+                .append(&folder_row(FolderFilter::Named(category.clone())));
+        }
+        self.mark_folder(&self.folder_filter.borrow());
+        self.folder_list.invalidate_filter();
     }
 
-    fn sync_folder_actions(&self, filter: &FolderFilter) {
-        let target = filter.target().to_variant();
-        for action in self.folder_actions.borrow().iter() {
-            action.set_state(&target);
+    /// The check mark beside the folder shown.
+    fn mark_folder(&self, filter: &FolderFilter) {
+        let target = filter.target();
+        let mut index = 0;
+        while let Some(row) = self.folder_list.row_at_index(index) {
+            if let Some(check) = row.child().and_then(|c| c.last_child()) {
+                check.set_opacity(if row.widget_name() == target {
+                    1.0
+                } else {
+                    0.0
+                });
+            }
+            index += 1;
         }
+    }
+
+    fn choose_folder(&self, row: &gtk::ListBoxRow) {
+        self.folder_popover.popdown();
+        self.set_folder_filter(FolderFilter::from_target(&row.widget_name()));
     }
 
     fn set_folder_filter(&self, filter: FolderFilter) {
         self.folder_button.set_label(&filter.label());
-        self.sync_folder_actions(&filter);
+        self.mark_folder(&filter);
         *self.folder_filter.borrow_mut() = filter;
         self.apply_filter();
         SessionManager::on_activity(&self.state.session);
@@ -1136,6 +1362,23 @@ impl Inner {
 
     // ---- Actions ------------------------------------------------------
 
+    fn shortcut_target(&self) -> Option<i64> {
+        let in_list = self
+            .list_view
+            .state_flags()
+            .contains(gtk::StateFlags::FOCUS_WITHIN);
+        let focused = in_list
+            .then(|| self.list_view.focus_child())
+            .flatten()
+            .and_then(|row| row.first_child())
+            .and_then(|root| {
+                root.widget_name()
+                    .strip_prefix(ROW_NAME_PREFIX)
+                    .and_then(|id| id.parse().ok())
+            });
+        focused.or(self.open_id.get())
+    }
+
     fn copy_password(&self, id: i64) {
         if !self.can_show_vault_data() {
             return;
@@ -1175,7 +1418,11 @@ impl Inner {
             Ok(Some(true)) => self.toast(tr!("Added to favorites")),
             Ok(Some(false)) => self.toast(tr!("Removed from favorites")),
             Ok(None) => self.toast(tr!("This access no longer exists")),
-            Err(e) => self.toast(&format!("{}: {e}", tr!("Could not change the favorite"))),
+            Err(e) => self.toast(&format!(
+                "{}: {}",
+                tr!("Could not change the favorite"),
+                crate::ui::errors::describe(&e)
+            )),
         }
         self.invalidate_caches();
         SessionManager::on_activity(&self.state.session);
@@ -1250,7 +1497,11 @@ impl Inner {
         let history = match self.state.vault.borrow().password_history(id) {
             Ok(h) => h,
             Err(e) => {
-                self.toast(&format!("{}: {e}", tr!("Could not read the history")));
+                self.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not read the history"),
+                    crate::ui::errors::describe(&e)
+                ));
                 return;
             }
         };
@@ -1358,7 +1609,7 @@ impl Inner {
                                 dialog.close();
                             }
                             Err(e) => inner
-                                .toast(&format!("{}: {e}", tr!("Could not clear the history"))),
+                                .toast(&format!("{}: {}", tr!("Could not clear the history"), crate::ui::errors::describe(&e))),
                         }
                     });
                     confirm.present();
@@ -1427,7 +1678,11 @@ impl Inner {
                     }
                 }
                 Ok(false) => inner.toast(tr!("This access no longer exists")),
-                Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not delete"))),
+                Err(e) => inner.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not delete"),
+                    crate::ui::errors::describe(&e)
+                )),
             }
             SessionManager::on_activity(&inner.state.session);
         });
@@ -1523,7 +1778,11 @@ impl Inner {
                     inner.reload();
                     inner.set_folder_filter(FolderFilter::Named(name));
                 }
-                Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not create the folder"))),
+                Err(e) => inner.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not create the folder"),
+                    crate::ui::errors::describe(&e)
+                )),
             }
         });
         self.state.track_sensitive_dialog(&dialog);
@@ -1593,7 +1852,11 @@ impl Inner {
                 return;
             }
             Err(e) => {
-                self.toast(&format!("{}: {e}", tr!("Could not open this access")));
+                self.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not open this access"),
+                    crate::ui::errors::describe(&e)
+                ));
                 return;
             }
         };
@@ -1615,9 +1878,17 @@ impl Inner {
 // Details content
 // ============================================================================
 
+/// "Copy" in words beside the icon: an icon alone was missed by people who
+/// do not know the symbol. The tooltip and accessible name say what is copied.
 fn copy_button(tooltip: &str) -> gtk::Button {
     let button = gtk::Button::builder()
-        .icon_name("edit-copy-symbolic")
+        .child(
+            &adw::ButtonContent::builder()
+                .icon_name("edit-copy-symbolic")
+                .label(tr!("Copy"))
+                .can_shrink(true)
+                .build(),
+        )
         .tooltip_text(tooltip)
         .valign(gtk::Align::Center)
         .build();
@@ -1625,6 +1896,10 @@ fn copy_button(tooltip: &str) -> gtk::Button {
     button.update_property(&[gtk::accessible::Property::Label(tooltip)]);
     button
 }
+
+/// Row roots are named after their entry, so a keyboard shortcut can tell
+/// which access has the focus (rows are recycled; the name follows).
+const ROW_NAME_PREFIX: &str = "entry-";
 
 const HIDDEN_PASSWORD: &str = "••••••••••••";
 
@@ -1985,18 +2260,10 @@ fn build_details(inner: &Rc<Inner>, entry: &PasswordEntry) -> gtk::Widget {
 
     if let Some(notes) = entry.notes.as_deref().filter(|n| !n.trim().is_empty()) {
         let group = adw::PreferencesGroup::builder().title(tr!("Notes")).build();
-        let label = gtk::Label::builder()
-            .label(notes)
-            .wrap(true)
-            .wrap_mode(gtk::pango::WrapMode::WordChar)
-            .xalign(0.0)
-            .selectable(true)
-            .margin_top(12)
-            .margin_bottom(12)
-            .margin_start(12)
-            .margin_end(12)
+        // Formatted: bold, italic, code and tables (see ui::notes).
+        let frame = gtk::Frame::builder()
+            .child(&crate::ui::notes::view(notes))
             .build();
-        let frame = gtk::Frame::builder().child(&label).build();
         frame.add_css_class("view");
         frame.add_css_class("ashy-notes");
         group.add(&frame);
@@ -2097,16 +2364,27 @@ pub(crate) fn save_attachment_copy(
         .build();
     let state = state.clone();
     let toast = toast.clone();
+    // The file chooser is the desktop's window: no activity here.
+    let hold = SessionManager::hold(&state.session);
     dialog.save(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+        drop(hold);
         let Ok(file) = result else { return };
         let Some(path) = file.path() else { return };
         let message = match state.vault.borrow().get_attachment(att_id) {
             Ok(Some((_info, data))) => match write_private(&path, &data) {
                 Ok(()) => tr!("Attachment saved").to_string(),
-                Err(e) => format!("{}: {e}", tr!("Could not save the file")),
+                Err(e) => format!(
+                    "{}: {}",
+                    tr!("Could not save the file"),
+                    crate::ui::errors::describe(&e)
+                ),
             },
             Ok(None) => tr!("Attachment not found").to_string(),
-            Err(e) => format!("{}: {e}", tr!("Could not decrypt the attachment")),
+            Err(e) => format!(
+                "{}: {}",
+                tr!("Could not decrypt the attachment"),
+                crate::ui::errors::describe(&e)
+            ),
         };
         toast.add_toast(
             adw::Toast::builder()
@@ -2271,6 +2549,7 @@ mod tests {
         favorite: bool,
     ) -> PasswordEntry {
         PasswordEntry {
+            has_password: true,
             item_type: ashypass_core::db::vault::ITEM_LOGIN.into(),
             extra: None,
             id,
@@ -2372,6 +2651,29 @@ mod tests {
     }
 
     #[test]
+    fn codes_without_a_password_stay_off_the_password_list() {
+        let mut code_only = entry(2, "GitHub: ana@example.com", None, None, None, false);
+        code_only.has_password = false;
+        code_only.has_totp = true;
+        let mut login_with_code = entry(3, "GitLab", None, None, None, false);
+        login_with_code.has_totp = true;
+        let cache = PasswordListCache::new(
+            vec![
+                entry(1, "Bank", None, None, None, false),
+                code_only,
+                login_with_code,
+            ],
+            Vec::new(),
+        );
+        let titles: Vec<String> = cache
+            .filtered(None, &FolderFilter::All, false)
+            .iter()
+            .map(|e| e.title.clone())
+            .collect();
+        assert_eq!(titles, ["Bank", "GitLab"]);
+    }
+
+    #[test]
     fn blank_category_counts_as_no_folder() {
         assert!(FolderFilter::NoFolder.matches(Some("  ")));
         assert!(!FolderFilter::NoFolder.matches(Some("Work")));
@@ -2379,6 +2681,7 @@ mod tests {
 
     fn row(id: i64, title: &str) -> Rc<PasswordEntry> {
         Rc::new(PasswordEntry {
+            has_password: true,
             item_type: ashypass_core::db::vault::ITEM_LOGIN.into(),
             extra: None,
             id,

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:26\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Paigalda laiendus"
+
 msgid "1PUX export file"
 msgstr "1PUX-ekspordifail"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Ühenda see Ashy Passiga"
+
+msgid "3. Allow it"
+msgstr "3. Luba see"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -27,6 +36,9 @@ msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "12-sõnaline BIP-39 fraas, millega saab avada ilma turvavõtmeta. Näidatakse "
 "üks kord."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "Sisselogimisvorm Ashy Passi soovitustega e-posti välja all"
 
 msgid "A new access"
 msgstr "Uus kirje"
@@ -67,6 +79,9 @@ msgstr "Lisa manus"
 msgid "Add code"
 msgstr "Lisa kood"
 
+msgid "Add codes"
+msgstr "Lisa koodid"
+
 msgid "Add file"
 msgstr "Lisa fail"
 
@@ -79,11 +94,23 @@ msgstr "Lisa koopia kirjed praegusesse hoidlasse"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "Lisa .ashy-varukoopia kirjed sellesse hoidlasse"
 
+msgid "Add to Firefox"
+msgstr "Lisa Firefoxi"
+
 msgid "Add to favorites"
 msgstr "Lisa lemmikutesse"
 
+msgid "Add to the browser"
+msgstr "Lisa brauserisse"
+
 msgid "Add verification code"
 msgstr "Lisa kinnituskood"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Kas lisada {} kood rakendusest Google Authenticator?"
+msgstr[1] "Kas lisada {} koodi rakendusest Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Lisatud lemmikutesse"
@@ -107,6 +134,9 @@ msgstr "Muuda numbrite arvu"
 
 msgid "Adjust words and separator"
 msgstr "Muuda sõnu ja eraldajat"
+
+msgid "Advanced"
+msgstr "Täpsemad"
 
 msgid "Algorithm"
 msgstr "Algoritm"
@@ -161,6 +191,9 @@ msgstr ""
 msgid "Another example"
 msgstr "Teine näide"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Igaüks, kes faili kätte saab, võib lugeda kõiki selles olevaid paroole"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -208,6 +241,12 @@ msgstr ""
 "Ashy Pass ei suutnud Nextcloudiga ühendust võtta. Kontrolli oma ühendust, "
 "serveri aadressi ja rakenduse parooli."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Ashy Pass Chrome'ile"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Ashy Pass Firefoxile"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -225,6 +264,14 @@ msgid ""
 msgstr ""
 "Vähemalt 8 tähemärki. Neljasõnaline paroolifraas EFF-i sõnastikust on tugev "
 "vaikevalik."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Vähemalt {} tähemärki. Mõnda juhuslikku sõna on lihtne meelde jätta ja raske "
+"ära arvata."
 
 msgid "Attachment added"
 msgstr "Manus lisatud"
@@ -289,11 +336,27 @@ msgstr "Varukoopiad"
 msgid "Before importing"
 msgstr "Enne importimist"
 
+msgid "Bold (Ctrl+B)"
+msgstr "Paks (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "Too oma paroolid kaasa või lisa need"
+
 msgid "Bring passwords from another app or browser"
 msgstr "Too paroolid teisest rakendusest või brauserist"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"Too need brauserist (Chrome, Edge, Brave, Firefox) või muust "
+"paroolihaldurist (Bitwarden, 1Password, KeePass)."
+
 msgid "Bring your passwords"
 msgstr "Too oma paroolid"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Toob serveri muudatused ja saadab sinu omad; võidab uusim versioon"
 
 msgid "Browser"
 msgstr "Brauser"
@@ -367,6 +430,9 @@ msgid ""
 msgstr ""
 "Vali põhiparool. See kaitseb kõike, mida selles arvutis Ashy Passis hoiad."
 
+msgid "Choose an access in the list first"
+msgstr "Vali kõigepealt loendist kirje"
+
 msgid "Choose an image with the QR code"
 msgstr "Vali QR-koodiga pilt"
 
@@ -400,6 +466,9 @@ msgstr "Vali see kaust parooli lisamisel või muutmisel."
 msgid "Choose…"
 msgstr "Vali…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge ja Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Chrome’i, Edge’i, Brave’i või Firefoxi paroolide eksport (CSV)"
 
@@ -414,6 +483,13 @@ msgstr "Tühista ajalugu"
 
 msgid "Clear the password history?"
 msgstr "Kas tühjendada paroolide ajalugu?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"Klõpsake sisselogimisväljal ja valige oma juurdepääs: see täidetakse ainult "
+"selle saidi juures, kuhu see kuulub."
 
 msgid "Client ID"
 msgstr "Kliendi ID"
@@ -439,6 +515,9 @@ msgstr "Sulge vastendus"
 msgid "Closing mapping"
 msgstr "Vastenduse sulgemine"
 
+msgid "Code"
+msgstr "Kood"
+
 msgid "Code copied"
 msgstr "Kood kopeeritud"
 
@@ -451,8 +530,26 @@ msgstr "Koodi seaded"
 msgid "Coffee"
 msgstr "Kohv"
 
+msgid "Column"
+msgstr "Veerg"
+
+msgid "Column 1"
+msgstr "Veerg 1"
+
+msgid "Column 2"
+msgstr "Veerg 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "Veerud nagu name, url, username, password"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Tuled rakendusest Google Authenticator? Ava seal menüü, vali Teisalda kontod "
+"→ Ekspordi kontod ja loe siin ette kuvatav QR-kood: kõik selle koodid "
+"tulevad korraga."
 
 msgid "Compact vault list"
 msgstr "Kompaktne võlvkonna loend"
@@ -526,9 +623,6 @@ msgstr "Ühendamine ebaõnnestus"
 msgid "Connect the sync folder"
 msgstr "Ühenda sünkroonimiskaust"
 
-msgid "Connect your browsers"
-msgstr "Ühenda oma brauserid"
-
 msgid "Connected"
 msgstr "Ühendatud"
 
@@ -537,6 +631,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Ühendatud {} brauseriga. Taaskäivita see, kui see on avatud."
 msgstr[1] "Ühendatud {} brauseriga. Taaskäivita need, kui need on avatud."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Ühendatud, aga blokeeritud (3. samm)"
 
 msgid "Connected. Received:"
 msgstr "Ühendatud. Vastu võetud:"
@@ -573,6 +670,15 @@ msgstr "Ashy Pass 2 hoidla koopia"
 
 msgid "Copy password"
 msgstr "Kopeeri parool"
+
+msgid "Copy the password"
+msgstr "Kopeeri parool"
+
+msgid "Copy the user"
+msgstr "Kopeeri kasutaja"
+
+msgid "Copy the verification code"
+msgstr "Kopeeri kinnituskood"
 
 msgid "Copy this old password"
 msgstr "Kopeeri see vana parool"
@@ -691,9 +797,6 @@ msgstr "Loo kaust…"
 msgid "Create my vault"
 msgstr "Loo minu hoidla"
 
-msgid "Create password"
-msgstr "Loo parool"
-
 msgid "Create your vault"
 msgstr "Loo oma hoidla"
 
@@ -795,6 +898,9 @@ msgstr "Ühenduse katkestamine ebaõnnestus"
 msgid "Disconnect the sync folder?"
 msgstr "Kas katkestada sünkroonimiskausta ühendus?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "Kas hoiad paroole mujal?"
+
 msgid "Done"
 msgstr "Valmis"
 
@@ -812,6 +918,13 @@ msgstr "Ketas lukustatud"
 
 msgid "Duplicate items"
 msgstr "Dubleeritud üksused"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Iga ikoon laaditakse alla saidilt endalt, mis näeb sinu internetiaadressi. "
+"Sinu kohtvõrgus olevate saitidega ei ühenduta kunagi."
 
 msgid "Easier to type and remember."
 msgstr "Lihtsam sisestada ja meelde jätta."
@@ -855,9 +968,6 @@ msgstr "Krüptitud kujul"
 msgid "Encrypted device"
 msgstr "Krüpteeritud seade"
 
-msgid "Encrypted folder sync"
-msgstr "Krüptitud kausta sünkroonimine"
-
 msgid "Encrypted folder sync failed"
 msgstr "Krüptitud kausta sünkroonimine ebaõnnestus"
 
@@ -888,6 +998,9 @@ msgstr "Seifi uuesti krüptimine…"
 
 msgid "Encrypting…"
 msgstr "Krüpteerimine…"
+
+msgid "Encryption"
+msgstr "Krüpteerimine"
 
 msgid "Encrypt…"
 msgstr "Krüpti…"
@@ -931,6 +1044,15 @@ msgstr "Vigade üksikasjad"
 msgid "Estimated strength"
 msgstr "Hinnanguline tugevus"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Kõik selle ekspordi koodid on juba varamus."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Iga kirje krüpteeritakse AES-256-GCM-iga põhiparoolist tuletatud võtmega"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -969,6 +1091,18 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "Kõik oli juba sünkroonitud"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Kõik, mida Ashy Passis hoiad, jääb krüpteeritud varamusse selles arvutis. "
+"Seda avab ainult sinu põhiparool ja Ashy Pass ei saa seda taastada, kui "
+"kaotad selle."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "Ekspordi kaitsmata fail (CSV)"
+
 msgid "Export complete"
 msgstr "Eksportimine lõpetatud"
 
@@ -978,8 +1112,8 @@ msgstr "Eksportimine ebaõnnestus"
 msgid "Export to KeePass"
 msgstr "Ekspordi KeePassi"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Ekspordi KeePassi või faili, mida igaüks saab lugeda"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Ekspordi KeePassi (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Ekspordi kaitsmata fail"
@@ -1011,9 +1145,6 @@ msgstr "Lemmik"
 msgid "Favorites"
 msgstr "Lemmikud"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Hangivad ja kuvavad saidiikoonid võlviku kirjete kõrval"
-
 msgid "Fetching remote passwords"
 msgstr "Kaugparoolide toomine"
 
@@ -1035,6 +1166,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Täida kõik kolm välja."
 
+msgid "Fill passwords in the browser"
+msgstr "Täida paroolid brauseris"
+
 msgid "Find duplicate items"
 msgstr "Leia dubleeritud üksused"
 
@@ -1044,6 +1178,9 @@ msgstr "Leiud"
 msgid "Finishing synchronization"
 msgstr "Sünkroonimise lõpetamine"
 
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox Add-ons · Firefox ja LibreWolf"
+
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
 "Before importing you will see what was recognized. Delete unprotected export "
@@ -1052,8 +1189,17 @@ msgstr ""
 "Ekspordi esmalt paroolid teisest rakendusest ja vali see fail siin. Enne "
 "importimist näed, mis tuvastati. Kustuta kaitsmata ekspordifailid hiljem."
 
+msgid "First steps"
+msgstr "Esimesed sammud"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "Esimesed sammud on peidetud. Põhimenüü toob need tagasi."
+
 msgid "Folder"
 msgstr "Kaust"
+
+msgid "Folder and tags"
+msgstr "Kaust ja sildid"
 
 msgid "Folder created"
 msgstr "Kaust loodud"
@@ -1087,6 +1233,9 @@ msgid ""
 msgstr ""
 "Nextcloudi puhul näeb baas-URL välja selline: https://cloud.example.com/"
 "remote.php/dav/files/KASUTAJANIMI"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Neile, kes kasutavad oma Nextcloudi serveris rakendust „Passwords“"
 
 msgid "For the browsers installed for this user"
 msgstr "Selle kasutaja brauseritele"
@@ -1183,6 +1332,9 @@ msgstr ""
 msgid "Hide copied passwords from clipboard history"
 msgstr "Peida kopeeritud paroolid lõikelaua ajaloost"
 
+msgid "Hide first steps"
+msgstr "Peida esimesed sammud"
+
 msgid "Hide password"
 msgstr "Peida parool"
 
@@ -1212,6 +1364,9 @@ msgstr "Hoian paroole juba mujal"
 msgid "I understand — Continue"
 msgstr "Ma saan aru — Jätka"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "Kirjutasin oma põhiparooli turvalisse kohta üles"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1228,6 +1383,9 @@ msgstr "Import"
 msgid "Import complete"
 msgstr "Importimine lõpetatud"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "Impordi brauserist või muust rakendusest või lisa üksikult"
+
 msgid "Import partly complete"
 msgstr "Import osaliselt lõpetatud"
 
@@ -1238,12 +1396,28 @@ msgid "Import passwords…"
 msgstr "Impordi paroolid…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"Oluline: kui see arvuti läheb katki, on varukoopia ainus viis kõik tagasi "
+"saada"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
 msgstr ""
 "Ava Androidi Ashy Passis Seaded → Krüptitud kausta sünkroonimine ja puuduta "
 "„Skanni arvuti QR-kood“. Seejärel sisesta allolev kood ja peamine parool."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"Chrome'is: Seaded → Automaattäide ja paroolid → Google'i paroolihaldur → "
+"Seaded → Ekspordi paroolid. Pärast importimist kustuta eksporditud fail: see "
+"pole kaitstud."
 
 msgid "Incorrect PIN"
 msgstr "Vale PIN-kood"
@@ -1266,6 +1440,9 @@ msgstr "Vale ülemparool. Midagi ei muudetud."
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Vale põhiparool. Midagi ei eksporditud."
 
+msgid "Insert a table"
+msgstr "Lisa tabel"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1273,6 +1450,13 @@ msgid ""
 msgstr ""
 "Sisesta oma FIDO2 võti (Yubikey, Nitrokey jne) ja kinnita seadmel, kui seda "
 "küsitakse. Uue pesa kinnitamiseks on vaja sinu praegust paroolifraasi."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Paigalda Ashy Passi laiendus ja ühenda see"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "Paigaldatud: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "Sisemine viga: parooli pole määratud"
@@ -1290,24 +1474,17 @@ msgstr ""
 "See avab selles arvutis hoidla. Keegi ei saa seda sinu eest taastada — isegi "
 "mitte Ashy Pass."
 
+msgid "Italic (Ctrl+I)"
+msgstr "Kaldkiri (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "Üksused jäävad siia ja kausta; uuesti ühendamine liidab need"
 
 msgid "Its user, password and other details appear here."
 msgstr "Selle kasutaja, parool ja muud üksikasjad kuvatakse siin."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass eksportimine lõpetatud"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass hoiab faili parooliga kaitstuna. CSV-faili saab lugeda igaüks, kes "
-"selle kätte saab."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1324,6 +1501,9 @@ msgstr "Jäta alles"
 
 msgid "Keep using"
 msgstr "Jätka kasutamist"
+
+msgid "Keep verification codes (2FA)"
+msgstr "Hoia kinnituskoode (2FA)"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1426,14 +1606,17 @@ msgstr ""
 "teised kausta Kustutatud üksused."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Sisselogimised, kaardid, identiteedid, märkmed ja pääsuvõtmed, krüpteeritud "
-"selles arvutis enne lahkumist, kausta kaudu Nextcloudis, pCloudis, WebDAV-"
-"is, Dropboxis, Google Drive'is või selles arvutis. Ashy Pass Androidile "
-"kasutab sama kausta."
+"Sisselogimised, kaardid, identiteedid, märkmed, pääsuvõtmed ja "
+"kinnituskoodid krüpteeritakse selles arvutis enne selle jätmist, kausta "
+"kaudu Nextcloudis, pCloudis, WebDAV-is, Dropboxis, Google Drive'is või "
+"selles arvutis. Teenus näeb ainult krüpteeritud faile, mitte kunagi nende "
+"sisu. Ashy Pass Androidile kasutab sama kausta."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1447,6 +1630,9 @@ msgstr "Väiketähed (a–z)"
 
 msgid "Main menu"
 msgstr "Peamenüü"
+
+msgid "Make a backup"
+msgstr "Tee varukoopia"
 
 msgid "Master Password"
 msgstr "Põhiparool"
@@ -1474,9 +1660,6 @@ msgstr "Ühendatud"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "Ühendatud; teised on kaustas Kustutatud üksused"
-
-msgid "Minimum length:"
-msgstr "Minimaalne pikkus:"
 
 msgid "Mint"
 msgstr "Münt"
@@ -1556,6 +1739,9 @@ msgstr "Uus põhiparool on määratud. Kirjuta see kindlasse kohta üles."
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords rakendus"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords ühendatud"
@@ -1641,6 +1827,15 @@ msgstr "Konfigureerimata"
 msgid "Not connected"
 msgstr "Ühendamata"
 
+msgid "Not done yet"
+msgstr "Veel tegemata"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "Poes veel pole: vaadake, kuidas seda käsitsi paigaldada"
+
+msgid "Not now"
+msgstr "Mitte praegu"
+
 msgid "Not run yet"
 msgstr "Pole veel käivitatud"
 
@@ -1720,14 +1915,38 @@ msgstr "Sees"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Ava kaitstava saidi kaheastmelise kinnitamise seaded ja vali "
-"autentimisrakendus. Loe kuvatud QR-kood või kopeeri seadistusvõti ja kleebi "
-"see allpool."
+"Ava kaitstaval saidil kaheastmelise kinnitamise seaded ja vali "
+"autentimisrakendus. Loe kuvatav QR-kood või kopeeri seadistusvõti (tähed ja "
+"numbrid QR-koodi all, sageli valiku „Ei saa skannida?“ taga) ja kleebi see "
+"allpool."
 
 msgid "On until Ashy Pass closes"
 msgstr "Sees kuni Ashy Passi sulgemiseni"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"Kui paroolid on sees, tee varukoopia jaotises Varukoopiad ja hoia seda "
+"väljaspool seda arvutit, näiteks USB-mälupulgal. Kui see arvuti läheb katki "
+"või kaob, on see ainus viis need tagasi saada."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Üks kood kasutab loendurit või algoritmi, mida Ashy Pass ei toeta, ja jäeti "
+"välja."
+msgstr[1] ""
+"Mõned koodid kasutavad loendurit või algoritmi, mida Ashy Pass ei toeta, ja "
+"jäeti välja."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1766,8 +1985,14 @@ msgstr "Ava krüptitud vastendus"
 msgid "Open image…"
 msgstr "Ava pilt…"
 
+msgid "Open in the store"
+msgstr "Ava poes"
+
 msgid "Open the encrypted volume"
 msgstr "Ava krüptitud köide"
+
+msgid "Open the website"
+msgstr "Ava veebisait"
 
 msgid "Open website"
 msgstr "Ava veebisait"
@@ -1783,6 +2008,9 @@ msgstr "Avab Dropboxi brauseris; kopeeri kuvatav kood"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Avab brauseri OAuth-nõusoleku jaoks"
+
+msgid "Optional, to organize the list"
+msgstr "Valikuline, loendi korrastamiseks"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1850,6 +2078,9 @@ msgstr "Parool kopeeritud"
 
 msgid "Password for this backup"
 msgstr "Selle varukoopia parool"
+
+msgid "Password generator"
+msgstr "Paroolide generaator"
 
 msgid "Password history"
 msgstr "Parooli ajalugu"
@@ -1938,11 +2169,18 @@ msgstr "Varasemad paroolid, mille Ashy Pass selle muutmisel säilitas."
 msgid "Protected by a password you choose"
 msgstr "Kaitstud sinu valitud parooliga"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"Kaitstud parooliga. Avaneb KeePassis, KeePassXC-s ja teistes rakendustes"
+
 msgid "Protection"
 msgstr "Kaitse"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR-kood loetud. Kontrolli andmeid ja salvesta."
+
+msgid "Quicker than the master password on this computer"
+msgstr "Kiirem kui põhiparool selles arvutis"
 
 msgid "Quit"
 msgstr "Välju"
@@ -1983,6 +2221,9 @@ msgstr "Registreerimine ebaõnnestus"
 msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr "Registreerige kuni 2 füüsilist FIDO2-autentijat (YubiKey, SoloKey jne)"
 
+msgid "Remember the backup"
+msgstr "Ära unusta varukoopiat"
+
 msgid "Remote generation:"
 msgstr "Kaugpõlvkond:"
 
@@ -2003,6 +2244,9 @@ msgstr "Eemalda kaust"
 
 msgid "Remove from favorites"
 msgstr "Eemalda lemmikutest"
+
+msgid "Remove table"
+msgstr "Eemalda tabel"
 
 msgid "Remove the old copy?"
 msgstr "Kas eemaldada vana koopia?"
@@ -2074,6 +2318,9 @@ msgstr "Säilitamine"
 
 msgid "Rose"
 msgstr "Roos"
+
+msgid "Row"
+msgstr "Rida"
 
 msgid "Run"
 msgstr "Käivita"
@@ -2159,6 +2406,9 @@ msgstr "Otsi nime, konto või saidi järgi"
 
 msgid "Search codes"
 msgstr "Otsi koode"
+
+msgid "Search folders"
+msgstr "Otsi kaustu"
 
 msgid "Search for drives"
 msgstr "Otsi kettaid"
@@ -2313,11 +2563,23 @@ msgstr "Suurus"
 msgid "Snapshot uploaded"
 msgstr "Hetktõmmis on üles laaditud"
 
+msgid "Start using Ashy Pass"
+msgstr "Hakka Ashy Passi kasutama"
+
 msgid "Starting..."
 msgstr "Käivitamine..."
 
 msgid "Status"
 msgstr "Olek"
+
+msgid "Step 1 of 3"
+msgstr "Samm 1 / 3"
+
+msgid "Step 2 of 3"
+msgstr "Samm 2 / 3"
+
+msgid "Step 3 of 3"
+msgstr "Samm 3 / 3"
 
 msgid "Strength"
 msgstr "Tugevus"
@@ -2334,6 +2596,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "Stiil"
+
+msgid "Suggest a passphrase"
+msgstr "Soovita paroolifraasi"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Soovitus: {}. Kirjuta see enne jätkamist üles."
 
 msgid "Summary"
 msgstr "Kokkuvõte"
@@ -2375,6 +2644,9 @@ msgstr "Sünkrooni kohe"
 msgid "Sync when the vault is unlocked"
 msgstr "Sünkrooni seifi lukust avamisel"
 
+msgid "Sync with your phone or another computer"
+msgstr "Sünkrooni telefoni või teise arvutiga"
+
 msgid "Synchronization"
 msgstr "Sünkroonimine"
 
@@ -2414,14 +2686,14 @@ msgstr "Sildid"
 msgid "Tags (separated by commas)"
 msgstr "Sildid (komadega eraldatud)"
 
-msgid "Take my data to another app"
-msgstr "Vii minu andmed teise rakendusse"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "Suhtlen sinu võtmega… kontrolli seadet puudutamise viiba osas."
 
 msgid "Technical details"
 msgstr "Tehnilised üksikasjad"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "Ashy Passi aken brauseris koos saidi kasutajakontodega"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "PIN-i ei saanud selles arvutis kasutada. Kasuta oma põhiparooli."
@@ -2512,6 +2784,13 @@ msgid "The new passwords do not match."
 msgstr "Uued paroolid ei ühti."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"Ülejäänud sammud — brauser, telefon, kinnituskoodid — ootavad jaotises "
+"Esimesed sammud, paroolide kohal."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2556,6 +2835,9 @@ msgstr "Otsing on piiratud kaustaga"
 msgid "The site's icon, when the code has a site saved"
 msgstr "Saidi ikoon, kui koodil on sait salvestatud"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "Kuuekohalised koodid, mida saidid pärast parooli küsivad"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "Sünkroonimine lõppes, kuid mõned üksused teatasid veast."
 
@@ -2567,6 +2849,18 @@ msgstr "Hoidlat ei õnnestunud uuesti avada"
 
 msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr "Hoidla on lukus. Midagi ei salvestatud — ava see ja proovi uuesti."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"Varamu lukustati enne varukoopia salvestamist. Ava see ja loo varukoopia "
+"uuesti."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"Varamu lukustati enne ekspordi salvestamist. Ava see ja ekspordi uuesti."
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2622,6 +2916,10 @@ msgstr ""
 "server vastata vaid osaliselt: jäta need alles ja järgmine sünkroonimine "
 "proovib uuesti."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Selles Google Authenticatori ekspordis pole koode, mida siin saaks kasutada."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "See PIN-kood ei sobi enam hoidlaga. Midagi ei muudetud."
 
@@ -2637,6 +2935,12 @@ msgstr "Sellel kirjel pole salvestatud parooli"
 
 msgid "This access has no user"
 msgstr "Sellel kirjel pole kasutajat"
+
+msgid "This access has no verification code"
+msgstr "Sellel kirjel pole kinnituskoodi"
+
+msgid "This access has no website"
+msgstr "Sellel kirjel pole veebisaiti"
 
 msgid "This access no longer exists"
 msgstr "Seda kirjet pole enam olemas"
@@ -2689,11 +2993,11 @@ msgstr ""
 "Pilti ei saanud avada. Kasuta kuni 20 MB suurust PNG-, JPEG- või WebP-pilti."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"See on mitme kontoga Google Authenticatori eksport. Kuva selle asemel iga "
-"konto QR-kood selle saidil."
+"See on mitme kontoga Google Authenticatori eksport. Loe see jaotises "
+"Kinnituskoodid → Lisa kood, et tuua kõik korraga."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2721,6 +3025,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "See kustutab kõik andmed kettalt"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "Krüpteeritud kausta kaudu pilves või ketta peal"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2754,6 +3061,12 @@ msgstr "Lülita välja"
 msgid "Turn on"
 msgstr "Lülita sisse"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Lülitub ühendamisel sisse. Kui see on väljas, ei näe laiendus varamus midagi"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Kahesuunaline ühitamine: tõmba kaugandmed, lüka kohalikud, lahenda uusima "
@@ -2763,11 +3076,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Kahesuunaline vastavusse viimine õnnestus."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Kahesuunaline sünkroonimine ametliku 'Passwords' rakendusega teie Nextcloudi "
-"serveris. Kasutage rakenduse parooli jaotises Seaded → Turvalisus."
+"Kahesuunaline sünkroonimine Nextcloudi serveri ametliku rakendusega "
+"„Passwords“. Server hoiab neid kirjeid kujul, mida ta saab lugeda: kasuta "
+"seda ainult serveriga, mida usaldad. Logi sisse rakenduse parooliga "
+"jaotisest Seaded → Turvalisus."
 
 msgid "Type of password"
 msgstr "Parooli tüüp"
@@ -2811,6 +3127,9 @@ msgstr "Uue parooli salvestamiseks ava hoidla. See ei lähe kaotsi."
 msgid "Unlock with PIN"
 msgstr "Ava PIN-koodiga"
 
+msgid "Unlock with a PIN"
+msgstr "Ava PIN-koodiga"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2836,9 +3155,6 @@ msgstr "Lukust avamine"
 
 msgid "Unlocking…"
 msgstr "Avamine…"
-
-msgid "Unprotected CSV…"
-msgstr "Kaitsmata CSV…"
 
 msgid "Updated locally"
 msgstr "Kohalikult uuendatud"
@@ -2886,6 +3202,9 @@ msgid ""
 msgstr ""
 "Kasutage kõigis oma seadmetes sama peamist parooli: see avab kausta võtme. "
 "Sisestate selle siin üks kord, et liituda."
+
+msgid "Use them on your phone or another computer"
+msgstr "Kasuta neid telefonis või teises arvutis"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Kasuta neid koode, kui sait küsib kaheastmelist kinnitamist."
@@ -3022,6 +3341,9 @@ msgstr "Veebisait"
 msgid "Website (optional)"
 msgstr "Veebisait (valikuline)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Tere tulemast Ashy Passi"
+
 msgid "What it contains"
 msgstr "Mida see sisaldab"
 
@@ -3031,9 +3353,6 @@ msgid ""
 msgstr ""
 "Kui sait pakub kaheastmelist kinnitamist, lisa koodide saamiseks selle "
 "seadistusvõti siia."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Kui see on väljas, ei näe laiendus seifist midagi"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Kust soovid oma paroolid tuua?"
@@ -3122,6 +3441,13 @@ msgstr ""
 "Teie üksused jäävad sellesse arvutisse ja kausta. Hilisem uuesti ühendamine "
 "liidab need dubleerimise asemel."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"Sinu sisselogimisandmed saidile, kus oled, ühe klõpsuga täidetavad. Otsi "
+"varamust ja loo ka uusi paroole."
+
 msgid "Your most used accesses can be here"
 msgstr "Siin võivad olla sinu enimkasutatud kirjed"
 
@@ -3172,6 +3498,9 @@ msgstr "vaba"
 msgid "high"
 msgstr "kõrge"
 
+msgid "incorrect master password"
+msgstr "vale põhiparool"
+
 msgid "low"
 msgstr "madal"
 
@@ -3194,6 +3523,9 @@ msgstr[1] "uus kood {} sekundi pärast"
 
 msgid "no 2FA"
 msgstr "ilma 2FA-ta"
+
+msgid "no permission to read or write there"
+msgstr "seal puudub lugemis- või kirjutamisluba"
 
 msgid "none"
 msgstr "puudub"
@@ -3238,6 +3570,21 @@ msgstr "saadetud:"
 msgid "solid-state"
 msgstr "pooljuhtketas"
 
+msgid "that place is read-only"
+msgstr "see koht on kirjutuskaitsega"
+
+msgid "the disk is full"
+msgstr "ketas on täis"
+
+msgid "the file or folder does not exist"
+msgstr "faili või kausta pole olemas"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "varamu on lukus; ava see ja proovi uuesti"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr "see avamisviis ei ava enam varamut; sisesta põhiparool"
+
 msgid "very high"
 msgstr "väga kõrge"
 
@@ -3246,6 +3593,14 @@ msgstr "väga madal"
 
 msgid "weak"
 msgstr "nõrk"
+
+#, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{added} koodi {total}-st lisatud; teisi ei saanud salvestada"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{done} / {total} tehtud"
 
 #, rust-format
 msgid "{} cannot be imported."
@@ -3258,6 +3613,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} märk"
 msgstr[1] "{} märki"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kood lisatud"
+msgstr[1] "{} koodi lisatud"
 
 #, rust-format
 msgid "{} day."

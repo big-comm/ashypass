@@ -21,9 +21,11 @@ pub const APP_NAME: &str = "Ashy Pass";
 /// but nothing breaks if it lags behind a patch bump.
 pub const APP_VERSION: &str = "3.0.1";
 
-pub const SESSION_TIMEOUT_SECONDS: u64 = 30;
+pub const SESSION_TIMEOUT_SECONDS: u64 = 300;
 pub const CLIPBOARD_CLEAR_SECONDS: u64 = 60;
-pub const MIN_MASTER_PASSWORD_LENGTH: usize = 8;
+/// For a new or changed master password; a vault made with a shorter one
+/// before still opens.
+pub const MIN_MASTER_PASSWORD_LENGTH: usize = 12;
 
 pub const DEFAULT_PASSWORD_LENGTH: usize = 16;
 pub const MIN_PASSWORD_LENGTH: usize = 8;

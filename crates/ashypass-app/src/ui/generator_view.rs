@@ -1,4 +1,4 @@
-//! "Create password": a good password ready at once, adjustments tucked away.
+//! "Password generator": a good password ready at once, adjustments tucked away.
 //!
 //! The same `GeneratorPanel` serves two places:
 //! - the standalone page, where the main actions are *Copy password* and
@@ -221,11 +221,7 @@ impl GeneratorPanel {
         root.append(&card);
 
         // ---- Actions: one primary per context.
-        let actions = gtk::Box::builder()
-            .orientation(gtk::Orientation::Horizontal)
-            .spacing(12)
-            .homogeneous(true)
-            .build();
+        let actions = crate::ui::widgets::button_row(adw::JustifyMode::Fill);
         let (primary, secondary) = match mode {
             PanelMode::Standalone => (
                 gtk::Button::with_label(tr!("Copy password")),
@@ -675,7 +671,7 @@ impl GeneratorView {
             .spacing(20)
             .build();
         content.append(&page_heading(
-            tr!("Create password"),
+            tr!("Password generator"),
             Some(tr!("A new password to use on a website or app.")),
         ));
         content.append(&panel.root);

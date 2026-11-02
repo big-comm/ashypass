@@ -9,6 +9,7 @@
 //!    a complete import from a partial one: "imported" never hides skipped
 //!    items.
 
+use crate::session::SessionManager;
 use crate::state::SharedState;
 use crate::tr;
 use crate::trn;
@@ -56,7 +57,10 @@ pub fn start(
         .filters(&filters)
         .build();
     let parent = anchor.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+    // The file chooser is the desktop's window: no activity here.
+    let hold = SessionManager::hold(&state.session);
     dialog.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+        drop(hold);
         let Ok(file) = result else { return };
         let Some(path) = file.path() else { return };
         match source {
@@ -157,7 +161,14 @@ pub(crate) fn analyse(
     let parts = match state.vault.borrow().session_reopen_parts() {
         Ok(parts) => parts,
         Err(e) => {
-            toast_message(&toast, &format!("{}: {e}", tr!("Nothing was imported")));
+            toast_message(
+                &toast,
+                &format!(
+                    "{}: {}",
+                    tr!("Nothing was imported"),
+                    crate::ui::errors::describe(&e)
+                ),
+            );
             return;
         }
     };
@@ -205,10 +216,7 @@ pub(crate) fn analyse(
             Err(e) => {
                 let dialog = big_gtk_kit::alert::Alert::builder(Some(&anchor))
                     .heading(tr!("This file could not be read"))
-                    .body(format!(
-                        "{}\n\n{e}",
-                        tr!("Nothing was imported. Check that you chose the right app and an unencrypted export.")
-                    ))
+                    .body(format!("{}\n\n{}", tr!("Nothing was imported. Check that you chose the right app and an unencrypted export."), crate::ui::errors::describe(&e)))
                     .build();
                 dialog.add_response("ok", tr!("OK"));
                 dialog.present();
@@ -355,7 +363,14 @@ fn apply(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget, pars
     let parts = match state.vault.borrow().session_reopen_parts() {
         Ok(parts) => parts,
         Err(e) => {
-            toast_message(&toast, &format!("{}: {e}", tr!("Nothing was imported")));
+            toast_message(
+                &toast,
+                &format!(
+                    "{}: {}",
+                    tr!("Nothing was imported"),
+                    crate::ui::errors::describe(&e)
+                ),
+            );
             return;
         }
     };
@@ -371,10 +386,7 @@ fn apply(state: SharedState, toast: adw::ToastOverlay, anchor: gtk::Widget, pars
                 Err(e) => {
                     let dialog = big_gtk_kit::alert::Alert::builder(Some(&anchor))
                         .heading(tr!("Nothing was imported"))
-                        .body(format!(
-                            "{}\n\n{e}",
-                            tr!("The import stopped and every change was undone. Your vault is as it was.")
-                        ))
+                        .body(format!("{}\n\n{}", tr!("The import stopped and every change was undone. Your vault is as it was."), crate::ui::errors::describe(&e)))
                         .build();
                     dialog.add_response("ok", tr!("OK"));
                     dialog.present();

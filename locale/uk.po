@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:48\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -14,8 +14,17 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Встановіть розширення"
+
 msgid "1PUX export file"
 msgstr "Файл експорту 1PUX"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Підключіть його до Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Дозвольте його"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -27,6 +36,9 @@ msgstr ""
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "Фраза BIP-39 з 12 слів для входу без ключа безпеки. Показується один раз."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "Форма входу з підказками Ashy Pass під полем електронної пошти"
 
 msgid "A new access"
 msgstr "Новий запис"
@@ -68,6 +80,9 @@ msgstr "Додати вкладення"
 msgid "Add code"
 msgstr "Додати код"
 
+msgid "Add codes"
+msgstr "Додати коди"
+
 msgid "Add file"
 msgstr "Додати файл"
 
@@ -80,11 +95,24 @@ msgstr "Додати записи з копії до поточного схов
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "Додати до цього сховища записи з резервної копії .ashy"
 
+msgid "Add to Firefox"
+msgstr "Додати у Firefox"
+
 msgid "Add to favorites"
 msgstr "Додати до обраного"
 
+msgid "Add to the browser"
+msgstr "Додати в браузер"
+
 msgid "Add verification code"
 msgstr "Додати код підтвердження"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Додати {} код із Google Authenticator?"
+msgstr[1] "Додати {} коди з Google Authenticator?"
+msgstr[2] "Додати {} кодів із Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Додано до обраного"
@@ -108,6 +136,9 @@ msgstr "Налаштувати кількість цифр"
 
 msgid "Adjust words and separator"
 msgstr "Налаштувати слова і роздільник"
+
+msgid "Advanced"
+msgstr "Додатково"
 
 msgid "Algorithm"
 msgstr "Алгоритм"
@@ -161,6 +192,9 @@ msgstr ""
 msgid "Another example"
 msgstr "Інший приклад"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Будь-хто, хто отримає файл, зможе прочитати всі паролі в ньому"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -208,6 +242,12 @@ msgstr ""
 "Ashy Pass не зміг зв'язатися з Nextcloud. Перевірте ваше з'єднання, адресу "
 "сервера та пароль застосунку."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Ashy Pass для Chrome"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Ashy Pass для Firefox"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -226,6 +266,14 @@ msgid ""
 msgstr ""
 "Щонайменше 8 символів. Парольна фраза з чотирьох слів зі списку EFF є "
 "надійним варіантом за замовчуванням."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Щонайменше {} символів. Кілька випадкових слів легко запам’ятати, але важко "
+"вгадати."
 
 msgid "Attachment added"
 msgstr "Вкладення додано"
@@ -290,11 +338,27 @@ msgstr "Резервні копії"
 msgid "Before importing"
 msgstr "Перед імпортом"
 
+msgid "Bold (Ctrl+B)"
+msgstr "Жирний (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "Перенесіть або додайте свої паролі"
+
 msgid "Bring passwords from another app or browser"
 msgstr "Перенесіть паролі з іншого застосунку чи браузера"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"Перенесіть їх із браузера (Chrome, Edge, Brave, Firefox) або іншого "
+"менеджера паролів (Bitwarden, 1Password, KeePass)."
+
 msgid "Bring your passwords"
 msgstr "Перенесіть свої паролі"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Отримує зміни з сервера й надсилає ваші; перемагає найновіша версія"
 
 msgid "Browser"
 msgstr "Браузер"
@@ -369,6 +433,9 @@ msgstr ""
 "Виберіть головний пароль. Він захищає все, що ви зберігаєте в Ashy Pass на "
 "цьому комп’ютері."
 
+msgid "Choose an access in the list first"
+msgstr "Спершу виберіть запис у списку"
+
 msgid "Choose an image with the QR code"
 msgstr "Виберіть зображення з QR-кодом"
 
@@ -402,6 +469,9 @@ msgstr "Вибирайте цю теку під час додавання чи �
 msgid "Choose…"
 msgstr "Вибрати…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge і Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Експорт паролів із Chrome, Edge, Brave чи Firefox (CSV)"
 
@@ -416,6 +486,13 @@ msgstr "Очистити історію"
 
 msgid "Clear the password history?"
 msgstr "Очистити історію паролів?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"Клацніть поле входу та виберіть свій доступ: він підставляється лише на "
+"сайті, якому належить."
 
 msgid "Client ID"
 msgstr "Ідентифікатор клієнта"
@@ -441,6 +518,9 @@ msgstr "Закрити відображення"
 msgid "Closing mapping"
 msgstr "Закриття відображення"
 
+msgid "Code"
+msgstr "Код"
+
 msgid "Code copied"
 msgstr "Код скопійовано"
 
@@ -453,8 +533,26 @@ msgstr "Параметри коду"
 msgid "Coffee"
 msgstr "Кава"
 
+msgid "Column"
+msgstr "Стовпець"
+
+msgid "Column 1"
+msgstr "Стовпець 1"
+
+msgid "Column 2"
+msgstr "Стовпець 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "Стовпці на зразок name, url, username, password"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Переходите з Google Authenticator? Відкрийте там меню, виберіть Перенесення "
+"облікових записів → Експорт облікових записів і відскануйте тут показаний QR-"
+"код: усі його коди надійдуть одразу."
 
 msgid "Compact vault list"
 msgstr "Компактний список сховища"
@@ -528,9 +626,6 @@ msgstr "Не вдалося під’єднатися"
 msgid "Connect the sync folder"
 msgstr "Під’єднати теку синхронізації"
 
-msgid "Connect your browsers"
-msgstr "Під’єднайте браузери"
-
 msgid "Connected"
 msgstr "Під’єднано"
 
@@ -540,6 +635,9 @@ msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Під’єднано браузерів: {}. Перезапустіть їх, якщо вони відкриті."
 msgstr[1] "Під’єднано браузерів: {}. Перезапустіть їх, якщо вони відкриті."
 msgstr[2] "Під’єднано браузерів: {}. Перезапустіть їх, якщо вони відкриті."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Підключено, але заблоковано (крок 3)"
 
 msgid "Connected. Received:"
 msgstr "Під’єднано. Отримано:"
@@ -576,6 +674,15 @@ msgstr "Копія сховища з Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Копіювати пароль"
+
+msgid "Copy the password"
+msgstr "Копіювати пароль"
+
+msgid "Copy the user"
+msgstr "Копіювати користувача"
+
+msgid "Copy the verification code"
+msgstr "Копіювати код підтвердження"
 
 msgid "Copy this old password"
 msgstr "Копіювати цей старий пароль"
@@ -694,9 +801,6 @@ msgstr "Створити теку…"
 msgid "Create my vault"
 msgstr "Створити моє сховище"
 
-msgid "Create password"
-msgstr "Створити пароль"
-
 msgid "Create your vault"
 msgstr "Створіть своє сховище"
 
@@ -801,6 +905,9 @@ msgstr "Не вдалося від’єднати"
 msgid "Disconnect the sync folder?"
 msgstr "Від’єднати теку синхронізації?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "Зберігаєте паролі деінде?"
+
 msgid "Done"
 msgstr "Готово"
 
@@ -818,6 +925,13 @@ msgstr "Диск заблоковано"
 
 msgid "Duplicate items"
 msgstr "Дублікати елементів"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Кожен значок завантажується з самого сайту, який бачить вашу інтернет-"
+"адресу. Сайти у вашій локальній мережі ніколи не опитуються."
 
 msgid "Easier to type and remember."
 msgstr "Легше вводити й запам’ятовувати."
@@ -861,9 +975,6 @@ msgstr "Зашифровано як"
 msgid "Encrypted device"
 msgstr "Зашифрований пристрій"
 
-msgid "Encrypted folder sync"
-msgstr "Синхронізація зашифрованої теки"
-
 msgid "Encrypted folder sync failed"
 msgstr "Помилка синхронізації зашифрованої теки"
 
@@ -893,6 +1004,9 @@ msgstr "Повторне шифрування сховища…"
 
 msgid "Encrypting…"
 msgstr "Шифрування…"
+
+msgid "Encryption"
+msgstr "Шифрування"
 
 msgid "Encrypt…"
 msgstr "Зашифрувати…"
@@ -936,6 +1050,16 @@ msgstr "Деталі помилок"
 msgid "Estimated strength"
 msgstr "Оцінка надійності"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Усі коди з цього експорту вже є в сховищі."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Кожен запис шифрується алгоритмом AES-256-GCM із ключем, отриманим із "
+"майстер-пароля"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -974,6 +1098,18 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "Все вже було синхронізовано"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Усе, що ви зберігаєте в Ashy Pass, залишається в зашифрованому сховищі на "
+"цьому комп'ютері. Відкрити його можна лише майстер-паролем, а Ashy Pass не "
+"зможе його відновити, якщо ви його втратите."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "Експортувати незахищений файл (CSV)"
+
 msgid "Export complete"
 msgstr "Експорт завершено"
 
@@ -983,8 +1119,8 @@ msgstr "Помилка експорту"
 msgid "Export to KeePass"
 msgstr "Експортувати в KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Експорт у KeePass або у файл, який може прочитати будь-хто"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Експорт до KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Експортувати незахищений файл"
@@ -1016,9 +1152,6 @@ msgstr "Вибране"
 msgid "Favorites"
 msgstr "Обране"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Отримувати та відображати іконки сайтів поруч із записами сховища"
-
 msgid "Fetching remote passwords"
 msgstr "Отримання віддалених паролів"
 
@@ -1040,6 +1173,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Заповніть усі три поля."
 
+msgid "Fill passwords in the browser"
+msgstr "Заповнювати паролі в браузері"
+
 msgid "Find duplicate items"
 msgstr "Знайти дублікати елементів"
 
@@ -1048,6 +1184,9 @@ msgstr "Результати"
 
 msgid "Finishing synchronization"
 msgstr "Завершення синхронізації"
+
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Додатки для Firefox · Firefox і LibreWolf"
 
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
@@ -1058,8 +1197,17 @@ msgstr ""
 "Перед імпортом ви побачите, що вдалося розпізнати. Після цього видаліть "
 "незахищені файли експорту."
 
+msgid "First steps"
+msgstr "Перші кроки"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "Перші кроки приховано. Повернути їх можна через головне меню."
+
 msgid "Folder"
 msgstr "Папка"
+
+msgid "Folder and tags"
+msgstr "Папка та мітки"
 
 msgid "Folder created"
 msgstr "Теку створено"
@@ -1094,6 +1242,10 @@ msgid ""
 msgstr ""
 "Для Nextcloud базовий URL виглядає як https://cloud.example.com/remote.php/"
 "dav/files/ІМ’Я_КОРИСТУВАЧА"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr ""
+"Для тих, хто користується застосунком «Passwords» на своєму сервері Nextcloud"
 
 msgid "For the browsers installed for this user"
 msgstr "Для браузерів цього користувача"
@@ -1190,6 +1342,9 @@ msgstr ""
 msgid "Hide copied passwords from clipboard history"
 msgstr "Приховувати скопійовані паролі з історії буфера обміну"
 
+msgid "Hide first steps"
+msgstr "Приховати перші кроки"
+
 msgid "Hide password"
 msgstr "Сховати пароль"
 
@@ -1219,6 +1374,9 @@ msgstr "Я вже зберігаю паролі деінде"
 msgid "I understand — Continue"
 msgstr "Я розумію — Продовжити"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "Я записав(-ла) майстер-пароль у надійному місці"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1235,6 +1393,9 @@ msgstr "Імпорт"
 msgid "Import complete"
 msgstr "Імпорт завершено"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "Імпортуйте з браузера чи іншого застосунку або додавайте по одному"
+
 msgid "Import partly complete"
 msgstr "Імпорт виконано частково"
 
@@ -1245,6 +1406,13 @@ msgid "Import passwords…"
 msgstr "Імпортувати паролі…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"Важливо: якщо цей комп'ютер зламається, резервна копія — єдиний спосіб "
+"повернути все"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1252,6 +1420,15 @@ msgstr ""
 "В Ashy Pass для Android відкрийте Налаштування → Синхронізація зашифрованої "
 "папки і торкніться «Сканувати QR-код комп’ютера». Потім введіть код нижче та "
 "майстер-пароль."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"У Chrome: Налаштування → Автозаповнення та паролі → Менеджер паролів Google "
+"→ Налаштування → Експортувати паролі. Після імпорту видаліть експортований "
+"файл: він не захищений."
 
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
@@ -1275,6 +1452,9 @@ msgstr "Неправильний основний пароль. Нічого н�
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Неправильний головний пароль. Нічого не експортовано."
 
+msgid "Insert a table"
+msgstr "Вставити таблицю"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1283,6 +1463,13 @@ msgstr ""
 "Вставте ваш FIDO2 токен (Yubikey, Nitrokey тощо) та підтвердьте дію на "
 "пристрої, коли з’явиться запит. Для авторизації нового ключового слота "
 "потрібна ваша поточна парольна фраза."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Встановіть розширення Ashy Pass і підключіть його"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "Встановлено в: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "Внутрішня помилка: не встановлено парольну фразу"
@@ -1300,24 +1487,17 @@ msgstr ""
 "Він відкриває сховище на цьому комп’ютері. Ніхто не зможе відновити його для "
 "вас — навіть Ashy Pass."
 
+msgid "Italic (Ctrl+I)"
+msgstr "Курсив (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "Елементи залишаються тут і в теці; повторне під’єднання об’єднає їх"
 
 msgid "Its user, password and other details appear here."
 msgstr "Тут з’являться користувач, пароль та інші подробиці."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "Експорт KeePass завершено"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass захищає файл паролем. Файл CSV може прочитати будь-хто, хто його "
-"отримає."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1334,6 +1514,9 @@ msgstr "Залишити"
 
 msgid "Keep using"
 msgstr "Продовжити роботу"
+
+msgid "Keep verification codes (2FA)"
+msgstr "Зберігайте коди підтвердження (2FA)"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1435,14 +1618,17 @@ msgstr ""
 "решту переміщує до Видалені елементи."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Логіни, картки, особи, нотатки та ключі доступу шифруються на цьому "
-"комп’ютері перед надсиланням, через теку в Nextcloud, pCloud, WebDAV, "
-"Dropbox, Google Диску або на цьому комп’ютері. Ashy Pass для Android "
-"використовує ту саму теку."
+"Дані для входу, картки, особисті дані, нотатки, ключі доступу та коди "
+"підтвердження шифруються на цьому комп'ютері до відправлення через теку в "
+"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive або на цьому комп'ютері. "
+"Сервіс бачить лише зашифровані файли, але не їхній вміст. Ashy Pass для "
+"Android використовує ту саму теку."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1456,6 +1642,9 @@ msgstr "Малі літери (a–z)"
 
 msgid "Main menu"
 msgstr "Головне меню"
+
+msgid "Make a backup"
+msgstr "Зробіть резервну копію"
 
 msgid "Master Password"
 msgstr "Майстер-пароль"
@@ -1484,9 +1673,6 @@ msgstr "Об’єднано"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "Об’єднано; решта у Видалених елементах"
-
-msgid "Minimum length:"
-msgstr "Мінімальна довжина:"
 
 msgid "Mint"
 msgstr "М'ята"
@@ -1569,6 +1755,9 @@ msgstr "Новий головний пароль задано. Запишіть 
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Застосунок Nextcloud Passwords"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords підключено"
@@ -1657,6 +1846,15 @@ msgstr "Не налаштовано"
 msgid "Not connected"
 msgstr "Не під’єднано"
 
+msgid "Not done yet"
+msgstr "Ще не виконано"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "Ще немає в магазині: дізнайтеся, як установити вручну"
+
+msgid "Not now"
+msgstr "Не зараз"
+
 msgid "Not run yet"
 msgstr "Ще не запущено"
 
@@ -1736,14 +1934,41 @@ msgstr "Увімкнено"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"На сайті, який треба захистити, відкрийте налаштування двоетапної перевірки "
-"й виберіть застосунок-автентифікатор. Зчитайте показаний QR-код або "
-"скопіюйте ключ налаштування та вставте його нижче."
+"На сайті, який ви хочете захистити, відкрийте налаштування двоетапної "
+"перевірки й виберіть застосунок-автентифікатор. Відскануйте показаний QR-код "
+"або скопіюйте ключ налаштування (літери й цифри під QR-кодом, часто за "
+"посиланням «Не вдається відсканувати?») і вставте його нижче."
 
 msgid "On until Ashy Pass closes"
 msgstr "Увімкнено до закриття Ashy Pass"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"Коли паролі буде додано, зробіть резервну копію в розділі «Резервні копії» і "
+"зберігайте її поза цим комп'ютером, наприклад на USB-накопичувачі. Якщо цей "
+"комп'ютер зламається або буде втрачений, це єдиний спосіб повернути паролі."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Один код використовує лічильник або алгоритм, які Ashy Pass не підтримує, і "
+"його пропущено."
+msgstr[1] ""
+"Деякі коди використовують лічильник або алгоритм, які Ashy Pass не "
+"підтримує, і їх пропущено."
+msgstr[2] ""
+"Деякі коди використовують лічильник або алгоритм, які Ashy Pass не "
+"підтримує, і їх пропущено."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1782,8 +2007,14 @@ msgstr "Відкрити зашифроване відображення"
 msgid "Open image…"
 msgstr "Відкрити зображення…"
 
+msgid "Open in the store"
+msgstr "Відкрити в магазині"
+
 msgid "Open the encrypted volume"
 msgstr "Відкрити зашифрований том"
+
+msgid "Open the website"
+msgstr "Відкрити сайт"
 
 msgid "Open website"
 msgstr "Відкрити сайт"
@@ -1799,6 +2030,9 @@ msgstr "Відкриває Dropbox у браузері; скопіюйте по�
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Відкриває браузер для отримання згоди OAuth"
+
+msgid "Optional, to organize the list"
+msgstr "Необов’язково, для впорядкування списку"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1867,6 +2101,9 @@ msgstr "Пароль скопійовано"
 
 msgid "Password for this backup"
 msgstr "Пароль для цієї резервної копії"
+
+msgid "Password generator"
+msgstr "Генератор паролів"
 
 msgid "Password history"
 msgstr "Історія паролів"
@@ -1958,11 +2195,18 @@ msgstr "Попередні паролі, збережені Ashy Pass під ч�
 msgid "Protected by a password you choose"
 msgstr "Захищено паролем, який ви вибираєте"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"Захищено паролем. Відкривається в KeePass, KeePassXC та інших застосунках"
+
 msgid "Protection"
 msgstr "Захист"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR-код зчитано. Перевірте дані й збережіть."
+
+msgid "Quicker than the master password on this computer"
+msgstr "Швидше, ніж майстер-пароль на цьому комп'ютері"
 
 msgid "Quit"
 msgstr "Вийти"
@@ -2004,6 +2248,9 @@ msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr ""
 "Зареєструйте до 2 фізичних автентифікаторів FIDO2 (YubiKey, SoloKey тощо)"
 
+msgid "Remember the backup"
+msgstr "Не забудьте про резервну копію"
+
 msgid "Remote generation:"
 msgstr "Віддалене покоління:"
 
@@ -2024,6 +2271,9 @@ msgstr "Вилучити теку"
 
 msgid "Remove from favorites"
 msgstr "Вилучити з обраного"
+
+msgid "Remove table"
+msgstr "Вилучити таблицю"
 
 msgid "Remove the old copy?"
 msgstr "Вилучити стару копію?"
@@ -2094,6 +2344,9 @@ msgstr "Зберігання"
 
 msgid "Rose"
 msgstr "Троянда"
+
+msgid "Row"
+msgstr "Рядок"
 
 msgid "Run"
 msgstr "Запустити"
@@ -2179,6 +2432,9 @@ msgstr "Пошук за назвою, обліковим записом або �
 
 msgid "Search codes"
 msgstr "Шукати коди"
+
+msgid "Search folders"
+msgstr "Пошук тек"
 
 msgid "Search for drives"
 msgstr "Шукати диски"
@@ -2335,11 +2591,23 @@ msgstr "Розмір"
 msgid "Snapshot uploaded"
 msgstr "Знімок завантажено"
 
+msgid "Start using Ashy Pass"
+msgstr "Почати користуватися Ashy Pass"
+
 msgid "Starting..."
 msgstr "Запуск..."
 
 msgid "Status"
 msgstr "Статус"
+
+msgid "Step 1 of 3"
+msgstr "Крок 1 з 3"
+
+msgid "Step 2 of 3"
+msgstr "Крок 2 з 3"
+
+msgid "Step 3 of 3"
+msgstr "Крок 3 з 3"
 
 msgid "Strength"
 msgstr "Надійність"
@@ -2356,6 +2624,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "Стиль"
+
+msgid "Suggest a passphrase"
+msgstr "Запропонувати парольну фразу"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Пропозиція: {}. Запишіть її, перш ніж продовжити."
 
 msgid "Summary"
 msgstr "Підсумок"
@@ -2397,6 +2672,9 @@ msgstr "Синхронізувати зараз"
 msgid "Sync when the vault is unlocked"
 msgstr "Синхронізувати під час розблокування сховища"
 
+msgid "Sync with your phone or another computer"
+msgstr "Синхронізація з телефоном або іншим комп'ютером"
+
 msgid "Synchronization"
 msgstr "Синхронізація"
 
@@ -2436,15 +2714,15 @@ msgstr "Мітки"
 msgid "Tags (separated by commas)"
 msgstr "Мітки (через кому)"
 
-msgid "Take my data to another app"
-msgstr "Перенести мої дані в інший застосунок"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Взаємодія з вашим токеном… перевірте пристрій на наявність запиту на дотик."
 
 msgid "Technical details"
 msgstr "Технічні подробиці"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "Вікно Ashy Pass у браузері з логінами для сайту"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr ""
@@ -2542,6 +2820,13 @@ msgid "The new passwords do not match."
 msgstr "Нові паролі не збігаються."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"Решта кроків — браузер, телефон, коди підтвердження — чекають у розділі "
+"«Перші кроки» над списком паролів."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2587,6 +2872,9 @@ msgstr "Пошук обмежено текою"
 msgid "The site's icon, when the code has a site saved"
 msgstr "Значок сайту, якщо для коду збережено сайт"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "Шестицифрові коди, які сайти просять після пароля"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "Синхронізацію завершено, але деякі елементи повідомили про помилку."
 
@@ -2600,6 +2888,19 @@ msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr ""
 "Сховище заблоковано. Нічого не збережено — розблокуйте його і спробуйте ще "
 "раз."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"Сховище заблокувалося до збереження резервної копії. Розблокуйте його та "
+"створіть резервну копію знову."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"Сховище заблокувалося до збереження експорту. Розблокуйте його та повторіть "
+"експорт."
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2657,6 +2958,11 @@ msgstr ""
 "міг відповісти лише частково: залиште їх, і наступна синхронізація спробує "
 "знову."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"В цьому експорті з Google Authenticator немає кодів, які можна використати "
+"тут."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Цей PIN більше не відповідає сховищу. Нічого не змінено."
 
@@ -2672,6 +2978,12 @@ msgstr "Цей запис не має збереженого пароля"
 
 msgid "This access has no user"
 msgstr "Цей запис не має користувача"
+
+msgid "This access has no verification code"
+msgstr "Цей запис не має коду підтвердження"
+
+msgid "This access has no website"
+msgstr "Цей запис не має сайту"
 
 msgid "This access no longer exists"
 msgstr "Цього запису більше не існує"
@@ -2725,11 +3037,12 @@ msgstr ""
 "розміром до 20 МБ."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Це експорт Google Authenticator із кількома обліковими записами. Натомість "
-"відкрийте QR-код кожного облікового запису на його сайті."
+"Це експорт із Google Authenticator з кількома обліковими записами. "
+"Відскануйте його в розділі Коди підтвердження → Додати код, щоб додати всі "
+"одразу."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2757,6 +3070,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "Це зітре всі дані на диску"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "Через зашифровану теку у хмарі або на диску"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2790,6 +3106,13 @@ msgstr "Вимкнути"
 msgid "Turn on"
 msgstr "Увімкнути"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Вмикається під час підключення. Коли вимкнено, розширення нічого не бачить у "
+"сховищі"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Двостороннє узгодження: отримати віддалені, надіслати локальні, вирішити за "
@@ -2799,12 +3122,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Двостороннє узгодження успішно завершено."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
 "Двостороння синхронізація з офіційним застосунком «Passwords» на вашому "
-"сервері Nextcloud. Використовуйте пароль застосунку з розділу Налаштування → "
-"Безпека."
+"сервері Nextcloud. Сервер зберігає ці записи в читабельному вигляді: "
+"користуйтеся нею лише з сервером, якому довіряєте. Увійдіть із паролем "
+"застосунку з Налаштування → Безпека."
 
 msgid "Type of password"
 msgstr "Тип пароля"
@@ -2848,6 +3173,9 @@ msgstr "Розблокуйте сховище, щоб зберегти нови�
 msgid "Unlock with PIN"
 msgstr "Розблокувати за PIN-кодом"
 
+msgid "Unlock with a PIN"
+msgstr "Розблокувати за PIN-кодом"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2874,9 +3202,6 @@ msgstr "Розблокування"
 
 msgid "Unlocking…"
 msgstr "Розблокування…"
-
-msgid "Unprotected CSV…"
-msgstr "Незахищений CSV…"
 
 msgid "Updated locally"
 msgstr "Оновлено локально"
@@ -2924,6 +3249,9 @@ msgid ""
 msgstr ""
 "Використовуйте той самий майстер-пароль на всіх пристроях: він відкриває "
 "ключ теки. Тут його потрібно ввести лише раз, щоб приєднатися."
+
+msgid "Use them on your phone or another computer"
+msgstr "Користуйтеся ними на телефоні чи іншому комп'ютері"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Використовуйте ці коди, коли сайт просить двоетапну перевірку."
@@ -3063,6 +3391,9 @@ msgstr "Сайт"
 msgid "Website (optional)"
 msgstr "Сайт (необов’язково)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Ласкаво просимо до Ashy Pass"
+
 msgid "What it contains"
 msgstr "Що вона містить"
 
@@ -3072,9 +3403,6 @@ msgid ""
 msgstr ""
 "Коли сайт пропонує двоетапну перевірку, додайте тут його ключ налаштування, "
 "щоб отримувати коди."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Коли вимкнено, розширення нічого не бачить у сховищі"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Звідки ви хочете перенести паролі?"
@@ -3163,6 +3491,13 @@ msgstr ""
 "Ваші елементи залишаються на цьому комп’ютері та в теці. Повторне "
 "під’єднання пізніше об’єднає їх, а не дублюватиме."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"Ваші логіни для поточного сайту, заповнення одним клацанням. Шукайте в "
+"сховищі та створюйте нові паролі."
+
 msgid "Your most used accesses can be here"
 msgstr "Тут можуть бути ваші найуживаніші записи"
 
@@ -3214,6 +3549,9 @@ msgstr "вільно з"
 msgid "high"
 msgstr "висока"
 
+msgid "incorrect master password"
+msgstr "неправильний майстер-пароль"
+
 msgid "low"
 msgstr "низька"
 
@@ -3238,6 +3576,9 @@ msgstr[2] "новий код через {} секунд"
 
 msgid "no 2FA"
 msgstr "без 2FA"
+
+msgid "no permission to read or write there"
+msgstr "немає дозволу на читання чи запис там"
 
 msgid "none"
 msgstr "немає"
@@ -3284,6 +3625,22 @@ msgstr "надіслано:"
 msgid "solid-state"
 msgstr "твердотільний"
 
+msgid "that place is read-only"
+msgstr "це місце доступне лише для читання"
+
+msgid "the disk is full"
+msgstr "диск заповнений"
+
+msgid "the file or folder does not exist"
+msgstr "файлу або теки не існує"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "сховище заблоковано; розблокуйте його та спробуйте ще раз"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr ""
+"цей спосіб розблокування більше не відкриває сховище; введіть майстер-пароль"
+
 msgid "very high"
 msgstr "дуже висока"
 
@@ -3292,6 +3649,14 @@ msgstr "дуже низька"
 
 msgid "weak"
 msgstr "слабкий"
+
+#, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "Додано кодів: {added} з {total}; решту не вдалося зберегти"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "Виконано {done} з {total}"
 
 #, rust-format
 msgid "{} cannot be imported."
@@ -3306,6 +3671,13 @@ msgid_plural "{} characters"
 msgstr[0] "{} символ"
 msgstr[1] "{} символи"
 msgstr[2] "{} символів"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "Додано {} код"
+msgstr[1] "Додано {} коди"
+msgstr[2] "Додано {} кодів"
 
 #, rust-format
 msgid "{} day."

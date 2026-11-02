@@ -92,7 +92,14 @@ pub(super) fn populate_two_factor(page: &adw::PreferencesPage, toast: Toaster) {
                                     cfg.enabled = false;
                                 }
                                 if let Err(e) = cfg.save() {
-                                    show_toast(&toast, &format!("{}: {e}", tr!("Error")));
+                                    show_toast(
+                                        &toast,
+                                        &format!(
+                                            "{}: {}",
+                                            tr!("Error"),
+                                            crate::ui::errors::describe(&e)
+                                        ),
+                                    );
                                     return;
                                 }
                                 drop(cfg);
@@ -140,7 +147,14 @@ pub(super) fn populate_two_factor(page: &adw::PreferencesPage, toast: Toaster) {
                     render();
                     show_toast(&toast, tr!("Key registered"));
                 }
-                Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Register failed"))),
+                Err(e) => show_toast(
+                    &toast,
+                    &format!(
+                        "{}: {}",
+                        tr!("Register failed"),
+                        crate::ui::errors::describe(&e)
+                    ),
+                ),
             }
         });
     }
@@ -185,14 +199,20 @@ pub(super) fn populate_two_factor(page: &adw::PreferencesPage, toast: Toaster) {
             let phrase = match generate_backup_phrase() {
                 Ok(p) => p,
                 Err(e) => {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Error")));
+                    show_toast(
+                        &toast,
+                        &format!("{}: {}", tr!("Error"), crate::ui::errors::describe(&e)),
+                    );
                     return;
                 }
             };
             let hash = match hash_backup_phrase(&phrase) {
                 Ok(h) => h,
                 Err(e) => {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Error")));
+                    show_toast(
+                        &toast,
+                        &format!("{}: {}", tr!("Error"), crate::ui::errors::describe(&e)),
+                    );
                     return;
                 }
             };
@@ -200,7 +220,10 @@ pub(super) fn populate_two_factor(page: &adw::PreferencesPage, toast: Toaster) {
                 let mut cfg = config.borrow_mut();
                 cfg.backup_code_hash = Some(hash);
                 if let Err(e) = cfg.save() {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Error")));
+                    show_toast(
+                        &toast,
+                        &format!("{}: {}", tr!("Error"), crate::ui::errors::describe(&e)),
+                    );
                     return;
                 }
             }

@@ -2,11 +2,13 @@
 //! screen.
 //!
 //! The sidebar lists destinations only — *My passwords*, *Verification
-//! codes*, *Create password*, then *Backups* and *Settings*. Locking is a
+//! codes*, *Password generator*, then *Backups* and *Settings*. Locking is a
 //! button, not a page; external drives live under *Tools* in the main menu.
+//! Before a vault exists the sidebar is hidden: the first-run screen stands
+//! alone, with nothing to wander off to.
 //!
 //! Pages that need the vault show the shared unlock screen while it is
-//! locked; *Create password* keeps working. A password created on that page
+//! locked; *Password generator* keeps working. A password created on that page
 //! survives the unlock: *Save to vault…* asks to unlock and then opens the
 //! entry form with the same value.
 //!
@@ -18,7 +20,9 @@ use crate::state::SharedState;
 use crate::tr;
 use crate::trn;
 use crate::ui::backups_view::BackupsView;
+use crate::ui::first_steps::{self, FirstStepsCard, Progress, Step};
 use crate::ui::unlock_view::UnlockView;
+use crate::ui::vault_view::EntryShortcut;
 use crate::ui::widgets::Chrome;
 use crate::ui::{
     drives_view::DrivesView, generator_view::GeneratorView, settings_dialog, totp_view::TotpView,
@@ -36,6 +40,8 @@ const DEFAULT_WIDTH: i32 = 960;
 const DEFAULT_HEIGHT: i32 = 720;
 const MIN_WIDTH: i32 = 360;
 const MIN_HEIGHT: i32 = 480;
+/// Window class registered in Big Gnome Center's window blur profiles.
+const WINDOW_CSS_CLASS: &str = "ashypass";
 
 /// Destinations shown in the sidebar, in order.
 const NAV: &[(&str, &str)] = &[
@@ -50,7 +56,7 @@ fn nav_label(name: &str) -> &'static str {
     match name {
         "vault" => tr!("My passwords"),
         "totp" => tr!("Verification codes"),
-        "generator" => tr!("Create password"),
+        "generator" => tr!("Password generator"),
         "backups" => tr!("Backups"),
         "settings" => tr!("Settings"),
         "drives" => tr!("External drives"),
@@ -88,6 +94,9 @@ struct MainWindowInner {
     totp_view: Rc<TotpView>,
     generator_view: GeneratorView,
     backups_view: Rc<BackupsView>,
+    first_steps: FirstStepsCard,
+    /// "No backup yet", above the list once there is something to lose.
+    backup_banner: adw::Banner,
     auto_sync: crate::auto_sync::Handle,
     folder_sync: crate::folder_sync::Handle,
 }
@@ -102,6 +111,9 @@ impl MainWindow {
             .width_request(MIN_WIDTH)
             .height_request(MIN_HEIGHT)
             .build();
+        // Big Gnome Center applies its window blur to windows registered by
+        // this class (GNOME 51); it has no effect anywhere else.
+        window.add_css_class(WINDOW_CSS_CLASS);
 
         let toast_overlay = adw::ToastOverlay::new();
         let split = adw::OverlaySplitView::builder()
@@ -118,6 +130,7 @@ impl MainWindow {
         });
         big_gtk_kit::menu::append_shared_section(&menu, None, "main-help", || {
             let help = gio::Menu::new();
+            help.append(Some(tr!("First steps")), Some("win.first-steps"));
             help.append(Some(tr!("Keyboard shortcuts")), Some("win.shortcuts"));
             help.append(Some(tr!("About Ashy Pass")), Some("app.about"));
             help
@@ -138,6 +151,14 @@ impl MainWindow {
         let totp_view = TotpView::new(state.clone(), toast_overlay.clone(), &chrome);
         let generator_view = GeneratorView::new(state.clone(), toast_overlay.clone(), &chrome);
         let backups_view = BackupsView::new(state.clone(), toast_overlay.clone(), &chrome);
+        let first_steps = FirstStepsCard::new();
+        let backup_banner = adw::Banner::builder()
+            .title(tr!("No backup made on this computer yet"))
+            .button_label(tr!("Make a backup"))
+            .revealed(false)
+            .build();
+        vault_view.add_top(&backup_banner);
+        vault_view.add_top(&first_steps.root);
         let drives_view = DrivesView::new(toast_overlay.clone());
         let drives_page = adw::ToolbarView::new();
         let drives_title = gtk::Label::new(Some(tr!("External drives")));
@@ -145,9 +166,13 @@ impl MainWindow {
         drives_page.add_top_bar(&chrome.header(Some(drives_title.upcast_ref())));
         drives_page.set_content(Some(&drives_view.root));
 
+        // Not homogeneous: a stack asks for the width of its widest page,
+        // hidden ones included, and one wide page kept the whole window
+        // from narrowing to a phone's width.
         let pages = gtk::Stack::builder()
             .transition_type(gtk::StackTransitionType::Crossfade)
             .transition_duration(150)
+            .hhomogeneous(false)
             .build();
         pages.add_named(&vault_view.root, Some("vault"));
         pages.add_named(&totp_view.root, Some("totp"));
@@ -162,6 +187,7 @@ impl MainWindow {
         let gate = gtk::Stack::builder()
             .transition_type(gtk::StackTransitionType::Crossfade)
             .transition_duration(150)
+            .hhomogeneous(false)
             .vexpand(true)
             .build();
         gate.add_named(&unlock_page, Some("unlock"));
@@ -286,6 +312,21 @@ impl MainWindow {
         ));
         narrow.add_setter(&vault_view.root, "collapsed", Some(&true.to_value()));
         narrow.add_setter(&split, "collapsed", Some(&true.to_value()));
+        {
+            // Code rows go on two lines (not a setter: rows are rebuilt).
+            let totp = Rc::downgrade(&totp_view);
+            narrow.connect_apply(move |_| {
+                if let Some(totp) = totp.upgrade() {
+                    totp.set_narrow(true);
+                }
+            });
+            let totp = Rc::downgrade(&totp_view);
+            narrow.connect_unapply(move |_| {
+                if let Some(totp) = totp.upgrade() {
+                    totp.set_narrow(false);
+                }
+            });
+        }
         big_gtk_kit::breakpoint::add(&window, medium);
         big_gtk_kit::breakpoint::add(&window, narrow);
 
@@ -311,6 +352,8 @@ impl MainWindow {
             totp_view: totp_view.clone(),
             generator_view,
             backups_view,
+            first_steps,
+            backup_banner,
             auto_sync,
             folder_sync,
         });
@@ -321,6 +364,10 @@ impl MainWindow {
         {
             let s = state.settings();
             state.session.borrow_mut().timeout_seconds = s.lock_timeout.max(15);
+        }
+
+        if !inner.has_vault() {
+            inner.split.set_show_sidebar(false);
         }
 
         // Startup: one try at the opt-in keyring unlock, then the vault.
@@ -373,6 +420,49 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
         inner.lock_button.connect_clicked(move |_| {
             if let Some(inner) = weak.upgrade() {
                 inner.lock_now(false);
+            }
+        });
+    }
+
+    // First steps: each step opens its place; hiding is remembered.
+    {
+        let weak = Rc::downgrade(inner);
+        inner.first_steps.set_on_step(move |step| {
+            if let Some(inner) = weak.upgrade() {
+                inner.open_step(step);
+            }
+        });
+        let weak = Rc::downgrade(inner);
+        inner.first_steps.set_on_hide(move || {
+            let Some(inner) = weak.upgrade() else { return };
+            if let Err(e) = inner.state.update_settings(|s| s.show_first_steps = false) {
+                log::warn!("could not save settings: {e}");
+            }
+            inner.refresh_first_steps();
+            inner.toast(
+                tr!("First steps hidden. The main menu brings them back."),
+                5,
+            );
+        });
+        let weak = Rc::downgrade(inner);
+        inner.backup_banner.connect_button_clicked(move |_| {
+            if let Some(inner) = weak.upgrade() {
+                inner.show_page("backups");
+            }
+        });
+        let weak = Rc::downgrade(inner);
+        let _permanent = inner.state.events.subscribe(move |event| {
+            use crate::events::AppEvent;
+            if matches!(
+                event,
+                AppEvent::VaultChanged
+                    | AppEvent::VaultChangedBySync
+                    | AppEvent::FolderSyncChanged
+                    | AppEvent::SyncStatusChanged
+            ) {
+                if let Some(inner) = weak.upgrade() {
+                    inner.refresh_first_steps();
+                }
             }
         });
     }
@@ -609,7 +699,34 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
         &["<Primary>4"],
         Box::new(|i| i.show_page("backups")),
     );
+    // On the access focused in the list or open in the details. Not plain
+    // Ctrl+C: that copies selected text everywhere else.
+    for (name, accel, shortcut) in [
+        ("copy-user", "<Primary>b", EntryShortcut::User),
+        (
+            "copy-password",
+            "<Primary><Shift>c",
+            EntryShortcut::Password,
+        ),
+        ("copy-code", "<Primary>t", EntryShortcut::Code),
+        ("open-website", "<Primary>u", EntryShortcut::Website),
+    ] {
+        add_action(
+            name,
+            &[accel],
+            Box::new(move |i| i.entry_shortcut(shortcut)),
+        );
+    }
     add_action("drives", &[], Box::new(|i| i.show_page("drives")));
+    add_action(
+        "first-steps",
+        &[],
+        Box::new(|i| {
+            if i.unlocked() && i.window.visible_dialog().is_none() {
+                i.show_first_steps();
+            }
+        }),
+    );
     add_action(
         "shortcuts",
         &["<Primary>question", "F1"],
@@ -618,6 +735,14 @@ fn wire(inner: &Rc<MainWindowInner>, app: &adw::Application) {
 }
 
 impl MainWindowInner {
+    fn has_vault(&self) -> bool {
+        self.state
+            .vault
+            .borrow()
+            .has_master_password()
+            .unwrap_or(false)
+    }
+
     fn unlocked(&self) -> bool {
         self.state.session.borrow().is_authenticated() && self.state.vault.borrow().is_unlocked()
     }
@@ -674,6 +799,10 @@ impl MainWindowInner {
         }
         self.window
             .set_title(Some(&format!("{} — Ashy Pass", nav_label(page))));
+        if page == "vault" {
+            // Back from making a backup or an import.
+            self.refresh_first_steps();
+        }
         if self.split.is_collapsed() {
             self.split.set_show_sidebar(false);
         }
@@ -682,6 +811,11 @@ impl MainWindowInner {
 
     fn on_unlocked(self: &Rc<Self>) {
         self.lock_button.set_visible(true);
+        // The vault was just created: bring the sidebar in (collapsed, it
+        // stays an overlay opened by its button).
+        if !self.split.is_collapsed() {
+            self.split.set_show_sidebar(true);
+        }
         self.vault_view.on_unlocked();
         self.totp_view.on_unlocked();
         self.backups_view.on_unlocked();
@@ -689,6 +823,10 @@ impl MainWindowInner {
         self.folder_sync.on_vault_unlocked();
         let target = self.pending_page.take().unwrap_or(self.current.get());
         self.show_page(target);
+        self.refresh_first_steps();
+        if self.unlock_view.take_created() {
+            self.show_first_steps();
+        }
         if let Some(password) = self.pending_password.borrow_mut().take() {
             self.show_page("vault");
             self.vault_view.show_add_dialog(Some(password));
@@ -850,6 +988,16 @@ impl MainWindowInner {
         true
     }
 
+    fn entry_shortcut(self: &Rc<Self>, shortcut: EntryShortcut) {
+        if !self.unlocked()
+            || self.window.visible_dialog().is_some()
+            || self.current.get() != "vault"
+        {
+            return;
+        }
+        self.vault_view.run_shortcut(shortcut);
+    }
+
     fn focus_search(self: &Rc<Self>) {
         // Not behind an open dialog: Ctrl+N inside the entry form would
         // stack a second form.
@@ -866,11 +1014,100 @@ impl MainWindowInner {
     }
 
     fn open_settings(self: &Rc<Self>) {
+        self.open_settings_page(settings_dialog::Page::Protection);
+    }
+
+    fn open_settings_page(self: &Rc<Self>, page: settings_dialog::Page) {
         // Ctrl+, twice, or over the entry form, must not stack dialogs.
         if self.window.visible_dialog().is_some() {
             return;
         }
-        settings_dialog::present(&self.window, self.state.clone(), self.toast_overlay.clone());
+        let dialog = settings_dialog::present(
+            &self.window,
+            self.state.clone(),
+            self.toast_overlay.clone(),
+            page,
+        );
+        // The browser, sync and PIN steps are set up in there.
+        let weak = Rc::downgrade(self);
+        dialog.connect_closed(move |_| {
+            if let Some(inner) = weak.upgrade() {
+                inner.refresh_first_steps();
+            }
+        });
+    }
+
+    /// What is set up already, for the first-steps card.
+    fn first_steps_progress(&self) -> Progress {
+        let entries = self.state.vault.borrow().list(None).unwrap_or_default();
+        let settings = self.state.settings();
+        Progress {
+            backup: crate::ui::backups_view::load_status().is_some(),
+            passwords: !entries.is_empty(),
+            browser: settings.browser_extension,
+            sync: self.state.folder_account.borrow().is_some()
+                || self.state.nextcloud.borrow().is_logged_in(),
+            codes: entries.iter().any(|e| e.has_totp),
+            pin: self.state.vault.borrow().is_quick_unlock_available()
+                || settings
+                    .quick_unlock
+                    .as_ref()
+                    .is_some_and(|p| p.is_configured()),
+        }
+    }
+
+    /// Show the first-steps card while it is wanted and not finished, and
+    /// otherwise the backup reminder when there is something to lose.
+    fn refresh_first_steps(&self) {
+        if !self.unlocked() {
+            return;
+        }
+        let mut show_card = self.state.settings().show_first_steps;
+        let progress = self.first_steps_progress();
+        if show_card && progress.all_done() {
+            show_card = false;
+            if let Err(e) = self.state.update_settings(|s| s.show_first_steps = false) {
+                log::warn!("could not save settings: {e}");
+            }
+        }
+        if show_card {
+            self.first_steps.update(&progress);
+        }
+        self.first_steps.root.set_visible(show_card);
+        self.backup_banner
+            .set_revealed(!show_card && progress.passwords && !progress.backup);
+    }
+
+    fn open_step(self: &Rc<Self>, step: Step) {
+        match step {
+            Step::Backup => self.show_page("backups"),
+            Step::Passwords => {
+                self.show_page("backups");
+                self.backups_view.show_import();
+            }
+            Step::Browser => self.open_settings_page(settings_dialog::Page::Browser),
+            Step::Sync => self.open_settings_page(settings_dialog::Page::Sync),
+            Step::Codes => self.show_page("totp"),
+            Step::Pin => self.open_settings_page(settings_dialog::Page::Protection),
+        }
+    }
+
+    /// After creating a vault, or from the main menu: the welcome, and the
+    /// card back above the list.
+    fn show_first_steps(self: &Rc<Self>) {
+        if let Err(e) = self.state.update_settings(|s| s.show_first_steps = true) {
+            log::warn!("could not save settings: {e}");
+        }
+        self.show_page("vault");
+        self.refresh_first_steps();
+        // Asked for: open, whatever the vault holds.
+        self.first_steps.set_expanded(true);
+        let weak = Rc::downgrade(self);
+        first_steps::show_welcome(&self.window, move || {
+            if let Some(inner) = weak.upgrade() {
+                inner.open_step(Step::Passwords);
+            }
+        });
     }
 
     fn show_import_help(self: &Rc<Self>) {
@@ -914,7 +1151,14 @@ impl MainWindowInner {
         let placeholder = match ashypass_core::db::Vault::open(&placeholder_path) {
             Ok(v) => v,
             Err(e) => {
-                self.toast(&format!("{}: {e}", tr!("Nothing was restored")), 6);
+                self.toast(
+                    &format!(
+                        "{}: {}",
+                        tr!("Nothing was restored"),
+                        crate::ui::errors::describe(&e)
+                    ),
+                    6,
+                );
                 return;
             }
         };
@@ -951,10 +1195,7 @@ impl MainWindowInner {
                         log::error!("could not reopen the vault after restore: {e}");
                         let dialog = big_gtk_kit::alert::Alert::builder(Some(&inner.window))
                             .heading(tr!("The vault could not be reopened"))
-                            .body(format!(
-                                "{}\n\n{e}",
-                                tr!("Ashy Pass will close. Open it again to continue; your vault file was not deleted.")
-                            ))
+                            .body(format!("{}\n\n{}", tr!("Ashy Pass will close. Open it again to continue; your vault file was not deleted."), crate::ui::errors::describe(&e)))
                             .build();
                         dialog.add_response("quit", tr!("Close Ashy Pass"));
                         let window = inner.window.clone();
@@ -988,7 +1229,11 @@ impl MainWindowInner {
                     ),
                     Err(e) => (
                         tr!("Nothing was restored").to_string(),
-                        format!("{}\n\n{e}", tr!("Your vault was not changed.")),
+                        format!(
+                            "{}\n\n{}",
+                            tr!("Your vault was not changed."),
+                            crate::ui::errors::describe(&e)
+                        ),
                     ),
                 };
                 let dialog = big_gtk_kit::alert::Alert::builder(Some(&inner.window))
@@ -1017,14 +1262,21 @@ fn show_shortcuts_window(parent: &adw::ApplicationWindow) {
             &[
                 ("Ctrl+1", tr!("My passwords")),
                 ("Ctrl+2", tr!("Verification codes")),
-                ("Ctrl+3", tr!("Create password")),
+                ("Ctrl+3", tr!("Password generator")),
                 ("Ctrl+4", tr!("Backups")),
                 ("Ctrl+F", tr!("Go to search")),
             ],
         ),
         (
             tr!("Vault"),
-            &[("Ctrl+N", tr!("Add password")), ("Ctrl+L", tr!("Lock"))],
+            &[
+                ("Ctrl+N", tr!("Add password")),
+                ("Ctrl+B", tr!("Copy the user")),
+                ("Ctrl+Shift+C", tr!("Copy the password")),
+                ("Ctrl+T", tr!("Copy the verification code")),
+                ("Ctrl+U", tr!("Open the website")),
+                ("Ctrl+L", tr!("Lock")),
+            ],
         ),
         (
             tr!("Application"),
@@ -1150,14 +1402,26 @@ impl DevHandle {
                 }
             }
             "click" => {
-                // click:<button label> — anywhere in the window, dialogs included.
+                // click:<button label> — anywhere in the window, dialogs
+                // included. A check button is toggled.
                 match find_widget(&inner.window.clone().upcast(), &|w| {
                     button_label(w).as_deref() == Some(arg)
                         || w.downcast_ref::<gtk::MenuButton>()
                             .is_some_and(|m| m.tooltip_text().as_deref() == Some(arg))
+                        || w.downcast_ref::<gtk::Button>()
+                            .is_some_and(|b| b.tooltip_text().as_deref() == Some(arg))
+                        || w.downcast_ref::<gtk::CheckButton>().is_some_and(|c| {
+                            c.label().as_deref() == Some(arg)
+                                || c.child()
+                                    .and_downcast::<gtk::Label>()
+                                    .is_some_and(|l| l.label() == arg)
+                        })
                 }) {
                     Some(w) => {
-                        if let Some(menu) = w.downcast_ref::<gtk::MenuButton>() {
+                        if let Some(check) = w.downcast_ref::<gtk::CheckButton>() {
+                            check.set_active(!check.is_active());
+                            eprintln!("dev: toggled {arg}");
+                        } else if let Some(menu) = w.downcast_ref::<gtk::MenuButton>() {
                             menu.popup();
                             eprintln!("dev: opened menu {arg}");
                         } else if let Ok(button) = w.downcast::<gtk::Button>() {
@@ -1204,8 +1468,18 @@ impl DevHandle {
                 }
             }
             "fill" => {
-                // fill:<row title>=<text> — type into an entry row.
+                // fill:<row title>=<text> — type into an entry row, or into
+                // a search field by its placeholder.
                 let (title, text) = arg.split_once('=').unwrap_or((arg, ""));
+                if let Some(search) = find_widget(&inner.window.clone().upcast(), &|w| {
+                    w.downcast_ref::<gtk::SearchEntry>()
+                        .is_some_and(|e| e.placeholder_text().as_deref() == Some(title))
+                }) {
+                    if let Ok(search) = search.downcast::<gtk::SearchEntry>() {
+                        search.set_text(text);
+                    }
+                    return;
+                }
                 // The last match: a dialog on top comes after the page below.
                 let mut rows = Vec::new();
                 collect_entry_rows(&inner.window.clone().upcast(), title, &mut rows);
@@ -1290,8 +1564,131 @@ impl DevHandle {
             "dark" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceDark),
             "light" => adw::StyleManager::default().set_color_scheme(adw::ColorScheme::ForceLight),
             "sidebar" => inner.split.set_show_sidebar(arg != "0"),
+            "type-note" => {
+                // type-note:<text> — insert at the cursor of the notes
+                // editor, as typing does (the style rules apply).
+                if let Some(view) = find_widget(&inner.window.clone().upcast(), &|w| {
+                    w.downcast_ref::<gtk::TextView>()
+                        .is_some_and(|v| v.has_css_class("ashy-notes"))
+                })
+                .and_then(|w| w.downcast::<gtk::TextView>().ok())
+                {
+                    view.grab_focus();
+                    view.buffer().insert_at_cursor(arg);
+                } else {
+                    eprintln!("dev: no notes editor");
+                }
+            }
+            "note-entry" => {
+                // note-entry — a login with a formatted note, first in the list.
+                // note-entry:en — the same note in English.
+                let note = if arg == "en" {
+                    "Home server on **Oracle Cloud**, *always on*.\nSign in: `ssh admin@10.0.0.5`\n\n| Service | Port |\n| --- | --- |\n| PostgreSQL | 5432 |\n| Caddy | 443 |\n\n```\nsudo systemctl restart caddy\n```"
+                } else {
+                    "Servidor **AshyTV** na *Oracle*.\nAcesso: `ssh root@10.0.0.5`\n\n| Serviço | Porta |\n| --- | --- |\n| PostgreSQL | 5432 |\n| Caddy | 443 |\n\n```\nsudo systemctl restart caddy\n```"
+                };
+                let added = inner
+                    .state
+                    .vault
+                    .borrow()
+                    .add(ashypass_core::db::vault::NewEntry {
+                        item_type: None,
+                        extra: None,
+                        title: if arg == "en" {
+                            "Home server".into()
+                        } else {
+                            "AAA Servidor".into()
+                        },
+                        username: Some("root".into()),
+                        password: "Pw-Long-Enough-123".into(),
+                        url: None,
+                        notes: Some(note.into()),
+                        totp_secret: None,
+                        totp_algorithm: None,
+                        totp_digits: None,
+                        totp_period: None,
+                        category: None,
+                    });
+                if let Err(e) = added {
+                    eprintln!("dev: could not add: {e}");
+                }
+                inner
+                    .state
+                    .events
+                    .emit(crate::events::AppEvent::VaultChanged);
+            }
+            "folders" => {
+                // folders:<n> — n logins, each in its own folder, for lists
+                // of folders as long as real ones.
+                let count: usize = arg.parse().unwrap_or(40);
+                let names = ["Banco", "Casa", "Fórum", "Trabalho", "Projeto"];
+                for i in 0..count {
+                    let folder = format!("{} {i:02}", names[i % names.len()]);
+                    let added =
+                        inner
+                            .state
+                            .vault
+                            .borrow()
+                            .add(ashypass_core::db::vault::NewEntry {
+                                item_type: None,
+                                extra: None,
+                                title: format!("Site {i:02}"),
+                                username: Some("user".into()),
+                                password: "Pw-Long-Enough-123".into(),
+                                url: None,
+                                notes: None,
+                                totp_secret: None,
+                                totp_algorithm: None,
+                                totp_digits: None,
+                                totp_period: None,
+                                category: Some(folder),
+                            });
+                    if let Err(e) = added {
+                        eprintln!("dev: could not add: {e}");
+                    }
+                }
+                inner
+                    .state
+                    .events
+                    .emit(crate::events::AppEvent::VaultChanged);
+            }
+            "minw" => {
+                // minw:<px> — print every shown widget whose minimum width
+                // is above <px> (default: the window's), to find what keeps
+                // the window from narrowing.
+                fn walk(widget: &gtk::Widget, limit: i32, depth: usize) {
+                    if !widget.is_mapped() {
+                        return;
+                    }
+                    let (min, _, _, _) = widget.measure(gtk::Orientation::Horizontal, -1);
+                    if min > limit {
+                        eprintln!(
+                            "dev: minw {:depth$}{} {min} (has {})",
+                            "",
+                            widget.type_().name(),
+                            widget.width()
+                        );
+                    }
+                    let mut child = widget.first_child();
+                    while let Some(current) = child {
+                        walk(&current, limit, depth + 1);
+                        child = current.next_sibling();
+                    }
+                }
+                let limit = arg.parse().unwrap_or(inner.window.width());
+                walk(inner.window.upcast_ref(), limit, 0);
+            }
             other => log::warn!("unknown dev step: {other}"),
         }
+    }
+
+    /// The popover open in the window, if any.
+    pub fn open_popover(&self) -> Option<gtk::Popover> {
+        find_widget(&self.inner.window.clone().upcast(), &|w| {
+            w.downcast_ref::<gtk::Popover>()
+                .is_some_and(|p| p.is_visible())
+        })
+        .and_then(|w| w.downcast::<gtk::Popover>().ok())
     }
 
     pub fn window(&self) -> adw::ApplicationWindow {

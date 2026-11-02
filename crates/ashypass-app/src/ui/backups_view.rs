@@ -9,6 +9,7 @@
 //! Backups are not synchronization: Nextcloud Passwords and WebDAV sync live
 //! in Settings → Synchronization.
 
+use crate::session::{InhibitGuard, SessionManager};
 use crate::state::SharedState;
 use crate::tr;
 use crate::trn;
@@ -104,11 +105,7 @@ impl BackupsView {
         status_group.add(&status_row);
         content.append(&status_group);
 
-        let actions = gtk::Box::builder()
-            .orientation(gtk::Orientation::Horizontal)
-            .spacing(12)
-            .homogeneous(true)
-            .build();
+        let actions = crate::ui::widgets::button_row(adw::JustifyMode::Fill);
         let create = gtk::Button::with_label(tr!("Create backup"));
         create.add_css_class("pill");
         create.add_css_class("suggested-action");
@@ -117,6 +114,13 @@ impl BackupsView {
         actions.append(&create);
         actions.append(&restore);
         content.append(&actions);
+
+        // Importing comes up right after the backup itself: it is what
+        // people arriving from another app look for here.
+        let data_group = adw::PreferencesGroup::builder()
+            .title(tr!("Other apps"))
+            .build();
+        content.append(&data_group);
 
         let about = adw::PreferencesGroup::builder()
             .title(tr!("About the backup"))
@@ -148,9 +152,6 @@ impl BackupsView {
         }
         content.append(&about);
 
-        let data_group = adw::PreferencesGroup::builder()
-            .title(tr!("Other apps"))
-            .build();
         let import_row = adw::ActionRow::builder()
             .title(tr!("Import passwords"))
             .subtitle(tr!("Bring passwords from another app or browser"))
@@ -159,15 +160,30 @@ impl BackupsView {
         import_row.add_prefix(&gtk::Image::from_icon_name("document-open-symbolic"));
         import_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
         data_group.add(&import_row);
+        // The protected export first; the readable one apart, marked, and
+        // behind the master password (see `export_csv_with_warning`).
         let export_row = adw::ActionRow::builder()
-            .title(tr!("Take my data to another app"))
-            .subtitle(tr!("Export to KeePass or to a file anyone can read"))
+            .title(tr!("Export to KeePass (.kdbx)"))
+            .subtitle(tr!(
+                "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+            ))
             .activatable(true)
             .build();
-        export_row.add_prefix(&gtk::Image::from_icon_name("document-send-symbolic"));
+        export_row.add_prefix(&gtk::Image::from_icon_name("channel-secure-symbolic"));
         export_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
         data_group.add(&export_row);
-        content.append(&data_group);
+        let csv_row = adw::ActionRow::builder()
+            .title(tr!("Export an unprotected file (CSV)"))
+            .subtitle(tr!(
+                "Anyone who gets the file can read every password in it"
+            ))
+            .activatable(true)
+            .build();
+        let csv_icon = gtk::Image::from_icon_name("dialog-warning-symbolic");
+        csv_icon.add_css_class("warning");
+        csv_row.add_prefix(&csv_icon);
+        csv_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+        data_group.add(&csv_row);
 
         let cloud_group = adw::PreferencesGroup::builder()
             .title(tr!("Copies in the cloud"))
@@ -244,7 +260,19 @@ impl BackupsView {
             let weak = Rc::downgrade(&inner);
             export_row.connect_activated(move |row| {
                 if let Some(inner) = weak.upgrade() {
-                    inner.choose_export(row);
+                    inner.export_kdbx(row);
+                }
+            });
+        }
+        {
+            let weak = Rc::downgrade(&inner);
+            csv_row.connect_activated(move |row| {
+                if let Some(inner) = weak.upgrade() {
+                    settings_dialog::export_csv_with_warning(
+                        inner.state.clone(),
+                        inner.toast.clone(),
+                        row.clone().upcast(),
+                    );
                 }
             });
         }
@@ -332,6 +360,10 @@ impl Inner {
     /// Protected copy: master password check, a password for the file, a
     /// destination, then the result that was really written.
     fn create_backup(self: &Rc<Self>, anchor: &gtk::Button) {
+        // From the first prompt to the file written: choosing where to save
+        // happens in the desktop's file chooser, which this window cannot
+        // see as activity, and an auto-lock there lost the backup.
+        let hold = Rc::new(SessionManager::hold(&self.state.session));
         let weak = Rc::downgrade(self);
         let anchor_widget: gtk::Widget = anchor.clone().upcast();
         let prompt_anchor = anchor_widget.clone();
@@ -343,20 +375,25 @@ impl Inner {
             move || {
                 let Some(inner) = weak.upgrade() else { return };
                 let weak = Rc::downgrade(&inner);
+                let hold = hold.clone();
                 settings_dialog::ask_new_password(
                     &anchor_widget,
                     tr!("Password for this backup"),
                     tr!("You will need this password to restore the copy. You may reuse your master password; Ashy Pass cannot recover it."),
                     move |password| {
                         let Some(inner) = weak.upgrade() else { return };
-                        inner.save_backup_file(password);
+                        inner.save_backup_file(password, hold.clone());
                     },
                 );
             },
         );
     }
 
-    fn save_backup_file(self: &Rc<Self>, password: zeroize::Zeroizing<String>) {
+    fn save_backup_file(
+        self: &Rc<Self>,
+        password: zeroize::Zeroizing<String>,
+        hold: Rc<InhibitGuard>,
+    ) {
         let name = format!(
             "ashypass-backup-{}.ashy",
             glib::DateTime::now_local()
@@ -382,18 +419,20 @@ impl Inner {
             let parts = match inner.state.vault.borrow().session_reopen_parts() {
                 Ok(parts) => parts,
                 Err(e) => {
-                    inner.toast(&format!("{}: {e}", tr!("The backup was not created")));
+                    inner.toast(&not_created(&e));
                     return;
                 }
             };
             let weak = Rc::downgrade(&inner);
             let target = path.clone();
+            let hold = hold.clone();
             settings_dialog::run_background_task(
                 move || {
                     let vault = ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
                     ashypass_core::importers::ashy::export_vault(&vault, &target, &password)
                 },
                 move |outcome: ashypass_core::Result<usize>| {
+                    drop(hold);
                     let Some(inner) = weak.upgrade() else { return };
                     match outcome {
                         Ok(entries) => {
@@ -405,9 +444,7 @@ impl Inner {
                             inner.refresh_status();
                             inner.toast(&format!("{} {}", tr!("Backup created:"), path.display()));
                         }
-                        Err(e) => {
-                            inner.toast(&format!("{}: {e}", tr!("The backup was not created")))
-                        }
+                        Err(e) => inner.toast(&not_created(&e)),
                     }
                 },
             );
@@ -581,6 +618,7 @@ impl Inner {
             let chosen = chosen.clone();
             let file_row = file_row.downgrade();
             let update = update.clone();
+            let state = self.state.clone();
             choose.connect_clicked(move |button| {
                 let filter = gtk::FileFilter::new();
                 filter.set_name(Some(tr!("Ashy Pass backups")));
@@ -597,7 +635,9 @@ impl Inner {
                 let chosen = chosen.clone();
                 let file_row = file_row.clone();
                 let update = update.clone();
+                let hold = SessionManager::hold(&state.session);
                 picker.open(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
+                    drop(hold);
                     let Ok(file) = result else { return };
                     let Some(path) = file.path() else { return };
                     let Some(file_row) = file_row.upgrade() else {
@@ -699,10 +739,7 @@ impl Inner {
                                 error.set_visible(true);
                             }
                             Err(e) => {
-                                error.set_label(&format!(
-                                    "{} ({e})",
-                                    tr!("This copy cannot be restored. Nothing was changed")
-                                ));
+                                error.set_label(&format!("{} ({})", tr!("This copy cannot be restored. Nothing was changed"), crate::ui::errors::describe(&e)));
                                 error.set_visible(true);
                             }
                         }
@@ -755,51 +792,30 @@ impl Inner {
         dialog.present();
     }
 
-    fn choose_export(self: &Rc<Self>, anchor: &adw::ActionRow) {
-        let dialog = big_gtk_kit::alert::Alert::builder(Some(anchor))
-            .heading(tr!("Take my data to another app"))
-            .body(tr!(
-                "KeePass keeps the file protected by a password. A CSV file can be read by anyone who gets hold of it."
-            ))
-            .close_response("cancel")
-            .build();
-        dialog.add_response("cancel", tr!("Cancel"));
-        dialog.add_response("csv", tr!("Unprotected CSV…"));
-        dialog.add_response("kdbx", tr!("KeePass (.kdbx)…"));
-        dialog.set_response_appearance("kdbx", adw::ResponseAppearance::Suggested);
-        dialog.set_default_response(Some("kdbx"));
+    fn export_kdbx(&self, anchor: &adw::ActionRow) {
         let state = self.state.clone();
         let toast = self.toast.clone();
-        let anchor_widget: gtk::Widget = anchor.clone().upcast();
-        dialog.connect_response(None, move |_, response| match response {
-            "kdbx" => {
-                let state_cl = state.clone();
-                let toast = toast.clone();
-                let anchor_cl = anchor_widget.clone();
-                settings_dialog::confirm_master_password(
-                    &state,
-                    &anchor_cl.clone(),
-                    tr!("Export to KeePass"),
-                    tr!("Confirm your master password to export your data."),
-                    move || {
-                        settings_dialog::export_kdbx(
-                            state_cl.clone(),
-                            toast.clone(),
-                            anchor_cl.clone(),
-                        )
-                    },
-                );
-            }
-            "csv" => {
-                settings_dialog::export_csv_with_warning(
-                    state.clone(),
-                    toast.clone(),
-                    anchor_widget.clone(),
-                );
-            }
-            _ => {}
-        });
-        dialog.present();
+        let anchor: gtk::Widget = anchor.clone().upcast();
+        let prompt_anchor = anchor.clone();
+        settings_dialog::confirm_master_password(
+            &self.state,
+            &prompt_anchor,
+            tr!("Export to KeePass"),
+            tr!("Confirm your master password to export your data."),
+            move || settings_dialog::export_kdbx(state.clone(), toast.clone(), anchor.clone()),
+        );
+    }
+}
+
+/// Why a backup was not made, in words: a vault locked midway (screen lock,
+/// the lock button) is the likely case and says what to do.
+fn not_created(error: &ashypass_core::Error) -> String {
+    match error {
+        ashypass_core::Error::Locked => tr!(
+            "The vault was locked before the backup was saved. Unlock it and create the backup again."
+        )
+        .to_string(),
+        other => format!("{}: {other}", tr!("The backup was not created")),
     }
 }
 

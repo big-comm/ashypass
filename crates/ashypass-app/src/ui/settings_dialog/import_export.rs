@@ -25,13 +25,15 @@ pub(super) fn run_export_kdbx(state: SharedState, toast: Toaster, anchor: gtk::W
                 let state = state.clone();
                 let toast = toast.clone();
                 let password = password.clone();
+                // The file chooser is the desktop's window: no activity here.
+                let hold = SessionManager::hold(&state.session);
                 dialog.save(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
                     let Ok(file) = result else { return };
                     let Some(path) = file.path() else { return };
                     let parts = match state.vault.borrow().session_reopen_parts() {
                         Ok(parts) => parts,
                         Err(error) => {
-                            show_toast(&toast, &format!("{}: {error}", tr!("Export failed")));
+                            show_toast(&toast, &export_failed(&error));
                             return;
                         }
                     };
@@ -44,13 +46,14 @@ pub(super) fn run_export_kdbx(state: SharedState, toast: Toaster, anchor: gtk::W
                                 &vault, &path, &password,
                             )
                         },
-                        move |outcome| match outcome {
-                            Ok(n) => show_toast(
-                                &toast_done,
-                                &format!("{} ({n})", tr!("KeePass export complete")),
-                            ),
-                            Err(e) => {
-                                show_toast(&toast_done, &format!("{}: {e}", tr!("Export failed")))
+                        move |outcome| {
+                            drop(hold);
+                            match outcome {
+                                Ok(n) => show_toast(
+                                    &toast_done,
+                                    &format!("{} ({n})", tr!("KeePass export complete")),
+                                ),
+                                Err(e) => show_toast(&toast_done, &export_failed(&e)),
                             }
                         },
                     );
@@ -58,6 +61,18 @@ pub(super) fn run_export_kdbx(state: SharedState, toast: Toaster, anchor: gtk::W
             }
         },
     );
+}
+
+/// Why an export failed, in words for the likely case: the vault locked
+/// before the file was written.
+fn export_failed(error: &ashypass_core::Error) -> String {
+    match error {
+        ashypass_core::Error::Locked => {
+            tr!("The vault was locked before the export was saved. Unlock it and export again.")
+                .to_string()
+        }
+        other => format!("{}: {other}", tr!("Export failed")),
+    }
 }
 
 pub(super) fn prompt_password<F>(
@@ -130,13 +145,14 @@ pub(super) fn run_export_csv(state: SharedState, toast: Toaster, anchor: gtk::Wi
         .build();
 
     let parent = anchor.root().and_then(|r| r.downcast::<gtk::Window>().ok());
+    let hold = SessionManager::hold(&state.session);
     dialog.save(parent.as_ref(), None::<&gio::Cancellable>, move |result| {
         let Ok(file) = result else { return };
         let Some(path) = file.path() else { return };
         let parts = match state.vault.borrow().session_reopen_parts() {
             Ok(parts) => parts,
             Err(error) => {
-                show_toast(&toast, &format!("{}: {error}", tr!("Export failed")));
+                show_toast(&toast, &export_failed(&error));
                 return;
             }
         };
@@ -146,9 +162,12 @@ pub(super) fn run_export_csv(state: SharedState, toast: Toaster, anchor: gtk::Wi
                 let vault = ashypass_core::db::Vault::open_with_session_key(parts.0, parts.1)?;
                 ashypass_core::importers::vault_import::export_vault_to_csv(&vault, &path)
             },
-            move |outcome| match outcome {
-                Ok(n) => show_toast(&toast_done, &format!("{} ({n})", tr!("Export complete"))),
-                Err(e) => show_toast(&toast_done, &format!("{}: {e}", tr!("Export failed"))),
+            move |outcome| {
+                drop(hold);
+                match outcome {
+                    Ok(n) => show_toast(&toast_done, &format!("{} ({n})", tr!("Export complete"))),
+                    Err(e) => show_toast(&toast_done, &export_failed(&e)),
+                }
             },
         );
     });

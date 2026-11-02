@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:47\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Eklentiyi kurun"
+
 msgid "1PUX export file"
 msgstr "1PUX dışa aktarma dosyası"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Ashy Pass'e bağlayın"
+
+msgid "3. Allow it"
+msgstr "3. İzin verin"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -27,6 +36,9 @@ msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "Güvenlik anahtarı olmadan kilidi açmak için 12 kelimelik bir BIP-39 ifadesi. "
 "Yalnızca bir kez gösterilir."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "E-posta alanının altında Ashy Pass önerileri bulunan bir giriş formu"
 
 msgid "A new access"
 msgstr "Yeni bir kayıt"
@@ -70,6 +82,9 @@ msgstr "Ek ekle"
 msgid "Add code"
 msgstr "Kod ekle"
 
+msgid "Add codes"
+msgstr "Kod ekle"
+
 msgid "Add file"
 msgstr "Dosya ekle"
 
@@ -82,11 +97,23 @@ msgstr "Kopyadaki kayıtları mevcut kasaya ekle"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "Bir .ashy yedeğindeki kayıtları bu kasaya ekle"
 
+msgid "Add to Firefox"
+msgstr "Firefox'a ekle"
+
 msgid "Add to favorites"
 msgstr "Favorilere ekle"
 
+msgid "Add to the browser"
+msgstr "Tarayıcıya ekle"
+
 msgid "Add verification code"
 msgstr "Doğrulama kodu ekle"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Google Authenticator'dan {} kod eklensin mi?"
+msgstr[1] "Google Authenticator'dan {} kod eklensin mi?"
 
 msgid "Added to favorites"
 msgstr "Favorilere eklendi"
@@ -111,6 +138,9 @@ msgstr "Basamak sayısını ayarla"
 
 msgid "Adjust words and separator"
 msgstr "Kelimeleri ve ayırıcıyı ayarla"
+
+msgid "Advanced"
+msgstr "Gelişmiş"
 
 msgid "Algorithm"
 msgstr "Algoritma"
@@ -166,6 +196,9 @@ msgstr ""
 msgid "Another example"
 msgstr "Başka bir örnek"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Dosyayı ele geçiren herkes içindeki tüm parolaları okuyabilir"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -213,6 +246,12 @@ msgstr ""
 "Ashy Pass, Nextcloud ile iletişim kuramadı. Bağlantınızı, sunucu adresinizi "
 "ve uygulama şifrenizi kontrol edin."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Chrome için Ashy Pass"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Firefox için Ashy Pass"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -231,6 +270,14 @@ msgid ""
 msgstr ""
 "En az 8 karakter. EFF kelime listesinden dört kelimelik bir parola güçlü bir "
 "varsayılandır."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"En az {} karakter. Rastgele birkaç sözcüğü hatırlamak kolay, tahmin etmek "
+"zordur."
 
 msgid "Attachment added"
 msgstr "Ek eklendi"
@@ -295,11 +342,29 @@ msgstr "Yedekler"
 msgid "Before importing"
 msgstr "İçe aktarmadan önce"
 
+msgid "Bold (Ctrl+B)"
+msgstr "Kalın (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "Parolalarınızı getirin veya ekleyin"
+
 msgid "Bring passwords from another app or browser"
 msgstr "Başka bir uygulamadan veya tarayıcıdan parolaları getir"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"Bir tarayıcıdan (Chrome, Edge, Brave, Firefox) veya başka bir parola "
+"yöneticisinden (Bitwarden, 1Password, KeePass) getirin."
+
 msgid "Bring your passwords"
 msgstr "Parolalarınızı getirin"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"Sunucudaki değişiklikleri getirir ve sizinkileri gönderir; en yeni sürüm "
+"kazanır"
 
 msgid "Browser"
 msgstr "Tarayıcı"
@@ -374,6 +439,9 @@ msgstr ""
 "Bir ana parola seçin. Bu bilgisayarda Ashy Pass'te sakladığınız her şeyi "
 "korur."
 
+msgid "Choose an access in the list first"
+msgstr "Önce listeden bir kayıt seçin"
+
 msgid "Choose an image with the QR code"
 msgstr "QR kodunu içeren bir görsel seçin"
 
@@ -407,6 +475,9 @@ msgstr "Bir parola eklerken veya düzenlerken bu klasörü seçin."
 msgid "Choose…"
 msgstr "Seç…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge ve Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Chrome, Edge, Brave veya Firefox parola dışa aktarımı (CSV)"
 
@@ -421,6 +492,13 @@ msgstr "Geçmişi temizle"
 
 msgid "Clear the password history?"
 msgstr "Parola geçmişi temizlensin mi?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"Bir giriş alanına tıklayın ve erişiminizi seçin: yalnızca ait olduğu sitede "
+"doldurulur."
 
 msgid "Client ID"
 msgstr "İstemci Kimliği"
@@ -446,6 +524,9 @@ msgstr "Eşlemeyi kapat"
 msgid "Closing mapping"
 msgstr "Eşleme kapatılıyor"
 
+msgid "Code"
+msgstr "Kod"
+
 msgid "Code copied"
 msgstr "Kod kopyalandı"
 
@@ -458,8 +539,26 @@ msgstr "Kod ayarları"
 msgid "Coffee"
 msgstr "Kahve"
 
+msgid "Column"
+msgstr "Sütun"
+
+msgid "Column 1"
+msgstr "Sütun 1"
+
+msgid "Column 2"
+msgstr "Sütun 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "name, url, username, password gibi sütunlar"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Google Authenticator'dan mı geliyorsunuz? Orada menüyü açın, Hesapları aktar "
+"→ Hesapları dışa aktar'ı seçin ve gösterilen QR kodunu burada okutun: tüm "
+"kodları bir anda gelir."
 
 msgid "Compact vault list"
 msgstr "Kompakt kasa listesi"
@@ -533,9 +632,6 @@ msgstr "Bağlanılamadı"
 msgid "Connect the sync folder"
 msgstr "Eşitleme klasörünü bağla"
 
-msgid "Connect your browsers"
-msgstr "Tarayıcılarınızı bağlayın"
-
 msgid "Connected"
 msgstr "Bağlı"
 
@@ -544,6 +640,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "{} tarayıcıya bağlandı. Açıksa yeniden başlatın."
 msgstr[1] "{} tarayıcıya bağlandı. Açıksa yeniden başlatın."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Bağlı, ancak engellendi (adım 3)"
 
 msgid "Connected. Received:"
 msgstr "Bağlandı. Alınan:"
@@ -580,6 +679,15 @@ msgstr "Ashy Pass 2'den kalan kasa kopyası"
 
 msgid "Copy password"
 msgstr "Parolayı kopyala"
+
+msgid "Copy the password"
+msgstr "Parolayı kopyala"
+
+msgid "Copy the user"
+msgstr "Kullanıcıyı kopyala"
+
+msgid "Copy the verification code"
+msgstr "Doğrulama kodunu kopyala"
 
 msgid "Copy this old password"
 msgstr "Bu eski parolayı kopyala"
@@ -698,9 +806,6 @@ msgstr "Klasör oluştur…"
 msgid "Create my vault"
 msgstr "Kasamı oluştur"
 
-msgid "Create password"
-msgstr "Parola oluştur"
-
 msgid "Create your vault"
 msgstr "Kasanızı oluşturun"
 
@@ -802,6 +907,9 @@ msgstr "Bağlantı kesilemedi"
 msgid "Disconnect the sync folder?"
 msgstr "Eşitleme klasörünün bağlantısı kesilsin mi?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "Parolalarınızı başka bir yerde mi tutuyorsunuz?"
+
 msgid "Done"
 msgstr "Tamamlandı"
 
@@ -819,6 +927,13 @@ msgstr "Sürücü kilitlendi"
 
 msgid "Duplicate items"
 msgstr "Yinelenen öğeler"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Her simge, internet adresinizi gören sitenin kendisinden indirilir. Yerel "
+"ağınızdaki sitelerle asla iletişim kurulmaz."
 
 msgid "Easier to type and remember."
 msgstr "Yazması ve hatırlaması daha kolay."
@@ -862,9 +977,6 @@ msgstr "Şifrelenmiş olarak"
 msgid "Encrypted device"
 msgstr "Şifrelenmiş cihaz"
 
-msgid "Encrypted folder sync"
-msgstr "Şifreli klasör eşitleme"
-
 msgid "Encrypted folder sync failed"
 msgstr "Şifreli klasör eşitleme başarısız oldu"
 
@@ -894,6 +1006,9 @@ msgstr "Kasa yeniden şifreleniyor…"
 
 msgid "Encrypting…"
 msgstr "Şifreleniyor…"
+
+msgid "Encryption"
+msgstr "Şifreleme"
 
 msgid "Encrypt…"
 msgstr "Şifrele…"
@@ -937,6 +1052,15 @@ msgstr "Hata ayrıntıları"
 msgid "Estimated strength"
 msgstr "Tahmini güç"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Bu dışa aktarmadaki tüm kodlar zaten kasada."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Her kayıt, Ana Paroladan türetilen bir anahtarla AES-256-GCM ile şifrelenir"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -975,6 +1099,18 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "Her şey zaten senkronize edilmişti"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Ashy Pass'te sakladığınız her şey bu bilgisayardaki şifreli bir kasada "
+"kalır. Onu yalnızca Ana Parolanız açar ve kaybederseniz Ashy Pass onu geri "
+"getiremez."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "Korumasız bir dosya dışa aktar (CSV)"
+
 msgid "Export complete"
 msgstr "Dışa aktarma tamamlandı"
 
@@ -984,8 +1120,8 @@ msgstr "Dışa aktarma başarısız oldu"
 msgid "Export to KeePass"
 msgstr "KeePass'e aktar"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "KeePass'e veya herkesin okuyabileceği bir dosyaya aktar"
+msgid "Export to KeePass (.kdbx)"
+msgstr "KeePass'e dışa aktar (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Korumasız dosyayı dışa aktar"
@@ -1017,9 +1153,6 @@ msgstr "Favori"
 msgid "Favorites"
 msgstr "Favoriler"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Kasa girişlerinin yanında site simgelerini getir ve görüntüle"
-
 msgid "Fetching remote passwords"
 msgstr "Uzak şifreler getiriliyor"
 
@@ -1041,6 +1174,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Üç alanın hepsini doldurun."
 
+msgid "Fill passwords in the browser"
+msgstr "Parolaları tarayıcıda doldurun"
+
 msgid "Find duplicate items"
 msgstr "Yinelenen öğeleri bul"
 
@@ -1049,6 +1185,9 @@ msgstr "Bulgular"
 
 msgid "Finishing synchronization"
 msgstr "Senkronizasyon tamamlanıyor"
+
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox Add-ons · Firefox ve LibreWolf"
 
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
@@ -1059,8 +1198,17 @@ msgstr ""
 "burada seçin. İçe aktarmadan önce nelerin tanındığını göreceksiniz. "
 "Korumasız dışa aktarma dosyalarını sonra silin."
 
+msgid "First steps"
+msgstr "İlk adımlar"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "İlk adımlar gizlendi. Ana menü onları geri getirir."
+
 msgid "Folder"
 msgstr "Klasör"
+
+msgid "Folder and tags"
+msgstr "Klasör ve etiketler"
 
 msgid "Folder created"
 msgstr "Klasör oluşturuldu"
@@ -1095,6 +1243,9 @@ msgid ""
 msgstr ""
 "Nextcloud için temel URL şuna benzer: https://cloud.example.com/remote.php/"
 "dav/files/KULLANICIADI"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Nextcloud sunucusunda “Passwords” uygulamasını kullananlar için"
 
 msgid "For the browsers installed for this user"
 msgstr "Bu kullanıcı için kurulu tarayıcılar için"
@@ -1191,6 +1342,9 @@ msgstr ""
 msgid "Hide copied passwords from clipboard history"
 msgstr "Kopyalanan parolaları pano geçmişinden gizle"
 
+msgid "Hide first steps"
+msgstr "İlk adımları gizle"
+
 msgid "Hide password"
 msgstr "Parolayı gizle"
 
@@ -1220,6 +1374,9 @@ msgstr "Parolalarımı zaten başka bir yerde saklıyorum"
 msgid "I understand — Continue"
 msgstr "Anlıyorum — Devam Et"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "Ana Parolamı güvenli bir yere yazdım"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1236,6 +1393,10 @@ msgstr "İçe Aktar"
 msgid "Import complete"
 msgstr "İçe aktarma tamamlandı"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr ""
+"Bir tarayıcıdan ya da başka bir uygulamadan içe aktarın veya tek tek ekleyin"
+
 msgid "Import partly complete"
 msgstr "İçe aktarma kısmen tamamlandı"
 
@@ -1246,6 +1407,12 @@ msgid "Import passwords…"
 msgstr "Parolaları içe aktar…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"Önemli: bu bilgisayar bozulursa, her şeyi geri almanın tek yolu bir yedektir"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1253,6 +1420,15 @@ msgstr ""
 "Android için Ashy Pass'te Ayarlar → Şifrelenmiş klasör senkronizasyonu "
 "bölümünü açın ve “Bilgisayarın QR kodunu tara” öğesine dokunun. Ardından "
 "aşağıdaki kodu ve ana parolanızı yazın."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"Chrome'da: Ayarlar → Otomatik doldurma ve şifreler → Google Şifre Yöneticisi "
+"→ Ayarlar → Şifreleri dışa aktar. İçe aktardıktan sonra dışa aktarılan "
+"dosyayı silin: korumalı değildir."
 
 msgid "Incorrect PIN"
 msgstr "Yanlış PIN"
@@ -1275,6 +1451,9 @@ msgstr "Ana parola yanlış. Hiçbir şey değiştirilmedi."
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Yanlış ana parola. Hiçbir şey dışa aktarılmadı."
 
+msgid "Insert a table"
+msgstr "Tablo ekle"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1283,6 +1462,13 @@ msgstr ""
 "FIDO2 belirtecinizi (Yubikey, Nitrokey vb.) takın ve istendiğinde cihazda "
 "yetkilendirme yapın. Yeni anahtar yuvasını yetkilendirmek için mevcut parola "
 "ifadeniz gereklidir."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Ashy Pass eklentisini kurun ve bağlayın"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "Yüklü olduğu tarayıcılar: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "Dahili hata: parola ayarlanmamış"
@@ -1300,24 +1486,17 @@ msgstr ""
 "Bu bilgisayardaki kasayı açar. Hiç kimse onu sizin için kurtaramaz — Ashy "
 "Pass bile."
 
+msgid "Italic (Ctrl+I)"
+msgstr "İtalik (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "Öğeler burada ve klasörde kalır; yeniden bağlanmak bunları birleştirir"
 
 msgid "Its user, password and other details appear here."
 msgstr "Kullanıcısı, parolası ve diğer ayrıntıları burada görünür."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass dışa aktarma tamamlandı"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass dosyayı bir parolayla korur. CSV dosyasını ise ele geçiren herkes "
-"okuyabilir."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1334,6 +1513,9 @@ msgstr "Sakla"
 
 msgid "Keep using"
 msgstr "Kullanmaya devam et"
+
+msgid "Keep verification codes (2FA)"
+msgstr "Doğrulama kodlarını (2FA) saklayın"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1436,14 +1618,17 @@ msgstr ""
 "öğeler bölümüne taşır."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Girişler, kartlar, kimlikler, notlar ve geçiş anahtarları, bu bilgisayardan "
-"çıkmadan önce şifrelenir ve Nextcloud, pCloud, WebDAV, Dropbox, Google Drive "
-"veya bu bilgisayardaki bir klasör üzerinden eşitlenir. Android için Ashy "
-"Pass aynı klasörü kullanır."
+"Girişler, kartlar, kimlikler, notlar, geçiş anahtarları ve doğrulama kodları "
+"bu bilgisayardan çıkmadan önce şifrelenir; Nextcloud, pCloud, WebDAV, "
+"Dropbox, Google Drive veya bu bilgisayardaki bir klasör üzerinden saklanır. "
+"Hizmet yalnızca şifreli dosyaları görür, içlerindekini asla görmez. Android "
+"için Ashy Pass aynı klasörü kullanır."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1457,6 +1642,9 @@ msgstr "Küçük harfler (a–z)"
 
 msgid "Main menu"
 msgstr "Ana menü"
+
+msgid "Make a backup"
+msgstr "Yedek alın"
 
 msgid "Master Password"
 msgstr "Ana Parola"
@@ -1484,9 +1672,6 @@ msgstr "Birleştirildi"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "Birleştirildi; diğerleri Silinen öğeler içinde"
-
-msgid "Minimum length:"
-msgstr "Asgari uzunluk:"
 
 msgid "Mint"
 msgstr "Nane"
@@ -1565,6 +1750,9 @@ msgstr "Yeni ana parola ayarlandı. Güvenli bir yere not edin."
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords uygulaması"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords bağlandı"
@@ -1653,6 +1841,15 @@ msgstr "Yapılandırılmadı"
 msgid "Not connected"
 msgstr "Bağlı değil"
 
+msgid "Not done yet"
+msgstr "Henüz yapılmadı"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "Henüz mağazada yok: elle nasıl kurulacağına bakın"
+
+msgid "Not now"
+msgstr "Şimdi değil"
+
 msgid "Not run yet"
 msgstr "Henüz çalıştırılmadı"
 
@@ -1734,14 +1931,39 @@ msgstr "Açık"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
 "Korumak istediğiniz sitede iki adımlı doğrulama ayarlarını açın ve bir "
-"kimlik doğrulama uygulaması seçin. Gösterilen QR kodunu okutun ya da kurulum "
-"anahtarını kopyalayıp aşağıya yapıştırın."
+"kimlik doğrulayıcı uygulaması seçin. Gösterilen QR kodunu okutun veya "
+"kurulum anahtarını (QR kodunun altındaki harf ve rakamlar, çoğu zaman "
+"“Tarayamıyor musunuz?” seçeneğinin arkasındadır) kopyalayıp aşağıya "
+"yapıştırın."
 
 msgid "On until Ashy Pass closes"
 msgstr "Ashy Pass kapanana kadar açık"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"Parolalarınız içeri girdikten sonra Yedekler bölümünde bir yedek alın ve "
+"bunu bu bilgisayarın dışında, örneğin bir USB bellekte saklayın. Bu "
+"bilgisayar bozulursa veya kaybolursa, onları geri almanın tek yolu budur."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Bir kod, Ashy Pass'in desteklemediği bir sayaç veya algoritma kullanıyor ve "
+"dışarıda bırakıldı."
+msgstr[1] ""
+"Bazı kodlar, Ashy Pass'in desteklemediği bir sayaç veya algoritma kullanıyor "
+"ve dışarıda bırakıldı."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1780,8 +2002,14 @@ msgstr "Şifrelenmiş eşlemeyi aç"
 msgid "Open image…"
 msgstr "Görsel aç…"
 
+msgid "Open in the store"
+msgstr "Mağazada aç"
+
 msgid "Open the encrypted volume"
 msgstr "Şifreli birimi aç"
+
+msgid "Open the website"
+msgstr "Web sitesini aç"
 
 msgid "Open website"
 msgstr "Web sitesini aç"
@@ -1797,6 +2025,9 @@ msgstr "Dropbox'ı tarayıcıda açar; gösterilen kodu kopyalayın"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "OAuth izni için tarayıcıyı açar"
+
+msgid "Optional, to organize the list"
+msgstr "İsteğe bağlı, listeyi düzenlemek için"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1865,6 +2096,9 @@ msgstr "Parola kopyalandı"
 
 msgid "Password for this backup"
 msgstr "Bu yedeğin parolası"
+
+msgid "Password generator"
+msgstr "Parola oluşturucu"
 
 msgid "Password history"
 msgstr "Şifre geçmişi"
@@ -1955,11 +2189,18 @@ msgstr "Bu parola değiştirildiğinde Ashy Pass'in sakladığı önceki parolal
 msgid "Protected by a password you choose"
 msgstr "Seçtiğiniz bir parolayla korunur"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"Bir parolayla korunur. KeePass, KeePassXC ve diğer uygulamalarda açılır"
+
 msgid "Protection"
 msgstr "Koruma"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR kodu okundu. Bilgileri kontrol edip kaydedin."
+
+msgid "Quicker than the master password on this computer"
+msgstr "Bu bilgisayarda Ana Paroladan daha hızlı"
 
 msgid "Quit"
 msgstr "Çıkış"
@@ -2001,6 +2242,9 @@ msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr ""
 "En fazla 2 adet fiziksel FIDO2 doğrulayıcı kaydedin (YubiKey, SoloKey vb.)"
 
+msgid "Remember the backup"
+msgstr "Yedeği unutmayın"
+
 msgid "Remote generation:"
 msgstr "Uzaktaki nesil:"
 
@@ -2021,6 +2265,9 @@ msgstr "Klasörü kaldır"
 
 msgid "Remove from favorites"
 msgstr "Favorilerden kaldır"
+
+msgid "Remove table"
+msgstr "Tabloyu kaldır"
 
 msgid "Remove the old copy?"
 msgstr "Eski kopya kaldırılsın mı?"
@@ -2092,6 +2339,9 @@ msgstr "Saklama süresi"
 
 msgid "Rose"
 msgstr "Gül"
+
+msgid "Row"
+msgstr "Satır"
 
 msgid "Run"
 msgstr "Çalıştır"
@@ -2177,6 +2427,9 @@ msgstr "Ada, hesaba veya siteye göre ara"
 
 msgid "Search codes"
 msgstr "Kodlarda ara"
+
+msgid "Search folders"
+msgstr "Klasör ara"
 
 msgid "Search for drives"
 msgstr "Sürücüleri ara"
@@ -2332,11 +2585,23 @@ msgstr "Boyut"
 msgid "Snapshot uploaded"
 msgstr "Anlık görüntü yüklendi"
 
+msgid "Start using Ashy Pass"
+msgstr "Ashy Pass'i kullanmaya başlayın"
+
 msgid "Starting..."
 msgstr "Başlatılıyor..."
 
 msgid "Status"
 msgstr "Durum"
+
+msgid "Step 1 of 3"
+msgstr "Adım 1 / 3"
+
+msgid "Step 2 of 3"
+msgstr "Adım 2 / 3"
+
+msgid "Step 3 of 3"
+msgstr "Adım 3 / 3"
 
 msgid "Strength"
 msgstr "Güç"
@@ -2353,6 +2618,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "Stil"
+
+msgid "Suggest a passphrase"
+msgstr "Parola ifadesi öner"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Öneri: {}. Devam etmeden önce not edin."
 
 msgid "Summary"
 msgstr "Özet"
@@ -2394,6 +2666,9 @@ msgstr "Şimdi senkronize et"
 msgid "Sync when the vault is unlocked"
 msgstr "Kasa kilidi açılınca eşitle"
 
+msgid "Sync with your phone or another computer"
+msgstr "Telefonunuzla veya başka bir bilgisayarla eşitleyin"
+
 msgid "Synchronization"
 msgstr "Eşitleme"
 
@@ -2433,15 +2708,15 @@ msgstr "Etiketler"
 msgid "Tags (separated by commas)"
 msgstr "Etiketler (virgülle ayrılmış)"
 
-msgid "Take my data to another app"
-msgstr "Verilerimi başka bir uygulamaya taşı"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Belirtecinizle iletişim kuruluyor… dokunma istemi için cihazı kontrol edin."
 
 msgid "Technical details"
 msgstr "Teknik ayrıntılar"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "Tarayıcıda Ashy Pass penceresi, sitenin oturum açma bilgileriyle"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "PIN bu bilgisayarda kullanılamadı. Ana parolanızı kullanın."
@@ -2532,6 +2807,13 @@ msgid "The new passwords do not match."
 msgstr "Yeni parolalar eşleşmiyor."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"Diğer adımlar — tarayıcı, telefonunuz, doğrulama kodları — parolalarınızın "
+"üstündeki İlk adımlar bölümünde sizi bekliyor."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2575,6 +2857,9 @@ msgstr "Arama şu klasörle sınırlı:"
 msgid "The site's icon, when the code has a site saved"
 msgstr "Kodun kayıtlı bir sitesi varsa sitenin simgesi"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "Sitelerin paroladan sonra istediği altı haneli kodlar"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "Senkronizasyon sona erdi, ancak bazı öğeler hata bildirdi."
 
@@ -2586,6 +2871,19 @@ msgstr "Kasa yeniden açılamadı"
 
 msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr "Kasa kilitli. Hiçbir şey kaydedilmedi — kilidi açıp yeniden deneyin."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"Yedek kaydedilmeden önce kasa kilitlendi. Kilidini açın ve yedeği yeniden "
+"oluşturun."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"Dışa aktarma kaydedilmeden önce kasa kilitlendi. Kilidini açın ve yeniden "
+"dışa aktarın."
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2639,6 +2937,10 @@ msgstr ""
 "yalnızca kısmen yanıt vermiş olabilir: saklayın, sonraki eşitleme yeniden "
 "dener."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Bu Google Authenticator dışa aktarmasında burada kullanılabilecek kod yok."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Bu PIN artık kasayla eşleşmiyor. Hiçbir şey değişmedi."
 
@@ -2654,6 +2956,12 @@ msgstr "Bu kayıtta kayıtlı parola yok"
 
 msgid "This access has no user"
 msgstr "Bu kayıtta kullanıcı yok"
+
+msgid "This access has no verification code"
+msgstr "Bu kayıtta doğrulama kodu yok"
+
+msgid "This access has no website"
+msgstr "Bu kayıtta web sitesi yok"
 
 msgid "This access no longer exists"
 msgstr "Bu kayıt artık mevcut değil"
@@ -2706,11 +3014,11 @@ msgstr ""
 "kullanın."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Bu, birden çok hesap içeren bir Google Authenticator dışa aktarımı. Bunun "
-"yerine her hesabın QR kodunu kendi sitesinde gösterin."
+"Bu, birden çok hesap içeren bir Google Authenticator dışa aktarmasıdır. "
+"Hepsini bir anda getirmek için Doğrulama kodları → Kod ekle bölümünde okutun."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2738,6 +3046,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "Bu işlem sürücüdeki her şeyi silecek"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "Bulutunuzdaki veya bir sürücüdeki şifreli bir klasör aracılığıyla"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2770,6 +3081,11 @@ msgstr "Kapat"
 msgid "Turn on"
 msgstr "Aç"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr "Bağlandığınızda açılır. Kapalıyken eklenti kasada hiçbir şey göremez"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Çift yönlü uzlaştırma: uzaktakini çek, yerel olanı gönder, en son kazananla "
@@ -2779,11 +3095,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Çift yönlü mutabakat başarıyla tamamlandı."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Nextcloud sunucunuzdaki resmi 'Passwords' uygulamasıyla çift yönlü "
-"senkronizasyon. Ayarlar → Güvenlik bölümünden bir uygulama parolası kullanın."
+"Nextcloud sunucunuzdaki resmî “Passwords” uygulamasıyla çift yönlü eşitleme. "
+"Sunucu bu kayıtları okuyabileceği biçimde tutar: yalnızca güvendiğiniz bir "
+"sunucuyla kullanın. Ayarlar → Güvenlik bölümündeki bir uygulama parolasıyla "
+"oturum açın."
 
 msgid "Type of password"
 msgstr "Parola türü"
@@ -2828,6 +3147,9 @@ msgstr ""
 msgid "Unlock with PIN"
 msgstr "PIN ile Aç"
 
+msgid "Unlock with a PIN"
+msgstr "PIN ile aç"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2854,9 +3176,6 @@ msgstr "Kilit açma"
 
 msgid "Unlocking…"
 msgstr "Kilidi açılıyor…"
-
-msgid "Unprotected CSV…"
-msgstr "Korumasız CSV…"
 
 msgid "Updated locally"
 msgstr "Yerel olarak güncellendi"
@@ -2904,6 +3223,9 @@ msgid ""
 msgstr ""
 "Tüm cihazlarınızda aynı ana parolayı kullanın: klasörün anahtarını açar. "
 "Katılmak için burada bir kez yazarsınız."
+
+msgid "Use them on your phone or another computer"
+msgstr "Onları telefonunuzda veya başka bir bilgisayarda kullanın"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Bir site iki adımlı doğrulama istediğinde bu kodları kullanın."
@@ -3041,6 +3363,9 @@ msgstr "Web sitesi"
 msgid "Website (optional)"
 msgstr "Web sitesi (isteğe bağlı)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Ashy Pass'e hoş geldiniz"
+
 msgid "What it contains"
 msgstr "Neleri içerir"
 
@@ -3050,9 +3375,6 @@ msgid ""
 msgstr ""
 "Bir site iki adımlı doğrulama sunduğunda, kodları almak için kurulum "
 "anahtarını buraya ekleyin."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Kapalıyken uzantı kasadaki hiçbir şeyi göremez"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Parolalarınızı nereden getirmek istiyorsunuz?"
@@ -3141,6 +3463,13 @@ msgstr ""
 "Öğeleriniz bu bilgisayarda ve klasörde kalır. Daha sonra yeniden bağlanmak "
 "bunları çoğaltmak yerine birleştirir."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"Bulunduğunuz sitenin oturum açma bilgileri, tek tıkla doldurulur. Kasada "
+"arayın ve yeni parolalar da oluşturun."
+
 msgid "Your most used accesses can be here"
 msgstr "En çok kullandığınız kayıtlar burada olabilir"
 
@@ -3191,6 +3520,9 @@ msgstr "boş alan"
 msgid "high"
 msgstr "yüksek"
 
+msgid "incorrect master password"
+msgstr "Ana Parola yanlış"
+
 msgid "low"
 msgstr "düşük"
 
@@ -3213,6 +3545,9 @@ msgstr[1] "{} saniye içinde yeni kod"
 
 msgid "no 2FA"
 msgstr "2FA yok"
+
+msgid "no permission to read or write there"
+msgstr "orada okuma veya yazma izni yok"
 
 msgid "none"
 msgstr "yok"
@@ -3257,6 +3592,21 @@ msgstr "gönderilen:"
 msgid "solid-state"
 msgstr "katı hal"
 
+msgid "that place is read-only"
+msgstr "bu konum salt okunur"
+
+msgid "the disk is full"
+msgstr "disk dolu"
+
+msgid "the file or folder does not exist"
+msgstr "dosya veya klasör yok"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "kasa kilitli; kilidini açıp yeniden deneyin"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr "bu kilit açma yöntemi artık kasayı açmıyor; Ana Parolayı girin"
+
 msgid "very high"
 msgstr "çok yüksek"
 
@@ -3265,6 +3615,14 @@ msgstr "çok düşük"
 
 msgid "weak"
 msgstr "zayıf"
+
+#, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{total} koddan {added} tanesi eklendi; diğerleri kaydedilemedi"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{done} / {total} tamamlandı"
 
 #, rust-format
 msgid "{} cannot be imported."
@@ -3277,6 +3635,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} karakter"
 msgstr[1] "{} karakter"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kod eklendi"
+msgstr[1] "{} kod eklendi"
 
 #, rust-format
 msgid "{} day."

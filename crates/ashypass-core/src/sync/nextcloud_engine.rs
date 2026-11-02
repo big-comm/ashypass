@@ -1351,6 +1351,7 @@ mod tests {
 
     fn local_entry(password: &str, category: Option<&str>) -> PasswordEntry {
         PasswordEntry {
+            has_password: !password.is_empty(),
             id: 1,
             item_type: crate::db::vault::ITEM_LOGIN.into(),
             extra: None,
@@ -1659,6 +1660,7 @@ mod tests {
     #[test]
     fn passwordless_detects_blank_passwords() {
         let entry = crate::db::vault::PasswordEntry {
+            has_password: true,
             id: 0,
             item_type: crate::db::vault::ITEM_LOGIN.into(),
             extra: None,

@@ -93,7 +93,14 @@ pub(super) fn populate_cloud(
             let signin = row.clone();
             if state.backup.borrow().is_logged_in() {
                 if let Err(e) = state.backup.borrow_mut().logout() {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Sign out failed")));
+                    show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Sign out failed"),
+                            crate::ui::errors::describe(&e)
+                        ),
+                    );
                     return;
                 }
                 status.set_subtitle(tr!("Not signed in"));
@@ -135,7 +142,14 @@ pub(super) fn populate_cloud(
                         }
                         Err(e) => {
                             status_done.set_subtitle(tr!("Not signed in"));
-                            show_toast(&toast_done, &format!("{}: {e}", tr!("Sign in failed")));
+                            show_toast(
+                                &toast_done,
+                                &format!(
+                                    "{}: {}",
+                                    tr!("Sign in failed"),
+                                    crate::ui::errors::describe(&e)
+                                ),
+                            );
                         }
                     }
                 },
@@ -161,7 +175,14 @@ pub(super) fn populate_cloud(
             let parts = match state.vault.borrow().session_reopen_parts() {
                 Ok(parts) => parts,
                 Err(error) => {
-                    show_toast(&toast, &format!("{}: {error}", tr!("Backup failed")));
+                    show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Backup failed"),
+                            crate::ui::errors::describe(&error)
+                        ),
+                    );
                     return;
                 }
             };
@@ -188,9 +209,14 @@ pub(super) fn populate_cloud(
                     row_done.set_sensitive(true);
                     match outcome {
                         Ok(()) => show_toast(&toast_done, tr!("Backup uploaded")),
-                        Err(e) => {
-                            show_toast(&toast_done, &format!("{}: {e}", tr!("Backup failed")))
-                        }
+                        Err(e) => show_toast(
+                            &toast_done,
+                            &format!(
+                                "{}: {}",
+                                tr!("Backup failed"),
+                                crate::ui::errors::describe(&e)
+                            ),
+                        ),
                     }
                 },
             );
@@ -245,7 +271,11 @@ pub(super) fn populate_cloud(
                         Ok(p) => present_downloaded_copy(&row_done, &p),
                         Err(e) => show_toast(
                             &toast_done,
-                            &format!("{}: {e}", tr!("The copy could not be downloaded")),
+                            &format!(
+                                "{}: {}",
+                                tr!("The copy could not be downloaded"),
+                                crate::ui::errors::describe(&e)
+                            ),
                         ),
                     }
                 },
@@ -273,12 +303,47 @@ pub(super) fn populate_sync(
         state.clone(),
         toast.clone(),
     ));
-    page.add(&build_nextcloud_passwords_group(
-        state,
-        toast,
-        parent,
-        dialog_slot,
-    ));
+    // The Passwords app is for people who already run it: a subpage, so the
+    // main choice on this page stays the encrypted folder.
+    let advanced = adw::PreferencesGroup::builder()
+        .title(tr!("Advanced"))
+        .build();
+    let nextcloud_row = adw::ActionRow::builder()
+        .title(tr!("Nextcloud Passwords app"))
+        .subtitle(if state.nextcloud.borrow().is_logged_in() {
+            tr!("Connected")
+        } else {
+            tr!("For people who use the Passwords app on their Nextcloud server")
+        })
+        .activatable(true)
+        .build();
+    nextcloud_row.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
+    nextcloud_row.connect_activated(move |row| {
+        let Some(dialog) = row
+            .ancestor(adw::PreferencesDialog::static_type())
+            .and_downcast::<adw::PreferencesDialog>()
+        else {
+            return;
+        };
+        let content = adw::PreferencesPage::new();
+        content.add(&build_nextcloud_passwords_group(
+            state.clone(),
+            toast.clone(),
+            parent.clone(),
+            dialog_slot.clone(),
+        ));
+        let toolbar = adw::ToolbarView::new();
+        toolbar.add_top_bar(&adw::HeaderBar::new());
+        toolbar.set_content(Some(&content));
+        dialog.push_subpage(
+            &adw::NavigationPage::builder()
+                .title(tr!("Nextcloud Passwords"))
+                .child(&toolbar)
+                .build(),
+        );
+    });
+    advanced.add(&nextcloud_row);
+    page.add(&advanced);
     let note = adw::PreferencesGroup::builder()
         .description(tr!(
             "Synchronization keeps the same entries on several devices. It is not a backup: a deletion is synchronized too. Encrypted copies to Google Drive or WebDAV are in Backups."
@@ -351,7 +416,14 @@ pub(super) fn show_google_oauth_dialog(
                 }
                 show_toast(&toast, tr!("Configured"));
             }
-            Err(e) => show_toast(&toast, &format!("{}: {e}", tr!("Configure failed"))),
+            Err(e) => show_toast(
+                &toast,
+                &format!(
+                    "{}: {}",
+                    tr!("Configure failed"),
+                    crate::ui::errors::describe(&e)
+                ),
+            ),
         }
     });
     dialog.present();
@@ -397,7 +469,14 @@ pub(super) fn build_webdav_group(state: SharedState, toast: Toaster) -> adw::Pre
             let configure = row.clone();
             if state.webdav.borrow().is_logged_in() {
                 if let Err(e) = state.webdav.borrow_mut().logout() {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Sign out failed")));
+                    show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Sign out failed"),
+                            crate::ui::errors::describe(&e)
+                        ),
+                    );
                     return;
                 }
                 status.set_subtitle(tr!("Not configured"));
@@ -442,7 +521,14 @@ pub(super) fn build_webdav_group(state: SharedState, toast: Toaster) -> adw::Pre
             let parts = match state.vault.borrow().session_reopen_parts() {
                 Ok(parts) => parts,
                 Err(error) => {
-                    show_toast(&toast, &format!("{}: {error}", tr!("Backup failed")));
+                    show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Backup failed"),
+                            crate::ui::errors::describe(&error)
+                        ),
+                    );
                     return;
                 }
             };
@@ -467,9 +553,14 @@ pub(super) fn build_webdav_group(state: SharedState, toast: Toaster) -> adw::Pre
                     row_done.set_sensitive(true);
                     match outcome {
                         Ok(()) => show_toast(&toast_done, tr!("Backup uploaded")),
-                        Err(e) => {
-                            show_toast(&toast_done, &format!("{}: {e}", tr!("Backup failed")))
-                        }
+                        Err(e) => show_toast(
+                            &toast_done,
+                            &format!(
+                                "{}: {}",
+                                tr!("Backup failed"),
+                                crate::ui::errors::describe(&e)
+                            ),
+                        ),
                     }
                 },
             );
@@ -543,7 +634,11 @@ pub(super) fn build_webdav_group(state: SharedState, toast: Toaster) -> adw::Pre
                         Ok(p) => present_downloaded_copy(&row_done, &p),
                         Err(e) => show_toast(
                             &toast_done,
-                            &format!("{}: {e}", tr!("The copy could not be downloaded")),
+                            &format!(
+                                "{}: {}",
+                                tr!("The copy could not be downloaded"),
+                                crate::ui::errors::describe(&e)
+                            ),
                         ),
                     }
                 },
@@ -633,9 +728,14 @@ pub(super) fn show_webdav_dialog<F>(
                             show_toast(&toast_done, tr!("WebDAV configured"));
                             on_saved_done();
                         }
-                        Err(e) => {
-                            show_toast(&toast_done, &format!("{}: {e}", tr!("Configure failed")))
-                        }
+                        Err(e) => show_toast(
+                            &toast_done,
+                            &format!(
+                                "{}: {}",
+                                tr!("Configure failed"),
+                                crate::ui::errors::describe(&e)
+                            ),
+                        ),
                     }
                 },
             );
@@ -661,7 +761,14 @@ pub(super) fn run_webdav_sync(
         let parts = match state.vault.borrow().session_reopen_parts() {
             Ok(parts) => parts,
             Err(error) => {
-                show_toast(&toast, &format!("{}: {error}", tr!("Sync failed")));
+                show_toast(
+                    &toast,
+                    &format!(
+                        "{}: {}",
+                        tr!("Sync failed"),
+                        crate::ui::errors::describe(&error)
+                    ),
+                );
                 return;
             }
         };
@@ -696,7 +803,14 @@ pub(super) fn run_webdav_sync(
                     ),
                 },
                 Err(error) => {
-                    show_toast(&toast_done, &format!("{}: {error}", tr!("Sync failed")));
+                    show_toast(
+                        &toast_done,
+                        &format!(
+                            "{}: {}",
+                            tr!("Sync failed"),
+                            crate::ui::errors::describe(&error)
+                        ),
+                    );
                 }
             },
         );
@@ -752,7 +866,14 @@ pub(super) fn do_webdav_push(state: SharedState, toast: Toaster, master: String,
     let parts = match state.vault.borrow().session_reopen_parts() {
         Ok(parts) => parts,
         Err(error) => {
-            show_toast(&toast, &format!("{}: {error}", tr!("Sync failed")));
+            show_toast(
+                &toast,
+                &format!(
+                    "{}: {}",
+                    tr!("Sync failed"),
+                    crate::ui::errors::describe(&error)
+                ),
+            );
             return;
         }
     };
@@ -793,7 +914,7 @@ pub(super) fn do_webdav_push(state: SharedState, toast: Toaster, master: String,
                         });
                 }
                 Err(e) => {
-                    let msg = format!("{e}");
+                    let msg = crate::ui::errors::describe(&e);
                     show_toast(&toast_done, &format!("{}: {msg}", tr!("Sync failed")));
                     state_done
                         .events

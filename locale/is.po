@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:34\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Icelandic <is@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n%10!=1 || n%100==11);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Settu upp viðbótina"
+
 msgid "1PUX export file"
 msgstr "1PUX-útflutningsskrá"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Tengdu hana við Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Leyfðu hana"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -25,6 +34,10 @@ msgstr ""
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "12 orða BIP-39 setning til að opna án öryggislykils. Birtist einu sinni."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr ""
+"Innskráningareyðublað með tillögum frá Ashy Pass undir tölvupóstsreitnum"
 
 msgid "A new access"
 msgstr "Ný færsla"
@@ -66,6 +79,9 @@ msgstr "Bæta við viðhengi"
 msgid "Add code"
 msgstr "Bæta við kóða"
 
+msgid "Add codes"
+msgstr "Bæta við kóðum"
+
 msgid "Add file"
 msgstr "Bæta við skrá"
 
@@ -78,11 +94,23 @@ msgstr "Bæta færslum afritsins við núverandi hvelfingu"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "Bæta færslum úr .ashy-öryggisafriti við þessa hvelfingu"
 
+msgid "Add to Firefox"
+msgstr "Bæta við Firefox"
+
 msgid "Add to favorites"
 msgstr "Bæta við eftirlæti"
 
+msgid "Add to the browser"
+msgstr "Bæta við vafrann"
+
 msgid "Add verification code"
 msgstr "Bæta við staðfestingarkóða"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Bæta við {} kóða úr Google Authenticator?"
+msgstr[1] "Bæta við {} kóðum úr Google Authenticator?"
 
 msgid "Added to favorites"
 msgstr "Bætt við eftirlæti"
@@ -107,6 +135,9 @@ msgstr "Stilla fjölda tölustafa"
 
 msgid "Adjust words and separator"
 msgstr "Stilla orð og skiltákn"
+
+msgid "Advanced"
+msgstr "Ítarlegt"
 
 msgid "Algorithm"
 msgstr "Reiknirit"
@@ -160,6 +191,9 @@ msgstr ""
 msgid "Another example"
 msgstr "Annað dæmi"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Hver sem fær skrána getur lesið öll lykilorð í henni"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -207,6 +241,12 @@ msgstr ""
 "Ashy Pass gat ekki átt samskipti við Nextcloud. Athugaðu tenginguna þína, "
 "netfang þjónsins og forritslykilorðið."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Ashy Pass fyrir Chrome"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Ashy Pass fyrir Firefox"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -224,6 +264,14 @@ msgid ""
 msgstr ""
 "Að minnsta kosti 8 stafir. Fjögurra orða aðgangsorð úr EFF orðalistanum er "
 "öflugur sjálfgefinn valkostur."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Að minnsta kosti {} stafir. Fáein tilviljanakennd orð eru auðveld að muna og "
+"erfið að giska á."
 
 msgid "Attachment added"
 msgstr "Viðhengi bætt við"
@@ -288,11 +336,27 @@ msgstr "Öryggisafrit"
 msgid "Before importing"
 msgstr "Fyrir innflutning"
 
+msgid "Bold (Ctrl+B)"
+msgstr "Feitletrað (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "Komdu með eða bættu við lykilorðunum þínum"
+
 msgid "Bring passwords from another app or browser"
 msgstr "Sæktu lykilorð úr öðru forriti eða vafra"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"Sæktu þau úr vafra (Chrome, Edge, Brave, Firefox) eða öðru lykilorðaforriti "
+"(Bitwarden, 1Password, KeePass)."
+
 msgid "Bring your passwords"
 msgstr "Taktu lykilorðin þín með"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "Sækir breytingar þjónsins og sendir þínar; nýjasta útgáfan gildir"
 
 msgid "Browser"
 msgstr "Vafri"
@@ -367,6 +431,9 @@ msgstr ""
 "Veldu aðallykilorð. Það verndar allt sem þú geymir í Ashy Pass á þessari "
 "tölvu."
 
+msgid "Choose an access in the list first"
+msgstr "Veldu fyrst færslu á listanum"
+
 msgid "Choose an image with the QR code"
 msgstr "Veldu mynd með QR-kóðanum"
 
@@ -400,6 +467,9 @@ msgstr "Veldu þessa möppu þegar þú bætir við eða breytir lykilorði."
 msgid "Choose…"
 msgstr "Velja…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge og Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Lykilorð flutt út úr Chrome, Edge, Brave eða Firefox (CSV)"
 
@@ -414,6 +484,13 @@ msgstr "Hreinsa feril"
 
 msgid "Clear the password history?"
 msgstr "Hreinsa lykilorðaferil?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"Smelltu á innskráningarreit og veldu aðganginn þinn: hann fyllist aðeins út "
+"á vefsvæðinu sem hann tilheyrir."
 
 msgid "Client ID"
 msgstr "Biðlaraauðkenni"
@@ -439,6 +516,9 @@ msgstr "Loka vörpun"
 msgid "Closing mapping"
 msgstr "Loka vörpun"
 
+msgid "Code"
+msgstr "Kóði"
+
 msgid "Code copied"
 msgstr "Kóði afritaður"
 
@@ -451,8 +531,26 @@ msgstr "Kóðastillingar"
 msgid "Coffee"
 msgstr "Kaffi"
 
+msgid "Column"
+msgstr "Dálkur"
+
+msgid "Column 1"
+msgstr "Dálkur 1"
+
+msgid "Column 2"
+msgstr "Dálkur 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "Dálkar eins og name, url, username, password"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Kemurðu úr Google Authenticator? Opnaðu valmyndina þar, veldu Flytja "
+"reikninga → Flytja út reikninga og lestu QR-kóðann sem birtist hér: allir "
+"kóðarnir koma í einu."
 
 msgid "Compact vault list"
 msgstr "Þéttur lyklageymslulisti"
@@ -526,9 +624,6 @@ msgstr "Tenging mistókst"
 msgid "Connect the sync folder"
 msgstr "Tengja samstillingarmöppuna"
 
-msgid "Connect your browsers"
-msgstr "Tengdu vafrana þína"
-
 msgid "Connected"
 msgstr "Tengt"
 
@@ -537,6 +632,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Tengt við {} vafra. Endurræstu hann ef hann er opinn."
 msgstr[1] "Tengt við {} vafra. Endurræstu þá ef þeir eru opnir."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Tengt, en lokað (skref 3)"
 
 msgid "Connected. Received:"
 msgstr "Tengt. Móttekið:"
@@ -573,6 +671,15 @@ msgstr "Afrit af hvelfingunni úr Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Afrita lykilorð"
+
+msgid "Copy the password"
+msgstr "Afrita lykilorðið"
+
+msgid "Copy the user"
+msgstr "Afrita notandann"
+
+msgid "Copy the verification code"
+msgstr "Afrita staðfestingarkóðann"
 
 msgid "Copy this old password"
 msgstr "Afrita þetta gamla lykilorð"
@@ -691,9 +798,6 @@ msgstr "Búa til möppu…"
 msgid "Create my vault"
 msgstr "Búa til hvelfinguna mína"
 
-msgid "Create password"
-msgstr "Búa til lykilorð"
-
 msgid "Create your vault"
 msgstr "Búðu til hvelfinguna þína"
 
@@ -797,6 +901,9 @@ msgstr "Aftenging mistókst"
 msgid "Disconnect the sync folder?"
 msgstr "Aftengja samstillingarmöppuna?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "Geymirðu lykilorð annars staðar?"
+
 msgid "Done"
 msgstr "Lokið"
 
@@ -814,6 +921,13 @@ msgstr "Drif læst"
 
 msgid "Duplicate items"
 msgstr "Tvítekin atriði"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Hvert tákn er sótt af vefsvæðinu sjálfu, sem sér netfangið þitt. Aldrei er "
+"haft samband við vefsvæði á staðarnetinu þínu."
 
 msgid "Easier to type and remember."
 msgstr "Auðveldara að slá inn og muna."
@@ -857,9 +971,6 @@ msgstr "Dulritað sem"
 msgid "Encrypted device"
 msgstr "Dulkóðað tæki"
 
-msgid "Encrypted folder sync"
-msgstr "Dulkóðuð möppusamstilling"
-
 msgid "Encrypted folder sync failed"
 msgstr "Dulkóðuð möppusamstilling mistókst"
 
@@ -887,6 +998,9 @@ msgstr "Dulrita hvelfinguna aftur…"
 
 msgid "Encrypting…"
 msgstr "Dulkóða…"
+
+msgid "Encryption"
+msgstr "Dulkóðun"
 
 msgid "Encrypt…"
 msgstr "Dulkóða…"
@@ -930,6 +1044,16 @@ msgstr "Upplýsingar um villur"
 msgid "Estimated strength"
 msgstr "Áætlaður styrkur"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Allir kóðar í þessum útflutningi eru þegar í hvelfingunni."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Hver færsla er dulkóðuð með AES-256-GCM með lykli sem er leiddur af aðal "
+"lykilorðinu"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -968,6 +1092,18 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "Allt var þegar samstillt"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Allt sem þú geymir í Ashy Pass helst í dulkóðaðri hvelfingu á þessari tölvu. "
+"Aðeins aðal lykilorðið þitt opnar hana og Ashy Pass getur ekki endurheimt "
+"það ef þú týnir því."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "Flytja út óvarða skrá (CSV)"
+
 msgid "Export complete"
 msgstr "Útflutningi lokið"
 
@@ -977,8 +1113,8 @@ msgstr "Útflutningur mistókst"
 msgid "Export to KeePass"
 msgstr "Flytja út í KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Flyttu út í KeePass eða í skrá sem hver sem er getur lesið"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Flytja út í KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Flytja út óvarða skrá"
@@ -1010,9 +1146,6 @@ msgstr "Eftirlæti"
 msgid "Favorites"
 msgstr "Eftirlæti"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Sækja og birta táknmyndir vefsvæða við hlið hvelfingarfærslna"
-
 msgid "Fetching remote passwords"
 msgstr "Sæki fjarlæg lykilorð"
 
@@ -1034,6 +1167,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Fylltu út alla þrjá reitina."
 
+msgid "Fill passwords in the browser"
+msgstr "Fylla út lykilorð í vafranum"
+
 msgid "Find duplicate items"
 msgstr "Finna tvítekin atriði"
 
@@ -1043,6 +1179,9 @@ msgstr "Niðurstöður"
 msgid "Finishing synchronization"
 msgstr "Ljúk samstillingu"
 
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox Add-ons · Firefox og LibreWolf"
+
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
 "Before importing you will see what was recognized. Delete unprotected export "
@@ -1051,8 +1190,17 @@ msgstr ""
 "Flyttu fyrst út lykilorðin úr hinu forritinu og veldu svo skrána hér. Fyrir "
 "innflutning sérðu hvað var greint. Eyddu óvörðum útflutningsskrám á eftir."
 
+msgid "First steps"
+msgstr "Fyrstu skref"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "Fyrstu skref falin. Aðalvalmyndin kemur þeim aftur."
+
 msgid "Folder"
 msgstr "Mappa"
+
+msgid "Folder and tags"
+msgstr "Mappa og merki"
 
 msgid "Folder created"
 msgstr "Mappa búin til"
@@ -1087,6 +1235,9 @@ msgid ""
 msgstr ""
 "Fyrir Nextcloud lítur grunnslóðin svona út: https://cloud.example.com/"
 "remote.php/dav/files/NOTANDANAFN"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Fyrir fólk sem notar „Passwords“ forritið á Nextcloud-þjóninum sínum"
 
 msgid "For the browsers installed for this user"
 msgstr "Fyrir vafra sem eru settir upp fyrir þennan notanda"
@@ -1182,6 +1333,9 @@ msgstr ""
 msgid "Hide copied passwords from clipboard history"
 msgstr "Fela afrituð lykilorð í ferli klippispjaldsins"
 
+msgid "Hide first steps"
+msgstr "Fela fyrstu skref"
+
 msgid "Hide password"
 msgstr "Fela lykilorð"
 
@@ -1210,6 +1364,9 @@ msgstr "Ég geymi nú þegar lykilorð annars staðar"
 msgid "I understand — Continue"
 msgstr "Ég skil — Halda áfram"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "Ég skrifaði aðal lykilorðið mitt niður á öruggum stað"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1226,6 +1383,9 @@ msgstr "Flytja inn"
 msgid "Import complete"
 msgstr "Innflutningi lokið"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "Fluttu inn úr vafra eða öðru forriti, eða bættu við einu í einu"
+
 msgid "Import partly complete"
 msgstr "Innflutningi lokið að hluta"
 
@@ -1236,6 +1396,13 @@ msgid "Import passwords…"
 msgstr "Flytja inn lykilorð…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"Mikilvægt: ef þessi tölva bilar er öryggisafrit eina leiðin til að fá allt "
+"til baka"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1243,6 +1410,15 @@ msgstr ""
 "Í Ashy Pass fyrir Android skaltu opna Stillingar → Samstilling með "
 "dulritaðri möppu og ýta á „Skanna QR-kóða tölvunnar“. Sláðu svo inn kóðann "
 "hér fyrir neðan og aðallykilorðið."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"Í Chrome: Stillingar → Sjálfvirk útfylling og lykilorð → Google "
+"lykilorðastjórnun → Stillingar → Flytja út lykilorð. Eyddu "
+"útflutningsskránni eftir innflutning: hún er ekki varin."
 
 msgid "Incorrect PIN"
 msgstr "Rangt PIN-númer"
@@ -1265,6 +1441,9 @@ msgstr "Rangt aðallykilorð. Engu var breytt."
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Rangt aðallykilorð. Ekkert var flutt út."
 
+msgid "Insert a table"
+msgstr "Setja inn töflu"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1273,6 +1452,13 @@ msgstr ""
 "Settu FIDO2 táknið þitt (Yubikey, Nitrokey o.s.frv.) í tækið og staðfestu á "
 "tækinu þegar beðið er um það. Núverandi lykilorðaseta er nauðsynleg til að "
 "heimila nýja lykilsætið."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Settu upp Ashy Pass viðbótina og tengdu hana"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "Sett upp í: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "Innri villa: ekkert lykilorð stillt"
@@ -1290,24 +1476,17 @@ msgstr ""
 "Það opnar hvelfinguna á þessari tölvu. Enginn getur endurheimt það fyrir þig "
 "— ekki einu sinni Ashy Pass."
 
+msgid "Italic (Ctrl+I)"
+msgstr "Skáletrað (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "Atriðin haldast hér og í möppunni; ný tenging sameinar þau"
 
 msgid "Its user, password and other details appear here."
 msgstr "Notandi, lykilorð og aðrar upplýsingar hennar birtast hér."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass-útflutningi lokið"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass heldur skránni varinni með lykilorði. CSV-skrá getur hver sem nær í "
-"hana lesið."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1324,6 +1503,9 @@ msgstr "Halda þeim"
 
 msgid "Keep using"
 msgstr "Halda áfram"
+
+msgid "Keep verification codes (2FA)"
+msgstr "Geymdu staðfestingarkóða (2FA)"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1425,14 +1607,17 @@ msgstr ""
 "Eydd atriði."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Innskráningar, kort, auðkenni, minnispunktar og aðgangslyklar, dulkóðuð á "
-"þessari tölvu áður en þau fara, í gegnum möppu á Nextcloud, pCloud, WebDAV, "
-"Dropbox, Google Drive eða þessari tölvu. Ashy Pass fyrir Android notar sömu "
-"möppu."
+"Innskráningar, kort, auðkenni, minnismiðar, lykilkóðar og staðfestingarkóðar "
+"eru dulkóðaðir á þessari tölvu áður en þeir fara frá henni, í gegnum möppu á "
+"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive eða þessari tölvu. "
+"Þjónustan sér aðeins dulkóðaðar skrár, aldrei innihald þeirra. Ashy Pass "
+"fyrir Android notar sömu möppu."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1447,6 +1632,9 @@ msgstr "Lágstafir (a–z)"
 
 msgid "Main menu"
 msgstr "Aðalvalmynd"
+
+msgid "Make a backup"
+msgstr "Taktu öryggisafrit"
 
 msgid "Master Password"
 msgstr "Aðal lykilorð"
@@ -1475,9 +1663,6 @@ msgstr "Sameinað"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "Sameinað; hin eru í Eydd atriði"
-
-msgid "Minimum length:"
-msgstr "Lágmarkslengd:"
 
 msgid "Mint"
 msgstr "Minta"
@@ -1557,6 +1742,9 @@ msgstr "Nýtt aðallykilorð stillt. Skrifaðu það niður á öruggan stað."
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords forritið"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords tengt"
@@ -1647,6 +1835,15 @@ msgstr "Ekki stillt"
 msgid "Not connected"
 msgstr "Ekki tengt"
 
+msgid "Not done yet"
+msgstr "Ekki lokið enn"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "Ekki enn í versluninni: sjáðu hvernig á að setja hana upp handvirkt"
+
+msgid "Not now"
+msgstr "Ekki núna"
+
 msgid "Not run yet"
 msgstr "Ekki keyrt enn"
 
@@ -1726,14 +1923,38 @@ msgstr "Kveikt"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Opnaðu stillingar tveggja þrepa staðfestingar á vefnum sem þú vilt verja og "
-"veldu auðkenningarforrit. Lestu QR-kóðann sem birtist eða afritaðu "
-"uppsetningarlykilinn og límdu hann hér fyrir neðan."
+"Opnaðu stillingar tveggja þrepa staðfestingar á vefsvæðinu sem þú vilt verja "
+"og veldu auðkenningarforrit. Lestu QR-kóðann sem birtist, eða afritaðu "
+"uppsetningarlykilinn (stafina og tölurnar undir QR-kóðanum, oft á bak við "
+"„Geturðu ekki skannað?“) og límdu hann hér fyrir neðan."
 
 msgid "On until Ashy Pass closes"
 msgstr "Kveikt þar til Ashy Pass er lokað"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"Þegar lykilorðin þín eru komin inn skaltu taka öryggisafrit í Öryggisafrit "
+"og geyma það utan þessarar tölvu, til dæmis á USB-lykli. Ef þessi tölva "
+"bilar eða týnist er það eina leiðin til að fá þau til baka."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Einn kóði notar teljara eða reiknirit sem Ashy Pass styður ekki og var "
+"sleppt."
+msgstr[1] ""
+"Sumir kóðar nota teljara eða reiknirit sem Ashy Pass styður ekki og var "
+"sleppt."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1771,8 +1992,14 @@ msgstr "Opna dulritaða vörpun"
 msgid "Open image…"
 msgstr "Opna mynd…"
 
+msgid "Open in the store"
+msgstr "Opna í versluninni"
+
 msgid "Open the encrypted volume"
 msgstr "Opna dulkóðaða gagnasvæðið"
+
+msgid "Open the website"
+msgstr "Opna vefsvæðið"
 
 msgid "Open website"
 msgstr "Opna vefsvæði"
@@ -1788,6 +2015,9 @@ msgstr "Opnar Dropbox í vafranum; afritaðu kóðann sem birtist"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Opnar vafra fyrir OAuth-samþykki"
+
+msgid "Optional, to organize the list"
+msgstr "Valfrjálst, til að skipuleggja listann"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1856,6 +2086,9 @@ msgstr "Lykilorð afritað"
 
 msgid "Password for this backup"
 msgstr "Lykilorð þessa öryggisafrits"
+
+msgid "Password generator"
+msgstr "Lykilorðasmiður"
 
 msgid "Password history"
 msgstr "Lykilorðasaga"
@@ -1946,11 +2179,17 @@ msgstr "Fyrri lykilorð sem Ashy Pass geymdi þegar þessu var breytt."
 msgid "Protected by a password you choose"
 msgstr "Varið með lykilorði sem þú velur"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr "Varið með lykilorði. Opnast í KeePass, KeePassXC og öðrum forritum"
+
 msgid "Protection"
 msgstr "Vörn"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR-kóði lesinn. Athugaðu upplýsingarnar og vistaðu."
+
+msgid "Quicker than the master password on this computer"
+msgstr "Fljótlegra en aðal lykilorðið á þessari tölvu"
 
 msgid "Quit"
 msgstr "Hætta"
@@ -1991,6 +2230,9 @@ msgstr "Skráning mistókst"
 msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr "Skráðu allt að 2 líkamlega FIDO2 auðkenna (YubiKey, SoloKey, o.s.frv.)"
 
+msgid "Remember the backup"
+msgstr "Mundu eftir öryggisafritinu"
+
 msgid "Remote generation:"
 msgstr "Fjartengd kynslóð:"
 
@@ -2011,6 +2253,9 @@ msgstr "Fjarlægja möppu"
 
 msgid "Remove from favorites"
 msgstr "Fjarlægja úr eftirlæti"
+
+msgid "Remove table"
+msgstr "Fjarlægja töflu"
 
 msgid "Remove the old copy?"
 msgstr "Fjarlægja gamla afritið?"
@@ -2081,6 +2326,9 @@ msgstr "Geymslutími"
 
 msgid "Rose"
 msgstr "Rós"
+
+msgid "Row"
+msgstr "Röð"
 
 msgid "Run"
 msgstr "Keyra"
@@ -2168,6 +2416,9 @@ msgstr "Leita eftir heiti, aðgangi eða vefsvæði"
 
 msgid "Search codes"
 msgstr "Leita í kóðum"
+
+msgid "Search folders"
+msgstr "Leita í möppum"
 
 msgid "Search for drives"
 msgstr "Leita að drifum"
@@ -2323,11 +2574,23 @@ msgstr "Stærð"
 msgid "Snapshot uploaded"
 msgstr "Skyndimynd hlaðið upp"
 
+msgid "Start using Ashy Pass"
+msgstr "Byrjaðu að nota Ashy Pass"
+
 msgid "Starting..."
 msgstr "Ræsi..."
 
 msgid "Status"
 msgstr "Staða"
+
+msgid "Step 1 of 3"
+msgstr "Skref 1 af 3"
+
+msgid "Step 2 of 3"
+msgstr "Skref 2 af 3"
+
+msgid "Step 3 of 3"
+msgstr "Skref 3 af 3"
 
 msgid "Strength"
 msgstr "Styrkur"
@@ -2344,6 +2607,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "Stíll"
+
+msgid "Suggest a passphrase"
+msgstr "Leggja til setningarlykilorð"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Tillaga: {}. Skrifaðu það niður áður en þú heldur áfram."
 
 msgid "Summary"
 msgstr "Samantekt"
@@ -2385,6 +2655,9 @@ msgstr "Samstilla núna"
 msgid "Sync when the vault is unlocked"
 msgstr "Samstilla þegar hvelfingin er aflæst"
 
+msgid "Sync with your phone or another computer"
+msgstr "Samstilltu við símann þinn eða aðra tölvu"
+
 msgid "Synchronization"
 msgstr "Samstilling"
 
@@ -2424,14 +2697,14 @@ msgstr "Merki"
 msgid "Tags (separated by commas)"
 msgstr "Merki (aðskilin með kommum)"
 
-msgid "Take my data to another app"
-msgstr "Taka gögnin mín í annað forrit"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "Tala við táknið þitt… athugaðu tækið fyrir snertingarbeiðni."
 
 msgid "Technical details"
 msgstr "Tæknilegar upplýsingar"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "Ashy Pass glugginn í vafranum með innskráningum fyrir vefsvæðið"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr ""
@@ -2528,6 +2801,13 @@ msgid "The new passwords do not match."
 msgstr "Nýju lykilorðin stemma ekki."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"Hin skrefin — vafrinn, síminn þinn, staðfestingarkóðar — bíða í Fyrstu "
+"skref, fyrir ofan lykilorðin þín."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2574,6 +2854,9 @@ msgstr "Leitin er takmörkuð við möppuna"
 msgid "The site's icon, when the code has a site saved"
 msgstr "Tákn vefsins þegar vefur er vistaður með kóðanum"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "Sex stafa kóðarnir sem vefsvæði biðja um eftir lykilorðið"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "Samstillingu lauk, en sum atriði greindu frá villu."
 
@@ -2585,6 +2868,19 @@ msgstr "Ekki tókst að opna hvelfinguna aftur"
 
 msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr "Hvelfingin er læst. Ekkert var vistað — aflæstu henni og reyndu aftur."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"Hvelfingin læstist áður en öryggisafritið var vistað. Opnaðu hana og búðu "
+"til öryggisafritið aftur."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"Hvelfingin læstist áður en útflutningurinn var vistaður. Opnaðu hana og "
+"fluttu út aftur."
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2639,6 +2935,10 @@ msgstr ""
 "Ef þú eyddir þeim þar fara þær í Eyddar færslur hér. Ef ekki gæti þjónninn "
 "hafa svarað aðeins að hluta: haltu þeim og næsta samstilling reynir aftur."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Í þessum útflutningi úr Google Authenticator eru engir kóðar sem nota má hér."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Þetta PIN-númer passar ekki lengur við hvelfinguna. Engu var breytt."
 
@@ -2654,6 +2954,12 @@ msgstr "Þessi færsla hefur ekkert vistað lykilorð"
 
 msgid "This access has no user"
 msgstr "Þessi færsla hefur engan notanda"
+
+msgid "This access has no verification code"
+msgstr "Þessi færsla hefur engan staðfestingarkóða"
+
+msgid "This access has no website"
+msgstr "Þessi færsla hefur ekkert vefsvæði"
 
 msgid "This access no longer exists"
 msgstr "Þessi færsla er ekki lengur til"
@@ -2708,11 +3014,11 @@ msgstr ""
 "hámarki 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Þetta er útflutningur úr Google Authenticator með mörgum reikningum. Sýndu "
-"frekar QR-kóða hvers reiknings á vef hans."
+"Þetta er útflutningur úr Google Authenticator með nokkrum reikningum. Lestu "
+"hann í Staðfestingarkóðar → Bæta við kóða til að koma með þá alla í einu."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2740,6 +3046,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "Þetta mun eyða öllu á drifinu"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "Í gegnum dulkóðaða möppu í skýinu þínu eða á drifi"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2772,6 +3081,13 @@ msgstr "Slökkva"
 msgid "Turn on"
 msgstr "Kveikja"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Kveikt þegar þú tengir. Þegar slökkt er getur viðbótin ekki séð neitt í "
+"hvelfingunni"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Tvíhliða sátt: draga fjartengt, ýta staðvært, leysa með því að nýjasta vinnur"
@@ -2780,11 +3096,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Tvíhliða samræmingu lauk með góðum árangri."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Tvíhliða samstilling við opinbera 'Passwords' forritið á Nextcloud-þjóninum "
-"þínum. Notaðu forritslykilorð frá Stillingar → Öryggi."
+"Tvíátta samstilling við opinbera „Passwords“ forritið á Nextcloud-þjóninum "
+"þínum. Þjónninn geymir þessar færslur á læsilegu formi: notaðu það aðeins "
+"með þjóni sem þú treystir. Skráðu þig inn með forritslykilorði úr Stillingar "
+"→ Öryggi."
 
 msgid "Type of password"
 msgstr "Tegund lykilorðs"
@@ -2828,6 +3147,9 @@ msgstr "Aflæstu hvelfingunni til að vista nýja lykilorðið. Það glatast ek
 msgid "Unlock with PIN"
 msgstr "Opna með PIN-númeri"
 
+msgid "Unlock with a PIN"
+msgstr "Opna með PIN-númeri"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2854,9 +3176,6 @@ msgstr "Aflæsing"
 
 msgid "Unlocking…"
 msgstr "Opnar…"
-
-msgid "Unprotected CSV…"
-msgstr "Óvarin CSV…"
 
 msgid "Updated locally"
 msgstr "Uppfært staðbundið"
@@ -2904,6 +3223,9 @@ msgid ""
 msgstr ""
 "Notaðu sama aðallykilorð á öllum tækjunum þínum: það opnar lykil möppunnar. "
 "Þú slærð það inn einu sinni hér til að taka þátt."
+
+msgid "Use them on your phone or another computer"
+msgstr "Notaðu þau í símanum þínum eða annarri tölvu"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Notaðu þessa kóða þegar vefsvæði biður um tveggja þrepa staðfestingu."
@@ -3041,6 +3363,9 @@ msgstr "Vefsvæði"
 msgid "Website (optional)"
 msgstr "Vefsvæði (valfrjálst)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Velkomin í Ashy Pass"
+
 msgid "What it contains"
 msgstr "Hvað það inniheldur"
 
@@ -3050,9 +3375,6 @@ msgid ""
 msgstr ""
 "Þegar vefsvæði býður upp á tveggja þrepa staðfestingu skaltu bæta "
 "uppsetningarlykli þess við hér til að fá kóðana."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Þegar slökkt er á þessu sér viðbótin ekkert í hvelfingunni"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Hvaðan viltu sækja lykilorðin þín?"
@@ -3141,6 +3463,13 @@ msgstr ""
 "Atriðin þín haldast á þessari tölvu og í möppunni. Ný tenging síðar sameinar "
 "þau í stað þess að afrita."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"Innskráningarnar þínar fyrir vefsvæðið sem þú ert á, fylltar út með einum "
+"smelli. Leitaðu í hvelfingunni og búðu líka til ný lykilorð."
+
 msgid "Your most used accesses can be here"
 msgstr "Mest notuðu færslurnar þínar geta verið hér"
 
@@ -3191,6 +3520,9 @@ msgstr "laust af"
 msgid "high"
 msgstr "mikill"
 
+msgid "incorrect master password"
+msgstr "rangt aðal lykilorð"
+
 msgid "low"
 msgstr "lítill"
 
@@ -3213,6 +3545,9 @@ msgstr[1] "nýr kóði eftir {} sekúndur"
 
 msgid "no 2FA"
 msgstr "engin 2FA"
+
+msgid "no permission to read or write there"
+msgstr "engin heimild til að lesa eða skrifa þar"
 
 msgid "none"
 msgstr "ekkert"
@@ -3257,6 +3592,21 @@ msgstr "sent:"
 msgid "solid-state"
 msgstr "solid-state"
 
+msgid "that place is read-only"
+msgstr "sá staður er skrifvarinn"
+
+msgid "the disk is full"
+msgstr "diskurinn er fullur"
+
+msgid "the file or folder does not exist"
+msgstr "skráin eða mappan er ekki til"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "hvelfingin er læst; opnaðu hana og reyndu aftur"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr "þessi opnun opnar hvelfinguna ekki lengur; sláðu inn aðal lykilorðið"
+
 msgid "very high"
 msgstr "mjög mikill"
 
@@ -3265,6 +3615,14 @@ msgstr "mjög lítill"
 
 msgid "weak"
 msgstr "veikt"
+
+#, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "{added} af {total} kóðum bætt við; hinir voru ekki vistaðir"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{done} af {total} lokið"
 
 #, rust-format
 msgid "{} cannot be imported."
@@ -3277,6 +3635,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} stafur"
 msgstr[1] "{} stafir"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} kóða bætt við"
+msgstr[1] "{} kóðum bætt við"
 
 #, rust-format
 msgid "{} day."

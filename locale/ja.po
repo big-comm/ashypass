@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:36\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgid "1. Install the extension"
+msgstr "1. 拡張機能をインストール"
+
 msgid "1PUX export file"
 msgstr "1PUX エクスポートファイル"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Ashy Passに接続"
+
+msgid "3. Allow it"
+msgstr "3. 許可する"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -27,6 +36,9 @@ msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "セキュリティキーなしでロック解除するための12語のBIP-39フレーズ。一度だけ表示"
 "されます。"
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "メール欄の下に Ashy Pass の候補が表示されたログインフォーム"
 
 msgid "A new access"
 msgstr "新しいエントリ"
@@ -68,6 +80,9 @@ msgstr "添付ファイルを追加"
 msgid "Add code"
 msgstr "コードを追加"
 
+msgid "Add codes"
+msgstr "コードを追加"
+
 msgid "Add file"
 msgstr "ファイルを追加"
 
@@ -80,11 +95,22 @@ msgstr "コピーのエントリを現在のボールトに追加"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr ".ashy バックアップのエントリをこのボールトに追加"
 
+msgid "Add to Firefox"
+msgstr "Firefox に追加"
+
 msgid "Add to favorites"
 msgstr "お気に入りに追加"
 
+msgid "Add to the browser"
+msgstr "ブラウザに追加"
+
 msgid "Add verification code"
 msgstr "確認コードを追加"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Google Authenticator から {} 個のコードを追加しますか?"
 
 msgid "Added to favorites"
 msgstr "お気に入りに追加しました"
@@ -109,6 +135,9 @@ msgstr "桁数を調整"
 
 msgid "Adjust words and separator"
 msgstr "単語と区切り文字を調整"
+
+msgid "Advanced"
+msgstr "詳細設定"
 
 msgid "Algorithm"
 msgstr "アルゴリズム"
@@ -163,6 +192,9 @@ msgstr ""
 msgid "Another example"
 msgstr "別の例"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "このファイルを入手した人は、中のすべてのパスワードを読めます"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -210,6 +242,12 @@ msgstr ""
 "Ashy PassがNextcloudと通信できませんでした。接続、サーバーアドレス、アプリ"
 "ケーションパスワードを確認してください。"
 
+msgid "Ashy Pass for Chrome"
+msgstr "Chrome 用 Ashy Pass"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Firefox 用 Ashy Pass"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -227,6 +265,14 @@ msgid ""
 "strong default."
 msgstr ""
 "最低8文字。EFFワードリストからの4単語のパスフレーズが強力なデフォルトです。"
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"{} 文字以上。ランダムな単語をいくつか組み合わせると、覚えやすく推測されにくく"
+"なります。"
 
 msgid "Attachment added"
 msgstr "添付ファイルを追加しました"
@@ -291,11 +337,28 @@ msgstr "バックアップ"
 msgid "Before importing"
 msgstr "インポートの前に"
 
+msgid "Bold (Ctrl+B)"
+msgstr "太字 (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "パスワードを持ち込むか追加しましょう"
+
 msgid "Bring passwords from another app or browser"
 msgstr "別のアプリやブラウザーからパスワードを取り込む"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"ブラウザー(Chrome、Edge、Brave、Firefox)や他のパスワードマネージャー"
+"(Bitwarden、1Password、KeePass)から取り込めます。"
+
 msgid "Bring your passwords"
 msgstr "パスワードを取り込む"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"サーバーの変更を取り込み、こちらの変更を送信します。新しいほうが優先されます"
 
 msgid "Browser"
 msgstr "ブラウザー"
@@ -370,6 +433,9 @@ msgstr ""
 "マスターパスワードを決めてください。このコンピューターの Ashy Pass に保存する"
 "すべてを保護します。"
 
+msgid "Choose an access in the list first"
+msgstr "先にリストからエントリを選んでください"
+
 msgid "Choose an image with the QR code"
 msgstr "QR コードを含む画像を選択"
 
@@ -403,6 +469,9 @@ msgstr "パスワードを追加・編集するときにこのフォルダを選
 msgid "Choose…"
 msgstr "選択…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge 、 Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Chrome、Edge、Brave、Firefox からエクスポートしたパスワード (CSV)"
 
@@ -417,6 +486,13 @@ msgstr "履歴を消去"
 
 msgid "Clear the password history?"
 msgstr "パスワード履歴を消去しますか？"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"ログイン欄をクリックしてアクセスを選ぶと、そのアクセスが属するサイトでのみ入"
+"力されます。"
 
 msgid "Client ID"
 msgstr "クライアントID"
@@ -442,6 +518,9 @@ msgstr "マッピングを閉じる"
 msgid "Closing mapping"
 msgstr "マッピングを閉じています"
 
+msgid "Code"
+msgstr "コード"
+
 msgid "Code copied"
 msgstr "コードをコピーしました"
 
@@ -454,8 +533,26 @@ msgstr "コードの設定"
 msgid "Coffee"
 msgstr "コーヒー"
 
+msgid "Column"
+msgstr "列"
+
+msgid "Column 1"
+msgstr "列 1"
+
+msgid "Column 2"
+msgstr "列 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "name、url、username、password などの列"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Google Authenticator からお引っ越しですか? あちらでメニューを開き、「アカウン"
+"トを転送」→「アカウントをエクスポート」を選んで、表示される QR コードをここで"
+"読み取ってください。すべてのコードを一度に取り込めます。"
 
 msgid "Compact vault list"
 msgstr "コンパクトなボールトリスト"
@@ -529,9 +626,6 @@ msgstr "接続に失敗しました"
 msgid "Connect the sync folder"
 msgstr "同期フォルダに接続"
 
-msgid "Connect your browsers"
-msgstr "ブラウザーを接続する"
-
 msgid "Connected"
 msgstr "接続済み"
 
@@ -540,6 +634,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] ""
 "{} 個のブラウザーに接続しました。開いている場合は再起動してください。"
+
+msgid "Connected, but blocked (step 3)"
+msgstr "接続済みですが、ブロックされています(ステップ3)"
 
 msgid "Connected. Received:"
 msgstr "接続しました。受信:"
@@ -576,6 +673,15 @@ msgstr "Ashy Pass 2 のボールトのコピー"
 
 msgid "Copy password"
 msgstr "パスワードをコピー"
+
+msgid "Copy the password"
+msgstr "パスワードをコピー"
+
+msgid "Copy the user"
+msgstr "ユーザーをコピー"
+
+msgid "Copy the verification code"
+msgstr "確認コードをコピー"
 
 msgid "Copy this old password"
 msgstr "この古いパスワードをコピー"
@@ -694,9 +800,6 @@ msgstr "フォルダを作成…"
 msgid "Create my vault"
 msgstr "ボールトを作成"
 
-msgid "Create password"
-msgstr "パスワードを作成"
-
 msgid "Create your vault"
 msgstr "ボールトを作成しましょう"
 
@@ -799,6 +902,9 @@ msgstr "切断に失敗しました"
 msgid "Disconnect the sync folder?"
 msgstr "同期フォルダを切断しますか？"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "ほかの場所にパスワードを保管していますか?"
+
 msgid "Done"
 msgstr "完了"
 
@@ -816,6 +922,13 @@ msgstr "ドライブをロックしました"
 
 msgid "Duplicate items"
 msgstr "重複アイテム"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"各アイコンはサイト自体からダウンロードされ、サイトにはあなたのインターネット"
+"アドレスが見えます。ローカルネットワーク上のサイトには一切接続しません。"
 
 msgid "Easier to type and remember."
 msgstr "入力しやすく覚えやすい。"
@@ -859,9 +972,6 @@ msgstr "暗号化形式"
 msgid "Encrypted device"
 msgstr "暗号化されたデバイス"
 
-msgid "Encrypted folder sync"
-msgstr "暗号化フォルダ同期"
-
 msgid "Encrypted folder sync failed"
 msgstr "暗号化フォルダ同期に失敗しました"
 
@@ -893,6 +1003,9 @@ msgstr "保管庫を再暗号化しています…"
 
 msgid "Encrypting…"
 msgstr "暗号化中…"
+
+msgid "Encryption"
+msgstr "暗号化"
 
 msgid "Encrypt…"
 msgstr "暗号化…"
@@ -937,6 +1050,16 @@ msgstr "エラーの詳細"
 msgid "Estimated strength"
 msgstr "推定強度"
 
+msgid "Every code in this export is already in the vault."
+msgstr "このエクスポートのコードはすべてすでにボールトにあります。"
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"すべてのエントリは、マスターパスワードから導出した鍵でAES-256-GCMにより暗号化"
+"されます"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -975,6 +1098,18 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "すべて既に同期済みでした"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Ashy Passに保管した内容はすべて、このコンピューター上の暗号化されたボールトに"
+"保存されます。開けるのはマスターパスワードだけで、紛失してもAshy Passでは復元"
+"できません。"
+
+msgid "Export an unprotected file (CSV)"
+msgstr "保護されていないファイルをエクスポート(CSV)"
+
 msgid "Export complete"
 msgstr "エクスポートが完了しました"
 
@@ -984,8 +1119,8 @@ msgstr "エクスポート失敗"
 msgid "Export to KeePass"
 msgstr "KeePass にエクスポート"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "KeePass、または誰でも読めるファイルにエクスポート"
+msgid "Export to KeePass (.kdbx)"
+msgstr "KeePassにエクスポート(.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "保護されていないファイルをエクスポート"
@@ -1017,9 +1152,6 @@ msgstr "お気に入り"
 msgid "Favorites"
 msgstr "お気に入り"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "サイトアイコンを取得し、保管庫エントリの横に表示します"
-
 msgid "Fetching remote passwords"
 msgstr "リモートパスワードを取得中"
 
@@ -1041,6 +1173,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "3 つの欄すべてに入力してください。"
 
+msgid "Fill passwords in the browser"
+msgstr "ブラウザーでパスワードを入力"
+
 msgid "Find duplicate items"
 msgstr "重複アイテムを探す"
 
@@ -1049,6 +1184,9 @@ msgstr "検出結果"
 
 msgid "Finishing synchronization"
 msgstr "同期を完了中"
+
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox アドオン · Firefox 、 LibreWolf"
 
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
@@ -1059,8 +1197,17 @@ msgstr ""
 "インポートの前に、認識された内容を確認できます。保護されていないエクスポート"
 "ファイルは後で削除してください。"
 
+msgid "First steps"
+msgstr "はじめの一歩"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "「はじめの一歩」を非表示にしました。メインメニューから再表示できます。"
+
 msgid "Folder"
 msgstr "フォルダ"
+
+msgid "Folder and tags"
+msgstr "フォルダとタグ"
 
 msgid "Folder created"
 msgstr "フォルダを作成しました"
@@ -1093,6 +1240,9 @@ msgid ""
 msgstr ""
 "Nextcloudの場合、ベースURLは https://cloud.example.com/remote.php/dav/files/"
 "USERNAME のようになります"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "NextcloudサーバーでPasswordsアプリを使っている方向け"
 
 msgid "For the browsers installed for this user"
 msgstr "このユーザーにインストールされたブラウザー"
@@ -1189,6 +1339,9 @@ msgstr ""
 msgid "Hide copied passwords from clipboard history"
 msgstr "コピーしたパスワードをクリップボード履歴に残さない"
 
+msgid "Hide first steps"
+msgstr "「はじめの一歩」を非表示"
+
 msgid "Hide password"
 msgstr "パスワードを隠す"
 
@@ -1217,6 +1370,9 @@ msgstr "すでに別の場所にパスワードを保存している"
 msgid "I understand — Continue"
 msgstr "理解しました — 続行"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "マスターパスワードを安全な場所に書き留めました"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1233,6 +1389,9 @@ msgstr "インポート"
 msgid "Import complete"
 msgstr "インポート完了"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "ブラウザーや他のアプリからインポートするか、1件ずつ追加します"
+
 msgid "Import partly complete"
 msgstr "インポートは一部のみ完了"
 
@@ -1243,6 +1402,13 @@ msgid "Import passwords…"
 msgstr "パスワードをインポート…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"重要:このコンピューターが故障した場合、すべてを取り戻せる方法はバックアップだ"
+"けです"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1250,6 +1416,15 @@ msgstr ""
 "Android 版 Ashy Pass で 設定 → 暗号化フォルダ同期 を開き、「パソコンの QR "
 "コードを読み取る」をタップします。次に下のコードとマスターパスワードを入力し"
 "ます。"
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"Chromeの場合:設定 → 自動入力とパスワード → Googleパスワードマネージャー → 設"
+"定 → パスワードをエクスポート。インポート後は、エクスポートしたファイルを削除"
+"してください。保護されていません。"
 
 msgid "Incorrect PIN"
 msgstr "PINが正しくありません"
@@ -1271,6 +1446,9 @@ msgstr "マスターパスワードが違います。何も変更されていま
 msgid "Incorrect master password. Nothing was exported."
 msgstr "マスターパスワードが正しくありません。何もエクスポートされていません。"
 
+msgid "Insert a table"
+msgstr "表を挿入"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1278,6 +1456,13 @@ msgid ""
 msgstr ""
 "FIDO2トークン（Yubikey、Nitrokeyなど）を挿入し、デバイスで認証を行ってくださ"
 "い。新しいキースロットを認証するには、現在のパスフレーズが必要です。"
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Ashy Passの拡張機能をインストールして接続"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "インストール済み: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "内部エラー：パスフレーズが設定されていません"
@@ -1295,24 +1480,17 @@ msgstr ""
 "このコンピューターでボールトを開くためのパスワードです。誰もあなたの代わりに"
 "復旧できません — Ashy Pass でさえも。"
 
+msgid "Italic (Ctrl+I)"
+msgstr "斜体 (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "アイテムはこことフォルダに残ります。再接続すると統合されます"
 
 msgid "Its user, password and other details appear here."
 msgstr "ユーザー、パスワード、その他の詳細がここに表示されます。"
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePassエクスポートが完了しました"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass はファイルをパスワードで保護します。CSV ファイルは入手した人なら誰で"
-"も読めます。"
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1329,6 +1507,9 @@ msgstr "残す"
 
 msgid "Keep using"
 msgstr "使い続ける"
+
+msgid "Keep verification codes (2FA)"
+msgstr "確認コード(2FA)を保管"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1430,14 +1611,17 @@ msgstr ""
 "歴に入ります）をそこに取り込み、他のアイテムは削除済みアイテムに移動します。"
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"ログイン、カード、ID、メモ、パスキーは、このコンピューターで暗号化されてか"
-"ら、Nextcloud、pCloud、WebDAV、Dropbox、Google ドライブ、またはこのコンピュー"
-"ター上のフォルダーを通じて同期されます。Android 版 Ashy Pass も同じフォルダー"
-"を使用します。"
+"ログイン情報、カード、ID、メモ、パスキー、確認コードは、このコンピューターか"
+"ら出る前に暗号化され、Nextcloud、pCloud、WebDAV、Dropbox、Google Drive、また"
+"はこのコンピューター上のフォルダー経由で保存されます。サービス側には暗号化さ"
+"れたファイルしか見えず、中身は見えません。Android版Ashy Passも同じフォルダー"
+"を使います。"
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1451,6 +1635,9 @@ msgstr "小文字 (a–z)"
 
 msgid "Main menu"
 msgstr "メインメニュー"
+
+msgid "Make a backup"
+msgstr "バックアップを作成"
 
 msgid "Master Password"
 msgstr "マスターパスワード"
@@ -1480,9 +1667,6 @@ msgstr "統合しました"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "統合しました。他のアイテムは削除済みアイテムにあります"
-
-msgid "Minimum length:"
-msgstr "最小の長さ:"
 
 msgid "Mint"
 msgstr "ミント"
@@ -1562,6 +1746,9 @@ msgstr ""
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwordsアプリ"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords に接続しました"
@@ -1651,6 +1838,15 @@ msgstr "未設定"
 msgid "Not connected"
 msgstr "未接続"
 
+msgid "Not done yet"
+msgstr "まだ完了していません"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "まだストアにありません: 手動でインストールする方法を見る"
+
+msgid "Not now"
+msgstr "今はしない"
+
 msgid "Not run yet"
 msgstr "未実行"
 
@@ -1732,14 +1928,35 @@ msgstr "オン"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"保護したいサイトで 2 段階認証の設定を開き、認証アプリを選択します。表示され"
-"た QR コードを読み取るか、セットアップキーをコピーして下に貼り付けてくださ"
+"保護したいサイトで 2 段階認証の設定を開き、認証アプリを選びます。表示される "
+"QR コードを読み取るか、セットアップキー(QR コードの下に表示される英数字。多く"
+"は「スキャンできませんか?」の先にあります)をコピーして、下に貼り付けてくださ"
 "い。"
 
 msgid "On until Ashy Pass closes"
 msgstr "Ashy Pass を閉じるまでオン"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"パスワードを取り込んだら、「バックアップ」でバックアップを作成し、このコン"
+"ピューターの外(たとえばUSBドライブ)に保管してください。このコンピューターが故"
+"障したり紛失したりした場合、取り戻せる唯一の方法です。"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Ashy Pass が対応していないカウンターまたはアルゴリズムを使うコードがあるた"
+"め、そのコードは除外されました。"
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1778,8 +1995,14 @@ msgstr "暗号化マッピングを開く"
 msgid "Open image…"
 msgstr "画像を開く…"
 
+msgid "Open in the store"
+msgstr "ストアで開く"
+
 msgid "Open the encrypted volume"
 msgstr "暗号化ボリュームを開く"
+
+msgid "Open the website"
+msgstr "Web サイトを開く"
 
 msgid "Open website"
 msgstr "Web サイトを開く"
@@ -1795,6 +2018,9 @@ msgstr "ブラウザーで Dropbox を開きます。表示されたコードを
 
 msgid "Opens the browser for OAuth consent"
 msgstr "OAuth同意のためにブラウザを開きます"
+
+msgid "Optional, to organize the list"
+msgstr "任意。リストを整理するためのものです"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1862,6 +2088,9 @@ msgstr "パスワードをコピーしました"
 
 msgid "Password for this backup"
 msgstr "このバックアップのパスワード"
+
+msgid "Password generator"
+msgstr "パスワードジェネレーター"
 
 msgid "Password history"
 msgstr "パスワード履歴"
@@ -1953,11 +2182,17 @@ msgstr "このパスワードを変更したときに Ashy Pass が保存した�
 msgid "Protected by a password you choose"
 msgstr "自分で選んだパスワードで保護"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr "パスワードで保護されています。KeePass、KeePassXCなどのアプリで開けます"
+
 msgid "Protection"
 msgstr "保護"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR コードを読み取りました。内容を確認して保存してください。"
+
+msgid "Quicker than the master password on this computer"
+msgstr "このコンピューターでマスターパスワードを使うより手早く開けます"
 
 msgid "Quit"
 msgstr "終了"
@@ -1998,6 +2233,9 @@ msgstr "登録に失敗しました"
 msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr "最大2つの物理FIDO2認証器（YubiKey、SoloKeyなど）を登録する"
 
+msgid "Remember the backup"
+msgstr "バックアップを忘れずに"
+
 msgid "Remote generation:"
 msgstr "リモートの世代:"
 
@@ -2018,6 +2256,9 @@ msgstr "フォルダを削除"
 
 msgid "Remove from favorites"
 msgstr "お気に入りから削除"
+
+msgid "Remove table"
+msgstr "表を削除"
 
 msgid "Remove the old copy?"
 msgstr "古いコピーを削除しますか？"
@@ -2088,6 +2329,9 @@ msgstr "保持期間"
 
 msgid "Rose"
 msgstr "ローズ"
+
+msgid "Row"
+msgstr "行"
 
 msgid "Run"
 msgstr "実行"
@@ -2174,6 +2418,9 @@ msgstr "名前、アカウント、サイトで検索"
 
 msgid "Search codes"
 msgstr "コードを検索"
+
+msgid "Search folders"
+msgstr "フォルダーを検索"
 
 msgid "Search for drives"
 msgstr "ドライブを検索"
@@ -2329,11 +2576,23 @@ msgstr "サイズ"
 msgid "Snapshot uploaded"
 msgstr "スナップショットがアップロードされました"
 
+msgid "Start using Ashy Pass"
+msgstr "Ashy Passを使い始める"
+
 msgid "Starting..."
 msgstr "起動中..."
 
 msgid "Status"
 msgstr "ステータス"
+
+msgid "Step 1 of 3"
+msgstr "ステップ 1/3"
+
+msgid "Step 2 of 3"
+msgstr "ステップ 2/3"
+
+msgid "Step 3 of 3"
+msgstr "ステップ 3/3"
 
 msgid "Strength"
 msgstr "強度"
@@ -2350,6 +2609,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "スタイル"
+
+msgid "Suggest a passphrase"
+msgstr "パスフレーズを提案"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "提案: {}。続ける前に書き留めてください。"
 
 msgid "Summary"
 msgstr "概要"
@@ -2391,6 +2657,9 @@ msgstr "今すぐ同期"
 msgid "Sync when the vault is unlocked"
 msgstr "保管庫のロック解除時に同期"
 
+msgid "Sync with your phone or another computer"
+msgstr "スマートフォンや別のコンピューターと同期"
+
 msgid "Synchronization"
 msgstr "同期"
 
@@ -2430,9 +2699,6 @@ msgstr "タグ"
 msgid "Tags (separated by commas)"
 msgstr "タグ (カンマ区切り)"
 
-msgid "Take my data to another app"
-msgstr "データを別のアプリに移す"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "トークンと通信中…タッチを促すプロンプトがデバイスに表示されていないか確認して"
@@ -2440,6 +2706,10 @@ msgstr ""
 
 msgid "Technical details"
 msgstr "技術的な詳細"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr ""
+"ブラウザ内の Ashy Pass ウィンドウ。サイトのログイン情報が表示されている"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr ""
@@ -2534,6 +2804,13 @@ msgid "The new passwords do not match."
 msgstr "新しいパスワードが一致しません。"
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"ほかのステップ(ブラウザー、スマートフォン、確認コード)は、パスワード一覧の上"
+"の「はじめの一歩」で待っています。"
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2580,6 +2857,9 @@ msgstr "検索は次のフォルダに限定されています:"
 msgid "The site's icon, when the code has a site saved"
 msgstr "コードにサイトが保存されているときは、そのサイトのアイコン"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "パスワードの次にサイトから求められる6桁のコード"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "同期は終了しましたが、一部の項目でエラーが報告されました。"
 
@@ -2593,6 +2873,19 @@ msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr ""
 "ボールトはロックされています。何も保存されていません — ロックを解除してもう一"
 "度お試しください。"
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"バックアップが保存される前にボールトがロックされました。ロックを解除して、も"
+"う一度バックアップを作成してください。"
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"エクスポートが保存される前にボールトがロックされました。ロックを解除して、も"
+"う一度エクスポートしてください。"
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2643,6 +2936,11 @@ msgstr ""
 "い場合はサーバーの応答が一部だけだった可能性があります。残しておけば次回の同"
 "期で再試行します。"
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"この Google Authenticator のエクスポートには、ここで使えるコードがありませ"
+"ん。"
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "この PIN はもうボールトと一致しません。何も変更されていません。"
 
@@ -2658,6 +2956,12 @@ msgstr "このエントリにはパスワードが保存されていません"
 
 msgid "This access has no user"
 msgstr "このエントリにはユーザーがありません"
+
+msgid "This access has no verification code"
+msgstr "このエントリには確認コードがありません"
+
+msgid "This access has no website"
+msgstr "このエントリには Web サイトがありません"
 
 msgid "This access no longer exists"
 msgstr "このエントリはもう存在しません"
@@ -2710,11 +3014,11 @@ msgstr ""
 "い。"
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"これは複数のアカウントを含む Google Authenticator のエクスポートです。代わり"
-"に各アカウントの QR コードをそれぞれのサイトで表示してください。"
+"これは複数のアカウントを含む Google Authenticator のエクスポートです。確認"
+"コード → コードを追加 で読み取ると、すべて一度に取り込めます。"
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2742,6 +3046,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "これによりドライブ上のすべてのデータが消去されます"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "クラウドやドライブ上の暗号化フォルダー経由"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2775,6 +3082,13 @@ msgstr "オフにする"
 msgid "Turn on"
 msgstr "オンにする"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"接続すると有効になります。オフにすると、拡張機能はボールト内の何も見られませ"
+"ん"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "双方向調整: リモートをプル、ローカルをプッシュ、最新の更新で解決"
 
@@ -2782,11 +3096,13 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "双方向の調整が正常に完了しました。"
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Nextcloudサーバー上の公式「Passwords」アプリとの双方向同期。設定→セキュリティ"
-"からアプリパスワードを使用してください。"
+"Nextcloudサーバーの公式「Passwords」アプリと双方向で同期します。サーバーはこ"
+"れらの項目を読み取れる形で保持します。信頼できるサーバーでのみ使ってくださ"
+"い。設定 → セキュリティ のアプリパスワードでサインインします。"
 
 msgid "Type of password"
 msgstr "パスワードの種類"
@@ -2832,6 +3148,9 @@ msgstr ""
 msgid "Unlock with PIN"
 msgstr "PINでロック解除"
 
+msgid "Unlock with a PIN"
+msgstr "PINでロック解除"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2859,9 +3178,6 @@ msgstr "ロック解除"
 
 msgid "Unlocking…"
 msgstr "ロック解除中…"
-
-msgid "Unprotected CSV…"
-msgstr "保護されていない CSV…"
 
 msgid "Updated locally"
 msgstr "ローカルで更新されました"
@@ -2909,6 +3225,9 @@ msgid ""
 msgstr ""
 "すべてのデバイスで同じマスターパスワードを使用してください。フォルダの鍵を開"
 "くために使われます。参加するために、ここで一度だけ入力します。"
+
+msgid "Use them on your phone or another computer"
+msgstr "スマートフォンや別のコンピューターで使う"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "サイトで 2 段階認証を求められたら、これらのコードを使ってください。"
@@ -3046,6 +3365,9 @@ msgstr "Web サイト"
 msgid "Website (optional)"
 msgstr "Web サイト (任意)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Ashy Passへようこそ"
+
 msgid "What it contains"
 msgstr "含まれるもの"
 
@@ -3055,9 +3377,6 @@ msgid ""
 msgstr ""
 "サイトが 2 段階認証に対応している場合は、ここにセットアップキーを追加すると"
 "コードを取得できます。"
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "オフのとき、拡張機能は保管庫の内容を一切参照できません"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "どこからパスワードを取り込みますか？"
@@ -3148,6 +3467,13 @@ msgstr ""
 "アイテムはこのコンピューターとフォルダに残ります。後で再接続すると、重複せず"
 "に統合されます。"
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"現在のサイトのログイン情報を、ワンクリックで入力できます。ボールトの検索や新"
+"しいパスワードの作成も可能です。"
+
 msgid "Your most used accesses can be here"
 msgstr "よく使うエントリをここに置けます"
 
@@ -3197,6 +3523,9 @@ msgstr "空き容量"
 msgid "high"
 msgstr "高"
 
+msgid "incorrect master password"
+msgstr "マスターパスワードが違います"
+
 msgid "low"
 msgstr "低"
 
@@ -3217,6 +3546,9 @@ msgstr[0] "{} 秒後に新しいコード"
 
 msgid "no 2FA"
 msgstr "2FA未設定"
+
+msgid "no permission to read or write there"
+msgstr "そこへの読み取りまたは書き込みの権限がありません"
 
 msgid "none"
 msgstr "なし"
@@ -3259,6 +3591,23 @@ msgstr "送信:"
 msgid "solid-state"
 msgstr "ソリッドステート"
 
+msgid "that place is read-only"
+msgstr "その場所は読み取り専用です"
+
+msgid "the disk is full"
+msgstr "ディスクがいっぱいです"
+
+msgid "the file or folder does not exist"
+msgstr "ファイルまたはフォルダーが存在しません"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "ボールトがロックされています。ロックを解除してもう一度お試しください"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr ""
+"このロック解除方法ではボールトを開けなくなりました。マスターパスワードを入力"
+"してください"
+
 msgid "very high"
 msgstr "非常に高い"
 
@@ -3269,6 +3618,15 @@ msgid "weak"
 msgstr "脆弱"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr ""
+"{total} 個中 {added} 個のコードを追加しました。残りは保存できませんでした"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{total}件中{done}件完了"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} 件はインポートできません。"
@@ -3277,6 +3635,11 @@ msgstr[0] "{} 件はインポートできません。"
 msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} 文字"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} 個のコードを追加しました"
 
 #, rust-format
 msgid "{} day."

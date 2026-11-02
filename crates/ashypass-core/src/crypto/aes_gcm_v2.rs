@@ -22,6 +22,10 @@ use super::key::DerivedKey;
 
 pub const VERSION_BYTE: u8 = 0x02;
 const NONCE_LEN: usize = 12;
+/// Length of the blob for an empty plaintext: version, nonce and tag. Every
+/// non-empty plaintext is longer, so a stored field can be known empty
+/// without decrypting it.
+pub const EMPTY_BLOB_LEN: usize = 1 + NONCE_LEN + 16;
 
 pub fn encrypt(key: &DerivedKey, plaintext: &[u8]) -> Result<Vec<u8>> {
     let cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(key.as_bytes()));

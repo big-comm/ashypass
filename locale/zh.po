@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:49\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgid "1. Install the extension"
+msgstr "1. 安装扩展程序"
+
 msgid "1PUX export file"
 msgstr "1PUX 导出文件"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. 将其连接到 Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. 允许它"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -24,6 +33,9 @@ msgstr ""
 
 msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr "一组12个词的BIP-39短语，用于无需安全密钥即可解锁。仅显示一次。"
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "电子邮件栏下方显示 Ashy Pass 建议的登录表单"
 
 msgid "A new access"
 msgstr "新条目"
@@ -63,6 +75,9 @@ msgstr "添加附件"
 msgid "Add code"
 msgstr "添加验证码"
 
+msgid "Add codes"
+msgstr "添加验证码"
+
 msgid "Add file"
 msgstr "添加文件"
 
@@ -75,11 +90,22 @@ msgstr "将副本中的条目添加到当前保险库"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "将 .ashy 备份中的条目添加到此保险库"
 
+msgid "Add to Firefox"
+msgstr "添加到 Firefox"
+
 msgid "Add to favorites"
 msgstr "添加到收藏"
 
+msgid "Add to the browser"
+msgstr "添加到浏览器"
+
 msgid "Add verification code"
 msgstr "添加验证码"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "要从 Google Authenticator 添加 {} 个验证码吗?"
 
 msgid "Added to favorites"
 msgstr "已添加到收藏"
@@ -102,6 +128,9 @@ msgstr "调整位数"
 
 msgid "Adjust words and separator"
 msgstr "调整单词和分隔符"
+
+msgid "Advanced"
+msgstr "高级"
 
 msgid "Algorithm"
 msgstr "算法"
@@ -153,6 +182,9 @@ msgstr ""
 msgid "Another example"
 msgstr "换一个示例"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "任何拿到该文件的人都可以读取其中的每个密码"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -197,6 +229,12 @@ msgid ""
 msgstr ""
 "Ashy Pass 无法与 Nextcloud 通信。请检查您的网络连接、服务器地址以及应用密码。"
 
+msgid "Ashy Pass for Chrome"
+msgstr "适用于 Chrome 的 Ashy Pass"
+
+msgid "Ashy Pass for Firefox"
+msgstr "适用于 Firefox 的 Ashy Pass"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -211,6 +249,12 @@ msgid ""
 "strong default."
 msgstr ""
 "至少8个字符。使用EFF词表中的四个单词组成的密码短语是一个强密码默认选项。"
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr "至少 {} 个字符。几个随机单词既容易记住,又难以猜到。"
 
 msgid "Attachment added"
 msgstr "附件已添加"
@@ -275,11 +319,27 @@ msgstr "备份"
 msgid "Before importing"
 msgstr "导入之前"
 
+msgid "Bold (Ctrl+B)"
+msgstr "粗体 (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "导入或添加您的密码"
+
 msgid "Bring passwords from another app or browser"
 msgstr "从其他应用或浏览器导入密码"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"从浏览器(Chrome、Edge、Brave、Firefox)或其他密码管理器(Bitwarden、1Password、"
+"KeePass)导入。"
+
 msgid "Bring your passwords"
 msgstr "导入你的密码"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr "获取服务器的更改并发送您的更改;以最新版本为准"
 
 msgid "Browser"
 msgstr "浏览器"
@@ -352,6 +412,9 @@ msgid ""
 "this computer."
 msgstr "设置一个主密码。它保护你在此电脑上保存在 Ashy Pass 中的所有内容。"
 
+msgid "Choose an access in the list first"
+msgstr "请先在列表中选择一个条目"
+
 msgid "Choose an image with the QR code"
 msgstr "选择包含二维码的图片"
 
@@ -385,6 +448,9 @@ msgstr "添加或编辑密码时可选择此文件夹。"
 msgid "Choose…"
 msgstr "选择…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge 和 Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Chrome、Edge、Brave 或 Firefox 导出的密码（CSV）"
 
@@ -399,6 +465,11 @@ msgstr "清除历史记录"
 
 msgid "Clear the password history?"
 msgstr "要清除密码历史记录吗？"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr "点击登录栏并选择您的登录信息:它只会在所属网站上自动填写。"
 
 msgid "Client ID"
 msgstr "客户端 ID"
@@ -424,6 +495,9 @@ msgstr "关闭映射"
 msgid "Closing mapping"
 msgstr "正在关闭映射"
 
+msgid "Code"
+msgstr "代码"
+
 msgid "Code copied"
 msgstr "验证码已复制"
 
@@ -436,8 +510,25 @@ msgstr "验证码设置"
 msgid "Coffee"
 msgstr "咖啡"
 
+msgid "Column"
+msgstr "列"
+
+msgid "Column 1"
+msgstr "列 1"
+
+msgid "Column 2"
+msgstr "列 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "包含 name、url、username、password 等列"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"从 Google Authenticator 迁移?请在那里打开菜单,选择“转移帐号”→“导出帐号”,然后"
+"在此处扫描显示的二维码:其中所有验证码会一次性导入。"
 
 msgid "Compact vault list"
 msgstr "紧凑型保险库列表"
@@ -510,9 +601,6 @@ msgstr "连接失败"
 msgid "Connect the sync folder"
 msgstr "连接同步文件夹"
 
-msgid "Connect your browsers"
-msgstr "连接您的浏览器"
-
 msgid "Connected"
 msgstr "已连接"
 
@@ -520,6 +608,9 @@ msgstr "已连接"
 msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "已连接 {} 个浏览器。如果它们已打开，请重新启动。"
+
+msgid "Connected, but blocked (step 3)"
+msgstr "已连接,但被阻止(第 3 步)"
 
 msgid "Connected. Received:"
 msgstr "已连接。已接收："
@@ -556,6 +647,15 @@ msgstr "来自 Ashy Pass 2 的保险库副本"
 
 msgid "Copy password"
 msgstr "复制密码"
+
+msgid "Copy the password"
+msgstr "复制密码"
+
+msgid "Copy the user"
+msgstr "复制用户"
+
+msgid "Copy the verification code"
+msgstr "复制验证码"
 
 msgid "Copy this old password"
 msgstr "复制此旧密码"
@@ -674,9 +774,6 @@ msgstr "创建文件夹…"
 msgid "Create my vault"
 msgstr "创建我的保险库"
 
-msgid "Create password"
-msgstr "创建密码"
-
 msgid "Create your vault"
 msgstr "创建你的保险库"
 
@@ -776,6 +873,9 @@ msgstr "断开连接失败"
 msgid "Disconnect the sync folder?"
 msgstr "断开同步文件夹？"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "您的密码保存在别的地方吗?"
+
 msgid "Done"
 msgstr "完成"
 
@@ -793,6 +893,13 @@ msgstr "驱动器已锁定"
 
 msgid "Duplicate items"
 msgstr "重复项目"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"每个图标都从网站本身下载,网站会看到您的互联网地址。绝不会联系本地网络中的网"
+"站。"
 
 msgid "Easier to type and remember."
 msgstr "更易于输入和记忆。"
@@ -836,9 +943,6 @@ msgstr "加密方式"
 msgid "Encrypted device"
 msgstr "已加密设备"
 
-msgid "Encrypted folder sync"
-msgstr "加密文件夹同步"
-
 msgid "Encrypted folder sync failed"
 msgstr "加密文件夹同步失败"
 
@@ -864,6 +968,9 @@ msgstr "正在重新加密密码库…"
 
 msgid "Encrypting…"
 msgstr "正在加密…"
+
+msgid "Encryption"
+msgstr "加密"
 
 msgid "Encrypt…"
 msgstr "加密…"
@@ -907,6 +1014,14 @@ msgstr "错误详情"
 msgid "Estimated strength"
 msgstr "预估强度"
 
+msgid "Every code in this export is already in the vault."
+msgstr "此导出中的所有验证码都已在保险库中。"
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr "每个条目都使用 AES-256-GCM 加密,密钥由主密码派生"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -943,6 +1058,17 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "所有内容均已同步"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"您保存在 Ashy Pass 中的所有内容都存放在这台电脑上的加密保险库中。只有您的主密"
+"码能打开它,如果丢失,Ashy Pass 无法恢复。"
+
+msgid "Export an unprotected file (CSV)"
+msgstr "导出未受保护的文件 (CSV)"
+
 msgid "Export complete"
 msgstr "导出完成"
 
@@ -952,8 +1078,8 @@ msgstr "导出失败"
 msgid "Export to KeePass"
 msgstr "导出到 KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "导出到 KeePass 或任何人都能读取的文件"
+msgid "Export to KeePass (.kdbx)"
+msgstr "导出到 KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "导出未受保护的文件"
@@ -985,9 +1111,6 @@ msgstr "收藏"
 msgid "Favorites"
 msgstr "收藏夹"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "获取并显示密码库条目旁的网站图标"
-
 msgid "Fetching remote passwords"
 msgstr "正在获取远程密码"
 
@@ -1008,6 +1131,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "请填写全部三个字段。"
 
+msgid "Fill passwords in the browser"
+msgstr "在浏览器中填写密码"
+
 msgid "Find duplicate items"
 msgstr "查找重复项目"
 
@@ -1017,6 +1143,9 @@ msgstr "发现结果"
 msgid "Finishing synchronization"
 msgstr "正在完成同步"
 
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox 附加组件 · Firefox 和 LibreWolf"
+
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
 "Before importing you will see what was recognized. Delete unprotected export "
@@ -1025,8 +1154,17 @@ msgstr ""
 "先在其他应用中导出密码，然后在此选择该文件。导入前你会看到识别出的内容。之后"
 "请删除未受保护的导出文件。"
 
+msgid "First steps"
+msgstr "入门步骤"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "入门步骤已隐藏。可以从主菜单恢复。"
+
 msgid "Folder"
 msgstr "文件夹"
+
+msgid "Folder and tags"
+msgstr "文件夹和标签"
 
 msgid "Folder created"
 msgstr "文件夹已创建"
@@ -1059,6 +1197,9 @@ msgid ""
 msgstr ""
 "对于 Nextcloud，基础地址格式为 https://cloud.example.com/remote.php/dav/"
 "files/用户名"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "适合在自己的 Nextcloud 服务器上使用“Passwords”应用的用户"
 
 msgid "For the browsers installed for this user"
 msgstr "适用于此用户安装的浏览器"
@@ -1149,6 +1290,9 @@ msgstr "有助于SSD磨损均衡，但会将空闲空间模式泄露给设备。
 msgid "Hide copied passwords from clipboard history"
 msgstr "在剪贴板历史中隐藏复制的密码"
 
+msgid "Hide first steps"
+msgstr "隐藏入门步骤"
+
 msgid "Hide password"
 msgstr "隐藏密码"
 
@@ -1177,6 +1321,9 @@ msgstr "我已在其他地方保存了密码"
 msgid "I understand — Continue"
 msgstr "我了解 — 继续"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "我已把主密码记在安全的地方"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1191,6 +1338,9 @@ msgstr "导入"
 msgid "Import complete"
 msgstr "导入完成"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "从浏览器或其他应用导入,或逐个添加"
+
 msgid "Import partly complete"
 msgstr "部分导入完成"
 
@@ -1201,12 +1351,25 @@ msgid "Import passwords…"
 msgstr "导入密码…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr "重要:如果这台电脑坏了,备份是找回全部内容的唯一方法"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
 msgstr ""
 "在 Android 版 Ashy Pass 中打开 设置 → 加密文件夹同步，点按“扫描电脑上的二维"
 "码”。然后输入下方的代码和主密码。"
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"在 Chrome 中:设置 → 自动填充和密码 → Google 密码管理工具 → 设置 → 导出密码。"
+"导入后请删除导出的文件:它没有受到保护。"
 
 msgid "Incorrect PIN"
 msgstr "PIN码错误"
@@ -1228,6 +1391,9 @@ msgstr "主密码不正确。未做任何更改。"
 msgid "Incorrect master password. Nothing was exported."
 msgstr "主密码不正确。未导出任何内容。"
 
+msgid "Insert a table"
+msgstr "插入表格"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1235,6 +1401,13 @@ msgid ""
 msgstr ""
 "插入您的 FIDO2 令牌（Yubikey、Nitrokey 等），并在提示时在设备上授权。需要您当"
 "前的密码短语来授权新的密钥槽。"
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "安装 Ashy Pass 扩展程序并连接"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "已安装于：{}"
 
 msgid "Internal error: no passphrase set"
 msgstr "内部错误：未设置密码短语"
@@ -1250,22 +1423,17 @@ msgid ""
 "even Ashy Pass."
 msgstr "它用于在此电脑上打开保险库。没有人能帮你找回它——Ashy Pass 也不能。"
 
+msgid "Italic (Ctrl+I)"
+msgstr "斜体 (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "项目会保留在此处和文件夹中；重新连接时会合并"
 
 msgid "Its user, password and other details appear here."
 msgstr "它的用户、密码和其他详细信息会显示在这里。"
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass导出完成"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr "KeePass 会用密码保护文件。CSV 文件任何拿到它的人都能读取。"
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1280,6 +1448,9 @@ msgstr "保留"
 
 msgid "Keep using"
 msgstr "继续使用"
+
+msgid "Keep verification codes (2FA)"
+msgstr "保存验证码(2FA)"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1378,13 +1549,16 @@ msgstr ""
 "密码进入其历史记录）并入其中，并将其他项目移至“已删除项目”。"
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"登录信息、卡片、身份、笔记和通行密钥会先在这台电脑上加密，再通过 Nextcloud、"
-"pCloud、WebDAV、Dropbox、Google 云端硬盘或这台电脑上的文件夹同步。Android 版 "
-"Ashy Pass 使用同一个文件夹。"
+"登录信息、银行卡、身份信息、笔记、通行密钥和验证码会先在这台电脑上加密,再通"
+"过 Nextcloud、pCloud、WebDAV、Dropbox、Google Drive 或这台电脑上的文件夹保"
+"存。服务只能看到加密文件,看不到其中的内容。Android 版 Ashy Pass 使用同一个文"
+"件夹。"
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1398,6 +1572,9 @@ msgstr "小写字母（a–z）"
 
 msgid "Main menu"
 msgstr "主菜单"
+
+msgid "Make a backup"
+msgstr "创建备份"
 
 msgid "Master Password"
 msgstr "主密码"
@@ -1425,9 +1602,6 @@ msgstr "已合并"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "已合并；其他项目在“已删除项目”中"
-
-msgid "Minimum length:"
-msgstr "最小长度："
 
 msgid "Mint"
 msgstr "薄荷"
@@ -1504,6 +1678,9 @@ msgstr "已设置新的主密码。请把它记在安全的地方。"
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords 应用"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords 已连接"
@@ -1588,6 +1765,15 @@ msgstr "未配置"
 msgid "Not connected"
 msgstr "未连接"
 
+msgid "Not done yet"
+msgstr "尚未完成"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "尚未上架商店:了解如何手动安装"
+
+msgid "Not now"
+msgstr "暂时不要"
+
 msgid "Not run yet"
 msgstr "尚未运行"
 
@@ -1665,13 +1851,30 @@ msgstr "开"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"在要保护的网站上打开两步验证设置，并选择身份验证器应用。读取显示的二维码，或"
-"复制设置密钥并粘贴到下方。"
+"在您想保护的网站上,打开两步验证设置并选择身份验证器应用。扫描显示的二维码,或"
+"复制设置密钥(二维码下方的字母和数字,通常在“无法扫描?”之后),并粘贴到下方。"
 
 msgid "On until Ashy Pass closes"
 msgstr "开启，直到 Ashy Pass 关闭"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"密码导入后,请在“备份”中创建备份,并保存在这台电脑之外,例如 U 盘。如果这台电脑"
+"损坏或丢失,这是找回密码的唯一方法。"
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] "有验证码使用了 Ashy Pass 不支持的计数器或算法,已被忽略。"
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1708,8 +1911,14 @@ msgstr "打开加密映射"
 msgid "Open image…"
 msgstr "打开图片…"
 
+msgid "Open in the store"
+msgstr "在商店中打开"
+
 msgid "Open the encrypted volume"
 msgstr "打开加密卷"
+
+msgid "Open the website"
+msgstr "打开网站"
 
 msgid "Open website"
 msgstr "打开网站"
@@ -1725,6 +1934,9 @@ msgstr "在浏览器中打开 Dropbox；复制显示的代码"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "打开浏览器进行OAuth授权"
+
+msgid "Optional, to organize the list"
+msgstr "可选,用于整理列表"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1790,6 +2002,9 @@ msgstr "密码已复制"
 
 msgid "Password for this backup"
 msgstr "此备份的密码"
+
+msgid "Password generator"
+msgstr "密码生成器"
 
 msgid "Password history"
 msgstr "密码历史"
@@ -1875,11 +2090,17 @@ msgstr "更改此密码时 Ashy Pass 保留的旧密码。"
 msgid "Protected by a password you choose"
 msgstr "由你选择的密码保护"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr "受密码保护。可在 KeePass、KeePassXC 和其他应用中打开"
+
 msgid "Protection"
 msgstr "保护"
 
 msgid "QR code read. Check the details and save."
 msgstr "已读取二维码。请检查信息后保存。"
+
+msgid "Quicker than the master password on this computer"
+msgstr "在这台电脑上比主密码更快"
 
 msgid "Quit"
 msgstr "退出"
@@ -1920,6 +2141,9 @@ msgstr "注册失败"
 msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr "最多注册2个物理FIDO2验证器（YubiKey、SoloKey等）"
 
+msgid "Remember the backup"
+msgstr "别忘了备份"
+
 msgid "Remote generation:"
 msgstr "远程版本："
 
@@ -1940,6 +2164,9 @@ msgstr "移除文件夹"
 
 msgid "Remove from favorites"
 msgstr "从收藏中移除"
+
+msgid "Remove table"
+msgstr "移除表格"
 
 msgid "Remove the old copy?"
 msgstr "移除旧副本？"
@@ -2009,6 +2236,9 @@ msgstr "保留期限"
 
 msgid "Rose"
 msgstr "玫瑰"
+
+msgid "Row"
+msgstr "行"
 
 msgid "Run"
 msgstr "运行"
@@ -2094,6 +2324,9 @@ msgstr "按名称、账户或网站搜索"
 
 msgid "Search codes"
 msgstr "搜索验证码"
+
+msgid "Search folders"
+msgstr "搜索文件夹"
 
 msgid "Search for drives"
 msgstr "搜索驱动器"
@@ -2246,11 +2479,23 @@ msgstr "大小"
 msgid "Snapshot uploaded"
 msgstr "快照已上传"
 
+msgid "Start using Ashy Pass"
+msgstr "开始使用 Ashy Pass"
+
 msgid "Starting..."
 msgstr "正在启动..."
 
 msgid "Status"
 msgstr "状态"
+
+msgid "Step 1 of 3"
+msgstr "第 1 步,共 3 步"
+
+msgid "Step 2 of 3"
+msgstr "第 2 步,共 3 步"
+
+msgid "Step 3 of 3"
+msgstr "第 3 步,共 3 步"
 
 msgid "Strength"
 msgstr "强度"
@@ -2266,6 +2511,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "样式"
+
+msgid "Suggest a passphrase"
+msgstr "建议密码短语"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "建议:{}。继续之前请先记下。"
 
 msgid "Summary"
 msgstr "摘要"
@@ -2307,6 +2559,9 @@ msgstr "立即同步"
 msgid "Sync when the vault is unlocked"
 msgstr "解锁密码库时同步"
 
+msgid "Sync with your phone or another computer"
+msgstr "与手机或另一台电脑同步"
+
 msgid "Synchronization"
 msgstr "同步"
 
@@ -2345,14 +2600,14 @@ msgstr "标签"
 msgid "Tags (separated by commas)"
 msgstr "标签（用逗号分隔）"
 
-msgid "Take my data to another app"
-msgstr "将我的数据转移到其他应用"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "正在与您的令牌通信…请检查设备是否有触摸提示。"
 
 msgid "Technical details"
 msgstr "技术细节"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "浏览器中的 Ashy Pass 窗口，显示该网站的登录信息"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "无法在此电脑上使用 PIN。请使用主密码。"
@@ -2436,6 +2691,11 @@ msgid "The new passwords do not match."
 msgstr "两次输入的新密码不一致。"
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr "其余步骤(浏览器、手机、验证码)都在密码列表上方的“入门步骤”中等着您。"
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2477,6 +2737,9 @@ msgstr "搜索仅限于文件夹"
 msgid "The site's icon, when the code has a site saved"
 msgstr "验证码保存了网站时显示该网站的图标"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "网站在输入密码后要求的六位数验证码"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "同步已结束，但部分项目报告了错误。"
 
@@ -2488,6 +2751,15 @@ msgstr "无法重新打开保险库"
 
 msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr "保险库已锁定。未保存任何内容——请解锁后重试。"
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr "保险库在备份保存之前已被锁定。请解锁后重新创建备份。"
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr "保险库在导出保存之前已被锁定。请解锁后重新导出。"
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2535,6 +2807,9 @@ msgstr ""
 "的，它们会在这里移到已删除项目。如果不是，服务器可能只返回了部分数据：请保留"
 "它们，下次同步会再次尝试。"
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr "此 Google Authenticator 导出中没有可在此处使用的验证码。"
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "此 PIN 已与保险库不匹配。未做任何更改。"
 
@@ -2548,6 +2823,12 @@ msgstr "此条目没有保存密码"
 
 msgid "This access has no user"
 msgstr "此条目没有用户"
+
+msgid "This access has no verification code"
+msgstr "此条目没有验证码"
+
+msgid "This access has no website"
+msgstr "此条目没有网站"
 
 msgid "This access no longer exists"
 msgstr "此条目已不存在"
@@ -2598,11 +2879,11 @@ msgid ""
 msgstr "无法打开此图片。请使用不超过 20 MB 的 PNG、JPEG 或 WebP 图片。"
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"这是包含多个账户的 Google Authenticator 导出。请改为在各账户的网站上分别显示"
-"其二维码。"
+"这是包含多个帐号的 Google Authenticator 导出。请在 验证码 → 添加验证码 中扫"
+"描,即可一次性全部导入。"
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2626,6 +2907,9 @@ msgstr "此设置密钥无效。请从网站的两步验证设置中重新复制
 
 msgid "This will erase everything on the drive"
 msgstr "此操作将擦除驱动器上的所有数据"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "通过您云端或驱动器中的加密文件夹"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2655,6 +2939,11 @@ msgstr "关闭"
 msgid "Turn on"
 msgstr "开启"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr "连接时开启。关闭后,扩展程序看不到保险库中的任何内容"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr "双向协调：拉取远程、推送本地、以最新版本为准解决冲突"
 
@@ -2662,11 +2951,12 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "双向同步已成功完成。"
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"与 Nextcloud 服务器上的官方“Passwords”应用进行双向同步。请使用设置 → 安全中的"
-"应用密码。"
+"与您 Nextcloud 服务器上的官方“Passwords”应用双向同步。服务器以可读的形式保存"
+"这些条目:请只在您信任的服务器上使用。使用“设置 → 安全”中的应用密码登录。"
 
 msgid "Type of password"
 msgstr "密码类型"
@@ -2710,6 +3000,9 @@ msgstr "解锁保险库以保存新密码。它不会丢失。"
 msgid "Unlock with PIN"
 msgstr "使用PIN码解锁"
 
+msgid "Unlock with a PIN"
+msgstr "使用 PIN 码解锁"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2735,9 +3028,6 @@ msgstr "解锁"
 
 msgid "Unlocking…"
 msgstr "正在解锁…"
-
-msgid "Unprotected CSV…"
-msgstr "未受保护的 CSV…"
 
 msgid "Updated locally"
 msgstr "已在本地更新"
@@ -2784,6 +3074,9 @@ msgid ""
 msgstr ""
 "请在所有设备上使用相同的主密码：它用于打开文件夹的密钥。加入时只需在此输入一"
 "次。"
+
+msgid "Use them on your phone or another computer"
+msgstr "在手机或另一台电脑上使用"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "当网站要求两步验证时，使用这些验证码。"
@@ -2916,6 +3209,9 @@ msgstr "网站"
 msgid "Website (optional)"
 msgstr "网站（可选）"
 
+msgid "Welcome to Ashy Pass"
+msgstr "欢迎使用 Ashy Pass"
+
 msgid "What it contains"
 msgstr "包含内容"
 
@@ -2923,9 +3219,6 @@ msgid ""
 "When a site offers two-step verification, add its setup key here to get the "
 "codes."
 msgstr "当网站提供两步验证时，在此添加其设置密钥以获取验证码。"
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "关闭时，扩展无法看到密码库中的任何内容"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "你想从哪里导入密码？"
@@ -3004,6 +3297,11 @@ msgid ""
 "merges them instead of duplicating."
 msgstr "您的项目会保留在此电脑和文件夹中。稍后重新连接会合并而不是重复。"
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr "当前网站的登录信息，一键填充。还可搜索保险库并生成新密码。"
+
 msgid "Your most used accesses can be here"
 msgstr "你最常用的条目可以放在这里"
 
@@ -3053,6 +3351,9 @@ msgstr "空闲空间"
 msgid "high"
 msgstr "高"
 
+msgid "incorrect master password"
+msgstr "主密码不正确"
+
 msgid "low"
 msgstr "低"
 
@@ -3073,6 +3374,9 @@ msgstr[0] "{} 秒后生成新验证码"
 
 msgid "no 2FA"
 msgstr "无双重验证"
+
+msgid "no permission to read or write there"
+msgstr "没有在该位置读取或写入的权限"
 
 msgid "none"
 msgstr "无"
@@ -3115,6 +3419,21 @@ msgstr "已发送："
 msgid "solid-state"
 msgstr "固态硬盘"
 
+msgid "that place is read-only"
+msgstr "该位置是只读的"
+
+msgid "the disk is full"
+msgstr "磁盘已满"
+
+msgid "the file or folder does not exist"
+msgstr "文件或文件夹不存在"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "保险库已锁定;请解锁后重试"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr "此解锁方式已无法打开保险库;请输入主密码"
+
 msgid "very high"
 msgstr "非常高"
 
@@ -3125,6 +3444,14 @@ msgid "weak"
 msgstr "弱密码"
 
 #, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "已添加 {total} 个验证码中的 {added} 个;其余的无法保存"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "已完成 {done}/{total}"
+
+#, rust-format
 msgid "{} cannot be imported."
 msgid_plural "{} cannot be imported."
 msgstr[0] "{} 个无法导入。"
@@ -3133,6 +3460,11 @@ msgstr[0] "{} 个无法导入。"
 msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} 个字符"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "已添加 {} 个验证码"
 
 #, rust-format
 msgid "{} day."

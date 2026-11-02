@@ -8,6 +8,7 @@
 use crate::config::favicons_dir;
 use crate::{Error, Result};
 use std::fs;
+use std::net::IpAddr;
 use std::path::PathBuf;
 use std::time::Duration;
 use url::Url;
@@ -16,6 +17,54 @@ const FETCH_TIMEOUT: Duration = Duration::from_secs(6);
 const MAX_BYTES: usize = 256 * 1024;
 const GENERIC_USER_AGENT: &str =
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36";
+
+/// Names that only exist on a local network.
+const LOCAL_SUFFIXES: &[&str] = &[
+    "localhost",
+    "local",
+    "lan",
+    "home",
+    "internal",
+    "intranet",
+    "corp",
+    "home.arpa",
+];
+
+/// Whether `host` is on the public internet. Icons are fetched for nothing
+/// else: a request to a router, a NAS or a single-label name only tells the
+/// local network which sites are in the vault, and it rarely has an icon.
+pub fn is_public_host(host: &str) -> bool {
+    let host = host.trim_end_matches('.').to_ascii_lowercase();
+    let bare = host.trim_start_matches('[').trim_end_matches(']');
+    if let Ok(ip) = bare.parse::<IpAddr>() {
+        return match ip {
+            IpAddr::V4(v4) => {
+                let [a, b, ..] = v4.octets();
+                // 100.64.0.0/10: carrier-grade NAT, also Tailscale's range.
+                let shared = a == 100 && (b & 0xc0) == 64;
+                !(v4.is_private()
+                    || v4.is_loopback()
+                    || v4.is_link_local()
+                    || v4.is_unspecified()
+                    || v4.is_broadcast()
+                    || v4.is_documentation()
+                    || shared)
+            }
+            IpAddr::V6(v6) => {
+                let first = v6.segments()[0];
+                // fc00::/7 unique local, fe80::/10 link local.
+                !(v6.is_loopback()
+                    || v6.is_unspecified()
+                    || (first & 0xfe00) == 0xfc00
+                    || (first & 0xffc0) == 0xfe80)
+            }
+        };
+    }
+    host.contains('.')
+        && !LOCAL_SUFFIXES
+            .iter()
+            .any(|suffix| host == *suffix || host.ends_with(&format!(".{suffix}")))
+}
 
 pub fn cache_path(host: &str) -> PathBuf {
     favicons_dir().join(format!("{host}.png"))
@@ -57,6 +106,11 @@ pub fn fetch_blocking(host: &str) -> Result<PathBuf> {
 /// Like [`fetch_blocking`], with the Google fallback chosen by the caller
 /// (apps that keep their own settings).
 pub fn fetch_blocking_with(host: &str, third_party_fallback: bool) -> Result<PathBuf> {
+    if !is_public_host(host) {
+        return Err(Error::Other(format!(
+            "favicon: {host} is not a public site"
+        )));
+    }
     let path = cache_path(host);
     if path.exists() {
         return Ok(path);
@@ -126,4 +180,45 @@ pub fn fetch_blocking_with(host: &str, third_party_fallback: bool) -> Result<Pat
     }
 
     Err(Error::Other(format!("favicon: no source for {host}")))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn only_public_sites_get_their_icon_fetched() {
+        for host in [
+            "github.com",
+            "accounts.google.com",
+            "8.8.8.8",
+            "wiki.debian.org.",
+        ] {
+            assert!(is_public_host(host), "{host}");
+        }
+        for host in [
+            "192.168.0.10",
+            "10.1.2.3",
+            "172.16.5.4",
+            "127.0.0.1",
+            "100.64.0.18",
+            "169.254.1.1",
+            "[::1]",
+            "[fd12::1]",
+            "[fe80::1]",
+            "localhost",
+            "router",
+            "nas.local",
+            "printer.lan",
+            "intranet.corp",
+            "box.home.arpa",
+        ] {
+            assert!(!is_public_host(host), "{host}");
+        }
+    }
+
+    #[test]
+    fn a_local_host_is_never_requested() {
+        assert!(fetch_blocking_with("192.168.0.10", true).is_err());
+    }
 }

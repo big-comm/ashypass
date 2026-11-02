@@ -31,6 +31,8 @@ pub struct TotpView {
 struct Inner {
     state: SharedState,
     toast: adw::ToastOverlay,
+    /// A phone-width window: each code row on two lines.
+    narrow: Cell<bool>,
     root: adw::ToolbarView,
     search_entry: gtk::SearchEntry,
     search_reload_id: RefCell<Option<glib::SourceId>>,
@@ -82,8 +84,8 @@ impl TotpView {
             .spacing(16)
             .margin_top(12)
             .margin_bottom(24)
-            .margin_start(18)
-            .margin_end(18)
+            .margin_start(12)
+            .margin_end(12)
             .build();
         content.append(&page_heading(
             tr!("Verification codes"),
@@ -140,6 +142,7 @@ impl TotpView {
         let inner = Rc::new(Inner {
             state,
             toast,
+            narrow: Cell::new(false),
             root: root.clone(),
             search_entry,
             search_reload_id: RefCell::new(None),
@@ -230,6 +233,14 @@ impl TotpView {
         inner.stop_timer();
         inner.rows.borrow_mut().clear();
         inner.list_box.remove_all();
+    }
+
+    /// Lay the rows out for a phone-width window (or not), from the
+    /// window's narrow breakpoint.
+    pub fn set_narrow(&self, narrow: bool) {
+        if self.inner.narrow.replace(narrow) != narrow && self.inner.root.is_mapped() {
+            self.inner.reload();
+        }
     }
 
     pub fn on_unlocked(&self) {
@@ -489,7 +500,11 @@ impl Inner {
             }
             let saved = inner.state.vault.borrow().set_tags(id, &chosen);
             if let Err(e) = saved {
-                inner.toast(&format!("{}: {e}", tr!("Could not save")));
+                inner.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not save"),
+                    crate::ui::errors::describe(&e)
+                ));
             }
         });
         self.state.track_sensitive_dialog(&dialog);
@@ -507,12 +522,25 @@ impl Inner {
         let row = gtk::ListBoxRow::builder().activatable(false).build();
         let content = gtk::Box::builder()
             .orientation(gtk::Orientation::Horizontal)
-            .spacing(12)
+            .spacing(8)
             .margin_top(10)
             .margin_bottom(10)
             .margin_start(12)
             .margin_end(8)
             .build();
+        // Narrow window: the name on its own line, the code and its buttons
+        // under it, so neither gets squeezed into "…".
+        let (head, tail) = if self.narrow.get() {
+            content.set_orientation(gtk::Orientation::Vertical);
+            content.set_spacing(4);
+            let head = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+            let tail = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+            content.append(&head);
+            content.append(&tail);
+            (head, tail)
+        } else {
+            (content.clone(), content.clone())
+        };
 
         if let Some(favicons) = icons {
             let icon = gtk::Image::new();
@@ -528,7 +556,7 @@ impl Inner {
             }
             icon.add_css_class("ashy-entry-icon");
             icon.set_accessible_role(gtk::AccessibleRole::Presentation);
-            content.append(&icon);
+            head.append(&icon);
         }
 
         let text = gtk::Box::builder()
@@ -559,7 +587,7 @@ impl Inner {
             account.add_css_class("caption");
             text.append(&account);
         }
-        content.append(&text);
+        head.append(&text);
 
         // Not selectable: Ctrl+C on the label would skip the clipboard
         // auto-clear that the Copy button applies.
@@ -569,7 +597,12 @@ impl Inner {
         if large {
             code_label.add_css_class("ashy-code-large");
         }
-        content.append(&code_label);
+        if self.narrow.get() {
+            // Pushes the buttons to the end of their line.
+            code_label.set_hexpand(true);
+            code_label.set_xalign(0.0);
+        }
+        tail.append(&code_label);
 
         let timer_box = gtk::Box::builder()
             .orientation(gtk::Orientation::Vertical)
@@ -589,10 +622,20 @@ impl Inner {
         countdown_label.add_css_class("numeric");
         timer_box.append(&progress);
         timer_box.append(&countdown_label);
-        content.append(&timer_box);
+        tail.append(&timer_box);
 
+        // Icon and words; the icon alone on a phone-width window, where the
+        // words would be cut to "Co…" (the tooltip still names it).
+        let copy_content = adw::ButtonContent::builder()
+            .icon_name("edit-copy-symbolic")
+            .can_shrink(true)
+            .build();
+        if !self.narrow.get() {
+            copy_content.set_label(tr!("Copy code"));
+        }
         let copy = gtk::Button::builder()
-            .label(tr!("Copy code"))
+            .child(&copy_content)
+            .tooltip_text(tr!("Copy code"))
             .valign(gtk::Align::Center)
             .build();
         copy.add_css_class("ashy-row-action");
@@ -620,7 +663,7 @@ impl Inner {
                 SessionManager::on_activity(&inner.state.session);
             });
         }
-        content.append(&copy);
+        tail.append(&copy);
 
         let menu = gio::Menu::new();
         menu.append(Some(tr!("Edit access…")), Some("code.edit"));
@@ -643,7 +686,7 @@ impl Inner {
             tr!("More actions"),
             entry.title
         ))]);
-        content.append(&more);
+        tail.append(&more);
 
         let group = gio::SimpleActionGroup::new();
         for (name, run) in [
@@ -786,7 +829,11 @@ impl Inner {
             };
             match inner.state.vault.borrow().update(id, change) {
                 Ok(_) => inner.toast(tr!("Verification code removed")),
-                Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not remove the code"))),
+                Err(e) => inner.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not remove the code"),
+                    crate::ui::errors::describe(&e)
+                )),
             }
             inner.reload();
         });
@@ -847,7 +894,11 @@ impl Inner {
                     tr!("Permanently deleted")
                 }),
                 Ok(false) => inner.toast(tr!("This access no longer exists")),
-                Err(e) => inner.toast(&format!("{}: {e}", tr!("Could not delete"))),
+                Err(e) => inner.toast(&format!(
+                    "{}: {}",
+                    tr!("Could not delete"),
+                    crate::ui::errors::describe(&e)
+                )),
             }
             inner.reload();
         });
@@ -889,13 +940,22 @@ impl Inner {
             .build();
         let explain = gtk::Label::builder()
             .label(tr!(
-                "On the site you want to protect, open the two-step verification settings and choose an authenticator app. Read the QR code it shows, or copy the setup key and paste it below."
+                "On the site you want to protect, open the two-step verification settings and choose an authenticator app. Read the QR code it shows, or copy the setup key (the letters and numbers shown under the QR code, often behind “Can't scan it?”) and paste it below."
             ))
             .wrap(true)
             .xalign(0.0)
             .build();
         explain.add_css_class("ashy-note");
         content.append(&explain);
+        let migrate = gtk::Label::builder()
+            .label(tr!(
+                "Coming from Google Authenticator? There, open the menu, choose Transfer accounts → Export accounts, and read the QR code it shows here: all its codes come at once."
+            ))
+            .wrap(true)
+            .xalign(0.0)
+            .build();
+        migrate.add_css_class("dim-label");
+        content.append(&migrate);
 
         // Where the code goes: an existing access or a new one.
         let entries: Vec<PasswordEntry> = self
@@ -1009,7 +1069,15 @@ impl Inner {
             let user_row = user_row.clone();
             let target_row = target_row.clone();
             let qr_status = qr_status.clone();
+            let weak = Rc::downgrade(self);
+            let dialog_weak = dialog.downgrade();
             crate::ui::qr_scan::scan_buttons(move |result| {
+                if let crate::ui::qr_scan::ScanResult::Migration(uri) = &result {
+                    if let (Some(inner), Some(dialog)) = (weak.upgrade(), dialog_weak.upgrade()) {
+                        inner.offer_migration(uri, &dialog, &qr_status);
+                        return;
+                    }
+                }
                 qr_status.set_label(crate::ui::qr_scan::message_for(&result));
                 qr_status.set_visible(true);
                 if let crate::ui::qr_scan::ScanResult::Otpauth(uri) = result {
@@ -1182,8 +1250,9 @@ impl Inner {
                 }
                 Err(e) => {
                     error.set_label(&format!(
-                        "{} ({e})",
-                        tr!("Could not save. Nothing was changed in the vault")
+                        "{} ({})",
+                        tr!("Could not save. Nothing was changed in the vault"),
+                        crate::ui::errors::describe(&e)
                     ));
                     error.set_visible(true);
                 }
@@ -1197,5 +1266,171 @@ impl Inner {
         }
         self.state.track_sensitive_dialog(&dialog);
         dialog.present();
+    }
+
+    /// A Google Authenticator export read in *Add verification code*: ask,
+    /// then add each of its codes as a new access. A code already here (same
+    /// name and account) is skipped, so reading the same export twice adds
+    /// nothing.
+    fn offer_migration(self: &Rc<Self>, uri: &str, add_dialog: &adw::Dialog, status: &gtk::Label) {
+        let migration = match ashypass_core::totp::parse_migration(uri) {
+            Ok(migration) if !migration.codes.is_empty() => migration,
+            _ => {
+                status.set_label(tr!(
+                    "This Google Authenticator export has no codes that can be used here."
+                ));
+                status.add_css_class("error");
+                status.set_visible(true);
+                return;
+            }
+        };
+        let existing: Vec<(String, String)> = self
+            .state
+            .vault
+            .borrow()
+            .list(None)
+            .unwrap_or_default()
+            .into_iter()
+            .filter(|e| e.has_totp)
+            .map(|e| (e.title, e.username.unwrap_or_default()))
+            .collect();
+        let entries = migration_entries(migration.codes, &existing);
+        if entries.is_empty() {
+            status.set_label(tr!("Every code in this export is already in the vault."));
+            status.remove_css_class("error");
+            status.set_visible(true);
+            return;
+        }
+        let names: Vec<&str> = entries.iter().map(|e| e.title.as_str()).collect();
+        let mut body = names.join(", ");
+        if migration.unsupported > 0 {
+            body.push_str("\n\n");
+            body.push_str(&trn!(
+                "One code uses a counter or an algorithm Ashy Pass does not support and is left out.",
+                "Some codes use a counter or an algorithm Ashy Pass does not support and are left out.",
+                migration.unsupported
+            ));
+        }
+        let heading = trn!(
+            "Add {} code from Google Authenticator?",
+            "Add {} codes from Google Authenticator?",
+            entries.len()
+        )
+        .replace("{}", &entries.len().to_string());
+        let alert = big_gtk_kit::alert::Alert::builder(Some(add_dialog))
+            .heading(&heading)
+            .body(&body)
+            .default_response("add")
+            .close_response("cancel")
+            .build();
+        alert.add_response("cancel", tr!("Cancel"));
+        alert.add_response("add", tr!("Add codes"));
+        alert.set_response_appearance("add", adw::ResponseAppearance::Suggested);
+        let inner = self.clone();
+        let add_dialog = add_dialog.downgrade();
+        let entries = RefCell::new(entries);
+        alert.connect_response(None, move |_, response| {
+            if response != "add" || !inner.can_show_vault_data() {
+                return;
+            }
+            let total = entries.borrow().len();
+            let mut added = 0;
+            for entry in entries.borrow_mut().drain(..) {
+                match inner.state.vault.borrow().add(entry) {
+                    Ok(_) => added += 1,
+                    Err(e) => log::warn!("could not add an imported code: {e}"),
+                }
+            }
+            inner.reload();
+            if added == total {
+                inner.toast(
+                    &trn!("{} code added", "{} codes added", added)
+                        .replace("{}", &added.to_string()),
+                );
+            } else {
+                inner.toast(
+                    &tr!("{added} of {total} codes added; the others could not be saved")
+                        .replace("{added}", &added.to_string())
+                        .replace("{total}", &total.to_string()),
+                );
+            }
+            if let Some(dialog) = add_dialog.upgrade() {
+                dialog.close();
+            }
+        });
+        alert.present();
+    }
+}
+
+/// New accesses for the codes of a Google Authenticator export: named after
+/// the issuer (the account under it), or the account when there is none.
+/// Codes already in the vault, by name and account, are left out.
+fn migration_entries(
+    codes: Vec<ashypass_core::totp::OtpAuth>,
+    existing: &[(String, String)],
+) -> Vec<NewEntry> {
+    codes
+        .into_iter()
+        .map(|code| {
+            let (title, username) = if code.issuer.is_empty() {
+                (code.label, None)
+            } else {
+                (code.issuer, Some(code.label).filter(|l| !l.is_empty()))
+            };
+            NewEntry {
+                item_type: None,
+                extra: None,
+                title,
+                username,
+                password: String::new(),
+                url: None,
+                notes: None,
+                totp_secret: Some(code.secret),
+                totp_algorithm: Some(code.algorithm.as_str().to_string()),
+                totp_digits: Some(code.digits),
+                totp_period: Some(code.period),
+                category: None,
+            }
+        })
+        .filter(|new| {
+            let key = (new.title.clone(), new.username.clone().unwrap_or_default());
+            !existing.contains(&key)
+        })
+        .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn an_export_becomes_new_accesses_without_duplicates() {
+        let code = |issuer: &str, label: &str| ashypass_core::totp::OtpAuth {
+            label: label.to_string(),
+            issuer: issuer.to_string(),
+            secret: "JBSWY3DPEHPK3PXP".to_string(),
+            algorithm: Algorithm::Sha1,
+            digits: 6,
+            period: 30,
+        };
+        let existing = vec![("GitHub".to_string(), "ana".to_string())];
+        let entries = migration_entries(
+            vec![
+                code("GitHub", "ana"),
+                code("Google", "ana@example.com"),
+                code("", "router"),
+            ],
+            &existing,
+        );
+        let names: Vec<(&str, Option<&str>)> = entries
+            .iter()
+            .map(|e| (e.title.as_str(), e.username.as_deref()))
+            .collect();
+        assert_eq!(
+            names,
+            [("Google", Some("ana@example.com")), ("router", None)]
+        );
+        assert_eq!(entries[0].totp_algorithm.as_deref(), Some("SHA1"));
+        assert_eq!(entries[0].totp_secret.as_deref(), Some("JBSWY3DPEHPK3PXP"));
     }
 }

@@ -18,7 +18,7 @@ pub(super) fn build_nextcloud_passwords_group(
     let group = adw::PreferencesGroup::builder()
         .title(tr!("Nextcloud Passwords"))
         .description(tr!(
-            "Two-way sync with the official 'Passwords' app on your Nextcloud server. Use an app password from Settings → Security."
+            "Two-way sync with the official 'Passwords' app on your Nextcloud server. The server keeps these entries in a form it can read: use it only with a server you trust. Sign in with an app password from Settings → Security."
         ))
         .build();
 
@@ -66,11 +66,25 @@ pub(super) fn build_nextcloud_passwords_group(
                 // a different account on the next sign-in.
                 let reset = state.vault.borrow_mut().nc_reset_sync_state();
                 if let Err(e) = reset {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Sign out failed")));
+                    show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Sign out failed"),
+                            crate::ui::errors::describe(&e)
+                        ),
+                    );
                     return;
                 }
                 if let Err(e) = state.nextcloud.borrow_mut().logout() {
-                    show_toast(&toast, &format!("{}: {e}", tr!("Sign out failed")));
+                    show_toast(
+                        &toast,
+                        &format!(
+                            "{}: {}",
+                            tr!("Sign out failed"),
+                            crate::ui::errors::describe(&e)
+                        ),
+                    );
                     return;
                 }
                 status.set_subtitle(tr!("Not configured"));
@@ -113,7 +127,7 @@ pub(super) fn build_nextcloud_passwords_group(
     let sync_row = adw::ActionRow::builder()
         .title(tr!("Sync now"))
         .subtitle(tr!(
-            "Two-way reconcile: pull remote, push local, resolve by latest-wins"
+            "Brings the server's changes and sends yours; the newest version wins"
         ))
         .activatable(true)
         .build();
@@ -139,7 +153,7 @@ pub(super) fn build_nextcloud_passwords_group(
     }
     group.add(&sync_row);
 
-    add_auto_sync_rows(&group, &state);
+    add_auto_sync_rows(&group, &state, &nextcloud_action_rows, logged_in);
 
     group
 }
@@ -149,8 +163,14 @@ const AUTO_SYNC_INTERVALS: [u32; 4] = [5, 15, 30, 60];
 
 /// "Sync automatically", its interval and "Sync when the vault is unlocked".
 /// Each change is saved at once and announced so the running scheduler
-/// picks it up.
-fn add_auto_sync_rows(group: &adw::PreferencesGroup, state: &SharedState) {
+/// picks it up. Like "Sync now", they stay insensitive until an account is
+/// signed in: a switch shown on beside "Not configured" reads as syncing.
+fn add_auto_sync_rows(
+    group: &adw::PreferencesGroup,
+    state: &SharedState,
+    action_rows: &Rc<RefCell<Vec<adw::ActionRow>>>,
+    logged_in: bool,
+) {
     let current = state.settings();
 
     let auto_row = adw::SwitchRow::builder()
@@ -159,6 +179,7 @@ fn add_auto_sync_rows(group: &adw::PreferencesGroup, state: &SharedState) {
             "Send changes shortly after each edit and check the server regularly"
         ))
         .active(current.nextcloud_auto_sync)
+        .sensitive(logged_in)
         .build();
 
     let labels: Vec<String> = AUTO_SYNC_INTERVALS
@@ -169,13 +190,14 @@ fn add_auto_sync_rows(group: &adw::PreferencesGroup, state: &SharedState) {
     let interval_row = adw::ComboRow::builder()
         .title(tr!("Check the server every"))
         .model(&model)
-        .sensitive(current.nextcloud_auto_sync)
+        .sensitive(logged_in && current.nextcloud_auto_sync)
         .build();
     interval_row.set_selected(interval_index(current.nextcloud_auto_sync_interval_minutes));
 
     let unlock_row = adw::SwitchRow::builder()
         .title(tr!("Sync when the vault is unlocked"))
         .active(current.nextcloud_sync_on_unlock)
+        .sensitive(logged_in)
         .build();
 
     {
@@ -183,10 +205,21 @@ fn add_auto_sync_rows(group: &adw::PreferencesGroup, state: &SharedState) {
         let interval_row = interval_row.clone();
         auto_row.connect_active_notify(move |row| {
             let value = row.is_active();
-            interval_row.set_sensitive(value);
+            interval_row.set_sensitive(value && row.is_sensitive());
             save_sync_setting(&state, |s| s.nextcloud_auto_sync = value);
         });
     }
+    {
+        // Signing in or out turns the switch on or off as a whole; the
+        // interval follows it.
+        let interval_row = interval_row.clone();
+        auto_row.connect_sensitive_notify(move |row| {
+            interval_row.set_sensitive(row.is_sensitive() && row.is_active());
+        });
+    }
+    action_rows
+        .borrow_mut()
+        .extend([auto_row.clone().upcast(), unlock_row.clone().upcast()]);
     {
         let state = state.clone();
         interval_row.connect_selected_notify(move |row| {
@@ -315,9 +348,14 @@ pub(super) fn show_nextcloud_dialog<F>(
                                 dialog_slot_done.clone(),
                             );
                         }
-                        Err(e) => {
-                            show_toast(&toast_done, &format!("{}: {e}", tr!("Configure failed")))
-                        }
+                        Err(e) => show_toast(
+                            &toast_done,
+                            &format!(
+                                "{}: {}",
+                                tr!("Configure failed"),
+                                crate::ui::errors::describe(&e)
+                            ),
+                        ),
                     }
                 },
             );
@@ -392,7 +430,11 @@ pub(super) fn run_nextcloud_sync(
     let (db_path, session_key) = match state.vault.borrow().session_reopen_parts() {
         Ok(parts) => parts,
         Err(e) => {
-            let msg = format!("{}: {e}", tr!("Sync failed"));
+            let msg = format!(
+                "{}: {}",
+                tr!("Sync failed"),
+                crate::ui::errors::describe(&e)
+            );
             show_toast(&toast, &msg);
             show_message_dialog(parent, tr!("Sync failed"), &msg);
             return;

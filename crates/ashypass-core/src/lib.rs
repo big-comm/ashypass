@@ -7,6 +7,7 @@
 pub mod audit;
 pub mod backup;
 pub mod brand_icons;
+pub mod browser_profiles;
 pub mod config;
 pub mod crypto;
 pub mod db;

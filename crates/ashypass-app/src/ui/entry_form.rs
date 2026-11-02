@@ -252,10 +252,14 @@ pub fn present(
         password_row.set_text(prefill);
     }
 
-    // ---- More options ------------------------------------------------
-    let more_group = adw::PreferencesGroup::builder()
-        .title(tr!("More options"))
+    // ---- Folder and tags --------------------------------------------
+    // Folded away unless the entry already uses them: most people never do.
+    let more_group = adw::PreferencesGroup::new();
+    let more_expander = adw::ExpanderRow::builder()
+        .title(tr!("Folder and tags"))
+        .subtitle(tr!("Optional, to organize the list"))
         .build();
+    more_group.add(&more_expander);
 
     let existing_folders = state.vault.borrow().categories().unwrap_or_default();
     let current_folder = entry
@@ -298,8 +302,8 @@ pub fn present(
             }
         });
     }
-    more_group.add(&folder_row);
-    more_group.add(&new_folder_row);
+    more_expander.add_row(&folder_row);
+    more_expander.add_row(&new_folder_row);
 
     let tags_row = adw::EntryRow::builder()
         .title(tr!("Tags (separated by commas)"))
@@ -322,29 +326,21 @@ pub fn present(
     }) {
         tags_row.add_suffix(&picker);
     }
-    more_group.add(&tags_row);
+    more_expander.add_row(&tags_row);
+    more_expander.set_expanded(current_folder.is_some() || !tags_row.text().is_empty());
     content.append(&more_group);
 
     let notes_group = adw::PreferencesGroup::builder()
         .title(tr!("Notes (optional)"))
         .build();
-    let notes_view = gtk::TextView::builder()
-        .wrap_mode(gtk::WrapMode::WordChar)
-        .accepts_tab(false)
-        .top_margin(10)
-        .bottom_margin(10)
-        .left_margin(12)
-        .right_margin(12)
-        .height_request(96)
-        .build();
-    notes_view.add_css_class("ashy-notes");
-    notes_view.update_property(&[gtk::accessible::Property::Label(tr!("Notes"))]);
-    if let Some(notes) = entry.as_ref().and_then(|e| e.notes.as_deref()) {
-        notes_view.buffer().set_text(notes);
-    }
-    let notes_frame = gtk::Frame::builder().child(&notes_view).build();
-    notes_frame.add_css_class("view");
-    notes_group.add(&notes_frame);
+    // Bold, italic, code and tables, edited as they look (see ui::notes).
+    let notes_editor = crate::ui::notes::NotesEditor::new(
+        entry
+            .as_ref()
+            .and_then(|e| e.notes.as_deref())
+            .unwrap_or(""),
+    );
+    notes_group.add(&notes_editor.root);
     content.append(&notes_group);
 
     // ---- Verification code -------------------------------------------
@@ -417,6 +413,10 @@ pub fn present(
     describe(&totp_row, &totp_error);
     content.append(&totp_group);
     content.append(&totp_error);
+    // Right under the main fields, before folder, tags and notes: a site's
+    // setup key is the field people came for, not one to scroll down to.
+    content.reorder_child_after(&totp_group, Some(&password_note));
+    content.reorder_child_after(&totp_error, Some(&totp_group));
     if let Some(e) = entry.as_ref() {
         if let Some(secret) = e.totp_secret.as_deref() {
             totp_row.set_text(secret);
@@ -526,13 +526,7 @@ pub fn present(
             let password = Zeroizing::new(password_row.text().to_string());
             let mut username = trim_to_opt(&username_row.text());
             let url = trim_to_opt(&url_row.text());
-            let notes = {
-                let buffer = notes_view.buffer();
-                let text = buffer
-                    .text(&buffer.start_iter(), &buffer.end_iter(), false)
-                    .to_string();
-                Some(text.trim().to_string()).filter(|s| !s.is_empty())
-            };
+            let notes = { Some(notes_editor.markdown()).filter(|s| !s.is_empty()) };
 
             // Verification code first: an otpauth link can fill the name.
             let totp_text = totp_row.text().trim().to_string();
@@ -698,8 +692,9 @@ pub fn present(
                 Err(e) => {
                     log::error!("saving entry failed: {e}");
                     save_banner.set_title(&format!(
-                        "{} ({e})",
-                        tr!("Could not save. Nothing was changed in the vault")
+                        "{} ({})",
+                        tr!("Could not save. Nothing was changed in the vault"),
+                        crate::ui::errors::describe(&e)
                     ));
                     save_banner.set_revealed(true);
                 }
@@ -893,8 +888,9 @@ fn build_attachments_group(
                                     adw::Toast::builder()
                                         .use_markup(false)
                                         .title(format!(
-                                            "{}: {e}",
-                                            tr!("Could not remove the attachment")
+                                            "{}: {}",
+                                            tr!("Could not remove the attachment"),
+                                            crate::ui::errors::describe(&e)
                                         ))
                                         .timeout(5)
                                         .build(),
@@ -981,7 +977,11 @@ fn build_attachments_group(
                             Err(e) => {
                                 toast.add_toast(
                                     adw::Toast::builder()
-                                        .title(format!("{}: {e}", tr!("Could not read the file")))
+                                        .title(format!(
+                                            "{}: {}",
+                                            tr!("Could not read the file"),
+                                            crate::ui::errors::describe(&e)
+                                        ))
                                         .use_markup(false)
                                         .timeout(5)
                                         .build(),
@@ -1016,7 +1016,11 @@ fn build_attachments_group(
                             }
                             Err(e) => toast.add_toast(
                                 adw::Toast::builder()
-                                    .title(format!("{}: {e}", tr!("Could not add the attachment")))
+                                    .title(format!(
+                                        "{}: {}",
+                                        tr!("Could not add the attachment"),
+                                        crate::ui::errors::describe(&e)
+                                    ))
                                     .use_markup(false)
                                     .timeout(5)
                                     .build(),

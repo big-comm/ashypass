@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:31\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -14,8 +14,17 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Instalirajte proširenje"
+
 msgid "1PUX export file"
 msgstr "Datoteka izvoza 1PUX"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Povežite ga s Ashy Passom"
+
+msgid "3. Allow it"
+msgstr "3. Dopustite ga"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -28,6 +37,9 @@ msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "BIP-39 fraza od 12 riječi za otključavanje bez sigurnosnog ključa. Prikazuje "
 "se jednom."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "Obrazac za prijavu s prijedlozima Ashy Passa ispod polja e-pošte"
 
 msgid "A new access"
 msgstr "Novi unos"
@@ -70,6 +82,9 @@ msgstr "Dodaj privitak"
 msgid "Add code"
 msgstr "Dodaj kôd"
 
+msgid "Add codes"
+msgstr "Dodaj kodove"
+
 msgid "Add file"
 msgstr "Dodaj datoteku"
 
@@ -82,11 +97,24 @@ msgstr "Dodaj unose iz kopije u trenutni trezor"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "Dodaj u ovaj trezor unose iz kopije .ashy"
 
+msgid "Add to Firefox"
+msgstr "Dodaj u Firefox"
+
 msgid "Add to favorites"
 msgstr "Dodaj u favorite"
 
+msgid "Add to the browser"
+msgstr "Dodaj u preglednik"
+
 msgid "Add verification code"
 msgstr "Dodaj kôd za provjeru"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "Dodati {} kôd iz Google Authenticatora?"
+msgstr[1] "Dodati {} kôda iz Google Authenticatora?"
+msgstr[2] "Dodati {} kodova iz Google Authenticatora?"
 
 msgid "Added to favorites"
 msgstr "Dodano u favorite"
@@ -110,6 +138,9 @@ msgstr "Prilagodi broj znamenki"
 
 msgid "Adjust words and separator"
 msgstr "Prilagodi riječi i razdjelnik"
+
+msgid "Advanced"
+msgstr "Napredno"
 
 msgid "Algorithm"
 msgstr "Algoritam"
@@ -163,6 +194,9 @@ msgstr ""
 msgid "Another example"
 msgstr "Drugi primjer"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Svatko tko dobije datoteku može pročitati svaku lozinku u njoj"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -210,6 +244,12 @@ msgstr ""
 "Ashy Pass nije mogao komunicirati s Nextcloudom. Provjerite svoju vezu, "
 "adresu poslužitelja i lozinku aplikacije."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Ashy Pass za Chrome"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Ashy Pass za Firefox"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -229,6 +269,14 @@ msgid ""
 msgstr ""
 "Najmanje 8 znakova. Lozinka od četiri riječi s EFF popisa riječi je jaka "
 "zadana opcija."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Najmanje {} znakova. Nekoliko nasumičnih riječi lako je zapamtiti, a teško "
+"pogoditi."
 
 msgid "Attachment added"
 msgstr "Privitak dodan"
@@ -293,11 +341,28 @@ msgstr "Sigurnosne kopije"
 msgid "Before importing"
 msgstr "Prije uvoza"
 
+msgid "Bold (Ctrl+B)"
+msgstr "Podebljano (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "Donesite ili dodajte svoje lozinke"
+
 msgid "Bring passwords from another app or browser"
 msgstr "Prenesite lozinke iz druge aplikacije ili preglednika"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"Donesite ih iz preglednika (Chrome, Edge, Brave, Firefox) ili drugog "
+"upravitelja lozinki (Bitwarden, 1Password, KeePass)."
+
 msgid "Bring your passwords"
 msgstr "Prenesite svoje lozinke"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"Donosi promjene s poslužitelja i šalje vaše; pobjeđuje najnovija verzija"
 
 msgid "Browser"
 msgstr "Preglednik"
@@ -372,6 +437,9 @@ msgstr ""
 "Odaberite glavnu lozinku. Ona štiti sve što čuvate u Ashy Passu na ovom "
 "računalu."
 
+msgid "Choose an access in the list first"
+msgstr "Prvo odaberite unos na popisu"
+
 msgid "Choose an image with the QR code"
 msgstr "Odaberite sliku s QR kodom"
 
@@ -405,6 +473,9 @@ msgstr "Odaberite ovu mapu pri dodavanju ili uređivanju lozinke."
 msgid "Choose…"
 msgstr "Odaberi…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge i Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Izvoz lozinki iz Chromea, Edgea, Bravea ili Firefoxa (CSV)"
 
@@ -419,6 +490,13 @@ msgstr "Očisti povijest"
 
 msgid "Clear the password history?"
 msgstr "Očistiti povijest lozinki?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"Kliknite polje za prijavu i odaberite svoj pristup: ispunjava se samo na web-"
+"mjestu kojem pripada."
 
 msgid "Client ID"
 msgstr "ID klijenta"
@@ -444,6 +522,9 @@ msgstr "Zatvori mapiranje"
 msgid "Closing mapping"
 msgstr "Zatvaranje mapiranja"
 
+msgid "Code"
+msgstr "Kôd"
+
 msgid "Code copied"
 msgstr "Kôd kopiran"
 
@@ -456,8 +537,26 @@ msgstr "Postavke koda"
 msgid "Coffee"
 msgstr "Kava"
 
+msgid "Column"
+msgstr "Stupac"
+
+msgid "Column 1"
+msgstr "Stupac 1"
+
+msgid "Column 2"
+msgstr "Stupac 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "Stupci poput name, url, username, password"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Dolazite iz Google Authenticatora? Tamo otvorite izbornik, odaberite "
+"Prijenos računa → Izvoz računa i očitajte ovdje prikazani QR kôd: svi "
+"njegovi kodovi stižu odjednom."
 
 msgid "Compact vault list"
 msgstr "Sažeti popis trezora"
@@ -531,9 +630,6 @@ msgstr "Povezivanje nije uspjelo"
 msgid "Connect the sync folder"
 msgstr "Poveži mapu za sinkronizaciju"
 
-msgid "Connect your browsers"
-msgstr "Povežite svoje preglednike"
-
 msgid "Connected"
 msgstr "Povezano"
 
@@ -543,6 +639,9 @@ msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Povezani preglednici: {}. Ponovno ih pokrenite ako su otvoreni."
 msgstr[1] "Povezani preglednici: {}. Ponovno ih pokrenite ako su otvoreni."
 msgstr[2] "Povezani preglednici: {}. Ponovno ih pokrenite ako su otvoreni."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Povezano, ali blokirano (korak 3)"
 
 msgid "Connected. Received:"
 msgstr "Povezano. Primljeno:"
@@ -579,6 +678,15 @@ msgstr "Kopija trezora iz Ashy Passa 2"
 
 msgid "Copy password"
 msgstr "Kopiraj lozinku"
+
+msgid "Copy the password"
+msgstr "Kopiraj lozinku"
+
+msgid "Copy the user"
+msgstr "Kopiraj korisnika"
+
+msgid "Copy the verification code"
+msgstr "Kopiraj kôd za provjeru"
 
 msgid "Copy this old password"
 msgstr "Kopiraj ovu staru lozinku"
@@ -697,9 +805,6 @@ msgstr "Stvori mapu…"
 msgid "Create my vault"
 msgstr "Stvori moj trezor"
 
-msgid "Create password"
-msgstr "Stvori lozinku"
-
 msgid "Create your vault"
 msgstr "Stvorite svoj trezor"
 
@@ -803,6 +908,9 @@ msgstr "Prekid veze nije uspio"
 msgid "Disconnect the sync folder?"
 msgstr "Prekinuti vezu s mapom za sinkronizaciju?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "Čuvate li lozinke negdje drugdje?"
+
 msgid "Done"
 msgstr "Gotovo"
 
@@ -820,6 +928,13 @@ msgstr "Pogon zaključan"
 
 msgid "Duplicate items"
 msgstr "Duplicirane stavke"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Svaka se ikona preuzima s same web stranice, koja vidi vašu internetsku "
+"adresu. Stranice u vašoj lokalnoj mreži nikad se ne kontaktiraju."
 
 msgid "Easier to type and remember."
 msgstr "Lakše za upisivanje i pamćenje."
@@ -863,9 +978,6 @@ msgstr "Šifrirano kao"
 msgid "Encrypted device"
 msgstr "Šifrirani uređaj"
 
-msgid "Encrypted folder sync"
-msgstr "Šifrirana sinkronizacija mape"
-
 msgid "Encrypted folder sync failed"
 msgstr "Šifrirana sinkronizacija mape nije uspjela"
 
@@ -896,6 +1008,9 @@ msgstr "Trezor se ponovno šifrira…"
 
 msgid "Encrypting…"
 msgstr "Enkriptiranje…"
+
+msgid "Encryption"
+msgstr "Šifriranje"
 
 msgid "Encrypt…"
 msgstr "Šifriraj…"
@@ -939,6 +1054,15 @@ msgstr "Pojedinosti o pogreškama"
 msgid "Estimated strength"
 msgstr "Procijenjena jačina"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Svi kodovi iz ovog izvoza već su u trezoru."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Svaki unos šifriran je pomoću AES-256-GCM ključem izvedenim iz glavne lozinke"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -977,6 +1101,18 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "Sve je već bilo sinkronizirano"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Sve što čuvate u Ashy Passu ostaje u šifriranom trezoru na ovom računalu. "
+"Otvara ga samo vaša glavna lozinka, a Ashy Pass je ne može vratiti ako je "
+"izgubite."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "Izvezi nezaštićenu datoteku (CSV)"
+
 msgid "Export complete"
 msgstr "Izvoz dovršen"
 
@@ -986,8 +1122,8 @@ msgstr "Izvoz nije uspio"
 msgid "Export to KeePass"
 msgstr "Izvezi u KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Izvezite u KeePass ili u datoteku koju svatko može pročitati"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Izvezi u KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Izvezi nezaštićenu datoteku"
@@ -1019,9 +1155,6 @@ msgstr "Omiljeno"
 msgid "Favorites"
 msgstr "Favoriti"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Dohvati i prikaži ikone web stranica pored unosa u trezoru"
-
 msgid "Fetching remote passwords"
 msgstr "Dohvaćanje udaljenih lozinki"
 
@@ -1043,6 +1176,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Ispunite sva tri polja."
 
+msgid "Fill passwords in the browser"
+msgstr "Ispunjavajte lozinke u pregledniku"
+
 msgid "Find duplicate items"
 msgstr "Pronađi duplicirane stavke"
 
@@ -1051,6 +1187,9 @@ msgstr "Pronađeno"
 
 msgid "Finishing synchronization"
 msgstr "Završetak sinkronizacije"
+
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox Add-ons · Firefox i LibreWolf"
 
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
@@ -1061,8 +1200,17 @@ msgstr ""
 "datoteku. Prije uvoza vidjet ćete što je prepoznato. Nakon toga izbrišite "
 "nezaštićene izvezene datoteke."
 
+msgid "First steps"
+msgstr "Prvi koraci"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "Prvi koraci su skriveni. Glavni izbornik ih vraća."
+
 msgid "Folder"
 msgstr "Mapa"
+
+msgid "Folder and tags"
+msgstr "Mapa i oznake"
 
 msgid "Folder created"
 msgstr "Mapa stvorena"
@@ -1097,6 +1245,10 @@ msgid ""
 msgstr ""
 "Za Nextcloud, osnovni URL izgleda poput https://cloud.example.com/remote.php/"
 "dav/files/KORISNIČKO_IME"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr ""
+"Za ljude koji koriste aplikaciju „Passwords“ na svom Nextcloud poslužitelju"
 
 msgid "For the browsers installed for this user"
 msgstr "Za preglednike ovog korisnika"
@@ -1192,6 +1344,9 @@ msgstr ""
 msgid "Hide copied passwords from clipboard history"
 msgstr "Sakrij kopirane lozinke iz povijesti međuspremnika"
 
+msgid "Hide first steps"
+msgstr "Sakrij prve korake"
+
 msgid "Hide password"
 msgstr "Sakrij lozinku"
 
@@ -1220,6 +1375,9 @@ msgstr "Lozinke već čuvam negdje drugdje"
 msgid "I understand — Continue"
 msgstr "Razumijem – Nastavi"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "Zapisao/la sam glavnu lozinku na sigurno mjesto"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1236,6 +1394,10 @@ msgstr "Uvoz"
 msgid "Import complete"
 msgstr "Uvoz dovršen"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr ""
+"Uvezite iz preglednika ili druge aplikacije ili ih dodajte jednu po jednu"
+
 msgid "Import partly complete"
 msgstr "Uvoz djelomično dovršen"
 
@@ -1246,6 +1408,13 @@ msgid "Import passwords…"
 msgstr "Uvezi lozinke…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"Važno: ako se ovo računalo pokvari, sigurnosna kopija jedini je način da sve "
+"vratite"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1253,6 +1422,15 @@ msgstr ""
 "U Ashy Passu za Android otvorite Postavke → Sinkronizacija šifriranom mapom "
 "i dodirnite „Skeniraj QR kod s računala”. Zatim upišite kod ispod i glavnu "
 "lozinku."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"U Chromeu: Postavke → Automatsko popunjavanje i lozinke → Googleov "
+"upravitelj lozinki → Postavke → Izvezi lozinke. Nakon uvoza izbrišite "
+"izvezenu datoteku: nije zaštićena."
 
 msgid "Incorrect PIN"
 msgstr "Neispravan PIN"
@@ -1276,6 +1454,9 @@ msgstr "Pogrešna glavna lozinka. Ništa nije promijenjeno."
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Netočna glavna lozinka. Ništa nije izvezeno."
 
+msgid "Insert a table"
+msgstr "Umetni tablicu"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1284,6 +1465,13 @@ msgstr ""
 "Umetnite svoj FIDO2 token (Yubikey, Nitrokey, itd.) i autorizirajte na "
 "uređaju kada se to zatraži. Vaša trenutna lozinka je potrebna za "
 "autorizaciju novog ključnog utora."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Instalirajte proširenje Ashy Pass i povežite ga"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "Instalirano u: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "Interna pogreška: nije postavljena lozinka"
@@ -1301,24 +1489,17 @@ msgstr ""
 "Otvara trezor na ovom računalu. Nitko je ne može vratiti umjesto vas — čak "
 "ni Ashy Pass."
 
+msgid "Italic (Ctrl+I)"
+msgstr "Kurziv (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "Stavke ostaju ovdje i u mapi; ponovno povezivanje ih spaja"
 
 msgid "Its user, password and other details appear here."
 msgstr "Ovdje se prikazuju korisnik, lozinka i ostale pojedinosti."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass izvoz dovršen"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass drži datoteku zaštićenom lozinkom. Datoteku CSV može pročitati "
-"svatko tko je dobije."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1335,6 +1516,9 @@ msgstr "Zadrži ih"
 
 msgid "Keep using"
 msgstr "Nastavi koristiti"
+
+msgid "Keep verification codes (2FA)"
+msgstr "Čuvajte kodove za provjeru (2FA)"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1438,14 +1622,17 @@ msgstr ""
 "premještaju u Izbrisane stavke."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Prijave, kartice, identiteti, bilješke i pristupni ključevi, šifrirani na "
-"ovom računalu prije nego što ga napuste, putem mape na Nextcloudu, pCloudu, "
-"WebDAV-u, Dropboxu, Google Disku ili ovom računalu. Ashy Pass za Android "
-"koristi istu mapu."
+"Prijave, kartice, identiteti, bilješke, pristupni ključevi i kodovi za "
+"provjeru šifriraju se na ovom računalu prije nego ga napuste, putem mape na "
+"Nextcloudu, pCloudu, WebDAV-u, Dropboxu, Google Driveu ili na ovom računalu. "
+"Usluga vidi samo šifrirane datoteke, nikad što je u njima. Ashy Pass za "
+"Android koristi istu mapu."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1459,6 +1646,9 @@ msgstr "Mala slova (a–z)"
 
 msgid "Main menu"
 msgstr "Glavni izbornik"
+
+msgid "Make a backup"
+msgstr "Napravite sigurnosnu kopiju"
 
 msgid "Master Password"
 msgstr "Glavna lozinka"
@@ -1487,9 +1677,6 @@ msgstr "Spojeno"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "Spojeno; ostale su u Izbrisanim stavkama"
-
-msgid "Minimum length:"
-msgstr "Najmanja duljina:"
 
 msgid "Mint"
 msgstr "Metvica"
@@ -1570,6 +1757,9 @@ msgstr "Nova glavna lozinka je postavljena. Zapišite je na sigurno mjesto."
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Aplikacija Nextcloud Passwords"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords povezan"
@@ -1658,6 +1848,15 @@ msgstr "Nije konfigurirano"
 msgid "Not connected"
 msgstr "Nije povezano"
 
+msgid "Not done yet"
+msgstr "Još nije gotovo"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "Još nije u trgovini: pogledajte kako je ručno instalirati"
+
+msgid "Not now"
+msgstr "Ne sada"
+
 msgid "Not run yet"
 msgstr "Još nije pokrenuto"
 
@@ -1740,14 +1939,41 @@ msgstr "Uključeno"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Na stranici koju želite zaštititi otvorite postavke provjere u dva koraka i "
-"odaberite aplikaciju za autentifikaciju. Očitajte prikazani QR kod ili "
-"kopirajte ključ za postavljanje i zalijepite ga ispod."
+"Na web stranici koju želite zaštititi otvorite postavke dvostupanjske "
+"provjere i odaberite aplikaciju za autentifikaciju. Očitajte prikazani QR "
+"kôd ili kopirajte ključ za postavljanje (slova i brojeve ispod QR kôda, "
+"često iza „Ne možete skenirati?“) i zalijepite ga ispod."
 
 msgid "On until Ashy Pass closes"
 msgstr "Uključeno dok se Ashy Pass ne zatvori"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"Kad vaše lozinke budu unutra, napravite sigurnosnu kopiju u Sigurnosne "
+"kopije i čuvajte je izvan ovog računala, na primjer na USB disku. Ako se ovo "
+"računalo pokvari ili izgubi, to je jedini način da ih vratite."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Jedan kôd koristi brojač ili algoritam koji Ashy Pass ne podržava i "
+"izostavljen je."
+msgstr[1] ""
+"Neki kodovi koriste brojač ili algoritam koji Ashy Pass ne podržava i "
+"izostavljeni su."
+msgstr[2] ""
+"Neki kodovi koriste brojač ili algoritam koji Ashy Pass ne podržava i "
+"izostavljeni su."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1785,8 +2011,14 @@ msgstr "Otvori šifrirano mapiranje"
 msgid "Open image…"
 msgstr "Otvori sliku…"
 
+msgid "Open in the store"
+msgstr "Otvori u trgovini"
+
 msgid "Open the encrypted volume"
 msgstr "Otvori šifrirani volumen"
+
+msgid "Open the website"
+msgstr "Otvori web-mjesto"
 
 msgid "Open website"
 msgstr "Otvori web-mjesto"
@@ -1802,6 +2034,9 @@ msgstr "Otvara Dropbox u pregledniku; kopirajte prikazani kod"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Otvara preglednik za OAuth pristanak"
+
+msgid "Optional, to organize the list"
+msgstr "Neobavezno, za organiziranje popisa"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1870,6 +2105,9 @@ msgstr "Lozinka kopirana"
 
 msgid "Password for this backup"
 msgstr "Lozinka za ovu kopiju"
+
+msgid "Password generator"
+msgstr "Generator lozinki"
 
 msgid "Password history"
 msgstr "Povijest lozinki"
@@ -1960,11 +2198,18 @@ msgstr "Prethodne lozinke koje je Ashy Pass sačuvao kada je ova promijenjena."
 msgid "Protected by a password you choose"
 msgstr "Zaštićena lozinkom koju vi odaberete"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"Zaštićeno lozinkom. Otvara se u KeePassu, KeePassXC-u i drugim aplikacijama"
+
 msgid "Protection"
 msgstr "Zaštita"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR kod očitan. Provjerite podatke i spremite."
+
+msgid "Quicker than the master password on this computer"
+msgstr "Brže od glavne lozinke na ovom računalu"
 
 msgid "Quit"
 msgstr "Izlaz"
@@ -2006,6 +2251,9 @@ msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr ""
 "Registrirajte do 2 fizička FIDO2 autentifikatora (YubiKey, SoloKey, itd.)"
 
+msgid "Remember the backup"
+msgstr "Sjetite se sigurnosne kopije"
+
 msgid "Remote generation:"
 msgstr "Udaljena generacija:"
 
@@ -2026,6 +2274,9 @@ msgstr "Ukloni mapu"
 
 msgid "Remove from favorites"
 msgstr "Ukloni iz favorita"
+
+msgid "Remove table"
+msgstr "Ukloni tablicu"
 
 msgid "Remove the old copy?"
 msgstr "Ukloniti staru kopiju?"
@@ -2095,6 +2346,9 @@ msgstr "Zadržavanje"
 
 msgid "Rose"
 msgstr "Ruža"
+
+msgid "Row"
+msgstr "Redak"
 
 msgid "Run"
 msgstr "Pokreni"
@@ -2180,6 +2434,9 @@ msgstr "Pretraži po nazivu, računu ili web-mjestu"
 
 msgid "Search codes"
 msgstr "Pretraži kodove"
+
+msgid "Search folders"
+msgstr "Pretraži mape"
 
 msgid "Search for drives"
 msgstr "Potraži pogone"
@@ -2336,11 +2593,23 @@ msgstr "Veličina"
 msgid "Snapshot uploaded"
 msgstr "Snimka je prenesena"
 
+msgid "Start using Ashy Pass"
+msgstr "Počnite koristiti Ashy Pass"
+
 msgid "Starting..."
 msgstr "Pokretanje..."
 
 msgid "Status"
 msgstr "Status"
+
+msgid "Step 1 of 3"
+msgstr "Korak 1 od 3"
+
+msgid "Step 2 of 3"
+msgstr "Korak 2 od 3"
+
+msgid "Step 3 of 3"
+msgstr "Korak 3 od 3"
 
 msgid "Strength"
 msgstr "Jačina"
@@ -2357,6 +2626,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "Stil"
+
+msgid "Suggest a passphrase"
+msgstr "Predloži lozinku (frazu)"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Prijedlog: {}. Zapišite ga prije nego nastavite."
 
 msgid "Summary"
 msgstr "Sažetak"
@@ -2398,6 +2674,9 @@ msgstr "Sinkroniziraj sada"
 msgid "Sync when the vault is unlocked"
 msgstr "Sinkroniziraj pri otključavanju trezora"
 
+msgid "Sync with your phone or another computer"
+msgstr "Sinkronizirajte s telefonom ili drugim računalom"
+
 msgid "Synchronization"
 msgstr "Sinkronizacija"
 
@@ -2437,14 +2716,14 @@ msgstr "Oznake"
 msgid "Tags (separated by commas)"
 msgstr "Oznake (odvojene zarezima)"
 
-msgid "Take my data to another app"
-msgstr "Prenesi moje podatke u drugu aplikaciju"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr "Razgovaram s vašim tokenom… provjerite uređaj za upit za dodirom."
 
 msgid "Technical details"
 msgstr "Tehničke pojedinosti"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "Prozor Ashy Passa u pregledniku s prijavama za web-mjesto"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr "PIN se ne može koristiti na ovom računalu. Koristite glavnu lozinku."
@@ -2539,6 +2818,13 @@ msgid "The new passwords do not match."
 msgstr "Nove lozinke se ne podudaraju."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"Ostali koraci — preglednik, vaš telefon, kodovi za provjeru — čekaju u Prvi "
+"koraci, iznad vaših lozinki."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2584,6 +2870,9 @@ msgstr "Pretraživanje je ograničeno na mapu"
 msgid "The site's icon, when the code has a site saved"
 msgstr "Ikona web-mjesta kada kod ima spremljeno web-mjesto"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "Šesteroznamenkasti kodovi koje stranice traže nakon lozinke"
+
 msgid "The sync finished, but some items reported errors."
 msgstr "Sinkronizacija je završila, ali neke stavke su prijavile pogrešku."
 
@@ -2597,6 +2886,19 @@ msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr ""
 "Trezor je zaključan. Ništa nije spremljeno — otključajte ga i pokušajte "
 "ponovno."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"Trezor se zaključao prije nego što je sigurnosna kopija spremljena. "
+"Otključajte ga i ponovno izradite sigurnosnu kopiju."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"Trezor se zaključao prije nego što je izvoz spremljen. Otključajte ga i "
+"ponovno izvezite."
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2654,6 +2956,11 @@ msgstr ""
 "poslužitelj je možda odgovorio samo djelomično: zadržite ih i sljedeća "
 "sinkronizacija pokušat će ponovno."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Ovaj izvoz iz Google Authenticatora nema kodova koji se ovdje mogu "
+"upotrijebiti."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Ovaj PIN više ne odgovara trezoru. Ništa nije promijenjeno."
 
@@ -2669,6 +2976,12 @@ msgstr "Ovaj unos nema spremljenu lozinku"
 
 msgid "This access has no user"
 msgstr "Ovaj unos nema korisnika"
+
+msgid "This access has no verification code"
+msgstr "Ovaj unos nema kôd za provjeru"
+
+msgid "This access has no website"
+msgstr "Ovaj unos nema web-mjesto"
 
 msgid "This access no longer exists"
 msgstr "Ovaj unos više ne postoji"
@@ -2720,11 +3033,11 @@ msgstr ""
 "Slika se ne može otvoriti. Upotrijebite PNG, JPEG ili WebP sliku do 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Ovo je izvoz iz Google Authenticatora s više računa. Umjesto toga prikažite "
-"QR kod svakog računa na njegovoj stranici."
+"Ovo je izvoz iz Google Authenticatora s nekoliko računa. Očitajte ga u "
+"Kodovi za provjeru → Dodaj kôd da biste ih sve dodali odjednom."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2753,6 +3066,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "Ovo će izbrisati sve na pogonu"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "Putem šifrirane mape u vašem oblaku ili na disku"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2786,6 +3102,13 @@ msgstr "Isključi"
 msgid "Turn on"
 msgstr "Uključi"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Uključuje se pri povezivanju. Kad je isključeno, proširenje ne vidi ništa u "
+"trezoru"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Dvosmjerno usklađivanje: povuci udaljeno, gurni lokalno, riješi po načelu "
@@ -2795,11 +3118,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Dvosmjerno usklađivanje uspješno dovršeno."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Dvosmjerna sinkronizacija sa službenom aplikacijom 'Passwords' na vašem "
-"Nextcloud poslužitelju. Koristite lozinku aplikacije iz Postavke → Sigurnost."
+"Dvosmjerna sinkronizacija sa službenom aplikacijom „Passwords“ na vašem "
+"Nextcloud poslužitelju. Poslužitelj čuva ove unose u obliku koji može "
+"pročitati: koristite je samo s poslužiteljem kojem vjerujete. Prijavite se "
+"lozinkom aplikacije iz Postavke → Sigurnost."
 
 msgid "Type of password"
 msgstr "Vrsta lozinke"
@@ -2843,6 +3169,9 @@ msgstr "Otključajte trezor da biste spremili novu lozinku. Neće se izgubiti."
 msgid "Unlock with PIN"
 msgstr "Otključaj PIN-om"
 
+msgid "Unlock with a PIN"
+msgstr "Otključaj PIN-om"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2869,9 +3198,6 @@ msgstr "Otključavanje"
 
 msgid "Unlocking…"
 msgstr "Otključavanje…"
-
-msgid "Unprotected CSV…"
-msgstr "Nezaštićeni CSV…"
 
 msgid "Updated locally"
 msgstr "Lokalno ažurirano"
@@ -2919,6 +3245,9 @@ msgid ""
 msgstr ""
 "Koristite istu glavnu lozinku na svim svojim uređajima: ona otvara ključ "
 "mape. Ovdje je upisujete jednom, kako biste se pridružili."
+
+msgid "Use them on your phone or another computer"
+msgstr "Koristite ih na telefonu ili drugom računalu"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Koristite ove kodove kada web-mjesto zatraži provjeru u dva koraka."
@@ -3058,6 +3387,9 @@ msgstr "Web-mjesto"
 msgid "Website (optional)"
 msgstr "Web-mjesto (neobavezno)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Dobro došli u Ashy Pass"
+
 msgid "What it contains"
 msgstr "Što sadrži"
 
@@ -3067,9 +3399,6 @@ msgid ""
 msgstr ""
 "Kada web-mjesto nudi provjeru u dva koraka, ovdje dodajte njegov ključ za "
 "postavljanje da biste dobivali kodove."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Kada je isključeno, proširenje ne vidi ništa iz trezora"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Odakle želite prenijeti svoje lozinke?"
@@ -3158,6 +3487,13 @@ msgstr ""
 "Vaše stavke ostaju na ovom računalu i u mapi. Kasnije ponovno povezivanje "
 "spaja ih umjesto dupliciranja."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"Vaše prijave za web-mjesto na kojem se nalazite, jednim klikom za ispunu. "
+"Pretražujte trezor i izradite nove lozinke."
+
 msgid "Your most used accesses can be here"
 msgstr "Ovdje mogu biti vaši najčešće korišteni unosi"
 
@@ -3209,6 +3545,9 @@ msgstr "slobodno od"
 msgid "high"
 msgstr "visoka"
 
+msgid "incorrect master password"
+msgstr "pogrešna glavna lozinka"
+
 msgid "low"
 msgstr "niska"
 
@@ -3233,6 +3572,9 @@ msgstr[2] "novi kôd za {} sekundi"
 
 msgid "no 2FA"
 msgstr "bez 2FA"
+
+msgid "no permission to read or write there"
+msgstr "nema dopuštenja za čitanje ili pisanje tamo"
 
 msgid "none"
 msgstr "nema"
@@ -3279,6 +3621,21 @@ msgstr "poslano:"
 msgid "solid-state"
 msgstr "poluvodički"
 
+msgid "that place is read-only"
+msgstr "to mjesto je samo za čitanje"
+
+msgid "the disk is full"
+msgstr "disk je pun"
+
+msgid "the file or folder does not exist"
+msgstr "datoteka ili mapa ne postoji"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "trezor je zaključan; otključajte ga i pokušajte ponovno"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr "ovo otključavanje više ne otvara trezor; unesite glavnu lozinku"
+
 msgid "very high"
 msgstr "vrlo visoka"
 
@@ -3287,6 +3644,14 @@ msgstr "vrlo niska"
 
 msgid "weak"
 msgstr "slabo"
+
+#, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr "Dodano {added} od {total} kodova; ostale nije bilo moguće spremiti"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "Gotovo {done} od {total}"
 
 #, rust-format
 msgid "{} cannot be imported."
@@ -3301,6 +3666,13 @@ msgid_plural "{} characters"
 msgstr[0] "{} znak"
 msgstr[1] "{} znaka"
 msgstr[2] "{} znakova"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "Dodan {} kôd"
+msgstr[1] "Dodana {} kôda"
+msgstr[2] "Dodano {} kodova"
 
 #, rust-format
 msgid "{} day."

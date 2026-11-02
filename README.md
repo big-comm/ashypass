@@ -33,18 +33,18 @@ Nothing leaves your machine unless you turn on a sync or backup service. The vau
 |---|---|
 | **My passwords** | One list with folder and favourite filters, a visible *Copy password* button on every row and a details page for the rest. Wide windows show the list and the details side by side. |
 | **Verification codes** | TOTP codes shown next to the service and account they belong to, with a countdown and one-click copy. Add a code by reading its QR code (image file, screen capture or clipboard) or by pasting the setup key. |
-| **Create password** | A ready 20-character password with its real length and an estimated strength; random words or a numeric PIN when a site needs them. *Save to vault…* keeps the value even if the vault has to be unlocked first. |
+| **Password generator** | A ready 20-character password with its real length and an estimated strength; random words or a numeric PIN when a site needs them. *Save to vault…* keeps the value even if the vault has to be unlocked first. |
 | **Backups** | Protected `.ashy` copies with clear status: when the last copy was made, what it contains and which password restores it. Guided import from other apps with a preview before anything is written. |
 | **Synchronization** | Two-way sync with Nextcloud Passwords, plus encrypted copies on WebDAV or Google Drive. Type just the server's domain — `https://` is added for you. |
 
 <table>
   <tr>
     <td><img src="docs/screenshots/verification-codes.png" alt="Verification codes" width="430"></td>
-    <td><img src="docs/screenshots/create-password-dark.png" alt="Create password, dark style" width="430"></td>
+    <td><img src="docs/screenshots/create-password-dark.png" alt="Password generator, dark style" width="430"></td>
   </tr>
   <tr>
     <td align="center"><sub>Verification codes</sub></td>
-    <td align="center"><sub>Create password — follows the system dark style</sub></td>
+    <td align="center"><sub>Password generator — follows the system dark style</sub></td>
   </tr>
 </table>
 
@@ -87,10 +87,10 @@ Nothing leaves your machine unless you turn on a sync or backup service. The vau
 - **Command line:** `ashypass-cli` shares the vault and keyring with the desktop app.
 - **Adaptive layout** from narrow to wide windows, keyboard shortcuts, and accessible names on icon buttons.
 - **29 languages:** bg, cs, da, de, el, en, es, et, fi, fr, he, hr, hu, is, it, ja, ko, nl, no, pl, pt, pt_BR, ro, ru, sk, sv, tr, uk, zh.
+- **Browser extension** for [Chrome, Brave, Edge and Vivaldi](https://chromewebstore.google.com/detail/ashy-pass/aaffaajejkomddnihpblnkolkhcgaoom) and [Firefox and LibreWolf](https://addons.mozilla.org/firefox/addon/ashy-pass/); then *Settings → Browser → Connect* in Ashy Pass.
 
 ## Not available yet
 
-- **Browser extension in the stores.** The extension is complete and can be loaded unpacked; it is not yet published on the Chrome Web Store and Firefox Add-ons.
 - **Security keys (FIDO2) for the vault.** Kept out of the interface until registration and verification are fully implemented. External drives can already use FIDO2 keyslots.
 
 ## Requirements
@@ -141,9 +141,11 @@ ASHYPASS_GOOGLE_CLIENT_SECRET=xxx \
 
 | Shortcut | Action |
 |---|---|
-| <kbd>Ctrl</kbd>+<kbd>1</kbd> … <kbd>Ctrl</kbd>+<kbd>4</kbd> | My passwords, Verification codes, Create password, Backups |
+| <kbd>Ctrl</kbd>+<kbd>1</kbd> … <kbd>Ctrl</kbd>+<kbd>4</kbd> | My passwords, Verification codes, Password generator, Backups |
 | <kbd>Ctrl</kbd>+<kbd>F</kbd> | Search the current page |
 | <kbd>Ctrl</kbd>+<kbd>N</kbd> | Add a password (or a code on the codes page) |
+| <kbd>Ctrl</kbd>+<kbd>B</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> | Copy the user / the password of the access focused in the list or open |
+| <kbd>Ctrl</kbd>+<kbd>T</kbd> / <kbd>Ctrl</kbd>+<kbd>U</kbd> | Copy its verification code / open its website |
 | <kbd>Ctrl</kbd>+<kbd>L</kbd> | Lock |
 | <kbd>Ctrl</kbd>+<kbd>,</kbd> | Settings |
 | <kbd>F1</kbd> | All shortcuts |

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ashypass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:11-0300\n"
+"POT-Creation-Date: 2026-10-31 15:37-0300\n"
 "PO-Revision-Date: 2026-05-12 19:38\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -13,8 +13,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "1. Install the extension"
+msgstr "1. Installeer de extensie"
+
 msgid "1PUX export file"
 msgstr "1PUX-exportbestand"
+
+msgid "2. Connect it to Ashy Pass"
+msgstr "2. Koppel hem aan Ashy Pass"
+
+msgid "3. Allow it"
+msgstr "3. Sta hem toe"
 
 msgid ""
 "A .ashy copy made by Ashy Pass, or a .db copy downloaded from Google Drive "
@@ -27,6 +36,9 @@ msgid "A 12-word BIP-39 phrase to unlock without a security key. Shown once."
 msgstr ""
 "Een BIP-39-zin van 12 woorden om te ontgrendelen zonder beveiligingssleutel. "
 "Wordt eenmalig getoond."
+
+msgid "A login form with the Ashy Pass suggestions under the email field"
+msgstr "Een inlogformulier met Ashy Pass-suggesties onder het e-mailveld"
 
 msgid "A new access"
 msgstr "Een nieuw item"
@@ -70,6 +82,9 @@ msgstr "Bijlage toevoegen"
 msgid "Add code"
 msgstr "Code toevoegen"
 
+msgid "Add codes"
+msgstr "Codes toevoegen"
+
 msgid "Add file"
 msgstr "Bestand toevoegen"
 
@@ -82,11 +97,23 @@ msgstr "De items van de kopie aan de huidige kluis toevoegen"
 msgid "Add the entries of a .ashy backup to this vault"
 msgstr "De items van een .ashy-back-up aan deze kluis toevoegen"
 
+msgid "Add to Firefox"
+msgstr "Aan Firefox toevoegen"
+
 msgid "Add to favorites"
 msgstr "Aan favorieten toevoegen"
 
+msgid "Add to the browser"
+msgstr "Aan de browser toevoegen"
+
 msgid "Add verification code"
 msgstr "Verificatiecode toevoegen"
+
+#, rust-format
+msgid "Add {} code from Google Authenticator?"
+msgid_plural "Add {} codes from Google Authenticator?"
+msgstr[0] "{} code uit Google Authenticator toevoegen?"
+msgstr[1] "{} codes uit Google Authenticator toevoegen?"
 
 msgid "Added to favorites"
 msgstr "Aan favorieten toegevoegd"
@@ -110,6 +137,9 @@ msgstr "Aantal cijfers aanpassen"
 
 msgid "Adjust words and separator"
 msgstr "Woorden en scheidingsteken aanpassen"
+
+msgid "Advanced"
+msgstr "Geavanceerd"
 
 msgid "Algorithm"
 msgstr "Algoritme"
@@ -165,6 +195,9 @@ msgstr ""
 msgid "Another example"
 msgstr "Ander voorbeeld"
 
+msgid "Anyone who gets the file can read every password in it"
+msgstr "Iedereen die het bestand krijgt, kan elk wachtwoord erin lezen"
+
 msgid ""
 "Anyone who gets the file can see what it contains: names, users, websites, "
 "passwords and notes. Verification codes, folders and attachments are not "
@@ -212,6 +245,12 @@ msgstr ""
 "Ashy Pass kon geen verbinding maken met Nextcloud. Controleer uw verbinding, "
 "het serveradres en het app-wachtwoord."
 
+msgid "Ashy Pass for Chrome"
+msgstr "Ashy Pass voor Chrome"
+
+msgid "Ashy Pass for Firefox"
+msgstr "Ashy Pass voor Firefox"
+
 msgid ""
 "Ashy Pass will close. Open it again to continue; your vault file was not "
 "deleted."
@@ -231,6 +270,14 @@ msgid ""
 msgstr ""
 "Minimaal 8 tekens. Een wachtzin van vier woorden uit de EFF-woordenlijst is "
 "een sterke standaard."
+
+#, rust-format
+msgid ""
+"At least {} characters. A few random words are easy to remember and hard to "
+"guess."
+msgstr ""
+"Minstens {} tekens. Een paar willekeurige woorden zijn makkelijk te "
+"onthouden en moeilijk te raden."
 
 msgid "Attachment added"
 msgstr "Bijlage toegevoegd"
@@ -295,11 +342,29 @@ msgstr "Back-ups"
 msgid "Before importing"
 msgstr "Vóór het importeren"
 
+msgid "Bold (Ctrl+B)"
+msgstr "Vet (Ctrl+B)"
+
+msgid "Bring or add your passwords"
+msgstr "Breng je wachtwoorden mee of voeg ze toe"
+
 msgid "Bring passwords from another app or browser"
 msgstr "Wachtwoorden uit een andere app of browser overzetten"
 
+msgid ""
+"Bring them from a browser (Chrome, Edge, Brave, Firefox) or another password "
+"manager (Bitwarden, 1Password, KeePass)."
+msgstr ""
+"Haal ze op uit een browser (Chrome, Edge, Brave, Firefox) of een andere "
+"wachtwoordmanager (Bitwarden, 1Password, KeePass)."
+
 msgid "Bring your passwords"
 msgstr "Breng uw wachtwoorden mee"
+
+msgid "Brings the server's changes and sends yours; the newest version wins"
+msgstr ""
+"Haalt de wijzigingen van de server op en stuurt de jouwe; de nieuwste versie "
+"wint"
 
 msgid "Browser"
 msgstr "Browser"
@@ -374,6 +439,9 @@ msgstr ""
 "Kies een hoofdwachtwoord. Het beschermt alles wat u op deze computer in Ashy "
 "Pass bewaart."
 
+msgid "Choose an access in the list first"
+msgstr "Kies eerst een item in de lijst"
+
 msgid "Choose an image with the QR code"
 msgstr "Kies een afbeelding met de QR-code"
 
@@ -407,6 +475,9 @@ msgstr "Kies deze map bij het toevoegen of bewerken van een wachtwoord."
 msgid "Choose…"
 msgstr "Kiezen…"
 
+msgid "Chrome Web Store · Chrome, Brave, Edge and Vivaldi"
+msgstr "Chrome Web Store · Chrome, Brave, Edge en Vivaldi"
+
 msgid "Chrome, Edge, Brave or Firefox password export (CSV)"
 msgstr "Wachtwoordexport van Chrome, Edge, Brave of Firefox (CSV)"
 
@@ -421,6 +492,13 @@ msgstr "Geschiedenis wissen"
 
 msgid "Clear the password history?"
 msgstr "Wachtwoordgeschiedenis wissen?"
+
+msgid ""
+"Click a login field and pick your login: it fills only on the site it "
+"belongs to."
+msgstr ""
+"Klik op een inlogveld en kies uw toegang: die wordt alleen ingevuld op de "
+"site waartoe hij behoort."
 
 msgid "Client ID"
 msgstr "Client-ID"
@@ -446,6 +524,9 @@ msgstr "Mapping sluiten"
 msgid "Closing mapping"
 msgstr "Mapping sluiten"
 
+msgid "Code"
+msgstr "Code"
+
 msgid "Code copied"
 msgstr "Code gekopieerd"
 
@@ -458,8 +539,26 @@ msgstr "Code-instellingen"
 msgid "Coffee"
 msgstr "Koffie"
 
+msgid "Column"
+msgstr "Kolom"
+
+msgid "Column 1"
+msgstr "Kolom 1"
+
+msgid "Column 2"
+msgstr "Kolom 2"
+
 msgid "Columns such as name, url, username, password"
 msgstr "Kolommen zoals name, url, username, password"
+
+msgid ""
+"Coming from Google Authenticator? There, open the menu, choose Transfer "
+"accounts → Export accounts, and read the QR code it shows here: all its "
+"codes come at once."
+msgstr ""
+"Kom je van Google Authenticator? Open daar het menu, kies Accounts "
+"overzetten → Accounts exporteren en lees hier de getoonde QR-code in: al "
+"zijn codes komen in één keer binnen."
 
 msgid "Compact vault list"
 msgstr "Compacte kluislijst"
@@ -533,9 +632,6 @@ msgstr "Verbinden mislukt"
 msgid "Connect the sync folder"
 msgstr "De synchronisatiemap verbinden"
 
-msgid "Connect your browsers"
-msgstr "Verbind je browsers"
-
 msgid "Connected"
 msgstr "Verbonden"
 
@@ -544,6 +640,9 @@ msgid "Connected to {} browser. Restart it if it is open."
 msgid_plural "Connected to {} browsers. Restart them if they are open."
 msgstr[0] "Verbonden met {} browser. Herstart hem als hij open is."
 msgstr[1] "Verbonden met {} browsers. Herstart ze als ze open zijn."
+
+msgid "Connected, but blocked (step 3)"
+msgstr "Verbonden, maar geblokkeerd (stap 3)"
 
 msgid "Connected. Received:"
 msgstr "Verbonden. Ontvangen:"
@@ -580,6 +679,15 @@ msgstr "Kopie van de kluis uit Ashy Pass 2"
 
 msgid "Copy password"
 msgstr "Wachtwoord kopiëren"
+
+msgid "Copy the password"
+msgstr "Het wachtwoord kopiëren"
+
+msgid "Copy the user"
+msgstr "De gebruiker kopiëren"
+
+msgid "Copy the verification code"
+msgstr "De verificatiecode kopiëren"
 
 msgid "Copy this old password"
 msgstr "Dit oude wachtwoord kopiëren"
@@ -698,9 +806,6 @@ msgstr "Map aanmaken…"
 msgid "Create my vault"
 msgstr "Mijn kluis aanmaken"
 
-msgid "Create password"
-msgstr "Wachtwoord aanmaken"
-
 msgid "Create your vault"
 msgstr "Maak uw kluis aan"
 
@@ -806,6 +911,9 @@ msgstr "Verbinding verbreken mislukt"
 msgid "Disconnect the sync folder?"
 msgstr "De synchronisatiemap loskoppelen?"
 
+msgid "Do you keep passwords somewhere else?"
+msgstr "Bewaar je wachtwoorden ergens anders?"
+
 msgid "Done"
 msgstr "Gereed"
 
@@ -823,6 +931,13 @@ msgstr "Schijf vergrendeld"
 
 msgid "Duplicate items"
 msgstr "Dubbele items"
+
+msgid ""
+"Each icon is downloaded from the site itself, which sees your internet "
+"address. Sites on your local network are never contacted."
+msgstr ""
+"Elk pictogram wordt van de site zelf gedownload, die je internetadres ziet. "
+"Sites in je lokale netwerk worden nooit benaderd."
 
 msgid "Easier to type and remember."
 msgstr "Makkelijker te typen en te onthouden."
@@ -866,9 +981,6 @@ msgstr "Versleuteld als"
 msgid "Encrypted device"
 msgstr "Versleuteld apparaat"
 
-msgid "Encrypted folder sync"
-msgstr "Versleutelde mapsynchronisatie"
-
 msgid "Encrypted folder sync failed"
 msgstr "Versleutelde mapsynchronisatie mislukt"
 
@@ -898,6 +1010,9 @@ msgstr "Kluis wordt opnieuw versleuteld…"
 
 msgid "Encrypting…"
 msgstr "Bezig met versleutelen…"
+
+msgid "Encryption"
+msgstr "Versleuteling"
 
 msgid "Encrypt…"
 msgstr "Versleutelen…"
@@ -941,6 +1056,16 @@ msgstr "Foutdetails"
 msgid "Estimated strength"
 msgstr "Geschatte sterkte"
 
+msgid "Every code in this export is already in the vault."
+msgstr "Alle codes in deze export staan al in de kluis."
+
+msgid ""
+"Every entry is encrypted with AES-256-GCM under a key derived from the "
+"master password"
+msgstr ""
+"Elk item wordt versleuteld met AES-256-GCM onder een sleutel die is afgeleid "
+"van het hoofdwachtwoord"
+
 msgid ""
 "Everything in the vault is encrypted again with a key derived using the "
 "costs above. Older versions of Ashy Pass will not open the vault with the "
@@ -981,6 +1106,18 @@ msgstr ""
 msgid "Everything was already in sync"
 msgstr "Alles was al gesynchroniseerd"
 
+msgid ""
+"Everything you keep in Ashy Pass stays in an encrypted vault on this "
+"computer. Only your master password opens it, and Ashy Pass cannot recover "
+"it if it is lost."
+msgstr ""
+"Alles wat je in Ashy Pass bewaart, blijft in een versleutelde kluis op deze "
+"computer. Alleen je hoofdwachtwoord opent de kluis, en Ashy Pass kan het "
+"niet herstellen als je het kwijtraakt."
+
+msgid "Export an unprotected file (CSV)"
+msgstr "Een onbeveiligd bestand exporteren (CSV)"
+
 msgid "Export complete"
 msgstr "Exporteren voltooid"
 
@@ -990,8 +1127,8 @@ msgstr "Exporteren mislukt"
 msgid "Export to KeePass"
 msgstr "Exporteren naar KeePass"
 
-msgid "Export to KeePass or to a file anyone can read"
-msgstr "Exporteren naar KeePass of naar een bestand dat iedereen kan lezen"
+msgid "Export to KeePass (.kdbx)"
+msgstr "Exporteren naar KeePass (.kdbx)"
 
 msgid "Export unprotected file"
 msgstr "Onbeveiligd bestand exporteren"
@@ -1023,9 +1160,6 @@ msgstr "Favoriet"
 msgid "Favorites"
 msgstr "Favorieten"
 
-msgid "Fetch and display site icons next to vault entries"
-msgstr "Site-pictogrammen ophalen en weergeven naast kluisitems"
-
 msgid "Fetching remote passwords"
 msgstr "Externe wachtwoorden ophalen"
 
@@ -1047,6 +1181,9 @@ msgstr ""
 msgid "Fill in all three fields."
 msgstr "Vul alle drie de velden in."
 
+msgid "Fill passwords in the browser"
+msgstr "Wachtwoorden invullen in de browser"
+
 msgid "Find duplicate items"
 msgstr "Dubbele items zoeken"
 
@@ -1055,6 +1192,9 @@ msgstr "Bevindingen"
 
 msgid "Finishing synchronization"
 msgstr "Synchronisatie voltooien"
+
+msgid "Firefox Add-ons · Firefox and LibreWolf"
+msgstr "Firefox-add-ons · Firefox en LibreWolf"
 
 msgid ""
 "First export your passwords from the other app, then choose that file here. "
@@ -1065,8 +1205,17 @@ msgstr ""
 "Vóór het importeren ziet u wat er is herkend. Verwijder onbeveiligde "
 "exportbestanden daarna."
 
+msgid "First steps"
+msgstr "Eerste stappen"
+
+msgid "First steps hidden. The main menu brings them back."
+msgstr "Eerste stappen verborgen. Via het hoofdmenu haal je ze terug."
+
 msgid "Folder"
 msgstr "Map"
+
+msgid "Folder and tags"
+msgstr "Map en labels"
 
 msgid "Folder created"
 msgstr "Map aangemaakt"
@@ -1101,6 +1250,9 @@ msgid ""
 msgstr ""
 "Voor Nextcloud ziet de basis-URL eruit als https://cloud.example.com/"
 "remote.php/dav/files/GEBRUIKERSNAAM"
+
+msgid "For people who use the Passwords app on their Nextcloud server"
+msgstr "Voor mensen die de app 'Passwords' op hun Nextcloud-server gebruiken"
 
 msgid "For the browsers installed for this user"
 msgstr "Voor de browsers van deze gebruiker"
@@ -1197,6 +1349,9 @@ msgstr ""
 msgid "Hide copied passwords from clipboard history"
 msgstr "Gekopieerde wachtwoorden verbergen in de klembordgeschiedenis"
 
+msgid "Hide first steps"
+msgstr "Eerste stappen verbergen"
+
 msgid "Hide password"
 msgstr "Wachtwoord verbergen"
 
@@ -1226,6 +1381,9 @@ msgstr "Ik bewaar mijn wachtwoorden al ergens anders"
 msgid "I understand — Continue"
 msgstr "Ik begrijp het — Doorgaan"
 
+msgid "I wrote my master password down somewhere safe"
+msgstr "Ik heb mijn hoofdwachtwoord op een veilige plek opgeschreven"
+
 msgid ""
 "If this computer is lost or damaged, a backup is the only way to get your "
 "passwords back."
@@ -1242,6 +1400,9 @@ msgstr "Importeren"
 msgid "Import complete"
 msgstr "Importeren voltooid"
 
+msgid "Import from a browser or another app, or add them one by one"
+msgstr "Importeer uit een browser of andere app, of voeg ze één voor één toe"
+
 msgid "Import partly complete"
 msgstr "Import deels voltooid"
 
@@ -1252,6 +1413,13 @@ msgid "Import passwords…"
 msgstr "Wachtwoorden importeren…"
 
 msgid ""
+"Important: if this computer breaks, a backup is the only way to get "
+"everything back"
+msgstr ""
+"Belangrijk: als deze computer kapotgaat, is een back-up de enige manier om "
+"alles terug te krijgen"
+
+msgid ""
 "In Ashy Pass for Android, open Settings → Encrypted folder sync and tap "
 "“Scan the computer's QR code”. Then type the code below and your master "
 "password."
@@ -1259,6 +1427,15 @@ msgstr ""
 "Open in Ashy Pass voor Android Instellingen → Gesynchroniseerde versleutelde "
 "map en tik op ‘QR-code van de computer scannen’. Typ daarna de code "
 "hieronder en uw hoofdwachtwoord."
+
+msgid ""
+"In Chrome: Settings → Autofill and passwords → Google Password Manager → "
+"Settings → Export passwords. After importing, delete the exported file: it "
+"is not protected."
+msgstr ""
+"In Chrome: Instellingen → Automatisch invullen en wachtwoorden → Google "
+"Wachtwoordmanager → Instellingen → Wachtwoorden exporteren. Verwijder het "
+"geëxporteerde bestand na het importeren: het is niet beveiligd."
 
 msgid "Incorrect PIN"
 msgstr "Onjuiste pincode"
@@ -1281,6 +1458,9 @@ msgstr "Onjuist hoofdwachtwoord. Er is niets gewijzigd."
 msgid "Incorrect master password. Nothing was exported."
 msgstr "Onjuist hoofdwachtwoord. Er is niets geëxporteerd."
 
+msgid "Insert a table"
+msgstr "Tabel invoegen"
+
 msgid ""
 "Insert your FIDO2 token (Yubikey, Nitrokey, etc.) and authorise on the "
 "device when prompted. Your current passphrase is required to authorise the "
@@ -1289,6 +1469,13 @@ msgstr ""
 "Plaats uw FIDO2-token (Yubikey, Nitrokey, enz.) en autoriseer op het "
 "apparaat wanneer daarom wordt gevraagd. Uw huidige wachtzin is vereist om de "
 "nieuwe sleutelsleuf te autoriseren."
+
+msgid "Install the Ashy Pass extension and connect it"
+msgstr "Installeer de Ashy Pass-extensie en koppel hem"
+
+#, rust-format
+msgid "Installed in {}"
+msgstr "Geïnstalleerd in: {}"
 
 msgid "Internal error: no passphrase set"
 msgstr "Interne fout: geen wachtzin ingesteld"
@@ -1306,24 +1493,17 @@ msgstr ""
 "Het opent de kluis op deze computer. Niemand kan het voor u herstellen — ook "
 "Ashy Pass niet."
 
+msgid "Italic (Ctrl+I)"
+msgstr "Cursief (Ctrl+I)"
+
 msgid "Items stay here and in the folder; connecting again merges them"
 msgstr "Items blijven hier en in de map; opnieuw verbinden voegt ze samen"
 
 msgid "Its user, password and other details appear here."
 msgstr "De gebruiker, het wachtwoord en andere details verschijnen hier."
 
-msgid "KeePass (.kdbx)…"
-msgstr "KeePass (.kdbx)…"
-
 msgid "KeePass export complete"
 msgstr "KeePass-export voltooid"
-
-msgid ""
-"KeePass keeps the file protected by a password. A CSV file can be read by "
-"anyone who gets hold of it."
-msgstr ""
-"KeePass houdt het bestand beveiligd met een wachtwoord. Een CSV-bestand kan "
-"worden gelezen door iedereen die het in handen krijgt."
 
 msgid ""
 "Keep a protected copy of your vault somewhere safe, and bring your passwords "
@@ -1340,6 +1520,9 @@ msgstr "Behouden"
 
 msgid "Keep using"
 msgstr "Doorgaan"
+
+msgid "Keep verification codes (2FA)"
+msgstr "Verificatiecodes (2FA) bewaren"
 
 msgid ""
 "Keeps the master password in the system keyring (GNOME Keyring, KWallet) so "
@@ -1443,14 +1626,17 @@ msgstr ""
 "geschiedenis) en de andere gaan naar Verwijderde items."
 
 msgid ""
-"Logins, cards, identities, notes and passkeys, encrypted on this computer "
-"before they leave, through a folder on Nextcloud, pCloud, WebDAV, Dropbox, "
-"Google Drive or this computer. Ashy Pass for Android uses the same folder."
+"Logins, cards, identities, notes, passkeys and verification codes are "
+"encrypted on this computer before they leave, through a folder on Nextcloud, "
+"pCloud, WebDAV, Dropbox, Google Drive or this computer. The service only "
+"sees encrypted files, never what is in them. Ashy Pass for Android uses the "
+"same folder."
 msgstr ""
-"Logins, kaarten, identiteiten, notities en passkeys, versleuteld op deze "
-"computer voordat ze vertrekken, via een map op Nextcloud, pCloud, WebDAV, "
-"Dropbox, Google Drive of deze computer. Ashy Pass voor Android gebruikt "
-"dezelfde map."
+"Inloggegevens, kaarten, identiteiten, notities, passkeys en verificatiecodes "
+"worden op deze computer versleuteld voordat ze hem verlaten, via een map op "
+"Nextcloud, pCloud, WebDAV, Dropbox, Google Drive of deze computer. De dienst "
+"ziet alleen versleutelde bestanden, nooit wat erin staat. Ashy Pass voor "
+"Android gebruikt dezelfde map."
 
 msgid ""
 "Looks for weak, repeated and old passwords, accounts without a verification "
@@ -1465,6 +1651,9 @@ msgstr "Kleine letters (a–z)"
 
 msgid "Main menu"
 msgstr "Hoofdmenu"
+
+msgid "Make a backup"
+msgstr "Maak een back-up"
 
 msgid "Master Password"
 msgstr "Hoofdwachtwoord"
@@ -1494,9 +1683,6 @@ msgstr "Samengevoegd"
 
 msgid "Merged; the others are in Deleted items"
 msgstr "Samengevoegd; de andere staan in Verwijderde items"
-
-msgid "Minimum length:"
-msgstr "Minimale lengte:"
 
 msgid "Mint"
 msgstr "Munt"
@@ -1576,6 +1762,9 @@ msgstr "Nieuw hoofdwachtwoord ingesteld. Noteer het op een veilige plek."
 
 msgid "Nextcloud Passwords"
 msgstr "Nextcloud Passwords"
+
+msgid "Nextcloud Passwords app"
+msgstr "Nextcloud Passwords-app"
 
 msgid "Nextcloud Passwords connected"
 msgstr "Nextcloud Passwords verbonden"
@@ -1666,6 +1855,15 @@ msgstr "Niet geconfigureerd"
 msgid "Not connected"
 msgstr "Niet verbonden"
 
+msgid "Not done yet"
+msgstr "Nog niet gedaan"
+
+msgid "Not in the store yet: see how to install it by hand"
+msgstr "Nog niet in de store: bekijk hoe u het handmatig installeert"
+
+msgid "Not now"
+msgstr "Niet nu"
+
 msgid "Not run yet"
 msgstr "Nog niet uitgevoerd"
 
@@ -1749,14 +1947,39 @@ msgstr "Aan"
 msgid ""
 "On the site you want to protect, open the two-step verification settings and "
 "choose an authenticator app. Read the QR code it shows, or copy the setup "
-"key and paste it below."
+"key (the letters and numbers shown under the QR code, often behind “Can't "
+"scan it?”) and paste it below."
 msgstr ""
-"Open op de site die u wilt beveiligen de instellingen voor "
-"tweestapsverificatie en kies een authenticator-app. Lees de getoonde QR-code "
-"of kopieer de configuratiesleutel en plak die hieronder."
+"Open op de site die je wilt beveiligen de instellingen voor verificatie in "
+"twee stappen en kies een authenticatie-app. Lees de getoonde QR-code in, of "
+"kopieer de configuratiesleutel (de letters en cijfers onder de QR-code, vaak "
+"achter „Kun je niet scannen?”) en plak die hieronder."
 
 msgid "On until Ashy Pass closes"
 msgstr "Aan tot Ashy Pass sluit"
+
+msgid ""
+"Once your passwords are in, make a backup in Backups and keep it off this "
+"computer, on a USB drive for example. If this computer breaks or is lost, it "
+"is the only way to get them back."
+msgstr ""
+"Zodra je wachtwoorden erin staan, maak je een back-up in Back-ups en bewaar "
+"je die buiten deze computer, bijvoorbeeld op een USB-stick. Als deze "
+"computer kapotgaat of kwijtraakt, is dat de enige manier om ze terug te "
+"krijgen."
+
+msgid ""
+"One code uses a counter or an algorithm Ashy Pass does not support and is "
+"left out."
+msgid_plural ""
+"Some codes use a counter or an algorithm Ashy Pass does not support and are "
+"left out."
+msgstr[0] ""
+"Eén code gebruikt een teller of een algoritme dat Ashy Pass niet ondersteunt "
+"en is overgeslagen."
+msgstr[1] ""
+"Sommige codes gebruiken een teller of een algoritme dat Ashy Pass niet "
+"ondersteunt en zijn overgeslagen."
 
 msgid ""
 "Only clears the clipboard if it still holds what Ashy Pass copied, so text "
@@ -1795,8 +2018,14 @@ msgstr "Versleutelde mapping openen"
 msgid "Open image…"
 msgstr "Afbeelding openen…"
 
+msgid "Open in the store"
+msgstr "Openen in de winkel"
+
 msgid "Open the encrypted volume"
 msgstr "Het versleutelde volume openen"
+
+msgid "Open the website"
+msgstr "De website openen"
 
 msgid "Open website"
 msgstr "Website openen"
@@ -1812,6 +2041,9 @@ msgstr "Opent Dropbox in de browser; kopieer de getoonde code"
 
 msgid "Opens the browser for OAuth consent"
 msgstr "Opent de browser voor OAuth-toestemming"
+
+msgid "Optional, to organize the list"
+msgstr "Optioneel, om de lijst te ordenen"
 
 msgid ""
 "Optional. Unlock this computer with a short PIN after an automatic lock or a "
@@ -1881,6 +2113,9 @@ msgstr "Wachtwoord gekopieerd"
 
 msgid "Password for this backup"
 msgstr "Wachtwoord voor deze back-up"
+
+msgid "Password generator"
+msgstr "Wachtwoordgenerator"
 
 msgid "Password history"
 msgstr "Wachtwoordgeschiedenis"
@@ -1973,11 +2208,18 @@ msgstr ""
 msgid "Protected by a password you choose"
 msgstr "Beveiligd met een wachtwoord naar keuze"
 
+msgid "Protected by a password. Opens in KeePass, KeePassXC and other apps"
+msgstr ""
+"Beveiligd met een wachtwoord. Opent in KeePass, KeePassXC en andere apps"
+
 msgid "Protection"
 msgstr "Beveiliging"
 
 msgid "QR code read. Check the details and save."
 msgstr "QR-code gelezen. Controleer de gegevens en sla op."
+
+msgid "Quicker than the master password on this computer"
+msgstr "Sneller dan het hoofdwachtwoord op deze computer"
 
 msgid "Quit"
 msgstr "Afsluiten"
@@ -2019,6 +2261,9 @@ msgid "Register up to 2 physical FIDO2 authenticators (YubiKey, SoloKey, etc.)"
 msgstr ""
 "Registreer maximaal 2 fysieke FIDO2-authenticators (YubiKey, SoloKey, enz.)"
 
+msgid "Remember the backup"
+msgstr "Denk aan de back-up"
+
 msgid "Remote generation:"
 msgstr "Externe generatie:"
 
@@ -2039,6 +2284,9 @@ msgstr "Map verwijderen"
 
 msgid "Remove from favorites"
 msgstr "Uit favorieten verwijderen"
+
+msgid "Remove table"
+msgstr "Tabel verwijderen"
 
 msgid "Remove the old copy?"
 msgstr "De oude kopie verwijderen?"
@@ -2109,6 +2357,9 @@ msgstr "Bewaartermijn"
 
 msgid "Rose"
 msgstr "Roos"
+
+msgid "Row"
+msgstr "Rij"
 
 msgid "Run"
 msgstr "Uitvoeren"
@@ -2196,6 +2447,9 @@ msgstr "Zoeken op naam, account of website"
 
 msgid "Search codes"
 msgstr "Codes zoeken"
+
+msgid "Search folders"
+msgstr "Mappen zoeken"
 
 msgid "Search for drives"
 msgstr "Naar schijven zoeken"
@@ -2353,11 +2607,23 @@ msgstr "Grootte"
 msgid "Snapshot uploaded"
 msgstr "Momentopname geüpload"
 
+msgid "Start using Ashy Pass"
+msgstr "Begin met Ashy Pass"
+
 msgid "Starting..."
 msgstr "Bezig met starten..."
 
 msgid "Status"
 msgstr "Status"
+
+msgid "Step 1 of 3"
+msgstr "Stap 1 van 3"
+
+msgid "Step 2 of 3"
+msgstr "Stap 2 van 3"
+
+msgid "Step 3 of 3"
+msgstr "Stap 3 van 3"
 
 msgid "Strength"
 msgstr "Sterkte"
@@ -2375,6 +2641,13 @@ msgstr ""
 
 msgid "Style"
 msgstr "Stijl"
+
+msgid "Suggest a passphrase"
+msgstr "Een wachtzin voorstellen"
+
+#, rust-format
+msgid "Suggested: {}. Write it down before you continue."
+msgstr "Voorstel: {}. Schrijf het op voordat je verdergaat."
 
 msgid "Summary"
 msgstr "Samenvatting"
@@ -2417,6 +2690,9 @@ msgstr "Nu synchroniseren"
 msgid "Sync when the vault is unlocked"
 msgstr "Synchroniseren bij het ontgrendelen van de kluis"
 
+msgid "Sync with your phone or another computer"
+msgstr "Synchroniseren met je telefoon of een andere computer"
+
 msgid "Synchronization"
 msgstr "Synchronisatie"
 
@@ -2456,9 +2732,6 @@ msgstr "Labels"
 msgid "Tags (separated by commas)"
 msgstr "Labels (gescheiden door komma's)"
 
-msgid "Take my data to another app"
-msgstr "Mijn gegevens naar een andere app meenemen"
-
 msgid "Talking to your token… check the device for a touch prompt."
 msgstr ""
 "Bezig met communiceren met uw token… controleer het apparaat op een "
@@ -2466,6 +2739,9 @@ msgstr ""
 
 msgid "Technical details"
 msgstr "Technische details"
+
+msgid "The Ashy Pass window in the browser, with the logins for the site"
+msgstr "Het Ashy Pass-venster in de browser, met de logins voor de site"
 
 msgid "The PIN could not be used on this computer. Use your master password."
 msgstr ""
@@ -2567,6 +2843,13 @@ msgid "The new passwords do not match."
 msgstr "De nieuwe wachtwoorden komen niet overeen."
 
 msgid ""
+"The other steps — the browser, your phone, verification codes — wait in "
+"First steps, above your passwords."
+msgstr ""
+"De andere stappen — de browser, je telefoon, verificatiecodes — wachten in "
+"Eerste stappen, boven je wachtwoorden."
+
+msgid ""
 "The password and other details stay. Before removing, make sure another app "
 "or a backup code can still sign you in, or turn off two-step verification on "
 "the site."
@@ -2613,6 +2896,9 @@ msgstr "Er wordt alleen gezocht in de map"
 msgid "The site's icon, when the code has a site saved"
 msgstr "Het pictogram van de site, als de code een opgeslagen site heeft"
 
+msgid "The six-digit codes sites ask for after the password"
+msgstr "De zescijferige codes die sites na het wachtwoord vragen"
+
 msgid "The sync finished, but some items reported errors."
 msgstr ""
 "De synchronisatie is voltooid, maar sommige items hebben een fout gemeld."
@@ -2628,6 +2914,19 @@ msgid "The vault is locked. Nothing was saved — unlock it and try again."
 msgstr ""
 "De kluis is vergrendeld. Er is niets opgeslagen — ontgrendel hem en probeer "
 "het opnieuw."
+
+msgid ""
+"The vault was locked before the backup was saved. Unlock it and create the "
+"backup again."
+msgstr ""
+"De kluis was vergrendeld voordat de back-up werd opgeslagen. Ontgrendel hem "
+"en maak de back-up opnieuw."
+
+msgid ""
+"The vault was locked before the export was saved. Unlock it and export again."
+msgstr ""
+"De kluis was vergrendeld voordat de export werd opgeslagen. Ontgrendel hem "
+"en exporteer opnieuw."
 
 #, rust-format
 msgid "The vault will lock in {} second because of inactivity."
@@ -2684,6 +2983,11 @@ msgstr ""
 "Zo niet, dan heeft de server misschien maar gedeeltelijk geantwoord: behoud "
 "ze, de volgende synchronisatie probeert het opnieuw."
 
+msgid "This Google Authenticator export has no codes that can be used here."
+msgstr ""
+"Deze export uit Google Authenticator bevat geen codes die hier te gebruiken "
+"zijn."
+
 msgid "This PIN no longer matches the vault. Nothing was changed."
 msgstr "Deze pincode past niet meer bij de kluis. Er is niets gewijzigd."
 
@@ -2699,6 +3003,12 @@ msgstr "Dit item heeft geen opgeslagen wachtwoord"
 
 msgid "This access has no user"
 msgstr "Dit item heeft geen gebruiker"
+
+msgid "This access has no verification code"
+msgstr "Dit item heeft geen verificatiecode"
+
+msgid "This access has no website"
+msgstr "Dit item heeft geen website"
 
 msgid "This access no longer exists"
 msgstr "Dit item bestaat niet meer"
@@ -2754,11 +3064,12 @@ msgstr ""
 "afbeelding van maximaal 20 MB."
 
 msgid ""
-"This is a Google Authenticator export with several accounts. Show the QR "
-"code of each account on its site instead."
+"This is a Google Authenticator export with several accounts. Read it in "
+"Verification codes → Add code to bring them all at once."
 msgstr ""
-"Dit is een export van Google Authenticator met meerdere accounts. Toon in "
-"plaats daarvan de QR-code van elk account op de bijbehorende site."
+"Dit is een export uit Google Authenticator met meerdere accounts. Lees hem "
+"in bij Verificatiecodes → Code toevoegen om ze allemaal in één keer binnen "
+"te halen."
 
 msgid ""
 "This looks like a temporary code. Paste the setup key (letters and numbers) "
@@ -2786,6 +3097,9 @@ msgstr ""
 
 msgid "This will erase everything on the drive"
 msgstr "Hiermee wordt alles op de schijf gewist"
+
+msgid "Through an encrypted folder in your cloud or on a drive"
+msgstr "Via een versleutelde map in je cloud of op een schijf"
 
 msgid ""
 "To replace the vault with it, open Backups → Restore a backup and choose "
@@ -2819,6 +3133,13 @@ msgstr "Uitschakelen"
 msgid "Turn on"
 msgstr "Inschakelen"
 
+msgid ""
+"Turned on when you connect. When off, the extension cannot see anything in "
+"the vault"
+msgstr ""
+"Wordt ingeschakeld als je verbindt. Als dit uit staat, kan de extensie niets "
+"in de kluis zien"
+
 msgid "Two-way reconcile: pull remote, push local, resolve by latest-wins"
 msgstr ""
 "Tweerichtingsafstemming: extern ophalen, lokaal pushen, oplossen op basis "
@@ -2828,11 +3149,14 @@ msgid "Two-way reconciliation completed successfully."
 msgstr "Bidirectionele reconciliatie succesvol voltooid."
 
 msgid ""
-"Two-way sync with the official 'Passwords' app on your Nextcloud server. Use "
-"an app password from Settings → Security."
+"Two-way sync with the official 'Passwords' app on your Nextcloud server. The "
+"server keeps these entries in a form it can read: use it only with a server "
+"you trust. Sign in with an app password from Settings → Security."
 msgstr ""
-"Tweerichtingssynchronisatie met de officiële 'Passwords'-app op uw Nextcloud-"
-"server. Gebruik een app-wachtwoord via Instellingen → Beveiliging."
+"Tweerichtingssynchronisatie met de officiële app 'Passwords' op je Nextcloud-"
+"server. De server bewaart deze items in een vorm die hij kan lezen: gebruik "
+"dit alleen met een server die je vertrouwt. Log in met een app-wachtwoord "
+"uit Instellingen → Beveiliging."
 
 msgid "Type of password"
 msgstr "Soort wachtwoord"
@@ -2878,6 +3202,9 @@ msgstr ""
 msgid "Unlock with PIN"
 msgstr "Ontgrendelen met pincode"
 
+msgid "Unlock with a PIN"
+msgstr "Ontgrendelen met een pincode"
+
 msgid ""
 "Unlock with the PIN of this computer, then open Settings → Protection → "
 "Forgot the master password to set a new one. You will be asked for the PIN "
@@ -2906,9 +3233,6 @@ msgstr "Ontgrendelen"
 
 msgid "Unlocking…"
 msgstr "Ontgrendelen…"
-
-msgid "Unprotected CSV…"
-msgstr "Onbeveiligde CSV…"
 
 msgid "Updated locally"
 msgstr "Lokaal bijgewerkt"
@@ -2956,6 +3280,9 @@ msgid ""
 msgstr ""
 "Gebruik hetzelfde hoofdwachtwoord op al je apparaten: het opent de sleutel "
 "van de map. Je typt het hier één keer in om je aan te sluiten."
+
+msgid "Use them on your phone or another computer"
+msgstr "Gebruik ze op je telefoon of een andere computer"
 
 msgid "Use these codes when a site asks for two-step verification."
 msgstr "Gebruik deze codes als een website om tweestapsverificatie vraagt."
@@ -3096,6 +3423,9 @@ msgstr "Website"
 msgid "Website (optional)"
 msgstr "Website (optioneel)"
 
+msgid "Welcome to Ashy Pass"
+msgstr "Welkom bij Ashy Pass"
+
 msgid "What it contains"
 msgstr "Wat erin staat"
 
@@ -3105,9 +3435,6 @@ msgid ""
 msgstr ""
 "Als een website tweestapsverificatie aanbiedt, voeg dan hier de "
 "configuratiesleutel toe om de codes te krijgen."
-
-msgid "When off, the extension cannot see anything in the vault"
-msgstr "Als dit uit staat, ziet de extensie niets van de kluis"
 
 msgid "Where do you want to bring your passwords from?"
 msgstr "Waar wilt u uw wachtwoorden vandaan halen?"
@@ -3198,6 +3525,13 @@ msgstr ""
 "Je items blijven op deze computer en in de map. Later opnieuw verbinden "
 "voegt ze samen in plaats van te dupliceren."
 
+msgid ""
+"Your logins for the site you are on, one click to fill. Search the vault and "
+"make new passwords too."
+msgstr ""
+"Je logins voor de site waarop je zit, met één klik ingevuld. Doorzoek de "
+"kluis en maak ook nieuwe wachtwoorden."
+
 msgid "Your most used accesses can be here"
 msgstr "Uw meest gebruikte items kunnen hier staan"
 
@@ -3248,6 +3582,9 @@ msgstr "vrij van"
 msgid "high"
 msgstr "hoog"
 
+msgid "incorrect master password"
+msgstr "onjuist hoofdwachtwoord"
+
 msgid "low"
 msgstr "laag"
 
@@ -3270,6 +3607,9 @@ msgstr[1] "nieuwe code over {} seconden"
 
 msgid "no 2FA"
 msgstr "geen 2FA"
+
+msgid "no permission to read or write there"
+msgstr "geen toestemming om daar te lezen of te schrijven"
 
 msgid "none"
 msgstr "geen"
@@ -3314,6 +3654,22 @@ msgstr "verzonden:"
 msgid "solid-state"
 msgstr "solid-state"
 
+msgid "that place is read-only"
+msgstr "die locatie is alleen-lezen"
+
+msgid "the disk is full"
+msgstr "de schijf is vol"
+
+msgid "the file or folder does not exist"
+msgstr "het bestand of de map bestaat niet"
+
+msgid "the vault is locked; unlock it and try again"
+msgstr "de kluis is vergrendeld; ontgrendel hem en probeer het opnieuw"
+
+msgid "this unlock no longer opens the vault; enter the master password"
+msgstr ""
+"deze ontgrendeling opent de kluis niet meer; voer het hoofdwachtwoord in"
+
 msgid "very high"
 msgstr "zeer hoog"
 
@@ -3322,6 +3678,15 @@ msgstr "zeer laag"
 
 msgid "weak"
 msgstr "zwak"
+
+#, rust-format
+msgid "{added} of {total} codes added; the others could not be saved"
+msgstr ""
+"{added} van {total} codes toegevoegd; de andere konden niet worden opgeslagen"
+
+#, rust-format
+msgid "{done} of {total} done"
+msgstr "{done} van {total} klaar"
 
 #, rust-format
 msgid "{} cannot be imported."
@@ -3334,6 +3699,12 @@ msgid "{} character"
 msgid_plural "{} characters"
 msgstr[0] "{} teken"
 msgstr[1] "{} tekens"
+
+#, rust-format
+msgid "{} code added"
+msgid_plural "{} codes added"
+msgstr[0] "{} code toegevoegd"
+msgstr[1] "{} codes toegevoegd"
 
 #, rust-format
 msgid "{} day."
