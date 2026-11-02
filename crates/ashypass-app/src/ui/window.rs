@@ -1581,7 +1581,12 @@ impl DevHandle {
             }
             "note-entry" => {
                 // note-entry — a login with a formatted note, first in the list.
-                let note = "Servidor **AshyTV** na *Oracle*.\nAcesso: `ssh root@10.0.0.5`\n\n| Serviço | Porta |\n| --- | --- |\n| PostgreSQL | 5432 |\n| Caddy | 443 |\n\n```\nsudo systemctl restart caddy\n```";
+                // note-entry:en — the same note in English.
+                let note = if arg == "en" {
+                    "Home server on **Oracle Cloud**, *always on*.\nSign in: `ssh admin@10.0.0.5`\n\n| Service | Port |\n| --- | --- |\n| PostgreSQL | 5432 |\n| Caddy | 443 |\n\n```\nsudo systemctl restart caddy\n```"
+                } else {
+                    "Servidor **AshyTV** na *Oracle*.\nAcesso: `ssh root@10.0.0.5`\n\n| Serviço | Porta |\n| --- | --- |\n| PostgreSQL | 5432 |\n| Caddy | 443 |\n\n```\nsudo systemctl restart caddy\n```"
+                };
                 let added = inner
                     .state
                     .vault
@@ -1589,7 +1594,11 @@ impl DevHandle {
                     .add(ashypass_core::db::vault::NewEntry {
                         item_type: None,
                         extra: None,
-                        title: "AAA Servidor".into(),
+                        title: if arg == "en" {
+                            "Home server".into()
+                        } else {
+                            "AAA Servidor".into()
+                        },
                         username: Some("root".into()),
                         password: "Pw-Long-Enough-123".into(),
                         url: None,
