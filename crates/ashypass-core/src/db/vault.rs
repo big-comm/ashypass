@@ -2612,9 +2612,8 @@ mod tests {
     fn summaries_know_an_empty_password_without_decrypting() {
         // The literal in the summary queries is this length.
         assert_eq!(crate::crypto::aes_gcm_v2::EMPTY_BLOB_LEN, 29);
-        let dir = tempfile::tempdir().unwrap();
-        let mut vault = Vault::open(dir.path().join("vault.db")).unwrap();
-        vault.set_master_password("correct horse battery").unwrap();
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let vault = unlocked_vault(tmp.path());
         let entry = |title: &str, password: &str| NewEntry {
             item_type: None,
             extra: None,
