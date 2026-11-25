@@ -19,7 +19,7 @@ pub const APP_NAME: &str = "Ashy Pass";
 /// what users see; the package's own `pkgver` is date-based (see
 /// `pkgbuild/PKGBUILD`). Keep it aligned with this constant when it matters,
 /// but nothing breaks if it lags behind a patch bump.
-pub const APP_VERSION: &str = "3.1.0";
+pub const APP_VERSION: &str = "3.1.1";
 
 pub const SESSION_TIMEOUT_SECONDS: u64 = 300;
 pub const CLIPBOARD_CLEAR_SECONDS: u64 = 60;
